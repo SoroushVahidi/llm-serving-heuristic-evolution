@@ -1,0 +1,69 @@
+# High-load scenario: arrival rate challenges GPU capacity so policies diverge.
+# 2 GPUs, each with max_active_sequences=8, max_batch_tokens=32, max_kv_tokens=512
+# Arrival rate = 20 req/s, mean output = 50 tokens → ~1 GPU needed → near-saturation
+experiment: stressed_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 50000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 32
+    max_kv_tokens: 512
+  - gpu_id: 1
+    max_active_sequences: 8
+    max_batch_tokens: 32
+    max_kv_tokens: 512
+
+workloads:
+  - tag: stressed_poisson
+    arrival_process: poisson
+    arrival_rate: 20.0
+    duration: 20.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.6
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 50.0
+    output_sigma: 0.8
+    output_low: 5
+    output_high: 256
+    prediction_noise_rel: 0.20
+  - tag: stressed_bursty
+    arrival_process: bursty
+    arrival_rate: 18.0
+    duration: 20.0
+    burst_factor: 6.0
+    burst_fraction: 0.2
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.6
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 50.0
+    output_sigma: 0.8
+    output_low: 5
+    output_high: 256
+    prediction_noise_rel: 0.20
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - greedy_token_fill
+  - least_loaded
+  - multi_bin_batching
+  - random_feasible
+
+seeds: [0, 1, 2, 3, 4]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

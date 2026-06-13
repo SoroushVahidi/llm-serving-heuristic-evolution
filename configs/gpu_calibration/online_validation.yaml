@@ -1,0 +1,17 @@
+# Online serving validation config
+# STATUS: SKIPPED — vLLM is not installed.
+# CUDA 13.0 + PyTorch 2.12.0 is too new for vLLM prebuilt wheels.
+# This config is reserved for future use when vLLM becomes available.
+
+status: skipped
+reason: "vLLM not installed; CUDA 13.0 / PyTorch 2.12.0 not yet supported by vLLM prebuilt wheels"
+
+# When vLLM is available, use:
+# backend: vllm
+# model: Qwen/Qwen2.5-0.5B
+# tensor_parallel_size: 1
+# max_model_len: 4096
+# validation:
+#   prompt_lengths: [64, 256, 512, 1024]
+#   output_lengths: [32, 128, 256]
+#   concurrency_levels: [1, 4, 8, 16]

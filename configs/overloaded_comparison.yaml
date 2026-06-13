@@ -1,0 +1,49 @@
+# Overloaded scenario: arrival rate exceeds GPU service capacity.
+# 1 GPU, max_active_sequences=4, mean service time ~50ms → max throughput ~80 req/s
+# Arrival rate 100 req/s → load factor ~1.25 (overloaded), heavy-tailed outputs.
+# Under these conditions policies diverge significantly.
+experiment: overloaded_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 100000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 16
+    max_kv_tokens: 256
+
+workloads:
+  - tag: overloaded_heavytail
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 16.0
+    prompt_sigma: 0.5
+    prompt_low: 4
+    prompt_high: 64
+    output_dist: lognormal
+    output_mean: 50.0
+    output_sigma: 1.2         # high variance → big SRPT advantage
+    output_low: 1
+    output_high: 512
+    prediction_noise_rel: 0.10
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - greedy_token_fill
+  - least_loaded
+  - multi_bin_batching
+  - random_feasible
+
+seeds: [0, 1, 2, 3, 4]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

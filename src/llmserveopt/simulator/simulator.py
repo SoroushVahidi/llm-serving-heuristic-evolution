@@ -1,0 +1,294 @@
+"""
+Deterministic iteration-level LLM serving simulator.
+
+Design overview
+---------------
+Time is measured in seconds (float).  The simulator advances in discrete
+decode steps of `step_size` seconds each.  At every step:
+
+  1. Enqueue all requests whose arrival_time ≤ current_time.
+  2. Build an ObservableState (no ground-truth leakage).
+  3. Call the policy to obtain an Action.
+  4. Validate and apply the Action: admitted requests join GPU active batches.
+  5. Advance every active request by one decode token.
+  6. Remove completed requests and record CompletedRequest objects.
+  7. Record per-step utilization history.
+
+Phase 1 simplifications (see docs/simulator_design.md):
+  - Prefill is instantaneous (no separate prefill step).
+  - All GPUs are identical.
+  - One output token produced per active request per step.
+  - No preemption / eviction.
+  - No speculative decoding.
+"""
+from __future__ import annotations
+
+import time as _time
+import warnings
+from collections import deque
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Sequence
+
+from ..core.action import Action
+from ..core.metrics import RunMetrics, compute_metrics
+from ..core.types import (
+    CompletedRequest,
+    GPUConfig,
+    ObservableRequest,
+    ObservableState,
+    Request,
+)
+from .gpu import GPUState
+from .request import InternalRequest, RequestPhase
+from .service_model import ServiceModel
+
+
+@dataclass
+class SimulatorConfig:
+    gpu_configs: List[GPUConfig]
+    service_model: ServiceModel = field(default_factory=ServiceModel)
+    # Maximum simulation steps; if None, run until all requests complete or
+    # trace is exhausted plus a drain window.
+    max_steps: Optional[int] = None
+    # After last arrival, continue for this many extra steps to drain queues.
+    drain_steps: int = 50_000
+    # Warn (but do not fail) when a policy tries to admit a non-existent request.
+    warn_on_invalid_action: bool = True
+
+
+class Simulator:
+    def __init__(self, config: SimulatorConfig) -> None:
+        self.config = config
+        self._gpus: List[GPUState] = [
+            GPUState(gc) for gc in config.gpu_configs
+        ]
+        self._gpu_map: Dict[int, GPUState] = {g.gpu_id: g for g in self._gpus}
+        self._waiting: deque[InternalRequest] = deque()
+        self._waiting_map: Dict[int, InternalRequest] = {}
+        self._pending_arrivals: List[InternalRequest] = []   # sorted by arrival_time
+        self._completed: List[CompletedRequest] = []
+        self._step: int = 0
+        self._time: float = 0.0
+
+        # Per-step history for metrics
+        self._util_history: List[float] = []
+        self._batch_history: List[float] = []
+        self._policy_times: List[float] = []
+
+    # ------------------------------------------------------------------
+    # Public interface
+    # ------------------------------------------------------------------
+
+    def load_trace(self, requests: Sequence[Request]) -> None:
+        """Load a sorted request trace.  Must be called before run()."""
+        sorted_reqs = sorted(requests, key=lambda r: r.arrival_time)
+        self._pending_arrivals = [InternalRequest(request=r) for r in sorted_reqs]
+
+    def run(self, policy, workload_tag: str = "unknown", seed: int = 0) -> RunMetrics:
+        """Run simulation with `policy` and return metrics.
+
+        Parameters
+        ----------
+        policy : BasePolicy
+            Must implement select_action(ObservableState) -> Action.
+        workload_tag : str
+            Label used in metrics output.
+        seed : int
+            Seed used for workload generation (recorded in metrics only).
+        """
+        wall_start = _time.perf_counter()
+        self._reset()
+
+        arrival_idx = 0
+        n_arrivals = len(self._pending_arrivals)
+        last_arrival_time = (
+            self._pending_arrivals[-1].request.arrival_time if n_arrivals > 0 else 0.0
+        )
+
+        step_size = self.config.service_model.step_size
+        max_steps = self.config.max_steps
+        drain_steps = self.config.drain_steps
+
+        steps_since_last_arrival = 0
+
+        while True:
+            self._time = self._step * step_size
+
+            # --- 1. Enqueue newly arrived requests ---
+            while (
+                arrival_idx < n_arrivals
+                and self._pending_arrivals[arrival_idx].request.arrival_time
+                <= self._time
+            ):
+                ir = self._pending_arrivals[arrival_idx]
+                self._waiting.append(ir)
+                self._waiting_map[ir.request_id] = ir
+                arrival_idx += 1
+
+            # --- 2. Build observable state ---
+            state = self._build_observable_state()
+
+            # --- 3. Call policy ---
+            t0 = _time.perf_counter()
+            action = policy.select_action(state)
+            self._policy_times.append(_time.perf_counter() - t0)
+
+            # --- 4. Apply action ---
+            self._apply_action(action)
+
+            # --- 5. Advance decode ---
+            step_completed = self._advance_decode()
+            self._completed.extend(step_completed)
+
+            # --- 6. Record per-step metrics ---
+            total_active = sum(g.num_active for g in self._gpus)
+            n_gpus = len(self._gpus)
+            mean_util = (
+                sum(g.utilization for g in self._gpus) / n_gpus if n_gpus else 0.0
+            )
+            self._util_history.append(mean_util)
+            self._batch_history.append(total_active)
+
+            # --- 7. Termination check ---
+            all_arrivals_done = arrival_idx >= n_arrivals
+            all_active_done = total_active == 0
+            queue_empty = len(self._waiting) == 0
+
+            if all_arrivals_done:
+                steps_since_last_arrival += 1
+            else:
+                steps_since_last_arrival = 0
+
+            if max_steps is not None and self._step >= max_steps:
+                break
+            if all_arrivals_done and queue_empty and all_active_done:
+                break
+            if all_arrivals_done and steps_since_last_arrival >= drain_steps:
+                break
+
+            self._step += 1
+
+        sim_duration = self._time
+        wall_elapsed = _time.perf_counter() - wall_start
+
+        # Requests still in waiting queue at end = dropped
+        dropped = [ir.request for ir in self._waiting]
+
+        return compute_metrics(
+            completed=self._completed,
+            dropped=dropped,
+            sim_duration=sim_duration,
+            gpu_utilization_history=self._util_history,
+            active_batch_history=self._batch_history,
+            policy_name=policy.name,
+            workload_tag=workload_tag,
+            seed=seed,
+            policy_decision_times=self._policy_times,
+            wall_clock_s=wall_elapsed,
+        )
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+
+    def _reset(self) -> None:
+        for g in self._gpus:
+            g._active.clear()
+            g.step_active_counts.clear()
+            g.step_kv_used.clear()
+        self._waiting.clear()
+        self._waiting_map.clear()
+        self._completed.clear()
+        self._step = 0
+        self._time = 0.0
+        self._util_history.clear()
+        self._batch_history.clear()
+        self._policy_times.clear()
+        # Reset internal request states
+        for ir in self._pending_arrivals:
+            ir.phase = RequestPhase.WAITING
+            ir.gpu_id = -1
+            ir.admission_time = -1.0
+            ir.completion_time = -1.0
+            ir.tokens_decoded = 0
+            ir.prefill_remaining = 0
+            ir.first_token_time = -1.0
+
+    def _build_observable_state(self) -> ObservableState:
+        waiting_obs = [
+            ObservableRequest.from_request(ir.request)
+            for ir in self._waiting
+        ]
+        gpu_obs = [g.to_observable() for g in self._gpus]
+        return ObservableState(
+            time=self._time,
+            waiting_queue=waiting_obs,
+            gpu_states=gpu_obs,
+            completed_count=len(self._completed),
+            step=self._step,
+        )
+
+    def _apply_action(self, action: Action) -> None:
+        admitted_ids = set()
+
+        for gpu_id, req_ids in action.admit.items():
+            if gpu_id not in self._gpu_map:
+                if self.config.warn_on_invalid_action:
+                    warnings.warn(f"Action references unknown gpu_id={gpu_id}; skipped.")
+                continue
+
+            gpu = self._gpu_map[gpu_id]
+
+            for rid in req_ids:
+                if rid in admitted_ids:
+                    # Prevent double-admission (same request to two GPUs)
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} appears in multiple GPUs in the same action; skipped."
+                        )
+                    continue
+
+                if rid not in self._waiting_map:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Action references request {rid} not in waiting queue; skipped."
+                        )
+                    continue
+
+                ir = self._waiting_map[rid]
+
+                # Validate arrival: request must have arrived by now
+                if ir.request.arrival_time > self._time:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} has arrival_time={ir.request.arrival_time} "
+                            f"> current time={self._time}; skipped."
+                        )
+                    continue
+
+                ok = gpu.admit(
+                    ir,
+                    admission_time=self._time,
+                    service_model=self.config.service_model,
+                )
+                if ok:
+                    self._waiting_map.pop(rid)
+                    admitted_ids.add(rid)
+
+        # Remove admitted requests from the waiting deque
+        if admitted_ids:
+            self._waiting = deque(
+                ir for ir in self._waiting if ir.request_id not in admitted_ids
+            )
+
+    def _advance_decode(self) -> List[CompletedRequest]:
+        completed: List[CompletedRequest] = []
+        step_end_time = (self._step + 1) * self.config.service_model.step_size
+        for g in self._gpus:
+            completed.extend(
+                g.step(
+                    current_time=step_end_time,
+                    service_model=self.config.service_model,
+                )
+            )
+        return completed

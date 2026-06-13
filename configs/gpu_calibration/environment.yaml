@@ -1,0 +1,16 @@
+# GPU environment template
+# This file is auto-populated by scripts/inspect_gpu_environment.py
+# See results/gpu_calibration/environment.json for actual values
+
+environment:
+  gpu: null           # filled by inspect script
+  cuda_version: null
+  driver_version: null
+  torch_version: null
+  python_version: null
+  transformers_version: null
+  accelerate_version: null
+  vllm_version: null
+  disk_free_gb: null
+  ram_total_gb: null
+  ram_free_gb: null

@@ -1,0 +1,13 @@
+model:
+  name: Qwen/Qwen2.5-0.5B
+  revision: main
+  dtype: bfloat16
+  device_map: auto
+  trust_remote_code: false
+
+tokenizer:
+  name: Qwen/Qwen2.5-0.5B
+  padding_side: left
+
+license: Apache-2.0
+reason_for_selection: "0.5B parameters fit in <2 GB VRAM; no gated access; realistic attention for profiling; fast calibration grid traversal"

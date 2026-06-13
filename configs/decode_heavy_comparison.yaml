@@ -1,0 +1,57 @@
+# Decode-heavy workload: long outputs + higher arrival pressure to expose
+# output-aware scheduling. Short-output and token-budget policies should win on
+# latency once decode queues become visible.
+experiment: decode_heavy_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 500000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: true
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 4096
+    max_kv_tokens: 8192
+
+workloads:
+  - tag: decode_heavy
+    arrival_process: poisson
+    arrival_rate: 30.0
+    duration: 20.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.4
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 512.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 2048
+    prediction_noise_rel: 0.20
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - greedy_token_fill
+  - multi_bin_batching
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - slo_slack_score
+
+seeds: [0, 1, 2]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

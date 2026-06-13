@@ -1,0 +1,56 @@
+# Burst + heavy-tail: transient burst overload with heavy-tailed request sizes.
+# This regime is already informative; keep it stable as the reference case for
+# burst-driven queue collapse and recovery behavior.
+experiment: burst_heavy_tail_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 500000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 16
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+workloads:
+  - tag: burst_heavy_tail
+    arrival_process: bursty
+    arrival_rate: 15.0
+    duration: 30.0
+    burst_factor: 10.0
+    burst_fraction: 0.2
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: pareto
+    output_mean: 128.0
+    output_low: 8
+    output_high: 2048
+    prediction_noise_rel: 0.25
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - slo_slack_score
+
+seeds: [0, 1, 2]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

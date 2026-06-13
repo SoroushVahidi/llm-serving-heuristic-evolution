@@ -1,0 +1,56 @@
+# Prefill-heavy workload: long prompts + constrained active slots/KV to expose
+# prefill ordering. FIFO should pay more head-of-line blocking; chunk-aware
+# prefill policies should have room to improve TTFT once queues build.
+experiment: prefill_heavy_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 200000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.5      # increased: heavier prefill cost forces more chunking steps
+  max_prefill_chunk_tokens: 64     # reduced from 256: long prompts now take ~24-192 steps
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 16384           # increased from 4096: accommodate long prompts
+
+workloads:
+  - tag: prefill_heavy
+    arrival_process: poisson
+    arrival_rate: 90.0             # tuned from 100.0: ~88% GPU utilization, deeper queue for HoL effects
+    duration: 30.0                 # increased from 20.0: more samples
+    prompt_dist: lognormal
+    prompt_mean: 1024.0            # increased from 512: substantially longer prompts
+    prompt_sigma: 1.0              # increased from 0.5: high variance exposes HoL blocking
+    prompt_low: 64                 # reduced from 256: allow short prompts for SPF to exploit
+    prompt_high: 8192              # increased from 2048: extreme prompts cause long HoL blocks
+    output_dist: lognormal
+    output_mean: 16.0              # reduced from 32: very short outputs = genuinely prefill-heavy
+    output_sigma: 0.4              # reduced from 0.5
+    output_low: 4
+    output_high: 64                # reduced from 128: keep outputs short
+    prediction_noise_rel: 0.10
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - slo_slack_score
+
+seeds: [0, 1, 2]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

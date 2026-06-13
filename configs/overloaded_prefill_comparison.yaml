@@ -1,0 +1,56 @@
+# Overloaded-prefill: constrained active slots and prefill pressure. Large
+# prompts with decode-first service should force real scheduling choices rather
+# than letting every serving-style baseline collapse to FIFO.
+experiment: overloaded_prefill_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 100000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: true
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 16384
+
+workloads:
+  - tag: overloaded_prefill
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 256.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 1024
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.8
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.10
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - slo_slack_score
+
+seeds: [0, 1, 2]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

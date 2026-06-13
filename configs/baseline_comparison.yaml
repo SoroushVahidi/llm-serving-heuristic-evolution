@@ -1,0 +1,75 @@
+experiment: baseline_comparison
+
+simulator:
+  step_size: 0.001
+  drain_steps: 50000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+  - gpu_id: 1
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+  - gpu_id: 2
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+  - gpu_id: 3
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+
+workloads:
+  - tag: medium_poisson
+    arrival_process: poisson
+    arrival_rate: 30.0
+    duration: 30.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.8
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.8
+    prediction_noise_rel: 0.15
+  - tag: bursty
+    arrival_process: bursty
+    arrival_rate: 25.0
+    duration: 30.0
+    burst_factor: 8.0
+    burst_fraction: 0.15
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.8
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.8
+    prediction_noise_rel: 0.15
+  - tag: heavy_tail
+    arrival_process: poisson
+    arrival_rate: 20.0
+    duration: 30.0
+    prompt_dist: pareto
+    prompt_mean: 128.0
+    output_dist: pareto
+    output_mean: 64.0
+    prediction_noise_rel: 0.20
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - greedy_token_fill
+  - least_loaded
+  - multi_bin_batching
+  - random_feasible
+
+seeds: [0, 1, 2, 3, 4]
+
+output:
+  save_figures: true
+  save_latex: true
+  verbose: true

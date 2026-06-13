@@ -1,0 +1,36 @@
+{
+  "prefill": {
+    "params": {"a0": 0.002, "a1": 0.0000015},
+    "rmse": 0.0001,
+    "mape": 2.5,
+    "max_error": 0.0003,
+    "r_squared": 0.99,
+    "n_samples": 100,
+    "fit_method": "linear"
+  },
+  "decode": {
+    "params": {"b0": 0.0008, "b1": 0.0002, "b2": 0.0000001},
+    "rmse": 0.00005,
+    "mape": 1.5,
+    "max_error": 0.0001,
+    "r_squared": 0.98,
+    "n_samples": 100,
+    "fit_method": "linear"
+  },
+  "lookup_tables": {
+    "prefill_table": [
+      {"prompt_tokens": 32, "batch_size": 1, "prefill_time_s_mean": 0.00205},
+      {"prompt_tokens": 128, "batch_size": 1, "prefill_time_s_mean": 0.00219},
+      {"prompt_tokens": 512, "batch_size": 1, "prefill_time_s_mean": 0.00277},
+      {"prompt_tokens": 1024, "batch_size": 1, "prefill_time_s_mean": 0.00354}
+    ],
+    "decode_table": [
+      {"prompt_tokens": 32, "output_tokens": 64, "batch_size": 1, "decode_time_per_token_s_mean": 0.0008},
+      {"prompt_tokens": 128, "output_tokens": 64, "batch_size": 1, "decode_time_per_token_s_mean": 0.00081},
+      {"prompt_tokens": 512, "output_tokens": 64, "batch_size": 4, "decode_time_per_token_s_mean": 0.00162}
+    ]
+  },
+  "step_size": 0.001,
+  "model_name": "Qwen/Qwen2.5-0.5B",
+  "fit_timestamp": "2026-06-10T00:00:00+00:00"
+}

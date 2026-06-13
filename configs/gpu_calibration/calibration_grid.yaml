@@ -1,0 +1,13 @@
+# Calibration grid — fitted on these combinations
+model_config: configs/gpu_calibration/model.yaml
+
+grid:
+  prompt_lengths: [32, 128, 512, 1024, 2048]
+  output_lengths: [16, 64, 128, 256]
+  batch_sizes: [1, 2, 4, 8]
+  warmup_runs: 2
+  measurement_runs: 5
+  seed: 42
+
+output:
+  raw_measurements: results/gpu_calibration/raw_measurements.csv

@@ -1,0 +1,50 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Results (large files; commit selectively)
+results/*/
+traces/
+!results/.gitkeep
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Real trace datasets (large; commit selectively)
+data/raw/*
+!data/raw/**/.gitkeep
+data/processed/*
+!data/processed/**/.gitkeep
+
+# Model weights and HuggingFace cache
+*.bin
+*.safetensors
+*.pt
+*.ckpt

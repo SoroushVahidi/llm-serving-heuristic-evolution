@@ -1,0 +1,41 @@
+experiment: small_debug
+
+simulator:
+  step_size: 0.001
+  drain_steps: 5000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 64
+    max_kv_tokens: 1024
+  - gpu_id: 1
+    max_active_sequences: 8
+    max_batch_tokens: 64
+    max_kv_tokens: 1024
+
+workloads:
+  - tag: small_debug
+    arrival_process: poisson
+    arrival_rate: 2.0
+    duration: 5.0
+    prompt_dist: lognormal
+    prompt_mean: 20.0
+    prompt_sigma: 0.3
+    output_dist: lognormal
+    output_mean: 10.0
+    output_sigma: 0.3
+    prediction_noise_rel: 0.0
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - random_feasible
+
+seeds: [42]
+
+output:
+  save_figures: false
+  save_latex: false
+  verbose: true

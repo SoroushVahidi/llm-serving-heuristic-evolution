@@ -1,0 +1,21 @@
+simulator:
+  step_size: 0.001          # seconds per decode step
+  drain_steps: 50000        # extra steps after last arrival
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+  - gpu_id: 1
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+  - gpu_id: 2
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+  - gpu_id: 3
+    max_active_sequences: 32
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
