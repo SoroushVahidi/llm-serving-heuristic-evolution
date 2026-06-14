@@ -52,6 +52,9 @@ class SarathiStylePolicy(BasePolicy):
         if not queue:
             return Action(admit=admit)
 
+        # Maintained incrementally — avoids O(N²) set rebuild inside the inner loop.
+        admitted_ids: set[int] = set()
+
         for gpu in state.gpu_states:
             # Reduce chunk budget when GPU already has active decode work
             n_active = len(gpu.active_request_ids)
@@ -65,11 +68,7 @@ class SarathiStylePolicy(BasePolicy):
             admitted_seq = 0
 
             for req in queue:
-                if req.request_id in {
-                    rid
-                    for gpu_id, rids in admit.items()
-                    for rid in rids
-                }:
+                if req.request_id in admitted_ids:
                     continue  # already assigned to another GPU
 
                 # Stall-free check: don't exceed prefill chunk budget.
@@ -84,13 +83,7 @@ class SarathiStylePolicy(BasePolicy):
                     continue   # defer to a future step
 
                 # Standard capacity check (uses updated state with admitted so far)
-                gpu_copy_seq = len(gpu.active_request_ids) + admitted_seq
-                gpu_copy_kv  = gpu.current_kv_tokens + sum(
-                    r.prompt_tokens
-                    for r in state.waiting_queue
-                    if r.request_id in (admit.get(gpu.gpu_id) or [])
-                )
-                new_seq = gpu_copy_seq + 1
+                new_seq = len(gpu.active_request_ids) + admitted_seq + 1
                 new_kv  = gpu.current_kv_tokens + admitted_prefill_tokens + req.prompt_tokens
 
                 if (
@@ -99,6 +92,7 @@ class SarathiStylePolicy(BasePolicy):
                     and new_seq <= gpu.max_batch_tokens
                 ):
                     admit[gpu.gpu_id].append(req.request_id)
+                    admitted_ids.add(req.request_id)  # O(1) incremental update
                     admitted_prefill_tokens += req.prompt_tokens
                     admitted_seq += 1
                     gpu.active_request_ids.append(req.request_id)

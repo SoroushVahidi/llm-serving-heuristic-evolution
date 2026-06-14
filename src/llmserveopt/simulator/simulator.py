@@ -74,6 +74,8 @@ class Simulator:
         self._util_history: List[float] = []
         self._batch_history: List[float] = []
         self._policy_times: List[float] = []
+        # Steps skipped during idle-period fast-forwarding
+        self._idle_skipped: int = 0
 
     # ------------------------------------------------------------------
     # Public interface
@@ -166,6 +168,17 @@ class Simulator:
             if all_arrivals_done and steps_since_last_arrival >= drain_steps:
                 break
 
+            # Fast-forward over idle periods: when the queue is empty, the GPU
+            # is empty, and the next arrival is far away, jump to just before
+            # that arrival instead of stepping through empty time one-by-one.
+            if not all_arrivals_done and queue_empty and all_active_done:
+                next_arr_time = self._pending_arrivals[arrival_idx].request.arrival_time
+                skip_to = int(next_arr_time / step_size)
+                idle_gap = skip_to - (self._step + 1)
+                if idle_gap > 0:
+                    self._idle_skipped += idle_gap
+                    self._step = skip_to - 1  # += 1 below makes it skip_to
+
             self._step += 1
 
         sim_duration = self._time
@@ -185,6 +198,7 @@ class Simulator:
             seed=seed,
             policy_decision_times=self._policy_times,
             wall_clock_s=wall_elapsed,
+            idle_steps_skipped=self._idle_skipped,
         )
 
     # ------------------------------------------------------------------
@@ -204,6 +218,7 @@ class Simulator:
         self._util_history.clear()
         self._batch_history.clear()
         self._policy_times.clear()
+        self._idle_skipped = 0
         # Reset internal request states
         for ir in self._pending_arrivals:
             ir.phase = RequestPhase.WAITING

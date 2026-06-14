@@ -86,6 +86,7 @@ def compute_metrics(
     seed: int = 0,
     policy_decision_times: Optional[List[float]] = None,
     wall_clock_s: float = float("nan"),
+    idle_steps_skipped: int = 0,
 ) -> RunMetrics:
     m = RunMetrics(policy_name=policy_name, workload_tag=workload_tag, seed=seed)
     m.num_completed = len(completed)
@@ -136,11 +137,17 @@ def compute_metrics(
             m.p95_prefill_delay  = float(np.percentile(valid_pfd, 95))
 
     if gpu_utilization_history:
-        m.mean_gpu_utilization = float(np.mean(gpu_utilization_history))
+        total_steps = len(gpu_utilization_history) + idle_steps_skipped
+        m.mean_gpu_utilization = (
+            float(np.sum(gpu_utilization_history) / total_steps) if total_steps else float("nan")
+        )
         m.total_gpu_busy_steps = int(np.sum(np.array(gpu_utilization_history) > 0))
 
     if active_batch_history:
-        m.mean_active_batch_size = float(np.mean(active_batch_history))
+        total_steps_b = len(active_batch_history) + idle_steps_skipped
+        m.mean_active_batch_size = (
+            float(np.sum(active_batch_history) / total_steps_b) if total_steps_b else float("nan")
+        )
 
     if policy_decision_times:
         m.total_policy_time_s = sum(policy_decision_times)

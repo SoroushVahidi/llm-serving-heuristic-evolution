@@ -1,0 +1,47 @@
+experiment: burstgpt_scaled_moderate_synthetic_service
+
+simulator:
+  step_size: 0.001
+  drain_steps: 200000
+
+service_model:
+  type: synthetic
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 8192
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 8192
+    max_kv_tokens: 131072
+
+workloads:
+  - tag: burstgpt_moderate_synthetic
+    source: trace_file
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - greedy_token_fill
+  - least_loaded
+  - multi_bin_batching
+  - random_feasible
+  - weighted_shortest_processing
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - slo_slack_score
+
+seeds: [0]
+
+output:
+  save_figures: true
+  save_latex: false
+  verbose: true

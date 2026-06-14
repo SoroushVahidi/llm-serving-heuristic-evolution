@@ -48,6 +48,13 @@ class CalibratedServiceModel:
     max_prefill_steps: int = 10_000
     enable_prefill_modeling: bool = True
 
+    # ---- ServiceModel interface compatibility fields ----
+    # These fields let gpu.py's _step_phase15 work with CalibratedServiceModel
+    # without modification. Values are calibration-informed defaults.
+    max_prefill_chunk_tokens: int = 512   # tokens processed per prefill chunk per step
+    step_token_budget: int = 8192         # total token budget per GPU per step
+    decode_first: bool = False            # guarantee decode budget before prefill
+
     # These are populated on first use via _load_curves()
     _curves: Optional[object] = None
     _loaded: bool = False

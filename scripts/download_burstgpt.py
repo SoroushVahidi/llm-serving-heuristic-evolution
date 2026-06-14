@@ -18,11 +18,15 @@ import urllib.request
 from pathlib import Path
 
 DATASET_URLS = [
+    "https://raw.githubusercontent.com/HPMLL/BurstGPT/main/data/BurstGPT_1.csv",
     "https://raw.githubusercontent.com/HKUDS/BurstGPT/main/data/BurstGPT_without_fails.csv",
     "https://huggingface.co/datasets/HKUDS/BurstGPT/resolve/main/data/BurstGPT_without_fails.csv",
 ]
 
-FILENAME = "BurstGPT_without_fails.csv"
+# The primary file in HPMLL/BurstGPT is BurstGPT_1.csv
+# HKUDS/BurstGPT (original) used BurstGPT_without_fails.csv but that repo
+# may be renamed or moved. Both CSVs use identical column schema.
+FILENAME = "BurstGPT_1.csv"
 LICENSE = "MIT"
 PAPER = "arXiv 2401.17644 (SIGMETRICS 2025)"
 

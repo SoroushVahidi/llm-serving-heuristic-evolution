@@ -21,10 +21,12 @@ from .augmentation import AugmentationConfig, DEFAULT_SLO_AUG, PredictionNoiseCo
 
 
 _REQUEST_TOKEN_VARIANTS = [
-    "Request Token", "request_token", "RequestTokens", "input_tokens", "prompt_tokens",
+    "Request Token", "Request tokens", "request_token", "RequestTokens",
+    "input_tokens", "prompt_tokens",
 ]
 _RESPONSE_TOKEN_VARIANTS = [
-    "Response Token", "response_token", "ResponseTokens", "output_tokens",
+    "Response Token", "Response tokens", "response_token", "ResponseTokens",
+    "output_tokens",
 ]
 _TIMESTAMP_VARIANTS = [
     "Timestamp", "timestamp", "Time", "time",

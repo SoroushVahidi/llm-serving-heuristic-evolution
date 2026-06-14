@@ -56,7 +56,8 @@ def test_interarrival_preservation():
     df = load_burstgpt_raw(FIXTURE)
     requests, _ = convert_burstgpt_to_requests(df, seed=0)
     arrivals = [r.arrival_time for r in requests]
-    timestamps = sorted(df[df["Request Token"] > 0][df["Response Token"] > 0]["Timestamp"].values)
+    mask = (df["Request Token"] > 0) & (df["Response Token"] > 0)
+    timestamps = sorted(df.loc[mask, "Timestamp"].values)
     timestamps = timestamps[:len(arrivals)]
     expected_gaps = np.diff(timestamps)
     actual_gaps = np.diff(arrivals)

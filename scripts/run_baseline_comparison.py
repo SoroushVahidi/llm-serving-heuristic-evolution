@@ -29,6 +29,7 @@ from llmserveopt.plotting.figures import plot_all
 from llmserveopt.plotting.tables import to_latex, to_markdown
 from llmserveopt.policies.registry import make_policy
 from llmserveopt.simulator.service_model import ServiceModel
+from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, DEFAULT_SLO_CLASSES
 
 
@@ -49,18 +50,9 @@ def build_gpu_configs(cfg: dict) -> list:
     ]
 
 
-def build_service_model(cfg: dict) -> ServiceModel:
-    sim_cfg = cfg.get("simulator", {})
-    sm_cfg  = cfg.get("service_model", {})
-    return ServiceModel(
-        step_size=sim_cfg.get("step_size", 0.001),
-        enable_prefill_modeling=sm_cfg.get("enable_prefill_modeling", False),
-        prefill_cost_per_token=sm_cfg.get("prefill_cost_per_token", 1.0),
-        max_prefill_chunk_tokens=sm_cfg.get("max_prefill_chunk_tokens", 512),
-        step_token_budget=sm_cfg.get("step_token_budget", 4096),
-        decode_first=sm_cfg.get("decode_first", False),
-        allow_chunked_prefill=sm_cfg.get("allow_chunked_prefill", True),
-    )
+def build_service_model(cfg: dict):
+    """Build service model; delegates to factory supporting 'synthetic' and 'calibrated'."""
+    return build_service_model_from_config(cfg)
 
 
 def build_workload_config(w: dict) -> WorkloadConfig:
@@ -113,10 +105,6 @@ def main():
     print(f"Output     : {out_dir}")
 
     service_model = build_service_model(cfg)
-    print(f"Prefill    : enable={service_model.enable_prefill_modeling}  "
-          f"chunk={service_model.max_prefill_chunk_tokens}  "
-          f"budget={service_model.step_token_budget}  "
-          f"decode_first={service_model.decode_first}")
     print(f"{'='*60}\n")
 
     gpu_configs = build_gpu_configs(cfg)
