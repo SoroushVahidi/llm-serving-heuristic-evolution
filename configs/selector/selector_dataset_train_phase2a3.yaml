@@ -1,0 +1,169 @@
+# Phase 2A.3 TRAIN dataset
+# Multiple stressed regimes: overloaded synthetic + mixed-SLO + BurstGPT traces
+# GPU config intentionally stressed (max_active_sequences=4, small KV) so that
+# isolated per-window simulations show real policy differentiation.
+# Seeds 0,1,2 for synthetic workloads → more label diversity.
+
+seed: 0
+window_size: 200
+feature_mode: online_prefix
+verbose: false
+
+simulator:
+  step_size: 0.001
+  drain_steps: 10000
+
+# Stressed GPU: small KV cache and few active sequences force real queuing/drops
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+
+workloads:
+  # --- Synthetic overloaded: SJF/EDF win clearly over FIFO ---
+  - tag: train_overloaded_s0
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 3.0
+    prompt_dist: lognormal
+    prompt_mean: 16.0
+    prompt_sigma: 0.5
+    prompt_low: 4
+    prompt_high: 64
+    output_dist: lognormal
+    output_mean: 50.0
+    output_sigma: 1.2
+    output_low: 1
+    output_high: 512
+    prediction_noise_rel: 0.10
+
+  - tag: train_overloaded_s1
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 3.0
+    prompt_dist: lognormal
+    prompt_mean: 16.0
+    prompt_sigma: 0.5
+    prompt_low: 4
+    prompt_high: 64
+    output_dist: lognormal
+    output_mean: 50.0
+    output_sigma: 1.2
+    output_low: 1
+    output_high: 512
+    prediction_noise_rel: 0.10
+
+  - tag: train_overloaded_s2
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 3.0
+    prompt_dist: lognormal
+    prompt_mean: 16.0
+    prompt_sigma: 0.5
+    prompt_low: 4
+    prompt_high: 64
+    output_dist: lognormal
+    output_mean: 50.0
+    output_sigma: 1.2
+    output_low: 1
+    output_high: 512
+    prediction_noise_rel: 0.10
+
+  # --- Mixed-SLO stressed: priority-aware policies win ---
+  - tag: train_mixed_slo_s0
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 4.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.7
+    prompt_low: 8
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.9
+    output_low: 4
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: train_mixed_slo_s1
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 4.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.7
+    prompt_low: 8
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.9
+    output_low: 4
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  # --- Bursty high-load: burst-handling policies win ---
+  - tag: train_bursty_s0
+    arrival_process: bursty
+    arrival_rate: 50.0
+    duration: 4.0
+    prompt_dist: lognormal
+    prompt_mean: 24.0
+    prompt_sigma: 0.6
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 40.0
+    output_sigma: 1.0
+    output_low: 4
+    output_high: 256
+    prediction_noise_rel: 0.15
+    burst_factor: 5.0
+    burst_fraction: 0.2
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: train_bursty_s1
+    arrival_process: bursty
+    arrival_rate: 50.0
+    duration: 4.0
+    prompt_dist: lognormal
+    prompt_mean: 24.0
+    prompt_sigma: 0.6
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 40.0
+    output_sigma: 1.0
+    output_low: 4
+    output_high: 256
+    prediction_noise_rel: 0.15
+    burst_factor: 5.0
+    burst_fraction: 0.2
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  # --- BurstGPT scaled moderate: real-trace policy differentiation ---
+  - tag: train_burstgpt_moderate
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+    max_requests: 1000   # 5 windows; full trace (46 windows) can be run in Phase 2A.4
+
+  # --- BurstGPT moderate exact prediction ---
+  - tag: train_burstgpt_exact
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_moderate_exact_prediction.jsonl
+    max_requests: 1000   # 5 windows

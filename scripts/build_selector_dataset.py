@@ -72,21 +72,32 @@ def build_workload_config(w: dict) -> WorkloadConfig:
 
 
 def load_or_generate_trace(wcfg: dict, seed: int):
-    """Load trace from file or generate synthetic."""
+    """Load trace from file or generate synthetic.
+
+    Supports optional max_requests field to cap trace length.
+    """
     source = wcfg.get("source", "synthetic")
+    max_req = wcfg.get("max_requests", None)
+
     if source == "trace_file":
         trace_path = wcfg["trace_path"]
         from llmserveopt.workloads.trace_io import load_jsonl
         print(f"  Loading trace from {trace_path}")
-        return load_jsonl(trace_path)
+        reqs = load_jsonl(trace_path)
     elif source == "extended_jsonl":
         from llmserveopt.workloads.trace_io_extended import load_extended_jsonl
         print(f"  Loading extended JSONL from {wcfg['trace_path']}")
-        return load_extended_jsonl(wcfg["trace_path"])
+        reqs, _ = load_extended_jsonl(wcfg["trace_path"])
     else:
         cfg = build_workload_config(wcfg)
         print(f"  Generating synthetic trace: tag={cfg.tag} rate={cfg.arrival_rate} dur={cfg.duration}s seed={seed}")
-        return generate_workload(cfg, seed=seed)
+        reqs = generate_workload(cfg, seed=seed)
+
+    if max_req is not None and len(reqs) > max_req:
+        reqs = reqs[:max_req]
+        print(f"  Trimmed to {len(reqs)} requests (max_requests={max_req})")
+
+    return reqs
 
 
 def parse_args():
@@ -142,10 +153,12 @@ def main():
     workloads = cfg.get("workloads", [{}])
     t0 = time.perf_counter()
 
-    for wdef in workloads:
+    for w_idx, wdef in enumerate(workloads):
         trace_id = wdef.get("tag", "trace")
-        print(f"[{trace_id}] Loading trace...")
-        requests = load_or_generate_trace(wdef, seed=seed)
+        # Per-workload seed: use explicit seed field, or global_seed + workload_index
+        w_seed = int(wdef.get("seed", seed + w_idx))
+        print(f"[{trace_id}] Loading trace... (seed={w_seed})")
+        requests = load_or_generate_trace(wdef, seed=w_seed)
         print(f"  {len(requests)} requests")
 
         dataset_cfg = DatasetConfig(
@@ -155,7 +168,7 @@ def main():
             gpu_configs=gpu_configs,
             service_model=service_model,
             drain_steps=drain_steps,
-            seed=seed,
+            seed=w_seed,
             verbose=verbose,
         )
 

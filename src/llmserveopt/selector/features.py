@@ -154,7 +154,8 @@ def _extract_online_prefix(
     prompt_arr = np.array([r.prompt_tokens for r in win], dtype=float) if win else np.array([0.0])
     pred_out_arr = np.array([r.predicted_output_tokens for r in win], dtype=float) if win else np.array([0.0])
     slack_arr = np.array([r.slo_deadline - r.arrival_time for r in win], dtype=float) if win else np.array([0.0])
-    tight_arr = np.array([1.0 if r.class_id == "tight" else 0.0 for r in win], dtype=float) if win else np.array([0.0])
+    # "tight" covers synthetic traces; "interactive" covers BurstGPT class_id convention.
+    tight_arr = np.array([1.0 if r.class_id in ("tight", "interactive") else 0.0 for r in win], dtype=float) if win else np.array([0.0])
 
     # --- Waiting time: time from arrival to window_start_time (visible at decision time) ---
     if lookback:
@@ -202,7 +203,8 @@ def _extract_trace_window_descriptive(
     prompt_arr = np.array([r.prompt_tokens for r in win], dtype=float) if win else np.array([0.0])
     pred_out_arr = np.array([r.predicted_output_tokens for r in win], dtype=float) if win else np.array([0.0])
     slack_arr = np.array([r.slo_deadline - r.arrival_time for r in win], dtype=float) if win else np.array([0.0])
-    tight_arr = np.array([1.0 if r.class_id == "tight" else 0.0 for r in win], dtype=float) if win else np.array([0.0])
+    # "tight" covers synthetic traces; "interactive" covers BurstGPT class_id convention.
+    tight_arr = np.array([1.0 if r.class_id in ("tight", "interactive") else 0.0 for r in win], dtype=float) if win else np.array([0.0])
 
     # Inter-arrival time stats from window itself
     arrivals = sorted(r.arrival_time for r in win)

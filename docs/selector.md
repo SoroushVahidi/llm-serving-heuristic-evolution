@@ -82,6 +82,20 @@ Non-overlapping windows of W=200 requests.  Partial tail windows with fewer than
 - Changing future requests (beyond window end) must not alter current window features.
 - Tests in `tests/test_selector_no_leakage.py` enforce these invariants.
 
+## Phase 2A.3 evaluation results
+
+The Random Forest selector was evaluated on train/validation/test/sanity splits built from stressed synthetic regimes and real BurstGPT traces.
+
+| Model | Split | Sel WG | Δ vs Best Fixed |
+|-------|-------|--------|----------------|
+| rule_based | test | 0.597 | -0.200 |
+| decision_tree | test | 0.797 | -0.001 |
+| **random_forest** | **test** | **0.828** | **+0.030** |
+
+The Random Forest selector beats the single best fixed policy (`shortest_output_first`) by +3% weighted goodput on the test split.
+
+**Limitations**: Dataset is small (19 train windows). Phase 2A.4 scales to full BurstGPT traces.
+
 ## Usage
 
 ```bash
@@ -90,8 +104,21 @@ python scripts/build_selector_dataset.py \
     --config configs/selector/selector_dataset_smoke.yaml \
     --output results/selector_dataset/smoke_selector_dataset.csv
 
-# Train selector
+# Build full Phase 2A.3 datasets
+python scripts/build_selector_dataset.py \
+    --config configs/selector/selector_dataset_train_phase2a3.yaml \
+    --output results/phase2a3_selector_eval/datasets/train_selector_dataset.csv
+
+# Train with separate validation set
 python scripts/train_policy_selector.py \
-    --dataset results/selector_dataset/smoke_selector_dataset.csv \
-    --output results/selector_models/smoke/
+    --dataset results/.../train.csv \
+    --validation-dataset results/.../validation.csv \
+    --output results/.../models/
+
+# Evaluate on held-out splits
+python scripts/evaluate_policy_selector.py \
+    --models-dir results/.../models \
+    --validation-dataset results/.../validation.csv \
+    --test-dataset results/.../test.csv \
+    --output results/.../evaluation/
 ```

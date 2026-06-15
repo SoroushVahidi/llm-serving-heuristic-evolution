@@ -22,3 +22,6 @@ for _name in ORACLE_POLICY_NAMES:
     )
 
 assert SELECTOR_CANDIDATE_COUNT > 0, "SELECTOR_CANDIDATES must not be empty."
+
+# Alias for backwards compatibility and explicit naming conventions.
+SELECTOR_CANDIDATE_POLICIES: List[str] = SELECTOR_CANDIDATES

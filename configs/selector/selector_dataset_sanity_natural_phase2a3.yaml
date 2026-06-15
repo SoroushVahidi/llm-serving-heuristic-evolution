@@ -1,0 +1,25 @@
+# Phase 2A.3 SANITY dataset
+# BurstGPT natural calibrated: very low load (~0.03 req/s)
+# Expected: most policies achieve near-perfect WG → confirms selector is stable at easy loads.
+
+seed: 0
+window_size: 200
+feature_mode: online_prefix
+verbose: false
+
+simulator:
+  step_size: 0.001
+  drain_steps: 10000
+
+# Full GPU for sanity: should be easy under any policy
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 4096
+    max_kv_tokens: 65536
+
+workloads:
+  - tag: sanity_natural
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+    max_requests: 400   # 2 windows only — sanity check
