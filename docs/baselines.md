@@ -5,10 +5,11 @@ None require external dependencies beyond NumPy.
 
 ---
 
-## Registered online baselines (14 policies)
+## Registered online baselines (16 policies)
 
 These policies are registered in `src/llmserveopt/policies/registry.py` and are
 used in all experiment comparisons. All are deployable in an online setting.
+All 16 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 
 | Policy | Category | Online deployable? | Uses prediction? | Uses SLO/deadline? | Uses KV/token budget? | Notes |
 |---|---|---|---|---|---|---|
@@ -20,6 +21,8 @@ used in all experiment comparisons. All are deployable in an online setting.
 | `least_loaded` | Load balancing | Yes | No | No | No | Assign to GPU with fewest active sequences |
 | `multi_bin_batching` | Batching | Yes | Yes (predicted) | No | No | Groups by output-length bins; Multi-Bin-style |
 | `random_feasible` | Stochastic | Yes | No | No | No | Random feasible admission; deterministic under seed |
+| `first_fit` | Packing | Yes | No | No | Yes (KV) | First-fit bin packing across GPUs |
+| `best_fit` | Packing | Yes | No | No | Yes (KV) | Best-fit bin packing (tightest-fit) across GPUs |
 | `orca_style` | Serving-style | Yes | No | No | Yes (seq count) | Orca-style iteration-level scheduler |
 | `vllm_style_token_budget` | Serving-style | Yes | Yes (predicted) | No | Yes (token budget + paged KV) | vLLM-inspired token-budget / paged-KV proxy |
 | `sarathi_style` | Serving-style | Yes | No | No | Yes (chunk budget) | Sarathi-style stall-free chunked-prefill |
@@ -29,16 +32,14 @@ used in all experiment comparisons. All are deployable in an online setting.
 
 ---
 
-## Unregistered / non-deployable policies
+## Non-deployable / oracle policies
 
-These exist in `src/llmserveopt/policies/` but are **not** in the standard
-experiment comparison set.
+The oracle is maintained separately in `ORACLE_POLICY_NAMES` and must never
+appear in `BASELINE_NAMES` or `SELECTOR_CANDIDATE_NAMES`.
 
 | Policy | File | Online deployable? | Notes |
 |---|---|---|---|
-| `oracle_srtf` | `oracle.py` | **No — hindsight oracle** | Uses actual (not predicted) output lengths; non-deployable upper-bound candidate. Always emits a `UserWarning` at construction to prevent accidental use. **Do not include in online-policy comparison reports.** |
-| `first_fit` | `first_fit.py` | Yes (candidate) | First-fit KV bin assignment; not yet registered |
-| `best_fit` | `best_fit.py` | Yes (candidate) | Best-fit KV bin assignment; not yet registered |
+| `oracle_srtf` | `oracle.py` | **No — hindsight oracle** | Uses actual (not predicted) output lengths. Non-deployable upper-bound candidate. Always emits `UserWarning` at construction. Use only as benchmark ceiling; label clearly as "hindsight upper bound" in all reports. Access via `make_oracle_policy()`, not `make_policy()`. |
 | `earliest_feasible_gpu` | `earliest_feasible_gpu.py` | Yes (candidate) | Assign to the GPU that can start the request earliest; not yet registered |
 
 ---

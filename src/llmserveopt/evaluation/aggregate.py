@@ -42,6 +42,7 @@ _PHASE1_COLS = [
     "p99_latency",
     "mean_queuing_delay",
     "slo_violation_rate",
+    "weighted_goodput",
     "request_throughput",
     "mean_gpu_utilization",
     "mean_active_batch_size",

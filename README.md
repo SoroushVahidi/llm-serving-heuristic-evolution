@@ -45,12 +45,15 @@ See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal de
 |---|---|---|
 | Deterministic iteration-level simulator | Complete | `src/llmserveopt/simulator/` |
 | Synthetic workload generators | Complete | Poisson, bursty, heavy-tail, mixed-SLO |
-| 14 serving-style baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
+| 16 serving-style baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
 | GPU-calibrated service model | Complete | RTX 5060 Ti, Qwen2.5-0.5B, MAPE <13% |
 | Real-trace replay (BurstGPT) | Complete | 7 experiments, Phase 1.7C |
 | Prediction-noise sensitivity | Complete | 0%, 35%, 70% noise variants |
 | Calibrated vs. synthetic comparison | Complete | Spearman ρ = 1.000 on moderate trace |
-| Selector (Phase 2A) | Not started | Design spec in `results/selector_design_spec/` |
+| `weighted_goodput` metric | Complete | Priority-weighted SLO-met rate; primary selector objective |
+| TTFT reporting | Complete | `mean_ttft`, `p95_ttft` in all summary CSVs |
+| oracle_srtf wiring | Complete | Non-deployable hindsight upper bound; separated from online baselines |
+| Selector (Phase 2A.2) | Not started | Design spec in `results/selector_design_spec/` |
 | LLM heuristic DSL (Phase 2B) | Not started | Design spec in `results/llm_heuristic_dsl_spec/` |
 | LLM evolution loop (Phase 4) | Not started | See [docs/roadmap.md](docs/roadmap.md) |
 
@@ -145,7 +148,7 @@ See [docs/gpu_calibration.md](docs/gpu_calibration.md).
 
 ## Baseline policies
 
-14 serving-style policies are registered. See [docs/baselines.md](docs/baselines.md) for
+16 policies are registered for online use. See [docs/baselines.md](docs/baselines.md) for
 provenance, safe/unsafe labels, and the full table.
 
 | Label | Policy | Inspired by |
@@ -158,6 +161,8 @@ provenance, safe/unsafe labels, and the full table.
 | `least_loaded` | Least-busy GPU dispatch | Load balancing |
 | `multi_bin_batching` | Multi-Bin-style grouping | Independent adaptation |
 | `random_feasible` | Random feasible admission | Stochastic baseline |
+| `first_fit` | First-fit KV bin packing | Classical bin packing |
+| `best_fit` | Best-fit KV bin packing (tightest fit) | Classical bin packing |
 | `orca_style` | Orca-style iteration-level scheduler | Yu et al., OSDI 2022 |
 | `vllm_style_token_budget` | vLLM-inspired token-budget / paged-KV proxy | Kwon et al., SOSP 2023 |
 | `sarathi_style` | Sarathi-style chunked-prefill | Agrawal et al., arXiv 2023 / OSDI 2024 |
@@ -168,8 +173,10 @@ provenance, safe/unsafe labels, and the full table.
 All serving-style baselines are **original implementations** capturing the key
 scheduling insight of each cited system. None reproduce the original system's code.
 
-**Note:** `oracle_srtf` (hindsight SRTF) exists in `src/llmserveopt/policies/oracle.py`
-as a non-deployable upper-bound candidate. It is not in the registered online baseline set.
+**Note:** `oracle_srtf` (hindsight SRTF) is in `ORACLE_POLICY_NAMES` — a non-deployable
+upper-bound. It is NOT in `BASELINE_NAMES` or `SELECTOR_CANDIDATE_NAMES`. Use
+`make_oracle_policy("oracle_srtf", requests)` to access it explicitly. Label all
+oracle_srtf results as "hindsight upper bound" in reports.
 
 ---
 
@@ -234,7 +241,8 @@ See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_clai
 | 1.7A | BurstGPT + ShareGPT trace ingestion | Complete |
 | 1.7B | GPU calibration (RTX 5060 Ti, Qwen2.5-0.5B) | Complete |
 | 1.7C | Calibrated real-trace replay (7 experiments) | Complete |
-| 2A | Metric finalization + selector over known policies | Not started |
+| 2A.1 | Metric finalization + oracle wiring | Complete |
+| 2A.2 | Selector over known policies (W=200 windows) | Not started |
 | 2B | LLM heuristic DSL + verifier | Not started |
 | 4 | LLM evolution loop (CloudRift, Cohere) | Not started |
 | 5 | Shifted-workload evaluation + paper write-up | Not started |

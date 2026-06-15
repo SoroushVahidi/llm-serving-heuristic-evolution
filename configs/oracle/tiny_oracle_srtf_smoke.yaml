@@ -1,0 +1,54 @@
+experiment: tiny_oracle_srtf_smoke
+
+# ORACLE COMPARISON CONFIG
+# ========================
+# Compares online baselines against the hindsight oracle_srtf.
+# oracle_srtf is non-deployable and uses actual output lengths.
+# This config is for smoke-testing and upper-bound estimation only.
+# Do NOT use oracle_srtf results as a baseline in selector training.
+
+simulator:
+  step_size: 0.001
+  drain_steps: 5000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 64
+    max_kv_tokens: 1024
+  - gpu_id: 1
+    max_active_sequences: 8
+    max_batch_tokens: 64
+    max_kv_tokens: 1024
+
+workloads:
+  - tag: tiny_oracle_smoke
+    arrival_process: poisson
+    arrival_rate: 2.0
+    duration: 5.0
+    prompt_dist: lognormal
+    prompt_mean: 20.0
+    prompt_sigma: 0.3
+    output_dist: lognormal
+    output_mean: 10.0
+    output_sigma: 0.3
+    prediction_noise_rel: 0.2
+
+# Online-deployable baselines for comparison
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - slo_slack_score
+
+# Oracle mode — non-deployable hindsight upper bound
+include_oracles: true
+oracle_policies:
+  - oracle_srtf
+
+seeds: [42]
+
+output:
+  save_figures: false
+  save_latex: false
+  verbose: true

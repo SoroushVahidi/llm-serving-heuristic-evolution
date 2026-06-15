@@ -27,7 +27,7 @@ from llmserveopt.evaluation.aggregate import (
 from llmserveopt.evaluation.compare import compare_policies, generate_traces_for_seeds
 from llmserveopt.plotting.figures import plot_all
 from llmserveopt.plotting.tables import to_latex, to_markdown
-from llmserveopt.policies.registry import make_policy
+from llmserveopt.policies.registry import make_policy, make_oracle_policy, ORACLE_POLICY_NAMES
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, DEFAULT_SLO_CLASSES
@@ -110,6 +110,9 @@ def main():
     gpu_configs = build_gpu_configs(cfg)
     seeds = cfg.get("seeds", [0])
     policy_names = cfg.get("policies", ["fifo", "edf"])
+    oracle_names = cfg.get("oracle_policies", []) if cfg.get("include_oracles", False) else []
+    if oracle_names:
+        print(f"  Oracle mode enabled: {oracle_names}  [HINDSIGHT — NON-DEPLOYABLE]")
     verbose = cfg.get("output", {}).get("verbose", True)
     save_figures = cfg.get("output", {}).get("save_figures", True)
     save_latex = cfg.get("output", {}).get("save_latex", False)
@@ -136,6 +139,25 @@ def main():
             drain_steps=cfg.get("simulator", {}).get("drain_steps", 50_000),
             verbose=verbose,
         )
+
+        # Oracle policies: built per-seed (need actual_output_map from each trace)
+        from llmserveopt.evaluation.run_policy import run_policy as _run_policy
+        for oracle_name in oracle_names:
+            for seed, requests in traces.items():
+                oracle = make_oracle_policy(oracle_name, requests)
+                if verbose:
+                    print(f"  Running {oracle_name} [ORACLE/HINDSIGHT] | seed={seed} | n_req={len(requests)}")
+                m = _run_policy(
+                    policy=oracle,
+                    requests=requests,
+                    gpu_configs=gpu_configs,
+                    service_model=service_model,
+                    workload_tag=tag,
+                    seed=seed,
+                    drain_steps=cfg.get("simulator", {}).get("drain_steps", 50_000),
+                )
+                results.append(m)
+
         all_results.extend(results)
 
         # Per-workload output

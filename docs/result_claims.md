@@ -14,6 +14,15 @@ These claims are directly supported by the Phase 1 simulator output:
   the small debug trace."
 - "All implemented baselines are deterministic under fixed seed."
 
+## Safe claims (Phase 2A.1 — metrics and oracle)
+
+- "We report `weighted_goodput` = priority-weighted fraction of requests meeting their SLO deadline."
+- "We report `mean_ttft` and `p95_ttft` as first-class interactive-serving metrics."
+- "We evaluate `oracle_srtf` only as a non-deployable hindsight upper bound using actual output lengths."
+- "oracle_srtf is not a selector candidate; it is excluded from all online-policy comparison tables."
+- "Any comparison involving oracle_srtf must be labeled 'oracle upper bound' or 'hindsight upper bound'."
+- "`weighted_goodput` is the primary selector and evolution fitness objective."
+
 ## Safe claims (Phase 1.5)
 
 These claims are additionally supported once `enable_prefill_modeling=True`:

@@ -1,16 +1,23 @@
 """
 Policy registry: map string names to policy instances.
+
+Online-deployable baselines are in _REGISTRY / BASELINE_NAMES.
+Non-deployable oracle policies are in ORACLE_POLICY_NAMES — never in BASELINE_NAMES
+and never in SELECTOR_CANDIDATE_NAMES.
 """
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Sequence
 
 from .base import BasePolicy
+from .best_fit import BestFitPolicy
 from .edf import EDFPolicy
 from .fifo import FIFOPolicy
+from .first_fit import FirstFitPolicy
 from .greedy_token_fill import GreedyTokenFillPolicy
 from .least_loaded import LeastLoadedPolicy
 from .multi_bin_batching import MultiBinBatchingPolicy
+from .oracle import OracleShortestJobFirstPolicy, build_oracle
 from .orca_style import OrcaStylePolicy
 from .random_feasible import RandomFeasiblePolicy
 from .sarathi_style import SarathiStylePolicy
@@ -32,6 +39,8 @@ _REGISTRY: Dict[str, type] = {
     "least_loaded":            LeastLoadedPolicy,
     "multi_bin_batching":      MultiBinBatchingPolicy,
     "random_feasible":         RandomFeasiblePolicy,
+    "first_fit":               FirstFitPolicy,
+    "best_fit":                BestFitPolicy,
     # Phase 1.5 serving-style baselines
     "orca_style":              OrcaStylePolicy,
     "vllm_style_token_budget": VLLMStyleTokenBudgetPolicy,
@@ -43,10 +52,18 @@ _REGISTRY: Dict[str, type] = {
 
 BASELINE_NAMES: List[str] = list(_REGISTRY.keys())
 
+# Oracle policies — non-deployable, hindsight upper bounds only.
+# MUST NOT appear in BASELINE_NAMES or SELECTOR_CANDIDATE_NAMES.
+ORACLE_POLICY_NAMES: List[str] = ["oracle_srtf"]
+
+# Selector candidates = all online-deployable baselines (no oracle).
+SELECTOR_CANDIDATE_NAMES: List[str] = list(BASELINE_NAMES)
+
 # Convenience subsets for experiment configs
 PHASE1_BASELINES: List[str] = [
     "fifo", "edf", "shortest_output_first", "shortest_prompt_first",
     "greedy_token_fill", "least_loaded", "multi_bin_batching", "random_feasible",
+    "first_fit", "best_fit",
 ]
 
 SERVING_STYLE_BASELINES: List[str] = [
@@ -90,3 +107,26 @@ def phase1_policies(seed: int = 0) -> List[BasePolicy]:
 def serving_style_policies(seed: int = 0) -> List[BasePolicy]:
     """Return one instance of each Phase 1.5 serving-style policy."""
     return [make_policy(name, seed=seed) for name in SERVING_STYLE_BASELINES]
+
+
+def make_oracle_policy(name: str, requests: Sequence) -> OracleShortestJobFirstPolicy:
+    """Build a non-deployable oracle policy from a list of Request objects.
+
+    Raises ValueError if name is not in ORACLE_POLICY_NAMES, so callers
+    cannot accidentally use this path for online baselines.
+
+    Parameters
+    ----------
+    name : str
+        Must be "oracle_srtf" (or another ORACLE_POLICY_NAMES entry in future).
+    requests : sequence of Request
+        The full trace — actual_output_tokens are extracted to build the oracle map.
+    """
+    if name not in ORACLE_POLICY_NAMES:
+        raise ValueError(
+            f"'{name}' is not an oracle policy. Oracle policies: {ORACLE_POLICY_NAMES}. "
+            f"For online baselines use make_policy()."
+        )
+    if name == "oracle_srtf":
+        return build_oracle(list(requests))
+    raise ValueError(f"No oracle constructor defined for '{name}'.")

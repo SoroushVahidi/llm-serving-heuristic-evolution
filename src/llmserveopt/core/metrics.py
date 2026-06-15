@@ -57,6 +57,11 @@ class RunMetrics:
     # SLO
     slo_violation_rate: float = float("nan")
 
+    # Weighted goodput — primary selector/evolution objective
+    # = sum(priority_i * 1[met SLO_i]) / sum(priority_i)
+    # Uses request.priority as weight (default 1.0 if priority == 0).
+    weighted_goodput: float = float("nan")
+
     # Throughput
     request_throughput: float = float("nan")
     token_throughput: float = float("nan")
@@ -110,6 +115,16 @@ def compute_metrics(
 
         m.num_slo_violated  = int(np.sum(violations))
         m.slo_violation_rate = float(np.mean(violations))
+
+        # Weighted goodput: priority-weighted SLO-met rate.
+        # Use priority as weight; fall back to 1.0 when priority is 0.
+        weights = np.array(
+            [c.request.priority if c.request.priority > 0 else 1.0 for c in completed],
+            dtype=float,
+        )
+        met = (~violations).astype(float)
+        total_weight = float(np.sum(weights))
+        m.weighted_goodput = float(np.dot(weights, met) / total_weight) if total_weight > 0 else 0.0
 
         total_output_tokens = sum(c.request.actual_output_tokens for c in completed)
         if sim_duration > 0:
@@ -179,6 +194,7 @@ def metrics_to_dict(m: RunMetrics) -> Dict:
         "mean_prefill_delay":        _fmt(m.mean_prefill_delay),
         "p95_prefill_delay":         _fmt(m.p95_prefill_delay),
         "slo_violation_rate":        _fmt(m.slo_violation_rate),
+        "weighted_goodput":          _fmt(m.weighted_goodput),
         "request_throughput":        _fmt(m.request_throughput),
         "token_throughput":          _fmt(m.token_throughput),
         "mean_gpu_utilization":      _fmt(m.mean_gpu_utilization),
