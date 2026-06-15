@@ -1,0 +1,15 @@
+{
+  "name": "fifo_like",
+  "description": "Admit in arrival order; score = \u2212arrival_time so earliest arrived wins.",
+  "tie_breaker": "arrival_order",
+  "default": {
+    "request_score": {
+      "op": "neg",
+      "args": [
+        {
+          "var": "req.waiting_time"
+        }
+      ]
+    }
+  }
+}

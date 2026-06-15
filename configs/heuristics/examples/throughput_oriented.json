@@ -1,0 +1,38 @@
+{
+  "name": "throughput_oriented",
+  "description": "Shortest predicted output first; KV-pressure regime also penalises long prompts.",
+  "tie_breaker": "shortest_output",
+  "regimes": [
+    {
+      "condition": {
+        "op": "sub",
+        "args": [
+          {
+            "var": "sys.kv_utilization"
+          },
+          {
+            "const": 0.8
+          }
+        ]
+      },
+      "request_score": {
+        "op": "neg",
+        "args": [
+          {
+            "var": "req.estimated_kv_cost"
+          }
+        ]
+      }
+    }
+  ],
+  "default": {
+    "request_score": {
+      "op": "neg",
+      "args": [
+        {
+          "var": "req.predicted_output_tokens"
+        }
+      ]
+    }
+  }
+}

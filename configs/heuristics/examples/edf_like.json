@@ -1,0 +1,10 @@
+{
+  "name": "edf_like",
+  "description": "Prioritise requests closest to their SLO deadline.",
+  "tie_breaker": "earliest_deadline",
+  "default": {
+    "request_score": {
+      "var": "req.deadline_urgency"
+    }
+  }
+}

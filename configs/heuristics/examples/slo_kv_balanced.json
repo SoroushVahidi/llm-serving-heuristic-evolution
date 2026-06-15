@@ -1,0 +1,50 @@
+{
+  "name": "slo_kv_balanced",
+  "description": "Weighted combination of deadline urgency and inverse KV cost. Switch to pure urgency when queue is short (< 8 requests).",
+  "tie_breaker": "earliest_deadline",
+  "regimes": [
+    {
+      "condition": {
+        "op": "sub",
+        "args": [
+          {
+            "const": 8.0
+          },
+          {
+            "var": "sys.queue_length"
+          }
+        ]
+      },
+      "request_score": {
+        "var": "req.deadline_urgency"
+      }
+    }
+  ],
+  "default": {
+    "request_score": {
+      "op": "weighted_sum",
+      "terms": [
+        [
+          {
+            "var": "req.deadline_urgency"
+          },
+          0.7
+        ],
+        [
+          {
+            "op": "div_safe",
+            "args": [
+              {
+                "const": 1.0
+              },
+              {
+                "var": "req.estimated_kv_cost"
+              }
+            ]
+          },
+          0.3
+        ]
+      ]
+    }
+  }
+}
