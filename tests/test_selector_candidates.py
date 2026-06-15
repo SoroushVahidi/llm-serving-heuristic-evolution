@@ -28,7 +28,9 @@ def test_expected_policies_present():
         "greedy_token_fill", "least_loaded", "multi_bin_batching", "random_feasible",
         "orca_style", "vllm_style_token_budget", "sarathi_style", "splitfuse_style",
         "slo_slack_score", "weighted_shortest_processing", "first_fit", "best_fit",
+        # Phase 2A.3B: hardened deadline/laxity and service-time baselines
+        "least_laxity_first", "estimated_service_time_first",
     ]
     for name in expected:
         assert name in SELECTOR_CANDIDATES, f"Expected '{name}' in SELECTOR_CANDIDATES"
-    assert SELECTOR_CANDIDATE_COUNT == 16
+    assert SELECTOR_CANDIDATE_COUNT == 18

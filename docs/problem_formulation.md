@@ -67,11 +67,15 @@ Requests complete when $\text{decoded}_r \geq o_r$.
 
 We evaluate policies on:
 
-1. **Mean / P95 / P99 latency** — end-to-end response time ($c_r - a_r$)
-2. **SLO violation rate** — fraction where $c_r > d_r$
-3. **Request throughput** — completed requests per second
-4. **Token throughput** — output tokens per second
-5. **GPU utilization** — mean fraction of $S_g$ in use
+1. **Priority-weighted SLO goodput** (primary objective, paper-facing name):
+   $$\text{priority\_weighted\_slo\_goodput} = \frac{\sum_r w_r \cdot \mathbf{1}[c_r \leq d_r]}{\sum_r w_r}$$
+   where $w_r = \text{priority}_r$ (default 1.0 when unset).
+   Internal alias: `weighted_goodput`. Both names appear in experiment CSVs.
+2. **Mean / P95 / P99 latency** — end-to-end response time ($c_r - a_r$)
+3. **SLO violation rate** — fraction where $c_r > d_r$
+4. **Request throughput** — completed requests per second
+5. **Token throughput** — output tokens per second
+6. **GPU utilization** — mean fraction of $S_g$ in use
 
 ### Optimal policy (theoretical)
 

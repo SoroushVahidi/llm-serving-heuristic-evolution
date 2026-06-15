@@ -12,9 +12,11 @@ from typing import Dict, List, Optional, Sequence
 from .base import BasePolicy
 from .best_fit import BestFitPolicy
 from .edf import EDFPolicy
+from .estimated_service_time_first import EstimatedServiceTimeFirstPolicy
 from .fifo import FIFOPolicy
 from .first_fit import FirstFitPolicy
 from .greedy_token_fill import GreedyTokenFillPolicy
+from .least_laxity_first import LeastLaxityFirstPolicy
 from .least_loaded import LeastLoadedPolicy
 from .multi_bin_batching import MultiBinBatchingPolicy
 from .oracle import OracleShortestJobFirstPolicy, build_oracle
@@ -48,6 +50,9 @@ _REGISTRY: Dict[str, type] = {
     "splitfuse_style":         SplitFuseStylePolicy,
     "slo_slack_score":         SloSlackScorePolicy,
     "weighted_shortest_processing": WeightedShortestProcessingPolicy,
+    # Phase 2A.3B: hardened deadline and service-time baselines
+    "least_laxity_first":                LeastLaxityFirstPolicy,
+    "estimated_service_time_first":      EstimatedServiceTimeFirstPolicy,
 }
 
 BASELINE_NAMES: List[str] = list(_REGISTRY.keys())
@@ -69,6 +74,12 @@ PHASE1_BASELINES: List[str] = [
 SERVING_STYLE_BASELINES: List[str] = [
     "orca_style", "vllm_style_token_budget", "sarathi_style",
     "splitfuse_style", "slo_slack_score", "weighted_shortest_processing",
+]
+
+# Phase 2A.3B: deadline/laxity and service-time baselines
+DEADLINE_LAXITY_BASELINES: List[str] = [
+    "least_laxity_first",
+    "estimated_service_time_first",
 ]
 
 

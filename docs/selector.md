@@ -4,7 +4,7 @@ The selector is a supervised portfolio policy that maps online-observable worklo
 
 ## What the selector is
 
-The selector does **not** create new heuristics.  It chooses, at the granularity of a request window (W = 200 requests by default), which of the 16 registered deployable policies to use next.  This is a supervised classification problem: label = argmax policy by weighted_goodput on that window.
+The selector does **not** create new heuristics.  It chooses, at the granularity of a request window (W = 200 requests by default), which of the 18 registered deployable policies to use next.  This is a supervised classification problem: label = argmax policy by priority-weighted SLO goodput (internal name: `weighted_goodput`) on that window.
 
 ## What the selector is not
 
@@ -14,13 +14,14 @@ The selector does **not** create new heuristics.  It chooses, at the granularity
 
 ## Selector candidate set
 
-All 16 online-deployable baselines registered in `BASELINE_NAMES` (from `llmserveopt/policies/registry.py`) minus any entry in `ORACLE_POLICY_NAMES`.
+All 18 online-deployable baselines registered in `BASELINE_NAMES` (from `llmserveopt/policies/registry.py`) minus any entry in `ORACLE_POLICY_NAMES`.
 
 ```
 fifo, edf, shortest_output_first, shortest_prompt_first,
 greedy_token_fill, least_loaded, multi_bin_batching, random_feasible,
 orca_style, vllm_style_token_budget, sarathi_style, splitfuse_style,
-slo_slack_score, weighted_shortest_processing, first_fit, best_fit
+slo_slack_score, weighted_shortest_processing, first_fit, best_fit,
+least_laxity_first, estimated_service_time_first
 ```
 
 Source of truth: `src/llmserveopt/selector/candidates.py`.

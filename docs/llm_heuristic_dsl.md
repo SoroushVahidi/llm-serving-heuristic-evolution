@@ -8,7 +8,7 @@ The heuristic DSL is a restricted JSON format for deterministic, safe scheduling
 - **No future information** — variables reference only what is observable at scheduling time.
 - **No actual_output_tokens** — the hidden ground-truth field is explicitly forbidden.
 - **No randomness at runtime** — tie-breaking is deterministic by design.
-- **Simulator objective is the fitness oracle** — weighted_goodput is the signal; the selector is the adaptive baseline heuristics must beat.
+- **Simulator objective is the fitness oracle** — priority-weighted SLO goodput (`weighted_goodput`) is the signal; the selector is the adaptive baseline heuristics must beat.
 
 ## Document Structure
 
@@ -256,10 +256,10 @@ src/llmserveopt/heuristics/
 
 ## Fitness Oracle
 
-The fitness signal is always **weighted_goodput**:
+The fitness signal is always **priority-weighted SLO goodput** (internal alias: `weighted_goodput`):
 
 ```
-weighted_goodput = Σ(priority_i × 1[met_SLO_i]) / Σ(priority_i)
+priority_weighted_slo_goodput = Σ(priority_i × 1[completion_time_i ≤ deadline_i]) / Σ(priority_i)
 ```
 
 Tie-breaks in order: lower SLO violation rate → lower p95 TTFT → lower p95 latency → higher throughput.

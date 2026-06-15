@@ -16,12 +16,28 @@ These claims are directly supported by the Phase 1 simulator output:
 
 ## Safe claims (Phase 2A.1 — metrics and oracle)
 
-- "We report `weighted_goodput` = priority-weighted fraction of requests meeting their SLO deadline."
+- "We optimize **priority-weighted SLO goodput** (internal name: `weighted_goodput`): the
+  priority-weighted fraction of requests that complete before their SLO deadline.
+  Formally: `Σ(priority_i × 1[completion_time_i ≤ deadline_i]) / Σ(priority_i)`."
+- "The metric `priority_weighted_slo_goodput` is an alias for `weighted_goodput` and
+  reports the identical value; both appear in experiment output CSVs."
 - "We report `mean_ttft` and `p95_ttft` as first-class interactive-serving metrics."
 - "We evaluate `oracle_srtf` only as a non-deployable hindsight upper bound using actual output lengths."
 - "oracle_srtf is not a selector candidate; it is excluded from all online-policy comparison tables."
 - "Any comparison involving oracle_srtf must be labeled 'oracle upper bound' or 'hindsight upper bound'."
-- "`weighted_goodput` is the primary selector and evolution fitness objective."
+- "`weighted_goodput` / `priority_weighted_slo_goodput` is the primary selector and evolution fitness objective."
+
+## Safe claims (Phase 2A.3B — hardened baselines)
+
+- "We add `least_laxity_first`, a deadline-aware LLF baseline that prioritises requests by
+  laxity = deadline − now − estimated_service_time. It is an online-deployable policy that
+  does not use actual output lengths."
+- "We add `estimated_service_time_first`, a prompt-and-prediction-aware SJF proxy that
+  approximates shortest job first via estimated prefill + decode cost (α×prompt_tokens +
+  β×predicted_output_tokens). It is not a reproduction of PARS, which uses prompt-aware
+  learning-to-rank."
+- "The deployable baseline set now contains 18 policies; the selector chooses among all 18."
+- "oracle_srtf remains excluded from the deployable set and the selector candidate set."
 
 ## Safe claims (Phase 1.5)
 
@@ -48,6 +64,7 @@ Do NOT make the following claims without additional validation:
 | "Sarathi-style policy reproduces Sarathi-Serve OSDI 2024 results" | Chunked prefill is approximated at admission time, not intra-step token granularity |
 | "SplitFuse-style policy reproduces DeepSpeed-FastGen results" | Token-level splitting requires intra-step control; Phase 1.5 approximates at admission |
 | "Multi-Bin Batching is reproduced from [paper]" | Our implementation is an independent approximate adaptation |
+| "estimated_service_time_first is PARS" | PARS uses learning-to-rank; this uses token-length estimates only |
 | "Policy X is optimal" | NP-hard in general; oracle is greedy, not globally optimal |
 | "Results generalize to real datacenter workloads" | Synthetic traces may not match real workload distributions |
 | "GPU utilization proxy = real GPU compute utilization" | Our proxy is #active_sequences / max_active_sequences |

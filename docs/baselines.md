@@ -5,11 +5,11 @@ None require external dependencies beyond NumPy.
 
 ---
 
-## Registered online baselines (16 policies)
+## Registered online baselines (18 policies)
 
 These policies are registered in `src/llmserveopt/policies/registry.py` and are
 used in all experiment comparisons. All are deployable in an online setting.
-All 16 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
+All 18 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 
 | Policy | Category | Online deployable? | Uses prediction? | Uses SLO/deadline? | Uses KV/token budget? | Notes |
 |---|---|---|---|---|---|---|
@@ -29,6 +29,8 @@ All 16 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 | `splitfuse_style` | Serving-style | Yes | No | No | Yes (token budget) | Dynamic-SplitFuse-style chunked-prefill |
 | `slo_slack_score` | Composite | Yes | Yes (predicted) | Yes | No | Urgency + service time + priority + wait composite |
 | `weighted_shortest_processing` | Composite | Yes | Yes (predicted) | No | No | WSPT priority × predicted processing time |
+| `least_laxity_first` | Deadline/laxity | Yes | Yes (predicted) | Yes | No | LLF: deadline − now − estimated_service_time; handles preemption-risk cases that EDF misses |
+| `estimated_service_time_first` | SJF proxy | Yes | Yes (predicted) | No | No | Prompt-and-prediction-aware SJF proxy (α×prompt + β×output). Not a PARS reproduction — no learning. |
 
 ---
 
@@ -41,6 +43,50 @@ appear in `BASELINE_NAMES` or `SELECTOR_CANDIDATE_NAMES`.
 |---|---|---|---|
 | `oracle_srtf` | `oracle.py` | **No — hindsight oracle** | Uses actual (not predicted) output lengths. Non-deployable upper-bound candidate. Always emits `UserWarning` at construction. Use only as benchmark ceiling; label clearly as "hindsight upper bound" in all reports. Access via `make_oracle_policy()`, not `make_policy()`. |
 | `earliest_feasible_gpu` | `earliest_feasible_gpu.py` | Yes (candidate) | Assign to the GPU that can start the request earliest; not yet registered |
+
+---
+
+## Phase 2A.3B hardened baselines
+
+### Least Laxity First (`least_laxity_first`)
+
+**Manuscript label:** "Least Laxity First (LLF) deadline-aware baseline"
+
+Laxity is the remaining slack after accounting for estimated service time:
+
+```
+laxity_i = deadline_i − current_time − estimated_remaining_service_time_i
+estimated_service_time_i = α × prompt_tokens_i + β × predicted_output_tokens_i
+```
+
+LLF is strictly more responsive to service-time uncertainty than EDF. A request
+that will almost certainly miss its deadline (large service time, tight deadline)
+gets higher priority even if its absolute deadline is later than another request.
+
+- **actual_output_tokens**: never accessed — uses `predicted_output_tokens`.
+- **Tie-breaking**: lower laxity → earlier deadline → higher priority → lower request_id.
+- **Not an oracle**: relies only on online-observable estimates.
+
+### Estimated Service Time First (`estimated_service_time_first`)
+
+**Manuscript label:** "Prompt-and-prediction-aware SJF proxy"
+
+A PARS-inspired baseline that approximates Shortest Job First using estimated
+service time:
+
+```
+estimated_service_time_i = α × prompt_tokens_i + β × predicted_output_tokens_i
+```
+
+**IMPORTANT — do not conflate with PARS**: PARS (Prototype-Aware Request Scheduling)
+uses prompt-aware learning-to-rank to estimate service time from prompt semantics.
+This policy uses only token-length estimates and does not learn from data.
+
+Safe wording: "prompt-and-prediction-aware SJF proxy based on estimated prefill and
+decode service time. Not a reproduction of PARS, which uses prompt-aware learning-to-rank."
+
+- **actual_output_tokens**: never accessed.
+- **Tie-breaking**: lower estimated service time → earlier deadline → higher priority → lower request_id.
 
 ---
 

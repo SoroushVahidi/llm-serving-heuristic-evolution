@@ -57,10 +57,16 @@ class RunMetrics:
     # SLO
     slo_violation_rate: float = float("nan")
 
-    # Weighted goodput — primary selector/evolution objective
-    # = sum(priority_i * 1[met SLO_i]) / sum(priority_i)
+    # Weighted goodput — primary selector/evolution objective.
+    # Paper-facing name: priority-weighted SLO goodput.
+    # Definition: sum(priority_i * 1[completion_time_i <= deadline_i]) / sum(priority_i)
     # Uses request.priority as weight (default 1.0 if priority == 0).
     weighted_goodput: float = float("nan")
+
+    @property
+    def priority_weighted_slo_goodput(self) -> float:
+        """Alias for weighted_goodput (paper-facing name)."""
+        return self.weighted_goodput
 
     # Throughput
     request_throughput: float = float("nan")
@@ -194,7 +200,8 @@ def metrics_to_dict(m: RunMetrics) -> Dict:
         "mean_prefill_delay":        _fmt(m.mean_prefill_delay),
         "p95_prefill_delay":         _fmt(m.p95_prefill_delay),
         "slo_violation_rate":        _fmt(m.slo_violation_rate),
-        "weighted_goodput":          _fmt(m.weighted_goodput),
+        "weighted_goodput":                    _fmt(m.weighted_goodput),
+        "priority_weighted_slo_goodput":       _fmt(m.weighted_goodput),  # paper-facing alias
         "request_throughput":        _fmt(m.request_throughput),
         "token_throughput":          _fmt(m.token_throughput),
         "mean_gpu_utilization":      _fmt(m.mean_gpu_utilization),

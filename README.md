@@ -4,12 +4,13 @@
 
 This project studies verifier-constrained, LLM-assisted generation of scheduling
 heuristics for online LLM inference serving. It provides a GPU-calibrated discrete-event
-simulator, a suite of 14 serving-style baseline policies, real-trace replay against
-BurstGPT arrival data, and the infrastructure for Phase 2 LLM-driven heuristic evolution.
+simulator, a suite of 18 baseline policies, real-trace replay against BurstGPT arrival
+data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
 
-> **Current status:** Phase 1.7C complete. Simulator, baselines, GPU calibration, and
-> real-trace replay are all finalized and committed. The LLM-evolution loop (Phase 2+)
-> is not yet implemented. See [docs/roadmap.md](docs/roadmap.md).
+> **Current status:** Phase 2B.1 complete. Simulator, 18 baselines, GPU calibration,
+> real-trace replay, selector (Phase 2A.2–2A.3), and DSL/verifier stack (Phase 2B.1)
+> are all finalized and committed. LLM heuristic generation (Phase 2B.2+) is next.
+> See [docs/roadmap.md](docs/roadmap.md).
 
 ---
 
@@ -45,17 +46,18 @@ See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal de
 |---|---|---|
 | Deterministic iteration-level simulator | Complete | `src/llmserveopt/simulator/` |
 | Synthetic workload generators | Complete | Poisson, bursty, heavy-tail, mixed-SLO |
-| 16 serving-style baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
+| 18 baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
 | GPU-calibrated service model | Complete | RTX 5060 Ti, Qwen2.5-0.5B, MAPE <13% |
 | Real-trace replay (BurstGPT) | Complete | 7 experiments, Phase 1.7C |
 | Prediction-noise sensitivity | Complete | 0%, 35%, 70% noise variants |
 | Calibrated vs. synthetic comparison | Complete | Spearman ρ = 1.000 on moderate trace |
-| `weighted_goodput` metric | Complete | Priority-weighted SLO-met rate; primary selector objective |
+| `weighted_goodput` / `priority_weighted_slo_goodput` metric | Complete | Priority-weighted SLO goodput; both names present in metric dicts |
 | TTFT reporting | Complete | `mean_ttft`, `p95_ttft` in all summary CSVs |
 | oracle_srtf wiring | Complete | Non-deployable hindsight upper bound; separated from online baselines |
-| Selector (Phase 2A.2) | Not started | Design spec in `results/selector_design_spec/` |
-| LLM heuristic DSL (Phase 2B) | Not started | Design spec in `results/llm_heuristic_dsl_spec/` |
-| LLM evolution loop (Phase 4) | Not started | See [docs/roadmap.md](docs/roadmap.md) |
+| Selector (Phase 2A.2–2A.3) | Complete | RF beats best fixed +3% WG on test split |
+| 2A.3B hardened baselines (LLF + ESTF) | Complete | 18 policies; `priority_weighted_slo_goodput` alias |
+| LLM heuristic DSL + verifier (Phase 2B.1) | Complete | Safe expression tree; 16 error codes; 4 examples |
+| LLM generation loop (Phase 2B.2) | Not started | Next step |
 
 ---
 
@@ -148,7 +150,7 @@ See [docs/gpu_calibration.md](docs/gpu_calibration.md).
 
 ## Baseline policies
 
-16 policies are registered for online use. See [docs/baselines.md](docs/baselines.md) for
+18 policies are registered for online use. See [docs/baselines.md](docs/baselines.md) for
 provenance, safe/unsafe labels, and the full table.
 
 | Label | Policy | Inspired by |
@@ -169,6 +171,8 @@ provenance, safe/unsafe labels, and the full table.
 | `splitfuse_style` | Dynamic-SplitFuse-style chunked-prefill | Holmes et al., arXiv 2024 |
 | `slo_slack_score` | SLO-slack composite scoring | Original |
 | `weighted_shortest_processing` | WSPT composite | Original |
+| `least_laxity_first` | LLF: deadline − now − est. service time | Classical real-time scheduling |
+| `estimated_service_time_first` | Prompt-and-prediction-aware SJF proxy | PARS-inspired (not a PARS reproduction) |
 
 All serving-style baselines are **original implementations** capturing the key
 scheduling insight of each cited system. None reproduce the original system's code.
@@ -187,7 +191,7 @@ src/llmserveopt/
   core/          # Types, actions, metrics
   simulator/     # Deterministic step simulator + service models
   workloads/     # Synthetic generators, BurstGPT/ShareGPT loaders, trace I/O
-  policies/      # 14 registered baselines + oracle + helpers
+  policies/      # 18 registered baselines + oracle + helpers
   evaluation/    # Run, compare, aggregate policies
   plotting/      # Tables and figures
   utils/         # Seeding, JSONL helpers
@@ -242,9 +246,11 @@ See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_clai
 | 1.7B | GPU calibration (RTX 5060 Ti, Qwen2.5-0.5B) | Complete |
 | 1.7C | Calibrated real-trace replay (7 experiments) | Complete |
 | 2A.1 | Metric finalization + oracle wiring | Complete |
-| 2A.2 | Selector over known policies (W=200 windows) | Not started |
-| 2B | LLM heuristic DSL + verifier | Not started |
-| 4 | LLM evolution loop (CloudRift, Cohere) | Not started |
+| 2A.2–2A.3 | Selector dataset + training + evaluation | Complete |
+| 2A.3B | Hardened baselines (LLF, ESTF) + priority_weighted alias | Complete |
+| 2B.1 | LLM heuristic DSL + verifier + policy wrapper | Complete |
+| 2B.2 | LLM offline heuristic generation loop | Not started |
+| 4 | LLM evolution loop (full) | Not started |
 | 5 | Shifted-workload evaluation + paper write-up | Not started |
 
 See [docs/roadmap.md](docs/roadmap.md) for details.
