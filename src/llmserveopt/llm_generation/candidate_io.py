@@ -43,6 +43,7 @@ DSL_VERSION = "2B.1"
 _INDEX_FIELDS = [
     "candidate_id", "provider", "model", "temperature", "verification_ok",
     "repair_attempts", "sha256", "git_commit", "timestamp", "candidate_dir",
+    "design_target",
 ]
 
 
@@ -143,6 +144,7 @@ def update_index(output_dir: Path, record: CandidateRecord, candidate_dir: Path)
             "git_commit": record.git_commit,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
             "candidate_dir": str(candidate_dir.name),
+            "design_target": record.extra.get("design_target", ""),
         })
 
 

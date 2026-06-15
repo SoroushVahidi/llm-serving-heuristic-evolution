@@ -49,7 +49,7 @@ Core design decisions are recorded in:
 
 ## 6. Baselines
 
-- [baselines.md](baselines.md) — all 14 registered policies + unregistered policies, safe/unsafe labels, provenance table
+- [baselines.md](baselines.md) — all 18 registered policies + non-deployable oracle, safe/unsafe labels, provenance table
 
 ---
 
@@ -95,10 +95,28 @@ recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md).
 | Phase 1.7A — real trace ingestion | [milestones/phase1_7a_real_traces.md](milestones/phase1_7a_real_traces.md) | COMPLETE |
 | Phase 1.7B — GPU calibration | [milestones/phase1_7b_gpu_calibration.md](milestones/phase1_7b_gpu_calibration.md) | COMPLETE |
 | Phase 1.7C — calibrated real-trace replay | [milestones/phase1_7c_calibrated_real_trace.md](milestones/phase1_7c_calibrated_real_trace.md) | COMPLETE |
+| Phase 2B.2 — offline LLM generation loop | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
 
 ---
 
-## 12. Safe manuscript claims
+## 12. LLM generation loop
+
+- [llm_generation_loop.md](llm_generation_loop.md) — offline LLM heuristic generation, Phase 2B.2 + 2B.3
+- [api_provider_setup.md](api_provider_setup.md) — CloudRift, Cohere, Mistral credential policy
+
+Phase 2B.3 adds:
+- **Design targets** (7 named emphases): `slo_urgency`, `kv_pressure`, `throughput_oriented`, `prefill_heavy`, `mixed_slo`, `noisy_prediction_robust`, `balanced`
+- **Candidate deduplication** by canonical SHA256
+- **Multi-regime evaluation** across 4 train + 3 validation synthetic regimes
+- **Search ranking** by validation `priority_weighted_slo_goodput` with overfitting detection
+
+Safe wording: "Phase 2B.3 performs offline LLM-based heuristic search. Candidates are generated
+by an LLM, verified by the DSL verifier, and evaluated deterministically in the simulator using
+priority-weighted SLO goodput."
+
+---
+
+## 13. Safe manuscript claims
 
 - [result_claims.md](result_claims.md) — comprehensive safe/unsafe claim table
 - [gpu_validation_claims.md](gpu_validation_claims.md) — GPU-specific claim guidance

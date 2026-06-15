@@ -38,16 +38,34 @@ def main() -> None:
     parser.add_argument("--max-repair-attempts", type=int, default=3,
                         help="Max repair attempts for each invalid candidate")
     parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument("--temperatures",
+                        help="Comma-separated temperature list (cycles through candidates)")
     parser.add_argument("--max-tokens", type=int, default=2000)
     parser.add_argument("--output-dir", default="results/phase2b2_llm_generation/candidates")
     parser.add_argument("--dry-run", action="store_true",
                         help="Use mock provider; do not call real APIs")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--design-targets",
+                        help="Comma-separated design targets (or 'all'); cycles through candidates")
+    parser.add_argument("--no-dedup", action="store_true",
+                        help="Disable exact-duplicate removal")
     args = parser.parse_args()
 
     providers = [p.strip() for p in args.providers.split(",") if p.strip()]
     models = [m.strip() for m in args.models.split(",") if m.strip()]
+
+    temperatures = None
+    if args.temperatures:
+        temperatures = [float(t.strip()) for t in args.temperatures.split(",") if t.strip()]
+
+    design_targets = None
+    if args.design_targets:
+        from llmserveopt.llm_generation.diversity import DESIGN_TARGETS, DEFAULT_TARGET_CYCLE
+        if args.design_targets.lower() == "all":
+            design_targets = DEFAULT_TARGET_CYCLE
+        else:
+            design_targets = [t.strip() for t in args.design_targets.split(",") if t.strip()]
 
     cfg = GenerationConfig(
         providers=providers,
@@ -55,18 +73,23 @@ def main() -> None:
         max_candidates=args.max_candidates,
         max_repair_attempts=args.max_repair_attempts,
         temperature=args.temperature,
+        temperatures=temperatures,
         max_tokens=args.max_tokens,
         output_dir=Path(args.output_dir),
         dry_run=args.dry_run,
         seed=args.seed,
         verbose=not args.quiet,
+        design_targets=design_targets,
+        deduplicate=not args.no_dedup,
     )
 
     print(f"Providers:       {providers}")
     print(f"Max candidates:  {args.max_candidates}")
     print(f"Max repair:      {args.max_repair_attempts}")
-    print(f"Temperature:     {args.temperature}")
+    print(f"Temperature(s):  {temperatures or args.temperature}")
+    print(f"Design targets:  {design_targets or 'default cycle'}")
     print(f"Dry-run:         {args.dry_run}")
+    print(f"Dedup:           {not args.no_dedup}")
     print(f"Output:          {cfg.output_dir}")
     print()
 
@@ -81,6 +104,7 @@ def main() -> None:
     print(f"  Verified OK:           {summary.verified_ok}")
     print(f"  Repaired OK:           {summary.repaired_ok}")
     print(f"  Failed:                {summary.failed}")
+    print(f"  Duplicates removed:    {summary.duplicates_removed}")
     print(f"  Output dir:            {cfg.output_dir}")
     print(f"  Index:                 {cfg.output_dir / 'index.csv'}")
 

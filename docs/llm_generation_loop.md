@@ -1,4 +1,4 @@
-# LLM Heuristic Generation Loop (Phase 2B.2)
+# LLM Heuristic Generation Loop (Phase 2B.2 + 2B.3)
 
 All LLM API calls happen **offline only**. No LLM is called at runtime during request scheduling.
 Generated heuristics are compiled to a deterministic JSON expression tree evaluated without `eval`.
@@ -8,7 +8,9 @@ Generated heuristics are compiled to a deterministic JSON expression tree evalua
 ## Overview
 
 ```
-Prompt template
+design_target (one of 7) + temperature
+    ↓
+build_targeted_messages()
     ↓
 LLM provider (offline)
     ↓
@@ -18,11 +20,15 @@ verify_heuristic() — JSON DSL verifier
     ↓  (if invalid)
 repair loop (up to max_repair_attempts)
     ↓
+deduplicate_candidates() — remove exact SHA256 duplicates
+    ↓
 save to candidate archive
     ↓
-evaluate_candidates() — simulator fitness oracle
+evaluate_multi_regime() — evaluate across 4 train + 3 validation regimes
     ↓
-rank_candidates() — sort by priority_weighted_slo_goodput
+aggregate_regime_results() — per-candidate train/val aggregation
+    ↓
+rank_search_results() — rank by val priority_weighted_slo_goodput
 ```
 
 ---
@@ -46,15 +52,18 @@ is NOT the fitness oracle — it is an adaptive deployable baseline.
 
 ```
 src/llmserveopt/llm_generation/
-  __init__.py            — public API
-  provider_base.py       — LLMResponse dataclass, LLMProvider protocol
-  providers.py           — CloudRiftProvider, CohereProvider, MistralProvider, MockProvider
-  prompt_templates.py    — build_generation_messages(), build_repair_messages()
-  candidate_io.py        — CandidateRecord, save_candidate(), load_verified_candidates()
-  repair.py              — extract_json(), run_repair_loop()
-  generation_loop.py     — GenerationConfig, run_generation_loop()
-  evaluation.py          — EvaluationConfig, evaluate_candidates()
-  ranking.py             — rank_candidates(), save_ranking_csv(), build_summary_md()
+  __init__.py                  — public API
+  provider_base.py             — LLMResponse dataclass, LLMProvider protocol
+  providers.py                 — CloudRiftProvider, CohereProvider, MistralProvider, MockProvider
+  prompt_templates.py          — build_generation_messages(), build_repair_messages()
+  diversity.py                 — DESIGN_TARGETS, build_targeted_messages(), deduplicate_candidates()
+  candidate_io.py              — CandidateRecord, save_candidate(), load_verified_candidates()
+  repair.py                    — extract_json(), run_repair_loop()
+  generation_loop.py           — GenerationConfig, run_generation_loop()
+  evaluation.py                — EvaluationConfig, evaluate_candidates() (single regime)
+  ranking.py                   — rank_candidates(), save_ranking_csv() (single regime)
+  multi_regime_evaluation.py   — evaluate_multi_regime(), aggregate_regime_results()
+  search_ranking.py            — rank_search_results(), save_search_ranking_csv()
 ```
 
 ---
@@ -98,6 +107,42 @@ output_dir/
 
 ---
 
+## Design Targets (Phase 2B.3)
+
+Seven named design emphases steer prompt diversity. The generation loop cycles
+through targets and temperatures to maximize candidate diversity:
+
+| Target | Emphasis |
+|---|---|
+| `slo_urgency` | Minimize SLO violations; prioritize tight-deadline requests |
+| `kv_pressure` | KV-cache efficiency; penalize large KV footprints under pressure |
+| `throughput_oriented` | Maximize request throughput; shortest-first |
+| `prefill_heavy` | Avoid prefill-dominated head-of-line blocking |
+| `mixed_slo` | Handle tight/medium/loose SLO tiers with priority weighting |
+| `noisy_prediction_robust` | Robust to 35% output-length prediction noise |
+| `balanced` | Multi-objective balance with high-load regime switching |
+
+---
+
+## Multi-Regime Evaluation (Phase 2B.3)
+
+Candidates are evaluated on 4 train + 3 validation synthetic regimes.
+Test regimes are held out (not used for candidate selection).
+
+| Regime | Split | Description |
+|---|---|---|
+| `train_poisson_moderate` | train | Standard Poisson, rate=15/s |
+| `train_bursty_moderate` | train | Bursty Poisson, rate=15/s |
+| `train_overloaded` | train | Poisson rate=25/s, tight SLOs |
+| `train_mixed_slo` | train | Mixed SLO tiers |
+| `val_prefill_heavy` | validation | Long prompts (512 avg), short outputs |
+| `val_decode_heavy` | validation | Short prompts, long outputs (384 avg) |
+| `val_noisy_predictions` | validation | 35% output-length noise |
+
+Ranking is by **validation** `priority_weighted_slo_goodput`, not training.
+
+---
+
 ## Scripts
 
 ### Generate candidates
@@ -105,25 +150,24 @@ output_dir/
 ```bash
 # Dry-run (mock provider, no API calls)
 python scripts/generate_llm_heuristics.py \
-    --providers mock \
-    --models mock \
-    --max-candidates 4 \
-    --max-repair-attempts 2 \
+    --providers mock --models mock \
+    --max-candidates 4 --max-repair-attempts 2 \
     --dry-run \
     --output-dir results/phase2b2_llm_generation/mock_candidates
 
-# Real API (CloudRift, thinking model — needs large token budget)
+# Phase 2B.3 controlled search (CloudRift, thinking model)
 python scripts/generate_llm_heuristics.py \
     --providers cloudrift \
-    --models auto \
-    --max-candidates 2 \
-    --max-repair-attempts 2 \
-    --temperature 0.4 \
-    --max-tokens 8000 \
-    --output-dir results/phase2b2_llm_generation/real_api_candidates
+    --models Qwen/Qwen3.6-35B-A3B-FP8 \
+    --max-candidates 30 \
+    --max-repair-attempts 3 \
+    --temperatures 0.3,0.7,1.0 \
+    --design-targets all \
+    --max-tokens 9000 \
+    --output-dir results/phase2b3_llm_search/candidates_main
 ```
 
-### Evaluate candidates
+### Evaluate single regime
 
 ```bash
 python scripts/evaluate_generated_heuristics.py \
@@ -131,11 +175,22 @@ python scripts/evaluate_generated_heuristics.py \
     --output-dir     results/phase2b2_llm_generation/mock_evaluation
 ```
 
-Outputs:
-- `ranking.csv` — all heuristics + baselines ranked by `priority_weighted_slo_goodput`
-- `candidate_metrics.csv` — heuristics only
-- `baseline_metrics.csv` — baselines only
-- `evaluation_summary.md` — markdown table + generation stats
+### Evaluate multi-regime (Phase 2B.3)
+
+```bash
+python scripts/evaluate_multi_regime.py \
+    --candidates-dir results/phase2b3_llm_search/candidates_main \
+    --output-dir     results/phase2b3_llm_search/evaluation_train_validation
+```
+
+Multi-regime outputs:
+- `ranking_overall.csv` — all candidates + baselines, ranked by val WG
+- `ranking_heuristics.csv` — heuristics only
+- `ranking_baselines.csv` — baselines only
+- `candidate_metrics_by_regime.csv` — per-regime WG for each candidate
+- `candidate_metrics_by_regime_flat.csv` — flat CSV with all per-regime results
+- `evaluation_summary.md` — markdown summary with overfitting analysis
+- `top_candidates/` — top 5 candidate JSON + markdown summary per candidate
 
 ---
 

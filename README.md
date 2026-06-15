@@ -7,10 +7,11 @@ heuristics for online LLM inference serving. It provides a GPU-calibrated discre
 simulator, a suite of 18 baseline policies, real-trace replay against BurstGPT arrival
 data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
 
-> **Current status:** Phase 2B.2 complete. Simulator, 18 baselines, GPU calibration,
+> **Current status:** Phase 2B.3 complete. Simulator, 18 baselines, GPU calibration,
 > real-trace replay, selector (Phase 2A.2–2A.3), DSL/verifier stack (Phase 2B.1),
-> and offline LLM heuristic generation loop (Phase 2B.2) are all finalized and committed.
-> LLM evolution loop (Phase 4) is next. See [docs/roadmap.md](docs/roadmap.md).
+> offline LLM generation loop (Phase 2B.2), and controlled LLM heuristic search
+> with multi-regime evaluation (Phase 2B.3) are all finalized and committed.
+> See [docs/roadmap.md](docs/roadmap.md).
 
 ---
 
@@ -58,6 +59,7 @@ See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal de
 | 2A.3B hardened baselines (LLF + ESTF) | Complete | 18 policies; `priority_weighted_slo_goodput` alias |
 | LLM heuristic DSL + verifier (Phase 2B.1) | Complete | Safe expression tree; 16 error codes; 4 examples |
 | LLM generation loop (Phase 2B.2) | Complete | Mock + CloudRift/Cohere/Mistral; verify → repair → evaluate pipeline |
+| Controlled LLM heuristic search (Phase 2B.3) | Complete | 7 design targets; multi-regime train/val eval; best heuristic beats EDF by +0.08% WG |
 
 ---
 
@@ -85,11 +87,11 @@ python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt
 ## Running tests
 
 ```bash
-pytest                    # all 557 tests
+pytest                    # all 601 tests
 pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
 ```
 
-All 557 tests pass on the current commit.
+All 601 tests pass on the current commit.
 
 ---
 
@@ -252,6 +254,7 @@ See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_clai
 | 2A.3B | Hardened baselines (LLF, ESTF) + priority_weighted alias | Complete |
 | 2B.1 | LLM heuristic DSL + verifier + policy wrapper | Complete |
 | 2B.2 | LLM offline heuristic generation loop | Complete |
+| 2B.3 | Controlled LLM heuristic search (multi-regime eval) | Complete |
 | 4 | LLM evolution loop (full) | Not started |
 | 5 | Shifted-workload evaluation + paper write-up | Not started |
 

@@ -23,7 +23,8 @@ from .candidate_io import (
     save_repair_attempt,
     update_index,
 )
-from .prompt_templates import build_generation_messages, build_repair_messages
+from .diversity import DEFAULT_TARGET_CYCLE, build_targeted_messages, deduplicate_candidates
+from .prompt_templates import build_repair_messages
 from .providers import build_providers
 from .repair import extract_json, run_repair_loop, verify_and_collect_errors
 
@@ -35,11 +36,14 @@ class GenerationConfig:
     max_candidates: int = 6
     max_repair_attempts: int = 3
     temperature: float = 0.7
+    temperatures: Optional[List[float]] = None          # if set, cycles through these
     max_tokens: int = 2000
     output_dir: Path = Path("results/phase2b2_llm_generation/candidates")
     dry_run: bool = False
     seed: int = 42
     verbose: bool = True
+    design_targets: Optional[List[str]] = None          # if set, cycles through targets
+    deduplicate: bool = True                            # remove exact-duplicate candidates
 
 
 @dataclass
@@ -48,6 +52,7 @@ class GenerationSummary:
     verified_ok: int = 0
     repaired_ok: int = 0
     failed: int = 0
+    duplicates_removed: int = 0
     providers_used: List[str] = field(default_factory=list)
     candidate_dirs: List[str] = field(default_factory=list)
 
@@ -77,8 +82,11 @@ def run_generation_loop(cfg: GenerationConfig) -> GenerationSummary:
     summary = GenerationSummary()
     summary.providers_used = [p.name for p in available]
 
-    prompt_messages = build_generation_messages()
+    # Build cycling sequences for design targets and temperatures
+    targets = cfg.design_targets if cfg.design_targets else DEFAULT_TARGET_CYCLE
+    temperatures = cfg.temperatures if cfg.temperatures else [cfg.temperature]
     candidate_counter = 0
+    seen_sha: set = set()  # for dedup tracking
 
     for provider in available:
         n_from_this = max(1, cfg.max_candidates // len(available))
@@ -87,15 +95,21 @@ def run_generation_loop(cfg: GenerationConfig) -> GenerationSummary:
 
         model = cfg.models[0] if cfg.models else "auto"
 
-        for _ in range(n_from_this):
+        for i in range(n_from_this):
             candidate_counter += 1
             cid = f"c{candidate_counter:03d}"
-            _log(cfg.verbose, f"\n[{provider.name}] Generating candidate {cid}...")
+            design_target = targets[i % len(targets)]
+            temperature = temperatures[i % len(temperatures)]
+
+            prompt_messages = build_targeted_messages(design_target)
+
+            _log(cfg.verbose, f"\n[{provider.name}] Generating candidate {cid} "
+                              f"(target={design_target}, temp={temperature:.1f})...")
 
             t0 = time.monotonic()
             resp = provider.generate(
                 prompt_messages,
-                temperature=cfg.temperature,
+                temperature=temperature,
                 max_tokens=cfg.max_tokens,
                 model=model,
             )
@@ -111,9 +125,10 @@ def run_generation_loop(cfg: GenerationConfig) -> GenerationSummary:
                 vr_dict = {"valid": False, "errors": [["JSON_PARSE_ERROR", "Could not extract JSON"]]}
                 record = CandidateRecord(
                     candidate_id=cid, provider=provider.name, model=resp.model,
-                    temperature=cfg.temperature, max_tokens=cfg.max_tokens,
+                    temperature=temperature, max_tokens=cfg.max_tokens,
                     generation_time=gen_time, repair_attempt_count=0,
                     verification_ok=False, sha256="none", git_commit=git_commit,
+                    extra={"design_target": design_target},
                 )
                 save_candidate(
                     cand_dir,
@@ -140,7 +155,7 @@ def run_generation_loop(cfg: GenerationConfig) -> GenerationSummary:
                     cfg.max_repair_attempts,
                     build_repair_messages,
                     lambda n, raw, cand: save_repair_attempt(cand_dir, n, raw, cand),
-                    temperature=max(0.0, cfg.temperature - 0.3),
+                    temperature=max(0.0, temperature - 0.3),
                     max_tokens=cfg.max_tokens,
                 )
                 if repair_ok:
@@ -155,24 +170,34 @@ def run_generation_loop(cfg: GenerationConfig) -> GenerationSummary:
             else:
                 _log(cfg.verbose, f"  [VERIFY OK] {extracted.get('name', cid)}")
 
-            if valid:
+            is_dup = cfg.deduplicate and (sha in seen_sha) and valid
+            if is_dup:
+                _log(cfg.verbose, f"  [DEDUP] {sha[:8]} already seen — duplicate")
+                summary.duplicates_removed += 1
+
+            if valid and not is_dup:
                 summary.verified_ok += 1
+                seen_sha.add(sha)
+            elif valid and is_dup:
+                valid = False  # treat dup as not counted toward verified_ok
 
             vr_dict = {
                 "valid": valid,
                 "errors": list(errors),
+                "duplicate": is_dup,
             }
             record = CandidateRecord(
                 candidate_id=cid,
                 provider=provider.name,
                 model=resp.model,
-                temperature=cfg.temperature,
+                temperature=temperature,
                 max_tokens=cfg.max_tokens,
                 generation_time=gen_time,
                 repair_attempt_count=repair_count,
                 verification_ok=valid,
                 sha256=sha,
                 git_commit=git_commit,
+                extra={"design_target": design_target, "duplicate": is_dup},
             )
             save_candidate(
                 cand_dir,
