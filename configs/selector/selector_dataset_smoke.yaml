@@ -1,0 +1,48 @@
+# Smoke dataset config: tiny trace (800 requests → 4 windows of 200)
+# Used to verify the dataset builder pipeline end-to-end.
+# Does NOT produce a meaningful selector — use phase17c_moderate for real training.
+
+seed: 42
+window_size: 200
+feature_mode: online_prefix
+verbose: true
+
+simulator:
+  step_size: 0.001
+  drain_steps: 2000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 256
+    max_kv_tokens: 2048
+  - gpu_id: 1
+    max_active_sequences: 8
+    max_batch_tokens: 256
+    max_kv_tokens: 2048
+
+workloads:
+  - tag: smoke_poisson_low
+    arrival_process: poisson
+    arrival_rate: 4.0
+    duration: 100.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.5
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.5
+    prediction_noise_rel: 0.15
+  - tag: smoke_bursty
+    arrival_process: bursty
+    arrival_rate: 4.0
+    duration: 100.0
+    prompt_dist: lognormal
+    prompt_mean: 48.0
+    prompt_sigma: 0.6
+    output_dist: lognormal
+    output_mean: 24.0
+    output_sigma: 0.5
+    prediction_noise_rel: 0.20
+    burst_factor: 4.0
+    burst_fraction: 0.15

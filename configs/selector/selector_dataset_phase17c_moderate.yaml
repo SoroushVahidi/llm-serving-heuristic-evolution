@@ -1,0 +1,34 @@
+# Phase17C moderate dataset config: larger trace from Phase 1.7C real-trace experiments.
+# Produces a meaningful selector dataset for Decision Tree and Random Forest training.
+# This config expects pre-processed BurstGPT traces at data/processed/burstgpt/.
+# Run after smoke passes.
+
+seed: 42
+window_size: 200
+feature_mode: online_prefix
+verbose: false
+
+simulator:
+  step_size: 0.001
+  drain_steps: 50000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 16
+    max_batch_tokens: 2048
+    max_kv_tokens: 16384
+  - gpu_id: 1
+    max_active_sequences: 16
+    max_batch_tokens: 2048
+    max_kv_tokens: 16384
+
+service_model:
+  type: synthetic
+
+workloads:
+  - tag: burstgpt_moderate_low_noise
+    source: trace_file
+    trace_path: data/processed/burstgpt/burstgpt_10k.jsonl
+  - tag: burstgpt_moderate_high_noise
+    source: trace_file
+    trace_path: data/processed/burstgpt/burstgpt_10k_noise070.jsonl
