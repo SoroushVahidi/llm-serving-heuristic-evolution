@@ -47,6 +47,10 @@ client = OpenAI(
 Do not rely on `OPENAI_API_KEY` pointing to CloudRift — the variable name and the
 routing destination must be kept separate to avoid accidentally hitting OpenAI.com.
 
+**Thinking model note**: The current CloudRift model (`Qwen/Qwen3.6-35B-A3B-FP8`) is a
+thinking model. It requires `max_tokens ≥ 8000` for the thinking phase to complete
+before outputting JSON. Use `--max-tokens 8000` in generation scripts.
+
 ### Cohere (`COHERE_API_KEY`)
 
 Used for heuristic generation in Phase 4. The `cohere` SDK reads `COHERE_API_KEY`
@@ -84,7 +88,8 @@ gcloud auth application-default login
 |---|---|
 | 1–1.7C (simulator, calibration, real-trace) | None |
 | 2A (selector training) | None — uses local simulator data |
-| 2B (LLM heuristic DSL) | CloudRift, Cohere, Mistral (design phase) |
+| 2B.1 (LLM heuristic DSL + verifier) | None — no API calls |
+| 2B.2 (LLM generation loop) | CloudRift, Cohere, Mistral (offline only, not at runtime) |
 | 4 (evolution loop) | CloudRift, Cohere (generation); local GPU (evaluation) |
 
 ---
