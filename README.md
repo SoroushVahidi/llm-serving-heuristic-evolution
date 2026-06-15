@@ -1,35 +1,58 @@
 # llm-serving-heuristic-evolution
 
-**Verifiable LLM-Evolved Dispatching and Dynamic Batching Heuristics for Online LLM Serving**
+**Verifier-Constrained, LLM-Assisted Generation of Scheduling Heuristics for Online LLM Inference Serving**
 
-> **Phase 1 only.**  This repository currently implements the simulator, synthetic
-> workloads, classical baseline policies, and baseline comparison infrastructure.
-> The LLM-evolved heuristic method is **not yet implemented**.
-> See [docs/roadmap.md](docs/roadmap.md) for the full research plan.
+This project studies verifier-constrained, LLM-assisted generation of scheduling
+heuristics for online LLM inference serving. It provides a GPU-calibrated discrete-event
+simulator, a suite of 14 serving-style baseline policies, real-trace replay against
+BurstGPT arrival data, and the infrastructure for Phase 2 LLM-driven heuristic evolution.
+
+> **Current status:** Phase 1.7C complete. Simulator, baselines, GPU calibration, and
+> real-trace replay are all finalized and committed. The LLM-evolution loop (Phase 2+)
+> is not yet implemented. See [docs/roadmap.md](docs/roadmap.md).
 
 ---
 
 ## Motivation
 
-LLM inference serving must make online decisions about which requests to batch
-together and which GPU to send them to — with limited information (output lengths
-are unknown at arrival) and tight latency/SLO constraints.
+LLM inference serving must make online scheduling decisions — which requests to batch,
+which GPU to assign them to — with incomplete information (output lengths are unknown at
+arrival) and tight latency/SLO constraints. Classical policies (FIFO, EDF, SRPT) provide
+interpretable but suboptimal baselines. Serving systems like vLLM, Sarathi-Serve, and
+DeepSpeed-FastGen each introduce specialized scheduling insights.
 
-This project builds a research infrastructure to:
-1. Evaluate classical dispatching and batching heuristics in a controlled simulator.
-2. (Phase 2+) Use LLMs to generate and evolve novel policy code within a verified sandbox.
-3. Benchmark evolved policies against classical baselines under realistic workloads.
+This project asks: can an LLM automatically generate scheduling heuristics, expressed
+in a restricted verifiable DSL, that outperform all known baselines on the regimes where
+baseline performance diverges?
 
 ---
 
 ## Problem statement
 
-- Requests arrive online; each has a prompt length, predicted output length, SLO deadline, and priority class.
+- Requests arrive online; each has a prompt length, predicted output length, SLO deadline,
+  and priority class.
 - A pool of GPUs with KV-cache and sequence-count constraints processes them.
-- A policy decides: which waiting requests to admit, and to which GPU.
-- Goal: minimize latency and SLO violations while maximizing throughput.
+- A policy decides: which waiting requests to admit, and to which GPU, at each time step.
+- Goal: minimize mean latency and SLO violation rate while maximizing throughput.
 
-See [docs/problem_formulation.md](docs/problem_formulation.md) for the mathematical formulation.
+See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal definition.
+
+---
+
+## Implemented components
+
+| Component | Status | Notes |
+|---|---|---|
+| Deterministic iteration-level simulator | Complete | `src/llmserveopt/simulator/` |
+| Synthetic workload generators | Complete | Poisson, bursty, heavy-tail, mixed-SLO |
+| 14 serving-style baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
+| GPU-calibrated service model | Complete | RTX 5060 Ti, Qwen2.5-0.5B, MAPE <13% |
+| Real-trace replay (BurstGPT) | Complete | 7 experiments, Phase 1.7C |
+| Prediction-noise sensitivity | Complete | 0%, 35%, 70% noise variants |
+| Calibrated vs. synthetic comparison | Complete | Spearman ρ = 1.000 on moderate trace |
+| Selector (Phase 2A) | Not started | Design spec in `results/selector_design_spec/` |
+| LLM heuristic DSL (Phase 2B) | Not started | Design spec in `results/llm_heuristic_dsl_spec/` |
+| LLM evolution loop (Phase 4) | Not started | See [docs/roadmap.md](docs/roadmap.md) |
 
 ---
 
@@ -42,74 +65,111 @@ pip install -e ".[dev]"
 # Smoke test
 python scripts/smoke_test.py
 
-# Run full baseline comparison
-python scripts/run_baseline_comparison.py --config configs/baseline_comparison.yaml
-
 # Quick debug run (seconds)
 python scripts/run_baseline_comparison.py --config configs/small_debug.yaml
 
-# Generate and save synthetic traces
-python scripts/generate_synthetic_traces.py --out-dir traces/ --seeds 0 1 2
+# Full synthetic baseline comparison
+python scripts/run_baseline_comparison.py --config configs/baseline_comparison.yaml
 
-# Run tests
-pytest
+# Real-trace replay (requires data/processed/burstgpt/*.jsonl)
+python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt_scaled_moderate_calibrated.yaml
 ```
+
+---
+
+## Running tests
+
+```bash
+pytest                    # all 182 tests
+pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
+```
+
+All 182 tests pass on the current commit.
+
+---
+
+## Synthetic experiment configs
+
+| Config | Description |
+|---|---|
+| `configs/small_debug.yaml` | Tiny trace, fast; for smoke testing |
+| `configs/baseline_comparison.yaml` | Standard Poisson workload |
+| `configs/overloaded_comparison.yaml` | High-load regime |
+| `configs/prefill_heavy_comparison.yaml` | Long-prompt, prefill-dominated |
+| `configs/decode_heavy_comparison.yaml` | Long-output, decode-dominated |
+| `configs/mixed_slo_comparison.yaml` | Mixed tight/relaxed SLO tiers |
+| `configs/burst_heavy_tail_comparison.yaml` | Heavy-tail arrival bursts |
+
+See [configs/README.md](configs/README.md) for the full list.
+
+---
+
+## Real-trace replay (Phase 1.7C)
+
+BurstGPT traces are replayed against the GPU-calibrated service model. Download
+data before running:
+
+```bash
+python scripts/download_burstgpt.py  # requires HF_TOKEN in environment
+python scripts/convert_burstgpt.py
+```
+
+| Config | Description |
+|---|---|
+| `configs/real_trace/burstgpt_natural_calibrated.yaml` | Natural BurstGPT timing (~318ks span) |
+| `configs/real_trace/burstgpt_scaled_moderate_calibrated.yaml` | Moderate-load scaled replay |
+| `configs/real_trace/burstgpt_scaled_high_calibrated.yaml` | High-load scaled replay |
+| `configs/real_trace/burstgpt_scaled_moderate_synthetic_service.yaml` | Moderate load, synthetic service model |
+| `configs/real_trace/burstgpt_moderate_exact_prediction.yaml` | Zero prediction noise |
+| `configs/real_trace/burstgpt_moderate_noise035.yaml` | Natural BurstGPT prediction noise |
+| `configs/real_trace/burstgpt_moderate_noise070.yaml` | 70% amplified prediction noise |
+
+See [docs/milestones/phase1_7c_calibrated_real_trace.md](docs/milestones/phase1_7c_calibrated_real_trace.md)
+for full results.
+
+---
+
+## GPU calibration (Phase 1.7B)
+
+Service curves (prefill and decode timing) were measured on an RTX 5060 Ti running
+Qwen/Qwen2.5-0.5B:
+
+```bash
+python scripts/run_gpu_calibration.py --config configs/gpu_calibration/calibration_grid.yaml
+```
+
+Prefill MAPE: 9%. Decode MAPE: 12%. Curves stored in `results/gpu_calibration/service_curves.json`.
+See [docs/gpu_calibration.md](docs/gpu_calibration.md).
 
 ---
 
 ## Baseline policies
 
-| Name | Description | Type |
+14 serving-style policies are registered. See [docs/baselines.md](docs/baselines.md) for
+provenance, safe/unsafe labels, and the full table.
+
+| Label | Policy | Inspired by |
 |---|---|---|
-| `fifo` | Oldest request first | Classical |
-| `edf` | Earliest Deadline First | Classical |
-| `shortest_output_first` | Shortest predicted output first (SRPT-style) | Classical |
-| `shortest_prompt_first` | Shortest prompt tokens first | Heuristic |
-| `greedy_token_fill` | Best-fit KV packing | Heuristic |
-| `least_loaded` | Assign to least-busy GPU | Load balancing |
-| `multi_bin_batching` | Group by output-length bins (Multi-Bin-style) | Heuristic |
-| `random_feasible` | Random admission, deterministic under seed | Baseline |
-| `oracle_srtf` | Hindsight SRTF (non-deployable) | Oracle |
+| `fifo` | FIFO | Classical |
+| `edf` | Earliest Deadline First | Classical real-time scheduling |
+| `shortest_output_first` | SRPT-style (predicted length) | Classical |
+| `shortest_prompt_first` | Shortest KV footprint first | Original |
+| `greedy_token_fill` | Best-fit KV packing | Original |
+| `least_loaded` | Least-busy GPU dispatch | Load balancing |
+| `multi_bin_batching` | Multi-Bin-style grouping | Independent adaptation |
+| `random_feasible` | Random feasible admission | Stochastic baseline |
+| `orca_style` | Orca-style iteration-level scheduler | Yu et al., OSDI 2022 |
+| `vllm_style_token_budget` | vLLM-inspired token-budget / paged-KV proxy | Kwon et al., SOSP 2023 |
+| `sarathi_style` | Sarathi-style chunked-prefill | Agrawal et al., arXiv 2023 / OSDI 2024 |
+| `splitfuse_style` | Dynamic-SplitFuse-style chunked-prefill | Holmes et al., arXiv 2024 |
+| `slo_slack_score` | SLO-slack composite scoring | Original |
+| `weighted_shortest_processing` | WSPT composite | Original |
 
-See [docs/baselines.md](docs/baselines.md) for policy descriptions and provenance.
+All serving-style baselines are **original implementations** capturing the key
+scheduling insight of each cited system. None reproduce the original system's code.
 
----
-
-## Reproducibility
-
-The full baseline comparison can be reproduced exactly:
-
-```bash
-python scripts/run_baseline_comparison.py --config configs/baseline_comparison.yaml
-```
-
-All randomness is seeded via `numpy.random.default_rng`.  Same config + same seeds =
-identical results.
-
----
-
-## Example result table
-
-Running `configs/small_debug.yaml` (single seed, small trace):
-
-| Policy | Mean Lat (s) | P95 Lat (s) | SLO Viol. Rate | Req/s | GPU Util. |
-|---|---|---|---|---|---|
-| shortest_output_first | ~0.013 | ~0.020 | 0.00 | ~2.0 | ~0.3 |
-| fifo | ~0.013 | ~0.022 | 0.00 | ~2.0 | ~0.3 |
-| edf | ~0.014 | ~0.021 | 0.00 | ~2.0 | ~0.3 |
-| random_feasible | ~0.015 | ~0.024 | 0.00 | ~2.0 | ~0.3 |
-
-*(Approximate values; run the experiment for exact numbers.)*
-
----
-
-## Result interpretation
-
-- All numbers are from a **deterministic Phase 1 simulator** (see [docs/simulator_design.md](docs/simulator_design.md)).
-- Do not compare directly to production vLLM or real-hardware benchmarks without additional validation.
-- The oracle policy uses future information and is not deployable.
-- Multi-Bin-style batching is an independent approximate implementation.
-- See [docs/result_claims.md](docs/result_claims.md) for a full list of safe and unsafe claims.
+**Note:** `oracle_srtf` (hindsight SRTF) exists in `src/llmserveopt/policies/oracle.py`
+as a non-deployable upper-bound candidate. It is not in the registered online baseline set.
 
 ---
 
@@ -118,29 +178,66 @@ Running `configs/small_debug.yaml` (single seed, small trace):
 ```
 src/llmserveopt/
   core/          # Types, actions, metrics
-  simulator/     # Deterministic iteration-level simulator
-  workloads/     # Synthetic workload generators and trace I/O
-  policies/      # All baseline policies + oracle
-  evaluation/    # Run, compare, aggregate
+  simulator/     # Deterministic step simulator + service models
+  workloads/     # Synthetic generators, BurstGPT/ShareGPT loaders, trace I/O
+  policies/      # 14 registered baselines + oracle + helpers
+  evaluation/    # Run, compare, aggregate policies
   plotting/      # Tables and figures
   utils/         # Seeding, JSONL helpers
-scripts/         # CLI entry points
-configs/         # YAML experiment configs
-docs/            # Problem formulation, design, claims, roadmap
-tests/           # pytest test suite
-results/         # Experiment outputs (gitignored except .gitkeep)
-external/        # Placeholder for future external code with provenance notes
+scripts/         # CLI entry points (see scripts/README.md)
+configs/         # YAML experiment configs (see configs/README.md)
+docs/            # Design docs, milestones, claims, roadmap (see docs/README.md)
+tests/           # pytest suite (182 tests)
+data/            # Local datasets — not committed (see data/README.md)
+results/         # Experiment outputs — not committed (see results/.gitkeep)
 ```
+
+---
+
+## Data policy
+
+- `data/raw/` and `data/processed/` are gitignored.
+- Results in `results/` are gitignored.
+- See `data/README.md` and `.env.example` for download and credential instructions.
+- **Never commit API keys, model weights, or raw dataset files.**
+
+---
+
+## Reproducibility
+
+All randomness is seeded via `numpy.random.default_rng`. Same config + same seed =
+identical results. The GPU calibration step requires a physical GPU; calibrated curves
+are stored in `results/gpu_calibration/service_curves.json` (local only).
+
+---
+
+## Safe claims and limitations
+
+- "We replay real BurstGPT arrival timestamps and token counts."
+- "SLOs, priorities, and predicted output lengths are synthetically augmented."
+- "Service curves are calibrated on an RTX 5060 Ti running Qwen2.5-0.5B."
+- "Serving-style baselines are original implementations inspired by, not reproductions of, the cited systems."
+
+Do not claim: production vLLM reproduction, exact production latency, generalization
+beyond the RTX 5060 Ti + Qwen2.5-0.5B calibration point.
+
+See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_claims.md](docs/gpu_validation_claims.md).
 
 ---
 
 ## Roadmap
 
-- **Phase 1** (now): Simulator + baselines ✓
-- **Phase 2**: LLM-generated restricted policy code
-- **Phase 3**: Verifier and sandboxed executor
-- **Phase 4**: LLM-evolution loop (Cohere, CloudRift)
-- **Phase 5**: Shifted workload evaluation and paper write-up
+| Phase | Description | Status |
+|---|---|---|
+| 1 | Simulator + classical baselines | Complete |
+| 1.5 | Serving-style baselines (Orca/vLLM/Sarathi/SplitFuse) | Complete |
+| 1.7A | BurstGPT + ShareGPT trace ingestion | Complete |
+| 1.7B | GPU calibration (RTX 5060 Ti, Qwen2.5-0.5B) | Complete |
+| 1.7C | Calibrated real-trace replay (7 experiments) | Complete |
+| 2A | Metric finalization + selector over known policies | Not started |
+| 2B | LLM heuristic DSL + verifier | Not started |
+| 4 | LLM evolution loop (CloudRift, Cohere) | Not started |
+| 5 | Shifted-workload evaluation + paper write-up | Not started |
 
 See [docs/roadmap.md](docs/roadmap.md) for details.
 

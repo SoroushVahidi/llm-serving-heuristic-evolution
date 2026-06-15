@@ -1,3 +1,4 @@
+# Python / build cache
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -10,41 +11,49 @@ build/
 .venv/
 venv/
 env/
+
+# Secrets — NEVER commit these
 .env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.json.secret
+secrets.*
+credentials.json
 
-# Results (large files; commit selectively)
+# Data and results (large files; commit selectively)
+data/raw/*
+!data/raw/**/.gitkeep
+data/processed/*
+!data/processed/**/.gitkeep
 results/*/
-traces/
 !results/.gitkeep
+traces/
 
-# Editor
-.idea/
-.vscode/
-*.swp
+# Large binary / model artifacts
+*.bin
+*.safetensors
+*.pt
+*.ckpt
+*.parquet
+*.cache
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Jupyter
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .ipynb_checkpoints/
 *.ipynb
 
 # Coverage
 .coverage
 htmlcov/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
 
-# Real trace datasets (large; commit selectively)
-data/raw/*
-!data/raw/**/.gitkeep
-data/processed/*
-!data/processed/**/.gitkeep
-
-# Model weights and HuggingFace cache
-*.bin
-*.safetensors
-*.pt
-*.ckpt
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
