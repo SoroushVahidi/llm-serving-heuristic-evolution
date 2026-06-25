@@ -1,0 +1,17 @@
+experiment_id,phase,branch,config_file,workload_tags,policies,seeds,num_windows,selector_wg,best_fixed_policy,best_fixed_wg,delta_vs_best_fixed,notes,run_date,runner
+# TEMPLATE — copy to results/experiment_registry/experiment_registry.csv and fill in
+# experiment_id: unique string, e.g. "phase2b6_fair_sweep_v1"
+# phase: e.g. "2B.6"
+# branch: git branch name
+# config_file: relative path from repo root, e.g. "configs/phase2b6_fair_sweep.yaml"
+# workload_tags: comma-separated, e.g. "mixed_slo,prefill_heavy"
+# policies: number of policies evaluated, e.g. 19
+# seeds: comma-separated, e.g. "0,1"
+# num_windows: total evaluation windows
+# selector_wg: rule_based selector weighted goodput (mean across windows)
+# best_fixed_policy: name of best single fixed policy
+# best_fixed_wg: best fixed policy weighted goodput
+# delta_vs_best_fixed: selector_wg - best_fixed_wg
+# notes: free text
+# run_date: ISO date, e.g. 2026-06-25
+# runner: machine or CI job name

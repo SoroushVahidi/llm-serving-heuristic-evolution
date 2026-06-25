@@ -1,0 +1,14 @@
+call_id,date,provider,model,tokens_in,tokens_out,cost_usd,phase,purpose,script,result_file,notes
+# TEMPLATE — copy to results/api_usage/api_usage_ledger.csv and fill in
+# call_id: unique string, e.g. "call_001"
+# date: ISO date, e.g. 2026-06-25
+# provider: one of: CloudRift | Cohere | OpenAI | Gemini | Mistral | other
+# model: model name used
+# tokens_in: input tokens consumed
+# tokens_out: output tokens generated
+# cost_usd: estimated cost in USD
+# phase: research phase, e.g. "2B.3"
+# purpose: brief description, e.g. "heuristic generation for mixed_slo workload"
+# script: script that made the call, e.g. "scripts/run_llm_heuristic_search.py"
+# result_file: output artifact path
+# notes: free text

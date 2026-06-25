@@ -22,6 +22,8 @@ import sys
 
 def gather_status() -> dict:
     """Return a structured status dict derived from live code."""
+    import os
+    from pathlib import Path
     from llmserveopt.policies.registry import (
         BASELINE_NAMES,
         ORACLE_POLICY_NAMES,
@@ -63,6 +65,16 @@ def gather_status() -> dict:
     except ImportError:
         pass
 
+    # --- template files ---
+    _repo_root = Path(__file__).parent.parent
+    _templates = {
+        "experiment_registry_template": "docs/templates/experiment_registry_template.csv",
+        "failure_case_registry_template": "docs/templates/failure_case_registry_template.csv",
+        "api_usage_ledger_template": "docs/templates/api_usage_ledger_template.csv",
+    }
+    templates_present = {k: (_repo_root / v).exists() for k, v in _templates.items()}
+    all_templates_present = all(templates_present.values())
+
     return {
         "deployable_baselines": {
             "count": n_deployable,
@@ -83,6 +95,10 @@ def gather_status() -> dict:
         "invariants": {
             "oracle_not_in_selector_candidates": len(oracle_leak) == 0,
             "oracle_leak_names": oracle_leak,
+        },
+        "templates": {
+            "present": templates_present,
+            "all_present": all_templates_present,
         },
     }
 
@@ -120,6 +136,13 @@ def print_text_report(status: dict) -> None:
     print(f"  oracle not in selector candidates: {inv['oracle_not_in_selector_candidates']}")
     if inv["oracle_leak_names"]:
         print(f"  !! LEAK: {inv['oracle_leak_names']}")
+
+    tmpl = status["templates"]
+    print(f"\nTemplate files:")
+    for name, present in tmpl["present"].items():
+        print(f"  {name}: {'OK' if present else 'MISSING'}")
+    print(f"  all templates present: {tmpl['all_present']}")
+
     print("=" * 60)
 
 
@@ -131,6 +154,10 @@ def check_invariants(status: dict) -> list[str]:
         violations.append(f"Oracle policies leaked into selector candidates: {inv['oracle_leak_names']}")
     if not status["selector_candidates"]["equals_deployable_baselines"]:
         violations.append("SELECTOR_CANDIDATES does not equal BASELINE_NAMES")
+    tmpl = status.get("templates", {})
+    if tmpl and not tmpl.get("all_present", True):
+        missing = [k for k, v in tmpl["present"].items() if not v]
+        violations.append(f"Template files missing: {missing}")
     return violations
 
 

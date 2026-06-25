@@ -1,0 +1,17 @@
+failure_id,experiment_id,workload_tag,seed,window_idx,selector_predicted,selector_wg,best_fixed_policy,best_fixed_wg,delta,failure_category,root_cause_hypothesis,llm_escalated,llm_resolution,notes
+# TEMPLATE — copy to results/failure_cases/failure_case_registry.csv and fill in
+# failure_id: unique string, e.g. "fail_001"
+# experiment_id: references experiment_registry.csv
+# workload_tag: e.g. "mixed_slo_small"
+# seed: integer seed used
+# window_idx: 0-indexed window number within the run
+# selector_predicted: policy the rule selector chose
+# selector_wg: weighted goodput under selector choice
+# best_fixed_policy: policy that would have been optimal
+# best_fixed_wg: optimal weighted goodput
+# delta: selector_wg - best_fixed_wg (negative means selector lost)
+# failure_category: one of: wrong_rule_fired | default_fallback_suboptimal | feature_not_captured | admission_drop_hurts | n/a
+# root_cause_hypothesis: free-text explanation
+# llm_escalated: true/false — whether this case was sent to CloudRift/LLM for analysis
+# llm_resolution: summary of LLM-suggested fix (if escalated)
+# notes: free text

@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-25  
-**Current branch:** `phase2b5-admission-rule-selector-status`  
-**Current phase:** Phase 2B.5 — External baseline coverage + admission control + feature-based selector
+**Current branch:** `phase2b6-fair-sweep-failure-audit`  
+**Current phase:** Phase 2B.6 — Fair sweep, failure tracking, external baseline correctness audit
 
 ---
 
@@ -24,7 +24,8 @@
 |---|---|---|
 | `phase2a4-2b4-final-eval` | `9ed8f71` | Final frozen evaluation (Phase 2A.4/2B.4) |
 | `phase2b5-external-baselines` | `e1c6c01` | External baseline audit + completion_fraction metric |
-| `phase2b5-admission-rule-selector-status` | current | Admission control policy + feature rule selector |
+| `phase2b5-admission-rule-selector-status` | `5d2afb6` | Admission control policy + feature rule selector |
+| `phase2b6-fair-sweep-failure-audit` | current | Fair sweep, failure tracking, correctness audit |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -56,7 +57,7 @@
 - `least_laxity_first` (LLF) — 14 unit tests
 - `estimated_service_time_first` (PARS-like SJF proxy) — 16 unit tests
 
-### Phase 2B.5 — External Baseline Coverage (current)
+### Phase 2B.5 — External Baseline Coverage
 - External baseline audit (`docs/external_baseline_coverage_report.md`)
 - Dataset/workload plan (`docs/dataset_workload_plan.md`)
 - `completion_fraction` and `num_total` added to `RunMetrics`
@@ -64,6 +65,15 @@
 - `RuleBasedSelector` upgraded from FIFO placeholder to feature-based dispatch
 - `scripts/report_research_status.py` for code-derived status
 - 710 tests passing
+
+### Phase 2B.6 — Fair Sweep + Failure Tracking (current)
+- Experiment/accounting infrastructure: committed CSV templates + `docs/experiment_tracking.md`
+- Per-policy correctness audit for 11 baselines (`docs/external_baseline_correctness_audit.md`)
+- `AdmissionControlPolicy` threshold calibration (`docs/audits/admission_control_threshold_calibration_summary.md`)
+- Fair sweep: all 19 deployable policies × 3 workloads × 2 seeds (`configs/phase2b6_fair_sweep.yaml`)
+- Sweep finding: underloaded workloads (10s, 10-20 req/s) produce zero WG differentiation — all policies tie
+- `report_research_status.py` updated: template existence checks + `--check` mode validates templates
+- New tests: leakage/fairness audit + registry template tests
 
 ---
 
@@ -182,11 +192,23 @@ Paid API usage is gated behind explicit `--use-llm` flags or dedicated scripts.
 
 ---
 
+## Phase 2B.6 Findings
+
+| Finding | Detail |
+|---|---|
+| Cheap sweep (10s, 10-20 req/s): zero differentiation | All 19 policies achieve WG ≈ 0.9977-1.0 under underloaded conditions |
+| AdmissionControl unit mismatch | `_laxity()` mixes seconds and steps; default `threshold=inf` is safe |
+| Threshold calibration: `threshold=200.0` | Drops ~21% of requests, achieves WG=1.0, zero SLO violations |
+| Historical rule_based failure (Phase 2A.4) | FIFO placeholder: WG=0.597 vs. best_fixed 0.798 (−0.20); now fixed in Phase 2B.5 |
+
+---
+
 ## Next Planned Tasks
 
-1. **Run baseline sweep** extending existing workloads (mixed-SLO, noise, prefill-heavy) to include `least_laxity_first`, `estimated_service_time_first`, and `admission_control`.
+1. **Run overloaded baseline sweep** using existing overloaded configs (arrival_rate=60-90, duration=30s) to produce meaningful WG differentiation across all 19 policies.
 2. **Add multi-bin batching unit tests** (`tests/test_multi_bin_batching_policy.py`).
-3. **Tune admission_control threshold** — calibrate `laxity_threshold` against service model step_size for meaningful filtering in simulation.
-4. **Update selector comparison table** in `docs/selector.md` to include the feature-based rule selector's actual performance.
-5. **Optional:** Add CP-SAT oracle for micro-benchmark traces.
-6. **Write comparison paper section** after baseline sweep results are available.
+3. **Re-evaluate rule_based selector** on Phase 2A.4 test split using updated feature-based dispatch (post Phase 2B.5 upgrade).
+4. **Fix admission_control unit mismatch** — convert service proxy to seconds before laxity comparison.
+5. **Update selector comparison table** in `docs/selector.md` with updated rule_based WG.
+6. **Optional:** Add CP-SAT oracle for micro-benchmark traces.
+7. **Write comparison paper section** after meaningful overloaded sweep results available.
