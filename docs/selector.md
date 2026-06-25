@@ -68,7 +68,7 @@ Tie-breaking (in order):
 
 | Model | Use |
 |-------|-----|
-| `RuleBasedSelector` | Always returns "fifo" — baseline for comparison |
+| `RuleBasedSelector` | Deterministic feature-based dispatch (Phase 2B.5+). Chooses among 7 policies using workload features; no training required. **Was FIFO-only placeholder before Phase 2B.5 — no longer.** |
 | `DecisionTreeSelector` | `max_depth=8, min_samples_leaf=20` — interpretable |
 | `RandomForestSelector` | `n_estimators=200, max_depth=10` — main v1 selector |
 

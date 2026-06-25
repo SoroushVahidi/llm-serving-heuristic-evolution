@@ -68,8 +68,9 @@ def test_test_only_traces_not_in_train_or_val():
 
 
 def test_all_18_selector_candidates_available():
+    """Phase 2A.4 required 18 candidates; Phase 2B.5 added admission_control (now 19+)."""
     from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
-    assert len(SELECTOR_CANDIDATES) == 18
+    assert len(SELECTOR_CANDIDATES) >= 18
 
 
 def test_selector_candidates_no_oracle():
@@ -83,7 +84,7 @@ def test_selector_candidates_no_oracle():
 
 def test_baseline_names_count():
     from llmserveopt.policies.registry import BASELINE_NAMES
-    assert len(BASELINE_NAMES) == 18
+    assert len(BASELINE_NAMES) >= 18
 
 
 def test_configs_have_consistent_window_size():

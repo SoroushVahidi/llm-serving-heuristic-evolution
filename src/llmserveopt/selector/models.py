@@ -3,8 +3,10 @@ Baseline selector model wrappers.
 
 v1 selector models
 ------------------
-* RuleBasedSelector   — always picks the policy with the highest predicted throughput
-  from features; simple placeholder for comparison.
+* RuleBasedSelector   — deterministic feature-based rule selector.
+  Dispatches to different scheduling policies based on workload features.
+  Does NOT require training.  Replaced the prior FIFO-only placeholder in
+  Phase 2B.5.
 * DecisionTreeSelector
 * RandomForestSelector
 
@@ -24,14 +26,125 @@ from .features import FEATURE_NAMES
 
 
 class RuleBasedSelector:
-    """Placeholder: always recommends 'fifo' (fixed, deterministic baseline)."""
+    """Deterministic feature-based rule selector.
+
+    Chooses among deployable scheduling policies using a hand-coded decision
+    tree over workload feature values.  No training required.  Fully
+    deterministic: same features always produce the same policy choice.
+
+    Rules (in priority order)
+    -------------------------
+    1. Tight-SLO / urgent regime
+       fraction_tight_slo > 0.4 OR min_slack < 1.0
+       → least_laxity_first  (laxity-based urgency handles SLO pressure best)
+
+    2. Recent SLO violations are high
+       recent_slo_violation_rate > 0.3
+       → admission_control  (filter likely-to-miss requests early)
+
+    3. High KV utilization (memory pressure)
+       kv_utilization > 0.7
+       → vllm_style_token_budget  (KV-budget-aware admission)
+
+    4. Prefill-heavy workload (large prompts)
+       mean_prompt_tokens > 512 OR p95_prompt_tokens > 1024
+       → sarathi_style  (stall-free chunked prefill handles large prompts)
+
+    5. Short, low-variance outputs (SJF regime)
+       mean_pred_output_tokens < 64 AND pred_output_cv < 0.5
+       → estimated_service_time_first  (SJF proxy works well for uniform short jobs)
+
+    6. Bursty arrivals (high burstiness CV)
+       burstiness_cv > 1.5
+       → slo_slack_score  (composite urgency handles bursty overload)
+
+    7. Moderate mixed workload
+       → edf  (safe, SLO-aware default for general workloads)
+
+    All policy names in use are verified to be in SELECTOR_CANDIDATES at
+    class definition time.
+    """
+
     name = "rule_based"
 
-    def predict(self, features: List[Dict[str, float]]) -> List[str]:
-        return ["fifo"] * len(features)
+    # All policies this selector may recommend — verified at class definition.
+    _POLICY_CHOICES = [
+        "least_laxity_first",
+        "admission_control",
+        "vllm_style_token_budget",
+        "sarathi_style",
+        "estimated_service_time_first",
+        "slo_slack_score",
+        "edf",
+    ]
+
+    def __init__(self) -> None:
+        _missing = [p for p in self._POLICY_CHOICES if p not in SELECTOR_CANDIDATES]
+        if _missing:
+            raise RuntimeError(
+                f"RuleBasedSelector references policies not in SELECTOR_CANDIDATES: {_missing}. "
+                "Ensure these policies are registered before using this selector."
+            )
+
+    @staticmethod
+    def _get(features: Dict[str, float], name: str, default: float = 0.0) -> float:
+        """Retrieve feature by bare name or 'feat_<name>' (dataset row format)."""
+        v = features.get(name)
+        if v is not None:
+            return float(v)
+        v = features.get(f"feat_{name}")
+        if v is not None:
+            return float(v)
+        return default
 
     def predict_one(self, features: Dict[str, float]) -> str:
-        return "fifo"
+        """Return a policy name for one feature dict.
+
+        Accepts both bare feature names (from extract_features()) and
+        'feat_*'-prefixed names (from dataset row dicts).
+        """
+        g = self._get  # shorthand
+
+        fraction_tight_slo    = g(features, "fraction_tight_slo", 0.0)
+        min_slack             = g(features, "min_slack", float("inf"))
+        recent_violation_rate = g(features, "recent_slo_violation_rate", 0.0)
+        kv_utilization        = g(features, "kv_utilization", 0.0)
+        mean_prompt           = g(features, "mean_prompt_tokens", 0.0)
+        p95_prompt            = g(features, "p95_prompt_tokens", 0.0)
+        mean_pred_output      = g(features, "mean_pred_output_tokens", 0.0)
+        pred_output_cv        = g(features, "pred_output_cv", 1.0)
+        burstiness_cv         = g(features, "burstiness_cv", 0.0)
+
+        # Rule 1: tight SLO / urgency
+        if fraction_tight_slo > 0.4 or min_slack < 1.0:
+            return "least_laxity_first"
+
+        # Rule 2: recent SLO violations — admission control
+        if recent_violation_rate > 0.3:
+            return "admission_control"
+
+        # Rule 3: memory pressure
+        if kv_utilization > 0.7:
+            return "vllm_style_token_budget"
+
+        # Rule 4: prefill-heavy
+        if mean_prompt > 512 or p95_prompt > 1024:
+            return "sarathi_style"
+
+        # Rule 5: short uniform outputs — SJF regime
+        if mean_pred_output < 64 and pred_output_cv < 0.5:
+            return "estimated_service_time_first"
+
+        # Rule 6: bursty arrivals
+        if burstiness_cv > 1.5:
+            return "slo_slack_score"
+
+        # Rule 7: safe general default
+        return "edf"
+
+    def predict(self, features: List[Dict[str, float]]) -> List[str]:
+        """Return a list of policy names for a list of feature dicts."""
+        return [self.predict_one(f) for f in features]
 
 
 def _check_sklearn():

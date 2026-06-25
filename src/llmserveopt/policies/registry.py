@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Sequence
 
+from .admission_control import AdmissionControlPolicy
 from .base import BasePolicy
 from .best_fit import BestFitPolicy
 from .edf import EDFPolicy
@@ -53,6 +54,8 @@ _REGISTRY: Dict[str, type] = {
     # Phase 2A.3B: hardened deadline and service-time baselines
     "least_laxity_first":                LeastLaxityFirstPolicy,
     "estimated_service_time_first":      EstimatedServiceTimeFirstPolicy,
+    # Phase 2B.5: explicit admission-control baseline
+    "admission_control":                 AdmissionControlPolicy,
 }
 
 BASELINE_NAMES: List[str] = list(_REGISTRY.keys())

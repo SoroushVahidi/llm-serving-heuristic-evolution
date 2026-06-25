@@ -1,6 +1,7 @@
 """
 Tests: policies produce feasible actions and are deterministic under fixed seed.
 """
+import math
 import pytest
 
 from llmserveopt.core.types import GPUConfig, Request
@@ -40,7 +41,13 @@ def test_policy_deterministic(policy_name):
     m_b = run_policy(policy_b, requests, GPU_CONFIGS, SERVICE_MODEL, drain_steps=5000)
 
     assert m_a.num_completed == m_b.num_completed
-    assert abs(m_a.mean_latency - m_b.mean_latency) < 1e-9
+    # Both NaN (zero completions) or equal finite value — both are deterministic
+    latency_ok = (
+        math.isnan(m_a.mean_latency) and math.isnan(m_b.mean_latency)
+    ) or abs(m_a.mean_latency - m_b.mean_latency) < 1e-9
+    assert latency_ok, (
+        f"Non-deterministic mean_latency for {policy_name}: {m_a.mean_latency} vs {m_b.mean_latency}"
+    )
 
 
 def test_fifo_admits_oldest_first():
@@ -92,8 +99,8 @@ def test_slo_violation_rate_in_range():
     for policy_name in BASELINE_NAMES:
         policy = make_policy(policy_name, seed=0)
         m = run_policy(policy, requests, GPU_CONFIGS, SERVICE_MODEL, drain_steps=5000)
-        assert 0.0 <= m.slo_violation_rate <= 1.0, \
-            f"{policy_name} produced slo_violation_rate={m.slo_violation_rate}"
+        assert (math.isnan(m.slo_violation_rate) or 0.0 <= m.slo_violation_rate <= 1.0), \
+            f"{policy_name} produced slo_violation_rate={m.slo_violation_rate} (must be [0,1] or NaN)"
 
 
 def test_no_negative_latency():

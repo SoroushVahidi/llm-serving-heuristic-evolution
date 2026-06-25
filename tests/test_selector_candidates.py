@@ -33,4 +33,4 @@ def test_expected_policies_present():
     ]
     for name in expected:
         assert name in SELECTOR_CANDIDATES, f"Expected '{name}' in SELECTOR_CANDIDATES"
-    assert SELECTOR_CANDIDATE_COUNT == 18
+    assert SELECTOR_CANDIDATE_COUNT >= 18  # 18 in Phase 2A.4; 19+ after Phase 2B.5

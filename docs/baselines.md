@@ -5,11 +5,11 @@ None require external dependencies beyond NumPy.
 
 ---
 
-## Registered online baselines (18 policies)
+## Registered online baselines (19 policies)
 
 These policies are registered in `src/llmserveopt/policies/registry.py` and are
 used in all experiment comparisons. All are deployable in an online setting.
-All 18 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
+All 19 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 
 | Policy | Category | Online deployable? | Uses prediction? | Uses SLO/deadline? | Uses KV/token budget? | Notes |
 |---|---|---|---|---|---|---|
@@ -31,6 +31,7 @@ All 18 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 | `weighted_shortest_processing` | Composite | Yes | Yes (predicted) | No | No | WSPT priority × predicted processing time |
 | `least_laxity_first` | Deadline/laxity | Yes | Yes (predicted) | Yes | No | LLF: deadline − now − estimated_service_time; handles preemption-risk cases that EDF misses |
 | `estimated_service_time_first` | SJF proxy | Yes | Yes (predicted) | No | No | Prompt-and-prediction-aware SJF proxy (α×prompt + β×output). Not a PARS reproduction — no learning. |
+| `admission_control` | Admission control | Yes | Yes (predicted) | Yes | Yes | Laxity-based filter + urgency sort. See Phase 2B.5 note below. |
 
 ---
 
@@ -167,3 +168,31 @@ and batching decisions are made atomically per step. Future phases may separate 
 - Feedback-control policies (admission rate throttling)
 - Prefix-cache-aware scheduling
 - LLM-generated heuristics (Phase 2+)
+
+---
+
+## Phase 2B.5: Admission Control Baseline
+
+### `admission_control` — Laxity-filtered admission-control baseline
+
+**Manuscript label:** "Laxity-based admission-control scheduling baseline"
+
+**IMPORTANT:** This is NOT a reproduction of Tempo, JITServe, SCORPIO, or any
+other published admission-control system.  It is a simple deterministic baseline
+designed to isolate the admission-control effect in simulation.
+
+**Algorithm:**
+1. Compute estimated service time: `est = α × prompt_tokens + β × predicted_output_tokens`
+2. Compute laxity: `laxity = slo_deadline − now − est`
+3. Filter: skip requests with `laxity < −laxity_threshold`
+4. Sort survivors: laxity ↑ → priority ↓ → est ↑ → deadline ↑ → request_id ↑
+5. Greedily assign to GPUs with capacity
+
+**Default threshold:** `float("inf")` (no filtering; acts as urgency-sorted admission).
+Set a finite threshold to enable the admission-control filter.
+
+**Unit note:** The service proxy is in decode steps; `slo_deadline`/`now` are in
+seconds.  Calibrate `laxity_threshold` against your service model's `step_size`.
+
+**Safe claim:** "Laxity-based admission-control scheduling baseline"  
+**Unsafe claim:** "Reproduction of Tempo, JITServe, or SCORPIO"
