@@ -240,6 +240,15 @@ Do not claim: production vLLM reproduction, exact production latency, generaliza
 beyond the RTX 5060 Ti + Qwen2.5-0.5B calibration point, or that LLM heuristics
 conclusively outperform all baselines (the CI is wide; only 1/7 heuristics clearly wins).
 
+**Selective-admission caveat (headline result):** The best LLM heuristic
+(`slo_kv_balance_heuristic`, mean WG=0.9595, 95% CI [0.00, 0.27]) achieved its score
+on the `test_very_overloaded` regime by completing only **1240 of 2119 requests (58%)**
+— i.e., via selective request dropping, not throughput improvement. All other heuristics
+and baselines completed all 2119 requests on that regime. Do not present this result as
+a full-admission win. See [docs/result_claims.md](docs/result_claims.md) §"What the final
+evaluation numbers mean" for the exact per-regime `num_completed` breakdown and safe
+claim language.
+
 See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_claims.md](docs/gpu_validation_claims.md).
 
 ---

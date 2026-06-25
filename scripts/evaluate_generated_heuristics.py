@@ -14,8 +14,7 @@ Usage:
         --arrival-rate 20 --duration 30
 
 NOTE: oracle_srtf is NOT included as a deployable baseline.
-      RF Selector from Phase 2A.3 was trained on 16-policy set; rerun needed
-      before final paper evaluation with 18 policies.
+      RF Selector (Phase 2A.4) trained on 18-policy set; rerun complete.
 """
 import argparse
 import csv

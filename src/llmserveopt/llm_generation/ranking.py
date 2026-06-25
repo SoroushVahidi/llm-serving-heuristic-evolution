@@ -106,7 +106,6 @@ def build_summary_md(
         "separately as a hindsight upper bound and must always be labeled as such.",
         "",
         "## Note on RF Selector",
-        "The RF Selector from Phase 2A.3 was trained on 16-policy candidate set.",
-        "Full rerun with 18 policies required before final paper evaluation.",
+        "RF Selector (Phase 2A.4) trained on 18-policy candidate set (52 windows: 30 train / 13 val / 9 test).",
     ]
     return "\n".join(lines)

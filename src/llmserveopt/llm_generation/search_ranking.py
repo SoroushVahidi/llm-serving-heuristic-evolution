@@ -184,7 +184,7 @@ def build_search_summary_md(
         "- Ranking is by **validation** performance, not training.",
         "- Test regimes held out — not used in this phase.",
         "- oracle_srtf excluded from all deployable comparisons.",
-        "- RF Selector (Phase 2A.3) trained on 16-policy set; rerun with 18 needed for paper.",
+        "- RF Selector (Phase 2A.4) trained on 18-policy set (52 windows); rerun complete.",
         "- estimated_service_time_first is PARS-inspired proxy, NOT a PARS reproduction.",
     ]
     return "\n".join(lines)

@@ -55,6 +55,6 @@ evaluation:
 
 notes:
   - oracle_srtf is excluded from all deployable comparisons
-  - RF Selector from Phase 2A.3 was trained on 16 policies; rerun with 18 needed for paper
+  - RF Selector (Phase 2A.4) trained on 18-policy set; rerun complete
   - estimated_service_time_first is PARS-inspired proxy, not a PARS reproduction
   - No LLM is called at runtime during request scheduling
