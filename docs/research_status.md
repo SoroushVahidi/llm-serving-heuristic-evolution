@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-25  
-**Current branch:** `phase2b7-overload-failure-mining`  
-**Current phase:** Phase 2B.7 — Unit fix, overloaded failure mining, multi-bin tests
+**Current branch:** `phase2b8-rule-selector-repair`  
+**Current phase:** Phase 2B.8 — Rule selector repair under KV pressure
 
 ---
 
@@ -14,7 +14,7 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **19** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) |
-| Test count | 710 passing, 0 failing |
+| Test count | 784 passing, 0 failing |
 
 ---
 
@@ -26,7 +26,8 @@
 | `phase2b5-external-baselines` | `e1c6c01` | External baseline audit + completion_fraction metric |
 | `phase2b5-admission-rule-selector-status` | `5d2afb6` | Admission control policy + feature rule selector |
 | `phase2b6-fair-sweep-failure-audit` | `a6df363` | Fair sweep, failure tracking, correctness audit |
-| `phase2b7-overload-failure-mining` | current | Unit fix, overloaded sweep, multi-bin tests, failure registry |
+| `phase2b7-overload-failure-mining` | `992fe11` | Unit fix, overloaded sweep, multi-bin tests, failure registry |
+| `phase2b8-rule-selector-repair` | current | Rule selector repair: KV-pressure guard, noise guard, slo_slack_score for tight SLO |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -76,7 +77,22 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.7 — Unit Fix + Overloaded Failure Mining (current)
+### Phase 2B.8 — Rule Selector Repair Under KV Pressure (current)
+- **Root cause**: Phase 2B.7 showed Rule 1 (`tight_slo/min_slack → least_laxity_first`) fired for
+  all 3 differentiated workloads; LLF catastrophic under KV pressure (WG=0.101 vs WSP=0.477)
+- **Repair**: Three changes to `RuleBasedSelector.predict_one()`:
+  1. New Rule 1 (elevated): `mean_pred_output_tokens > 200 OR kv_utilization > 0.7 → weighted_shortest_processing`
+     (KV pressure proxy: large outputs fill KV cache; WSP avoids urgency-induced cascade)
+  2. New Rule 2: `pred_output_cv > 1.0 → admission_control`
+     (High noise: laxity estimates unreliable under 70%+ prediction noise)
+  3. Rule 4 (was Rule 1): tight SLO now → `slo_slack_score` instead of `least_laxity_first`
+     (composite urgency+throughput score; avoids LLF throughput collapse under overload)
+- **Policy choices reduced**: `_POLICY_CHOICES` from 7 to 6 (removed `vllm_style_token_budget` and `least_laxity_first`)
+- Tests: 32 rule selector tests pass (including 3 failure-case regression tests)
+- Total tests: 784 passing
+- Sweep: same 4 workloads × 19 policies × 3 seeds as Phase 2B.7 (apples-to-apples)
+
+### Phase 2B.7 — Unit Fix + Overloaded Failure Mining
 - **Unit fix**: `AdmissionControlPolicy._laxity()` now unit-consistent (seconds); `laxity_threshold` in seconds
 - New parameter `step_size=0.001` for service proxy → seconds conversion
 - **Multi-bin unit tests**: `tests/test_multi_bin_batching_policy.py` (18 tests)
@@ -245,14 +261,12 @@ includes genuinely-filtered infeasible requests — but the metrics don't distin
 
 ## Next Planned Tasks
 
-1. **Fix Rule 1 in rule_based selector** — `min_slack < 1.0s` too broad; add KV-pressure and
-   overload-level features to distinguish urgency from capacity bottleneck.
-2. **Experiment with `admission_control(threshold=0.0s)`** — run kv_pressure workload with
-   correct threshold; expected to reduce catastrophic WG loss.
+1. **Phase 2B.8 sweep analysis** — compare repaired rule selector against Phase 2B.7 baseline;
+   confirm 3 failure cases resolved; check if new failure cases emerge.
+2. **Re-evaluate trained RF/DT selectors** on Phase 2B.7/2B.8 workloads to compare with repaired rule selector.
 3. **Re-run overloaded_prefill_heavy** with higher arrival_rate (current=40 is underloaded).
-4. **Add real-trace workloads** (BurstGPT/ShareGPT) to overloaded sweep.
-5. **LLM escalation** (CloudRift/Cohere): synthesize improved rule conditions for the 3
-   identified failure patterns (kv_pressure, prediction_noise, mixed_slo overload).
-   Use API ledger to track. Limit: 1-2 calls per pattern.
-6. **Re-evaluate trained RF/DT selectors** on Phase 2B.7 workloads.
-7. **Optional:** Add CP-SAT oracle for micro-benchmark traces.
+4. **Experiment with `admission_control(threshold=0.0s)`** — run kv_pressure workload; expected to reduce catastrophic WG loss.
+5. **Add real-trace workloads** (BurstGPT/ShareGPT) to overloaded sweep.
+6. **Phase 2B.9** — Finalize modern external baselines and datasets for publication.
+7. **LLM escalation** (CloudRift/Cohere): if further rule improvement needed, synthesize updated
+   rules using remaining failure patterns. Use API ledger. Limit: 1-2 calls per pattern.

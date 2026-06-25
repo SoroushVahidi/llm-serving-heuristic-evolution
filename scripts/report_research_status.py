@@ -52,10 +52,32 @@ def gather_status() -> dict:
     # A genuine feature-based selector will return different policies for
     # different inputs; a placeholder always returns the same thing.
     rb = RuleBasedSelector()
-    tight_slo_pred = rb.predict_one({"fraction_tight_slo": 0.9, "min_slack": 0.1})
-    normal_pred    = rb.predict_one({"fraction_tight_slo": 0.0, "mean_pred_output_tokens": 20.0,
-                                     "pred_output_cv": 0.2})
+    tight_slo_pred = rb.predict_one({
+        "fraction_tight_slo": 0.9, "min_slack": 0.1,
+        "kv_utilization": 0.0, "mean_pred_output_tokens": 96.0, "pred_output_cv": 0.8,
+    })
+    normal_pred = rb.predict_one({"fraction_tight_slo": 0.0, "mean_pred_output_tokens": 20.0,
+                                  "pred_output_cv": 0.2})
     rule_based_is_fifo_placeholder = (tight_slo_pred == "fifo" and normal_pred == "fifo")
+
+    # --- Phase 2B.8: rule_based KV-pressure repair applied? ---
+    # Before repair: tight SLO → least_laxity_first (catastrophic under KV pressure).
+    # After repair:  KV pressure → weighted_shortest_processing; tight SLO → slo_slack_score.
+    kv_pressure_pred = rb.predict_one({
+        "fraction_tight_slo": 0.3, "min_slack": 0.8,
+        "kv_utilization": 0.0,
+        "mean_pred_output_tokens": 384.0,  # decode-heavy KV proxy
+        "pred_output_cv": 0.78,
+    })
+    tight_slo_no_kv_pred = rb.predict_one({
+        "fraction_tight_slo": 0.5, "min_slack": 0.4,
+        "kv_utilization": 0.0, "mean_pred_output_tokens": 96.0, "pred_output_cv": 0.87,
+    })
+    rule_based_kv_repair_applied = (
+        kv_pressure_pred == "weighted_shortest_processing"
+        and tight_slo_no_kv_pred != "least_laxity_first"
+    )
+    rule_based_tight_slo_policy = tight_slo_no_kv_pred  # should be slo_slack_score post-repair
 
     # --- selector models ---
     selector_models = ["rule_based"]
@@ -134,6 +156,8 @@ def gather_status() -> dict:
         "admission_control_unit_fixed": admission_control_unit_fixed,
         "multi_bin_tests_exist": multi_bin_tests_exist,
         "rule_based_is_fifo_placeholder": rule_based_is_fifo_placeholder,
+        "rule_based_kv_repair_applied": rule_based_kv_repair_applied,
+        "rule_based_tight_slo_policy": rule_based_tight_slo_policy,
         "failure_cases": {
             "count": num_failure_cases,
             "registry_path": str(_fc_path.relative_to(_repo_root)) if _fc_path.exists() else None,
@@ -180,6 +204,10 @@ def print_text_report(status: dict) -> None:
 
     rb = status["rule_based_is_fifo_placeholder"]
     print(f"rule_based is FIFO-only placeholder: {'YES (STALE)' if rb else 'NO (feature-based)'}")
+
+    kv_rep = status.get("rule_based_kv_repair_applied", False)
+    print(f"rule_based Phase 2B.8 KV-pressure repair applied: {'YES' if kv_rep else 'NO (old LLF routing)'}")
+    print(f"  tight-SLO (no KV pressure) routes to: {status.get('rule_based_tight_slo_policy', 'unknown')}")
 
     inv = status["invariants"]
     print(f"\nInvariants:")

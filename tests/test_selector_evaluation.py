@@ -28,24 +28,30 @@ def _rows(policies: list, wg_map: dict, n: int = 10) -> list:
 # --- evaluate_selector ---
 
 def test_evaluate_accuracy_perfect():
-    """Perfect accuracy when all labels match the selector's predictions."""
+    """Perfect accuracy when all labels match the selector's predictions.
+
+    Phase 2B.8: tight-SLO now routes to slo_slack_score (not least_laxity_first).
+    """
     rb = RuleBasedSelector()
-    # Build rows whose best_policy matches what the rule selector will predict
-    # For tight-SLO features, rule selector returns "least_laxity_first"
+    # Build rows whose best_policy matches what the rule selector will predict.
+    # For tight-SLO features (no KV pressure, low noise), rule selector returns "slo_slack_score".
     rows = []
     for i in range(10):
         row = {
-            "best_policy": "least_laxity_first",
+            "best_policy": "slo_slack_score",
             "best_weighted_goodput": 0.9,
             "trace_id": f"t{i}",
-            "feat_fraction_tight_slo": 0.9,  # triggers Rule 1
+            "feat_fraction_tight_slo": 0.9,  # triggers Rule 4 (tight SLO)
             "feat_min_slack": 0.1,
+            "feat_kv_utilization": 0.0,       # no KV pressure
+            "feat_mean_pred_output_tokens": 96.0,  # not decode-heavy
+            "feat_pred_output_cv": 0.8,        # low noise (< 1.0)
         }
         for fname in FEATURE_NAMES:
             if f"feat_{fname}" not in row:
                 row[f"feat_{fname}"] = 0.0
         for pname in SELECTOR_CANDIDATES:
-            row[f"reward_{pname}"] = 0.9 if pname == "least_laxity_first" else 0.5
+            row[f"reward_{pname}"] = 0.9 if pname == "slo_slack_score" else 0.5
         rows.append(row)
     m = evaluate_selector(rb, rows)
     assert m["accuracy"] == pytest.approx(1.0)
@@ -75,23 +81,30 @@ def test_evaluate_returns_confusion():
 
 
 def test_evaluate_n_correct():
-    """n_correct counts correct predictions for 8 rows."""
+    """n_correct counts correct predictions for 8 rows.
+
+    Phase 2B.8: tight-SLO now routes to slo_slack_score (not least_laxity_first).
+    """
     rb = RuleBasedSelector()
-    # All rows have tight-SLO features → rule selector picks "least_laxity_first"
+    # All rows have tight-SLO features (no KV pressure, low noise) →
+    # rule selector picks "slo_slack_score" after Phase 2B.8 repair.
     rows = []
     for i in range(8):
         row = {
-            "best_policy": "least_laxity_first",
+            "best_policy": "slo_slack_score",
             "best_weighted_goodput": 0.9,
             "trace_id": f"t{i}",
             "feat_fraction_tight_slo": 0.9,
             "feat_min_slack": 0.1,
+            "feat_kv_utilization": 0.0,
+            "feat_mean_pred_output_tokens": 96.0,
+            "feat_pred_output_cv": 0.8,
         }
         for fname in FEATURE_NAMES:
             if f"feat_{fname}" not in row:
                 row[f"feat_{fname}"] = 0.0
         for pname in SELECTOR_CANDIDATES:
-            row[f"reward_{pname}"] = 0.9 if pname == "least_laxity_first" else 0.5
+            row[f"reward_{pname}"] = 0.9 if pname == "slo_slack_score" else 0.5
         rows.append(row)
     m = evaluate_selector(rb, rows)
     assert m["n_correct"] == 8

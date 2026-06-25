@@ -137,3 +137,43 @@ def test_json_api_ledger_section():
     al = data["api_ledger"]
     assert "entries" in al
     assert "is_empty" in al
+
+
+# -------------------------------------------------------------------------
+# Phase 2B.8: rule selector KV-pressure repair detection
+# -------------------------------------------------------------------------
+
+def test_json_rule_based_kv_repair_applied():
+    """Phase 2B.8: rule_based selector should have KV-pressure repair applied."""
+    result = _run(["--json"])
+    assert result.returncode == 0, result.stderr
+    data = json.loads(result.stdout)
+    assert "rule_based_kv_repair_applied" in data, (
+        "report_research_status.py missing rule_based_kv_repair_applied field"
+    )
+    assert data["rule_based_kv_repair_applied"] is True, (
+        "rule_based KV-pressure repair not applied: kv_pressure_decode_heavy features "
+        "should route to weighted_shortest_processing, not least_laxity_first"
+    )
+
+
+def test_json_tight_slo_not_routed_to_llf():
+    """Phase 2B.8: tight SLO (no KV pressure) must NOT route to least_laxity_first."""
+    result = _run(["--json"])
+    data = json.loads(result.stdout)
+    tight_slo_policy = data.get("rule_based_tight_slo_policy", "unknown")
+    assert tight_slo_policy != "least_laxity_first", (
+        f"Tight-SLO policy still routes to least_laxity_first — Phase 2B.8 repair not applied. "
+        f"Expected slo_slack_score, got {tight_slo_policy}"
+    )
+    assert tight_slo_policy == "slo_slack_score", (
+        f"Tight-SLO policy should be slo_slack_score after Phase 2B.8 repair, got {tight_slo_policy}"
+    )
+
+
+def test_text_output_kv_repair_mentioned():
+    """Phase 2B.8: text report should mention the KV-pressure repair."""
+    result = _run()
+    assert "Phase 2B.8" in result.stdout or "KV" in result.stdout or "kv" in result.stdout.lower(), (
+        "Text report doesn't mention Phase 2B.8 KV repair"
+    )

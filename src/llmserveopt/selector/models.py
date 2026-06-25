@@ -26,39 +26,60 @@ from .features import FEATURE_NAMES
 
 
 class RuleBasedSelector:
-    """Deterministic feature-based rule selector.
+    """Deterministic feature-based rule selector (Phase 2B.8 repair).
 
     Chooses among deployable scheduling policies using a hand-coded decision
     tree over workload feature values.  No training required.  Fully
     deterministic: same features always produce the same policy choice.
 
+    Phase 2B.8 change summary
+    -------------------------
+    Phase 2B.7 found that the original Rule 1 (tight-SLO → least_laxity_first)
+    fired for ALL overloaded workloads, causing catastrophic WG losses:
+      - kv_pressure_decode_heavy:   LLF WG=0.101 vs WSP WG=0.477 (−0.376)
+      - high_prediction_noise:      LLF WG=0.584 vs AC  WG=0.988 (−0.404)
+      - overloaded_mixed_slo:       LLF WG=0.474 vs SLO WG=0.905 (−0.431)
+
+    Repair: add two guard rules BEFORE the tight-SLO dispatch:
+      R1. Decode-heavy workload (large mean_pred_output) → weighted_shortest_processing
+          Proxy for KV saturation in offline mode (kv_utilization unavailable).
+          Also triggers on kv_utilization > 0.7 in online deployments.
+      R2. High output prediction noise (pred_output_cv > 1.0) → admission_control
+          Under noisy service estimates, laxity ranking is unreliable.
+    Replace least_laxity_first in the tight-SLO rule with slo_slack_score, which
+    is a composite urgency+throughput score that generalises better under overload.
+
     Rules (in priority order)
     -------------------------
-    1. Tight-SLO / urgent regime
-       fraction_tight_slo > 0.4 OR min_slack < 1.0
-       → least_laxity_first  (laxity-based urgency handles SLO pressure best)
+    1. Decode-heavy / KV-pressure proxy
+       mean_pred_output_tokens > 200 OR kv_utilization > 0.7
+       → weighted_shortest_processing  (short-job-first frees KV slots quickly)
 
-    2. Recent SLO violations are high
+    2. High output prediction noise
+       pred_output_cv > 1.0
+       → admission_control  (urgency-sorted; robust when laxity estimates unreliable)
+
+    3. Recent SLO violations are high
        recent_slo_violation_rate > 0.3
        → admission_control  (filter likely-to-miss requests early)
 
-    3. High KV utilization (memory pressure)
-       kv_utilization > 0.7
-       → vllm_style_token_budget  (KV-budget-aware admission)
+    4. Tight-SLO / urgent regime (with KV pressure already ruled out)
+       fraction_tight_slo > 0.4 OR min_slack < 1.0
+       → slo_slack_score  (composite urgency+throughput; avoids LLF cascade under overload)
 
-    4. Prefill-heavy workload (large prompts)
+    5. Prefill-heavy workload (large prompts)
        mean_prompt_tokens > 512 OR p95_prompt_tokens > 1024
        → sarathi_style  (stall-free chunked prefill handles large prompts)
 
-    5. Short, low-variance outputs (SJF regime)
+    6. Short, low-variance outputs (SJF regime)
        mean_pred_output_tokens < 64 AND pred_output_cv < 0.5
        → estimated_service_time_first  (SJF proxy works well for uniform short jobs)
 
-    6. Bursty arrivals (high burstiness CV)
+    7. Bursty arrivals (high burstiness CV)
        burstiness_cv > 1.5
        → slo_slack_score  (composite urgency handles bursty overload)
 
-    7. Moderate mixed workload
+    8. Moderate mixed workload
        → edf  (safe, SLO-aware default for general workloads)
 
     All policy names in use are verified to be in SELECTOR_CANDIDATES at
@@ -69,12 +90,11 @@ class RuleBasedSelector:
 
     # All policies this selector may recommend — verified at class definition.
     _POLICY_CHOICES = [
-        "least_laxity_first",
+        "weighted_shortest_processing",
         "admission_control",
-        "vllm_style_token_budget",
+        "slo_slack_score",
         "sarathi_style",
         "estimated_service_time_first",
-        "slo_slack_score",
         "edf",
     ]
 
@@ -115,31 +135,44 @@ class RuleBasedSelector:
         pred_output_cv        = g(features, "pred_output_cv", 1.0)
         burstiness_cv         = g(features, "burstiness_cv", 0.0)
 
-        # Rule 1: tight SLO / urgency
-        if fraction_tight_slo > 0.4 or min_slack < 1.0:
-            return "least_laxity_first"
+        # Rule 1: decode-heavy / KV-pressure proxy (Phase 2B.8 guard)
+        # Large mean output → requests hold KV slots longest; urgency-based scheduling
+        # (LLF) promotes the worst offenders, cascading into KV saturation (WG=0.101).
+        # Use WSP instead: short-job-first frees slots quickly.
+        # kv_utilization guard also fires in online deployments where it is available.
+        if mean_pred_output > 200 or kv_utilization > 0.7:
+            return "weighted_shortest_processing"
 
-        # Rule 2: recent SLO violations — admission control
+        # Rule 2: high output prediction noise (Phase 2B.8 guard)
+        # pred_output_cv > 1.0 signals that service estimates are unreliable (noisy
+        # predictions). LLF's laxity ranking degrades under high noise; admission_control
+        # with urgency sort is more robust.
+        if pred_output_cv > 1.0:
+            return "admission_control"
+
+        # Rule 3: recent SLO violations — admission control
         if recent_violation_rate > 0.3:
             return "admission_control"
 
-        # Rule 3: memory pressure
-        if kv_utilization > 0.7:
-            return "vllm_style_token_budget"
+        # Rule 4: tight SLO / urgency (Phase 2B.8: uses slo_slack_score, not LLF)
+        # slo_slack_score is a composite urgency+throughput score; unlike LLF (pure
+        # urgency), it avoids throughput collapse under queue build-up.
+        if fraction_tight_slo > 0.4 or min_slack < 1.0:
+            return "slo_slack_score"
 
-        # Rule 4: prefill-heavy
+        # Rule 5: prefill-heavy
         if mean_prompt > 512 or p95_prompt > 1024:
             return "sarathi_style"
 
-        # Rule 5: short uniform outputs — SJF regime
+        # Rule 6: short uniform outputs — SJF regime
         if mean_pred_output < 64 and pred_output_cv < 0.5:
             return "estimated_service_time_first"
 
-        # Rule 6: bursty arrivals
+        # Rule 7: bursty arrivals
         if burstiness_cv > 1.5:
             return "slo_slack_score"
 
-        # Rule 7: safe general default
+        # Rule 8: safe general default
         return "edf"
 
     def predict(self, features: List[Dict[str, float]]) -> List[str]:

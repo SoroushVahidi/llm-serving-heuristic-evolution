@@ -14,14 +14,14 @@ The selector does **not** create new heuristics.  It chooses, at the granularity
 
 ## Selector candidate set
 
-All 18 online-deployable baselines registered in `BASELINE_NAMES` (from `llmserveopt/policies/registry.py`) minus any entry in `ORACLE_POLICY_NAMES`.
+All 19 online-deployable baselines registered in `BASELINE_NAMES` (from `llmserveopt/policies/registry.py`) minus any entry in `ORACLE_POLICY_NAMES`.
 
 ```
 fifo, edf, shortest_output_first, shortest_prompt_first,
 greedy_token_fill, least_loaded, multi_bin_batching, random_feasible,
 orca_style, vllm_style_token_budget, sarathi_style, splitfuse_style,
 slo_slack_score, weighted_shortest_processing, first_fit, best_fit,
-least_laxity_first, estimated_service_time_first
+least_laxity_first, estimated_service_time_first, admission_control
 ```
 
 Source of truth: `src/llmserveopt/selector/candidates.py`.
@@ -68,9 +68,37 @@ Tie-breaking (in order):
 
 | Model | Use |
 |-------|-----|
-| `RuleBasedSelector` | Deterministic feature-based dispatch (Phase 2B.5+). Chooses among 7 policies using workload features; no training required. **Was FIFO-only placeholder before Phase 2B.5 — no longer.** |
+| `RuleBasedSelector` | Deterministic feature-based dispatch. **Was FIFO-only placeholder before Phase 2B.5; repaired in Phase 2B.8 (KV-pressure guard + noise guard).** Is a baseline/adaptive method, not an oracle. Uses only online-observable features — no `actual_output_tokens`. See [Phase 2B.8 rule change](#phase-2b8-rule-selector-repair) below. |
 | `DecisionTreeSelector` | `max_depth=8, min_samples_leaf=20` — interpretable |
 | `RandomForestSelector` | `n_estimators=200, max_depth=10` — main v1 selector |
+
+## Phase 2B.8 Rule Selector Repair
+
+**Phase 2B.7 finding:** Rule 1 (`fraction_tight_slo > 0.4 OR min_slack < 1.0 → least_laxity_first`)
+fired for ALL overloaded workloads, producing catastrophic WG loss in 3 of 4 test regimes:
+
+| Failure | WG (old LLF) | WG (best fixed) | Delta |
+|---|---|---|---|
+| overloaded_mixed_slo | 0.474 | 0.905 (slo_slack_score) | −0.431 |
+| high_prediction_noise | 0.584 | 0.988 (admission_control) | −0.404 |
+| kv_pressure_decode_heavy | 0.101 | 0.477 (weighted_shortest_processing) | −0.376 |
+
+**Phase 2B.8 repair:** Three changes to `RuleBasedSelector.predict_one()` (in rule priority order):
+
+1. **Rule 1 (new, elevated):** `mean_pred_output_tokens > 200 OR kv_utilization > 0.7`
+   → `weighted_shortest_processing`
+   *KV pressure proxy: large outputs fill KV slots longest; WSP is short-job-first, which frees KV quickly. `kv_utilization` is available in online deployments; `mean_pred_output_tokens` works offline.*
+
+2. **Rule 2 (new):** `pred_output_cv > 1.0`
+   → `admission_control`
+   *High prediction noise (CV > 1.0 indicates 70%+ noise): laxity estimates unreliable; AC with urgency sort is more robust.*
+
+3. **Rule 4 (modified):** `fraction_tight_slo > 0.4 OR min_slack < 1.0`
+   → `slo_slack_score` (was `least_laxity_first`)
+   *Composite urgency+throughput score; avoids LLF throughput collapse under queue build-up.*
+
+The selector uses only online-observable features and remains deterministic.
+Any remaining failure cases will drive either modern baseline additions or LLM-assisted rule synthesis in future phases.
 
 ## Window construction
 

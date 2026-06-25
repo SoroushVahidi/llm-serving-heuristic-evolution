@@ -20,7 +20,9 @@ and routes to `least_laxity_first`, which performs poorly in high-overload regim
 | fail_002 | high_prediction_noise | `least_laxity_first` | 0.584 | `admission_control` | 0.988 | **−0.404** |
 | fail_003 | kv_pressure_decode_heavy | `least_laxity_first` | 0.101 | `weighted_shortest_processing` | 0.477 | **−0.376** |
 
-**Status:** All 3 unresolved. No LLM escalation in this phase.
+**Phase 2B.7 Status:** All 3 unresolved when filed. No LLM escalation in Phase 2B.7.  
+**Phase 2B.8 Status:** ✓ All 3 resolved by rule selector repair (`phase2b8-rule-selector-repair`).  
+See `docs/audits/phase2b8_rule_selector_repair_summary.md` for details.
 
 ---
 

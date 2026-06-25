@@ -1,0 +1,134 @@
+# Phase 2B.8 Rule Selector Repair: same workloads/seeds as Phase 2B.7 for apples-to-apples comparison.
+# Tests the repaired RuleBasedSelector (KV-pressure guard + noise guard + slo_slack_score for tight SLO).
+# All 19 deployable policies. DO NOT include oracle_srtf.
+# Results → results/phase2b8_rule_selector_repair/
+experiment: phase2b8_rule_selector_repair
+
+simulator:
+  step_size: 0.001
+  drain_steps: 50000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+workloads:
+  # Regime 1: Overloaded mixed-SLO (fail_001 regime)
+  - tag: overloaded_mixed_slo
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 15.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.15}
+
+  # Regime 2: High prediction noise (fail_002 regime)
+  - tag: high_prediction_noise
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 15.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.70
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  # Regime 3: Prefill-heavy with overload (was underloaded in Phase 2B.7; unchanged for comparison)
+  - tag: overloaded_prefill_heavy
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 15.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  # Regime 4: KV-pressure / decode-heavy (fail_003 regime)
+  - tag: kv_pressure_decode_heavy
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 15.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+      - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+policies:
+  - fifo
+  - edf
+  - shortest_output_first
+  - shortest_prompt_first
+  - greedy_token_fill
+  - least_loaded
+  - multi_bin_batching
+  - random_feasible
+  - first_fit
+  - best_fit
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - slo_slack_score
+  - weighted_shortest_processing
+  - least_laxity_first
+  - estimated_service_time_first
+  - admission_control
+
+seeds: [0, 1, 2]
+
+output:
+  save_figures: false
+  save_latex: false
+  verbose: true
