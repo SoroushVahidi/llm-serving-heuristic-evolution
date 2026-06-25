@@ -103,3 +103,80 @@ def test_metrics_to_dict_no_nan():
     for k, v in d.items():
         if isinstance(v, float):
             assert not math.isnan(v), f"NaN in metrics_to_dict key={k}"
+
+
+# -------------------------------------------------------------------------
+# completion_fraction and num_total tests
+# -------------------------------------------------------------------------
+
+def test_completion_fraction_all_complete():
+    completed = [_make_completed(i, arrival=0.0, admission=0.0, completion=1.0) for i in range(5)]
+    m = compute_metrics(
+        completed=completed, dropped=[], sim_duration=2.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=5,
+    )
+    assert m.num_total == 5
+    assert m.completion_fraction == pytest.approx(1.0)
+
+
+def test_completion_fraction_partial():
+    completed = [_make_completed(i, arrival=0.0, admission=0.0, completion=1.0) for i in range(3)]
+    dropped = [object(), object()]  # 2 dropped stubs
+    m = compute_metrics(
+        completed=completed, dropped=dropped, sim_duration=2.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=10,
+    )
+    assert m.num_total == 10
+    assert m.num_completed == 3
+    assert m.completion_fraction == pytest.approx(0.3)
+
+
+def test_completion_fraction_none_complete():
+    m = compute_metrics(
+        completed=[], dropped=[], sim_duration=1.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=4,
+    )
+    assert m.num_total == 4
+    assert m.completion_fraction == pytest.approx(0.0)
+
+
+def test_completion_fraction_fallback_when_no_num_total():
+    """When num_total=0, falls back to num_completed + num_dropped."""
+    completed = [_make_completed(i, arrival=0.0, admission=0.0, completion=1.0) for i in range(2)]
+    dropped = [object()]
+    m = compute_metrics(
+        completed=completed, dropped=dropped, sim_duration=2.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=0,
+    )
+    assert m.num_total == 3  # 2 completed + 1 dropped
+    assert m.completion_fraction == pytest.approx(2 / 3)
+
+
+def test_completion_fraction_in_metrics_to_dict():
+    completed = [_make_completed(i, arrival=0.0, admission=0.0, completion=1.0) for i in range(4)]
+    m = compute_metrics(
+        completed=completed, dropped=[], sim_duration=2.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=8,
+    )
+    d = metrics_to_dict(m)
+    assert "completion_fraction" in d
+    assert d["completion_fraction"] == pytest.approx(0.5)
+    assert "num_total" in d
+    assert d["num_total"] == 8
+
+
+def test_completion_fraction_zero_num_total():
+    """num_total=0 with no completions/drops → NaN fraction, num_total fallback=0."""
+    m = compute_metrics(
+        completed=[], dropped=[], sim_duration=1.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=0,
+    )
+    # fallback: num_total = 0+0 = 0; fraction = NaN
+    assert m.num_total == 0
+    assert math.isnan(m.completion_fraction)

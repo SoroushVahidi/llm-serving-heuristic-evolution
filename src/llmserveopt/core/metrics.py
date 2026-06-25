@@ -29,6 +29,10 @@ class RunMetrics:
     num_completed: int = 0
     num_dropped: int = 0
     num_slo_violated: int = 0
+    # Total arrivals in the trace (num_completed + num_dropped + active-at-end)
+    num_total: int = 0
+    # Fraction of trace requests that completed: num_completed / num_total
+    completion_fraction: float = float("nan")
 
     # End-to-end latency (arrival → completion)
     mean_latency: float = float("nan")
@@ -98,11 +102,16 @@ def compute_metrics(
     policy_decision_times: Optional[List[float]] = None,
     wall_clock_s: float = float("nan"),
     idle_steps_skipped: int = 0,
+    num_total: int = 0,
 ) -> RunMetrics:
     m = RunMetrics(policy_name=policy_name, workload_tag=workload_tag, seed=seed)
     m.num_completed = len(completed)
     m.num_dropped = len(dropped)
     m.sim_duration = sim_duration
+    m.num_total = num_total if num_total > 0 else (m.num_completed + m.num_dropped)
+    m.completion_fraction = (
+        m.num_completed / m.num_total if m.num_total > 0 else float("nan")
+    )
     m.wall_clock_s = wall_clock_s
 
     if completed:
@@ -185,6 +194,8 @@ def metrics_to_dict(m: RunMetrics) -> Dict:
         "num_completed":             m.num_completed,
         "num_dropped":               m.num_dropped,
         "num_slo_violated":          m.num_slo_violated,
+        "num_total":                 m.num_total,
+        "completion_fraction":       _fmt(m.completion_fraction),
         "mean_latency":              _fmt(m.mean_latency),
         "median_latency":            _fmt(m.median_latency),
         "p95_latency":               _fmt(m.p95_latency),

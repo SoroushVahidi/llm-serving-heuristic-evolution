@@ -199,6 +199,7 @@ class Simulator:
             policy_decision_times=self._policy_times,
             wall_clock_s=wall_elapsed,
             idle_steps_skipped=self._idle_skipped,
+            num_total=n_arrivals,
         )
 
     # ------------------------------------------------------------------
