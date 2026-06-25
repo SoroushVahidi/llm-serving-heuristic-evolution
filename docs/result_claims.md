@@ -94,6 +94,33 @@ Do NOT make the following claims without additional validation:
 6. **TTFT under Phase 1**: When `enable_prefill_modeling=False`, TTFT measures queuing
    delay + first decode step only.  It does not reflect real-world prefill latency.
 
+## Safe claims (Phase 2A.4 — selector hardening)
+
+- "We train policy selectors on 30 windows (train) and evaluate on 9 held-out windows (test), all with 18 candidate policies."
+- "The Decision Tree and Random Forest selectors each achieve +3.0 pp weighted goodput over the best single fixed policy on the held-out test split."
+- "Test trace (`burstgpt_scaled_high_10k.jsonl`) is absent from all train and validation configs."
+
+## Safe claims (Phase 2B.4 — LLM heuristic final evaluation)
+
+Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calibrated simulator and held-out workload regimes."
+
+- "We select a frozen shortlist of 7 heuristics using only train+validation data, then evaluate once on 3 held-out test regimes."
+- "`slo_kv_balance_heuristic` achieves a mean priority-weighted SLO goodput of 0.9595 across the 3 held-out test regimes, compared to 0.8602 for the best fixed baseline (`weighted_shortest_processing`)."
+- "The 95% bootstrap CI for the improvement of `slo_kv_balance_heuristic` vs best fixed is [0.00, 0.27] (3 regimes, n=2000 bootstrap replicates). The CI is wide due to the small number of held-out regimes."
+- "On the `test_very_overloaded` regime, `slo_kv_balance_heuristic` completed only 1240 of 2119 requests, achieving high goodput by selective request handling. Other heuristics and baselines completed all 2119 requests."
+- "6 of 7 shortlisted heuristics achieve lower mean WG than the best fixed baseline on held-out test regimes, indicating the heuristics generalize well to moderate conditions but not extreme overload without selective admission."
+- "oracle_srtf achieves mean WG=0.855 on test regimes. It is non-deployable (uses actual output tokens). SRTF is not optimal for priority-weighted SLO goodput; a deployable heuristic that also acts as a selective admission controller can exceed oracle_srtf on this metric."
+
+## Unsafe claims (Phase 2A.4/2B.4)
+
+| Claim | Why unsafe |
+|---|---|
+| "The LLM scheduler beats production vLLM" | All results are in the calibrated simulator, not production vLLM |
+| "slo_kv_balance_heuristic significantly outperforms all baselines" | CI [0.00, 0.27] does not cross zero but is very wide (3 test regimes only) |
+| "LLM-generated heuristics consistently outperform baselines" | Only 1/7 shortlisted heuristics outperforms best fixed on held-out test |
+| "The selector generalizes to arbitrary workloads" | Evaluated on calibrated synthetic and BurstGPT regimes only |
+| "oracle_srtf is a tight upper bound" | SRTF minimizes latency, not priority-weighted SLO goodput; it is not tight on this metric |
+
 ## How to harden claims for Phase 2+
 
 - Validate against real vLLM / Sarathi / DeepSpeed-FastGen serving traces

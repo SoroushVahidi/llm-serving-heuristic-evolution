@@ -1,0 +1,39 @@
+# Phase 2B.4 — Shortlist selection using train/validation only
+#
+# This config documents which regimes are used for shortlist selection.
+# The actual evaluation uses the hard-coded TRAIN_REGIMES + VALIDATION_REGIMES
+# in src/llmserveopt/llm_generation/multi_regime_evaluation.py.
+#
+# Usage (shortlist selection):
+#   python scripts/evaluate_multi_regime.py \
+#       --candidates-dir results/phase2b3_llm_search/candidates_main \
+#       --output-dir results/phase2a4_2b4_final_eval/llm_train_validation_eval \
+#       --split train_validation --all-baselines
+#
+# Shortlist selection rule (applied BEFORE test evaluation):
+#   - Top 5 by validation priority_weighted_slo_goodput
+#   - +1 with smallest train-validation gap among candidates within 1% of best val result
+#   - +1 simplest high-performing DSL candidate (fewest branches/conditions)
+#
+# Test regimes are NOT included here. Held-out evaluation happens in
+# configs/llm_generation/phase2b4_final_heldout_test.yaml.
+
+evaluation:
+  objective: priority_weighted_slo_goodput
+  split_policy:
+    tune_on: train_validation_only
+    holdout_test: true
+  splits_used:
+    - train_poisson_moderate
+    - train_bursty_moderate
+    - train_overloaded
+    - train_mixed_slo
+    - val_prefill_heavy
+    - val_decode_heavy
+    - val_noisy_predictions
+
+notes:
+  - Shortlist selected using train/validation only
+  - Held-out test results NOT inspected before shortlist is frozen
+  - oracle_srtf excluded from all deployable comparisons
+  - 22 verified candidates from Phase 2B.3 candidates_main

@@ -7,10 +7,11 @@ heuristics for online LLM inference serving. It provides a GPU-calibrated discre
 simulator, a suite of 18 baseline policies, real-trace replay against BurstGPT arrival
 data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
 
-> **Current status:** Phase 2B.3 complete. Simulator, 18 baselines, GPU calibration,
-> real-trace replay, selector (Phase 2A.2–2A.3), DSL/verifier stack (Phase 2B.1),
-> offline LLM generation loop (Phase 2B.2), and controlled LLM heuristic search
-> with multi-regime evaluation (Phase 2B.3) are all finalized and committed.
+> **Current status:** Phase 2A.4/2B.4 complete. All components finalized: simulator,
+> 18 baselines, GPU calibration, real-trace replay, 18-policy selector (Phase 2A.4),
+> DSL/verifier stack (Phase 2B.1), offline LLM generation loop (Phase 2B.2),
+> controlled LLM heuristic search (Phase 2B.3), and final held-out evaluation with
+> bootstrap CIs and shortlist freeze (Phase 2A.4/2B.4). 656 tests pass.
 > See [docs/roadmap.md](docs/roadmap.md).
 
 ---
@@ -55,11 +56,12 @@ See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal de
 | `weighted_goodput` / `priority_weighted_slo_goodput` metric | Complete | Priority-weighted SLO goodput; both names present in metric dicts |
 | TTFT reporting | Complete | `mean_ttft`, `p95_ttft` in all summary CSVs |
 | oracle_srtf wiring | Complete | Non-deployable hindsight upper bound; separated from online baselines |
-| Selector (Phase 2A.2–2A.3) | Complete | RF beats best fixed +3% WG on test split |
+| Selector (Phase 2A.4) | Complete | RF/DT beat best fixed +3.0 pp WG on test split (18 policies, 52 windows) |
 | 2A.3B hardened baselines (LLF + ESTF) | Complete | 18 policies; `priority_weighted_slo_goodput` alias |
 | LLM heuristic DSL + verifier (Phase 2B.1) | Complete | Safe expression tree; 16 error codes; 4 examples |
 | LLM generation loop (Phase 2B.2) | Complete | Mock + CloudRift/Cohere/Mistral; verify → repair → evaluate pipeline |
-| Controlled LLM heuristic search (Phase 2B.3) | Complete | 7 design targets; multi-regime train/val eval; best heuristic beats EDF by +0.08% WG |
+| Controlled LLM heuristic search (Phase 2B.3) | Complete | 7 design targets; multi-regime train/val eval; 22 verified candidates |
+| Final held-out evaluation (Phase 2B.4) | Complete | 7-heuristic frozen shortlist; 3 held-out test regimes; bootstrap CIs |
 
 ---
 
@@ -87,11 +89,11 @@ python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt
 ## Running tests
 
 ```bash
-pytest                    # all 601 tests
+pytest                    # all 656 tests
 pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
 ```
 
-All 601 tests pass on the current commit.
+All 656 tests pass on the current commit.
 
 ---
 
@@ -202,7 +204,7 @@ src/llmserveopt/
 scripts/         # CLI entry points (see scripts/README.md)
 configs/         # YAML experiment configs (see configs/README.md)
 docs/            # Design docs, milestones, claims, roadmap (see docs/README.md)
-tests/           # pytest suite (557 tests)
+tests/           # pytest suite (656 tests)
 data/            # Local datasets — not committed (see data/README.md)
 results/         # Experiment outputs — not committed (see results/.gitkeep)
 ```
@@ -232,9 +234,11 @@ are stored in `results/gpu_calibration/service_curves.json` (local only).
 - "SLOs, priorities, and predicted output lengths are synthetically augmented."
 - "Service curves are calibrated on an RTX 5060 Ti running Qwen2.5-0.5B."
 - "Serving-style baselines are original implementations inspired by, not reproductions of, the cited systems."
+- "We evaluate LLM-generated deterministic heuristics under a calibrated simulator and held-out workload regimes."
 
 Do not claim: production vLLM reproduction, exact production latency, generalization
-beyond the RTX 5060 Ti + Qwen2.5-0.5B calibration point.
+beyond the RTX 5060 Ti + Qwen2.5-0.5B calibration point, or that LLM heuristics
+conclusively outperform all baselines (the CI is wide; only 1/7 heuristics clearly wins).
 
 See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_claims.md](docs/gpu_validation_claims.md).
 
@@ -255,6 +259,7 @@ See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_clai
 | 2B.1 | LLM heuristic DSL + verifier + policy wrapper | Complete |
 | 2B.2 | LLM offline heuristic generation loop | Complete |
 | 2B.3 | Controlled LLM heuristic search (multi-regime eval) | Complete |
+| 2A.4/2B.4 | Final evaluation hardening (shortlist freeze, held-out test, bootstrap CIs) | Complete |
 | 4 | LLM evolution loop (full) | Not started |
 | 5 | Shifted-workload evaluation + paper write-up | Not started |
 

@@ -1,0 +1,72 @@
+# Phase 2A.4 VALIDATION dataset — full 18-policy selector
+# Used for hyperparameter tuning and early stopping. Not used as final test.
+# DO NOT use these regimes for training or for shortlist selection on test.
+
+seed: 3
+window_size: 200
+feature_mode: online_prefix
+verbose: false
+
+simulator:
+  step_size: 0.001
+  drain_steps: 10000
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 512
+    max_kv_tokens: 8192
+
+workloads:
+  # --- Prefill-heavy synthetic: prompt-aware policies matter (2 windows) ---
+  - tag: val_prefill_heavy_s3
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 5.5
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 20.0
+    output_sigma: 0.5
+    output_low: 2
+    output_high: 128
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.6,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: val_prefill_heavy_s4
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 5.5
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 20.0
+    output_sigma: 0.5
+    output_low: 2
+    output_high: 128
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.6,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  # --- BurstGPT moderate noise070: real-trace with 7% noise (5 windows) ---
+  - tag: val_burstgpt_noise070
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_moderate_noise070.jsonl
+    max_requests: 1000
+
+  # --- BurstGPT natural calibrated: baseline natural-rate regime (5 windows) ---
+  - tag: val_burstgpt_natural
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+    max_requests: 1000

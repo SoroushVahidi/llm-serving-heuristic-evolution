@@ -136,12 +136,63 @@ VALIDATION_REGIMES: List[RegimeSpec] = [
     ),
 ]
 
+TEST_REGIMES: List[RegimeSpec] = [
+    # Held-out: very high load + high noise (hardest overload condition)
+    RegimeSpec(
+        name="test_very_overloaded",
+        split="test",
+        workload=WorkloadConfig(
+            arrival_process="poisson", arrival_rate=35.0, duration=60.0,
+            prompt_mean=256.0, output_mean=128.0,
+            prediction_noise_rel=0.30,
+            slo_classes=_tight_slo_classes(),
+            tag="test_very_overloaded",
+        ),
+        seed=200,
+    ),
+    # Held-out: extreme burst factor (far beyond train_bursty burst_factor=4)
+    RegimeSpec(
+        name="test_extreme_bursty",
+        split="test",
+        workload=WorkloadConfig(
+            arrival_process="bursty", arrival_rate=25.0, duration=60.0,
+            prompt_mean=256.0, output_mean=128.0,
+            burst_factor=8.0, burst_fraction=0.25,
+            prediction_noise_rel=0.25,
+            slo_classes=_mixed_slo_classes(),
+            tag="test_extreme_bursty",
+        ),
+        seed=201,
+    ),
+    # Held-out: very high prediction noise (0.50 vs 0.35 max in train/val)
+    RegimeSpec(
+        name="test_high_noise",
+        split="test",
+        workload=WorkloadConfig(
+            arrival_process="poisson", arrival_rate=15.0, duration=60.0,
+            prompt_mean=256.0, output_mean=128.0,
+            prediction_noise_rel=0.50,
+            slo_classes=_mixed_slo_classes(),
+            tag="test_high_noise",
+        ),
+        seed=202,
+    ),
+]
+
 DEFAULT_REGIMES = TRAIN_REGIMES + VALIDATION_REGIMES
 
 DEFAULT_BASELINES = [
     "fifo", "edf", "least_laxity_first", "estimated_service_time_first",
     "shortest_output_first", "slo_slack_score", "vllm_style_token_budget",
     "sarathi_style", "splitfuse_style", "best_fit",
+]
+
+ALL_BASELINES = [
+    "fifo", "edf", "shortest_output_first", "shortest_prompt_first",
+    "greedy_token_fill", "least_loaded", "multi_bin_batching", "random_feasible",
+    "first_fit", "best_fit", "orca_style", "vllm_style_token_budget",
+    "sarathi_style", "splitfuse_style", "slo_slack_score",
+    "weighted_shortest_processing", "least_laxity_first", "estimated_service_time_first",
 ]
 
 
@@ -155,6 +206,7 @@ class MultiRegimeConfig:
     baseline_names: List[str] = field(default_factory=lambda: list(DEFAULT_BASELINES))
     drain_steps: int = 50_000
     verbose: bool = True
+    include_oracle: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -224,9 +276,8 @@ def evaluate_multi_regime(
             baseline_names=cfg.baseline_names,
             drain_steps=cfg.drain_steps,
         )
-        # Override the workload config parameters directly on EvaluationConfig
-        # by patching workload generation
-        r = _evaluate_regime(candidate_records, eval_cfg, regime)
+        r = _evaluate_regime(candidate_records, eval_cfg, regime,
+                             include_oracle=cfg.include_oracle)
         results.append(RegimeResult(
             regime_name=regime.name,
             split=regime.split,
@@ -240,6 +291,8 @@ def _evaluate_regime(
     candidate_records: List[Dict[str, Any]],
     eval_cfg: EvaluationConfig,
     regime: RegimeSpec,
+    *,
+    include_oracle: bool = False,
 ) -> Dict[str, List[CandidateResult]]:
     """Evaluate candidates on a single regime using the workload spec."""
     from ..core.types import GPUConfig
@@ -248,7 +301,7 @@ def _evaluate_regime(
     from ..workloads.synthetic import generate_workload
     from ..heuristics import build_heuristic_policy
     from ..heuristics.compiler import CompilationError
-    from ..policies.registry import BASELINE_NAMES, make_policy
+    from ..policies.registry import BASELINE_NAMES, make_policy, make_oracle_policy
 
     requests = generate_workload(regime.workload, seed=regime.seed)
     gpu = GPUConfig(
@@ -315,6 +368,13 @@ def _evaluate_regime(
         r = _run(policy)
         r.source = "baseline"
         r.name = bname
+        baseline_results.append(r)
+
+    if include_oracle:
+        oracle_policy = make_oracle_policy("oracle_srtf", requests)
+        r = _run(oracle_policy)
+        r.source = "oracle"
+        r.name = "oracle_srtf"
         baseline_results.append(r)
 
     return {"heuristics": heuristic_results, "baselines": baseline_results}

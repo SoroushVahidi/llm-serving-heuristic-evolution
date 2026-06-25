@@ -214,10 +214,61 @@ Multi-regime outputs:
 
 ---
 
+## Phase 2B.4 — Final Evaluation (shortlist freeze + held-out test)
+
+Phase 2B.4 completes the evaluation with strict train/validation/test discipline.
+
+### Shortlist freeze procedure
+
+1. Re-evaluate all 22 Phase 2B.3 candidates on train+val regimes with all 18 baselines.
+2. Select frozen shortlist using train+validation only (test NOT inspected before freeze).
+3. Freeze 7 candidates: top-5 by val WG + 1 robustness pick + 1 simplicity pick.
+4. Evaluate frozen shortlist once on 3 held-out test regimes with oracle.
+
+### Held-out test regimes
+
+| Regime | Rate | Burst | Noise | SLO |
+|--------|------|-------|-------|-----|
+| test_very_overloaded | 35/s | — | 0.30 | tight |
+| test_extreme_bursty | 25/s | 8.0× | 0.25 | mixed |
+| test_high_noise | 15/s | — | 0.50 | mixed |
+
+### Final test results
+
+Best heuristic: `slo_kv_balance_heuristic`, mean WG=0.9595 across 3 test regimes.
+Best fixed baseline: `weighted_shortest_processing`, mean WG=0.8602.
+oracle_srtf: WG=0.8550 (non-deployable; not optimal for priority-weighted SLO goodput).
+
+**Safe interpretation**: `slo_kv_balance_heuristic` shows a suggestive +9.9 pp improvement over best fixed on these regimes (95% CI [0.00, 0.27]). The result is exploratory: the CI is wide (3 regimes only) and the improvement is partly driven by selective request handling under extreme overload. 6/7 shortlisted heuristics regress vs best fixed on held-out test.
+
+### Scripts
+
+```bash
+# Shortlist selection (train+val only)
+python scripts/evaluate_multi_regime.py \
+    --split train_validation --all-baselines --candidates results/phase2b3_llm_search/candidates_main
+
+# Final held-out test (after freeze)
+python scripts/evaluate_multi_regime.py \
+    --split test --all-baselines --include-oracle --candidates results/phase2a4_2b4_final_eval/frozen_shortlist
+
+# Bootstrap CI summary
+python scripts/summarize_final_evaluation.py \
+    --eval-dir results/phase2a4_2b4_final_eval/final_heldout_eval \
+    --selector-eval-dir results/phase2a4_selector_eval \
+    --output-dir results/phase2a4_2b4_final_eval/final_summary
+
+# Plots
+python scripts/plot_final_evaluation.py \
+    --summary-dir results/phase2a4_2b4_final_eval/final_summary \
+    --output-dir results/phase2a4_2b4_final_eval/plots
+```
+
 ## Notes for final paper
 
-- RF Selector from Phase 2A.3 was trained on 16-policy candidate set. Rerun with 18 policies
-  required before final paper evaluation.
+- RF/DT Selectors: +3.0% over best fixed on 18-policy test split (Phase 2A.4). Supersedes Phase 2A.3.
 - `oracle_srtf` is a hindsight upper bound only — never included in deployable comparisons.
 - `estimated_service_time_first` is a PARS-inspired proxy, not a PARS reproduction.
   PARS uses learning-to-rank; this policy uses token arithmetic only.
+- Safe wording: "We evaluate LLM-generated deterministic heuristics under a calibrated simulator and held-out workload regimes."
+- Do not claim: "The LLM scheduler beats production vLLM."

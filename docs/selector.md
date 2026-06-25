@@ -83,19 +83,35 @@ Non-overlapping windows of W=200 requests.  Partial tail windows with fewer than
 - Changing future requests (beyond window end) must not alter current window features.
 - Tests in `tests/test_selector_no_leakage.py` enforce these invariants.
 
-## Phase 2A.3 evaluation results
+## Phase 2A.4 evaluation results (current)
 
-The Random Forest selector was evaluated on train/validation/test/sanity splits built from stressed synthetic regimes and real BurstGPT traces.
+The selectors were retrained and evaluated on an expanded 18-policy dataset with 52 total windows across three splits.
+
+| Split | Windows | Config |
+|-------|---------|--------|
+| Train | 30 | phase2a4_train_18policies.yaml |
+| Validation | 13 | phase2a4_validation_18policies.yaml |
+| Test | 9 | phase2a4_test_18policies.yaml |
+
+| Model | Split | Sel WG | Accuracy | Δ vs Best Fixed |
+|-------|-------|--------|----------|----------------|
+| rule_based | test | 0.597 | 0.0% | -0.200 |
+| decision_tree | test | 0.828 | 55.6% | **+0.030** |
+| **random_forest** | **test** | **0.828** | **55.6%** | **+0.030** |
+
+Best fixed baseline on test split: `shortest_output_first` (WG = 0.798). The RF/DT selectors both achieve approximately +3.0% improvement over the best fixed policy.
+
+**Test trace exclusion**: `burstgpt_scaled_high_10k.jsonl` appears only in the test config — it is never used in train or validation splits. This prevents data leakage from the test trace into selector training.
+
+## Phase 2A.3 evaluation results (superseded)
+
+Phase 2A.3 used 16 policies and 19 train windows. Superseded by Phase 2A.4 (18 policies, 30 train windows).
 
 | Model | Split | Sel WG | Δ vs Best Fixed |
 |-------|-------|--------|----------------|
 | rule_based | test | 0.597 | -0.200 |
 | decision_tree | test | 0.797 | -0.001 |
 | **random_forest** | **test** | **0.828** | **+0.030** |
-
-The Random Forest selector beats the single best fixed policy (`shortest_output_first`) by +3% weighted goodput on the test split.
-
-**Limitations**: Dataset is small (19 train windows). Phase 2A.4 scales to full BurstGPT traces.
 
 ## Usage
 

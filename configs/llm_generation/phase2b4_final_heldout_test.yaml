@@ -1,0 +1,44 @@
+# Phase 2B.4 — Final held-out test evaluation
+#
+# Evaluate the FROZEN shortlist on held-out test regimes ONLY.
+# This evaluation happens once, after the shortlist is frozen.
+#
+# Usage (after shortlist is frozen):
+#   python scripts/evaluate_multi_regime.py \
+#       --candidates-dir results/phase2a4_2b4_final_eval/frozen_shortlist \
+#       --output-dir results/phase2a4_2b4_final_eval/final_heldout_eval \
+#       --split test --all-baselines --include-oracle
+#
+# oracle_srtf is included here as a non-deployable hindsight upper bound.
+# It must NOT be used as a deployable policy or selector candidate.
+#
+# Final comparison includes:
+#   - 18 deployable fixed baselines
+#   - Best fixed baseline per regime
+#   - Decision Tree selector (18-policy, trained on Phase 2A.4 train split)
+#   - Random Forest selector (18-policy, trained on Phase 2A.4 train split)
+#   - LLM-generated frozen shortlist (~6 candidates)
+#   - oracle_srtf (non-deployable hindsight upper bound)
+
+evaluation:
+  objective: priority_weighted_slo_goodput
+  include_oracle: true
+  compare_against:
+    - all_18_baselines
+    - best_fixed_per_regime
+    - decision_tree_selector_18policy
+    - random_forest_selector_18policy
+    - llm_frozen_shortlist
+    - oracle_srtf_nondeployable
+  test_regimes:
+    - test_very_overloaded
+    - test_extreme_bursty
+    - test_high_noise
+
+notes:
+  - This evaluation happens ONCE, after shortlist is frozen
+  - No hyperparameter adjustments allowed after this point
+  - If LLM heuristic improves by < 1-2 pp vs best fixed, call it "marginal"
+  - If CI crosses zero, call it "not statistically clear"
+  - oracle_srtf is non-deployable — do not report as an achievable method
+  - No production vLLM reproduction claims

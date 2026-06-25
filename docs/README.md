@@ -96,6 +96,7 @@ recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md).
 | Phase 1.7B — GPU calibration | [milestones/phase1_7b_gpu_calibration.md](milestones/phase1_7b_gpu_calibration.md) | COMPLETE |
 | Phase 1.7C — calibrated real-trace replay | [milestones/phase1_7c_calibrated_real_trace.md](milestones/phase1_7c_calibrated_real_trace.md) | COMPLETE |
 | Phase 2B.2 — offline LLM generation loop | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
+| Phase 2A.4/2B.4 — final evaluation hardening | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
 
 ---
 
@@ -129,20 +130,18 @@ Key safe phrasings:
 
 ---
 
-## 13. Future phases
+## 13. Phase 2A.4/2B.4 results summary
 
-See [roadmap.md](roadmap.md). Immediate next step after Phase 1.7C:
+Phase 2A.4 scaled the selector to 18 policies (52 windows total). RF and DT selectors achieve +3.0 pp over best fixed on held-out test. Phase 2B.4 froze a 7-heuristic shortlist on train+val and evaluated once on 3 held-out test regimes.
 
-**Phase 2A.1 — metric and oracle finalization:**
-- Add/verify `weighted_goodput` metric
-- Verify TTFT reporting end-to-end
-- Wire `oracle_srtf` as non-deployable upper bound in experiment configs
-- Optionally register `first_fit`, `best_fit`, LLF as additional baselines
+Key results:
+- **Selector (RF/DT)**: +3.0 pp over best fixed on selector test split (WG=0.828 vs 0.798)
+- **Best LLM heuristic** (`slo_kv_balance_heuristic`): mean WG=0.9595 on final test regimes (+9.9 pp vs best fixed); 95% CI [0.00, 0.27] — exploratory
+- **6/7 shortlisted heuristics** regress vs best fixed on hardest test regimes
+- **oracle_srtf**: WG=0.855 on test; non-deployable and not optimal for this metric
 
-**Phase 2A.2 — selector:**
-- Windowed supervised classification over 14 online-deployable policies
-- See `results/selector_design_spec/selector_design_spec.md`
+See [result_claims.md](result_claims.md) for safe/unsafe claim guidance.
 
-**Phase 2B — LLM heuristic DSL:**
-- Two-level JSON DSL with recursive verifier
-- See `results/llm_heuristic_dsl_spec/llm_heuristic_dsl_spec.md`
+## 14. Future phases
+
+See [roadmap.md](roadmap.md).

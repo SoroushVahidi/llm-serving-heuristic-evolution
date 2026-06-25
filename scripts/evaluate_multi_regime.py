@@ -2,16 +2,22 @@
 """
 Multi-regime evaluation of LLM-generated heuristic candidates.
 
-Evaluates verified candidates across multiple synthetic train/validation regimes
-and produces search rankings. Test regimes are NOT used here.
+Evaluates verified candidates across synthetic regimes and produces search
+rankings. Use --split to control which regimes are included.
 
 Usage:
     python scripts/evaluate_multi_regime.py \\
         --candidates-dir results/phase2b3_llm_search/candidates_main \\
         --output-dir     results/phase2b3_llm_search/evaluation_train_validation
 
-NOTE: oracle_srtf is excluded from all deployable comparisons.
-      RF Selector from Phase 2A.3 trained on 16 policies; rerun needed for final paper.
+    # Final held-out test evaluation (after shortlist is frozen):
+    python scripts/evaluate_multi_regime.py \\
+        --candidates-dir results/.../frozen_shortlist \\
+        --output-dir     results/.../final_heldout_eval \\
+        --split test --all-baselines --include-oracle
+
+NOTE: oracle_srtf is a non-deployable hindsight upper bound.
+      Use --include-oracle only for held-out test evaluation after shortlist freeze.
 """
 import argparse
 import csv
@@ -27,8 +33,10 @@ from llmserveopt.llm_generation.multi_regime_evaluation import (
     MultiRegimeConfig,
     TRAIN_REGIMES,
     VALIDATION_REGIMES,
+    TEST_REGIMES,
     DEFAULT_REGIMES,
     DEFAULT_BASELINES,
+    ALL_BASELINES,
     aggregate_regime_results,
     evaluate_multi_regime,
 )
@@ -41,16 +49,42 @@ from llmserveopt.llm_generation.search_ranking import (
 from llmserveopt.llm_generation.ranking import rank_candidates, save_ranking_csv
 
 
-def main() -> None:
+def _select_regimes(split: str):
+    if split == "train":
+        return TRAIN_REGIMES
+    if split == "validation":
+        return VALIDATION_REGIMES
+    if split == "test":
+        return TEST_REGIMES
+    if split == "all":
+        return TRAIN_REGIMES + VALIDATION_REGIMES + TEST_REGIMES
+    return DEFAULT_REGIMES  # "train_validation"
+
+
+def parse_args(argv=None):
     parser = argparse.ArgumentParser(
         description="Multi-regime evaluation of LLM-generated heuristics"
     )
     parser.add_argument("--candidates-dir", required=True)
     parser.add_argument("--output-dir", required=True)
-    parser.add_argument("--baselines", default=",".join(DEFAULT_BASELINES))
+    parser.add_argument("--baselines", default=",".join(DEFAULT_BASELINES),
+                        help="Comma-separated baseline policy names")
+    parser.add_argument("--all-baselines", action="store_true",
+                        help="Use all 18 deployable baselines instead of default 10")
+    parser.add_argument("--split",
+                        choices=["train_validation", "train", "validation", "test", "all"],
+                        default="train_validation",
+                        help="Which regime split(s) to evaluate (default: train_validation)")
+    parser.add_argument("--include-oracle", action="store_true",
+                        help="Include oracle_srtf as non-deployable upper bound "
+                             "(use only for final held-out test evaluation)")
     parser.add_argument("--no-dedup", action="store_true")
     parser.add_argument("--quiet", action="store_true")
-    args = parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def main(argv=None) -> int:
+    args = parse_args(argv)
 
     candidates_dir = Path(args.candidates_dir)
     output_dir = Path(args.output_dir)
@@ -63,21 +97,31 @@ def main() -> None:
     print(f"Found {len(records)} verified candidate(s)")
 
     # Dedup
+    removed = []
     if not args.no_dedup:
         records, removed = deduplicate_candidates(records, verbose=verbose)
         if removed:
             print(f"Deduplicated: removed {len(removed)} exact duplicate(s)")
 
-    baselines = [b.strip() for b in args.baselines.split(",") if b.strip()]
+    baselines_list = ALL_BASELINES if args.all_baselines else [
+        b.strip() for b in args.baselines.split(",") if b.strip()
+    ]
+
+    regimes = _select_regimes(args.split)
+    train_r = [r for r in regimes if r.split == "train"]
+    val_r = [r for r in regimes if r.split == "validation"]
+    test_r = [r for r in regimes if r.split == "test"]
 
     cfg = MultiRegimeConfig(
-        regimes=DEFAULT_REGIMES,
-        baseline_names=baselines,
+        regimes=regimes,
+        baseline_names=baselines_list,
         verbose=verbose,
+        include_oracle=args.include_oracle,
     )
 
     print(f"\nRunning evaluation on {len(cfg.regimes)} regimes "
-          f"({len(TRAIN_REGIMES)} train, {len(VALIDATION_REGIMES)} validation)...")
+          f"({len(train_r)} train, {len(val_r)} validation, {len(test_r)} test)..."
+          + (" [+oracle_srtf]" if args.include_oracle else ""))
     regime_results = evaluate_multi_regime(records, cfg, verbose=verbose)
 
     # Aggregate
@@ -136,12 +180,14 @@ def main() -> None:
     # Top candidates folder
     top_dir = output_dir / "top_candidates"
     top_dir.mkdir(exist_ok=True)
-    _save_top_candidates(ranked_h[:5], candidates_dir, top_dir, agg, regime_results, baselines)
+    _save_top_candidates(ranked_h[:5], candidates_dir, top_dir, agg, regime_results,
+                         baselines_list)
 
     # Print results
+    split_label = args.split.replace("_", "/")
     print()
     print("=" * 70)
-    print("Ranking: validation priority_weighted_slo_goodput (heuristics)")
+    print(f"Ranking: {split_label} priority_weighted_slo_goodput (heuristics)")
     print("=" * 70)
     for rank, r in enumerate(ranked_h[:10], 1):
         wg = f"{r.val_mean_wg:.4f}" if r.val_mean_wg == r.val_mean_wg else "  nan"
@@ -160,6 +206,7 @@ def main() -> None:
             print(f"Delta:           {delta:+.4f}")
 
     print(f"\nOutputs: {output_dir}")
+    return 0
 
 
 def _save_per_regime_flat(
@@ -291,4 +338,4 @@ def _write_candidate_summary(
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
