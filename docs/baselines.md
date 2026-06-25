@@ -181,18 +181,29 @@ and batching decisions are made atomically per step. Future phases may separate 
 other published admission-control system.  It is a simple deterministic baseline
 designed to isolate the admission-control effect in simulation.
 
-**Algorithm:**
-1. Compute estimated service time: `est = α × prompt_tokens + β × predicted_output_tokens`
-2. Compute laxity: `laxity = slo_deadline − now − est`
+**Algorithm (Phase 2B.7 unit-corrected):**
+1. Compute estimated service time in seconds:
+   `est_s = step_size × (α × prompt_tokens + β × predicted_output_tokens)`
+2. Compute laxity in seconds: `laxity = slo_deadline − now − est_s`
 3. Filter: skip requests with `laxity < −laxity_threshold`
-4. Sort survivors: laxity ↑ → priority ↓ → est ↑ → deadline ↑ → request_id ↑
+4. Sort survivors: laxity ↑ → priority ↓ → est_s ↑ → deadline ↑ → request_id ↑
 5. Greedily assign to GPUs with capacity
 
-**Default threshold:** `float("inf")` (no filtering; acts as urgency-sorted admission).
-Set a finite threshold to enable the admission-control filter.
+**Parameters:**
+- `laxity_threshold` (seconds, default `float("inf")`): filter threshold. 0.0 = admit only
+  requests whose estimated service time fits within remaining deadline.
+- `step_size` (seconds/step, default 0.001): simulator step duration for unit conversion.
+- `alpha`, `beta`: service proxy weights.
 
-**Unit note:** The service proxy is in decode steps; `slo_deadline`/`now` are in
-seconds.  Calibrate `laxity_threshold` against your service model's `step_size`.
+**Default threshold:** `float("inf")` (no filtering; acts as urgency-sorted admission).
+
+**Unit fix (Phase 2B.7):** Prior to Phase 2B.7, laxity mixed seconds and decode steps.
+This is now corrected: `est_s = step_size × est_steps` ensures all terms are in seconds.
+`laxity_threshold=0.0` now correctly drops requests infeasible within their deadline.
 
 **Safe claim:** "Laxity-based admission-control scheduling baseline"  
 **Unsafe claim:** "Reproduction of Tempo, JITServe, or SCORPIO"
+
+**Phase 2B.7 sweep result (laxity_threshold=inf):**
+- Wins: `high_prediction_noise` workload (WG=0.988, rank 1/19)
+- Loses: `kv_pressure_decode_heavy` (WG=0.051, rank 19/19 — urgency sorting ineffective under KV saturation)

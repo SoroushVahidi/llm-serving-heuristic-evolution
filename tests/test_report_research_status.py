@@ -100,3 +100,40 @@ def test_gather_status_importable():
     assert status["admission_control_registered"] is True
     assert status["rule_based_is_fifo_placeholder"] is False
     assert status["invariants"]["oracle_not_in_selector_candidates"] is True
+
+
+# -------------------------------------------------------------------------
+# Phase 2B.7 additions: unit fix, multi-bin tests, failure cases, API ledger
+# -------------------------------------------------------------------------
+
+def test_json_admission_control_unit_fixed():
+    result = _run(["--json"])
+    assert result.returncode == 0, result.stderr
+    data = json.loads(result.stdout)
+    assert "admission_control_unit_fixed" in data
+    assert data["admission_control_unit_fixed"] is True
+
+
+def test_json_multi_bin_tests_exist():
+    result = _run(["--json"])
+    data = json.loads(result.stdout)
+    assert "multi_bin_tests_exist" in data
+    assert data["multi_bin_tests_exist"] is True
+
+
+def test_json_failure_cases_section():
+    result = _run(["--json"])
+    data = json.loads(result.stdout)
+    assert "failure_cases" in data
+    fc = data["failure_cases"]
+    assert "count" in fc
+    assert fc["count"] >= 0  # may be 0 if registry not yet populated in CI
+
+
+def test_json_api_ledger_section():
+    result = _run(["--json"])
+    data = json.loads(result.stdout)
+    assert "api_ledger" in data
+    al = data["api_ledger"]
+    assert "entries" in al
+    assert "is_empty" in al

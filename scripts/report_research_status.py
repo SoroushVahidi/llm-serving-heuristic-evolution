@@ -75,6 +75,46 @@ def gather_status() -> dict:
     templates_present = {k: (_repo_root / v).exists() for k, v in _templates.items()}
     all_templates_present = all(templates_present.values())
 
+    # --- admission_control unit fix ---
+    import inspect as _inspect
+    from llmserveopt.policies.admission_control import AdmissionControlPolicy as _AC
+    _ac_init_src = _inspect.getsource(_AC.__init__)
+    _ac_laxity_src = _inspect.getsource(_AC._laxity)
+    # Unit fix: __init__ accepts step_size; _laxity delegates to _est_seconds
+    admission_control_unit_fixed = (
+        "step_size" in _ac_init_src and "_est_seconds" in _ac_laxity_src
+    )
+
+    # --- multi_bin_batching unit tests ---
+    _mb_test = _repo_root / "tests" / "test_multi_bin_batching_policy.py"
+    multi_bin_tests_exist = _mb_test.exists()
+
+    # --- failure case registry populated ---
+    _fc_path = _repo_root / "results" / "failure_cases" / "failure_case_registry.csv"
+    if _fc_path.exists():
+        try:
+            import csv as _csv
+            with open(_fc_path) as _f:
+                _rows = [r for r in _csv.DictReader(_f) if r.get("failure_id", "").strip()]
+            num_failure_cases = len(_rows)
+        except Exception:
+            num_failure_cases = -1
+    else:
+        num_failure_cases = 0
+
+    # --- API ledger empty? ---
+    import csv as _csv
+    _al_path = _repo_root / "results" / "api_usage" / "api_usage_ledger.csv"
+    if _al_path.exists():
+        try:
+            with open(_al_path) as _f:
+                _al_rows = [r for r in _csv.DictReader(_f) if r.get("call_id", "").strip()]
+            api_ledger_entries = len(_al_rows)
+        except Exception:
+            api_ledger_entries = -1
+    else:
+        api_ledger_entries = 0
+
     return {
         "deployable_baselines": {
             "count": n_deployable,
@@ -91,7 +131,17 @@ def gather_status() -> dict:
         },
         "selector_models_available": selector_models,
         "admission_control_registered": admission_control_registered,
+        "admission_control_unit_fixed": admission_control_unit_fixed,
+        "multi_bin_tests_exist": multi_bin_tests_exist,
         "rule_based_is_fifo_placeholder": rule_based_is_fifo_placeholder,
+        "failure_cases": {
+            "count": num_failure_cases,
+            "registry_path": str(_fc_path.relative_to(_repo_root)) if _fc_path.exists() else None,
+        },
+        "api_ledger": {
+            "entries": api_ledger_entries,
+            "is_empty": api_ledger_entries == 0,
+        },
         "invariants": {
             "oracle_not_in_selector_candidates": len(oracle_leak) == 0,
             "oracle_leak_names": oracle_leak,
@@ -137,6 +187,20 @@ def print_text_report(status: dict) -> None:
     if inv["oracle_leak_names"]:
         print(f"  !! LEAK: {inv['oracle_leak_names']}")
 
+    ac_fixed = status.get("admission_control_unit_fixed", "unknown")
+    print(f"\nadmission_control unit fix applied: {'YES' if ac_fixed else 'NO (STALE)'}")
+
+    mb = status.get("multi_bin_tests_exist", False)
+    print(f"multi_bin_batching unit tests: {'EXISTS' if mb else 'MISSING'}")
+
+    fc = status.get("failure_cases", {})
+    print(f"\nFailure cases recorded: {fc.get('count', 0)}")
+    if fc.get("registry_path"):
+        print(f"  Registry: {fc['registry_path']}")
+
+    al = status.get("api_ledger", {})
+    print(f"API ledger entries: {al.get('entries', 0)} {'(empty — no paid API calls yet)' if al.get('is_empty') else ''}")
+
     tmpl = status["templates"]
     print(f"\nTemplate files:")
     for name, present in tmpl["present"].items():
@@ -158,6 +222,10 @@ def check_invariants(status: dict) -> list[str]:
     if tmpl and not tmpl.get("all_present", True):
         missing = [k for k, v in tmpl["present"].items() if not v]
         violations.append(f"Template files missing: {missing}")
+    if not status.get("admission_control_unit_fixed", True):
+        violations.append("AdmissionControlPolicy unit mismatch not fixed (laxity mixes seconds and steps)")
+    if not status.get("multi_bin_tests_exist", True):
+        violations.append("multi_bin_batching unit tests missing (test_multi_bin_batching_policy.py)")
     return violations
 
 

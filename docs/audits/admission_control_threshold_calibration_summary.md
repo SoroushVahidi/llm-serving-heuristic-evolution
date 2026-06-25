@@ -1,6 +1,6 @@
 # AdmissionControlPolicy Threshold Calibration Summary
 
-**Phase:** 2B.6  
+**Phase:** 2B.7 (updated; original in 2B.6)  
 **Date:** 2026-06-25  
 **Script:** `scripts/calibrate_admission_threshold.py`  
 **Workload:** Mixed-SLO, Poisson 25 req/s, 10s, 3 seeds (42, 0, 1)  
@@ -8,84 +8,86 @@
 
 ---
 
-## Key Finding: Unit Mismatch in Raw Laxity
+## Phase 2B.7 Unit Fix
 
-The `AdmissionControlPolicy._laxity()` formula mixes incompatible units:
-
+Prior to Phase 2B.7, `AdmissionControlPolicy._laxity()` mixed units:
 ```python
-laxity = slo_deadline(s) - now(s) - est(steps)
+# BEFORE (broken): seconds - steps
+laxity = slo_deadline - now - predicted_service_proxy(req)  # proxy in steps!
 ```
 
-where `est = α × prompt_tokens + β × predicted_output_tokens` is in **decode steps**
-(dimensionless count), while `(slo_deadline − now)` is in **seconds**.
+After the fix, all terms are in **seconds**:
+```python
+# AFTER (correct): all in seconds
+est_seconds = predicted_service_proxy(req) * step_size     # steps → seconds
+laxity = slo_deadline - now - est_seconds
+```
 
-With `step_size = 0.001 s/step`:
-- A medium request (128 prompt + 96 output): `est ≈ 0.5×128 + 1.0×96 = 160 steps`
-- A tight SLO of `slo_slack = 0.4s` gives `(deadline − now) ≈ 0.4`
-- Raw laxity ≈ `0.4 − 160 = −159.6` — deeply negative even though the request **is feasible**
-
-This means:
-- `laxity_threshold = 0.0` admits **nothing** (completion=0%)
-- `laxity_threshold = inf` (default) admits **everything** (no filtering)
-- Only thresholds in the range [−200, +200] produce partial filtering
+With `step_size=0.001 s/step`:
+- A request with `prompt=128, output=64` has `est_steps = 128` → `est_s = 0.128s`
+- A tight SLO slack of `0.4s` gives `laxity = 0.4 - 0 - 0.128 = 0.272s > 0` (feasible!)
+- `threshold=0.0s` now correctly admits feasible requests and filters infeasible ones
 
 ---
 
-## Calibration Results
+## Calibration Results (post unit fix)
 
 | threshold | mean_wg | slo_violation_rate | completion_fraction | note |
 |---|---|---|---|---|
 | inf | 0.9949 | 0.0039 | 1.0000 | default — no filtering, pure urgency sort |
-| 200.0 | 1.0000 | 0.0000 | 0.7871 | drops ~21% requests; achieves 0 SLO violations |
-| 100.0 | 1.0000 | 0.0000 | 0.3149 | drops ~69% requests |
-| 50.0 | 1.0000 | 0.0000 | 0.0493 | drops ~95% requests (near-empty admission) |
-| 0.0 | NaN | NaN | 0.0000 | admits nothing |
-| −50.0 | NaN | NaN | 0.0000 | admits nothing |
-| −100.0 | NaN | NaN | 0.0000 | admits nothing |
+| 200.0 s | 0.9949 | 0.0039 | 1.0000 | very loose — no requests have laxity < −200s |
+| 100.0 s | 0.9949 | 0.0039 | 1.0000 | loose — no requests filtered |
+| 50.0 s | 0.9949 | 0.0039 | 1.0000 | moderate — no requests filtered |
+| **0.0 s** | **0.9983** | **0.0013** | **0.9882** | **correct: filters infeasible requests** |
+| −50.0 s | NaN | NaN | 0.0000 | too strict — filters all (needs laxity ≥ 50s) |
+| −100.0 s | NaN | NaN | 0.0000 | too strict — filters all |
+
+**Key finding:** `threshold=0.0s` correctly filters ~1.2% infeasible requests while
+*improving* WG (0.9983 > 0.9949). This is the semantically correct behavior.
 
 ---
 
-## Interpretation
+## Comparison with Phase 2B.6 results (before unit fix)
 
-1. **`threshold = inf` (default, recommended):** All requests admitted. Acts as urgency-sorted
-   admission with no drop policy. WG=0.9949 with ~0.4% SLO violation rate. Safe for all workloads.
+Before the fix, `threshold=200.0` dropped 21% of requests and `threshold=0.0` dropped 100%.
+After the fix:
+- `threshold=0.0s` drops only ~1.2% (truly infeasible requests)
+- `threshold=200.0s` drops nothing (200 seconds is extremely loose)
 
-2. **`threshold = 200.0`:** Drops requests with raw laxity < −200. Achieves WG=1.0 (zero SLO
-   violations) at the cost of dropping ~21% of arrivals. This threshold works because requests
-   with `est > (deadline − now) + 200` are almost certainly infeasible, even after accounting
-   for the unit mismatch.
-
-3. **Thresholds ≤ 0:** Admit nothing in typical workloads. Avoid.
+The pre-fix behavior was broken. All previous calibration results in Phase 2B.6 are superseded.
 
 ---
 
-## Fix for Consistent Units
+## Recommendations (updated)
 
-To use `admission_control` as a genuine admission-control filter, convert service proxy to seconds:
+1. **`laxity_threshold=float("inf")` (default):** All requests admitted; urgency-sorted.
+   Appropriate when admission filtering is not the research goal.
 
-```python
-# Option A: Convert est to seconds (multiply by step_size)
-def _laxity(self, req, now, step_size=0.001):
-    est_seconds = predicted_service_proxy(req, self.alpha, self.beta) * step_size
-    return req.slo_deadline - now - est_seconds
-    # Now threshold is in seconds; threshold=0.0 means "drop if est > remaining time"
-```
+2. **`laxity_threshold=0.0` + `step_size=0.001`:** Correct semantic: filters requests
+   whose estimated service time exceeds remaining deadline. WG slightly improves (+0.003).
 
-With this fix, `threshold = 0.0` would correctly drop infeasible requests. Not implemented in
-Phase 2B.6 (would change existing test behavior). Tracked as a future improvement.
+3. **To use as genuine admission control:** Set `laxity_threshold=T_s` where `T_s` is
+   a tolerance in seconds for prediction error (e.g., `T_s=0.1` allows up to 100ms of
+   laxity deficit before dropping).
+
+4. **For Phase 2B.7+ experiments:** Always pass the correct `step_size` matching your
+   config's `simulator.step_size`. Default `0.001` matches all current experiment configs.
 
 ---
 
-## Recommendations
+## Phase 2B.7 sweep results
 
-1. **Use `laxity_threshold = float("inf")` (default)** in all current experiments.
-   This gives the policy a fair comparison as a pure urgency-sorter.
+Under overloaded conditions, `admission_control` (threshold=inf, step_size=0.001):
 
-2. **Do not set `laxity_threshold ≤ 100`** without the unit-consistent fix — it will
-   drop too many requests and produce NaN metrics.
+| Workload | WG | Rank |
+|---|---|---|
+| overloaded_mixed_slo | 0.813 | 9/19 |
+| high_prediction_noise | **0.988** | **1/19** |
+| overloaded_prefill_heavy | 1.000 | (all tie) |
+| kv_pressure_decode_heavy | 0.051 | **19/19** |
 
-3. **For a genuine admission-control experiment:** Apply Option A above, then sweep
-   `threshold ∈ {0.0, 0.5, 1.0, 2.0, 5.0}` (all in seconds).
-
-4. **Document safe claims:** The current baseline is "laxity-based urgency sorter with
-   optional admission filtering" — not a reproduction of any published system.
+**Finding:** `admission_control` with `threshold=inf` is essentially an urgency-sorter.
+It wins when SLO management matters (high_prediction_noise) but loses catastrophically
+when the bottleneck is KV saturation (kv_pressure_decode_heavy), same as LLF.
+Setting `threshold=0.0s` would actively drop the infeasible requests in that regime,
+potentially recovering WG — this is a recommended next experiment.

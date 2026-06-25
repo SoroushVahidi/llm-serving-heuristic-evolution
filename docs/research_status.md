@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-25  
-**Current branch:** `phase2b6-fair-sweep-failure-audit`  
-**Current phase:** Phase 2B.6 — Fair sweep, failure tracking, external baseline correctness audit
+**Current branch:** `phase2b7-overload-failure-mining`  
+**Current phase:** Phase 2B.7 — Unit fix, overloaded failure mining, multi-bin tests
 
 ---
 
@@ -25,7 +25,8 @@
 | `phase2a4-2b4-final-eval` | `9ed8f71` | Final frozen evaluation (Phase 2A.4/2B.4) |
 | `phase2b5-external-baselines` | `e1c6c01` | External baseline audit + completion_fraction metric |
 | `phase2b5-admission-rule-selector-status` | `5d2afb6` | Admission control policy + feature rule selector |
-| `phase2b6-fair-sweep-failure-audit` | current | Fair sweep, failure tracking, correctness audit |
+| `phase2b6-fair-sweep-failure-audit` | `a6df363` | Fair sweep, failure tracking, correctness audit |
+| `phase2b7-overload-failure-mining` | current | Unit fix, overloaded sweep, multi-bin tests, failure registry |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -66,7 +67,7 @@
 - `scripts/report_research_status.py` for code-derived status
 - 710 tests passing
 
-### Phase 2B.6 — Fair Sweep + Failure Tracking (current)
+### Phase 2B.6 — Fair Sweep + Failure Tracking
 - Experiment/accounting infrastructure: committed CSV templates + `docs/experiment_tracking.md`
 - Per-policy correctness audit for 11 baselines (`docs/external_baseline_correctness_audit.md`)
 - `AdmissionControlPolicy` threshold calibration (`docs/audits/admission_control_threshold_calibration_summary.md`)
@@ -74,6 +75,20 @@
 - Sweep finding: underloaded workloads (10s, 10-20 req/s) produce zero WG differentiation — all policies tie
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
+
+### Phase 2B.7 — Unit Fix + Overloaded Failure Mining (current)
+- **Unit fix**: `AdmissionControlPolicy._laxity()` now unit-consistent (seconds); `laxity_threshold` in seconds
+- New parameter `step_size=0.001` for service proxy → seconds conversion
+- **Multi-bin unit tests**: `tests/test_multi_bin_batching_policy.py` (18 tests)
+- **Overloaded sweep**: all 19 policies × 4 regimes × 3 seeds (`configs/phase2b7_overload_failure_mining.yaml`)
+  - 3/4 workloads show substantial policy differentiation (WG range 0.43–0.56)
+  - `prefill_heavy_small` still underloaded (all tie WG=1.0)
+- **3 failure cases identified** in `results/failure_cases/failure_case_registry.csv`
+  - Root cause: Rule 1 (`min_slack < 1.0s`) fires for all overloaded workloads → always picks LLF
+  - LLF catastrophically bad in kv_pressure_decode_heavy (WG=0.101 vs best=0.477)
+- Best fixed baseline overall: `weighted_shortest_processing` WG=0.827
+- Rule-based selector overall WG ≈ 0.540 (−0.287 vs best fixed)
+- Admission control (post unit-fix, threshold=inf): wins high_prediction_noise (rank 1), loses kv_pressure (rank last)
 
 ---
 
@@ -203,12 +218,41 @@ Paid API usage is gated behind explicit `--use-llm` flags or dedicated scripts.
 
 ---
 
+## Admission/Completion Accounting Limitation
+
+The simulator tracks:
+- `num_total` = all arrivals
+- `num_completed` = requests serviced before drain
+- `num_dropped` = arrivals − completed (never serviced OR timed out)
+- `completion_fraction` = num_completed / num_total
+
+**Not tracked:**
+- `num_admitted` = requests explicitly accepted for service in some step
+- `num_rejected` = requests explicitly filtered by admission control policy
+- `admission_fraction` = num_admitted / num_total
+- `conditional_completion_fraction` = num_completed / max(num_admitted, 1)
+
+**Limitation:** In the current simulator, "dropped" conflates requests filtered by admission
+control with requests that arrived but were never scheduled before simulation ended. The 
+simulator does not distinguish these. For `admission_control` with `threshold=inf` (default),
+`num_dropped` = requests that ran out of simulation time. For `threshold=0.0s`, dropped
+includes genuinely-filtered infeasible requests — but the metrics don't distinguish them.
+
+**TODO:** Add `num_rejected` tracking when `AdmissionControlPolicy` explicitly filters a request
+(not just delays it). This requires simulator-level hooks or policy instrumentation.
+
+---
+
 ## Next Planned Tasks
 
-1. **Run overloaded baseline sweep** using existing overloaded configs (arrival_rate=60-90, duration=30s) to produce meaningful WG differentiation across all 19 policies.
-2. **Add multi-bin batching unit tests** (`tests/test_multi_bin_batching_policy.py`).
-3. **Re-evaluate rule_based selector** on Phase 2A.4 test split using updated feature-based dispatch (post Phase 2B.5 upgrade).
-4. **Fix admission_control unit mismatch** — convert service proxy to seconds before laxity comparison.
-5. **Update selector comparison table** in `docs/selector.md` with updated rule_based WG.
-6. **Optional:** Add CP-SAT oracle for micro-benchmark traces.
-7. **Write comparison paper section** after meaningful overloaded sweep results available.
+1. **Fix Rule 1 in rule_based selector** — `min_slack < 1.0s` too broad; add KV-pressure and
+   overload-level features to distinguish urgency from capacity bottleneck.
+2. **Experiment with `admission_control(threshold=0.0s)`** — run kv_pressure workload with
+   correct threshold; expected to reduce catastrophic WG loss.
+3. **Re-run overloaded_prefill_heavy** with higher arrival_rate (current=40 is underloaded).
+4. **Add real-trace workloads** (BurstGPT/ShareGPT) to overloaded sweep.
+5. **LLM escalation** (CloudRift/Cohere): synthesize improved rule conditions for the 3
+   identified failure patterns (kv_pressure, prediction_noise, mixed_slo overload).
+   Use API ledger to track. Limit: 1-2 calls per pattern.
+6. **Re-evaluate trained RF/DT selectors** on Phase 2B.7 workloads.
+7. **Optional:** Add CP-SAT oracle for micro-benchmark traces.

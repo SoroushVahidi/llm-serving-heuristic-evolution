@@ -15,22 +15,34 @@ Uses future information: NO (uses only online-observable fields)
 SLO-aware: YES (laxity-based filtering)
 KV/token-budget aware: YES (respects GPU capacity)
 
+Units
+-----
+All time quantities in this policy are in **seconds**:
+
+- ``req.slo_deadline``: absolute deadline (seconds)
+- ``state.time`` (``now``): current simulator time (seconds)
+- ``step_size``: simulator step duration (seconds per step, default 0.001)
+- ``service_proxy``: estimated service time in **decode steps** (dimensionless)
+- ``service_proxy_seconds = service_proxy * step_size``
+- ``laxity (seconds) = slo_deadline - now - service_proxy_seconds``
+
+``laxity_threshold`` is therefore in **seconds**.  A threshold of 0.0 means
+"admit a request only if its estimated service time fits within its remaining
+deadline."  The default ``float("inf")`` disables filtering entirely.
+
 Algorithm
 ---------
-1. Estimate service time for each waiting request:
-       est = alpha * prompt_tokens + beta * predicted_output_tokens
-2. Compute laxity:
-       laxity = slo_deadline - now - est
+1. Compute estimated service time for each waiting request (in seconds):
+       est_s = step_size * (alpha * prompt_tokens + beta * predicted_output_tokens)
+2. Compute laxity (seconds):
+       laxity = slo_deadline - now - est_s
 3. Filter: keep only requests with laxity >= -laxity_threshold
-   (requests with laxity < -threshold are already unlikely to meet their SLO
-   and are skipped this step; they remain in the queue but are never admitted
-   unless conditions improve).
 4. Sort survivors by:
-       (a) laxity ascending (most urgent first)
+       (a) laxity ascending          (most urgent first)
        (b) priority descending
        (c) estimated service time ascending
        (d) slo_deadline ascending
-       (e) request_id ascending (deterministic tie-break)
+       (e) request_id ascending      (deterministic tie-break)
 5. Greedily assign each request to any GPU with sufficient capacity.
 
 Tie-breaking is fully deterministic.  The policy is stateless between steps.
@@ -48,24 +60,31 @@ class AdmissionControlPolicy(BasePolicy):
 
     Parameters
     ----------
-    laxity_threshold : float
-        Requests with laxity < -laxity_threshold are skipped (treated as
-        already expired or infeasible).
+    laxity_threshold : float, **seconds**
+        Requests with laxity (in seconds) < ``-laxity_threshold`` are skipped
+        for this scheduling step.  They remain in the queue and may be admitted
+        in a later step if conditions improve.
 
-        Default float("inf") = no filtering (all requests are candidates;
-        policy acts as urgency-sorted admission).  Set to a finite value to
-        enable the admission-control filter.
+        * ``float("inf")`` (default) — no filtering; acts as urgency-sorted
+          admission over all waiting requests.
+        * ``0.0`` — admit only requests whose estimated service time fits
+          within the remaining deadline (``laxity >= 0``).
+        * Positive value ``T`` — admit requests with laxity >= ``-T`` seconds,
+          giving some slack for prediction error.
 
-        NOTE: laxity mixes units — the service proxy (alpha*prompt + beta*output)
-        is in decode steps while slo_deadline/now are in seconds.  Calibrate
-        this threshold against your service model's step_size when using a
-        finite value.  For the default synthetic service model (step_size=0.001),
-        a threshold of ~500 would admit requests whose proxy is within 500
-        steps of their deadline.
+    step_size : float, **seconds per step**
+        Simulator step duration in seconds.  Used to convert the service proxy
+        (in decode steps) to seconds so that ``laxity`` is unit-consistent.
+        Default ``0.001`` matches the typical simulator configuration
+        ``step_size: 0.001``.  Override this if your config uses a different
+        step size.
+
     alpha : float
-        Prefill cost coefficient in service-time estimate.
+        Prefill cost coefficient in the service-time proxy
+        (``alpha * prompt_tokens`` decode steps).
     beta : float
-        Decode cost coefficient in service-time estimate.
+        Decode cost coefficient in the service-time proxy
+        (``beta * predicted_output_tokens`` decode steps).
     """
 
     name = "admission_control"
@@ -73,16 +92,22 @@ class AdmissionControlPolicy(BasePolicy):
     def __init__(
         self,
         laxity_threshold: float = float("inf"),
+        step_size: float = 0.001,
         alpha: float = DEFAULT_ALPHA,
         beta: float = DEFAULT_BETA,
     ) -> None:
         self.laxity_threshold = laxity_threshold
+        self.step_size = step_size
         self.alpha = alpha
         self.beta = beta
 
+    def _est_seconds(self, req: ObservableRequest) -> float:
+        """Estimated service time in seconds."""
+        return predicted_service_proxy(req, self.alpha, self.beta) * self.step_size
+
     def _laxity(self, req: ObservableRequest, now: float) -> float:
-        est = predicted_service_proxy(req, self.alpha, self.beta)
-        return req.slo_deadline - now - est
+        """Laxity in seconds: remaining time budget after estimated service."""
+        return req.slo_deadline - now - self._est_seconds(req)
 
     def select_action(self, state: ObservableState) -> Action:
         admit: dict[int, list[int]] = {g.gpu_id: [] for g in state.gpu_states}
@@ -92,28 +117,28 @@ class AdmissionControlPolicy(BasePolicy):
 
         now = state.time
 
-        # Step 1-3: filter by laxity threshold
+        # Filter by laxity threshold (all values in seconds)
         min_laxity = -self.laxity_threshold
         candidates = [
             req for req in state.waiting_queue
             if self._laxity(req, now) >= min_laxity
         ]
 
-        # Step 4: sort survivors deterministically
+        # Sort survivors deterministically
         def sort_key(r: ObservableRequest):
             lax = self._laxity(r, now)
-            est = predicted_service_proxy(r, self.alpha, self.beta)
+            est = self._est_seconds(r)
             return (
-                lax,                  # ascending: most urgent first
-                -r.priority,          # descending: higher priority first
-                est,                  # ascending: shorter job first
-                r.slo_deadline,       # ascending: earlier deadline first
-                r.request_id,         # ascending: deterministic
+                lax,           # ascending: most urgent first
+                -r.priority,   # descending: higher priority first
+                est,           # ascending: shorter estimated service first
+                r.slo_deadline,
+                r.request_id,
             )
 
         candidates.sort(key=sort_key)
 
-        # Step 5: greedy GPU assignment
+        # Greedy GPU assignment
         gpu_idx = 0
         n_gpus = len(state.gpu_states)
 
