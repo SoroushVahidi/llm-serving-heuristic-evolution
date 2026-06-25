@@ -12,9 +12,11 @@ Reads summary.csv from each experiment's result directory and produces:
 
 Usage:
   python scripts/generate_phase17c_summary.py 2>&1 | tee results/phase17c/summary_gen.log
+  python scripts/generate_phase17c_summary.py --output-dir /tmp/phase17c_preview
 """
 from __future__ import annotations
 
+import argparse
 import json
 import shutil
 import sys
@@ -30,9 +32,7 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).parent.parent
 RESULTS = ROOT / "results"
 OUT = RESULTS / "phase17c"
-OUT.mkdir(parents=True, exist_ok=True)
 PLOTS = OUT / "plots"
-PLOTS.mkdir(parents=True, exist_ok=True)
 
 # Map: experiment_name -> (result_dir_prefix, label)
 EXPERIMENTS = [
@@ -393,7 +393,28 @@ def plot_latency_comparison(all_data: dict[str, pd.DataFrame | None]) -> None:
     print(f"  Saved: {out}")
 
 
-def main():
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Generate the Phase 1.7C consolidated experiment summary (markdown reports, "
+            "CSVs, and plots) from per-experiment results/ directories."
+        )
+    )
+    parser.add_argument(
+        "--output-dir", type=Path, default=OUT,
+        help=f"Directory to write summary docs/CSVs/plots into (default: {OUT}).",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    global OUT, PLOTS
+    OUT = args.output_dir
+    PLOTS = OUT / "plots"
+    OUT.mkdir(parents=True, exist_ok=True)
+    PLOTS.mkdir(parents=True, exist_ok=True)
+
     print(f"\n{'='*60}")
     print("Phase 1.7C Summary Generator")
     print(f"  Generated: {datetime.now().isoformat()}")
@@ -480,7 +501,8 @@ def main():
     if missing:
         print(f"  Missing: {missing}")
     print(f"{'='*60}\n")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

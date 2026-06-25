@@ -3,22 +3,34 @@
 Quick smoke test: run FIFO on a tiny trace and print results.
 Exits with code 0 on success, 1 on failure.
 
+This runs an in-memory simulation only; it does not write any files.
+
 Usage:
     python scripts/smoke_test.py
 """
+import argparse
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from llmserveopt.core.types import GPUConfig
-from llmserveopt.evaluation.run_policy import run_policy
-from llmserveopt.policies.fifo import FIFOPolicy
-from llmserveopt.simulator.service_model import ServiceModel
-from llmserveopt.workloads.synthetic import make_small_debug_trace
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run FIFO on a tiny in-memory trace and print results. Writes no files."
+    )
+    return parser.parse_args(argv)
 
 
-def main():
+def main(argv: list[str] | None = None) -> int:
+    parse_args(argv)
+
+    from llmserveopt.core.types import GPUConfig
+    from llmserveopt.evaluation.run_policy import run_policy
+    from llmserveopt.policies.fifo import FIFOPolicy
+    from llmserveopt.simulator.service_model import ServiceModel
+    from llmserveopt.workloads.synthetic import make_small_debug_trace
+
     print("Running smoke test...")
 
     requests = make_small_debug_trace(seed=42)
@@ -59,4 +71,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

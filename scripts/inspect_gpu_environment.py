@@ -2,11 +2,19 @@
 """
 Inspect and save the GPU/software environment.
 
-Saves results/gpu_calibration/environment.json and docs/gpu_environment.md.
-Does NOT expose environment variables, tokens, or secrets.
+By default, writes results/gpu_calibration/environment.json and
+docs/gpu_environment.md (override with --json-output/--md-output, or
+skip writing entirely with --dry-run). Does NOT expose environment
+variables, tokens, or secrets.
+
+Usage:
+    python scripts/inspect_gpu_environment.py
+    python scripts/inspect_gpu_environment.py --dry-run
+    python scripts/inspect_gpu_environment.py --json-output /tmp/env.json --md-output /tmp/env.md
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import platform
@@ -17,6 +25,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
+DEFAULT_JSON_OUTPUT = ROOT / "results" / "gpu_calibration" / "environment.json"
+DEFAULT_MD_OUTPUT = ROOT / "docs" / "gpu_environment.md"
 
 
 def _run(cmd: list[str], timeout: int = 15) -> str:
@@ -131,18 +141,13 @@ def _hf_cache_info() -> tuple[str, list[str]]:
     return hf_home, sorted(models)
 
 
-def main() -> None:
-    out_dir = ROOT / "results" / "gpu_calibration"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    nvidia_smi_out = _run(["nvidia-smi"])
+def collect_environment() -> dict:
     gpus = _gpu_info()
     ram_total, ram_free = _ram_stats()
     hf_cache_dir, hf_models = _hf_cache_info()
-
-    env = {
+    return {
         "gpu": gpus,
-        "nvidia_smi": nvidia_smi_out,
+        "nvidia_smi": _run(["nvidia-smi"]),
         "cuda_version": _cuda_version(),
         "driver_version": _driver_version(),
         "torch_version": _torch_version(),
@@ -158,15 +163,8 @@ def main() -> None:
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
-    json_path = out_dir / "environment.json"
-    with open(json_path, "w") as f:
-        json.dump(env, f, indent=2)
-    print(f"Saved: {json_path}")
 
-    # Create docs/gpu_environment.md
-    docs_dir = ROOT / "docs"
-    docs_dir.mkdir(parents=True, exist_ok=True)
-    md_path = docs_dir / "gpu_environment.md"
+def render_markdown(env: dict) -> str:
     lines = [
         "# GPU Environment",
         "",
@@ -175,7 +173,7 @@ def main() -> None:
         "## Hardware",
         "",
     ]
-    for g in gpus:
+    for g in env["gpu"]:
         lines.append(
             f"- GPU {g['index']}: **{g['name']}** — {g['total_memory_gb']} GB VRAM, "
             f"{g['multi_processor_count']} SMs, compute {g['major']}.{g['minor']}"
@@ -184,7 +182,7 @@ def main() -> None:
         "",
         f"- Driver version: {env['driver_version']}",
         f"- CUDA version: {env['cuda_version']}",
-        f"- RAM total: {ram_total} GB, free: {ram_free} GB",
+        f"- RAM total: {env['ram_total_gb']} GB, free: {env['ram_free_gb']} GB",
         f"- Disk free: {env['disk_free_gb']} GB",
         "",
         "## Software",
@@ -197,27 +195,73 @@ def main() -> None:
         "",
         "## HuggingFace Cache",
         "",
-        f"- Cache dir: `{hf_cache_dir}`",
-        f"- Cached models ({len(hf_models)}):",
+        f"- Cache dir: `{env['hf_cache_dir']}`",
+        f"- Cached models ({len(env['hf_cached_models'])}):",
     ]
-    for m in hf_models:
+    for m in env["hf_cached_models"]:
         lines.append(f"  - {m}")
-    lines += ["", "## nvidia-smi", "", "```", nvidia_smi_out, "```", ""]
+    lines += ["", "## nvidia-smi", "", "```", env["nvidia_smi"], "```", ""]
+    return "\n".join(lines)
 
-    with open(md_path, "w") as f:
-        f.write("\n".join(lines))
-    print(f"Saved: {md_path}")
 
-    # Print summary
+def print_summary(env: dict) -> None:
     print("\n=== GPU Environment Summary ===")
-    for g in gpus:
+    for g in env["gpu"]:
         print(f"  GPU {g['index']}: {g['name']} ({g['total_memory_gb']} GB)")
     print(f"  CUDA: {env['cuda_version']}, Driver: {env['driver_version']}")
     print(f"  PyTorch: {env['torch_version']}")
     print(f"  Transformers: {env['transformers_version']}")
     print(f"  vLLM: {env['vllm_version'] or 'NOT installed'}")
-    print(f"  Disk free: {env['disk_free_gb']} GB, RAM free: {ram_free} GB")
+    print(f"  Disk free: {env['disk_free_gb']} GB, RAM free: {env['ram_free_gb']} GB")
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Inspect and save the GPU/software environment. "
+            "Writes a JSON report and a markdown doc by default; "
+            "use --dry-run to only print, without writing any file."
+        )
+    )
+    parser.add_argument(
+        "--json-output", type=Path, default=DEFAULT_JSON_OUTPUT,
+        help=f"Path to write the environment JSON report (default: {DEFAULT_JSON_OUTPUT}).",
+    )
+    parser.add_argument(
+        "--md-output", type=Path, default=DEFAULT_MD_OUTPUT,
+        help=f"Path to write the environment markdown doc (default: {DEFAULT_MD_OUTPUT}).",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Collect and print environment info without writing any file.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+
+    env = collect_environment()
+
+    if args.dry_run:
+        print(json.dumps(env, indent=2))
+        print_summary(env)
+        print(f"\n[dry-run] no files written (would have written {args.json_output} and {args.md_output})")
+        return 0
+
+    args.json_output.parent.mkdir(parents=True, exist_ok=True)
+    with open(args.json_output, "w") as f:
+        json.dump(env, f, indent=2)
+    print(f"Saved: {args.json_output}")
+
+    args.md_output.parent.mkdir(parents=True, exist_ok=True)
+    with open(args.md_output, "w") as f:
+        f.write(render_markdown(env))
+    print(f"Saved: {args.md_output}")
+
+    print_summary(env)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

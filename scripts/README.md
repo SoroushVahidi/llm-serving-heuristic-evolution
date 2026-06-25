@@ -2,6 +2,11 @@
 
 All scripts are in `scripts/`. Run from the repository root.
 
+All scripts support `--help` safely (prints usage, no file writes). Scripts that
+write tracked docs or reports (`inspect_gpu_environment.py`, `update_phase17c_docs.py`)
+also support `--dry-run` to preview output without writing, and accept explicit
+output-path flags to override the defaults.
+
 ---
 
 ## Data download and conversion
@@ -161,10 +166,14 @@ python scripts/validate_simulator_calibration.py
 ---
 
 ### `inspect_gpu_environment.py`
-Prints CUDA, driver, GPU name, VRAM, and PyTorch version.
+Prints CUDA, driver, GPU name, VRAM, and PyTorch version. Writes
+`results/gpu_calibration/environment.json` and `docs/gpu_environment.md`
+by default (override with `--json-output`/`--md-output`, or preview with
+`--dry-run`).
 
 ```bash
 python scripts/inspect_gpu_environment.py
+python scripts/inspect_gpu_environment.py --dry-run
 ```
 
 ---
@@ -200,10 +209,12 @@ python scripts/generate_phase17c_summary.py
 ---
 
 ### `update_phase17c_docs.py`
-Updates `docs/milestones/phase1_7c_calibrated_real_trace.md` with experiment results.
+Updates `docs/milestones/phase1_7c_calibrated_real_trace.md` with experiment results
+(override with `--milestone-output`/`--claims-output`, or preview with `--dry-run`).
 
 ```bash
 python scripts/update_phase17c_docs.py
+python scripts/update_phase17c_docs.py --dry-run
 ```
 
 ---

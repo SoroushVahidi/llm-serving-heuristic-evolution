@@ -3,11 +3,17 @@
 Update Phase 1.7C documentation with actual experiment results.
 Reads summary files and rewrites the milestone doc.
 
+By default, writes docs/milestones/phase1_7c_calibrated_real_trace.md and
+(if it does not already exist) docs/result_claims.md. Use --dry-run to
+preview what would be written without writing anything.
+
 Usage:
   python scripts/update_phase17c_docs.py
+  python scripts/update_phase17c_docs.py --dry-run
 """
 from __future__ import annotations
 
+import argparse
 import json
 import subprocess
 from datetime import datetime
@@ -20,6 +26,7 @@ RESULTS = ROOT / "results"
 OUT_PHASE17C = RESULTS / "phase17c"
 DOCS = ROOT / "docs"
 MILESTONE = ROOT / "docs" / "milestones" / "phase1_7c_calibrated_real_trace.md"
+DEFAULT_CLAIMS_OUTPUT = DOCS / "result_claims.md"
 
 EXPERIMENTS = [
     ("burstgpt_natural_calibrated",            "Natural BurstGPT — calibrated service"),
@@ -155,7 +162,36 @@ def generate_calibration_summary() -> str:
         return "_scipy not available_"
 
 
-def main():
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Update Phase 1.7C documentation with actual experiment results. "
+            "Writes the milestone doc, and (if absent) the result-claims doc, by default; "
+            "use --dry-run to preview without writing."
+        )
+    )
+    parser.add_argument(
+        "--milestone-output", type=Path, default=MILESTONE,
+        help=f"Path to write the Phase 1.7C milestone doc (default: {MILESTONE}).",
+    )
+    parser.add_argument(
+        "--claims-output", type=Path, default=DEFAULT_CLAIMS_OUTPUT,
+        help=f"Path to write result_claims.md (default: {DEFAULT_CLAIMS_OUTPUT}).",
+    )
+    parser.add_argument(
+        "--force-claims", action="store_true",
+        help="Overwrite the result-claims doc even if it already exists (default: skip if present).",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Print what would be written without writing any file.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+
     print(f"Updating Phase 1.7C docs...")
     now = datetime.now().isoformat()
     commit = get_git_commit()
@@ -356,13 +392,9 @@ Full comparison: `results/phase17c/calibrated_vs_synthetic_comparison.md`
 - "The calibrated simulator generalizes to all models/hardware."
 """
 
-    MILESTONE.write_text(content)
-    print(f"  Wrote: {MILESTONE}")
-
-    # Also write result_claims.md if it doesn't exist or needs update
-    claims_path = DOCS / "result_claims.md"
-    if not claims_path.exists():
-        claims_path.write_text(f"""# Result Claims and Evidence
+    claims_path = args.claims_output
+    will_write_claims = args.force_claims or not claims_path.exists()
+    claims_content = f"""# Result Claims and Evidence
 
 Last updated: {now}
 
@@ -392,11 +424,29 @@ Last updated: {now}
 
 All claims apply to the RTX 5060 Ti + Qwen2.5-0.5B calibration.
 BurstGPT SLOs/priorities are synthetic augmentation, not from the original dataset.
-""")
+"""
+
+    if args.dry_run:
+        print(f"  [dry-run] would write: {args.milestone_output} ({len(content)} chars)")
+        if will_write_claims:
+            print(f"  [dry-run] would write: {claims_path} ({len(claims_content)} chars)")
+        else:
+            print(f"  [dry-run] would skip (already exists): {claims_path}")
+        print("  [dry-run] Done.")
+        return 0
+
+    args.milestone_output.parent.mkdir(parents=True, exist_ok=True)
+    args.milestone_output.write_text(content)
+    print(f"  Wrote: {args.milestone_output}")
+
+    if will_write_claims:
+        claims_path.parent.mkdir(parents=True, exist_ok=True)
+        claims_path.write_text(claims_content)
         print(f"  Wrote: {claims_path}")
 
     print(f"  Done.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
