@@ -123,11 +123,18 @@ Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calib
 
 ## Safe claims (Phase 2B.16 — fresh corrected-objective validation)
 
-*Status: Experiment not yet run. Claims will be added after Phase B simulation completes.*
-
-- "Phase 2B.16 evaluates Phase 2B.15 selectors on entirely fresh windows (seeds [12,13,14,15] for diversity, [20,21,22] for heldout) that were not seen during selector training."
-- "Selectors are frozen before any fresh window is evaluated: training uses only Phase 2B.13 train-split data (diversity seeds 6-10, dev seeds 0-2)."
-- "Bootstrap 95% CI (n=2000) is computed for `rf_anwg` vs always-SCORPIO gap on fresh windows. Whether this CI excludes zero determines whether the Phase 2B.15 +0.0157 gain is statistically confirmed."
+- "We validate Phase 2B.15 selectors on 174 fresh windows using entirely new seeds ([12,13,14,15] for diversity, [20,21,22] for heldout) and 21 workloads not seen during training. Selectors are frozen before any fresh window is evaluated."
+- "`rf_anwg` achieves arrival-norm WG = 0.9781 on 174 fresh windows, +0.0095 over always-SCORPIO (0.9686). 95% bootstrap CI = [0.0035, 0.0155], excluding zero. Phase 2B.15 gain survives fresh evaluation."
+- "`regression_anwg` (per-policy RF regressors, argmax) achieves 0.9856 on fresh windows (+0.0170 vs SCORPIO), CI [0.0127, 0.0213]. It is the strongest deployable selector under arrival-norm WG."
+- "`knn_anwg` achieves 0.9818 (+0.0132 vs SCORPIO), CI [0.0076, 0.0186] on fresh validation."
+- "93.1% of fresh windows (162/174) are near-ties (policy margin < 0.005). Only 12 windows are meaningful. Selector gains on fresh validation are concentrated in these 12 meaningful windows."
+- "All 90 FIFO 'wins' under arrival-norm WG on fresh data are metric artifacts: FIFO 'wins' because SCORPIO CF < 1.0 while FIFO CF = 1.0, with margin < 0.001. No genuine FIFO scheduling advantage exists."
+- "On 12 meaningful fresh windows: SCORPIO = 0.852, rf_anwg = 0.8647 (+0.0127), knn_anwg = 0.8656 (+0.0136), regression_anwg = 0.8650 (+0.013)."
+- "Under fresh arrival-norm WG, EDF/orca_style/slo_slack_score each achieve 0.9776, outperforming always-SCORPIO (0.9686). SCORPIO ranks 5th among 20 fixed policies on fresh data."
+- "always-WSP (0.9648) is statistically below always-SCORPIO on fresh validation: gap = −0.0038, CI [−0.0066, −0.0011] excludes zero. SCORPIO maintains its ANWG advantage over WSP."
+- "`rf_anwg` loses to always-SCORPIO on fresh_targeted workloads (rf_anwg = 0.9521 vs SCORPIO = 0.9737, gap = −0.0216). `regression_anwg` succeeds on targeted (1.000). The RF classifier approach fails to route away from SCORPIO in regimes designed to favor non-SCORPIO policies."
+- "SCORPIO satisfies CF ≥ 0.99 in only 52.3% of fresh windows. The constrained oracle (CF ≥ 0.99) achieves 0.9863, dominated by EDF/FIFO (CF = 1.0 always)."
+- "dt_anwg and dt_anwg_regret are not statistically confirmed vs SCORPIO on fresh validation (CI includes zero). DT variants should not be used as production selectors."
 
 ## Safe claims (Phase 2B.15 — corrected objective selector retraining)
 

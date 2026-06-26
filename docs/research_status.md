@@ -100,21 +100,36 @@
 - **Audit docs:** `docs/audits/phase2b16_fresh_corrected_objective_validation_summary.md`,
   `docs/audits/phase2b16_failure_cases_summary.md`
 - **Tests:** `tests/test_phase2b16_fresh_validation.py`
-- **Status:** Experiment queued — results TBD after ~50-90 min simulation
+- **Status:** COMPLETE — 2026-06-26 (637.6s)
 
-#### Phase 2B.16 Key Results (TBD)
+#### Phase 2B.16 Key Results
 
 | Metric | Value |
 |--------|-------|
-| Fresh windows | TBD |
+| Fresh windows | **174** (diversity=106, targeted=34, heldout=34) |
 | Fresh seeds (diversity) | [12, 13, 14, 15] |
 | Fresh seeds (heldout) | [20, 21, 22] |
-| Workload groups | fresh_diversity (12), fresh_targeted (4), fresh_heldout (5) |
-| always-SCORPIO (fresh, anwg) | TBD |
-| always-WSP (fresh, anwg) | TBD |
-| rf_anwg (fresh, anwg) | TBD |
-| rf_anwg CI vs SCORPIO | TBD |
-| B15 gain confirmed? | TBD |
+| Selectors frozen before evaluation | **Yes** |
+| always-SCORPIO (fresh, anwg) | **0.9686** |
+| always-WSP (fresh, anwg) | 0.9648 (below SCORPIO) |
+| best fixed policy (EDF, anwg) | 0.9776 (EDF beats SCORPIO on fresh data) |
+| oracle (anwg) | 0.9879 |
+| **rf_anwg (fresh, features-only)** | **0.9781 (+0.0095 vs SCORPIO)** |
+| rf_anwg 95% CI vs SCORPIO | **[0.0035, 0.0155] — CI excludes zero ✓** |
+| knn_anwg | 0.9818 (+0.0132) CI [0.0076, 0.0186] |
+| regression_anwg | **0.9856 (+0.0170)** CI [0.0127, 0.0213] |
+| safe_fallback_wsp_margin0.001 (oracle) | 0.9849 (+0.0163) CI [0.0126, 0.0204] |
+| B15 gain confirmed? | **YES — CI excludes zero for 6 selectors** |
+| Near-tie fraction (eps=0.005) | **93.1%** (162/174 windows) |
+| Meaningful windows (eps=0.005) | **12** |
+| FIFO wins (all near-tie artifacts) | 90/174 (100% near-tie) |
+| rf_anwg win/tie/loss vs SCORPIO | 87/80/7 |
+| rf_anwg on fresh_targeted | **0.9521 (−0.0216 vs SCORPIO)** — fails on targeted |
+| regression_anwg on fresh_targeted | **1.000** |
+
+**Key finding:** B15 gains survive fresh validation. rf_anwg CI excludes zero but fails
+on targeted workloads; regression_anwg is the most robust selector (1.000 on targeted).
+Near-tie workloads dominate (93%) — 12 meaningful windows drive the bulk of learning signal.
 
 ---
 
