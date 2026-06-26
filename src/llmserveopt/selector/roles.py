@@ -20,6 +20,19 @@ DEPLOYABLE_LEARNED_SELECTORS: List[str] = [
     "regression_anwg",
 ]
 
+# Literature-inspired / external-style baselines (subset of deployable policies).
+EXTERNAL_STYLE_BASELINES: List[str] = [
+    "orca_style",
+    "vllm_style_token_budget",
+    "sarathi_style",
+    "splitfuse_style",
+    "multi_bin_batching",
+    "estimated_service_time_first",
+    "scorpio_style_slo_guard",
+]
+
+PRIMARY_RANK_METRIC = "mean_arrival_normalized_wg"
+
 SELECTOR_ROLE_DEPLOYABLE_LEARNED = "deployable_learned"
 SELECTOR_ROLE_ALWAYS_FIXED = "always_fixed"
 SELECTOR_ROLE_ORACLE_ASSISTED = "oracle_assisted"
@@ -43,6 +56,10 @@ def selector_role(name: str) -> str:
 def is_deployable_headline_selector(name: str) -> bool:
     """Selectors eligible for deployable headline summaries."""
     return selector_role(name) == SELECTOR_ROLE_DEPLOYABLE_LEARNED
+
+
+def is_external_style_baseline(name: str) -> bool:
+    return name in EXTERNAL_STYLE_BASELINES
 
 
 def classify_selectors(names: List[str]) -> Dict[str, List[str]]:

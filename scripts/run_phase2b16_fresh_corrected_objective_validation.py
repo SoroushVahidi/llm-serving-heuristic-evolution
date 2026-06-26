@@ -210,6 +210,71 @@ def train_phase2b15_selectors(
     return selectors
 
 
+def train_selectors_from_rows(
+    train_rows: List[Dict],
+    *,
+    near_tie_eps: float = 0.005,
+    rw_eps: float = 0.001,
+    sf_margins: Optional[List[float]] = None,
+    knn_k: int = 5,
+) -> Dict[str, Any]:
+    """Train Phase 2B.15-style selectors from pre-built causal training rows."""
+    if not train_rows:
+        raise ValueError("train_selectors_from_rows requires non-empty train_rows")
+
+    margins = sf_margins if sf_margins is not None else [0.001, 0.005, 0.010]
+    train_rows = relabel_rows(list(train_rows))
+    logging.info("Training selectors on %d causal-feature rows", len(train_rows))
+
+    train_anwg = _anwg_labels(train_rows)
+    X_tr = _feature_matrix(train_anwg)
+    y_tr = [r["best_policy"] for r in train_anwg]
+    rw_all = compute_anwg_regret_weights(train_rows, rw_eps)
+
+    rf_anwg = RandomForestSelector(n_estimators=200, max_depth=10, random_state=42)
+    rf_anwg.name = "rf_anwg"
+    rf_anwg.fit(train_anwg)
+
+    rf_anwg_rw = RandomForestSelector(n_estimators=200, max_depth=10, random_state=42)
+    rf_anwg_rw.name = "rf_anwg_regret"
+    rf_anwg_rw._clf.fit(X_tr, y_tr, sample_weight=rw_all)
+
+    dt_anwg = DecisionTreeSelector(max_depth=8, min_samples_leaf=5, random_state=42)
+    dt_anwg.name = "dt_anwg"
+    dt_anwg.fit(train_anwg)
+
+    dt_anwg_rw = DecisionTreeSelector(max_depth=8, min_samples_leaf=5, random_state=42)
+    dt_anwg_rw.name = "dt_anwg_regret"
+    dt_anwg_rw._clf.fit(X_tr, y_tr, sample_weight=rw_all)
+
+    knn_anwg = KNNAnwgSelector(k=knn_k)
+    knn_anwg.fit(train_rows)
+
+    reg_anwg = PerPolicyRegressionAnwgSelector()
+    reg_anwg.fit(train_rows)
+
+    sf_selectors = [SafeFallbackWspSelector(rf_anwg, m) for m in margins]
+    rule_based = RuleBasedSelector()
+    rule_based.name = "rule_based"
+
+    selectors: Dict[str, Any] = {
+        "always_scorpio": AlwaysScorpioSelector(),
+        "always_wsp": AlwaysWSPSelector(),
+        "rule_based": rule_based,
+        "rf_anwg": rf_anwg,
+        "rf_anwg_regret": rf_anwg_rw,
+        "dt_anwg": dt_anwg,
+        "dt_anwg_regret": dt_anwg_rw,
+        "knn_anwg": knn_anwg,
+        "regression_anwg": reg_anwg,
+    }
+    for sf in sf_selectors:
+        selectors[sf.name] = sf
+
+    logging.info("Trained %d selectors from causal training rows", len(selectors))
+    return selectors
+
+
 # ---------------------------------------------------------------------------
 # Phase C: Corrected metric evaluation on fresh windows
 # ---------------------------------------------------------------------------

@@ -1,0 +1,73 @@
+# Phase 2C.2 Causal-Feature Selector Retraining and Real-Trace Evaluation
+#
+# Goals:
+#   1. Rebuild Phase 2B.13 synthetic training rows with feature_mode: causal.
+#   2. Retrain deployable selectors on the causal train split (dev + diversity s6-10).
+#   3. Evaluate on the same six Phase 2C.1 real-trace workloads (held-out from training).
+#   4. Mine selector losses vs external-style baselines.
+#
+# Train/test separation:
+#   Training: Phase 2B.13 synthetic workloads (dev_*, div_*) — NOT real traces.
+#   Evaluation: Phase 2C.1 real-trace workloads (burstgpt_*, azure_2023_*).
+#
+# Runner: scripts/run_phase2c2_causal_selector_retraining.py
+# Output: results/phase2c2_causal_selector_retraining/
+# Log:    logs/phase2c2_causal_selector_retraining/
+
+experiment: phase2c2_causal_selector_retraining
+
+output_dir: results/phase2c2_causal_selector_retraining
+
+# Phase 2B.13 workload definitions for causal training-row rebuild
+training_config: configs/phase2b13_selector_training_and_suspicion_audit.yaml
+
+# Phase 2C.1 real-trace workloads for evaluation (Azure files must exist locally)
+evaluation_config: configs/phase2c1_real_trace_ingestion_validation.yaml
+
+feature_mode: causal
+
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+window_size: 200
+min_partial_window: 50
+
+selector_training:
+  train_diversity_seeds: [6, 7, 8, 9, 10]
+  val_diversity_seeds: [11]
+  regret_weight_epsilon: 0.001
+  near_tie_filter_epsilon: 0.005
+
+safe_fallback_margins: [0.001, 0.005, 0.010]
+
+knn:
+  k: 5
+  metric: euclidean
+
+primary_rank_metric: mean_arrival_normalized_wg
+
+# Prefixes that identify synthetic training traces (must not appear in eval tags)
+training_trace_prefixes: [dev_, heldout_, div_]
+
+# Eval workload tags from Phase 2C.1 (explicit allow-list for leakage checks)
+evaluation_workload_tags:
+  - burstgpt_scaled_high
+  - burstgpt_scaled_moderate
+  - burstgpt_moderate_noise070
+  - burstgpt_moderate_exact_prediction
+  - azure_2023_code
+  - azure_2023_conv

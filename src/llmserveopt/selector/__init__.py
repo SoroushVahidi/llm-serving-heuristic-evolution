@@ -16,8 +16,11 @@ from .features import (
 from .roles import (
     classify_selectors,
     is_deployable_headline_selector,
+    is_external_style_baseline,
     is_oracle_assisted_selector,
     selector_role,
+    EXTERNAL_STYLE_BASELINES,
+    PRIMARY_RANK_METRIC,
 )
 from .labels import label_window, label_windows, TieBreaker
 from .dataset import build_selector_dataset
@@ -38,7 +41,9 @@ __all__ = [
     "classify_selectors",
     "is_deployable_headline_selector",
     "is_oracle_assisted_selector",
-    "selector_role",
+    "is_external_style_baseline",
+    "EXTERNAL_STYLE_BASELINES",
+    "PRIMARY_RANK_METRIC",
     "label_window",
     "label_windows",
     "TieBreaker",
