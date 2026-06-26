@@ -1,0 +1,257 @@
+# Phase 2B.9 Selector Robustness Experiment
+#
+# Broader evaluation of the repaired rule selector, RF selector, and DT selector.
+# Workloads are divided into two groups:
+#   dev:     Same 4 workloads as Phase 2B.7/2B.8 — regression/development evidence.
+#   heldout: 5 new workloads — held-out robustness test; not used to design any selector.
+#
+# IMPORTANT: Tags prefixed with "dev_" are the Phase 2B.7/2B.8 development workloads.
+#            Tags prefixed with "heldout_" were NOT used to motivate or tune any selector rule.
+#            Do NOT retrain or tune selector thresholds on the heldout group.
+#
+# Runner: scripts/run_phase2b9_selector_robustness.py
+# Output: results/phase2b9_selector_robustness/
+# Log:    logs/phase2b9/phase2b9_selector_robustness.log
+#
+# RF/DT models loaded from: results/phase2a4_2b4_final_eval/selector_models/
+
+experiment: phase2b9_selector_robustness
+
+selector_models_dir: results/phase2a4_2b4_final_eval/selector_models
+
+output_dir: results/phase2b9_selector_robustness
+
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+# Window configuration
+window_size: 200
+min_partial_window: 50
+feature_mode: online_prefix
+
+# Seeds for each group
+dev_seeds: [0, 1, 2]      # same as Phase 2B.7/2B.8 — regression evidence only
+heldout_seeds: [3, 4, 5]  # truly held-out; rule selector never saw these
+
+workloads:
+  # =========================================================================
+  # GROUP A: DEVELOPMENT / REGRESSION
+  # (same parameters as Phase 2B.7/2B.8; used to confirm Phase 2B.8 fixes hold)
+  # =========================================================================
+
+  # dev_1: Overloaded mixed-SLO — fail_001 from Phase 2B.7
+  # Expected: rule selector picks slo_slack_score (WG≈0.905)
+  - tag: dev_overloaded_mixed_slo
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.15}
+
+  # dev_2: High prediction noise — fail_002 from Phase 2B.7
+  # Expected: rule selector picks admission_control (WG≈0.988); pred_output_cv > 1.0
+  - tag: dev_high_prediction_noise
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.70
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  # dev_3: KV-pressure decode-heavy — fail_003 from Phase 2B.7
+  # Expected: rule selector picks weighted_shortest_processing (WG≈0.477); mean_pred_output≈384 > 200
+  - tag: dev_kv_pressure_decode_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+      - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+  # dev_4: Prefill-heavy (underloaded in Phase 2B.7) — keep for tracking
+  # Expected: all policies close to WG=1.0 (underloaded); selector choice matters little
+  - tag: dev_overloaded_prefill_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  # =========================================================================
+  # GROUP B: HELD-OUT ROBUSTNESS TEST
+  # (NOT used to design any selector rule; first seen in Phase 2B.9)
+  # =========================================================================
+
+  # heldout_1: Moderate KV-pressure — output_mean=150 (near 200 threshold)
+  # Key question: does Rule 1 mis-fire or correctly stay silent?
+  # output_mean=150 < 200 threshold → Rule 1 should NOT fire → falls to Rule 4 (tight SLO)
+  # This tests whether the threshold=200 guard is too conservative for mid-range outputs.
+  - tag: heldout_moderate_kv_pressure
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 150.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  # heldout_2: Very high noise (90% prediction noise)
+  # Harder than Phase 2B.7 (70% noise). Tests whether Rule 2 (pred_output_cv > 1.0) still fires.
+  # With noise=0.90 and output_sigma=1.0, pred_output_cv should be > 1.0 → admission_control
+  - tag: heldout_very_high_noise
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.90
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  # heldout_3: Prefill-heavy ACTUALLY overloaded (arrival_rate=80 vs 40 in Phase 2B.7)
+  # Fixes the underloading issue in Phase 2B.7 dev_4. Should produce real differentiation.
+  # Rule 5 (mean_prompt > 512) should fire → sarathi_style
+  - tag: heldout_prefill_overloaded
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  # heldout_4: Bursty overloaded with mixed SLO
+  # Bursty arrivals + overload + SLO mix. Rule 7 (burstiness_cv > 1.5) fires → slo_slack_score
+  # Tests rule selector on arrival patterns not seen in Phase 2B.7/2B.8.
+  - tag: heldout_bursty_mixed_slo
+    group: heldout
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.8
+    output_low: 8
+    output_high: 384
+    prediction_noise_rel: 0.20
+    burst_factor: 4.0
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  # heldout_5: BurstGPT smoke — real-trace derived workload, 1-2 windows
+  # Tests selector on real-trace characteristics (natural prompt/output distributions).
+  # Low max_requests=400 → at most 2 windows of 200 → cheap.
+  - tag: heldout_burstgpt_smoke
+    group: heldout
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+    max_requests: 400

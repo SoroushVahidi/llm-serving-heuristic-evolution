@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-25  
-**Current branch:** `phase2b8-rule-selector-repair`  
-**Current phase:** Phase 2B.8 — Rule selector repair under KV pressure
+**Current branch:** `phase2b9-selector-robustness-and-suite-freeze`  
+**Current phase:** Phase 2B.9 — Selector robustness audit and comparison suite freeze
 
 ---
 
@@ -14,7 +14,7 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **19** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) |
-| Test count | 784 passing, 0 failing |
+| Test count | **787 passing**, 1 skipped (Phase 2B.8 base) + Phase 2B.9 tests added |
 
 ---
 
@@ -27,7 +27,8 @@
 | `phase2b5-admission-rule-selector-status` | `5d2afb6` | Admission control policy + feature rule selector |
 | `phase2b6-fair-sweep-failure-audit` | `a6df363` | Fair sweep, failure tracking, correctness audit |
 | `phase2b7-overload-failure-mining` | `992fe11` | Unit fix, overloaded sweep, multi-bin tests, failure registry |
-| `phase2b8-rule-selector-repair` | current | Rule selector repair: KV-pressure guard, noise guard, slo_slack_score for tight SLO |
+| `phase2b8-rule-selector-repair` | `429e96e` | Rule selector repair: KV-pressure guard, noise guard, slo_slack_score for tight SLO |
+| `phase2b9-selector-robustness-and-suite-freeze` | current | Selector robustness audit, training data sufficiency, external baseline/dataset decisions |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -77,7 +78,36 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.8 — Rule Selector Repair Under KV Pressure (current)
+### Phase 2B.9 — Selector Robustness Audit and Suite Freeze (current)
+- **Selector training data audit**: Phase 2A.4 RF/DT use ~30 training windows (critically small for 19-class).
+  KV-pressure and high-noise regimes missing from training data.
+  See `docs/audits/phase2b9_selector_training_audit.md` for full analysis.
+- **Broader robustness experiment**: 4 dev workloads (same as Phase 2B.7/2B.8, seeds 0–2) +
+  5 held-out workloads (new regimes, seeds 3–5). Config: `configs/phase2b9_selector_robustness.yaml`.
+  Runner: `scripts/run_phase2b9_selector_robustness.py`. Log: `logs/phase2b9/`.
+- **External baseline decisions**: 5 must-add baselines identified (SCORPIO-style, KV-cache-aware,
+  FairBatching, PARS-LTR, PROSERVE SlideBatching). See `docs/external_baseline_decision.md`.
+- **Dataset/workload decisions**: BurstGPT (full), Azure LLM Inference 2023, LMSYS-Chat-1M,
+  LongBench, and calibrated synthetics are must-use before publication.
+  See `docs/dataset_workload_decision.md`.
+- **Caveats and claims**:
+  - Phase 2B.8 repaired rule selector matched best fixed baseline on 4 **development** workloads.
+    This is **not** a final generalization claim (same workloads used for rule design and evaluation).
+  - Phase 2B.9 evaluates the selector on held-out workloads (5 new + different seeds) for the first time.
+  - RF/DT selectors have 30 training windows; insufficient for strong publication claims.
+  - Final publication requires: ≥200 training windows, KV-pressure/noise regimes in training,
+    real-trace BurstGPT/Azure data, and must-add external baselines.
+- **Tests added**: `tests/test_phase2b9_selector_robustness.py`
+  (rule selector dispatch table, oracle exclusion, config validation, doc existence checks)
+- **Robustness results analyzed**: `docs/audits/phase2b9_selector_robustness_summary.md`
+  - Dev WG=0.917, held-out WG=0.979, overall WG=0.951 (rule selector)
+  - Beats best fixed on dev (+0.024) and held-out (+0.008); within 0.5 pp of per-window oracle on held-out
+  - RF/DT not re-evaluated (Phase 2A.4 model artifacts absent in this run)
+- **Failure cases**: `docs/audits/phase2b9_failure_cases_summary.md`
+  - 1 unresolved: `heldout_very_high_noise_s4` (AC vs EDF, gap ≈ −0.023)
+- Log: `logs/phase2b9/phase2b9_selector_robustness.log` (gitignored)
+
+### Phase 2B.8 — Rule Selector Repair Under KV Pressure
 - **Root cause**: Phase 2B.7 showed Rule 1 (`tight_slo/min_slack → least_laxity_first`) fired for
   all 3 differentiated workloads; LLF catastrophic under KV pressure (WG=0.101 vs WSP=0.477)
 - **Repair**: Three changes to `RuleBasedSelector.predict_one()`:
@@ -261,12 +291,27 @@ includes genuinely-filtered infeasible requests — but the metrics don't distin
 
 ## Next Planned Tasks
 
-1. **Phase 2B.8 sweep analysis** — compare repaired rule selector against Phase 2B.7 baseline;
-   confirm 3 failure cases resolved; check if new failure cases emerge.
-2. **Re-evaluate trained RF/DT selectors** on Phase 2B.7/2B.8 workloads to compare with repaired rule selector.
-3. **Re-run overloaded_prefill_heavy** with higher arrival_rate (current=40 is underloaded).
-4. **Experiment with `admission_control(threshold=0.0s)`** — run kv_pressure workload; expected to reduce catastrophic WG loss.
-5. **Add real-trace workloads** (BurstGPT/ShareGPT) to overloaded sweep.
-6. **Phase 2B.9** — Finalize modern external baselines and datasets for publication.
-7. **LLM escalation** (CloudRift/Cohere): if further rule improvement needed, synthesize updated
-   rules using remaining failure patterns. Use API ledger. Limit: 1-2 calls per pattern.
+### Completed in Phase 2B.9 ✅
+- Selector training data sufficiency and leakage audit (`docs/audits/phase2b9_selector_training_audit.md`)
+- Broader robustness experiment (9 workloads: 4 dev + 5 heldout, seeds 0–5)
+- Robustness results analysis (`docs/audits/phase2b9_selector_robustness_summary.md`)
+- Failure case documentation (`docs/audits/phase2b9_failure_cases_summary.md`)
+- External baseline decision document (`docs/external_baseline_decision.md`)
+- Dataset/workload decision document (`docs/dataset_workload_decision.md`)
+- Tests for oracle exclusion, rule dispatch, config validation, doc existence
+
+### Remaining Before Submission
+1. **Expand selector training data** — add KV-pressure + high-noise + real-trace windows to reach ≥200 training windows; re-train and re-evaluate RF/DT on Phase 2B.9 suite.
+2. **Implement must-add baselines** (see `docs/external_baseline_decision.md` section B):
+   - B.2 SCORPIO-style SLO guard (highest priority; directly addresses Phase 2B.7/2B.8 overload)
+   - B.3 KV-cache-aware scheduler (addresses remaining KV WG gap)
+   - B.4 FairBatching
+   - B.1 PARS-style LTR (requires training data)
+   - B.5 PROSERVE SlideBatching
+3. **Ingest real-trace datasets** (see `docs/dataset_workload_decision.md` section B):
+   - BurstGPT full dataset (currently using 10k subset only)
+   - Azure LLM Inference 2023 / Splitwise trace
+   - LMSYS-Chat-1M length statistics for calibrated synthetic
+   - LongBench for long-context stress workloads
+4. **LLM escalation** (CloudRift/Cohere): if further rule improvement needed after Phase 2B.9
+   generalization analysis, synthesize updated rules. Log in API ledger. Limit: 1–2 calls per pattern.

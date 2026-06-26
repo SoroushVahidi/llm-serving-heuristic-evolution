@@ -6,6 +6,7 @@ This document explains the machine-readable registries used to track experiments
 
 ```
 docs/templates/                         ← committed templates (gitignored results/ excluded)
+docs/audits/phase2b9_*_summary.md       ← committed Phase 2B.9 result summaries (full CSVs gitignored)
     experiment_registry_template.csv
     failure_case_registry_template.csv
     api_usage_ledger_template.csv

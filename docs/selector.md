@@ -111,7 +111,29 @@ Non-overlapping windows of W=200 requests.  Partial tail windows with fewer than
 - Changing future requests (beyond window end) must not alter current window features.
 - Tests in `tests/test_selector_no_leakage.py` enforce these invariants.
 
-## Phase 2A.4 evaluation results (current)
+## Phase 2B.9 Status and Caveats
+
+**Phase 2B.9 adds the first held-out generalization test for the repaired rule selector.**
+
+Key findings from Phase 2B.9 training audit (`docs/audits/phase2b9_selector_training_audit.md`):
+- Phase 2A.4 RF/DT training used only **~30 windows** — insufficient for a 19-class problem.
+- KV-pressure and high-noise regimes (the Phase 2B.7 failure cases) are **not in the Phase 2A.4 training set**.
+- The Phase 2B.8 repaired rule selector was evaluated on the same 4 workloads that motivated the repair.
+  Phase 2B.9 is the first evaluation on truly held-out workloads.
+- **Final publication requires ≥200 training windows** covering all regime families.
+
+Phase 2B.9 robustness experiment:
+- Config: `configs/phase2b9_selector_robustness.yaml`
+- Dev group: 4 workloads (same as Phase 2B.7/2B.8), seeds 0–2
+- Heldout group: 5 new workloads (moderate KV, very-high-noise, fixed prefill-overloaded,
+  bursty-mixed-SLO, BurstGPT smoke), seeds 3–5
+- Results: `results/phase2b9_selector_robustness/` (gitignored); summary in
+  `docs/audits/phase2b9_selector_robustness_summary.md`
+- **Held-out generalization (rule selector):** WG=0.979 vs best fixed 0.970 (EDF), gap vs oracle −0.005
+- **One unresolved failure:** `heldout_very_high_noise_s4` — see `docs/audits/phase2b9_failure_cases_summary.md`
+- RF/DT were not re-evaluated in Phase 2B.9 (model artifacts absent); Phase 2A.4 numbers below are historical only
+
+## Phase 2A.4 evaluation results (Phase 2A.4 dataset; see Phase 2B.9 for broader evaluation)
 
 The selectors were retrained and evaluated on an expanded 18-policy dataset with 52 total windows across three splits.
 
