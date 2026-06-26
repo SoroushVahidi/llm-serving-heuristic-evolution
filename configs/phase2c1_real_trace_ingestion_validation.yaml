@@ -1,0 +1,181 @@
+# Phase 2C.1 Real Trace Ingestion and Validation
+#
+# Goals:
+#   Validate whether Phase 2B.15/2B.16 selector gains survive real production traces.
+#   Tests: BurstGPT (4 scaled variants, 184 windows) + Azure LLM 2023 (2 traces, 140 windows).
+#
+# Key design:
+#   - Selectors frozen from Phase 2B.13 train split (same as Phase 2B.16).
+#   - No tuning on real-trace windows.
+#   - BurstGPT: 4 variants, all 9229 rows each → 46 windows per variant.
+#   - Azure 2023: code (8819 rows) + conv (19366 rows); downloaded inline.
+#     Downloaded from public GitHub (no HF token needed).
+#   - Azure traces time-scaled to ~50 req/s for meaningful load.
+#   - Azure 2024 (691 MB + 1.1 GB): download separately via scripts/data/download_azure_llm_2024.py.
+#
+# Expected windows: ~324 (184 BurstGPT + 44 Azure code + 96 Azure conv)
+# Estimated runtime: ~45 minutes in tmux.
+#
+# Runner: scripts/run_phase2c1_real_trace_ingestion_validation.py
+# Log:    logs/phase2c1/phase2c1_real_traces.log
+# tmux:   phase2c1_real_traces
+# Output: results/phase2c1_real_trace_ingestion_validation/
+
+experiment: phase2c1_real_trace_ingestion_validation
+
+# Training data source (Phase 2B.13 per_window.csv — same as Phase 2B.16)
+input_b13_dir: results/phase2b13_selector_training_and_suspicion_audit
+
+output_dir: results/phase2c1_real_trace_ingestion_validation
+
+# -----------------------------------------------------------------------
+# Simulator settings (same as Phase 2B.16)
+# -----------------------------------------------------------------------
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+window_size: 200
+min_partial_window: 50
+feature_mode: online_prefix
+
+# -----------------------------------------------------------------------
+# Selector training config (same as Phase 2B.16)
+# -----------------------------------------------------------------------
+selector_training:
+  train_diversity_seeds: [6, 7, 8, 9, 10]
+  val_diversity_seeds: [11]
+  near_tie_filter_epsilon: 0.005
+  regret_weight_epsilon: 0.001
+
+safe_fallback_margins: [0.001, 0.005, 0.010]
+
+knn:
+  k: 5
+  metric: euclidean
+
+# -----------------------------------------------------------------------
+# Metric evaluation config (same as Phase 2B.16)
+# -----------------------------------------------------------------------
+near_tie_thresholds: [0.001, 0.005, 0.010]
+all_complete_threshold: 0.99
+
+completion_penalized:
+  configs:
+    - target: 0.95
+      lambda: 0.5
+      key: cp_wg_t095_l05
+    - target: 0.95
+      lambda: 1.0
+      key: cp_wg_t095_l10
+    - target: 0.99
+      lambda: 0.5
+      key: cp_wg_t099_l05
+    - target: 0.99
+      lambda: 1.0
+      key: cp_wg_t099_l10
+
+constrained_objectives:
+  completion_thresholds: [0.95, 0.99]
+
+bootstrap:
+  n_samples: 2000
+  random_seed: 42
+  ci: 0.95
+
+top_epsilon_thresholds: [0.001, 0.005, 0.010]
+
+# -----------------------------------------------------------------------
+# Phase 2B.16 reference (for regression check)
+# -----------------------------------------------------------------------
+phase2b16_reference:
+  rf_anwg_fresh_anwg: 0.9781
+  regression_anwg_fresh_anwg: 0.9856
+  always_scorpio_fresh_anwg: 0.9686
+  n_fresh_windows: 174
+  near_tie_fraction: 0.931
+
+# -----------------------------------------------------------------------
+# Azure dataset download config (Azure 2023 only — 320 KB + 719 KB)
+# -----------------------------------------------------------------------
+azure:
+  "2023":
+    code:
+      url: "https://raw.githubusercontent.com/Azure/AzurePublicDataset/master/data/AzureLLMInferenceTrace_code.csv"
+      raw_path: data/raw/azure/AzureLLMInferenceTrace_code_2023.csv
+      processed_path: data/processed/azure/azure_llm_2023_code.jsonl
+      time_scale: 0.05    # 2.57 req/s → ~51 req/s effective
+      source_tag: azure_2023_code
+    conv:
+      url: "https://raw.githubusercontent.com/Azure/AzurePublicDataset/master/data/AzureLLMInferenceTrace_conv.csv"
+      raw_path: data/raw/azure/AzureLLMInferenceTrace_conv_2023.csv
+      processed_path: data/processed/azure/azure_llm_2023_conv.jsonl
+      time_scale: 0.10    # 5.53 req/s → ~55 req/s effective
+      source_tag: azure_2023_conv
+
+# -----------------------------------------------------------------------
+# Real-trace workload families
+# -----------------------------------------------------------------------
+workloads:
+
+  # =====================================================================
+  # BurstGPT: 4 scaled variants (all 9229 rows each → 46 windows each)
+  # Real arrival pattern from production LLM serving (2024, scaled to load)
+  # Reference: Wang et al., "BurstGPT" SIGMETRICS 2025.  arXiv 2401.17644
+  # =====================================================================
+  - tag: burstgpt_scaled_high
+    group: burstgpt
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_high_10k.jsonl
+    # ~73 req/s, 9229 rows → 46 windows; no max_requests (use all)
+
+  - tag: burstgpt_scaled_moderate
+    group: burstgpt
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+    # ~48 req/s, 9229 rows → 46 windows
+
+  - tag: burstgpt_moderate_noise070
+    group: burstgpt
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_moderate_noise070.jsonl
+    # ~48 req/s + 70% prediction noise, 9229 rows → 46 windows
+
+  - tag: burstgpt_moderate_exact_prediction
+    group: burstgpt
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_moderate_exact_prediction.jsonl
+    # ~48 req/s + exact prediction, 9229 rows → 46 windows
+
+  # =====================================================================
+  # Azure 2023: code and conv traces (downloaded inline by runner)
+  # Real production inference traces from Azure LLM services.
+  # Reference: Patel et al., "Splitwise" ISCA 2024.  CC-BY License.
+  # Time-scaled to ~50 req/s for meaningful load in our simulator.
+  # =====================================================================
+  - tag: azure_2023_code
+    group: azure_2023
+    source: extended_jsonl
+    trace_path: data/processed/azure/azure_llm_2023_code.jsonl
+    # Prefill-heavy: context mean=2048, generated mean=28 tokens
+    # 8819 rows → 44 windows of 200 each
+
+  - tag: azure_2023_conv
+    group: azure_2023
+    source: extended_jsonl
+    trace_path: data/processed/azure/azure_llm_2023_conv.jsonl
+    # Conversational: context mean=1155, generated mean=211 tokens
+    # 19366 rows → 96 windows of 200 each
