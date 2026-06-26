@@ -1,0 +1,245 @@
+# Phase 2B.14: Metric Audit and SCORPIO Ablation
+#
+# Goals:
+#   1. Audit weighted_goodput denominator: confirm completed-only vs arrival-normalized
+#   2. Define and compute arrival_normalized_weighted_goodput, admission_normalized_wg,
+#      completed_request_quality, completion_fraction, and completion-penalized scores
+#   3. Re-rank all policies and selectors under corrected metrics
+#   4. Near-tie/all-complete reanalysis under arrival-normalized WG
+#   5. SCORPIO ablation: identify which component drives SCORPIO's gain
+#   6. Determine whether SCORPIO dominance survives corrected metrics
+#   7. Determine whether old Phase 2B.10–2B.13 result claims need reinterpretation
+#
+# Input data: results/phase2b13_selector_training_and_suspicion_audit/per_window.csv
+#   (no re-simulation for main metric computation; ablation runs a targeted subset)
+#
+# Runner: scripts/run_phase2b14_metric_audit_scorpio_ablation.py
+# Output: results/phase2b14_metric_audit_scorpio_ablation/
+# Log:    logs/phase2b14/phase2b14_metric_audit.log
+
+experiment: phase2b14_metric_audit_scorpio_ablation
+
+# Input from Phase 2B.13
+input_results: results/phase2b13_selector_training_and_suspicion_audit
+output_dir: results/phase2b14_metric_audit_scorpio_ablation
+
+# Phase 2B.13 reference (before metric correction)
+phase2b13_reference:
+  n_windows: 319
+  scorpio_conditional_wg: 0.9846     # completed-only denominator
+  scorpio_mean_completion: 0.8988    # num_completed / num_total
+  best_fixed_policy: scorpio_style_slo_guard
+  best_fixed_wg: 0.9846
+  rf_selector_wg: 0.9855
+  rule_selector_wg: 0.8431
+  always_scorpio_wg: 0.9846
+  near_tie_eps001_fraction: null     # to be determined
+  all_complete_fraction: null        # to be determined
+
+# Metric variant definitions
+metrics:
+  # Metric 1: existing WG — completed-only denominator
+  completed_request_quality:
+    description: "WG over completed requests only. High completion fraction policies are not penalized for dropping requests."
+    denominator: completed_requests
+    source_column: reward_{policy}
+
+  # Metric 2: arrival-normalized WG
+  # Denominator = total arrivals. Approximation: completion_fraction * conditional_WG
+  # Valid when all request priorities = 1.0 (the dominant case in this suite).
+  arrival_normalized_wg:
+    description: "WG normalized over all arrivals. Dropped/rejected requests count as zero."
+    denominator: all_arrivals
+    formula: "completion_fraction * completed_request_quality"
+    note: "Approximate when priorities are non-uniform; exact for equal-priority requests."
+
+  # Metric 3: admission-normalized WG (lower bound on arrival-normalized)
+  # We do not have num_admitted separately in per_window.csv.
+  # For policies without explicit admission rejection (fifo, edf, etc.),
+  # num_admitted ≈ num_completed (completion_fraction ≈ 1.0).
+  # For SCORPIO/AC, completion_fraction < 1.0 captures both rejected and mid-drop.
+  admission_normalized_wg:
+    description: "WG normalized over admitted requests (same as arrival-normalized when no mid-execution drops)."
+    denominator: admitted_requests
+    note: "Not separately tracked. See completion_fraction for rejection signal."
+
+  # Completion-penalized scores
+  completion_penalized:
+    formula: "arrival_normalized_wg - lambda * max(0, target - completion_fraction)"
+    targets: [0.95, 0.99]
+    lambdas: [0.5, 1.0]
+
+# Near-tie thresholds (same as phase2b13)
+near_tie_thresholds: [0.001, 0.005, 0.010]
+all_complete_threshold: 0.99
+
+# SCORPIO ablation — targeted workloads (those where SCORPIO actually activates guard)
+ablation:
+  # Run ablation on these workloads only (most discriminative, guard-activating)
+  workloads:
+    - tag: dev_kv_pressure_decode_heavy
+      group: dev
+      arrival_process: poisson
+      arrival_rate: 45.0
+      duration: 8.0
+      prompt_dist: lognormal
+      prompt_mean: 64.0
+      prompt_sigma: 0.5
+      prompt_low: 16
+      prompt_high: 256
+      output_dist: lognormal
+      output_mean: 384.0
+      output_sigma: 0.6
+      output_low: 64
+      output_high: 1024
+      prediction_noise_rel: 0.25
+      slo_classes:
+        - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+        - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+        - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+    - tag: div_kv_extreme_tight_slo
+      group: diversity
+      arrival_process: poisson
+      arrival_rate: 60.0
+      duration: 8.0
+      prompt_dist: lognormal
+      prompt_mean: 64.0
+      prompt_sigma: 0.5
+      prompt_low: 16
+      prompt_high: 256
+      output_dist: lognormal
+      output_mean: 512.0
+      output_sigma: 0.5
+      output_low: 128
+      output_high: 1024
+      prediction_noise_rel: 0.20
+      slo_classes:
+        - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+        - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+        - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+    - tag: div_kv_extreme_decode_only
+      group: diversity
+      arrival_process: poisson
+      arrival_rate: 55.0
+      duration: 8.0
+      prompt_dist: lognormal
+      prompt_mean: 32.0
+      prompt_sigma: 0.4
+      prompt_low: 8
+      prompt_high: 128
+      output_dist: lognormal
+      output_mean: 600.0
+      output_sigma: 0.5
+      output_low: 200
+      output_high: 1024
+      prediction_noise_rel: 0.20
+      slo_classes:
+        - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.70}
+        - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.30}
+
+    - tag: div_high_overload_tight_priority
+      group: diversity
+      arrival_process: poisson
+      arrival_rate: 80.0
+      duration: 6.0
+      prompt_dist: lognormal
+      prompt_mean: 64.0
+      prompt_sigma: 0.5
+      prompt_low: 16
+      prompt_high: 256
+      output_dist: lognormal
+      output_mean: 128.0
+      output_sigma: 0.7
+      output_low: 32
+      output_high: 512
+      prediction_noise_rel: 0.25
+      slo_classes:
+        - {class_id: tight,  slo_slack: 0.3,  priority: 3.0, weight: 0.70}
+        - {class_id: loose,  slo_slack: 5.0,  priority: 1.0, weight: 0.30}
+
+    - tag: div_kv_mixed_extreme_noise
+      group: diversity
+      arrival_process: poisson
+      arrival_rate: 50.0
+      duration: 8.0
+      prompt_dist: lognormal
+      prompt_mean: 64.0
+      prompt_sigma: 0.5
+      prompt_low: 16
+      prompt_high: 256
+      output_dist: lognormal
+      output_mean: 400.0
+      output_sigma: 0.8
+      output_low: 64
+      output_high: 1024
+      prediction_noise_rel: 0.70
+      slo_classes:
+        - {class_id: tight,  slo_slack: 0.6,  priority: 3.0, weight: 0.35}
+        - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+        - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+    - tag: div_decode_saturation_bursty
+      group: diversity
+      arrival_process: bursty
+      arrival_rate: 55.0
+      duration: 8.0
+      prompt_dist: lognormal
+      prompt_mean: 64.0
+      prompt_sigma: 0.5
+      prompt_low: 16
+      prompt_high: 256
+      output_dist: lognormal
+      output_mean: 350.0
+      output_sigma: 0.6
+      output_low: 64
+      output_high: 1024
+      prediction_noise_rel: 0.25
+      burst_factor: 4.0
+      burst_fraction: 0.25
+      slo_classes:
+        - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.45}
+        - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.35}
+        - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+    - tag: div_extreme_overload_short_tight
+      group: diversity
+      arrival_process: poisson
+      arrival_rate: 100.0
+      duration: 6.0
+      prompt_dist: lognormal
+      prompt_mean: 32.0
+      prompt_sigma: 0.4
+      prompt_low: 8
+      prompt_high: 128
+      output_dist: lognormal
+      output_mean: 32.0
+      output_sigma: 0.5
+      output_low: 8
+      output_high: 128
+      prediction_noise_rel: 0.20
+      slo_classes:
+        - {class_id: tight,  slo_slack: 0.2,  priority: 3.0, weight: 0.60}
+        - {class_id: loose,  slo_slack: 3.0,  priority: 1.0, weight: 0.40}
+
+  seeds: [0, 1, 2]
+  window_size: 200
+  min_partial_window: 50
+
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768

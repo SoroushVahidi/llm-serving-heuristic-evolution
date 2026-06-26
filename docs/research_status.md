@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-26  
-**Current branch:** `phase2b13-selector-training-and-suspicion-audit`  
-**Current phase:** Phase 2B.13 — Selector training and SCORPIO suspicion audit
+**Current branch:** `phase2b14-metric-audit-scorpio-ablation`  
+**Current phase:** Phase 2B.14 — Metric audit and SCORPIO ablation
 
 ---
 
@@ -36,7 +36,8 @@
 | `phase2b10-scorpio-slo-guard` | `a9921b9` | SCORPIO-style SLO guard baseline (20th deployable policy) |
 | `phase2b11-scorpio-selector-integration` | `6de9e2b` | SCORPIO integrated into rule selector; 3 new routing rules |
 | `phase2b12-workload-diversity-selector-labels` | `93b6da7` | Workload diversity sweep for selector label analysis |
-| `phase2b13-selector-training-and-suspicion-audit` | current | Extend to 256 windows; train selectors; audit SCORPIO dominance |
+| `phase2b13-selector-training-and-suspicion-audit` | `3f83922` | Extend to 256 windows; train selectors; audit SCORPIO dominance |
+| `phase2b14-metric-audit-scorpio-ablation` | current | Metric audit: WG denominator; arrival-normalized WG; SCORPIO ablation |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -86,7 +87,41 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.13 — Selector Training and SCORPIO Suspicion Audit (current)
+### Phase 2B.14 — Metric Audit and SCORPIO Ablation (current)
+
+- **Goal:** Audit `weighted_goodput` denominator; define arrival-normalized WG; SCORPIO ablation.
+- **Key finding:** Old `weighted_goodput` is `completed_request_quality` (completed-only denominator).
+  SCORPIO completion fraction = 0.899; arrival-normalized WG = 0.8885 (vs conditional WG = 0.9846).
+  SCORPIO still dominates under arrival-normalized WG (+0.0345 vs WSP).
+  Under completion-penalized metrics, **WSP beats SCORPIO**.
+- **Config:** `configs/phase2b14_metric_audit_scorpio_ablation.yaml`
+- **Runner:** `scripts/run_phase2b14_metric_audit_scorpio_ablation.py`
+- **Log:** `logs/phase2b14/phase2b14_metric_audit.log`
+- **tmux session:** `phase2b14_metric_audit`
+- **Results:** `results/phase2b14_metric_audit_scorpio_ablation/`
+- **Audit docs:** `docs/audits/phase2b14_metric_definition_audit.md`,
+  `docs/audits/phase2b14_metric_audit_scorpio_ablation_summary.md`,
+  `docs/audits/phase2b14_failure_cases_summary.md`
+- **Tests:** `tests/test_phase2b14_metric_audit.py`
+
+#### Phase 2B.14 Key Results
+
+| Metric | Value |
+|--------|-------|
+| Input windows | **319** (Phase 2B.13 per_window.csv) |
+| SCORPIO conditional WG (old) | **0.9846** |
+| SCORPIO arrival-norm WG (corrected) | **0.8885** |
+| SCORPIO completion fraction | **0.899** |
+| Best policy (arrival-norm WG) | SCORPIO (0.8885) |
+| Best policy (cp t=0.95 λ=0.5) | **WSP (0.8524)** ← SCORPIO loses |
+| Best policy (cp t=0.99 λ=1.0) | **WSP (0.8480)** ← SCORPIO drops to rank 6 |
+| RF selector arrival-norm WG | **0.8944** (+0.0059 vs always-SCORPIO) |
+| KNN selector arrival-norm WG | **0.8970** (+0.0085 vs always-SCORPIO) |
+| Near-tie fraction (ε=0.001, arrival-norm) | 0.70 (97 meaningful windows) |
+| All-complete fraction (arrival-norm) | **0.64** (was 0.93 conditional) |
+| SCORPIO ablation | in progress (tmux phase2b14_metric_audit) |
+
+### Phase 2B.13 — Selector Training and SCORPIO Suspicion Audit
 
 - **Goal:** Extend Phase 2B.12 to ≥200 windows; audit SCORPIO dominance and near-tie labels;
   train RF/DT and alternative selectors if criteria pass; compare against always-SCORPIO baseline.

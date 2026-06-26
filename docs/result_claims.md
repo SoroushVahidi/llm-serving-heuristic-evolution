@@ -121,6 +121,28 @@ Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calib
 | "The selector generalizes to arbitrary workloads" | Evaluated on calibrated synthetic and BurstGPT regimes only |
 | "oracle_srtf is a tight upper bound" | SRTF minimizes latency, not priority-weighted SLO goodput; it is not tight on this metric |
 
+## Safe claims (Phase 2B.14 — metric audit)
+
+- "The `weighted_goodput` metric computes `Σ(priority_i × slo_met_i) / Σ(priority_i)` over **completed requests only**. Dropped or rejected requests are excluded from both numerator and denominator."
+- "We rename `weighted_goodput` as `completed_request_quality` to reflect its semantics accurately."
+- "We introduce `arrival_normalized_wg = completion_fraction × completed_request_quality` as the corrected system-level goodput metric."
+- "SCORPIO arrival-normalized WG = 0.8885; SCORPIO completed-request quality = 0.9846. The gap (0.096) arises because SCORPIO rejects ~10.1% of arrivals."
+- "Under arrival-normalized WG, SCORPIO (0.8885) still dominates WSP (0.8540), SOF (0.8297), and all other policies."
+- "Under completion-penalized WG (target=0.95, λ≥0.5), WSP becomes the best policy; SCORPIO is rank 2 or lower."
+- "Under completion-penalized WG (target=0.99, λ=1.0), SCORPIO drops to rank 6 or lower; WSP remains rank 1."
+- "RF and KNN selectors beat always-SCORPIO under arrival-normalized WG (+0.0059 and +0.0085 respectively)."
+- "Phase 2B.10–2B.13 WG comparisons between non-SCORPIO policies (FIFO, EDF, WSP, etc.) remain valid arrival-normalized comparisons because those policies have completion fraction ≈ 0.99."
+- "SCORPIO ablation performed on 7 targeted discriminative workloads; results in `results/phase2b14_metric_audit_scorpio_ablation/ablation_gap_analysis.json`."
+
+## Unsafe claims (Phase 2B.14 corrections)
+
+| Old claim | Corrected claim |
+|---|---|
+| "SCORPIO WG = 0.9846 (best system goodput)" | SCORPIO completed-request quality = 0.9846; arrival-normalized WG = 0.8885 |
+| "SCORPIO dominates by 10+ pp over all baselines" | Under arrival-normalized WG, lead over WSP = 0.0345; under completion-penalized metrics, WSP wins |
+| "Phase 2B.10–2B.13 WG is arrival-normalized goodput" | It is completed-only conditional quality; reinterpretation required for SCORPIO comparisons |
+| "Selector training optimizes arrival-normalized goodput" | Selector training used completed-only labels; valid for non-SCORPIO policies but conflated for SCORPIO-heavy labels |
+
 ## How to harden claims for Phase 2+
 
 - Validate against real vLLM / Sarathi / DeepSpeed-FastGen serving traces
