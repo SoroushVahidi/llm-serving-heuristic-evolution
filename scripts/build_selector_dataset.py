@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from llmserveopt.core.types import GPUConfig
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.dataset import DatasetConfig, build_selector_dataset, save_dataset
-from llmserveopt.selector.features import FeatureMode
+from llmserveopt.selector.features import FeatureMode, parse_feature_mode
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, generate_workload
@@ -106,8 +106,12 @@ def parse_args():
     p.add_argument("--output", required=True, help="Output CSV path or directory")
     p.add_argument("--seed", type=int, default=None, help="Override seed")
     p.add_argument("--window-size", type=int, default=None, help="Override window size")
-    p.add_argument("--feature-mode", choices=["online_prefix", "trace_window_descriptive"],
-                   default=None, help="Override feature mode")
+    p.add_argument(
+        "--feature-mode",
+        choices=["causal", "offline_window_lookahead", "online_prefix", "trace_window_descriptive"],
+        default=None,
+        help="Override config feature_mode",
+    )
     p.add_argument("--policies", nargs="*", default=None,
                    help="Subset of candidate policies to evaluate (default: all)")
     p.add_argument("-v", "--verbose", action="store_true")
@@ -120,8 +124,8 @@ def main():
 
     seed = args.seed if args.seed is not None else cfg.get("seed", 42)
     window_size = args.window_size or cfg.get("window_size", 200)
-    feature_mode_str = args.feature_mode or cfg.get("feature_mode", "online_prefix")
-    feature_mode = FeatureMode(feature_mode_str)
+    feature_mode_str = args.feature_mode or cfg.get("feature_mode", "causal")
+    feature_mode = parse_feature_mode(feature_mode_str)
     verbose = args.verbose or cfg.get("verbose", False)
     drain_steps = cfg.get("simulator", {}).get("drain_steps", 5000)
 

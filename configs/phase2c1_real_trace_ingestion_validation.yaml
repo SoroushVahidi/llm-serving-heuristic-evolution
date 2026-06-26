@@ -50,7 +50,7 @@ gpus:
 
 window_size: 200
 min_partial_window: 50
-feature_mode: online_prefix
+feature_mode: causal  # deployable default; use offline_window_lookahead only for diagnostics
 
 # -----------------------------------------------------------------------
 # Selector training config (same as Phase 2B.16)

@@ -34,12 +34,21 @@ def _prefix(n: int = 5, start_t: float = 0.0) -> list:
 
 # --- all 18 features present ---
 
-def test_all_feature_names_present_online():
+def test_all_feature_names_present_causal():
     win = _window()
-    feats = extract_features(win, window_start_time=5.0, mode=FeatureMode.ONLINE_PREFIX)
+    feats = extract_features(win, window_start_time=5.0, mode=FeatureMode.CAUSAL)
     for name in FEATURE_NAMES:
         assert name in feats, f"Missing feature: {name}"
     assert len(feats) == len(FEATURE_NAMES)
+
+
+def test_all_feature_names_present_offline_window_lookahead():
+    win = _window()
+    feats = extract_features(
+        win, window_start_time=5.0, mode=FeatureMode.OFFLINE_WINDOW_LOOKAHEAD
+    )
+    for name in FEATURE_NAMES:
+        assert name in feats, f"Missing feature: {name}"
 
 
 def test_all_feature_names_present_descriptive():
@@ -72,14 +81,13 @@ def test_mean_prompt_tokens():
 
 def test_kv_utilization_offline_default():
     win = _window()
-    feats = extract_features(win, window_start_time=5.0, mode=FeatureMode.ONLINE_PREFIX)
-    # In offline mode without kv_utilization_available=True, should be 0.0
+    feats = extract_features(win, window_start_time=5.0, mode=FeatureMode.CAUSAL)
     assert feats["kv_utilization"] == pytest.approx(0.0)
 
 
 def test_free_sequence_ratio_offline_default():
     win = _window()
-    feats = extract_features(win, window_start_time=5.0, mode=FeatureMode.ONLINE_PREFIX)
+    feats = extract_features(win, window_start_time=5.0, mode=FeatureMode.CAUSAL)
     assert feats["free_sequence_ratio"] == pytest.approx(1.0)
 
 
@@ -97,15 +105,15 @@ def test_mean_slack_positive():
     assert feats["min_slack"] == pytest.approx(3.0)
 
 
-# --- online_prefix: waiting time uses prefix ---
+# --- causal: waiting time uses prefix ---
 
 def test_waiting_time_from_prefix():
-    prefix = _prefix(n=5, start_t=0.0)   # arrived at t=0..2
+    prefix = _prefix(n=5, start_t=0.0)
     win = _window(n=10, start_t=5.0)
     feats = extract_features(
         win,
         window_start_time=5.0,
-        mode=FeatureMode.ONLINE_PREFIX,
+        mode=FeatureMode.CAUSAL,
         prefix_requests=prefix,
     )
     # Waiting time of prefix[0]: 5.0 - 0.0 = 5.0, prefix[1]: 5.0 - 0.5 = 4.5, ...
@@ -121,7 +129,7 @@ def test_arrival_rate_positive_with_prefix():
     feats = extract_features(
         win,
         window_start_time=10.0,
-        mode=FeatureMode.ONLINE_PREFIX,
+        mode=FeatureMode.CAUSAL,
         prefix_requests=prefix,
     )
     assert feats["arrival_rate_est"] > 0.0

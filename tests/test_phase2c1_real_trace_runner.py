@@ -161,6 +161,71 @@ def test_phase2c1_runner_refuses_full_run_without_flag():
     assert "--allow-full-run" in result.stderr
 
 
+def test_phase2c1_config_uses_causal_feature_mode():
+    with open(CONFIG_PATH) as f:
+        cfg = yaml.safe_load(f)
+    assert cfg["feature_mode"] == "causal"
+
+
+def test_phase2c1_config_rejects_offline_lookahead_feature_mode():
+    mod = _load_runner_module()
+    with open(CONFIG_PATH) as f:
+        cfg = yaml.safe_load(f)
+    bad_cfg = dict(cfg)
+    bad_cfg["feature_mode"] = "offline_window_lookahead"
+    issues, _plan = mod.validate_phase2c1_config(bad_cfg)
+    assert any("feature_mode must be 'causal'" in issue for issue in issues)
+
+
+def test_selector_roles_classify_oracle_assisted():
+    from llmserveopt.selector.roles import (
+        classify_selectors,
+        is_oracle_assisted_selector,
+        is_deployable_headline_selector,
+        selector_role,
+    )
+
+    assert is_oracle_assisted_selector("safe_fallback_wsp_margin0.005")
+    assert selector_role("safe_fallback_wsp_margin0.005") == "oracle_assisted"
+    assert not is_deployable_headline_selector("safe_fallback_wsp_margin0.005")
+    assert is_deployable_headline_selector("regression_anwg")
+
+    roles = classify_selectors([
+        "regression_anwg",
+        "always_scorpio",
+        "safe_fallback_wsp_margin0.001",
+    ])
+    assert roles["deployable_learned"] == ["regression_anwg"]
+    assert roles["always_fixed"] == ["always_scorpio"]
+    assert roles["oracle_assisted"] == ["safe_fallback_wsp_margin0.001"]
+
+
+def test_phase2c1_smoke_writes_deployable_selector_summary():
+    mod = _load_runner_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        out_dir = Path(tmpdir) / "smoke_out"
+        workloads = mod.build_smoke_workloads(out_dir)
+        with open(CONFIG_PATH) as f:
+            cfg = yaml.safe_load(f)
+        metadata = mod.run_phase2c1_validation(
+            cfg,
+            workloads=workloads,
+            out_dir=out_dir,
+            allow_fallback_selectors=True,
+            window_size=4,
+            min_partial_window=2,
+        )
+        assert (out_dir / "deployable_selector_summary.csv").exists()
+        assert metadata["primary_rank_metric"] == "mean_arrival_normalized_wg"
+        assert "safe_fallback_wsp_margin" in "".join(metadata["oracle_assisted_selectors"])
+        assert "regression_anwg" in metadata["deployable_headline_selectors"]
+        with open(out_dir / "deployable_selector_summary.csv") as f:
+            rows = list(csv.DictReader(f))
+        assert rows
+        assert all(row.get("deployable_headline") == "True" for row in rows)
+        assert all("safe_fallback" not in row["selector"] for row in rows)
+
+
 def test_phase2c1_azure_materialization_requires_explicit_download_flag():
     mod = _load_runner_module()
     with tempfile.TemporaryDirectory() as tmpdir:

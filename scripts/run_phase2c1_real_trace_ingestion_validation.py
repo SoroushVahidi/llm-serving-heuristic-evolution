@@ -37,7 +37,13 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from llmserveopt.selector.features import FeatureMode
+from llmserveopt.selector.features import FeatureMode, FEATURE_NAMES, parse_feature_mode, feature_mode_is_deployable
+from llmserveopt.selector.roles import (
+    classify_selectors,
+    is_deployable_headline_selector,
+    is_oracle_assisted_selector,
+    selector_role,
+)
 from llmserveopt.selector.models import RuleBasedSelector
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.augmentation import AugmentationConfig
@@ -244,11 +250,18 @@ def validate_phase2c1_config(cfg: dict) -> Tuple[List[str], Dict[str, Any]]:
                 "time_scale": entry.get("time_scale"),
             })
 
-    feature_mode = cfg.get("feature_mode", "online_prefix")
+    feature_mode_raw = cfg.get("feature_mode", "causal")
     try:
-        FeatureMode(feature_mode)
+        feature_mode = parse_feature_mode(feature_mode_raw)
     except ValueError:
-        issues.append(f"unsupported feature_mode: {feature_mode}")
+        issues.append(f"unsupported feature_mode: {feature_mode_raw}")
+        feature_mode = None
+    else:
+        if feature_mode is not None and not feature_mode_is_deployable(feature_mode):
+            issues.append(
+                "feature_mode must be 'causal' for deployable Phase 2C.1 evaluation; "
+                f"got {feature_mode_raw!r} (offline/diagnostic modes leak within-window arrivals)"
+            )
 
     plan = {
         "experiment": cfg.get("experiment", ""),
@@ -256,6 +269,10 @@ def validate_phase2c1_config(cfg: dict) -> Tuple[List[str], Dict[str, Any]]:
         "input_b13_exists": bool(
             cfg.get("input_b13_dir")
             and (_repo_path(cfg["input_b13_dir"]) / "per_window.csv").exists()
+        ),
+        "feature_mode": feature_mode.value if feature_mode is not None else feature_mode_raw,
+        "feature_mode_deployable": (
+            feature_mode_is_deployable(feature_mode) if feature_mode is not None else False
         ),
         "workloads": workload_plan,
         "azure_2023": azure_plan,
@@ -268,6 +285,8 @@ def plan_to_stdout(plan: Dict[str, Any], mode: str) -> None:
     print(f"  Experiment        : {plan['experiment']}")
     print(f"  input_b13_dir     : {plan['input_b13_dir']}")
     print(f"  input_b13_exists  : {plan['input_b13_exists']}")
+    print(f"  feature_mode      : {plan.get('feature_mode')}")
+    print(f"  deployable mode   : {plan.get('feature_mode_deployable')}")
     print(f"  Workloads         : {len(plan['workloads'])}")
     for workload in plan["workloads"]:
         print(
@@ -477,6 +496,30 @@ def _annotate_groups(rows: List[Dict[str, Any]], workloads: Iterable[Dict[str, A
         row["workload_group"] = group_by_tag.get(tag, "unknown")
 
 
+def _evaluate_selector_summary(selector_key: str, group_rows: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Evaluate one selector and attach role / headline metadata."""
+    summary = evaluate_fresh_selector(selector_key, group_rows)
+    summary["selector_role"] = selector_role(selector_key)
+    summary["deployable_headline"] = is_deployable_headline_selector(selector_key)
+    summary["oracle_assisted"] = is_oracle_assisted_selector(selector_key)
+    return summary
+
+
+def _build_deployable_headline_rows(summary_rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    deployable = [
+        row for row in summary_rows
+        if row.get("deployable_headline") or row.get("selector_role") == "deployable_learned"
+    ]
+    deployable.sort(
+        key=lambda row: (
+            -float(row.get("mean_arrival_normalized_wg", 0.0)),
+            row.get("group", ""),
+            row.get("selector", ""),
+        )
+    )
+    return deployable
+
+
 def run_phase2c1_validation(
     cfg: dict,
     *,
@@ -501,7 +544,7 @@ def run_phase2c1_validation(
             if min_partial_window is not None
             else cfg.get("min_partial_window", 50)
         ),
-        feature_mode=FeatureMode(cfg.get("feature_mode", "online_prefix")),
+        feature_mode=parse_feature_mode(cfg.get("feature_mode", "causal")),
         verbose=False,
     )
     if not rows:
@@ -521,20 +564,41 @@ def run_phase2c1_validation(
         for selector_key in selector_keys:
             summary_rows.append(
                 _flatten_dict(
-                    {"group": group_name, **evaluate_fresh_selector(selector_key, group_rows)}
+                    {"group": group_name, **_evaluate_selector_summary(selector_key, group_rows)}
                 )
             )
 
     for selector_key in selector_keys:
         summary_rows.append(
-            _flatten_dict({"group": "overall", **evaluate_fresh_selector(selector_key, rows)})
+            _flatten_dict(
+                {"group": "overall", **_evaluate_selector_summary(selector_key, rows)}
+            )
         )
     _write_csv(out_dir / "selector_summary.csv", summary_rows)
+    deployable_rows = _build_deployable_headline_rows(summary_rows)
+    _write_csv(out_dir / "deployable_selector_summary.csv", deployable_rows)
 
+    selector_roles = classify_selectors(selector_keys)
     metadata = {
         "n_windows": len(rows),
         "n_workloads": len(workloads),
+        "feature_mode": parse_feature_mode(cfg.get("feature_mode", "causal")).value,
+        "feature_mode_deployable": feature_mode_is_deployable(
+            parse_feature_mode(cfg.get("feature_mode", "causal"))
+        ),
         "selectors": selector_keys,
+        "selector_roles": selector_roles,
+        "oracle_assisted_selectors": selector_roles.get("oracle_assisted", []),
+        "deployable_headline_selectors": selector_roles.get("deployable_learned", []),
+        "primary_rank_metric": "mean_arrival_normalized_wg",
+        "metric_definitions": {
+            "mean_completed_request_quality": "completed-only weighted goodput (conditional on completed requests)",
+            "mean_completion_fraction": "fraction of arrivals completed",
+            "mean_arrival_normalized_wg": "completion_fraction * completed_only_wg",
+            "mean_cp_wg_t095_l05": "completion-penalized WG target=0.95 lambda=0.5",
+            "mean_cp_wg_t099_l05": "completion-penalized WG target=0.99 lambda=0.5",
+            "mean_cp_wg_t099_l10": "completion-penalized WG target=0.99 lambda=1.0",
+        },
         "workloads": [
             {
                 "tag": w["tag"],

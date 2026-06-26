@@ -2,7 +2,7 @@
 Selector dataset builder.
 
 For each window in a trace:
-1. Extract features (online_prefix mode by default).
+1. Extract features (causal mode by default).
 2. Run each deployable candidate policy on the window (isolated simulation).
 3. Assign label = best policy by weighted_goodput.
 4. Write CSV and metadata.
@@ -24,7 +24,7 @@ from ..evaluation.run_policy import run_policy
 from ..policies.registry import make_policy
 from ..simulator.service_model import ServiceModel
 from .candidates import SELECTOR_CANDIDATES
-from .features import FeatureMode, FEATURE_NAMES, extract_features
+from .features import FeatureMode, FEATURE_NAMES, extract_features, parse_feature_mode
 from .labels import WindowLabel, label_windows
 from .windows import RequestWindow, make_windows, DEFAULT_WINDOW_SIZE, MIN_PARTIAL_WINDOW
 
@@ -35,7 +35,7 @@ class DatasetConfig:
     trace_id: str = "trace"
     window_size: int = DEFAULT_WINDOW_SIZE
     min_partial_window: int = MIN_PARTIAL_WINDOW
-    feature_mode: FeatureMode = FeatureMode.ONLINE_PREFIX
+    feature_mode: FeatureMode = FeatureMode.CAUSAL
     gpu_configs: Optional[List[GPUConfig]] = None
     service_model: Optional[ServiceModel] = None
     drain_steps: int = 5_000

@@ -3,21 +3,33 @@ Feature leakage tests.
 
 Verifies that:
 1. actual_output_tokens is never used.
-2. Future arrivals (after window end) do not change current features.
-3. Future completion outcomes do not change features.
-4. Full-trace normalization is not applied.
-5. Changing future requests does not alter current window features.
+2. Causal features ignore later within-window arrivals.
+3. Offline lookahead mode intentionally reflects within-window future arrivals.
+4. Feature normalization is not fit on evaluation rows inside selector models.
 """
 import copy
 import pytest
 import numpy as np
 
 from llmserveopt.core.types import Request
-from llmserveopt.selector.features import extract_features, FEATURE_NAMES, FeatureMode
+from llmserveopt.selector.features import (
+    extract_features,
+    FEATURE_NAMES,
+    FeatureMode,
+    parse_feature_mode,
+    feature_mode_is_deployable,
+)
+from llmserveopt.selector.models import RandomForestSelector
 
 
-def _req(i: int, t: float, prompt: int = 64, pred_out: int = 32,
-         actual_out: int = 32, slo_slack: float = 5.0) -> Request:
+def _req(
+    i: int,
+    t: float,
+    prompt: int = 64,
+    pred_out: int = 32,
+    actual_out: int = 32,
+    slo_slack: float = 5.0,
+) -> Request:
     return Request(
         request_id=i,
         arrival_time=t,
@@ -30,7 +42,7 @@ def _req(i: int, t: float, prompt: int = 64, pred_out: int = 32,
     )
 
 
-def _extract(win, start_t=0.0, prefix=None, mode=FeatureMode.ONLINE_PREFIX):
+def _extract(win, start_t=0.0, prefix=None, mode=FeatureMode.CAUSAL):
     return extract_features(
         window_requests=win,
         window_start_time=start_t,
@@ -41,12 +53,11 @@ def _extract(win, start_t=0.0, prefix=None, mode=FeatureMode.ONLINE_PREFIX):
 
 # --- actual_output_tokens not used ---
 
-def test_actual_output_tokens_change_does_not_affect_features():
-    """Changing actual_output_tokens must not change any feature."""
+def test_actual_output_tokens_change_does_not_affect_causal_features():
     win_a = [_req(i, float(i), actual_out=10) for i in range(10)]
     win_b = [_req(i, float(i), actual_out=999) for i in range(10)]
-    feats_a = _extract(win_a)
-    feats_b = _extract(win_b)
+    feats_a = _extract(win_a, start_t=0.0, mode=FeatureMode.CAUSAL)
+    feats_b = _extract(win_b, start_t=0.0, mode=FeatureMode.CAUSAL)
     for name in FEATURE_NAMES:
         assert feats_a[name] == pytest.approx(feats_b[name], nan_ok=True), (
             f"Feature '{name}' changed when actual_output_tokens changed — leakage!"
@@ -64,73 +75,126 @@ def test_actual_output_tokens_change_descriptive_mode():
         )
 
 
-# --- future arrivals do not change features ---
+# --- causal vs within-window lookahead ---
 
-def test_future_arrivals_do_not_affect_online_prefix_features():
-    """Adding requests after window_start_time must not change online_prefix features."""
+def test_causal_features_unchanged_when_later_window_requests_mutated():
+    """Mutating later within-window arrivals must not change causal features."""
     window_start = 10.0
-    prefix = [_req(i, float(i)) for i in range(5)]   # all arrive before window_start
-    win = [_req(100 + i, window_start + i * 0.1) for i in range(10)]
+    prefix = [_req(i, float(i)) for i in range(5)]
+    win_base = [
+        _req(100, window_start, prompt=100),
+        _req(101, window_start + 1.0, prompt=200),
+        _req(102, window_start + 2.0, prompt=300),
+    ]
+    win_mutated = [
+        _req(100, window_start, prompt=100),
+        _req(101, window_start + 1.0, prompt=9999),
+        _req(102, window_start + 2.0, prompt=8888),
+    ]
 
-    # Baseline features
-    feats_base = _extract(win, start_t=window_start, prefix=prefix)
-
-    # Append future requests to prefix (they should be ignored since t > window_start)
-    future = [_req(200 + i, window_start + 100.0 + float(i)) for i in range(5)]
-    prefix_extended = prefix + future
-    feats_extended = _extract(win, start_t=window_start, prefix=prefix_extended)
-
+    feats_base = _extract(
+        win_base, start_t=window_start, prefix=prefix, mode=FeatureMode.CAUSAL
+    )
+    feats_mut = _extract(
+        win_mutated, start_t=window_start, prefix=prefix, mode=FeatureMode.CAUSAL
+    )
     for name in FEATURE_NAMES:
-        assert feats_base[name] == pytest.approx(feats_extended[name], nan_ok=True), (
-            f"Feature '{name}' changed when future arrivals added to prefix — leakage!"
+        assert feats_base[name] == pytest.approx(feats_mut[name], nan_ok=True), (
+            f"Causal feature '{name}' changed after mutating future within-window arrivals"
         )
 
 
-# --- changing future window does not change previous window features ---
+def test_offline_window_lookahead_reflects_later_window_requests():
+    """Offline lookahead intentionally uses full-window token/SLO statistics."""
+    window_start = 10.0
+    prefix = [_req(i, float(i)) for i in range(5)]
+    win_base = [
+        _req(100, window_start, prompt=100),
+        _req(101, window_start + 1.0, prompt=200),
+        _req(102, window_start + 2.0, prompt=300),
+    ]
+    win_mutated = [
+        _req(100, window_start, prompt=100),
+        _req(101, window_start + 1.0, prompt=9999),
+        _req(102, window_start + 2.0, prompt=8888),
+    ]
 
-def test_changing_future_window_does_not_alter_current_features():
-    """Features for window 0 must be independent of window 1 contents."""
-    all_requests = [_req(i, float(i) * 0.5, prompt=64) for i in range(40)]
-    win0 = all_requests[:20]
-    win1_a = all_requests[20:]
-    win1_b = [_req(200 + i, float(20 + i) * 0.5, prompt=512) for i in range(20)]  # very different
+    feats_base = _extract(
+        win_base,
+        start_t=window_start,
+        prefix=prefix,
+        mode=FeatureMode.OFFLINE_WINDOW_LOOKAHEAD,
+    )
+    feats_mut = _extract(
+        win_mutated,
+        start_t=window_start,
+        prefix=prefix,
+        mode=FeatureMode.OFFLINE_WINDOW_LOOKAHEAD,
+    )
+    assert feats_base["mean_prompt_tokens"] != pytest.approx(
+        feats_mut["mean_prompt_tokens"]
+    )
 
-    prefix = []
-    feats_with_a = _extract(win0, start_t=0.0, prefix=prefix)
-    feats_with_b = _extract(win0, start_t=0.0, prefix=prefix)
 
-    # Changing win1 has no effect because features only depend on win0 and prefix
+def test_online_prefix_alias_maps_to_offline_window_lookahead():
+    assert parse_feature_mode("online_prefix") == FeatureMode.OFFLINE_WINDOW_LOOKAHEAD
+    assert not feature_mode_is_deployable(parse_feature_mode("online_prefix"))
+    assert feature_mode_is_deployable(parse_feature_mode("causal"))
+
+
+# --- prefix future arrivals do not change causal prefix-only stats ---
+
+def test_future_prefix_arrivals_after_window_start_ignored_for_causal():
+    window_start = 10.0
+    prefix = [_req(i, float(i)) for i in range(5)]
+    win = [_req(100 + i, window_start + i * 0.1, prompt=128) for i in range(10)]
+
+    feats_base = _extract(win, start_t=window_start, prefix=prefix, mode=FeatureMode.CAUSAL)
+    future = [_req(200 + i, window_start + 100.0 + float(i), prompt=512) for i in range(5)]
+    feats_extended = _extract(
+        win, start_t=window_start, prefix=prefix + future, mode=FeatureMode.CAUSAL
+    )
+
     for name in FEATURE_NAMES:
-        assert feats_with_a[name] == pytest.approx(feats_with_b[name], nan_ok=True), (
-            f"Feature '{name}' is not independent of future window — leakage!"
+        assert feats_base[name] == pytest.approx(feats_extended[name], nan_ok=True), (
+            f"Causal feature '{name}' changed when future prefix arrivals were added"
         )
 
 
 # --- predicted vs actual separation ---
 
 def test_pred_output_tokens_used_not_actual():
-    """mean_pred_output_tokens must track predicted_output_tokens, not actual."""
-    win_same_pred_diff_actual = [
+    win = [
         _req(i, float(i), pred_out=50, actual_out=200 + i * 10) for i in range(10)
     ]
-    feats = _extract(win_same_pred_diff_actual)
+    feats = _extract(win, start_t=0.0, mode=FeatureMode.CAUSAL)
     assert feats["mean_pred_output_tokens"] == pytest.approx(50.0)
     assert feats["p95_pred_output_tokens"] == pytest.approx(50.0)
 
 
-# --- no full-trace normalization ---
+# --- selector model fitting uses train rows only ---
 
-def test_no_full_trace_normalization():
-    """Features must not depend on the global min/max of a full trace."""
-    # Window 0: small prompts
-    win_small = [_req(i, float(i), prompt=10) for i in range(10)]
-    feats_small = _extract(win_small, start_t=0.0)
+def test_selector_model_fit_uses_only_training_rows():
+    """Tree selectors fit on provided train rows; test rows are not used in fit()."""
+    train_rows = [
+        {"feat_queue_length": 1.0, "feat_arrival_rate_est": 2.0, "best_policy": "fifo"},
+        {"feat_queue_length": 2.0, "feat_arrival_rate_est": 3.0, "best_policy": "edf"},
+        {"feat_queue_length": 3.0, "feat_arrival_rate_est": 4.0, "best_policy": "edf"},
+    ]
+    test_rows = [
+        {"feat_queue_length": 99.0, "feat_arrival_rate_est": 99.0, "best_policy": "fifo"},
+    ]
+    for row in train_rows + test_rows:
+        for name in FEATURE_NAMES:
+            row.setdefault(f"feat_{name}", 0.0)
 
-    # Hypothetical full trace includes huge requests later — should not affect win_small features
-    # (We simulate this by computing features without those huge requests vs with them in a prefix)
-    large_prefix = [_req(100 + i, float(i) * 0.01, prompt=9999) for i in range(50)]
-    feats_with_large_prefix = _extract(win_small, start_t=0.0, prefix=large_prefix)
+    model = RandomForestSelector(n_estimators=10, max_depth=3, random_state=0)
+    model.fit(copy.deepcopy(train_rows))
+    preds_before = model.predict(copy.deepcopy(test_rows))
 
-    # Token stats come from the window, not the prefix — must be unchanged
-    assert feats_small["mean_prompt_tokens"] == pytest.approx(feats_with_large_prefix["mean_prompt_tokens"])
-    assert feats_small["p95_prompt_tokens"] == pytest.approx(feats_with_large_prefix["p95_prompt_tokens"])
+    mutated_test = copy.deepcopy(test_rows)
+    mutated_test[0]["feat_queue_length"] = 12345.0
+    preds_after = model.predict(mutated_test)
+
+    assert preds_before == preds_after
+    assert model._clf.n_features_in_ == len(FEATURE_NAMES)

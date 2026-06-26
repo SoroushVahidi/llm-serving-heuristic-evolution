@@ -242,6 +242,7 @@ def evaluate_fresh_selector(
     mean_wsp = float(np.mean(wsp_anwgs))
     mean_oracle = float(np.mean(oracle_anwgs))
     mean_anwg = float(np.mean(metric_vals["arrival_normalized_wg"]))
+    mean_completion = float(np.mean([_comp_frac(row, pred) for pred, row in zip(preds, rows)]))
 
     return {
         "selector": sel_key,
@@ -250,6 +251,8 @@ def evaluate_fresh_selector(
         "chosen_policy_dist": dict(Counter(preds)),
         "collapses_to_scorpio": dict(Counter(preds)).get(SCORPIO, 0) == n,
         **{f"mean_{k}": round(float(np.mean(v)), 4) for k, v in metric_vals.items()},
+        "mean_completion_fraction": round(mean_completion, 4),
+        "primary_rank_metric": "mean_arrival_normalized_wg",
         "gap_vs_always_scorpio_anwg": round(mean_anwg - mean_scorpio, 4),
         "gap_vs_always_wsp_anwg": round(mean_anwg - mean_wsp, 4),
         "gap_vs_oracle_anwg": round(mean_anwg - mean_oracle, 4),
