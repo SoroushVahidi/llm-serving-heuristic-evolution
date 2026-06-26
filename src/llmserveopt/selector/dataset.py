@@ -168,9 +168,13 @@ def build_selector_dataset(
         row["slo_violation_rate_best"] = lbl.slo_violation_rate_best
         row["p95_ttft_best"] = lbl.p95_ttft_best
         row["p95_latency_best"] = lbl.p95_latency_best
-        # Per-policy reward vector
+        # Per-policy reward vector and aux metrics (for admission/completion audits)
         for pname in SELECTOR_CANDIDATES:
             row[f"reward_{pname}"] = lbl.reward_vector.get(pname, float("nan"))
+            pm = pmetrics.get(pname)
+            if pm is not None:
+                row[f"completion_{pname}"] = pm.completion_fraction
+                row[f"slo_violation_{pname}"] = pm.slo_violation_rate
         rows.append(row)
 
     return rows

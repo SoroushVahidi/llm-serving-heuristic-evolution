@@ -216,6 +216,47 @@ Per-window oracle WG (overall): 0.9974
 See `docs/audits/phase2b12_failure_cases_summary.md` and `docs/audits/phase2b12_selector_label_diversity_summary.md`
 for full analysis.
 
+## Phase 2B.13 Selector Training and SCORPIO Suspicion Audit (Results)
+
+**Goal:** Extend to ≥200 windows; train selectors; audit whether SCORPIO dominance and
+near-tie labels make selector learning meaningful; report always-SCORPIO baseline.
+
+**Config:** `configs/phase2b13_selector_training_and_suspicion_audit.yaml`  
+**Runner:** `scripts/run_phase2b13_selector_training_and_suspicion_audit.py`  
+**Summary:** `docs/audits/phase2b13_selector_training_and_suspicion_audit_summary.md`  
+**tmux session:** `phase2b13_selector_training`
+
+### Phase 2B.13 Results Summary
+
+| Group | n_windows | Rule WG | RF WG | always-SCORPIO WG | Best fixed WG |
+|-------|-----------|---------|-------|-------------------|---------------|
+| dev | 27 | 0.9168 | 0.9881 | 0.9878 | 0.9878 |
+| heldout | 33 | 0.9803 | **0.9975** | **0.9975** | 0.9975 |
+| regression | 60 | 0.9518 | 0.9933 | 0.9932 | 0.9932 |
+| diversity | 259 | 0.8179 | 0.9837 | 0.9826 | 0.9826 |
+| **overall** | **319** | **0.8431** | **0.9855** | **0.9846** | **0.9846** |
+
+### Selectors Trained
+
+Standard RF/DT, regret-weighted RF/DT, per-policy regression, KNN (k=5), safe-fallback-to-SCORPIO
+(margins 0.001/0.005/0.010). All tie or lose to always-SCORPIO on held-out.
+
+### Key Phase 2B.13 Findings
+
+1. **RF ties always-SCORPIO on held-out** (WG=0.9975) but does not beat it; collapses to SCORPIO 32/33 windows.
+2. **Near-tie / all-complete labels dominate** (~93% windows); regret-weighting does not change held-out conclusion.
+3. **Label diversity sufficient** for training (43.8% SCORPIO, 7 policies ≥10 wins).
+4. **always-SCORPIO within 0.2 pp of per-window oracle** on held-out — little selector headroom.
+5. **No rule selector repair** — trained selectors evaluated first; RF failure suggests rule patches would be ad hoc.
+
+### Phase 2B.13 Failure Cases
+
+See `docs/audits/phase2b13_failure_cases_summary.md` (fail_012–fail_018).
+
+**Selector claim requirement:** Any selector contribution must beat always-SCORPIO on held-out
+or demonstrate statistically meaningful improvement. Near-tie/all-complete windows should not
+be treated as strong labels.
+
 ## Phase 2B.9 Status and Caveats
 
 **Phase 2B.9 adds the first held-out generalization test for the repaired rule selector.**

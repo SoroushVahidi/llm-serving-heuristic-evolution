@@ -137,6 +137,11 @@ def gather_status() -> dict:
     else:
         api_ledger_entries = 0
 
+    # --- Phase 2B.13 config present ---
+    _p2b13_cfg = _repo_root / "configs" / "phase2b13_selector_training_and_suspicion_audit.yaml"
+    _p2b13_runner = _repo_root / "scripts" / "run_phase2b13_selector_training_and_suspicion_audit.py"
+    phase2b13_artifacts_present = _p2b13_cfg.exists() and _p2b13_runner.exists()
+
     return {
         "deployable_baselines": {
             "count": n_deployable,
@@ -173,6 +178,11 @@ def gather_status() -> dict:
         "templates": {
             "present": templates_present,
             "all_present": all_templates_present,
+        },
+        "phase2b13": {
+            "config_present": _p2b13_cfg.exists(),
+            "runner_present": _p2b13_runner.exists(),
+            "artifacts_present": phase2b13_artifacts_present,
         },
     }
 

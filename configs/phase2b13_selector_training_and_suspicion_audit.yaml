@@ -1,0 +1,706 @@
+# Phase 2B.13 Selector Training and Suspicion Audit
+#
+# Goals:
+#   1. Extend Phase 2B.12 to ≥200 total windows with genuine WG differentiation
+#   2. Audit SCORPIO dominance: always-SCORPIO comparison, near-tie filtering,
+#      completion-penalized objectives, leakage confirmation
+#   3. Train RF/DT selectors with regret weighting if criteria pass
+#   4. Evaluate safe-fallback, KNN, and per-policy regression selectors
+#
+# Key Phase 2B.12 finding:
+#   Only dev_kv_pressure_decode_heavy (45 req/s, output_mean=384, slo_slack=0.8)
+#   produced genuinely differentiated windows (0/6 all-complete, mean_gap=0.29).
+#   All other 166/172 windows were all-complete (WG≈1.0 for all policies).
+#   Near-tie at eps=0.001: 128/172 (74%) — labels reflect tie-breaking, not WG.
+#
+# Extension strategy:
+#   A. Extend existing diversity workloads: seeds [6,7,8,9] → [6,7,8,9,10,11]
+#      (~56 more windows — mostly all-complete but adds label diversity margin)
+#   B. Add 6 new "genuinely differentiated" workloads:
+#      Higher arrival rate + longer outputs + tighter SLOs → genuine KV pressure
+#      These target regimes where SCORPIO's admission throttling measurably matters.
+#   C. Existing regression + heldout: unchanged
+#
+# Runner: scripts/run_phase2b13_selector_training_and_suspicion_audit.py
+# Output: results/phase2b13_selector_training_and_suspicion_audit/
+# Log:    logs/phase2b13/phase2b13_selector_training.log
+
+experiment: phase2b13_selector_training_and_suspicion_audit
+
+output_dir: results/phase2b13_selector_training_and_suspicion_audit
+
+# Phase 2B.12 reference for regression continuity
+phase2b12_reference:
+  rule_based_wg:
+    dev: 0.9168
+    heldout: 0.9803
+    regression: 0.9518
+    diversity: 0.9831
+    overall: 0.9721
+  best_fixed_wg:
+    dev: 0.9878
+    heldout: 0.9975
+    regression: 0.9932
+    diversity: 0.9969
+    overall: 0.9956
+  best_fixed_policy: scorpio_style_slo_guard
+  n_windows: 172
+  scorpio_label_fraction: 0.459
+  near_tie_eps001_fraction: 0.744   # 128/172 windows had gap < 0.001
+  near_tie_eps010_fraction: 0.826   # 142/172 windows had gap < 0.010
+  all_complete_fraction: 0.936      # 161/172 windows had best_wg >= 0.99
+
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+window_size: 200
+min_partial_window: 50
+feature_mode: online_prefix
+
+dev_seeds: [0, 1, 2]
+heldout_seeds: [3, 4, 5]
+# Extended from [6,7,8,9] to [6,7,8,9,10,11] (BurstGPT workloads only use seed 6)
+diversity_seeds: [6, 7, 8, 9, 10, 11]
+
+# Near-tie filtering thresholds (policy_margin = best_wg - second_best_wg)
+near_tie_thresholds: [0.001, 0.005, 0.010]
+
+# All-complete threshold
+all_complete_threshold: 0.99
+
+# RF/DT feasibility thresholds (applied to ALL windows, not just non-tie)
+rf_feasibility:
+  min_windows: 200
+  min_policies_winning: 3
+  min_windows_per_policy: 10
+  max_single_policy_fraction: 0.85
+
+# Selector training split
+selector_training:
+  train_groups: [dev, diversity]
+  test_groups: [heldout]
+  train_diversity_seeds: [6, 7, 8, 9, 10]
+  val_diversity_seeds: [11]
+  # Regret-weighting: sample_weight = (policy_margin + epsilon)
+  regret_weight_epsilon: 0.001
+
+# Objective sensitivity parameters (SCORPIO admission audit)
+objective_sensitivity:
+  completion_target: 0.95
+  lambdas: [0.5, 1.0]
+  # adjusted_score = wg - lambda * max(0, completion_target - completion_fraction)
+  # completion_fraction per window estimated from mean over policies
+
+# Safe-fallback selector margins
+safe_fallback_margins: [0.001, 0.005, 0.010]
+
+# KNN selector
+knn:
+  k: 5
+  metric: euclidean
+
+workloads:
+
+  # =========================================================================
+  # REGRESSION GROUP — unchanged from Phase 2B.11/2B.12
+  # =========================================================================
+
+  - tag: dev_overloaded_mixed_slo
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.15}
+
+  - tag: dev_high_prediction_noise
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.70
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: dev_kv_pressure_decode_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+      - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+  - tag: dev_overloaded_prefill_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  - tag: heldout_moderate_kv_pressure
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 150.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_very_high_noise
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.90
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_prefill_overloaded
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  - tag: heldout_bursty_mixed_slo
+    group: heldout
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.8
+    output_low: 8
+    output_high: 384
+    prediction_noise_rel: 0.20
+    burst_factor: 4.0
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_burstgpt_smoke
+    group: heldout
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+    max_requests: 400
+
+  # =========================================================================
+  # DIVERSITY GROUP — Phase 2B.12 workloads with extended seeds [6..11]
+  # =========================================================================
+
+  - tag: div_prefill_heavy_sarathi
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 22.0
+    duration: 12.0
+    prompt_dist: lognormal
+    prompt_mean: 768.0
+    prompt_sigma: 0.5
+    prompt_low: 256
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: tight, slo_slack: 1.5, priority: 3.0, weight: 0.55}
+      - {class_id: loose, slo_slack: 8.0, priority: 1.0, weight: 0.45}
+
+  - tag: div_prefill_moderate_tight
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 25.0
+    duration: 12.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1536
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 3.0, weight: 0.60}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.40}
+
+  - tag: div_prefill_bursty
+    group: diversity
+    arrival_process: bursty
+    arrival_rate: 30.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 600.0
+    prompt_sigma: 0.5
+    prompt_low: 192
+    prompt_high: 1792
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    burst_factor: 3.0
+    burst_fraction: 0.30
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 3.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 10.0, priority: 1.0, weight: 0.40}
+
+  - tag: div_decode_all_loose_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 256.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 768
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.40}
+
+  - tag: div_decode_medium_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 192.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 640
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 3.0,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_decode_kv_saturated
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 5.0,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 12.0, priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 30.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_loose_weight_dominant
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight, slo_slack: 0.5,  priority: 3.0, weight: 0.10}
+      - {class_id: loose, slo_slack: 10.0, priority: 1.0, weight: 0.90}
+
+  - tag: div_medium_rate_low_noise
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.5
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.05
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.3,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 1.5,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 8.0,  priority: 1.0, weight: 0.20}
+
+  - tag: div_bursty_moderate
+    group: diversity
+    arrival_process: bursty
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 320
+    prediction_noise_rel: 0.15
+    burst_factor: 3.5
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_high_load_no_tight_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 55.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.6
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 2.0,  priority: 2.0, weight: 0.65}
+      - {class_id: loose,  slo_slack: 10.0, priority: 1.0, weight: 0.35}
+
+  - tag: div_high_noise_moderate_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.9
+    output_low: 8
+    output_high: 768
+    prediction_noise_rel: 0.60
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_very_high_noise_tight_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.80
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.45}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_burstgpt_high_load
+    group: diversity
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_high_10k.jsonl
+    max_requests: 400
+
+  - tag: div_burstgpt_natural
+    group: diversity
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+    max_requests: 400
+
+  # =========================================================================
+  # NEW GENUINELY-DIFFERENTIATED WORKLOADS (Phase 2B.13 additions)
+  #
+  # Designed to create genuine WG gaps (not just tie-breaking).
+  # Evidence basis: dev_kv_pressure_decode_heavy (45 req/s, output_mean=384,
+  # slo_slack=0.8) is the ONLY Phase 2B.12 workload with 0/6 all-complete and
+  # mean_gap=0.29. These new workloads amplify those conditions.
+  # =========================================================================
+
+  - tag: div_kv_extreme_tight_slo
+    # Amplifies dev_kv_pressure_decode_heavy: higher rate, even longer outputs,
+    # tighter SLO. Expected: WSP vs SCORPIO vs best_fit show genuine WG gaps.
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 512.0
+    output_sigma: 0.5
+    output_low: 128
+    output_high: 1024
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_kv_extreme_decode_only
+    # Very long outputs, medium SLO only, no tight. Tests whether WSP/best_fit
+    # outperform SCORPIO by short-job-first ordering without SLO urgency.
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 55.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.4
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 600.0
+    output_sigma: 0.5
+    output_low: 200
+    output_high: 1024
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.70}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.30}
+
+  - tag: div_high_overload_tight_priority
+    # Very high arrival rate, tight SLO, all high-priority. Forces admission
+    # decisions to matter. SCORPIO vs EDF vs AC should differ significantly.
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 6.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 128.0
+    output_sigma: 0.7
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.3,  priority: 3.0, weight: 0.70}
+      - {class_id: loose,  slo_slack: 5.0,  priority: 1.0, weight: 0.30}
+
+  - tag: div_kv_mixed_extreme_noise
+    # KV pressure + very high noise. Tests whether SCORPIO's laxity-guard beats
+    # WSP/EDF when output prediction is very uncertain.
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 400.0
+    output_sigma: 0.8
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.70
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.6,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_decode_saturation_bursty
+    # Bursty arrivals + long outputs: burst fills KV cache, then drain while new
+    # burst arrives. Tests whether admission (SCORPIO/AC) handles bursts better.
+    group: diversity
+    arrival_process: bursty
+    arrival_rate: 55.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 350.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    burst_factor: 4.0
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.45}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_extreme_overload_short_tight
+    # Extreme arrival rate but short outputs — tests whether admission matters
+    # when there's no KV pressure (throughput-limited, not KV-limited).
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 100.0
+    duration: 6.0
+    prompt_dist: lognormal
+    prompt_mean: 32.0
+    prompt_sigma: 0.4
+    prompt_low: 8
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 32.0
+    output_sigma: 0.5
+    output_low: 8
+    output_high: 128
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.2,  priority: 3.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 3.0,  priority: 1.0, weight: 0.40}

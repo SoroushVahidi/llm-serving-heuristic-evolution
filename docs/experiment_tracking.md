@@ -88,3 +88,14 @@ See `docs/templates/api_usage_ledger_template.csv` for full schema.
 - `results/experiment_registry/` and `results/failure_cases/` are gitignored; only templates are committed.
 - The `api_usage_ledger.csv` in `results/api_usage/` is also gitignored.
 - Summaries extracted from results (e.g., `docs/audits/`) are committed.
+
+## Phase 2B.13 outputs (gitignored raw, committed summaries)
+
+- **Raw results:** `results/phase2b13_selector_training_and_suspicion_audit/`
+- **Committed summary:** `docs/audits/phase2b13_selector_training_and_suspicion_audit_summary.md`
+- **Failure cases:** `docs/audits/phase2b13_failure_cases_summary.md` + `failure_cases.csv` in results
+- **tmux session:** `phase2b13_selector_training`
+- **Log:** `logs/phase2b13/phase2b13_selector_training.log`
+
+Key runner outputs: `selector_comparison.csv`, `always_scorpio_comparison.csv`,
+`near_tie_summary.csv`, `rf_dt_training_summary.json`, `regret_weighted_training_summary.json`.

@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-26  
-**Current branch:** `phase2b12-workload-diversity-selector-labels`  
-**Current phase:** Phase 2B.12 — Workload diversity for selector label analysis
+**Current branch:** `phase2b13-selector-training-and-suspicion-audit`  
+**Current phase:** Phase 2B.13 — Selector training and SCORPIO suspicion audit
 
 ---
 
@@ -13,11 +13,12 @@
 | Deployable scheduling policies | **20** |
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
-| Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) |
-| Test count | **919 passing**, 2 skipped (Phase 2B.12) |
-| Phase 2B.12 windows evaluated | **172** (60 regression + 112 diversity) |
-| SCORPIO label fraction (Phase 2B.12) | **45.9%** (down from 100% in Phase 2B.11) |
-| RF/DT training feasible | **No** (172 < 200 threshold; spread+concentration pass) |
+| Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) + KNN/regression/fallback variants |
+| Test count | **945+ passing**, 2 skipped (Phase 2B.13) |
+| Phase 2B.13 windows evaluated | **319** (60 regression + 259 diversity) |
+| SCORPIO label fraction (Phase 2B.13) | **55.2%** |
+| RF/DT training feasible | **Yes** (256 ≥ 200; spread+concentration pass) |
+| RF beats always-SCORPIO (held-out) | **No** (ties at WG=0.9975) |
 
 ---
 
@@ -34,7 +35,8 @@
 | `phase2b9-selector-robustness-and-suite-freeze` | `5fe977b` | Selector robustness audit, held-out generalization, suite freeze |
 | `phase2b10-scorpio-slo-guard` | `a9921b9` | SCORPIO-style SLO guard baseline (20th deployable policy) |
 | `phase2b11-scorpio-selector-integration` | `6de9e2b` | SCORPIO integrated into rule selector; 3 new routing rules |
-| `phase2b12-workload-diversity-selector-labels` | current | Workload diversity sweep for selector label analysis |
+| `phase2b12-workload-diversity-selector-labels` | `93b6da7` | Workload diversity sweep for selector label analysis |
+| `phase2b13-selector-training-and-suspicion-audit` | current | Extend to 256 windows; train selectors; audit SCORPIO dominance |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -84,7 +86,39 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.12 — Workload Diversity for Selector Label Analysis (current)
+### Phase 2B.13 — Selector Training and SCORPIO Suspicion Audit (current)
+
+- **Goal:** Extend Phase 2B.12 to ≥200 windows; audit SCORPIO dominance and near-tie labels;
+  train RF/DT and alternative selectors if criteria pass; compare against always-SCORPIO baseline.
+- **Extension:** diversity seeds `[6..11]` + 6 KV-pressure/overload workloads.
+- **Config:** `configs/phase2b13_selector_training_and_suspicion_audit.yaml` (29 workloads)
+- **Runner:** `scripts/run_phase2b13_selector_training_and_suspicion_audit.py`
+- **Log:** `logs/phase2b13/phase2b13_selector_training.log`
+- **tmux session:** `phase2b13_selector_training`
+- **Results:** `results/phase2b13_selector_training_and_suspicion_audit/` (gitignored)
+- **Audit docs:** `docs/audits/phase2b13_selector_training_and_suspicion_audit_summary.md`,
+  `docs/audits/phase2b13_failure_cases_summary.md`
+- **Tests:** `tests/test_phase2b13_selector_training.py`
+
+#### Phase 2B.13 Key Results
+
+| Metric | Value |
+|--------|-------|
+| Total windows | **319** (60 regression + 259 diversity) |
+| RF/DT feasible | **Yes** |
+| SCORPIO label fraction | **55.2%** (176/319) |
+| always-SCORPIO held-out WG | **0.9975** |
+| RF held-out WG | **0.9975** (ties; does not beat always-SCORPIO) |
+| per_policy_regression held-out WG | 0.9978 (+0.0003 vs always-SCORPIO, negligible) |
+| Rule selector held-out WG | 0.9803 |
+| Rule selector diversity WG | 0.8179 (KV-extreme failure) |
+| Best fixed WG (held-out) | 0.9975 (SCORPIO) |
+| Rule repair applied | **No** |
+
+**Key finding:** Learned selectors do not beat always-SCORPIO on held-out windows.
+Selector claims require beating always-SCORPIO or showing statistically meaningful improvement.
+
+### Phase 2B.12 — Workload Diversity for Selector Label Analysis
 
 - **Goal:** Build ~200-window evaluation suite spanning diverse regimes (load, SLO pressure,
   token structure, KV pressure, noise, priority) where non-SCORPIO policies can win.
