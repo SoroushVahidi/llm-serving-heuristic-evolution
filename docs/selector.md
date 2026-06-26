@@ -142,6 +142,80 @@ Config: `configs/phase2b11_scorpio_selector_integration.yaml`
 Runner: `scripts/run_phase2b11_scorpio_selector_integration.py`
 Summary: `docs/audits/phase2b11_scorpio_selector_integration_summary.md`
 
+**Phase 2B.11 label diversity finding:** SCORPIO wins as per-window oracle on all 60
+Phase 2B.9/2B.10 windows.  Rule selector dispatches to SCORPIO 1/60 times.  RF/DT training
+deferred — "always choose SCORPIO" is the only learnable function.  Phase 2B.12 broadens the
+suite to expose regimes where other policies win.
+
+## Phase 2B.12 Workload Diversity (Results)
+
+**Goal:** Build ~200-window suite across diverse regimes to enable meaningful RF/DT training
+(label diversity criterion: ≥3 policies winning ≥10 windows each, no single policy >85%).
+
+**Config:** `configs/phase2b12_workload_diversity_selector_labels.yaml`  
+**Runner:** `scripts/run_phase2b12_workload_diversity_selector_labels.py`  
+**Design doc:** `docs/audits/phase2b12_workload_diversity_design.md`  
+**tmux session:** `phase2b12_workload_diversity` (completed, EXIT_CODE=0, ~638s)  
+**Results:** `results/phase2b12_workload_diversity_selector_labels/` (gitignored)
+
+### Phase 2B.12 Results Summary
+
+| Group | n_windows | Rule selector WG | Best fixed WG | Gap |
+|-------|-----------|-----------------|---------------|-----|
+| dev | 27 | 0.9168 | 0.9878 | −0.071 |
+| heldout | 33 | 0.9803 | 0.9975 | −0.017 |
+| regression | 60 | 0.9518 | 0.9932 | −0.041 |
+| diversity | 112 | 0.9831 | 0.9969 | −0.014 |
+| **overall** | **172** | **0.9721** | **0.9956** | **−0.024** |
+
+Best fixed policy in all groups: `scorpio_style_slo_guard`  
+Per-window oracle WG (overall): 0.9974
+
+### Label Distribution (Phase 2B.12 overall, n=172)
+
+| Policy | Oracle wins | Fraction |
+|--------|------------|---------|
+| `scorpio_style_slo_guard` | 79 | 45.9% ↓ from 100% in Phase 2B.11 |
+| `admission_control` | 29 | 16.9% |
+| `best_fit` | 14 | 8.1% |
+| `edf` | 14 | 8.1% |
+| `shortest_output_first` | 13 | 7.6% |
+| `estimated_service_time_first` | 10 | 5.8% |
+| `multi_bin_batching` | 9 | 5.2% |
+| `random_feasible` | 3 | 1.7% |
+| `shortest_prompt_first` | 1 | 0.6% |
+
+**RF/DT feasibility:**
+- Window count: 172 < 200 → **FAIL** (28 short)
+- Policy spread: 6 policies ≥10 wins → **PASS**
+- Concentration: top=45.9% < 85% → **PASS**
+- **Decision: RF/DT NOT trained** — expand to ≥200 windows first
+
+### Key Phase 2B.12 Findings
+
+1. **Label diversity achieved:** SCORPIO wins 45.9% overall (vs 100% in Phase 2B.11).
+   9 distinct policies appear as oracle labels.
+2. **Prefill surprise:** `admission_control` wins all prefill-heavy diversity windows;
+   `sarathi_style` rule target (Rule 5) is wrong for this WG objective.
+3. **Missing rule coverage:** `best_fit`, `multi_bin_batching`, `estimated_service_time_first`,
+   `shortest_output_first` each win 9–14 windows but are not in the rule selector's policy choices.
+4. **All-complete diversity:** Many diversity workloads have WG=1.0 for all policies; label
+   diversity reflects tie-breaking, not genuine differentiation.
+5. **Rule selector dispatch:** slo_slack_score=93, WSP=29, AC=28, EDF=19, SCORPIO=2, sarathi=1.
+
+### Phase 2B.12 Failure Cases
+
+| ID | Description | Status |
+|----|-------------|--------|
+| fail_007 | Rule selector under-dispatches SCORPIO (2/172 vs 79/172 oracle) | Partially deferred |
+| fail_008 | Missing rule targets: best_fit, multi_bin_batching, SOF, estST | Open |
+| fail_009 | sarathi_style rule target wrong; AC wins prefill-heavy | Open |
+| fail_010 | 172 < 200 window threshold; RF/DT training blocked | Open |
+| fail_011 | All-complete diversity windows have tie-breaking labels | Open |
+
+See `docs/audits/phase2b12_failure_cases_summary.md` and `docs/audits/phase2b12_selector_label_diversity_summary.md`
+for full analysis.
+
 ## Phase 2B.9 Status and Caveats
 
 **Phase 2B.9 adds the first held-out generalization test for the repaired rule selector.**

@@ -32,6 +32,9 @@ results/*
 !results/.gitkeep
 traces/
 
+# Experiment logs (runtime output; not source code)
+logs/
+
 # Large binary / model artifacts
 *.bin
 *.safetensors
@@ -57,3 +60,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Claude Code project memory (local only)
+.claude/

@@ -1,0 +1,545 @@
+# Phase 2B.12 Workload Diversity for Selector Label Analysis
+#
+# Builds a ~200-window suite spanning diverse load, SLO pressure, token structure,
+# KV pressure, noise, and priority regimes.  Measures selector-label diversity and
+# determines whether RF/DT training is meaningful after Phase 2B.11 found SCORPIO
+# dominates all 60 Phase 2B.9/2B.10 windows.
+#
+# Groups:
+#   dev / heldout  — 9 Phase 2B.9/2B.11 regression workloads (seeds 0-5)
+#   diversity      — 15 new workloads targeting non-SCORPIO winners (seeds 6-9)
+#
+# Runner: scripts/run_phase2b12_workload_diversity_selector_labels.py
+# Output: results/phase2b12_workload_diversity_selector_labels/
+# Log:    logs/phase2b12/phase2b12_workload_diversity.log
+
+experiment: phase2b12_workload_diversity_selector_labels
+
+output_dir: results/phase2b12_workload_diversity_selector_labels
+
+# Phase 2B.11 reference for regression continuity
+phase2b11_reference:
+  rule_based_wg:
+    dev: 0.9168
+    heldout: 0.9803
+    overall: 0.9518
+  scorpio_fixed_wg:
+    dev: 0.9878
+    heldout: 0.9975
+    overall: 0.9932
+  best_fixed_wg:
+    dev: 0.9878
+    heldout: 0.9975
+    overall: 0.9932
+  best_fixed_policy:
+    dev: scorpio_style_slo_guard
+    heldout: scorpio_style_slo_guard
+    overall: scorpio_style_slo_guard
+  n_windows: 60
+
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+window_size: 200
+min_partial_window: 50
+feature_mode: online_prefix
+
+dev_seeds: [0, 1, 2]
+heldout_seeds: [3, 4, 5]
+diversity_seeds: [6, 7, 8, 9]
+
+# RF/DT training feasibility thresholds
+rf_feasibility:
+  min_windows: 200
+  min_policies_winning: 3
+  min_windows_per_policy: 10
+  max_single_policy_fraction: 0.85
+
+workloads:
+
+  # =========================================================================
+  # REGRESSION GROUP — Phase 2B.9/2B.11 workloads (dev, seeds 0-2)
+  # =========================================================================
+
+  - tag: dev_overloaded_mixed_slo
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.15}
+
+  - tag: dev_high_prediction_noise
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.70
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: dev_kv_pressure_decode_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+      - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+  - tag: dev_overloaded_prefill_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  # =========================================================================
+  # REGRESSION GROUP — Phase 2B.9/2B.11 workloads (heldout, seeds 3-5)
+  # =========================================================================
+
+  - tag: heldout_moderate_kv_pressure
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 150.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_very_high_noise
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.90
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_prefill_overloaded
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  - tag: heldout_bursty_mixed_slo
+    group: heldout
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.8
+    output_low: 8
+    output_high: 384
+    prediction_noise_rel: 0.20
+    burst_factor: 4.0
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_burstgpt_smoke
+    group: heldout
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+    max_requests: 400
+
+  # =========================================================================
+  # DIVERSITY GROUP A — Prefill-heavy (sarathi_style target, seeds 6-9)
+  # =========================================================================
+  # Long prompts (512-768 tokens) create prefill bottlenecks.
+  # sarathi_style chunks prefill with decode; other policies stall.
+  # Moderate load keeps SCORPIO guard passive (few violations).
+
+  - tag: div_prefill_heavy_sarathi
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 22.0
+    duration: 12.0
+    prompt_dist: lognormal
+    prompt_mean: 768.0
+    prompt_sigma: 0.5
+    prompt_low: 256
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: tight, slo_slack: 1.5, priority: 3.0, weight: 0.55}
+      - {class_id: loose, slo_slack: 8.0, priority: 1.0, weight: 0.45}
+
+  - tag: div_prefill_moderate_tight
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 25.0
+    duration: 12.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1536
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 3.0, weight: 0.60}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.40}
+
+  - tag: div_prefill_bursty
+    group: diversity
+    arrival_process: bursty
+    arrival_rate: 30.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 600.0
+    prompt_sigma: 0.5
+    prompt_low: 192
+    prompt_high: 1792
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    burst_factor: 3.0
+    burst_fraction: 0.30
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 3.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 10.0, priority: 1.0, weight: 0.40}
+
+  # =========================================================================
+  # DIVERSITY GROUP B — Long decode, loose SLO (WSP target, seeds 6-9)
+  # =========================================================================
+  # Long outputs → high KV utilization. Loose SLO → SCORPIO guard stays passive.
+  # WSP frees KV slots faster by serving shortest outputs first.
+
+  - tag: div_decode_all_loose_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 256.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 768
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.40}
+
+  - tag: div_decode_medium_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 192.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 640
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 3.0,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_decode_kv_saturated
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 5.0,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 12.0, priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 30.0, priority: 1.0, weight: 0.20}
+
+  # =========================================================================
+  # DIVERSITY GROUP C — Moderate competition (EDF/slo_slack target, seeds 6-9)
+  # =========================================================================
+
+  - tag: div_loose_weight_dominant
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.15
+    # WG denominator = sum(priorities). Tight has priority=3 but only 10% of arrivals.
+    # Loose has priority=1 but 90% of arrivals → WG mostly from loose requests.
+    # SCORPIO throttles to protect tight (priority 3) but at cost of loose (priority 1 × 90%).
+    # EDF that completes both achieves higher WG.
+    slo_classes:
+      - {class_id: tight, slo_slack: 0.5,  priority: 3.0, weight: 0.10}
+      - {class_id: loose, slo_slack: 10.0, priority: 1.0, weight: 0.90}
+
+  - tag: div_medium_rate_low_noise
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.5
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.05
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.3,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 1.5,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 8.0,  priority: 1.0, weight: 0.20}
+
+  - tag: div_bursty_moderate
+    group: diversity
+    arrival_process: bursty
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 320
+    prediction_noise_rel: 0.15
+    burst_factor: 3.5
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_high_load_no_tight_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 55.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.6
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 2.0,  priority: 2.0, weight: 0.65}
+      - {class_id: loose,  slo_slack: 10.0, priority: 1.0, weight: 0.35}
+
+  # =========================================================================
+  # DIVERSITY GROUP D — High prediction noise (admission_control target, seeds 6-9)
+  # =========================================================================
+
+  - tag: div_high_noise_moderate_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.9
+    output_low: 8
+    output_high: 768
+    prediction_noise_rel: 0.60
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: div_very_high_noise_tight_slo
+    group: diversity
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.80
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.45}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.20}
+
+  # =========================================================================
+  # DIVERSITY GROUP E — BurstGPT traces (unknown winner, seed 6 only)
+  # =========================================================================
+
+  - tag: div_burstgpt_high_load
+    group: diversity
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_high_10k.jsonl
+    max_requests: 400
+
+  - tag: div_burstgpt_natural
+    group: diversity
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+    max_requests: 400
