@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-25  
-**Current branch:** `phase2b10-scorpio-slo-guard`  
-**Current phase:** Phase 2B.10 — SCORPIO-style SLO guard baseline
+**Current branch:** `phase2b11-scorpio-selector-integration`  
+**Current phase:** Phase 2B.11 — SCORPIO selector integration
 
 ---
 
@@ -14,7 +14,7 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) |
-| Test count | **787 passing**, 1 skipped (Phase 2B.8 base) + Phase 2B.9 tests added |
+| Test count | **883 passing**, 2 skipped (Phase 2B.11) |
 
 ---
 
@@ -29,7 +29,8 @@
 | `phase2b7-overload-failure-mining` | `992fe11` | Unit fix, overloaded sweep, multi-bin tests, failure registry |
 | `phase2b8-rule-selector-repair` | `429e96e` | Rule selector repair: KV-pressure guard, noise guard, slo_slack_score for tight SLO |
 | `phase2b9-selector-robustness-and-suite-freeze` | `5fe977b` | Selector robustness audit, held-out generalization, suite freeze |
-| `phase2b10-scorpio-slo-guard` | current | SCORPIO-style SLO guard baseline (20th deployable policy) |
+| `phase2b10-scorpio-slo-guard` | `a9921b9` | SCORPIO-style SLO guard baseline (20th deployable policy) |
+| `phase2b11-scorpio-selector-integration` | current | SCORPIO integrated into rule selector; 3 new routing rules |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -79,7 +80,20 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.10 — SCORPIO-Style SLO Guard (current)
+### Phase 2B.11 — SCORPIO Selector Integration (current)
+- **Rule selector update:** 3 new routing rules integrate `scorpio_style_slo_guard` into `RuleBasedSelector`
+  - Rule 0: overloaded tight-SLO + recent violations → `scorpio_style_slo_guard`
+  - Rule 2a: very high noise (pred_output_cv > 2.0) → `scorpio_style_slo_guard` (fail_004 fix)
+  - Rule 3: standalone recent violations → `scorpio_style_slo_guard` (was AC)
+- **Selector policy choices:** 7 (was 6); `scorpio_style_slo_guard` added to `_POLICY_CHOICES`
+- **Experiment:** Phase 2B.9/2B.10 workload suite re-run with updated selector
+- **Tests:** 43 rule selector tests, 20 Phase 2B.11 tests; see `tests/test_rule_based_selector.py`, `tests/test_phase2b11_scorpio_selector_integration.py`
+- Config: `configs/phase2b11_scorpio_selector_integration.yaml`
+- Runner: `scripts/run_phase2b11_scorpio_selector_integration.py`
+- Log: `logs/phase2b11/phase2b11_scorpio_selector_integration.log`
+- Summary: `docs/audits/phase2b11_scorpio_selector_integration_summary.md`
+
+### Phase 2B.10 — SCORPIO-Style SLO Guard
 - **New policy:** `scorpio_style_slo_guard` — SCORPIO-inspired TTFT/TPOT guard with credit throttling
 - **Registry:** 20 deployable policies, 20 selector candidates; `oracle_srtf` still excluded
 - **Comparison results:** SCORPIO-style WG dev=0.988, held-out=0.998, overall=0.993; becomes best fixed baseline; rule selector no longer beats best fixed (gap −0.042 overall). See `docs/audits/phase2b10_scorpio_slo_guard_summary.md`

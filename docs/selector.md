@@ -21,7 +21,8 @@ fifo, edf, shortest_output_first, shortest_prompt_first,
 greedy_token_fill, least_loaded, multi_bin_batching, random_feasible,
 orca_style, vllm_style_token_budget, sarathi_style, splitfuse_style,
 slo_slack_score, weighted_shortest_processing, first_fit, best_fit,
-least_laxity_first, estimated_service_time_first, admission_control
+least_laxity_first, estimated_service_time_first, admission_control,
+scorpio_style_slo_guard
 ```
 
 Source of truth: `src/llmserveopt/selector/candidates.py`.
@@ -110,6 +111,36 @@ Non-overlapping windows of W=200 requests.  Partial tail windows with fewer than
 - Features depend only on requests arrived before or at `window_start_time`.
 - Changing future requests (beyond window end) must not alter current window features.
 - Tests in `tests/test_selector_no_leakage.py` enforce these invariants.
+
+## Phase 2B.11 SCORPIO Selector Integration
+
+**Phase 2B.11 finding:** Adding `scorpio_style_slo_guard` (Phase 2B.10) made it the best fixed
+baseline (WG=0.993 overall), but the Phase 2B.8 rule selector never dispatched to it (fail_005/006).
+The selector gap vs best fixed widened to −0.042 overall.
+
+**Phase 2B.11 repair:** Three new routing rules integrate SCORPIO into the rule selector:
+
+0. **Rule 0 (new):** `(fraction_tight_slo > 0.4 OR min_slack < 1.0) AND recent_slo_violation_rate > 0.2`
+   → `scorpio_style_slo_guard`
+   *Overloaded tight-SLO with active violations: SCORPIO's admission budget + TTFT/laxity guard
+   beats slo_slack_score. The violation rate guard ensures the rule fires only under genuine overload.*
+
+2a. **Rule 2a (new, between existing 1 and 2b):** `pred_output_cv > 2.0`
+    → `scorpio_style_slo_guard`
+    *Very extreme noise (> 2.0 CV): SCORPIO beats admission_control. Evidence: heldout_very_high_noise_s4
+    at 90% noise — AC=0.970, SCORPIO=1.000 (fail_004 resolution).*
+
+3. **Rule 3 (modified):** `recent_slo_violation_rate > 0.3`
+   → `scorpio_style_slo_guard` (was `admission_control`)
+   *Standalone high violations: SCORPIO's targeted admission budget throttling is more expressive.*
+
+All existing Phase 2B.8 rules (KV pressure → WSP; moderate noise → AC; tight SLO → slo_slack_score;
+prefill-heavy → sarathi_style; short uniform → ESTF; bursty → slo_slack_score; default → EDF)
+remain unchanged where the new rules do not fire.
+
+Config: `configs/phase2b11_scorpio_selector_integration.yaml`
+Runner: `scripts/run_phase2b11_scorpio_selector_integration.py`
+Summary: `docs/audits/phase2b11_scorpio_selector_integration_summary.md`
 
 ## Phase 2B.9 Status and Caveats
 

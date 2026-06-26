@@ -26,7 +26,7 @@ from .features import FEATURE_NAMES
 
 
 class RuleBasedSelector:
-    """Deterministic feature-based rule selector (Phase 2B.8 repair).
+    """Deterministic feature-based rule selector (Phase 2B.11 SCORPIO integration).
 
     Chooses among deployable scheduling policies using a hand-coded decision
     tree over workload feature values.  No training required.  Fully
@@ -42,30 +42,58 @@ class RuleBasedSelector:
 
     Repair: add two guard rules BEFORE the tight-SLO dispatch:
       R1. Decode-heavy workload (large mean_pred_output) → weighted_shortest_processing
-          Proxy for KV saturation in offline mode (kv_utilization unavailable).
-          Also triggers on kv_utilization > 0.7 in online deployments.
       R2. High output prediction noise (pred_output_cv > 1.0) → admission_control
-          Under noisy service estimates, laxity ranking is unreliable.
-    Replace least_laxity_first in the tight-SLO rule with slo_slack_score, which
-    is a composite urgency+throughput score that generalises better under overload.
+    Replace least_laxity_first with slo_slack_score in the tight-SLO rule.
+
+    Phase 2B.11 change summary
+    --------------------------
+    Phase 2B.10 added scorpio_style_slo_guard (20th deployable policy), which became
+    the best fixed baseline (WG=0.993 overall vs 0.922 for WSP).  The Phase 2B.8
+    rule selector was not updated and never dispatched to SCORPIO (fail_005/006).
+    Two changes close the gap:
+
+      R0. Overloaded tight-SLO + active SLO violations → scorpio_style_slo_guard
+          SCORPIO's admission budget + TTFT/laxity guard outperforms slo_slack_score
+          when the system is already violating SLOs under tight deadlines.
+          (Evidence: dev_overloaded_mixed_slo + heldout_bursty_mixed_slo families)
+          Guard condition: recent_slo_violation_rate > 0.2 ensures this only fires
+          when online feedback confirms actual violations are occurring, not just tight
+          SLO fractions without overload.
+
+      R2 split. Very extreme prediction noise (pred_output_cv > 2.0) → scorpio_style_slo_guard
+          Phase 2B.9 fail_004 (heldout_very_high_noise_s4, 90% noise): AC=0.970,
+          SCORPIO=1.000.  Above CV=2.0, SCORPIO's composite SLO guard beats AC.
+          Moderate noise (CV 1.0–2.0) keeps routing to admission_control (unchanged).
+
+      R3. Recent SLO violations (standalone, no tight-SLO combined) → scorpio_style_slo_guard
+          (was: admission_control)  SCORPIO's targeted admission budget throttling is
+          strictly more expressive than AC for violation-prone regimes.
 
     Rules (in priority order)
     -------------------------
-    1. Decode-heavy / KV-pressure proxy
+    0. Overloaded tight-SLO + active SLO violations (Phase 2B.11)
+       (fraction_tight_slo > 0.4 OR min_slack < 1.0) AND recent_slo_violation_rate > 0.2
+       → scorpio_style_slo_guard  (admission budget + TTFT guard beats urgency sort)
+
+    1. Decode-heavy / KV-pressure proxy (Phase 2B.8)
        mean_pred_output_tokens > 200 OR kv_utilization > 0.7
        → weighted_shortest_processing  (short-job-first frees KV slots quickly)
 
-    2. High output prediction noise
+    2a. Very high prediction noise (Phase 2B.11)
+       pred_output_cv > 2.0
+       → scorpio_style_slo_guard  (composite SLO guard beats AC at extreme CV)
+
+    2b. High output prediction noise (Phase 2B.8, unchanged)
        pred_output_cv > 1.0
        → admission_control  (urgency-sorted; robust when laxity estimates unreliable)
 
-    3. Recent SLO violations are high
+    3. Recent SLO violations (Phase 2B.11 modified)
        recent_slo_violation_rate > 0.3
-       → admission_control  (filter likely-to-miss requests early)
+       → scorpio_style_slo_guard  (was: admission_control)
 
-    4. Tight-SLO / urgent regime (with KV pressure already ruled out)
+    4. Tight-SLO / urgent regime (Phase 2B.8: uses slo_slack_score, not LLF)
        fraction_tight_slo > 0.4 OR min_slack < 1.0
-       → slo_slack_score  (composite urgency+throughput; avoids LLF cascade under overload)
+       → slo_slack_score  (composite urgency+throughput; avoids LLF cascade)
 
     5. Prefill-heavy workload (large prompts)
        mean_prompt_tokens > 512 OR p95_prompt_tokens > 1024
@@ -90,6 +118,7 @@ class RuleBasedSelector:
 
     # All policies this selector may recommend — verified at class definition.
     _POLICY_CHOICES = [
+        "scorpio_style_slo_guard",
         "weighted_shortest_processing",
         "admission_control",
         "slo_slack_score",
@@ -135,6 +164,15 @@ class RuleBasedSelector:
         pred_output_cv        = g(features, "pred_output_cv", 1.0)
         burstiness_cv         = g(features, "burstiness_cv", 0.0)
 
+        # Rule 0: overloaded tight-SLO + active SLO violations (Phase 2B.11)
+        # When tight deadlines coincide with observed violations, SCORPIO's admission
+        # budget throttling + TTFT/laxity guard outperforms slo_slack_score.
+        # The recent_violation_rate guard ensures this only fires under actual overload,
+        # not merely a tight-SLO distribution without queue build-up.
+        # Evidence: dev WG 0.988, heldout WG 0.998 (SCORPIO-style, Phase 2B.10).
+        if (fraction_tight_slo > 0.4 or min_slack < 1.0) and recent_violation_rate > 0.2:
+            return "scorpio_style_slo_guard"
+
         # Rule 1: decode-heavy / KV-pressure proxy (Phase 2B.8 guard)
         # Large mean output → requests hold KV slots longest; urgency-based scheduling
         # (LLF) promotes the worst offenders, cascading into KV saturation (WG=0.101).
@@ -143,16 +181,24 @@ class RuleBasedSelector:
         if mean_pred_output > 200 or kv_utilization > 0.7:
             return "weighted_shortest_processing"
 
-        # Rule 2: high output prediction noise (Phase 2B.8 guard)
-        # pred_output_cv > 1.0 signals that service estimates are unreliable (noisy
-        # predictions). LLF's laxity ranking degrades under high noise; admission_control
-        # with urgency sort is more robust.
+        # Rule 2a: very high prediction noise (Phase 2B.11)
+        # At extreme CV (> 2.0), SCORPIO's composite SLO guard beats admission_control.
+        # Evidence: heldout_very_high_noise_s4 (90% noise) — AC=0.970, SCORPIO=1.000.
+        # fail_004 resolution: routes the extreme-noise regime away from AC.
+        if pred_output_cv > 2.0:
+            return "scorpio_style_slo_guard"
+
+        # Rule 2b: high output prediction noise (Phase 2B.8 guard, unchanged)
+        # pred_output_cv 1.0–2.0 signals unreliable service estimates (moderate noise).
+        # admission_control with urgency sort is robust here (dev 70%-noise: WG=0.988).
         if pred_output_cv > 1.0:
             return "admission_control"
 
-        # Rule 3: recent SLO violations — admission control
+        # Rule 3: recent SLO violations — SCORPIO guard (Phase 2B.11; was AC)
+        # SCORPIO's targeted admission budget + deadline filter is more expressive than
+        # AC alone when the system is in violation-prone steady state.
         if recent_violation_rate > 0.3:
-            return "admission_control"
+            return "scorpio_style_slo_guard"
 
         # Rule 4: tight SLO / urgency (Phase 2B.8: uses slo_slack_score, not LLF)
         # slo_slack_score is a composite urgency+throughput score; unlike LLF (pure

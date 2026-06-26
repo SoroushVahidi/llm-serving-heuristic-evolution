@@ -1,4 +1,4 @@
-"""Tests for the feature-based RuleBasedSelector (Phase 2B.5 + Phase 2B.8 repair)."""
+"""Tests for the feature-based RuleBasedSelector (Phase 2B.5 + Phase 2B.8 + Phase 2B.11)."""
 import pytest
 
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
@@ -102,13 +102,16 @@ def test_low_noise_does_not_trigger_admission_control_via_noise_rule():
 
 
 # -------------------------------------------------------------------------
-# Rule 3: high recent violations → admission_control
+# Rule 3: high recent violations → scorpio_style_slo_guard (Phase 2B.11)
+# Changed from admission_control: SCORPIO's admission budget + TTFT guard is
+# strictly more expressive for violation-prone regimes.
 # -------------------------------------------------------------------------
 
-def test_high_violation_rate_triggers_admission_control():
+def test_high_violation_rate_triggers_scorpio():
+    """Phase 2B.11: high recent violations (standalone) route to scorpio_style_slo_guard."""
     sel = RuleBasedSelector()
     f = feats(fraction_tight_slo=0.0, min_slack=50.0, recent_slo_violation_rate=0.5)
-    assert sel.predict_one(f) == "admission_control"
+    assert sel.predict_one(f) == "scorpio_style_slo_guard"
 
 
 def test_moderate_violation_below_threshold_no_admission_control():
@@ -483,3 +486,201 @@ def test_default_rule_unchanged():
         burstiness_cv=0.5,
     )
     assert sel.predict_one(f) == "edf"
+
+
+# -------------------------------------------------------------------------
+# Phase 2B.11: SCORPIO routing rules
+# -------------------------------------------------------------------------
+
+def test_scorpio_in_policy_choices():
+    """scorpio_style_slo_guard must be in RuleBasedSelector._POLICY_CHOICES (Phase 2B.11)."""
+    assert "scorpio_style_slo_guard" in RuleBasedSelector._POLICY_CHOICES
+
+
+def test_overload_tight_slo_with_violations_triggers_scorpio():
+    """Phase 2B.11 Rule 0: overloaded tight SLO + recent violations → scorpio_style_slo_guard.
+
+    When tight deadlines AND observed SLO violations coincide, SCORPIO's admission
+    budget throttling + TTFT/laxity guard beats slo_slack_score.
+    Evidence: dev_overloaded_mixed_slo and heldout_bursty_mixed_slo families.
+    """
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.5,
+        min_slack=0.4,
+        recent_slo_violation_rate=0.35,  # > 0.2 threshold
+        kv_utilization=0.0,
+        pred_output_cv=0.87,
+        mean_pred_output_tokens=96.0,
+    )
+    assert sel.predict_one(f) == "scorpio_style_slo_guard"
+
+
+def test_low_min_slack_with_violations_triggers_scorpio():
+    """Phase 2B.11 Rule 0: min_slack < 1.0 + recent violations → scorpio_style_slo_guard."""
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.0,
+        min_slack=0.5,
+        recent_slo_violation_rate=0.25,  # > 0.2 threshold
+        kv_utilization=0.0,
+        pred_output_cv=0.8,
+        mean_pred_output_tokens=96.0,
+    )
+    assert sel.predict_one(f) == "scorpio_style_slo_guard"
+
+
+def test_tight_slo_without_violations_does_not_trigger_scorpio_rule0():
+    """Phase 2B.11: tight SLO alone (no violations) must NOT fire Rule 0 → SCORPIO.
+
+    Without active violations, the system may be handling tight SLOs fine.
+    Rule 4 (slo_slack_score) applies here — keeps fail_001 regression intact.
+    """
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.5,
+        min_slack=0.4,
+        recent_slo_violation_rate=0.0,   # no violations
+        kv_utilization=0.0,
+        pred_output_cv=0.87,
+        mean_pred_output_tokens=96.0,
+    )
+    # Rule 0 should NOT fire; Rule 4 (tight SLO → slo_slack_score) should
+    assert sel.predict_one(f) == "slo_slack_score"
+
+
+def test_violations_below_threshold_no_scorpio_rule0():
+    """Phase 2B.11: violation rate at 0.2 (not > 0.2) does not fire Rule 0."""
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.5,
+        min_slack=0.4,
+        recent_slo_violation_rate=0.2,   # at threshold, not above
+        kv_utilization=0.0,
+        pred_output_cv=0.87,
+        mean_pred_output_tokens=96.0,
+    )
+    assert sel.predict_one(f) == "slo_slack_score"
+
+
+def test_very_high_pred_output_cv_triggers_scorpio():
+    """Phase 2B.11 Rule 2a: pred_output_cv > 2.0 → scorpio_style_slo_guard.
+
+    At extreme prediction noise (CV > 2.0), SCORPIO's composite SLO guard beats
+    admission_control.  Evidence: heldout_very_high_noise_s4 (90% noise, fail_004).
+    """
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.4,
+        min_slack=0.5,
+        recent_slo_violation_rate=0.0,
+        kv_utilization=0.0,
+        pred_output_cv=2.5,              # > 2.0 threshold
+        mean_pred_output_tokens=96.0,
+    )
+    assert sel.predict_one(f) == "scorpio_style_slo_guard"
+
+
+def test_moderate_high_noise_still_routes_to_admission_control():
+    """Phase 2B.11: pred_output_cv in (1.0, 2.0] still routes to admission_control.
+
+    Moderate-high noise (Rule 2b, unchanged from Phase 2B.8).
+    dev_high_prediction_noise (70% noise): admission_control WG=0.988.
+    """
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.0,
+        min_slack=50.0,
+        recent_slo_violation_rate=0.0,
+        kv_utilization=0.0,
+        pred_output_cv=1.5,              # > 1.0 but ≤ 2.0
+        mean_pred_output_tokens=96.0,
+    )
+    assert sel.predict_one(f) == "admission_control"
+
+
+def test_scorpio_rule0_fires_before_kv_pressure_rule1():
+    """Phase 2B.11: Rule 0 (SCORPIO overload) has higher priority than Rule 1 (KV → WSP).
+
+    When tight SLO + SLO violations + KV pressure all coincide, Rule 0 fires first
+    and returns scorpio_style_slo_guard.  SCORPIO handles KV pressure internally via
+    its _guard_active() + long-decode token filter (kv_fill_ratio threshold check).
+    This is correct per the Phase 2B.11 rule ordering: overload guard precedes KV proxy.
+
+    Contrast: KV pressure WITHOUT tight SLO or violations → Rule 1 (WSP) still fires.
+    """
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.5,
+        min_slack=0.4,
+        recent_slo_violation_rate=0.4,   # triggers Rule 0
+        kv_utilization=0.85,             # would trigger Rule 1 if Rule 0 absent
+        pred_output_cv=0.8,
+        mean_pred_output_tokens=250.0,
+    )
+    # Rule 0 fires first: tight SLO + violations → SCORPIO
+    assert sel.predict_one(f) == "scorpio_style_slo_guard"
+
+
+def test_kv_pressure_alone_still_triggers_wsp():
+    """Phase 2B.11: KV pressure without tight SLO / violations still routes to WSP (Rule 1)."""
+    sel = RuleBasedSelector()
+    f = feats(
+        fraction_tight_slo=0.0,
+        min_slack=50.0,
+        recent_slo_violation_rate=0.0,   # no violations → Rule 0 doesn't fire
+        kv_utilization=0.85,             # Rule 1 fires
+        pred_output_cv=0.8,
+        mean_pred_output_tokens=250.0,
+    )
+    assert sel.predict_one(f) == "weighted_shortest_processing"
+
+
+def test_fail004_very_high_noise_regression():
+    """Regression: heldout_very_high_noise_s4 feature profile → scorpio_style_slo_guard.
+
+    fail_004: heldout_very_high_noise_s4 (90% noise, seed 4):
+    Phase 2B.9 — rule selector chose admission_control (WG=0.970), best fixed edf (0.993).
+    Phase 2B.10 — SCORPIO-style WG=1.000 (best).
+    Phase 2B.11 fix: extreme CV (> 2.0) now routes to scorpio_style_slo_guard.
+    """
+    sel = RuleBasedSelector()
+    # Feature profile for heldout_very_high_noise with 90% prediction noise:
+    # output_sigma=1.0 lognormal + 90% multiplicative noise → very high pred_output_cv.
+    f = feats(
+        fraction_tight_slo=0.4,
+        min_slack=0.5,
+        recent_slo_violation_rate=0.0,
+        kv_utilization=0.0,
+        pred_output_cv=2.8,              # representative value for 90% noise + sigma=1.0
+        mean_pred_output_tokens=96.0,
+    )
+    result = sel.predict_one(f)
+    assert result == "scorpio_style_slo_guard", (
+        f"fail_004 regression: extreme noise (cv=2.8) should route to scorpio_style_slo_guard, "
+        f"not {result}"
+    )
+    assert result != "admission_control"
+
+
+def test_selector_never_returns_non_candidate():
+    """All RuleBasedSelector choices must be in SELECTOR_CANDIDATES (including SCORPIO)."""
+    sel = RuleBasedSelector()
+    test_cases = [
+        feats(fraction_tight_slo=0.6),
+        feats(recent_slo_violation_rate=0.5),
+        feats(kv_utilization=0.9),
+        feats(mean_prompt_tokens=2000.0),
+        feats(mean_pred_output_tokens=20.0, pred_output_cv=0.2),
+        feats(burstiness_cv=3.0),
+        feats(),
+        # Phase 2B.11 SCORPIO cases
+        feats(fraction_tight_slo=0.5, min_slack=0.4, recent_slo_violation_rate=0.35),
+        feats(pred_output_cv=2.5),
+        feats(fraction_tight_slo=0.0, min_slack=50.0, recent_slo_violation_rate=0.5),
+    ]
+    for f in test_cases:
+        pred = sel.predict_one(f)
+        assert pred in SELECTOR_CANDIDATES, (
+            f"selector returned non-candidate policy '{pred}' for features {f}"
+        )
