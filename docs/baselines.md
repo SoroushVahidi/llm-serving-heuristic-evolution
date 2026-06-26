@@ -5,11 +5,11 @@ None require external dependencies beyond NumPy.
 
 ---
 
-## Registered online baselines (19 policies)
+## Registered online baselines (20 policies)
 
 These policies are registered in `src/llmserveopt/policies/registry.py` and are
 used in all experiment comparisons. All are deployable in an online setting.
-All 19 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
+All 20 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 
 | Policy | Category | Online deployable? | Uses prediction? | Uses SLO/deadline? | Uses KV/token budget? | Notes |
 |---|---|---|---|---|---|---|
@@ -32,6 +32,7 @@ All 19 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 | `least_laxity_first` | Deadline/laxity | Yes | Yes (predicted) | Yes | No | LLF: deadline − now − estimated_service_time; handles preemption-risk cases that EDF misses |
 | `estimated_service_time_first` | SJF proxy | Yes | Yes (predicted) | No | No | Prompt-and-prediction-aware SJF proxy (α×prompt + β×output). Not a PARS reproduction — no learning. |
 | `admission_control` | Admission control | Yes | Yes (predicted) | Yes | Yes | Laxity-based filter + urgency sort. See Phase 2B.5 note below. |
+| `scorpio_style_slo_guard` | SCORPIO-inspired SLO guard | Yes | Yes (predicted) | Yes | Yes | SCORPIO-style TTFT/TPOT guard + credit throttling. See Phase 2B.10 note below. |
 
 ---
 
@@ -207,3 +208,27 @@ This is now corrected: `est_s = step_size × est_steps` ensures all terms are in
 **Phase 2B.7 sweep result (laxity_threshold=inf):**
 - Wins: `high_prediction_noise` workload (WG=0.988, rank 1/19)
 - Loses: `kv_pressure_decode_heavy` (WG=0.051, rank 19/19 — urgency sorting ineffective under KV saturation)
+
+---
+
+## Phase 2B.10: SCORPIO-Style SLO Guard Baseline
+
+### `scorpio_style_slo_guard` — SCORPIO-inspired SLO guard
+
+**Manuscript label:** "SCORPIO-style SLO guard" or "SCORPIO-inspired TTFT/TPOT guard baseline"
+
+**IMPORTANT:** This is NOT an official SCORPIO reproduction. It is a deterministic,
+simulator-compatible approximation of SCORPIO's policy-level admission and guard ideas.
+
+**Algorithm (summary):**
+1. Filter infeasible requests by laxity and TTFT proxy slack (seconds).
+2. Detect guard mode from KV utilization, decode pressure, queue overload, or negative mean laxity.
+3. Under guard mode: throttle admissions via refilling credit budget; defer long decode under KV pressure.
+4. Rank survivors by composite urgency score (laxity, priority, age, decode-pressure penalty).
+5. Tie-break: laxity ↑ → priority ↓ → arrival ↑ → request_id ↑.
+6. Greedily assign to feasible GPUs.
+
+**TTFT/TPOT:** scheduling-time **proxies** only (see `docs/audits/phase2b10_scorpio_slo_guard_summary.md`).
+
+**Safe claim:** "SCORPIO-inspired SLO guard baseline"  
+**Unsafe claim:** "Official SCORPIO reproduction"

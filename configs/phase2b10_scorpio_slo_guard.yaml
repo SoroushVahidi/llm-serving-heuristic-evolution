@@ -1,0 +1,228 @@
+# Phase 2B.10 SCORPIO-Style SLO Guard Comparison
+#
+# Re-runs the Phase 2B.9 selector robustness workload suite with 20 deployable
+# policies (including new scorpio_style_slo_guard) to measure whether the repaired
+# rule selector remains competitive.
+#
+# Runner: scripts/run_phase2b10_scorpio_slo_guard.py
+# Output: results/phase2b10_scorpio_slo_guard/
+# Log:    logs/phase2b10/phase2b10_scorpio_slo_guard.log
+
+experiment: phase2b10_scorpio_slo_guard
+
+output_dir: results/phase2b10_scorpio_slo_guard
+
+# Phase 2B.9 reference (19 policies, pre-SCORPIO) for before/after comparison
+phase2b9_reference:
+  rule_based_wg:
+    dev: 0.9168
+    heldout: 0.9785
+    overall: 0.9507
+  best_fixed_wg:
+    dev: 0.8932
+    heldout: 0.9701
+    overall: 0.9224
+  best_fixed_policy:
+    dev: weighted_shortest_processing
+    heldout: edf
+    overall: weighted_shortest_processing
+
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+window_size: 200
+min_partial_window: 50
+feature_mode: online_prefix
+
+dev_seeds: [0, 1, 2]
+heldout_seeds: [3, 4, 5]
+
+# Same workloads as configs/phase2b9_selector_robustness.yaml
+workloads:
+  - tag: dev_overloaded_mixed_slo
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.15}
+
+  - tag: dev_high_prediction_noise
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.70
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: dev_kv_pressure_decode_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+      - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+  - tag: dev_overloaded_prefill_heavy
+    group: dev
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  - tag: heldout_moderate_kv_pressure
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 150.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_very_high_noise
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.90
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_prefill_overloaded
+    group: heldout
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.8
+    prompt_low: 64
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.40}
+
+  - tag: heldout_bursty_mixed_slo
+    group: heldout
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.8
+    output_low: 8
+    output_high: 384
+    prediction_noise_rel: 0.20
+    burst_factor: 4.0
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: heldout_burstgpt_smoke
+    group: heldout
+    source: extended_jsonl
+    trace_path: data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl
+    max_requests: 400

@@ -14,7 +14,7 @@ The selector does **not** create new heuristics.  It chooses, at the granularity
 
 ## Selector candidate set
 
-All 19 online-deployable baselines registered in `BASELINE_NAMES` (from `llmserveopt/policies/registry.py`) minus any entry in `ORACLE_POLICY_NAMES`.
+All 20 online-deployable baselines registered in `BASELINE_NAMES` (from `llmserveopt/policies/registry.py`) minus any entry in `ORACLE_POLICY_NAMES`.
 
 ```
 fifo, edf, shortest_output_first, shortest_prompt_first,

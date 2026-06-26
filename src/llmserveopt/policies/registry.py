@@ -24,6 +24,7 @@ from .oracle import OracleShortestJobFirstPolicy, build_oracle
 from .orca_style import OrcaStylePolicy
 from .random_feasible import RandomFeasiblePolicy
 from .sarathi_style import SarathiStylePolicy
+from .scorpio_style_slo_guard import ScorpioStyleSloGuardPolicy
 from .shortest_output_first import ShortestOutputFirstPolicy
 from .shortest_prompt_first import ShortestPromptFirstPolicy
 from .slo_slack_score import SloSlackScorePolicy
@@ -56,6 +57,8 @@ _REGISTRY: Dict[str, type] = {
     "estimated_service_time_first":      EstimatedServiceTimeFirstPolicy,
     # Phase 2B.5: explicit admission-control baseline
     "admission_control":                 AdmissionControlPolicy,
+    # Phase 2B.10: SCORPIO-inspired SLO guard baseline
+    "scorpio_style_slo_guard":           ScorpioStyleSloGuardPolicy,
 }
 
 BASELINE_NAMES: List[str] = list(_REGISTRY.keys())

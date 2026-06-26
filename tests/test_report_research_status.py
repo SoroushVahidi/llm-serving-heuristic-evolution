@@ -49,7 +49,7 @@ def test_json_deployable_count():
     result = _run(["--json"])
     data = json.loads(result.stdout)
     count = data["deployable_baselines"]["count"]
-    assert count >= 19, f"Expected at least 19 deployable baselines, got {count}"
+    assert count >= 20, f"Expected at least 20 deployable baselines, got {count}"
 
 
 def test_json_oracle_excluded():
@@ -95,7 +95,7 @@ def test_text_output_oracle_not_deployable():
 def test_gather_status_importable():
     from scripts.report_research_status import gather_status
     status = gather_status()
-    assert status["deployable_baselines"]["count"] >= 19
+    assert status["deployable_baselines"]["count"] >= 20
     assert "oracle_srtf" in status["oracle_policies"]["names"]
     assert status["admission_control_registered"] is True
     assert status["rule_based_is_fifo_placeholder"] is False

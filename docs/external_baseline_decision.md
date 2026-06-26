@@ -74,25 +74,12 @@ Estimated ~2–3 days of implementation + testing.
 
 ---
 
-### B.2 SCORPIO-style SLO Guard
+### B.2 SCORPIO-style SLO Guard — **IMPLEMENTED (Phase 2B.10)**
 
-**Why it matters:** SCORPIO (2024) introduces a rate-controller that throttles inflow when SLO violation probability exceeds a threshold, improving high-percentile latency under overload. The current `admission_control` policy is a simpler urgency-sorted filter. A proper SCORPIO-style guard would add proactive rate control rather than reactive laxity filtering.
-
-**Decisions it makes:** Monitors rolling SLO violation rate; pauses or delays admission when predicted violation probability is high; uses token-bucket style rate limiting.
-
-**Features needed:** Recent SLO violation rate, queue length, estimated arrival rate, service capacity estimate. All online-observable.
-
-**Simulator-compatible:** Yes. Can be implemented as an admission gate before the scheduling queue.
-
-**Implementation difficulty:** Medium. Core idea (rolling violation rate → admission gate) is ~100 LOC. Testing requires overloaded workloads.
-
-**Selector candidate:** Yes.
-
-**Leakage risks:** Violation rate is computed from completed requests (no leakage). Rate prediction must not use future arrivals.
-
-**Tests required:** Test that gate fires under overload but not underload; regression test against admission_control.
-
-**Safe manuscript wording:** "SLO-guard admission control (SCORPIO-inspired [cite]); uses rolling SLO violation rate to throttle admission under overload."
+**Registry name:** `scorpio_style_slo_guard`  
+**File:** `src/llmserveopt/policies/scorpio_style_slo_guard.py`  
+**Status:** Simulator-compatible SCORPIO-inspired guard with TTFT proxy, decode-pressure
+penalty, and admission credit throttling. See `docs/audits/phase2b10_scorpio_slo_guard_summary.md`.
 
 ---
 
@@ -217,4 +204,4 @@ For the next development phase, implement in this order:
 | Implementation priority order specified | ✅ |
 | Oracle excluded from all comparisons | ✅ |
 | All baselines are deployable (no oracle leak) | ✅ |
-| Must-add B.1–B.5 implemented | ❌ — needed before submission |
+| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); B.1, B.3–B.5 pending |

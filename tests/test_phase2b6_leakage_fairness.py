@@ -221,7 +221,7 @@ def test_metrics_to_dict_has_completion_fraction():
 # ---------------------------------------------------------------------------
 
 def test_fair_sweep_config_has_all_policies():
-    """Phase 2B.6 fair sweep config must include all 19 deployable policies."""
+    """Frozen Phase 2B.6 fair sweep — policies must be a valid registry subset."""
     import yaml
     from pathlib import Path
     from llmserveopt.policies.registry import BASELINE_NAMES
@@ -233,10 +233,20 @@ def test_fair_sweep_config_has_all_policies():
         cfg = yaml.safe_load(f)
 
     policies_in_config = set(cfg.get("policies", []))
-    missing = set(BASELINE_NAMES) - policies_in_config
-    assert len(missing) == 0, (
-        f"Fair sweep config missing policies: {sorted(missing)}"
+    unknown = policies_in_config - set(BASELINE_NAMES)
+    assert len(unknown) == 0, (
+        f"Fair sweep config has unknown policies: {sorted(unknown)}"
     )
+    assert len(policies_in_config) >= 19, (
+        f"Expected frozen Phase 2B.6 snapshot with ≥19 policies, got {len(policies_in_config)}"
+    )
+
+
+def test_phase2b10_config_policies_are_registry_subset():
+    """Phase 2B.10 comparison uses all deployable policies via SELECTOR_CANDIDATES at runtime."""
+    from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
+    assert "scorpio_style_slo_guard" in SELECTOR_CANDIDATES
+    assert len(SELECTOR_CANDIDATES) == 20
 
 
 def test_fair_sweep_config_excludes_oracle():

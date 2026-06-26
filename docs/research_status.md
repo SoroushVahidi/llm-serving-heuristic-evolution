@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-25  
-**Current branch:** `phase2b9-selector-robustness-and-suite-freeze`  
-**Current phase:** Phase 2B.9 — Selector robustness audit and comparison suite freeze
+**Current branch:** `phase2b10-scorpio-slo-guard`  
+**Current phase:** Phase 2B.10 — SCORPIO-style SLO guard baseline
 
 ---
 
@@ -10,9 +10,9 @@
 
 | Item | Value |
 |---|---|
-| Deployable scheduling policies | **19** |
+| Deployable scheduling policies | **20** |
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
-| Selector candidate policies | **19** (= deployable baselines) |
+| Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) |
 | Test count | **787 passing**, 1 skipped (Phase 2B.8 base) + Phase 2B.9 tests added |
 
@@ -28,7 +28,8 @@
 | `phase2b6-fair-sweep-failure-audit` | `a6df363` | Fair sweep, failure tracking, correctness audit |
 | `phase2b7-overload-failure-mining` | `992fe11` | Unit fix, overloaded sweep, multi-bin tests, failure registry |
 | `phase2b8-rule-selector-repair` | `429e96e` | Rule selector repair: KV-pressure guard, noise guard, slo_slack_score for tight SLO |
-| `phase2b9-selector-robustness-and-suite-freeze` | current | Selector robustness audit, training data sufficiency, external baseline/dataset decisions |
+| `phase2b9-selector-robustness-and-suite-freeze` | `5fe977b` | Selector robustness audit, held-out generalization, suite freeze |
+| `phase2b10-scorpio-slo-guard` | current | SCORPIO-style SLO guard baseline (20th deployable policy) |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -78,7 +79,13 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.9 — Selector Robustness Audit and Suite Freeze (current)
+### Phase 2B.10 — SCORPIO-Style SLO Guard (current)
+- **New policy:** `scorpio_style_slo_guard` — SCORPIO-inspired TTFT/TPOT guard with credit throttling
+- **Registry:** 20 deployable policies, 20 selector candidates; `oracle_srtf` still excluded
+- **Comparison results:** SCORPIO-style WG dev=0.988, held-out=0.998, overall=0.993; becomes best fixed baseline; rule selector no longer beats best fixed (gap −0.042 overall). See `docs/audits/phase2b10_scorpio_slo_guard_summary.md`
+- **Failure cases:** `docs/audits/phase2b10_failure_cases_summary.md` (selector vs SCORPIO gap; high-noise s4 fixed for SCORPIO)
+
+### Phase 2B.9 — Selector Robustness Audit and Suite Freeze
 - **Selector training data audit**: Phase 2A.4 RF/DT use ~30 training windows (critically small for 19-class).
   KV-pressure and high-noise regimes missing from training data.
   See `docs/audits/phase2b9_selector_training_audit.md` for full analysis.
@@ -138,9 +145,9 @@
 
 ---
 
-## Implemented Deployable Scheduling Policies (19)
+## Implemented Deployable Scheduling Policies (20)
 
-All 19 are in `BASELINE_NAMES` and `SELECTOR_CANDIDATE_NAMES`.  
+All 20 are in `BASELINE_NAMES` and `SELECTOR_CANDIDATE_NAMES`.  
 None have access to `actual_output_tokens` (oracle excluded).
 
 | # | Policy name | Category | SLO-aware | KV-budget aware |
@@ -164,6 +171,7 @@ None have access to `actual_output_tokens` (oracle excluded).
 | 17 | `least_laxity_first` | Deadline/laxity | Yes | No |
 | 18 | `estimated_service_time_first` | SJF proxy | Partial | No |
 | 19 | `admission_control` | Admission control | Yes | Yes |
+| 20 | `scorpio_style_slo_guard` | SCORPIO-inspired SLO guard | Yes | Yes |
 
 ---
 
@@ -181,7 +189,7 @@ The selector must never choose `oracle_srtf`. This invariant is enforced by `sel
 
 `SELECTOR_CANDIDATES` = `BASELINE_NAMES` minus `ORACLE_POLICY_NAMES`.
 
-Currently: **19 candidates** (all 19 deployable policies above).
+Currently: **20 candidates** (all 20 deployable policies above).
 
 Verified at import time by `selector/candidates.py` assertion loop.
 
@@ -301,17 +309,18 @@ includes genuinely-filtered infeasible requests — but the metrics don't distin
 - Tests for oracle exclusion, rule dispatch, config validation, doc existence
 
 ### Remaining Before Submission
-1. **Expand selector training data** — add KV-pressure + high-noise + real-trace windows to reach ≥200 training windows; re-train and re-evaluate RF/DT on Phase 2B.9 suite.
-2. **Implement must-add baselines** (see `docs/external_baseline_decision.md` section B):
-   - B.2 SCORPIO-style SLO guard (highest priority; directly addresses Phase 2B.7/2B.8 overload)
-   - B.3 KV-cache-aware scheduler (addresses remaining KV WG gap)
+1. **Update rule selector / RF-DT for 20 policies** — route to `scorpio_style_slo_guard` where best (Phase 2B.10 shows −0.042 overall gap vs new best fixed); re-run robustness.
+2. **Expand selector training data** — add KV-pressure + high-noise + real-trace windows to reach ≥200 training windows; re-train and re-evaluate RF/DT on Phase 2B.9/2B.10 suite.
+3. **Implement remaining must-add baselines** (see `docs/external_baseline_decision.md` section B):
+   - B.3 KV-cache-aware scheduler (WAIT/Jaillet-style)
    - B.4 FairBatching
    - B.1 PARS-style LTR (requires training data)
    - B.5 PROSERVE SlideBatching
-3. **Ingest real-trace datasets** (see `docs/dataset_workload_decision.md` section B):
+   - ~~B.2 SCORPIO-style~~ ✅ implemented Phase 2B.10
+4. **Ingest real-trace datasets** (see `docs/dataset_workload_decision.md` section B):
    - BurstGPT full dataset (currently using 10k subset only)
    - Azure LLM Inference 2023 / Splitwise trace
    - LMSYS-Chat-1M length statistics for calibrated synthetic
    - LongBench for long-context stress workloads
-4. **LLM escalation** (CloudRift/Cohere): if further rule improvement needed after Phase 2B.9
+5. **LLM escalation** (CloudRift/Cohere): if further rule improvement needed,
    generalization analysis, synthesize updated rules. Log in API ledger. Limit: 1–2 calls per pattern.
