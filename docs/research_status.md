@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-26  
-**Current branch:** `phase2b14-metric-audit-scorpio-ablation`  
-**Current phase:** Phase 2B.14 — Metric audit and SCORPIO ablation
+**Current branch:** `phase2b15-corrected-objective-selector-retraining`  
+**Current phase:** Phase 2B.15 — Corrected objective selector retraining
 
 ---
 
@@ -37,7 +37,8 @@
 | `phase2b11-scorpio-selector-integration` | `6de9e2b` | SCORPIO integrated into rule selector; 3 new routing rules |
 | `phase2b12-workload-diversity-selector-labels` | `93b6da7` | Workload diversity sweep for selector label analysis |
 | `phase2b13-selector-training-and-suspicion-audit` | `3f83922` | Extend to 256 windows; train selectors; audit SCORPIO dominance |
-| `phase2b14-metric-audit-scorpio-ablation` | current | Metric audit: WG denominator; arrival-normalized WG; SCORPIO ablation |
+| `phase2b14-metric-audit-scorpio-ablation` | `abf7989` | Metric audit: WG denominator; arrival-normalized WG; SCORPIO ablation |
+| `phase2b15-corrected-objective-selector-retraining` | current | Corrected-objective selector retraining; WSP fallback; deadline-only decision |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -87,7 +88,38 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.14 — Metric Audit and SCORPIO Ablation (current)
+### Phase 2B.15 — Corrected Objective Selector Retraining (current)
+
+- **Goal:** Retrain/evaluate selectors using `arrival_normalized_wg` as primary objective; add
+  always-WSP baseline; decide on `scorpio_deadline_only` promotion.
+- **Config:** `configs/phase2b15_corrected_objective_selector_retraining.yaml`
+- **Runner:** `scripts/run_phase2b15_corrected_objective_selector_retraining.py`
+- **Log:** `logs/phase2b15/phase2b15_corrected_selector.log`
+- **Results:** `results/phase2b15_corrected_objective_selector_retraining/` (gitignored)
+- **Audit docs:** `docs/audits/phase2b15_corrected_objective_selector_summary.md`,
+  `docs/audits/phase2b15_failure_cases_summary.md`
+- **Tests:** `tests/test_phase2b15_corrected_selector.py`
+
+#### Phase 2B.15 Key Results
+
+| Metric | Value |
+|--------|-------|
+| Input windows | **319** (Phase 2B.13 per_window.csv) |
+| Label changes (cond→anwg) | **214/319** (67%) — mostly near-tie FIFO wins |
+| Meaningful (ε=0.005) | **97 windows** — SCORPIO wins 82/97 (85%) |
+| Meaningful (ε=0.010) | **84 windows** — SCORPIO wins 81/84 (96%) |
+| Test split | **33 heldout windows** (82% all-complete) |
+| always-SCORPIO (test, anwg) | 0.9638 |
+| always-WSP (test, anwg) | 0.9463 |
+| **RF_anwg (test, features-only)** | **0.9795 (+0.0157 vs SCORPIO)** |
+| safe_fallback_wsp (test, oracle) | 0.9848 (+0.0210 vs SCORPIO) |
+| B13 RF on test (anwg) | **0.9638** (collapses to always-SCORPIO!) |
+| scorpio_deadline_only decision | **Keep as ablation** (CQ gap −1.2pp > threshold −1.0pp) |
+
+**Key finding:** Corrected-objective training prevents selector collapse on test.
+`rf_anwg` achieves +0.0157 vs always-SCORPIO using features only.
+
+### Phase 2B.14 — Metric Audit and SCORPIO Ablation
 
 - **Goal:** Audit `weighted_goodput` denominator; define arrival-normalized WG; SCORPIO ablation.
 - **Key finding:** Old `weighted_goodput` is `completed_request_quality` (completed-only denominator).

@@ -121,6 +121,17 @@ Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calib
 | "The selector generalizes to arbitrary workloads" | Evaluated on calibrated synthetic and BurstGPT regimes only |
 | "oracle_srtf is a tight upper bound" | SRTF minimizes latency, not priority-weighted SLO goodput; it is not tight on this metric |
 
+## Safe claims (Phase 2B.15 — corrected objective selector retraining)
+
+- "We retrain policy selectors under `arrival_normalized_wg` (corrected objective) and evaluate under 5 metric variants: `completed_request_quality`, `arrival_normalized_wg`, `cp_wg_t095_l05`, `cp_wg_t099_l05`, `cp_wg_t099_l10`."
+- "RF selector trained under arrival-norm WG (`rf_anwg`) achieves arrival-norm WG = 0.9795 on 33 held-out windows, +0.0157 over always-SCORPIO (0.9638). This gain uses features only (no oracle information)."
+- "Phase 2B.13 RF, RF-regret, and safe-fallback-SCORPIO selectors collapse to always-SCORPIO on 33 heldout windows under arrival-norm WG (all predict SCORPIO for every window). Phase 2B.15 selectors do not exhibit this collapse."
+- "Safe-fallback with WSP as the default policy achieves oracle arrival-norm WG = 0.9848 on 33 heldout windows (+0.0210 vs always-SCORPIO). This is an oracle upper bound: it uses actual per-window rewards to decide when to deviate from WSP."
+- "Under arrival-norm WG with near-tie filter ε=0.010, SCORPIO is the best policy in 81/84 meaningful windows (96%) on the full 319-window suite."
+- "`scorpio_deadline_only` (laxity pre-filter only, no KV guard or credit budget) achieves arrival-norm WG gap = −0.0017 vs full SCORPIO on 7 targeted discriminative workloads. Conditional quality gap = −0.0120. Promotion recommendation: keep as ablation (CQ gap marginally exceeds 0.010 threshold)."
+- "214/319 windows (67%) change best-policy label from conditional WG to arrival-norm WG. After near-tie filtering at ε=0.005, the meaningful label distribution is nearly unchanged: SCORPIO wins 82/97 windows under both metrics."
+- "Always-WSP achieves arrival-norm WG = 0.9463 on 33 held-out windows, below always-SCORPIO (0.9638), confirming SCORPIO's arrival-norm WG advantage is maintained on the heldout split."
+
 ## Safe claims (Phase 2B.14 — metric audit)
 
 - "The `weighted_goodput` metric computes `Σ(priority_i × slo_met_i) / Σ(priority_i)` over **completed requests only**. Dropped or rejected requests are excluded from both numerator and denominator."

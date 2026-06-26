@@ -1,0 +1,116 @@
+# Phase 2B.15 Corrected Objective Selector Retraining
+#
+# Goals:
+#   1. Retrain / evaluate selectors using arrival_normalized_wg as the
+#      primary training objective (corrected from Phase 2B.13's completed-only WG).
+#   2. Evaluate all selectors under all 5 metric variants:
+#        completed_request_quality, arrival_normalized_wg, cp_wg_t095_l05,
+#        cp_wg_t099_l05, cp_wg_t099_l10.
+#   3. Add always-WSP baseline for completion-penalized comparisons.
+#   4. Compare scorpio_deadline_only (laxity-filter-only ablation from Phase 2B.14)
+#      to full SCORPIO on discriminative workloads; recommend promotion or demotion.
+#   5. Formally document whether corrected-objective retraining changes selector
+#      conclusions from Phase 2B.13.
+#
+# Phase 2B.14 findings that motivate this phase:
+#   - weighted_goodput = completed_request_quality (completed-only denominator).
+#   - SCORPIO arrival-norm WG = 0.8885 (vs conditional 0.9846, gap due to CF=0.899).
+#   - Under all completion-penalized metrics, WSP beats SCORPIO.
+#   - 134/319 windows change label to FIFO under arrival-norm WG (all near-tie).
+#   - After filtering at eps=0.010: 84 meaningful windows, SCORPIO wins 81/84 (96%).
+#   - scorpio_deadline_only (laxity filter only): gap vs full SCORPIO = -0.0017.
+#
+# Runner: scripts/run_phase2b15_corrected_objective_selector_retraining.py
+# Output: results/phase2b15_corrected_objective_selector_retraining/
+# Log:    logs/phase2b15/phase2b15_corrected_selector.log
+# tmux:   phase2b15_corrected_selector
+
+experiment: phase2b15_corrected_objective_selector_retraining
+
+input_dir: results/phase2b13_selector_training_and_suspicion_audit
+phase2b14_input_dir: results/phase2b14_metric_audit_scorpio_ablation
+output_dir: results/phase2b15_corrected_objective_selector_retraining
+
+# Near-tie analysis thresholds (applied to arrival-normalized WG margin)
+near_tie_thresholds: [0.001, 0.005, 0.010]
+
+# All-complete threshold (in arrival-normalized WG space)
+all_complete_threshold: 0.99
+
+# Selector training/evaluation split — same as Phase 2B.13 for comparability
+selector_training:
+  train_groups: [dev, diversity]
+  test_groups: [heldout]
+  train_diversity_seeds: [6, 7, 8, 9, 10]
+  val_diversity_seeds: [11]
+  # Near-tie filter: only use meaningful windows for training (arrival-norm margin >= eps)
+  # This prevents FIFO's near-tie "wins" (CF=1.0 vs SCORPIO CF=0.999) from adding noise.
+  near_tie_filter_epsilon: 0.005
+  # Regret-weighting sample weight = arrival_norm_margin + epsilon
+  regret_weight_epsilon: 0.001
+
+# Safe-fallback now uses WSP as default (WSP wins under completion-penalized objectives)
+safe_fallback:
+  default_policy: weighted_shortest_processing
+  margins: [0.001, 0.005, 0.010]
+
+knn:
+  k: 5
+  metric: euclidean
+
+# Metric variant definitions for evaluation
+metric_variants:
+  - name: completed_request_quality
+    description: "Conditional WG (completed-only denominator; old Phase 2B.13 objective)"
+  - name: arrival_normalized_wg
+    description: "arrival-norm WG = completion_fraction * conditional_WG (corrected objective)"
+  - name: cp_wg_t095_l05
+    description: "Completion-penalized WG; target=0.95, lambda=0.5"
+  - name: cp_wg_t099_l05
+    description: "Completion-penalized WG; target=0.99, lambda=0.5"
+  - name: cp_wg_t099_l10
+    description: "Completion-penalized WG; target=0.99, lambda=1.0"
+
+# Completion-penalized WG parameters
+completion_penalized:
+  configs:
+    - target: 0.95
+      lambda: 0.5
+      key: cp_wg_t095_l05
+    - target: 0.99
+      lambda: 0.5
+      key: cp_wg_t099_l05
+    - target: 0.99
+      lambda: 1.0
+      key: cp_wg_t099_l10
+
+# Phase 2B.13 selectors to compare (already in per_window.csv)
+phase2b13_selectors:
+  - rule_based
+  - always_scorpio
+  - random_forest
+  - decision_tree
+  - random_forest_regret_weighted
+  - decision_tree_regret_weighted
+  - per_policy_regression
+  - knn_selector
+  - safe_fallback_margin0.001
+  - safe_fallback_margin0.005
+  - safe_fallback_margin0.010
+
+# Phase 2B.15 scorpio_deadline_only decision thresholds
+# (from Phase 2B.14 ablation: gap = -0.0017 on discriminative workloads)
+deadline_only_promotion:
+  anwg_gap_threshold: 0.005   # promote if gap < 0.005 vs full SCORPIO
+  cq_gap_threshold: 0.010     # also check conditional quality gap
+  ablation_source: results/phase2b14_metric_audit_scorpio_ablation/ablation_gap_analysis.json
+
+# Phase 2B.13 reference (for regression verification)
+phase2b13_reference:
+  conditional_wg_always_scorpio_overall: 0.9956
+  arrival_norm_wg_always_scorpio_overall: 0.8885
+  arrival_norm_wg_rf_overall: 0.8944
+  n_windows: 319
+  n_meaningful_eps010: 84
+  scorpio_label_fraction_conditional: 0.552
+  scorpio_label_fraction_arrival_norm_meaningful: 0.964
