@@ -147,6 +147,82 @@ Phase 2B.9/2B.10 windows.  Rule selector dispatches to SCORPIO 1/60 times.  RF/D
 deferred — "always choose SCORPIO" is the only learnable function.  Phase 2B.12 broadens the
 suite to expose regimes where other policies win.
 
+## Phase 2B.13 Selector Training After Diversity (Current)
+
+**Goal:** Extend Phase 2B.12 to ≥200 windows, train RF/DT selectors, apply minimal rule repair.
+
+**Config:** `configs/phase2b13_selector_training_after_diversity.yaml` (25 workloads, seeds 6–11)  
+**Runner:** `scripts/run_phase2b13_selector_training_after_diversity.py`  
+**Branch:** `phase2b13-selector-training-after-diversity`  
+**tmux session:** `phase2b13_selector_training` (completed, EXIT_CODE=0, ~854s)  
+**Audit doc:** `docs/audits/phase2b13_selector_training_summary.md`
+
+### Phase 2B.13 Selector Comparison
+
+| Group | N | Best Fixed WG | Rule WG | Rule Repaired WG | RF WG | DT WG |
+|-------|---|---------------|---------|-----------------|-------|-------|
+| dev | 27 | 0.9878 | 0.9168 | 0.9168 | **0.9881** | 0.9878 |
+| heldout | 33 | 0.9975 | 0.9803 | 0.9803 | **0.9975** | 0.9752 |
+| regression | 60 | 0.9932 | 0.9518 | 0.9518 | **0.9933** | 0.9809 |
+| diversity | 196 | 0.9967 | 0.9747 | 0.9747 | **0.9982** | 0.9946 |
+| **overall** | **256** | **0.9959** | **0.9694** | **0.9694** | **0.9970** | 0.9914 |
+
+Best fixed policy (all groups): `scorpio_style_slo_guard`
+
+### RF/DT Feasibility (Phase 2B.13)
+
+| Criterion | Threshold | Result | Status |
+|-----------|-----------|--------|--------|
+| Window count | ≥200 | **256** | PASS |
+| Policies winning ≥10 windows | ≥3 | **7** | PASS |
+| Top policy concentration | <85% | **43.75%** | PASS |
+| **Overall** | — | — | **FEASIBLE** |
+
+### Label Distribution (Phase 2B.13 overall, n=256)
+
+| Policy | Oracle wins | Fraction |
+|--------|------------|---------|
+| `scorpio_style_slo_guard` | 112 | 43.75% |
+| `admission_control` | 37 | 14.45% |
+| `best_fit` | 36 | 14.06% |
+| `edf` | 20 | 7.81% |
+| `multi_bin_batching` | 18 | 7.03% |
+| `shortest_output_first` | 15 | 5.86% |
+| `estimated_service_time_first` | 12 | 4.69% |
+| `random_feasible` | 3 | 1.17% |
+| others (3 policies) | 3 | 1.17% |
+
+### RF/DT Metrics
+
+| Metric | RF (train) | RF (val) | RF (test=heldout) | DT (train) | DT (val) | DT (test=heldout) |
+|--------|-----------|----------|-------------------|-----------|----------|-------------------|
+| Accuracy | 1.000 | 0.667 | 0.606 | 0.782 | 0.600 | 0.455 |
+| Mean WG | 0.9968 | 0.9980 | **0.9975** | 0.9939 | 0.9928 | 0.9752 |
+| Gap vs best fixed | +0.0015 | +0.0002 | **+0.0000** | −0.0014 | −0.0050 | −0.0224 |
+
+### Rule 5 Repair
+
+- **Change:** `mean_prompt > 512 OR p95_prompt > 1024` → `admission_control` (was `sarathi_style`)
+- **Evidence:** admission_control wins all 16 prefill-heavy diversity windows in Phase 2B.12
+- **WG impact:** 0.0 (only 1/256 windows affected; that window was already WG≈1.0 for both AC and sarathi)
+- **Class:** `RepairedRuleBasedSelector` in runner (not yet committed to `models.py`)
+
+### Phase 2B.13 Key Findings
+
+1. **RF ≈ best fixed SCORPIO:** RF test WG = 0.9975 = best fixed (gap +0.0000). RF provides
+   no WG advantage over always-SCORPIO in this regime.
+2. **All-complete problem (93%):** 238/256 windows have WG≈1.0 for all policies. Labels
+   primarily encode secondary-metric tie-breaking, not genuine WG differentiation.
+3. **DT fails:** DT test WG = 0.9752 (gap −0.0224 vs best fixed); inadequate depth.
+4. **Rule repair WG-neutral:** Semantically correct (sarathi_style had 0 oracle labels) but
+   no WG improvement due to all-complete regime.
+5. **fail_012/013/014:** All-complete regime is the central blocker for meaningful selector
+   learning. Future phases need workloads with genuine WG differentiation.
+
+See `docs/audits/phase2b13_selector_training_summary.md` for full analysis.
+
+---
+
 ## Phase 2B.12 Workload Diversity (Results)
 
 **Goal:** Build ~200-window suite across diverse regimes to enable meaningful RF/DT training

@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-26  
-**Current branch:** `phase2b12-workload-diversity-selector-labels`  
-**Current phase:** Phase 2B.12 — Workload diversity for selector label analysis
+**Current branch:** `phase2b13-selector-training-after-diversity`  
+**Current phase:** Phase 2B.13 — Selector training on diversified workload suite
 
 ---
 
@@ -14,10 +14,12 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) |
-| Test count | **919 passing**, 2 skipped (Phase 2B.12) |
-| Phase 2B.12 windows evaluated | **172** (60 regression + 112 diversity) |
-| SCORPIO label fraction (Phase 2B.12) | **45.9%** (down from 100% in Phase 2B.11) |
-| RF/DT training feasible | **No** (172 < 200 threshold; spread+concentration pass) |
+| Test count | **992 passing**, 2 skipped (Phase 2B.13) |
+| Phase 2B.13 windows evaluated | **256** (60 regression + 196 diversity) |
+| SCORPIO label fraction (Phase 2B.13) | **43.75%** (112/256) |
+| RF/DT training feasible | **Yes** (256≥200; 7 policies ≥10 wins; top=43.75%<85%) |
+| RF test WG (heldout) | **0.9975** (gap=+0.0000 vs best fixed SCORPIO) |
+| DT test WG (heldout) | 0.9752 (gap=−0.0224 vs best fixed; not recommended) |
 
 ---
 
@@ -34,7 +36,8 @@
 | `phase2b9-selector-robustness-and-suite-freeze` | `5fe977b` | Selector robustness audit, held-out generalization, suite freeze |
 | `phase2b10-scorpio-slo-guard` | `a9921b9` | SCORPIO-style SLO guard baseline (20th deployable policy) |
 | `phase2b11-scorpio-selector-integration` | `6de9e2b` | SCORPIO integrated into rule selector; 3 new routing rules |
-| `phase2b12-workload-diversity-selector-labels` | current | Workload diversity sweep for selector label analysis |
+| `phase2b12-workload-diversity-selector-labels` | `93b6da7` | Workload diversity sweep for selector label analysis |
+| `phase2b13-selector-training-after-diversity` | current | Selector training on diversified suite; RF trained; Rule 5 repaired |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -84,7 +87,72 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.12 — Workload Diversity for Selector Label Analysis (current)
+### Phase 2B.13 — Selector Training After Diversity (current)
+
+- **Goal:** Extend Phase 2B.12 suite to ≥200 windows, train RF and DT selectors, apply minimal
+  rule selector repair (Rule 5: prefill-heavy → admission_control instead of sarathi_style).
+- **Config:** `configs/phase2b13_selector_training_after_diversity.yaml` (25 workloads)
+- **Runner:** `scripts/run_phase2b13_selector_training_after_diversity.py`
+- **Log:** `logs/phase2b13/phase2b13_selector_training.log`
+- **Tests:** 73 new tests in `tests/test_phase2b13_selector_training.py`; 992 total
+- **tmux session:** `phase2b13_selector_training` (completed, EXIT_CODE=0, ~854s)
+- **Audit docs:** `docs/audits/phase2b13_selector_training_summary.md`, `docs/audits/phase2b13_failure_cases_summary.md`
+
+#### Phase 2B.13 Key Results
+
+| Metric | Value |
+|--------|-------|
+| Total windows | **256** (60 regression + 196 diversity) |
+| RF/DT training | **FEASIBLE** (all 3 criteria pass) |
+| Best fixed WG (overall) | **0.9959** (SCORPIO, all groups) |
+| Rule selector WG (overall) | **0.9694** (gap −0.0265) |
+| Rule repaired WG (overall) | **0.9694** (no WG change; Rule 5 affects 1/256 windows) |
+| RF WG (overall) | **0.9970** (gap +0.0011 vs best fixed) |
+| RF WG heldout (test) | **0.9975** (gap +0.0000 vs best fixed) |
+| DT WG heldout (test) | 0.9752 (gap −0.0224; not recommended) |
+| SCORPIO label fraction | **43.75%** (112/256) |
+| All-complete windows | **238/256 (93%)** — WG≈1.0 for all policies |
+| Meaningful WG gap windows | 18/256 (7%) |
+| Distinct oracle policies | **11** (7 win ≥10 windows) |
+| Rule repair: Rule 5 | sarathi_style → admission_control (1/256 windows affected) |
+
+#### Phase 2B.13 Selector Comparison Table
+
+| Group | N | Best Fixed | Rule | Rule Repaired | RF | DT |
+|---|---|---|---|---|---|---|
+| dev | 27 | 0.9878 | 0.9168 | 0.9168 | 0.9881 | 0.9878 |
+| heldout | 33 | 0.9975 | 0.9803 | 0.9803 | **0.9975** | 0.9752 |
+| regression | 60 | 0.9932 | 0.9518 | 0.9518 | **0.9933** | 0.9809 |
+| diversity | 196 | 0.9967 | 0.9747 | 0.9747 | **0.9982** | 0.9946 |
+| overall | 256 | 0.9959 | 0.9694 | 0.9694 | **0.9970** | 0.9914 |
+
+#### Phase 2B.13 Key Findings
+
+1. **RF trained and feasible:** 256 windows; 7 policies win ≥10 windows each; top (SCORPIO) = 43.75%.
+2. **RF ≈ best fixed:** RF test WG = 0.9975 matches best fixed SCORPIO exactly (+0.0000 gap).
+   RF provides no WG improvement over always-SCORPIO in this all-complete regime.
+3. **All-complete problem confirmed:** 238/256 windows (93%) have WG≈1.0 for all policies.
+   Labels encode tie-breaking, not genuine WG differentiation. RF learns secondary-metric
+   distinctions that happen to be WG-neutral.
+4. **Rule repair WG-neutral:** Only 1/256 windows was dispatched to sarathi_style (oracle=AC);
+   repair is semantically correct but has zero WG impact.
+5. **DT inadequate:** DT test WG = 0.9752 (gap −0.0224). max_depth=8 insufficient for 11-class.
+   RF is the correct ML selector; DT is discarded.
+
+#### Phase 2B.13 Failure Cases
+
+| ID | Description | Status |
+|----|-------------|--------|
+| fail_007 | Rule selector under-dispatches SCORPIO (offline artifact) | Carry-forward |
+| fail_008 | Missing rule targets: best_fit, mbb, SOF, estST | Carry-forward (RF covers) |
+| fail_009 | sarathi_style wrong for prefill-heavy | **Resolved** (Rule 5 → AC) |
+| fail_010 | 172 < 200 window threshold | **Resolved** (256 windows) |
+| fail_011 | All-complete tie-breaking labels | Partially addressed |
+| fail_012 | All-complete regime limits RF signal (93% trivial) | Open — documented |
+| fail_013 | DT underperforms on heldout (WG=0.9752) | Known — DT discarded |
+| fail_014 | New workloads still mostly all-complete | Known — workload design issue |
+
+### Phase 2B.12 — Workload Diversity for Selector Label Analysis
 
 - **Goal:** Build ~200-window evaluation suite spanning diverse regimes (load, SLO pressure,
   token structure, KV pressure, noise, priority) where non-SCORPIO policies can win.
