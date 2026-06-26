@@ -1,0 +1,583 @@
+# Phase 2B.16 Fresh Corrected Objective Validation
+#
+# Goals:
+#   Test whether Phase 2B.15's rf_anwg gain over always-SCORPIO (+0.016) survives
+#   evaluation on fresh, unseen simulation windows.  Selectors are frozen from
+#   Phase 2B.15 training data before any fresh window is evaluated.
+#
+# Design constraints:
+#   - All fresh validation workloads use seeds NOT used in Phase 2B.13/2B.15.
+#     Phase 2B.13 used dev=[0,1,2], heldout=[3,4,5], diversity=[6,7,8,9,10,11].
+#     Phase 2B.16 uses diversity=[12,13,14,15], heldout=[20,21,22].
+#   - Selectors are retrained on Phase 2B.13 TRAIN SPLIT (dev s0-2, div s6-10) only.
+#   - No tuning on fresh validation windows.
+#   - 20 deployable policies evaluated per window.
+#   - scorpio_deadline_only included as comparison-only ablation (not selector candidate).
+#
+# Expected fresh windows: ~220-300 (depending on arrival rates and durations).
+# Estimated runtime: ~50-90 minutes in tmux.
+#
+# Runner: scripts/run_phase2b16_fresh_corrected_objective_validation.py
+# Log:    logs/phase2b16/phase2b16_fresh_validation.log
+# tmux:   phase2b16_fresh_validation
+# Output: results/phase2b16_fresh_corrected_objective_validation/
+
+experiment: phase2b16_fresh_corrected_objective_validation
+
+# Training data source (Phase 2B.13 per_window.csv)
+input_b13_dir: results/phase2b13_selector_training_and_suspicion_audit
+
+# Phase 2B.14 ablation data (for scorpio_deadline_only comparison)
+input_b14_dir: results/phase2b14_metric_audit_scorpio_ablation
+
+output_dir: results/phase2b16_fresh_corrected_objective_validation
+
+# Simulator settings (same as Phase 2B.13)
+simulator:
+  step_size: 0.001
+  drain_steps: 20000
+
+service_model:
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false
+
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 4096
+    max_kv_tokens: 32768
+
+window_size: 200
+min_partial_window: 50
+feature_mode: online_prefix
+
+# Fresh seeds — NOT used in Phase 2B.13/2B.15
+fresh_diversity_seeds: [12, 13, 14, 15]   # 4 new seeds for diversity workloads
+fresh_heldout_seeds: [20, 21, 22]          # 3 new seeds for heldout workloads
+
+# Phase 2B.13 training split (for selector training; do NOT retrain on fresh)
+selector_training:
+  train_diversity_seeds: [6, 7, 8, 9, 10]
+  val_diversity_seeds: [11]
+  near_tie_filter_epsilon: 0.005
+  regret_weight_epsilon: 0.001
+
+# Safe-fallback WSP margins (same as Phase 2B.15)
+safe_fallback_margins: [0.001, 0.005, 0.010]
+
+knn:
+  k: 5
+  metric: euclidean
+
+# Metric evaluation
+near_tie_thresholds: [0.001, 0.005, 0.010]
+all_complete_threshold: 0.99
+
+completion_penalized:
+  configs:
+    - target: 0.95
+      lambda: 0.5
+      key: cp_wg_t095_l05
+    - target: 0.95
+      lambda: 1.0
+      key: cp_wg_t095_l10
+    - target: 0.99
+      lambda: 0.5
+      key: cp_wg_t099_l05
+    - target: 0.99
+      lambda: 1.0
+      key: cp_wg_t099_l10
+
+# Constrained objective thresholds
+constrained_objectives:
+  completion_thresholds: [0.95, 0.99]
+
+# Statistical analysis
+bootstrap:
+  n_samples: 2000
+  random_seed: 42
+  ci: 0.95
+
+# Top-epsilon accuracy thresholds
+top_epsilon_thresholds: [0.001, 0.005, 0.010]
+
+# Phase 2B.15 reference (for regression check)
+phase2b15_reference:
+  rf_anwg_test_anwg: 0.9795
+  always_scorpio_test_anwg: 0.9638
+  always_wsp_test_anwg: 0.9463
+  safe_fallback_wsp_test_anwg: 0.9848
+  n_b13_windows: 319
+  n_heldout_windows: 33
+
+workloads:
+
+  # ==========================================================================
+  # FRESH DIVERSITY GROUP
+  # Phase 2B.13 synthetic diversity workloads with new seeds [12,13,14,15].
+  # Trace-based workloads (div_burstgpt_*) are excluded (no meaningful seed).
+  # ==========================================================================
+
+  - tag: fresh_div_prefill_heavy_sarathi
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 22.0
+    duration: 12.0
+    prompt_dist: lognormal
+    prompt_mean: 768.0
+    prompt_sigma: 0.5
+    prompt_low: 256
+    prompt_high: 2048
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: tight, slo_slack: 1.5, priority: 3.0, weight: 0.55}
+      - {class_id: loose, slo_slack: 8.0, priority: 1.0, weight: 0.45}
+
+  - tag: fresh_div_prefill_moderate_tight
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 25.0
+    duration: 12.0
+    prompt_dist: lognormal
+    prompt_mean: 512.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1536
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 3.0, weight: 0.60}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.40}
+
+  - tag: fresh_div_prefill_bursty
+    group: fresh_diversity
+    arrival_process: bursty
+    arrival_rate: 30.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 600.0
+    prompt_sigma: 0.5
+    prompt_low: 192
+    prompt_high: 1792
+    output_dist: lognormal
+    output_mean: 16.0
+    output_sigma: 0.4
+    output_low: 4
+    output_high: 64
+    prediction_noise_rel: 0.10
+    burst_factor: 3.0
+    burst_fraction: 0.30
+    slo_classes:
+      - {class_id: tight,  slo_slack: 1.0,  priority: 3.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 10.0, priority: 1.0, weight: 0.40}
+
+  - tag: fresh_div_decode_all_loose_slo
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 256.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 768
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.40}
+
+  - tag: fresh_div_decode_medium_slo
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 192.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 640
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 3.0,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_div_decode_kv_saturated
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 5.0,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 12.0, priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 30.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_div_loose_weight_dominant
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight, slo_slack: 0.5,  priority: 3.0, weight: 0.10}
+      - {class_id: loose, slo_slack: 10.0, priority: 1.0, weight: 0.90}
+
+  - tag: fresh_div_medium_rate_low_noise
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 35.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.5
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.05
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.3,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 1.5,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 8.0,  priority: 1.0, weight: 0.20}
+
+  - tag: fresh_div_bursty_moderate
+    group: fresh_diversity
+    arrival_process: bursty
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 320
+    prediction_noise_rel: 0.15
+    burst_factor: 3.5
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_div_high_load_no_tight_slo
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 55.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.6
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 8
+    output_high: 256
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 2.0,  priority: 2.0, weight: 0.65}
+      - {class_id: loose,  slo_slack: 10.0, priority: 1.0, weight: 0.35}
+
+  - tag: fresh_div_high_noise_moderate_slo
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.9
+    output_low: 8
+    output_high: 768
+    prediction_noise_rel: 0.60
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_div_very_high_noise_tight_slo
+    group: fresh_diversity
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.80
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.45}
+      - {class_id: medium, slo_slack: 3.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.20}
+
+  # ==========================================================================
+  # FRESH TARGETED GROUP
+  # New discriminative workloads designed to produce non-SCORPIO wins.
+  # Seeds [12, 13, 14, 15].
+  # ==========================================================================
+
+  - tag: fresh_tgt_completion_sensitive_moderate
+    # Low-load, all-loose-SLO regime: SCORPIO has no incentive to reject.
+    # Expected: FIFO/EDF/WSP win (CF=1.0), SCORPIO CF=1.0 too → tie-breaker.
+    # Tests: whether selector correctly keeps SCORPIO-equivalent policies.
+    group: fresh_targeted
+    arrival_process: poisson
+    arrival_rate: 25.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.5
+    prompt_low: 32
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.10
+    slo_classes:
+      - {class_id: loose, slo_slack: 10.0, priority: 1.0, weight: 1.00}
+
+  - tag: fresh_tgt_long_decode_loose_slo
+    # Long outputs, medium/loose SLO only — WSP/SOF/best_fit advantage.
+    # No tight SLO → SCORPIO's rejection hurts CF without protecting SLO.
+    # Expected: WSP/SOF/best_fit beat SCORPIO under arrival-norm WG.
+    group: fresh_targeted
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 10.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.4
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.5
+    output_low: 128
+    output_high: 1024
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: medium, slo_slack: 10.0, priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.40}
+
+  - tag: fresh_tgt_short_output_sjf_regime
+    # Short uniform outputs, tight SLO, low noise — SJF/ESTF regime.
+    # Predicted outputs accurate (low noise) → ESTF/SOF can sort correctly.
+    # Expected: ESTF/SOF beat FIFO/SCORPIO via short-job-first ordering.
+    group: fresh_targeted
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.3
+    prompt_low: 32
+    prompt_high: 128
+    output_dist: lognormal
+    output_mean: 28.0
+    output_sigma: 0.3
+    output_low: 16
+    output_high: 64
+    prediction_noise_rel: 0.05
+    slo_classes:
+      - {class_id: tight,  slo_slack: 2.0,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 8.0,  priority: 2.0, weight: 0.50}
+
+  - tag: fresh_tgt_moderate_overload_completion
+    # Moderate overload, medium SLO slack — neither tight nor trivial.
+    # SCORPIO may reject while EDF/WSP/admission_control complete all.
+    # Expected: admission_control or WSP competes with SCORPIO.
+    group: fresh_targeted
+    arrival_process: poisson
+    arrival_rate: 55.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 96.0
+    prompt_sigma: 0.6
+    prompt_low: 24
+    prompt_high: 384
+    output_dist: lognormal
+    output_mean: 144.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.60}
+      - {class_id: loose,  slo_slack: 12.0, priority: 1.0, weight: 0.40}
+
+  # ==========================================================================
+  # FRESH HELDOUT GROUP
+  # Phase 2B.13 synthetic heldout workloads with new seeds [20, 21, 22].
+  # These are structurally identical to Phase 2B.13 heldout workloads but
+  # with seeds not used in any prior phase.
+  # ==========================================================================
+
+  - tag: fresh_heldout_moderate_kv_pressure
+    group: fresh_heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 150.0
+    output_sigma: 0.6
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.20
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.35}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.45}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_heldout_very_high_noise
+    group: fresh_heldout
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 1.0
+    output_low: 8
+    output_high: 1024
+    prediction_noise_rel: 0.90
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_heldout_overloaded_mixed_slo
+    group: fresh_heldout
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_dist: lognormal
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 8
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.4,  priority: 3.0, weight: 0.50}
+      - {class_id: medium, slo_slack: 5.0,  priority: 2.0, weight: 0.35}
+      - {class_id: loose,  slo_slack: 20.0, priority: 1.0, weight: 0.15}
+
+  - tag: fresh_heldout_kv_pressure_decode_heavy
+    group: fresh_heldout
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.5
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 384.0
+    output_sigma: 0.6
+    output_low: 64
+    output_high: 1024
+    prediction_noise_rel: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.8,  priority: 3.0, weight: 0.30}
+      - {class_id: medium, slo_slack: 6.0,  priority: 2.0, weight: 0.50}
+      - {class_id: loose,  slo_slack: 25.0, priority: 1.0, weight: 0.20}
+
+  - tag: fresh_heldout_bursty_mixed_slo
+    group: fresh_heldout
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 8.0
+    prompt_dist: lognormal
+    prompt_mean: 64.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 256
+    output_dist: lognormal
+    output_mean: 80.0
+    output_sigma: 0.8
+    output_low: 8
+    output_high: 384
+    prediction_noise_rel: 0.20
+    burst_factor: 4.0
+    burst_fraction: 0.25
+    slo_classes:
+      - {class_id: tight,  slo_slack: 0.5,  priority: 3.0, weight: 0.40}
+      - {class_id: medium, slo_slack: 4.0,  priority: 2.0, weight: 0.40}
+      - {class_id: loose,  slo_slack: 15.0, priority: 1.0, weight: 0.20}

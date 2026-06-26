@@ -1,8 +1,8 @@
 # Research Status
 
 **Last updated:** 2026-06-26  
-**Current branch:** `phase2b15-corrected-objective-selector-retraining`  
-**Current phase:** Phase 2B.15 — Corrected objective selector retraining
+**Current branch:** `phase2b16-fresh-corrected-objective-validation`  
+**Current phase:** Phase 2B.16 — Fresh corrected-objective validation
 
 ---
 
@@ -38,7 +38,8 @@
 | `phase2b12-workload-diversity-selector-labels` | `93b6da7` | Workload diversity sweep for selector label analysis |
 | `phase2b13-selector-training-and-suspicion-audit` | `3f83922` | Extend to 256 windows; train selectors; audit SCORPIO dominance |
 | `phase2b14-metric-audit-scorpio-ablation` | `abf7989` | Metric audit: WG denominator; arrival-normalized WG; SCORPIO ablation |
-| `phase2b15-corrected-objective-selector-retraining` | current | Corrected-objective selector retraining; WSP fallback; deadline-only decision |
+| `phase2b15-corrected-objective-selector-retraining` | `30dacf7` | Corrected-objective selector retraining; WSP fallback; deadline-only decision |
+| `phase2b16-fresh-corrected-objective-validation` | current | Fresh validation: new seeds [12-15,20-22]; 21 workloads; frozen B15 selectors |
 | `main` | stale | Do not use; all work is on phase branches |
 
 ---
@@ -88,7 +89,36 @@
 - `report_research_status.py` updated: template existence checks + `--check` mode validates templates
 - New tests: leakage/fairness audit + registry template tests
 
-### Phase 2B.15 — Corrected Objective Selector Retraining (current)
+### Phase 2B.16 — Fresh Corrected-Objective Validation (current)
+
+- **Goal:** Validate Phase 2B.15 selector gains on unseen seeds/workloads with frozen selectors.
+- **Config:** `configs/phase2b16_fresh_corrected_objective_validation.yaml`
+- **Runner:** `scripts/run_phase2b16_fresh_corrected_objective_validation.py`
+- **Log:** `logs/phase2b16/phase2b16_fresh_validation.log`
+- **tmux session:** `phase2b16_fresh_validation`
+- **Results:** `results/phase2b16_fresh_corrected_objective_validation/` (gitignored)
+- **Audit docs:** `docs/audits/phase2b16_fresh_corrected_objective_validation_summary.md`,
+  `docs/audits/phase2b16_failure_cases_summary.md`
+- **Tests:** `tests/test_phase2b16_fresh_validation.py`
+- **Status:** Experiment queued — results TBD after ~50-90 min simulation
+
+#### Phase 2B.16 Key Results (TBD)
+
+| Metric | Value |
+|--------|-------|
+| Fresh windows | TBD |
+| Fresh seeds (diversity) | [12, 13, 14, 15] |
+| Fresh seeds (heldout) | [20, 21, 22] |
+| Workload groups | fresh_diversity (12), fresh_targeted (4), fresh_heldout (5) |
+| always-SCORPIO (fresh, anwg) | TBD |
+| always-WSP (fresh, anwg) | TBD |
+| rf_anwg (fresh, anwg) | TBD |
+| rf_anwg CI vs SCORPIO | TBD |
+| B15 gain confirmed? | TBD |
+
+---
+
+### Phase 2B.15 — Corrected Objective Selector Retraining
 
 - **Goal:** Retrain/evaluate selectors using `arrival_normalized_wg` as primary objective; add
   always-WSP baseline; decide on `scorpio_deadline_only` promotion.

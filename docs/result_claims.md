@@ -121,6 +121,14 @@ Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calib
 | "The selector generalizes to arbitrary workloads" | Evaluated on calibrated synthetic and BurstGPT regimes only |
 | "oracle_srtf is a tight upper bound" | SRTF minimizes latency, not priority-weighted SLO goodput; it is not tight on this metric |
 
+## Safe claims (Phase 2B.16 — fresh corrected-objective validation)
+
+*Status: Experiment not yet run. Claims will be added after Phase B simulation completes.*
+
+- "Phase 2B.16 evaluates Phase 2B.15 selectors on entirely fresh windows (seeds [12,13,14,15] for diversity, [20,21,22] for heldout) that were not seen during selector training."
+- "Selectors are frozen before any fresh window is evaluated: training uses only Phase 2B.13 train-split data (diversity seeds 6-10, dev seeds 0-2)."
+- "Bootstrap 95% CI (n=2000) is computed for `rf_anwg` vs always-SCORPIO gap on fresh windows. Whether this CI excludes zero determines whether the Phase 2B.15 +0.0157 gain is statistically confirmed."
+
 ## Safe claims (Phase 2B.15 — corrected objective selector retraining)
 
 - "We retrain policy selectors under `arrival_normalized_wg` (corrected objective) and evaluate under 5 metric variants: `completed_request_quality`, `arrival_normalized_wg`, `cp_wg_t095_l05`, `cp_wg_t099_l05`, `cp_wg_t099_l10`."
