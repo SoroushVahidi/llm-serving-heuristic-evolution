@@ -10,6 +10,8 @@ None require external dependencies beyond NumPy.
 These policies are registered in `src/llmserveopt/policies/registry.py` and are
 used in all experiment comparisons. All are deployable in an online setting.
 All 20 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
+Primary comparison metric: **ANWG** (`arrival_normalized_weighted_goodput`), with
+weighted-goodput aliases retained only for compatibility with older outputs.
 
 | Policy | Category | Online deployable? | Uses prediction? | Uses SLO/deadline? | Uses KV/token budget? | Notes |
 |---|---|---|---|---|---|---|
@@ -40,6 +42,9 @@ All 20 are also valid **selector candidates** (`SELECTOR_CANDIDATE_NAMES`).
 
 The oracle is maintained separately in `ORACLE_POLICY_NAMES` and must never
 appear in `BASELINE_NAMES` or `SELECTOR_CANDIDATE_NAMES`.
+
+`safe_fallback_wsp_margin*` variants are oracle-assisted analysis helpers, not
+registered baselines, not selector candidates, and not deployable.
 
 | Policy | File | Online deployable? | Notes |
 |---|---|---|---|
@@ -95,7 +100,8 @@ decode service time. Not a reproduction of PARS, which uses prompt-aware learnin
 ## Serving-style baseline provenance
 
 Each serving-style baseline captures the **key scheduling insight** of the cited system.
-None are reproductions of the original system's code.
+None are reproductions of the original system's code; all external-style policies in
+this repository are internal simulator approximations built for controlled comparison.
 
 ### Orca-style (`orca_style`)
 

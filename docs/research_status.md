@@ -14,7 +14,7 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) + KNN/regression/fallback variants |
-| Test count | **1267 collected** (one collection error in test_phase2c1_real_trace_runner.py) |
+| Test count | **1277 collected** (broader non-GPU smoke passes after fixing the `scripts` import path in `test_phase2c1_real_trace_runner.py`) |
 | Phase 2C.2 eval windows | **325** (real Azure 2023 + BurstGPT traces) |
 | Phase 2C.2 best selector ANWG | **0.8021** (`native_non_oracle_dt`) |
 | Phase 2C.3 result | **Negative finding** — orca_style: 0 full-pool training labels |

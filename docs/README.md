@@ -49,7 +49,7 @@ Core design decisions are recorded in:
 
 ## 6. Baselines
 
-- [baselines.md](baselines.md) — all 18 registered policies + non-deployable oracle, safe/unsafe labels, provenance table
+- [baselines.md](baselines.md) — all 20 registered policies + non-deployable oracle, safe/unsafe labels, provenance table
 
 ---
 
@@ -136,9 +136,15 @@ Key safe phrasings:
 
 ---
 
-## 13. Phase 2A.4/2B.4 results summary
+## 14. Historical Phase 2A.4/2B.4 results summary
 
-Phase 2A.4 scaled the selector to 18 policies (52 windows total). RF and DT selectors achieve +3.0 pp over best fixed on held-out test. Phase 2B.4 froze a 7-heuristic shortlist on train+val and evaluated once on 3 held-out test regimes.
+This section is historical context only. For current canonical Phase 2C status and
+safe wording, use:
+- [audits/phase2c_project_pause_checkpoint.md](audits/phase2c_project_pause_checkpoint.md)
+- [result_claims.md](result_claims.md)
+- [audits/phase2c3_labeled_dataset_and_api_calibration.md](audits/phase2c3_labeled_dataset_and_api_calibration.md)
+
+Phase 2A.4 scaled the selector to the then-current 18-policy portfolio (52 windows total). RF and DT selectors achieved +3.0 pp over best fixed on held-out test. Phase 2B.4 froze a 7-heuristic shortlist on train+val and evaluated once on 3 held-out test regimes.
 
 Key results:
 - **Selector (RF/DT)**: +3.0 pp over best fixed on selector test split (WG=0.828 vs 0.798)
@@ -148,7 +154,7 @@ Key results:
 
 See [result_claims.md](result_claims.md) for safe/unsafe claim guidance.
 
-## 14. Phase 2C audit docs
+## 15. Phase 2C audit docs
 
 - [audits/phase2c1_evaluation_validity_audit.md](audits/phase2c1_evaluation_validity_audit.md) — real-trace replay validity
 - [audits/phase2c2_causal_selector_retraining.md](audits/phase2c2_causal_selector_retraining.md) — causal selector retraining results
@@ -167,6 +173,6 @@ Key facts for Phase 2C:
 
 ---
 
-## 15. Future phases
+## 16. Future phases
 
 See [roadmap.md](roadmap.md).

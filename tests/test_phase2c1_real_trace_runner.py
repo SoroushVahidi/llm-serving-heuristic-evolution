@@ -12,6 +12,9 @@ from pathlib import Path
 
 import yaml
 
+ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(ROOT))
+
 from llmserveopt.core.types import GPUConfig
 from llmserveopt.evaluation.run_policy import run_policy
 from llmserveopt.policies.fifo import FIFOPolicy
@@ -20,7 +23,6 @@ from llmserveopt.workloads.augmentation import AugmentationConfig
 from llmserveopt.workloads.trace_io_extended import load_extended_jsonl, save_extended_jsonl
 from scripts.data.convert_azure_llm_trace import load_azure_csv, convert_azure_to_requests
 
-ROOT = Path(__file__).parent.parent
 RUNNER_PATH = ROOT / "scripts" / "run_phase2c1_real_trace_ingestion_validation.py"
 CONFIG_PATH = ROOT / "configs" / "phase2c1_real_trace_ingestion_validation.yaml"
 

@@ -4,12 +4,12 @@
 
 This project studies verifier-constrained, LLM-assisted generation of scheduling
 heuristics for online LLM inference serving. It provides a GPU-calibrated discrete-event
-simulator, a suite of 18 baseline policies, real-trace replay against BurstGPT arrival
+simulator, a suite of 20 baseline policies, real-trace replay against BurstGPT arrival
 data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
 
 > **Current status (2026-06-27):** Phase 2C paused after completing causal selector
 > retraining (2C.2) and external-aware analysis (2C.3). Branch:
-> `phase2c1-real-trace-ingestion-validation`. 1267 tests collected.
+> `phase2c1-real-trace-ingestion-validation`. 1277 tests collected.
 >
 > **Phase 2C summary:**
 > - Phase 2C.1: Azure 2023 + BurstGPT real-trace ingestion and validation complete.
@@ -24,8 +24,10 @@ data, a portfolio selector, and a restricted verifiable DSL for LLM-generated he
 >   eval=325). Labels from simulator ANWG only — no live API used.
 > - Gemini calibration dry-run infrastructure exists; no live API call made.
 >
-> See [docs/audits/phase2c_project_pause_checkpoint.md](docs/audits/phase2c_project_pause_checkpoint.md)
-> and [docs/result_claims.md](docs/result_claims.md) for safe/unsafe claim guidance.
+> Canonical current-status references:
+> [docs/audits/phase2c_project_pause_checkpoint.md](docs/audits/phase2c_project_pause_checkpoint.md),
+> [docs/result_claims.md](docs/result_claims.md), and
+> [docs/audits/phase2c3_labeled_dataset_and_api_calibration.md](docs/audits/phase2c3_labeled_dataset_and_api_calibration.md).
 
 ---
 
@@ -61,7 +63,7 @@ See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal de
 |---|---|---|
 | Deterministic iteration-level simulator | Complete | `src/llmserveopt/simulator/` |
 | Synthetic workload generators | Complete | Poisson, bursty, heavy-tail, mixed-SLO |
-| 18 baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
+| 20 baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
 | GPU-calibrated service model | Complete | RTX 5060 Ti, Qwen2.5-0.5B, MAPE <13% |
 | Real-trace replay (BurstGPT) | Complete | 7 experiments, Phase 1.7C |
 | Prediction-noise sensitivity | Complete | 0%, 35%, 70% noise variants |
@@ -102,13 +104,12 @@ python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt
 ## Running tests
 
 ```bash
-pytest                    # all tests (~1267 collected)
+pytest                    # all tests (~1277 collected)
 pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
 ```
 
-1267 tests collected on the current commit (one collection error in
-`test_phase2c1_real_trace_runner.py` due to a `scripts` import path issue — does not
-affect other tests).
+1277 tests collected on the current commit. Targeted Phase 2C stabilization tests and
+the `test_phase2c1_real_trace_runner.py` collection path both pass on this branch.
 
 ---
 
@@ -169,7 +170,7 @@ See [docs/gpu_calibration.md](docs/gpu_calibration.md).
 
 ## Baseline policies
 
-18 policies are registered for online use. See [docs/baselines.md](docs/baselines.md) for
+20 policies are registered for online use. See [docs/baselines.md](docs/baselines.md) for
 provenance, safe/unsafe labels, and the full table.
 
 | Label | Policy | Inspired by |
@@ -192,6 +193,8 @@ provenance, safe/unsafe labels, and the full table.
 | `weighted_shortest_processing` | WSPT composite | Original |
 | `least_laxity_first` | LLF: deadline − now − est. service time | Classical real-time scheduling |
 | `estimated_service_time_first` | Prompt-and-prediction-aware SJF proxy | PARS-inspired (not a PARS reproduction) |
+| `admission_control` | Laxity-based admission control | Original simulator baseline |
+| `scorpio_style_slo_guard` | SCORPIO-inspired SLO guard | Internal simulator approximation |
 
 All serving-style baselines are **original implementations** capturing the key
 scheduling insight of each cited system. None reproduce the original system's code.
@@ -219,7 +222,7 @@ src/llmserveopt/
 scripts/         # CLI entry points (see scripts/README.md)
 configs/         # YAML experiment configs (see configs/README.md)
 docs/            # Design docs, milestones, claims, roadmap (see docs/README.md)
-tests/           # pytest suite (656 tests)
+tests/           # pytest suite (1277 tests collected on 2026-06-27)
 data/            # Local datasets — not committed (see data/README.md)
 results/         # Experiment outputs — not committed (see results/.gitkeep)
 ```
