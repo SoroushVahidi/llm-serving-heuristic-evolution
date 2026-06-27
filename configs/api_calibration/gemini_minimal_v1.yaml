@@ -1,0 +1,102 @@
+experiment: gemini_api_calibration_minimal_v1
+
+# Model to target. Dry-run does not require credentials; live mode does.
+# Supported providers: gemini_api (api.google.com), vertex (Vertex AI)
+provider: gemini_api
+model: gemini-1.5-flash-latest
+
+# Hard caps — enforced before any live call is issued.
+# Dry-run uses these to plan and estimate cost without making calls.
+hard_caps:
+  max_calls: 50
+  max_prompt_tokens_per_call: 2048
+  max_output_tokens_per_call: 512
+  max_total_prompt_tokens: 40000
+  max_total_output_tokens: 10000
+  estimated_budget_usd: 0.10       # abort if dry-run estimate exceeds this
+  timeout_seconds: 30
+  max_retries: 2
+
+# Prompt length buckets (in tokens, approximate via word-count proxy)
+prompt_buckets:
+  short:
+    description: "Short prompt (~50 tokens)"
+    approx_tokens: 50
+    template: >
+      Complete the following sentence in one sentence: "The latency of a large
+      language model depends on"
+  medium:
+    description: "Medium prompt (~250 tokens)"
+    approx_tokens: 250
+    template: >
+      You are an expert in distributed systems. A user is asking about the
+      trade-offs between throughput and latency in large-language-model serving.
+      In particular, they want to understand how batching strategies affect
+      time-to-first-token versus total generation time. Please write a concise
+      technical paragraph (3–5 sentences) explaining the key trade-offs.
+      Consider both prefill and decode phases. Focus on practical implications
+      for a production system serving many concurrent users.
+  long:
+    description: "Long prompt (~900 tokens)"
+    approx_tokens: 900
+    template: >
+      You are an expert in ML systems and scheduling. Below is a description of
+      a simulator for LLM serving that models prefill and decode phases
+      separately. The simulator uses calibrated service curves: prefill time is
+      modeled as a0 + a1 * prompt_tokens, and decode time per step is modeled
+      as b0 + b1 * kv_cache_tokens + b2 * kv_cache_tokens^2. These curves were
+      fitted on an RTX 5060 Ti with Qwen2.5-0.5B and achieved prefill MAPE of
+      9% and decode MAPE of 12-17%. The simulator is used to compare scheduling
+      policies (FIFO, EDF, SCORPIO-style SLO guard, ORCA-style continuous
+      batching, vLLM-style token budget, Sarathi-style chunked prefill, etc.)
+      under realistic Azure and BurstGPT workload traces. The evaluation metric
+      is arrival-normalized weighted goodput (ANWG = completion_fraction *
+      completed_request_quality). Given this setup, answer the following:
+      (1) What are the main sources of simulator inaccuracy for a hosted LLM
+      API like Gemini compared with a local GPU deployment?
+      (2) Which scheduling policy differences would be hardest to capture in a
+      simulator calibrated only on local GPU measurements?
+      (3) What minimal set of live API measurements (prompt lengths, output
+      lengths, concurrency levels) would most efficiently calibrate the
+      simulator for hosted-API behavior?
+      Please answer in three clearly labeled sections, each 2–4 sentences.
+
+# Output token budget buckets
+output_buckets:
+  small:
+    description: "Small output (≤64 tokens)"
+    max_tokens: 64
+  medium:
+    description: "Medium output (≤256 tokens)"
+    max_tokens: 256
+
+# Number of times each (prompt_bucket, output_bucket) combination is repeated
+repeats: 2
+
+# Concurrency groups to test. Dry-run plans calls; live mode sends concurrently.
+# concurrency=1 means sequential. Keep low for minimal pilot.
+concurrency_groups: [1, 2]
+
+# Output directory (timestamped subdirectory appended at runtime)
+output_dir: results/api_calibration/gemini_minimal_v1
+
+# Fields recorded per call (for reference; actual recording is in the script)
+recorded_fields:
+  - call_id
+  - provider
+  - model
+  - prompt_bucket
+  - output_bucket
+  - concurrency_group
+  - repeat_index
+  - planned_prompt_tokens
+  - max_output_tokens
+  - status
+  - prompt_tokens_actual
+  - output_tokens_actual
+  - latency_total_ms
+  - time_to_first_token_ms   # only if streaming is supported
+  - start_utc
+  - end_utc
+  - error_code
+  - error_message

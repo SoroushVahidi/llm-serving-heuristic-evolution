@@ -1,0 +1,75 @@
+experiment: phase2c3_external_aware_orca_recovery
+
+output_dir: results/phase2c3_external_aware_orca_recovery
+
+phase2c2_input_dir: results/phase2c2_causal_selector_retraining/20260626_194325
+phase2c3_failure_diagnosis_dir: results/phase2c3_failure_diagnosis/20260626_phase2c2_analysis
+
+primary_rank_metric: mean_arrival_normalized_wg
+near_tie_filter_epsilon: 0.005
+regret_weight_epsilon: 0.001
+
+required_policies:
+  - orca_style
+  - scorpio_style_slo_guard
+  - edf
+  - fifo
+  - weighted_shortest_processing
+  - multi_bin_batching
+  - estimated_service_time_first
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+
+external_style_policies:
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+  - multi_bin_batching
+  - estimated_service_time_first
+  - scorpio_style_slo_guard
+
+# Native pool approximates the Phase 2C.2 target space while holding out the
+# four purely external-style approximations that never appeared as native labels.
+native_excluded_policies:
+  - orca_style
+  - vllm_style_token_budget
+  - sarathi_style
+  - splitfuse_style
+
+oracle_assisted_prefixes:
+  - safe_fallback_wsp_margin
+
+target_pools:
+  - native_non_oracle
+  - external_aware_non_oracle
+  - orca_vs_scorpio_gate
+  - external_aware_balanced
+
+models:
+  decision_tree:
+    max_depth: 8
+    min_samples_leaf: 5
+    random_state: 42
+  random_forest:
+    n_estimators: 200
+    max_depth: 10
+    random_state: 42
+  knn:
+    k: 5
+    metric: euclidean
+  regression:
+    n_estimators: 200
+    max_depth: 10
+    random_state: 42
+
+smoke:
+  max_train_rows: 80
+  max_eval_rows_per_workload: 8
+
+expected_reproduction:
+  dt_anwg: 0.8021
+  always_scorpio: 0.7963
+  external_style_envelope: 0.8297
+  external_loss_windows: 62
