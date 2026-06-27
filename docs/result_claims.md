@@ -169,6 +169,30 @@ Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calib
 | "Phase 2B.10–2B.13 WG is arrival-normalized goodput" | It is completed-only conditional quality; reinterpretation required for SCORPIO comparisons |
 | "Selector training optimizes arrival-normalized goodput" | Selector training used completed-only labels; valid for non-SCORPIO policies but conflated for SCORPIO-heavy labels |
 
+## Safe claims (Phase 2C.1–2C.3 — real-trace ingestion and causal selector retraining)
+
+- "Phase 2C.1 validates simulator outputs against real Azure 2023 LLM Inference traces (conv and code splits) and BurstGPT traces. All claim comparisons use only simulator-measured quantities."
+- "Phase 2C.2 trains a DT selector on causal feat_* features (17 features) with ANWG = reward_* × completion_* labels. Best eval ANWG = 0.8021 (dt_anwg selector, native non-oracle pool)."
+- "Phase 2C.2 external-style envelope (per-window max over 7 external-style policies) = 0.8297 on eval. Gap of ~0.028 relative to dt_anwg selector. 62/325 eval windows where envelope > dt_anwg."
+- "Phase 2C.3 is a negative finding: adding external-style policies to the training pool did not recover orca_style advantage. orca_style had zero full-pool training labels. external_aware_non_oracle DT is numerically identical to native_non_oracle DT."
+- "Best Phase 2C.3 selector ANWG = 0.8063 (native_non_oracle_dt). Delta from Phase 2C.2 = +0.0042 (no real orca recovery; improvement is within noise)."
+- "scorpio_style_slo_guard is the best fixed external-style policy overall by mean eval ANWG."
+- "orca_style wins on 212/611 labeled windows by pairwise ANWG vs scorpio; it is selectively competitive but not a good always-fixed choice."
+- "azure_2023_conv is the primary failure workload: windows with long prompts (>1000 tokens) and mixed tight SLO (fraction_tight_slo in [0.4, 0.7]) are where external policies most outperform the learned selector."
+- "is_azure_conv_like (feature-based: is_long_prompt AND is_mixed_tight_slo) identifies 135/611 windows matching this profile, regardless of workload name."
+- "The Phase 2C labeled dataset (611 rows) captures pairwise orca-vs-scorpio signal, near-tie rows (304), and failure labels. All labels are derived from simulator ANWG. No live API call was used as ground truth."
+- "Gemini API calibration infrastructure is dry-run only. 24 planned calls, estimated worst-case $0.00187. No live API call has been made."
+- "See docs/audits/phase2c_project_pause_checkpoint.md for full Phase 2C pause inventory."
+
+## Unsafe claims (Phase 2C)
+
+| Claim | Why Unsafe |
+|---|---|
+| "Phase 2C.3 outperforms Phase 2C.2 by +0.0042 ANWG" | External-aware DTs are numerically identical to native DTs; the delta is measurement noise |
+| "Orca recovery is impossible" | Targeted synthetic training for azure_conv_like windows has not been attempted |
+| "rf_anwg generalizes better than dt_anwg" | rf_anwg shows slight gains within the current eval set; CI overlap with dt_anwg |
+| "Adding more external policies closes the envelope gap" | Not tested; envelope gap is a structural property of the training distribution |
+
 ## How to harden claims for Phase 2+
 
 - Validate against real vLLM / Sarathi / DeepSpeed-FastGen serving traces
