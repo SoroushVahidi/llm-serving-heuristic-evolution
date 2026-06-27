@@ -97,6 +97,12 @@ recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md).
 | Phase 1.7C — calibrated real-trace replay | [milestones/phase1_7c_calibrated_real_trace.md](milestones/phase1_7c_calibrated_real_trace.md) | COMPLETE |
 | Phase 2B.2 — offline LLM generation loop | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
 | Phase 2A.4/2B.4 — final evaluation hardening | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
+| Phase 2B.14 — metric audit (ANWG), SCORPIO ablation | [audits/phase2b14_metric_definition_audit.md](audits/phase2b14_metric_definition_audit.md) | COMPLETE |
+| Phase 2B.16 — fresh corrected-objective validation | [audits/phase2b16_fresh_corrected_objective_validation_summary.md](audits/phase2b16_fresh_corrected_objective_validation_summary.md) | COMPLETE |
+| Phase 2C.1 — Azure 2023 + BurstGPT real-trace validation | [audits/phase2c1_evaluation_validity_audit.md](audits/phase2c1_evaluation_validity_audit.md) | COMPLETE |
+| Phase 2C.2 — causal selector retraining | [audits/phase2c2_causal_selector_retraining.md](audits/phase2c2_causal_selector_retraining.md) | COMPLETE |
+| Phase 2C.3 — external-aware analysis (negative finding) | [audits/phase2c3_labeled_dataset_and_api_calibration.md](audits/phase2c3_labeled_dataset_and_api_calibration.md) | COMPLETE |
+| **PAUSE CHECKPOINT** | [audits/phase2c_project_pause_checkpoint.md](audits/phase2c_project_pause_checkpoint.md) | **2026-06-27** |
 
 ---
 
@@ -142,6 +148,25 @@ Key results:
 
 See [result_claims.md](result_claims.md) for safe/unsafe claim guidance.
 
-## 14. Future phases
+## 14. Phase 2C audit docs
+
+- [audits/phase2c1_evaluation_validity_audit.md](audits/phase2c1_evaluation_validity_audit.md) — real-trace replay validity
+- [audits/phase2c2_causal_selector_retraining.md](audits/phase2c2_causal_selector_retraining.md) — causal selector retraining results
+- [audits/phase2c3_labeled_dataset_and_api_calibration.md](audits/phase2c3_labeled_dataset_and_api_calibration.md) — Phase 2C.3 negative finding, labeled dataset, Gemini dry-run
+- [audits/phase2c_project_pause_checkpoint.md](audits/phase2c_project_pause_checkpoint.md) — **pause checkpoint** (resume here)
+
+Key facts for Phase 2C:
+- Best learned selector ANWG = 0.8021 (native_non_oracle_dt on 325 eval windows).
+- External-style envelope = 0.8297; learned selector does **not** beat it.
+- orca_style wins on 212/611 labeled windows vs scorpio but is not a good fixed choice.
+- azure_2023_conv is the main failure workload (long-prompt + mixed-SLO regime).
+- **No live API call was made.** Gemini calibration is dry-run only.
+- Labeled dataset has 611 rows with simulator-derived ANWG labels (no API ground-truth).
+- Safe-for-training labels: `label_best_native_non_oracle_policy`, all `is_*` regime flags.
+- Unsafe to claim: learned selector beats external envelope; orca recovery; Gemini-validated results.
+
+---
+
+## 15. Future phases
 
 See [roadmap.md](roadmap.md).

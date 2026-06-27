@@ -1,8 +1,8 @@
 # Research Status
 
-**Last updated:** 2026-06-26  
-**Current branch:** `phase2b16-fresh-corrected-objective-validation`  
-**Current phase:** Phase 2B.16 — Fresh corrected-objective validation
+**Last updated:** 2026-06-27  
+**Current branch:** `phase2c1-real-trace-ingestion-validation`  
+**Current phase:** Phase 2C — Paused after Phase 2C.3 (external-aware analysis)
 
 ---
 
@@ -14,11 +14,62 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) + KNN/regression/fallback variants |
-| Test count | **945+ passing**, 2 skipped (Phase 2B.13) |
-| Phase 2B.13 windows evaluated | **319** (60 regression + 259 diversity) |
-| SCORPIO label fraction (Phase 2B.13) | **55.2%** |
-| RF/DT training feasible | **Yes** (256 ≥ 200; spread+concentration pass) |
-| RF beats always-SCORPIO (held-out) | **No** (ties at WG=0.9975) |
+| Test count | **1267 collected** (one collection error in test_phase2c1_real_trace_runner.py) |
+| Phase 2C.2 eval windows | **325** (real Azure 2023 + BurstGPT traces) |
+| Phase 2C.2 best selector ANWG | **0.8021** (`native_non_oracle_dt`) |
+| Phase 2C.3 result | **Negative finding** — orca_style: 0 full-pool training labels |
+| External-style envelope ANWG | **0.8297** (external policies still beat learned selector) |
+| Phase 2C labeled dataset | **611 rows** (train=245, val=41, eval=325); 17 causal features |
+| Live API calls made | **None** — Gemini dry-run only |
+
+---
+
+## Phase 2C — Real-Trace Causal Selector (PAUSED 2026-06-27)
+
+### Phase 2C.1 — Real-Trace Ingestion and Validation
+- Azure 2023 conv + code traces and BurstGPT traces ingested and validated.
+- Evaluation runner validates simulator outputs against real-trace distributions.
+- Commits: `db6819e`, `a04eb6a`
+
+### Phase 2C.2 — Causal Selector Retraining
+
+| Metric | Value |
+|---|---|
+| Eval windows | **325** (real Azure 2023 + BurstGPT traces) |
+| Feature columns | **17** causal `feat_*` columns |
+| Best selector | `native_non_oracle_dt`, ANWG = **0.8021** |
+| Always-scorpio ANWG | 0.7963 (selector beats by +0.0058) |
+| External-style envelope ANWG | **0.8297** — learned selector does NOT beat this |
+| External-loss windows | **62/325** (envelope > dt_anwg selector) |
+
+Key: Learned selectors outperform always-scorpio but do not close the gap to the
+external-style envelope. azure_2023_conv is the main failure workload.
+
+### Phase 2C.3 — External-Aware Orca Recovery (Negative Finding)
+
+- **Goal:** Test whether adding external-style policies to training pool recovers orca advantage on azure_2023_conv.
+- **Structural finding:** orca_style has **zero** full-pool training labels → external-aware DT is numerically identical to native DT.
+- **Best Phase 2C.3 ANWG:** 0.8063 (delta +0.0042 vs Phase 2C.2, no real recovery).
+- **Orca selected by best selector:** 0 times.
+- Commit: `69c80ea`
+
+### Phase 2C — Labeled Dataset and API Infrastructure
+
+- **Labeled dataset:** 611 rows (train=245, val=41, eval=325). Labels from ANWG = reward_* × completion_*. No live API used.
+  - 304 near-tie rows (native pool, margin < 0.005)
+  - 135 azure_conv_like rows (feature-based: is_long_prompt AND is_mixed_tight_slo)
+  - 212 orca-beats-scorpio rows (pairwise ANWG)
+  - 69 Phase 2C.3 external-loss rows
+- **Gemini API calibration:** Dry-run only. 24 planned calls, worst-case $0.00187. No live call.
+- Commit: `69c80ea`, `b5b78a7`
+- Pause checkpoint: `docs/audits/phase2c_project_pause_checkpoint.md`
+
+### Phase 2C — Next Steps (after returning)
+
+1. **Phase 2C.4:** Pairwise/regret-weighted selector training from labeled dataset.
+2. **Azure-conv-like synthetic training:** Generate targeted windows for long-prompt + mixed-SLO regime.
+3. **Regime-gated selector:** Route azure_conv_like windows to a specialized sub-selector.
+4. **Gemini live calibration:** 10-call pilot after credentials/caps review.
 
 ---
 
@@ -26,6 +77,7 @@
 
 | Branch | Commit | Description |
 |---|---|---|
+| `phase2c1-real-trace-ingestion-validation` | `b5b78a7` | **Current** — Phase 2C.1–2C.3 complete, labeled dataset, API infra, pause checkpoint |
 | `phase2a4-2b4-final-eval` | `9ed8f71` | Final frozen evaluation (Phase 2A.4/2B.4) |
 | `phase2b5-external-baselines` | `e1c6c01` | External baseline audit + completion_fraction metric |
 | `phase2b5-admission-rule-selector-status` | `5d2afb6` | Admission control policy + feature rule selector |
@@ -529,30 +581,29 @@ includes genuinely-filtered infeasible requests — but the metrics don't distin
 
 ---
 
-## Next Planned Tasks
+## Next Planned Tasks (After Pause)
 
-### Completed in Phase 2B.9 ✅
-- Selector training data sufficiency and leakage audit (`docs/audits/phase2b9_selector_training_audit.md`)
-- Broader robustness experiment (9 workloads: 4 dev + 5 heldout, seeds 0–5)
-- Robustness results analysis (`docs/audits/phase2b9_selector_robustness_summary.md`)
-- Failure case documentation (`docs/audits/phase2b9_failure_cases_summary.md`)
-- External baseline decision document (`docs/external_baseline_decision.md`)
-- Dataset/workload decision document (`docs/dataset_workload_decision.md`)
-- Tests for oracle exclusion, rule dispatch, config validation, doc existence
+Phase 2B.5–2B.16 and Phase 2C.1–2C.3 are all complete. See the Phase 2C section
+above and `docs/audits/phase2c_project_pause_checkpoint.md` for full details.
+
+### Immediate Next Steps (Phase 2C.4+)
+1. **Pairwise/regret-weighted selector training:** Use `label_best_native_non_oracle_policy`
+   (safe_for_training) and `pairwise_orca_scorpio_labels.csv` from the Phase 2C labeled
+   dataset. Deprioritize the 304 near-tie windows.
+2. **Azure-conv-like synthetic training generation:** Generate targeted windows matching
+   `is_azure_conv_like` profile (long prompt + mixed tight SLO) to close the external-
+   envelope gap on azure_2023_conv.
+3. **Regime-gated selector:** Implement two-stage selector that routes azure_conv_like
+   windows to a specialized sub-selector.
+
+### Calibration
+4. **Gemini live calibration pilot:** 10-call pilot (`--allow-live-api --max-calls 10`)
+   after credentials and $0.10 budget cap are reviewed.
 
 ### Remaining Before Submission
-1. **Update rule selector / RF-DT for 20 policies** — route to `scorpio_style_slo_guard` where best (Phase 2B.10 shows −0.042 overall gap vs new best fixed); re-run robustness.
-2. **Expand selector training data** — add KV-pressure + high-noise + real-trace windows to reach ≥200 training windows; re-train and re-evaluate RF/DT on Phase 2B.9/2B.10 suite.
-3. **Implement remaining must-add baselines** (see `docs/external_baseline_decision.md` section B):
+5. **Must-add external baselines** (see `docs/external_baseline_decision.md`):
    - B.3 KV-cache-aware scheduler (WAIT/Jaillet-style)
-   - B.4 FairBatching
-   - B.1 PARS-style LTR (requires training data)
+   - B.4 FairBatching  
+   - B.1 PARS-style LTR
    - B.5 PROSERVE SlideBatching
-   - ~~B.2 SCORPIO-style~~ ✅ implemented Phase 2B.10
-4. **Ingest real-trace datasets** (see `docs/dataset_workload_decision.md` section B):
-   - BurstGPT full dataset (currently using 10k subset only)
-   - Azure LLM Inference 2023 / Splitwise trace
-   - LMSYS-Chat-1M length statistics for calibrated synthetic
-   - LongBench for long-context stress workloads
-5. **LLM escalation** (CloudRift/Cohere): if further rule improvement needed,
-   generalization analysis, synthesize updated rules. Log in API ledger. Limit: 1–2 calls per pattern.
+6. **Real-trace datasets** still needed: BurstGPT full dataset, LMSYS-Chat-1M, LongBench.

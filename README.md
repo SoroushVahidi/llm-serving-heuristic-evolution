@@ -7,12 +7,25 @@ heuristics for online LLM inference serving. It provides a GPU-calibrated discre
 simulator, a suite of 18 baseline policies, real-trace replay against BurstGPT arrival
 data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
 
-> **Current status:** Phase 2A.4/2B.4 complete. All components finalized: simulator,
-> 18 baselines, GPU calibration, real-trace replay, 18-policy selector (Phase 2A.4),
-> DSL/verifier stack (Phase 2B.1), offline LLM generation loop (Phase 2B.2),
-> controlled LLM heuristic search (Phase 2B.3), and final held-out evaluation with
-> bootstrap CIs and shortlist freeze (Phase 2A.4/2B.4). 656 tests pass.
-> See [docs/roadmap.md](docs/roadmap.md).
+> **Current status (2026-06-27):** Phase 2C paused after completing causal selector
+> retraining (2C.2) and external-aware analysis (2C.3). Branch:
+> `phase2c1-real-trace-ingestion-validation`. 1267 tests collected.
+>
+> **Phase 2C summary:**
+> - Phase 2C.1: Azure 2023 + BurstGPT real-trace ingestion and validation complete.
+> - Phase 2C.2: Causal selector retraining complete. Best learned selector ANWG = 0.8021
+>   (native non-oracle DT). Modest improvement over always-scorpio (0.7963).
+>   External-style envelope = 0.8297 — learned selector does **not** beat external-style
+>   envelope overall. azure_2023_conv remains the main unresolved failure.
+> - Phase 2C.3: External-aware pool analysis complete (**negative finding**). orca_style
+>   had zero full-pool training labels; external-aware DT is numerically identical to
+>   native DT. Best Phase 2C.3 selector ANWG = 0.8063 (no real improvement).
+> - Automatic labeled dataset builder exists: 611 labeled windows (train=245, val=41,
+>   eval=325). Labels from simulator ANWG only — no live API used.
+> - Gemini calibration dry-run infrastructure exists; no live API call made.
+>
+> See [docs/audits/phase2c_project_pause_checkpoint.md](docs/audits/phase2c_project_pause_checkpoint.md)
+> and [docs/result_claims.md](docs/result_claims.md) for safe/unsafe claim guidance.
 
 ---
 
@@ -89,11 +102,13 @@ python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt
 ## Running tests
 
 ```bash
-pytest                    # all 656 tests
+pytest                    # all tests (~1267 collected)
 pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
 ```
 
-All 656 tests pass on the current commit.
+1267 tests collected on the current commit (one collection error in
+`test_phase2c1_real_trace_runner.py` due to a `scripts` import path issue — does not
+affect other tests).
 
 ---
 
@@ -269,8 +284,15 @@ See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_clai
 | 2B.2 | LLM offline heuristic generation loop | Complete |
 | 2B.3 | Controlled LLM heuristic search (multi-regime eval) | Complete |
 | 2A.4/2B.4 | Final evaluation hardening (shortlist freeze, held-out test, bootstrap CIs) | Complete |
-| 4 | LLM evolution loop (full) | Not started |
-| 5 | Shifted-workload evaluation + paper write-up | Not started |
+| 2B.5–2B.9 | External baselines, admission control, rule selector repair, robustness audit | Complete |
+| 2B.10–2B.13 | SCORPIO, selector training on diversified suite (256 windows) | Complete |
+| 2B.14–2B.16 | Metric audit (ANWG), corrected-objective retraining, fresh validation | Complete |
+| 2C.1 | Real-trace ingestion: Azure 2023 + BurstGPT validation | Complete |
+| 2C.2 | Causal selector retraining on real traces (ANWG labels) | Complete |
+| 2C.3 | External-aware pool analysis (negative finding: no orca recovery) | Complete |
+| 2C.4 | Pairwise/regret-weighted selector training from labeled dataset | Not started |
+| — | LLM evolution loop (full) | Not started |
+| — | Shifted-workload evaluation + paper write-up | Not started |
 
 See [docs/roadmap.md](docs/roadmap.md) for details.
 
