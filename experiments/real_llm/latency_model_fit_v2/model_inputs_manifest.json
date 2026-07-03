@@ -1,0 +1,91 @@
+{
+  "generated_at_utc": "2026-07-03T14:56:28.563615+00:00",
+  "command_line": "scripts/fit_real_llm_latency_model_v2.py --experiment-dir experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z --experiment-dir experiments/real_llm/gemini_v2_length_targeted_20260703T141723Z --output-dir experiments/real_llm/latency_model_fit_v2",
+  "git_branch": "phase2c1-real-trace-ingestion-validation",
+  "git_commit": "f2bf21a6d392717898fa707a40495756b6754832",
+  "git_dirty": true,
+  "experiment_dirs": [
+    {
+      "experiment_dir": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z",
+      "provider": "Cohere",
+      "model": "command-r7b-12-2024",
+      "workload_version": "v2",
+      "status_counts": {
+        "success": 108
+      },
+      "total_records": 108,
+      "error_rate": 0.0,
+      "frac_reached_target_output_range": 0.9444444444444444,
+      "by_target_output_tokens": [
+        {
+          "target_output_tokens": 64,
+          "n_total": 36,
+          "n_success": 36,
+          "mean_output_tokens": 51.97222222222222,
+          "p50_output_tokens": 52.0,
+          "mean_output_token_ratio": 0.8120659722222222,
+          "frac_reached_target_range": 0.8333333333333334
+        },
+        {
+          "target_output_tokens": 128,
+          "n_total": 36,
+          "n_success": 36,
+          "mean_output_tokens": 127.55555555555556,
+          "p50_output_tokens": 125.0,
+          "mean_output_token_ratio": 0.9965277777777778,
+          "frac_reached_target_range": 1.0
+        },
+        {
+          "target_output_tokens": 256,
+          "n_total": 36,
+          "n_success": 36,
+          "mean_output_tokens": 241.58333333333334,
+          "p50_output_tokens": 232.0,
+          "mean_output_token_ratio": 0.9436848958333334,
+          "frac_reached_target_range": 1.0
+        }
+      ]
+    },
+    {
+      "experiment_dir": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/gemini_v2_length_targeted_20260703T141723Z",
+      "provider": "Gemini",
+      "model": "gemini-3.1-flash-lite",
+      "workload_version": "v2",
+      "status_counts": {
+        "success": 108
+      },
+      "total_records": 108,
+      "error_rate": 0.0,
+      "frac_reached_target_output_range": 1.0,
+      "by_target_output_tokens": [
+        {
+          "target_output_tokens": 64,
+          "n_total": 36,
+          "n_success": 36,
+          "mean_output_tokens": 66.66666666666667,
+          "p50_output_tokens": 65.0,
+          "mean_output_token_ratio": 1.0416666666666667,
+          "frac_reached_target_range": 1.0
+        },
+        {
+          "target_output_tokens": 128,
+          "n_total": 36,
+          "n_success": 36,
+          "mean_output_tokens": 118.66666666666667,
+          "p50_output_tokens": 118.0,
+          "mean_output_token_ratio": 0.9270833333333334,
+          "frac_reached_target_range": 1.0
+        },
+        {
+          "target_output_tokens": 256,
+          "n_total": 36,
+          "n_success": 36,
+          "mean_output_tokens": 232.66666666666666,
+          "p50_output_tokens": 233.0,
+          "mean_output_token_ratio": 0.9088541666666666,
+          "frac_reached_target_range": 1.0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+# Reference data for the v2 length-targeted real-LLM latency fit.
+#
+# STATUS: data only — NOT wired into the simulator. No loader in src/
+# reads this file today. See docs/real_llm_simulator_integration_plan.md
+# for why (hosted-API black-box latency and simulator-internal service-time
+# modeling are different things) and what an actual integration would need.
+#
+# Source: experiments/real_llm/latency_model_fit_v2/ (fit from
+# experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z/ and
+# experiments/real_llm/gemini_v2_length_targeted_20260703T141723Z/, both
+# 108/108 requests, 0 failures). Regenerate with:
+#   python scripts/fit_real_llm_latency_model_v2.py \
+#     --experiment-dir experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z \
+#     --experiment-dir experiments/real_llm/gemini_v2_length_targeted_20260703T141723Z \
+#     --output-dir experiments/real_llm/latency_model_fit_v2
+#
+# Only the "overall" (n=108, pooled across all three targets) decode rates
+# are included below — see docs/real_llm_latency_model_v2.md's "which
+# metrics are reliable" section for why the per-target-length decode rates
+# (provider_decode_rates.csv) are NOT included here: several of those cells
+# have R^2 < 0.5 and are fit noise, not a real measurement.
+
+fit_generated_at_utc: "2026-07-03T14:56:28.563615+00:00"
+fit_git_commit: "f2bf21a6d392717898fa707a40495756b6754832"
+source_experiment_dirs:
+  - experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z
+  - experiments/real_llm/gemini_v2_length_targeted_20260703T141723Z
+
+providers:
+  cohere:
+    model: command-r7b-12-2024
+    n_requests: 108
+    error_rate: 0.0
+    ttft_seconds:
+      mean: 0.2462
+      p50: 0.2352
+      p95: 0.3363
+      p99: 0.3866
+    provider_latency_seconds:
+      mean: 1.9391
+      p50: 1.8596
+      p95: 3.7744
+      p99: 4.0699
+    decode_rate_overall:
+      effective_decode_rate_tokens_per_sec: 88.49
+      decode_intercept_s: 0.1065
+      n: 108
+      r2: 0.8866
+
+  gemini:
+    model: gemini-3.1-flash-lite
+    n_requests: 108
+    error_rate: 0.0
+    ttft_seconds:
+      mean: 0.6741
+      p50: 0.6006
+      p95: 1.2678
+      p99: 1.7924
+    provider_latency_seconds:
+      mean: 1.2675
+      p50: 1.1127
+      p95: 1.9757
+      p99: 2.2172
+    decode_rate_overall:
+      effective_decode_rate_tokens_per_sec: 288.93
+      decode_intercept_s: 0.1112
+      n: 108
+      r2: 0.8334
+
+notes:
+  reliable: >
+    TTFT/latency stats and the "overall" per-provider decode rate above are
+    the numbers docs/real_llm_latency_model_v2.md marks reliable.
+  not_included: >
+    Per-target-length (64/128/256) decode rates, the standalone TTFT
+    regression coefficients, and any coefficient extrapolated beyond this
+    pilot's grid (targets 64/128/256, concurrency 1-8, 3 prompt buckets)
+    are deliberately NOT summarized here — see
+    experiments/real_llm/latency_model_fit_v2/provider_decode_rates.csv
+    and docs/real_llm_latency_model_v2.md for the full, caveated numbers.
+  scope: >
+    Two models, one pilot each, one time window, one client/region. Do not
+    generalize to other Cohere/Gemini models, Azure, OpenAI, or Fireworks —
+    no data exists for them here.

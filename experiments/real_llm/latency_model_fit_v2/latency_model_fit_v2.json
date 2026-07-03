@@ -1,0 +1,302 @@
+{
+  "generated_at_utc": "2026-07-03T14:56:28.563615+00:00",
+  "inputs": {
+    "experiment_dirs": [
+      "experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z",
+      "experiments/real_llm/gemini_v2_length_targeted_20260703T141723Z"
+    ],
+    "labels": null,
+    "exclude_rpm_wait_outliers": false
+  },
+  "providers": {
+    "Cohere": {
+      "provider": "Cohere",
+      "model": "command-r7b-12-2024",
+      "n_records": 108,
+      "ttft_stats": {
+        "n": 108,
+        "mean": 0.24620277777777777,
+        "p50": 0.23515,
+        "p95": 0.33625499999999997,
+        "p99": 0.38657299999999994,
+        "min": 0.1613,
+        "max": 0.3878
+      },
+      "latency_stats": {
+        "n": 108,
+        "mean": 1.9390574074074076,
+        "p50": 1.85955,
+        "p95": 3.77436,
+        "p99": 4.069901999999999,
+        "min": 0.7031,
+        "max": 4.172
+      },
+      "ttft_model": {
+        "fit": true,
+        "n": 108,
+        "intercept": 0.22162576319408947,
+        "r2": 0.05334829196860513,
+        "coef_target_or_output_tokens": 7.895290658591036e-05,
+        "coef_prompt_tokens": -1.8671445529144391e-06,
+        "coef_concurrency_level": 0.0038428019323671595
+      },
+      "latency_model": {
+        "fit": true,
+        "n": 108,
+        "intercept": 0.20133174465750453,
+        "r2": 0.8902592810533481,
+        "coef_ttft_seconds": 0.6473920255007639,
+        "coef_output_tokens": 0.011335453023648037,
+        "coef_prompt_tokens": 3.19390668611641e-05,
+        "coef_concurrency_level": -0.010827235546312857
+      }
+    },
+    "Gemini": {
+      "provider": "Gemini",
+      "model": "gemini-3.1-flash-lite",
+      "n_records": 108,
+      "ttft_stats": {
+        "n": 108,
+        "mean": 0.6740833333333334,
+        "p50": 0.6006,
+        "p95": 1.267825,
+        "p99": 1.7924159999999987,
+        "min": 0.3991,
+        "max": 1.9238
+      },
+      "latency_stats": {
+        "n": 108,
+        "mean": 1.267486111111111,
+        "p50": 1.1126999999999998,
+        "p95": 1.9757449999999996,
+        "p99": 2.217192,
+        "min": 0.7495,
+        "max": 2.5386
+      },
+      "ttft_model": {
+        "fit": true,
+        "n": 108,
+        "intercept": 0.6010843916963986,
+        "r2": 0.06301117666305955,
+        "coef_target_or_output_tokens": 0.00030166052578668094,
+        "coef_prompt_tokens": 7.912987723698232e-05,
+        "coef_concurrency_level": -0.010693526570048283
+      },
+      "latency_model": {
+        "fit": true,
+        "n": 108,
+        "intercept": 0.1818222035021213,
+        "r2": 0.9236100137830658,
+        "coef_ttft_seconds": 0.8778176801712434,
+        "coef_output_tokens": 0.0034983742053379674,
+        "coef_prompt_tokens": 2.9589523490303193e-06,
+        "coef_concurrency_level": 0.0010551470408374976
+      }
+    }
+  },
+  "pooled": {
+    "providers": [
+      "Cohere",
+      "Gemini"
+    ],
+    "baseline_provider": "Cohere",
+    "n_records": 216,
+    "ttft_stats": {
+      "n": 216,
+      "mean": 0.46014305555555557,
+      "p50": 0.39344999999999997,
+      "p95": 0.9524999999999999,
+      "p99": 1.5965849999999993,
+      "min": 0.1613,
+      "max": 1.9238
+    },
+    "latency_stats": {
+      "n": 216,
+      "mean": 1.6032717592592591,
+      "p50": 1.4094,
+      "p95": 3.41635,
+      "p99": 3.9518399999999994,
+      "min": 0.7031,
+      "max": 4.172
+    },
+    "ttft_model": {
+      "fit": true,
+      "n": 216,
+      "intercept": 0.1974226117285272,
+      "r2": 0.5516653483945766,
+      "coef_target_or_output_tokens": 0.0001903112316259803,
+      "coef_prompt_tokens": 3.8181829231989965e-05,
+      "coef_concurrency_level": -0.0034253623188405503,
+      "coef_is_Gemini": 0.42824964657146475
+    },
+    "latency_model": {
+      "fit": true,
+      "n": 216,
+      "intercept": 0.6230476733883762,
+      "r2": 0.7832624453704431,
+      "coef_ttft_seconds": 0.791558940855025,
+      "coef_output_tokens": 0.007986669734329904,
+      "coef_prompt_tokens": 2.485814401564923e-05,
+      "coef_concurrency_level": -0.005755830366251652,
+      "coef_is_Gemini": -1.0017412079550936
+    }
+  },
+  "decode_rate_table": [
+    {
+      "provider": "Cohere",
+      "target_output_tokens": "overall",
+      "fit": true,
+      "n": 108,
+      "r2": 0.886569250484566,
+      "effective_decode_rate_tokens_per_sec": 88.48598618257714,
+      "decode_intercept_s": 0.10649755291990237
+    },
+    {
+      "provider": "Cohere",
+      "target_output_tokens": 64,
+      "fit": true,
+      "n": 36,
+      "r2": 0.48671877548791753,
+      "effective_decode_rate_tokens_per_sec": 94.94492415588981,
+      "decode_intercept_s": 0.10736218319486814
+    },
+    {
+      "provider": "Cohere",
+      "target_output_tokens": 128,
+      "fit": true,
+      "n": 36,
+      "r2": 0.4228657815372333,
+      "effective_decode_rate_tokens_per_sec": 96.8111843361493,
+      "decode_intercept_s": 0.27811566271482707
+    },
+    {
+      "provider": "Cohere",
+      "target_output_tokens": 256,
+      "fit": true,
+      "n": 36,
+      "r2": 0.23071022828047494,
+      "effective_decode_rate_tokens_per_sec": 106.19853102764984,
+      "decode_intercept_s": 0.5532947740870419
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": "overall",
+      "fit": true,
+      "n": 108,
+      "r2": 0.8334044240984967,
+      "effective_decode_rate_tokens_per_sec": 288.9269821113135,
+      "decode_intercept_s": 0.11115867473428595
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": 64,
+      "fit": true,
+      "n": 36,
+      "r2": 0.00032916616593703374,
+      "effective_decode_rate_tokens_per_sec": null,
+      "decode_intercept_s": 0.4053749402628435
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": 128,
+      "fit": true,
+      "n": 36,
+      "r2": 0.007993165338463726,
+      "effective_decode_rate_tokens_per_sec": 553.1148721642053,
+      "decode_intercept_s": 0.24886579861111058
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": 256,
+      "fit": true,
+      "n": 36,
+      "r2": 0.4654290402298028,
+      "effective_decode_rate_tokens_per_sec": 70.83236177987507,
+      "decode_intercept_s": -2.351898158379374
+    }
+  ],
+  "residual_summary": [
+    {
+      "provider": "Cohere",
+      "model_type": "latency",
+      "n": 108,
+      "mean_residual": 1.0399088997322299e-13,
+      "std_residual": 0.3217872558157035,
+      "rmse": 0.3217872558157035
+    },
+    {
+      "provider": "Cohere",
+      "model_type": "ttft",
+      "n": 108,
+      "mean_residual": 9.894348714830678e-17,
+      "std_residual": 0.05120352767819288,
+      "rmse": 0.051203527678192876
+    },
+    {
+      "provider": "Gemini",
+      "model_type": "latency",
+      "n": 108,
+      "mean_residual": -1.7266743590482747e-13,
+      "std_residual": 0.1022267465523217,
+      "rmse": 0.1022267465523217
+    },
+    {
+      "provider": "Gemini",
+      "model_type": "ttft",
+      "n": 108,
+      "mean_residual": -1.850371707708594e-17,
+      "std_residual": 0.2662213781625737,
+      "rmse": 0.2662213781625737
+    }
+  ],
+  "raw_latency_by_target": [
+    {
+      "provider": "Cohere",
+      "target_output_tokens": 64,
+      "n": 36,
+      "mean_latency_s": 0.8923055555555555,
+      "mean_ttft_s": 0.23755,
+      "mean_output_tokens": 51.97222222222222
+    },
+    {
+      "provider": "Cohere",
+      "target_output_tokens": 128,
+      "n": 36,
+      "mean_latency_s": 1.8430805555555554,
+      "mean_ttft_s": 0.24739444444444444,
+      "mean_output_tokens": 127.55555555555556
+    },
+    {
+      "provider": "Cohere",
+      "target_output_tokens": 256,
+      "n": 36,
+      "mean_latency_s": 3.081786111111111,
+      "mean_ttft_s": 0.2536638888888889,
+      "mean_output_tokens": 241.58333333333334
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": 64,
+      "n": 36,
+      "mean_latency_s": 1.0447916666666666,
+      "mean_ttft_s": 0.6608444444444443,
+      "mean_output_tokens": 66.66666666666667
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": 128,
+      "n": 36,
+      "mean_latency_s": 1.1121833333333333,
+      "mean_ttft_s": 0.648775,
+      "mean_output_tokens": 118.66666666666667
+    },
+    {
+      "provider": "Gemini",
+      "target_output_tokens": 256,
+      "n": 36,
+      "mean_latency_s": 1.6454833333333334,
+      "mean_ttft_s": 0.7126305555555555,
+      "mean_output_tokens": 232.66666666666666
+    }
+  ]
+}

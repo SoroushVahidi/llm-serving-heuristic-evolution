@@ -146,6 +146,7 @@ def load_dataset(
             concurrency = r.get("concurrency_level")
             if prompt_tokens is None or concurrency is None:
                 continue
+            target_output_tokens = r.get("target_output_tokens")
             records.append({
                 "provider": provider,
                 "model": model,
@@ -158,7 +159,13 @@ def load_dataset(
                 "output_tokens": float(output_tokens) if output_tokens is not None else None,
                 "ttft_seconds": float(ttft) if ttft is not None else None,
                 "latency_seconds": float(latency) if latency is not None else None,
+                "rate_limiter_wait_seconds": r.get("rate_limiter_wait_seconds"),
+                "total_wall_time_seconds": r.get("total_wall_time_seconds"),
                 "was_rpm_wait_flagged": r["request_id"] in flagged_ids,
+                # v2 length-targeted workload fields (None for v1/legacy rows).
+                "target_output_tokens": float(target_output_tokens) if target_output_tokens is not None else None,
+                "workload_version": r.get("workload_version"),
+                "reached_target_output_range": r.get("reached_target_output_range"),
             })
     return records
 
