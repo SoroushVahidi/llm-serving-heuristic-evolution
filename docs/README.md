@@ -84,6 +84,9 @@ recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md).
 ## 10. API-provider setup
 
 - [api_provider_setup.md](api_provider_setup.md) — CloudRift, Cohere, HuggingFace, Mistral setup; credential policy
+- [cohere_smoke_test.md](cohere_smoke_test.md) — Cohere API connectivity/latency/TTFT smoke test (`scripts/smoke_test_cohere_api.py`)
+- [cohere_api_calibration.md](cohere_api_calibration.md) — Cohere real-LLM latency/TTFT calibration pilot: dry-run/live/resume, hard caps, tmux instructions (`scripts/run_cohere_api_calibration.py`)
+- [real_llm_multi_provider_plan.md](real_llm_multi_provider_plan.md) — Multi-provider rollout plan (Cohere done; Gemini/Vertex, Azure OpenAI, Fireworks dry-run/mock skeletons only); shared schema via `src/llmserveopt/real_llm/calibration_common.py`
 
 ---
 

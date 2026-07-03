@@ -1,0 +1,34 @@
+{
+  "provider": "Gemini",
+  "experiment_id": "gemini_pilot_DRYRUN",
+  "model": "gemini-3.1-flash-lite",
+  "seed": 42,
+  "prompt_buckets": [
+    "short",
+    "medium",
+    "long"
+  ],
+  "max_tokens_list": [
+    64,
+    128,
+    256
+  ],
+  "concurrency_list": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "requests_per_cell": 5,
+  "timeout_seconds": 90,
+  "max_total_requests": 180,
+  "max_total_input_tokens": 250000,
+  "max_total_output_tokens": 50000,
+  "max_estimated_cost_usd": 5.0,
+  "resume": false,
+  "mock": false,
+  "mode": "dry_run",
+  "rpm_limit": 20,
+  "fail_fast": false,
+  "stream": false
+}

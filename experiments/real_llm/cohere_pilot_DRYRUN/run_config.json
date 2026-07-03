@@ -1,0 +1,33 @@
+{
+  "experiment_id": "cohere_pilot_DRYRUN",
+  "model": "command-r7b-12-2024",
+  "seed": 42,
+  "prompt_buckets": [
+    "short",
+    "medium",
+    "long"
+  ],
+  "max_tokens_list": [
+    64,
+    128,
+    256
+  ],
+  "concurrency_list": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "requests_per_cell": 5,
+  "timeout_seconds": 90,
+  "rpm_limit": 20,
+  "max_total_requests": 180,
+  "max_total_input_tokens": 250000,
+  "max_total_output_tokens": 50000,
+  "max_estimated_cost_usd": 5.0,
+  "stream": false,
+  "resume": false,
+  "fail_fast": false,
+  "mock": false,
+  "mode": "dry_run"
+}

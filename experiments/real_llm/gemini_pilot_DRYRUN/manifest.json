@@ -1,0 +1,287 @@
+{
+  "generated_at_utc": "2026-07-03T04:48:36.840476+00:00",
+  "git_branch": "phase2c1-real-trace-ingestion-validation",
+  "git_commit": "43602e5feb217d324974713e7b31568a0866114f",
+  "git_dirty": true,
+  "git_diff_stat": "docs/README.md | 3 +++\n 1 file changed, 3 insertions(+)",
+  "git_diff_file": "git_diff.patch",
+  "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "platform": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+  "hostname": "al-khwarizmi",
+  "cwd": "/home/soroush/llm-serving-heuristic-evolution",
+  "sdk_package_name": "google-genai",
+  "sdk_version": "2.6.0",
+  "command_line": "scripts/run_gemini_real_llm_calibration.py --dry-run --model gemini-3.1-flash-lite --prompt-buckets short,medium,long --max-tokens-list 64,128,256 --concurrency-list 1,2,4,8 --requests-per-cell 5 --timeout-seconds 90 --max-total-requests 180 --max-total-input-tokens 250000 --max-total-output-tokens 50000 --max-estimated-cost-usd 5 --output-dir experiments/real_llm/gemini_pilot_DRYRUN",
+  "env_var_presence": {
+    "GOOGLE_CLOUD_PROJECT_present": true
+  },
+  "config": {
+    "provider": "Gemini",
+    "experiment_id": "gemini_pilot_DRYRUN",
+    "model": "gemini-3.1-flash-lite",
+    "seed": 42,
+    "prompt_buckets": [
+      "short",
+      "medium",
+      "long"
+    ],
+    "max_tokens_list": [
+      64,
+      128,
+      256
+    ],
+    "concurrency_list": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "requests_per_cell": 5,
+    "timeout_seconds": 90,
+    "max_total_requests": 180,
+    "max_total_input_tokens": 250000,
+    "max_total_output_tokens": 50000,
+    "max_estimated_cost_usd": 5.0,
+    "resume": false,
+    "mock": false,
+    "mode": "dry_run",
+    "rpm_limit": 20,
+    "fail_fast": false,
+    "stream": false
+  },
+  "planned_requests": 180,
+  "cells": [
+    [
+      "long",
+      64,
+      1
+    ],
+    [
+      "long",
+      64,
+      2
+    ],
+    [
+      "long",
+      64,
+      4
+    ],
+    [
+      "long",
+      64,
+      8
+    ],
+    [
+      "long",
+      128,
+      1
+    ],
+    [
+      "long",
+      128,
+      2
+    ],
+    [
+      "long",
+      128,
+      4
+    ],
+    [
+      "long",
+      128,
+      8
+    ],
+    [
+      "long",
+      256,
+      1
+    ],
+    [
+      "long",
+      256,
+      2
+    ],
+    [
+      "long",
+      256,
+      4
+    ],
+    [
+      "long",
+      256,
+      8
+    ],
+    [
+      "medium",
+      64,
+      1
+    ],
+    [
+      "medium",
+      64,
+      2
+    ],
+    [
+      "medium",
+      64,
+      4
+    ],
+    [
+      "medium",
+      64,
+      8
+    ],
+    [
+      "medium",
+      128,
+      1
+    ],
+    [
+      "medium",
+      128,
+      2
+    ],
+    [
+      "medium",
+      128,
+      4
+    ],
+    [
+      "medium",
+      128,
+      8
+    ],
+    [
+      "medium",
+      256,
+      1
+    ],
+    [
+      "medium",
+      256,
+      2
+    ],
+    [
+      "medium",
+      256,
+      4
+    ],
+    [
+      "medium",
+      256,
+      8
+    ],
+    [
+      "short",
+      64,
+      1
+    ],
+    [
+      "short",
+      64,
+      2
+    ],
+    [
+      "short",
+      64,
+      4
+    ],
+    [
+      "short",
+      64,
+      8
+    ],
+    [
+      "short",
+      128,
+      1
+    ],
+    [
+      "short",
+      128,
+      2
+    ],
+    [
+      "short",
+      128,
+      4
+    ],
+    [
+      "short",
+      128,
+      8
+    ],
+    [
+      "short",
+      256,
+      1
+    ],
+    [
+      "short",
+      256,
+      2
+    ],
+    [
+      "short",
+      256,
+      4
+    ],
+    [
+      "short",
+      256,
+      8
+    ]
+  ],
+  "requests_preview": [
+    {
+      "request_id": "short__mt64__c1__i0",
+      "experiment_id": "gemini_pilot_DRYRUN",
+      "model": "gemini-3.1-flash-lite",
+      "prompt_bucket": "short",
+      "max_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 0,
+      "intended_prompt_tokens": 132
+    },
+    {
+      "request_id": "short__mt64__c1__i1",
+      "experiment_id": "gemini_pilot_DRYRUN",
+      "model": "gemini-3.1-flash-lite",
+      "prompt_bucket": "short",
+      "max_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 1,
+      "intended_prompt_tokens": 132
+    },
+    {
+      "request_id": "short__mt64__c1__i2",
+      "experiment_id": "gemini_pilot_DRYRUN",
+      "model": "gemini-3.1-flash-lite",
+      "prompt_bucket": "short",
+      "max_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 2,
+      "intended_prompt_tokens": 132
+    },
+    {
+      "request_id": "short__mt64__c1__i3",
+      "experiment_id": "gemini_pilot_DRYRUN",
+      "model": "gemini-3.1-flash-lite",
+      "prompt_bucket": "short",
+      "max_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 3,
+      "intended_prompt_tokens": 132
+    },
+    {
+      "request_id": "short__mt64__c1__i4",
+      "experiment_id": "gemini_pilot_DRYRUN",
+      "model": "gemini-3.1-flash-lite",
+      "prompt_bucket": "short",
+      "max_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 4,
+      "intended_prompt_tokens": 132
+    }
+  ]
+}

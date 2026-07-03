@@ -1,0 +1,586 @@
+2026-07-03 00:49:12,424 INFO Cell bucket=short max_tokens=64 concurrency=1: dispatching 5 requests
+2026-07-03 00:49:12,425 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:13,318 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:13,439 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:13,454 INFO short__mt64__c1__i0 status=success ttft=0.8943 latency=1.0131
+2026-07-03 00:49:14,010 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:14,151 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:14,166 INFO short__mt64__c1__i1 status=success ttft=0.5735 latency=0.7127
+2026-07-03 00:49:14,616 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:14,696 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:14,710 INFO short__mt64__c1__i2 status=success ttft=0.4663 latency=0.544
+2026-07-03 00:49:15,302 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:15,451 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:15,466 INFO short__mt64__c1__i3 status=success ttft=0.6083 latency=0.7556
+2026-07-03 00:49:16,065 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:16,222 INFO short__mt64__c1__i4 status=success ttft=0.615 latency=0.7587
+2026-07-03 00:49:16,222 INFO Cell bucket=short max_tokens=64 concurrency=2: dispatching 5 requests
+2026-07-03 00:49:16,223 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:16,228 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:16,750 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:16,791 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:16,849 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:16,865 INFO short__mt64__c2__i1 status=success ttft=0.5241 latency=0.6213
+2026-07-03 00:49:16,924 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:16,929 INFO short__mt64__c2__i0 status=success ttft=0.5694 latency=0.7006
+2026-07-03 00:49:17,262 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:17,366 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:17,382 INFO short__mt64__c2__i2 status=success ttft=0.4144 latency=0.5168
+2026-07-03 00:49:17,452 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:17,552 INFO short__mt64__c2__i3 status=success ttft=0.5293 latency=0.6153
+2026-07-03 00:49:17,848 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:17,951 INFO short__mt64__c2__i4 status=success ttft=0.4831 latency=0.5732
+2026-07-03 00:49:17,951 INFO Cell bucket=short max_tokens=64 concurrency=4: dispatching 5 requests
+2026-07-03 00:49:17,953 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:17,953 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:17,957 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:17,960 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:18,416 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:18,443 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:18,519 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:18,533 INFO short__mt64__c4__i3 status=success ttft=0.4577 latency=0.5589
+2026-07-03 00:49:18,554 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:18,579 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:18,592 INFO short__mt64__c4__i0 status=success ttft=0.4922 latency=0.6381
+2026-07-03 00:49:18,676 INFO short__mt64__c4__i1 status=success ttft=0.6028 latency=0.7201
+2026-07-03 00:49:18,689 INFO short__mt64__c4__i2 status=success ttft=0.6237 latency=0.7309
+2026-07-03 00:49:19,079 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:19,184 INFO short__mt64__c4__i4 status=success ttft=0.5611 latency=0.6532
+2026-07-03 00:49:19,185 INFO Cell bucket=short max_tokens=64 concurrency=8: dispatching 5 requests
+2026-07-03 00:49:19,186 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:19,190 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:19,190 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:19,196 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:19,199 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:49:19,554 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:19,663 INFO short__mt64__c8__i2 status=success ttft=0.3655 latency=0.4611
+2026-07-03 00:49:19,705 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:19,766 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:19,848 INFO short__mt64__c8__i1 status=success ttft=0.5168 latency=0.647
+2026-07-03 00:49:19,849 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:19,881 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:49:19,917 INFO short__mt64__c8__i3 status=success ttft=0.5716 latency=0.7193
+2026-07-03 00:49:19,987 INFO short__mt64__c8__i4 status=success ttft=0.6516 latency=0.7846
+2026-07-03 00:49:20,043 INFO short__mt64__c8__i0 status=success ttft=0.6968 latency=0.8564
+2026-07-03 00:49:20,044 INFO Cell bucket=short max_tokens=128 concurrency=1: dispatching 5 requests
+2026-07-03 00:50:12,436 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:13,157 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:13,340 INFO short__mt128__c1__i0 status=success ttft=0.7231 latency=53.2763
+2026-07-03 00:50:13,449 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:14,079 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:14,176 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:14,191 INFO short__mt128__c1__i1 status=success ttft=0.6316 latency=0.8546
+2026-07-03 00:50:14,569 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:14,688 INFO short__mt128__c1__i2 status=success ttft=0.394 latency=0.4988
+2026-07-03 00:50:14,706 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:15,205 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:15,295 INFO short__mt128__c1__i3 status=success ttft=0.5007 latency=0.608
+2026-07-03 00:50:15,462 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:16,024 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:16,040 INFO short__mt128__c1__i4 status=success ttft=0.5644 latency=0.7446
+2026-07-03 00:50:16,041 INFO Cell bucket=short max_tokens=128 concurrency=2: dispatching 5 requests
+2026-07-03 00:50:16,234 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:16,237 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:16,844 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:16,849 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:16,964 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:16,977 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:16,980 INFO short__mt128__c2__i1 status=success ttft=0.6125 latency=0.9208
+2026-07-03 00:50:16,982 INFO short__mt128__c2__i0 status=success ttft=0.6138 latency=0.9348
+2026-07-03 00:50:17,462 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:17,466 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:17,561 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:17,577 INFO short__mt128__c2__i3 status=success ttft=0.491 latency=0.5836
+2026-07-03 00:50:17,643 INFO short__mt128__c2__i2 status=success ttft=0.5001 latency=0.6746
+2026-07-03 00:50:18,075 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:18,090 INFO short__mt128__c2__i4 status=success ttft=0.5154 latency=0.5175
+2026-07-03 00:50:18,090 INFO Cell bucket=short max_tokens=128 concurrency=4: dispatching 5 requests
+2026-07-03 00:50:18,091 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:18,096 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:18,097 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:18,097 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:18,612 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:18,674 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:18,704 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:18,707 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:18,720 INFO short__mt128__c4__i1 status=success ttft=0.5184 latency=0.6116
+2026-07-03 00:50:18,846 INFO short__mt128__c4__i3 status=success ttft=0.6082 latency=0.7372
+2026-07-03 00:50:18,849 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:18,851 INFO short__mt128__c4__i2 status=success ttft=0.5787 latency=0.7385
+2026-07-03 00:50:18,975 INFO short__mt128__c4__i0 status=success ttft=0.7599 latency=0.872
+2026-07-03 00:50:19,301 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:19,337 INFO short__mt128__c4__i4 status=success ttft=0.5958 latency=0.6178
+2026-07-03 00:50:19,338 INFO Cell bucket=short max_tokens=128 concurrency=8: dispatching 5 requests
+2026-07-03 00:50:19,339 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:19,343 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:19,346 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:19,348 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:19,351 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:50:19,814 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:19,850 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:19,895 INFO short__mt128__c8__i3 status=success ttft=0.4672 latency=0.5345
+2026-07-03 00:50:19,900 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:19,919 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:19,925 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:50:19,939 INFO short__mt128__c8__i1 status=success ttft=0.5089 latency=0.5951
+2026-07-03 00:50:20,018 INFO short__mt128__c8__i4 status=success ttft=0.5759 latency=0.6653
+2026-07-03 00:50:20,022 INFO short__mt128__c8__i2 status=success ttft=0.5555 latency=0.6749
+2026-07-03 00:50:20,079 INFO short__mt128__c8__i0 status=success ttft=0.5818 latency=0.7386
+2026-07-03 00:50:20,080 INFO Cell bucket=short max_tokens=256 concurrency=1: dispatching 5 requests
+2026-07-03 00:51:12,446 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:12,913 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:13,105 INFO short__mt256__c1__i0 status=success ttft=0.4687 latency=53.0054
+2026-07-03 00:51:13,459 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:13,881 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:14,052 INFO short__mt256__c1__i1 status=success ttft=0.4235 latency=0.954
+2026-07-03 00:51:14,187 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:14,802 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:14,816 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:14,830 INFO short__mt256__c1__i2 status=success ttft=0.6176 latency=0.7746
+2026-07-03 00:51:15,520 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:15,567 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:15,581 INFO short__mt256__c1__i3 status=success ttft=0.7057 latency=0.7508
+2026-07-03 00:51:16,236 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:16,255 INFO short__mt256__c1__i4 status=success ttft=0.6712 latency=0.6752
+2026-07-03 00:51:16,256 INFO Cell bucket=short max_tokens=256 concurrency=2: dispatching 5 requests
+2026-07-03 00:51:16,257 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:16,261 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:16,851 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:16,928 INFO short__mt256__c2__i0 status=success ttft=0.596 latency=0.6677
+2026-07-03 00:51:16,974 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:17,011 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:17,176 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:17,192 INFO short__mt256__c2__i1 status=success ttft=0.752 latency=0.9152
+2026-07-03 00:51:17,567 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:17,575 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:17,589 INFO short__mt256__c2__i2 status=success ttft=0.5951 latency=0.6498
+2026-07-03 00:51:17,772 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:17,841 INFO short__mt256__c2__i3 status=success ttft=0.598 latency=0.6529
+2026-07-03 00:51:18,182 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:18,324 INFO short__mt256__c2__i4 status=success ttft=0.6091 latency=0.7376
+2026-07-03 00:51:18,325 INFO Cell bucket=short max_tokens=256 concurrency=4: dispatching 5 requests
+2026-07-03 00:51:18,326 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:18,330 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:18,332 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:18,333 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:18,899 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:18,902 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:18,905 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:18,942 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:18,957 INFO short__mt256__c4__i2 status=success ttft=0.5722 latency=0.61
+2026-07-03 00:51:19,010 INFO short__mt256__c4__i0 status=success ttft=0.5813 latency=0.6828
+2026-07-03 00:51:19,023 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:19,064 INFO short__mt256__c4__i1 status=success ttft=0.5719 latency=0.7326
+2026-07-03 00:51:19,159 INFO short__mt256__c4__i3 status=success ttft=0.6921 latency=0.8238
+2026-07-03 00:51:19,513 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:19,610 INFO short__mt256__c4__i4 status=success ttft=0.5726 latency=0.6562
+2026-07-03 00:51:19,611 INFO Cell bucket=short max_tokens=256 concurrency=8: dispatching 5 requests
+2026-07-03 00:51:19,612 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:19,616 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:19,621 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:19,621 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:19,627 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:51:20,016 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:20,042 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:20,130 INFO short__mt256__c8__i3 status=success ttft=0.3968 latency=0.4976
+2026-07-03 00:51:20,150 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:20,154 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:20,181 INFO short__mt256__c8__i2 status=success ttft=0.423 latency=0.5586
+2026-07-03 00:51:20,210 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:51:20,240 INFO short__mt256__c8__i0 status=success ttft=0.5401 latency=0.6262
+2026-07-03 00:51:20,275 INFO short__mt256__c8__i4 status=success ttft=0.5297 latency=0.6469
+2026-07-03 00:51:20,337 INFO short__mt256__c8__i1 status=success ttft=0.5957 latency=0.7187
+2026-07-03 00:51:20,338 INFO Cell bucket=medium max_tokens=64 concurrency=1: dispatching 5 requests
+2026-07-03 00:52:12,456 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:13,391 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:13,452 INFO medium__mt64__c1__i0 status=success ttft=0.9366 latency=53.0943
+2026-07-03 00:52:13,470 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:14,048 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:14,216 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:14,230 INFO medium__mt64__c1__i1 status=success ttft=0.5798 latency=0.7818
+2026-07-03 00:52:14,810 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:14,907 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:14,922 INFO medium__mt64__c1__i2 status=success ttft=0.5959 latency=0.6917
+2026-07-03 00:52:15,424 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:15,518 INFO medium__mt64__c1__i3 status=success ttft=0.5182 latency=0.5993
+2026-07-03 00:52:15,577 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:16,126 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:16,349 INFO medium__mt64__c1__i4 status=success ttft=0.5509 latency=0.8301
+2026-07-03 00:52:16,350 INFO Cell bucket=medium max_tokens=64 concurrency=2: dispatching 5 requests
+2026-07-03 00:52:16,351 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:16,356 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:16,912 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:16,932 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:17,065 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:17,081 INFO medium__mt64__c2__i0 status=success ttft=0.5628 latency=0.7134
+2026-07-03 00:52:17,127 INFO medium__mt64__c2__i1 status=success ttft=0.5781 latency=0.7707
+2026-07-03 00:52:17,187 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:17,574 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:17,702 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:17,710 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:17,718 INFO medium__mt64__c2__i2 status=success ttft=0.5115 latency=0.6367
+2026-07-03 00:52:17,878 INFO medium__mt64__c2__i3 status=success ttft=0.5249 latency=0.7392
+2026-07-03 00:52:18,041 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:18,203 INFO medium__mt64__c2__i4 status=success ttft=0.3412 latency=0.4898
+2026-07-03 00:52:18,204 INFO Cell bucket=medium max_tokens=64 concurrency=4: dispatching 5 requests
+2026-07-03 00:52:18,336 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:18,340 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:18,344 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:18,347 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:18,803 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:18,806 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:18,921 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:18,942 INFO medium__mt64__c4__i3 status=success ttft=0.4614 latency=0.7236
+2026-07-03 00:52:18,952 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:18,983 INFO medium__mt64__c4__i2 status=success ttft=0.4714 latency=0.7763
+2026-07-03 00:52:18,997 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:19,195 INFO medium__mt64__c4__i1 status=success ttft=0.6511 latency=0.9783
+2026-07-03 00:52:19,220 INFO medium__mt64__c4__i0 status=success ttft=0.5825 latency=1.0141
+2026-07-03 00:52:19,520 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:19,692 INFO medium__mt64__c4__i4 status=success ttft=0.5692 latency=0.7502
+2026-07-03 00:52:19,693 INFO Cell bucket=medium max_tokens=64 concurrency=8: dispatching 5 requests
+2026-07-03 00:52:19,694 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:19,698 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:19,702 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:19,706 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:19,710 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:52:20,071 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:20,240 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:20,254 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:20,268 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:20,283 INFO medium__mt64__c8__i0 status=success ttft=0.379 latency=0.5778
+2026-07-03 00:52:20,296 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:52:20,468 INFO medium__mt64__c8__i2 status=success ttft=0.5674 latency=0.754
+2026-07-03 00:52:20,483 INFO medium__mt64__c8__i4 status=success ttft=0.5874 latency=0.7719
+2026-07-03 00:52:20,498 INFO medium__mt64__c8__i3 status=success ttft=0.5497 latency=0.7899
+2026-07-03 00:52:20,624 INFO medium__mt64__c8__i1 status=success ttft=0.5432 latency=0.9123
+2026-07-03 00:52:20,625 INFO Cell bucket=medium max_tokens=128 concurrency=1: dispatching 5 requests
+2026-07-03 00:53:12,467 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:13,178 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:13,426 INFO medium__mt128__c1__i0 status=success ttft=0.7133 latency=52.7806
+2026-07-03 00:53:13,480 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:13,996 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:14,153 INFO medium__mt128__c1__i1 status=success ttft=0.5177 latency=0.7346
+2026-07-03 00:53:14,226 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:14,713 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:14,783 INFO medium__mt128__c1__i2 status=success ttft=0.4893 latency=0.6301
+2026-07-03 00:53:14,918 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:15,430 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:15,579 INFO medium__mt128__c1__i3 status=success ttft=0.514 latency=0.7953
+2026-07-03 00:53:15,587 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:16,053 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:16,254 INFO medium__mt128__c1__i4 status=success ttft=0.4677 latency=0.6747
+2026-07-03 00:53:16,255 INFO Cell bucket=medium max_tokens=128 concurrency=2: dispatching 5 requests
+2026-07-03 00:53:16,362 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:16,365 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:16,865 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:16,917 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:16,967 INFO medium__mt128__c2__i0 status=success ttft=0.5013 latency=0.7001
+2026-07-03 00:53:17,075 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:17,122 INFO medium__mt128__c2__i1 status=success ttft=0.5569 latency=0.8543
+2026-07-03 00:53:17,197 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:17,786 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:17,807 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:17,926 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:17,940 INFO medium__mt128__c2__i2 status=success ttft=0.7123 latency=0.9699
+2026-07-03 00:53:18,021 INFO medium__mt128__c2__i3 status=success ttft=0.6119 latency=0.9083
+2026-07-03 00:53:18,606 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:18,924 INFO medium__mt128__c2__i4 status=success ttft=0.6815 latency=0.986
+2026-07-03 00:53:18,924 INFO Cell bucket=medium max_tokens=128 concurrency=4: dispatching 5 requests
+2026-07-03 00:53:18,926 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:18,930 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:18,931 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:18,933 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:19,425 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:19,427 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:19,448 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:19,480 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:19,575 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:19,589 INFO medium__mt128__c4__i1 status=success ttft=0.4966 latency=0.6453
+2026-07-03 00:53:19,630 INFO medium__mt128__c4__i0 status=success ttft=0.5032 latency=0.7037
+2026-07-03 00:53:19,648 INFO medium__mt128__c4__i3 status=success ttft=0.549 latency=0.7142
+2026-07-03 00:53:19,669 INFO medium__mt128__c4__i2 status=success ttft=0.5181 latency=0.7361
+2026-07-03 00:53:20,003 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:20,227 INFO medium__mt128__c4__i4 status=success ttft=0.4291 latency=0.6385
+2026-07-03 00:53:20,228 INFO Cell bucket=medium max_tokens=128 concurrency=8: dispatching 5 requests
+2026-07-03 00:53:20,229 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:20,234 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:20,239 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:20,243 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:20,246 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:53:20,653 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:20,664 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:20,674 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:20,718 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:20,726 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:53:20,795 INFO medium__mt128__c8__i4 status=success ttft=0.4092 latency=0.536
+2026-07-03 00:53:20,817 INFO medium__mt128__c8__i3 status=success ttft=0.4328 latency=0.5725
+2026-07-03 00:53:20,897 INFO medium__mt128__c8__i2 status=success ttft=0.4268 latency=0.656
+2026-07-03 00:53:20,917 INFO medium__mt128__c8__i0 status=success ttft=0.4903 latency=0.6868
+2026-07-03 00:53:22,407 INFO medium__mt128__c8__i1 status=success ttft=0.4939 latency=2.1621
+2026-07-03 00:53:22,409 INFO Cell bucket=medium max_tokens=256 concurrency=1: dispatching 5 requests
+2026-07-03 00:54:12,477 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:13,184 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:13,303 INFO medium__mt256__c1__i0 status=success ttft=0.709 latency=50.8743
+2026-07-03 00:54:13,490 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:14,003 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:14,170 INFO medium__mt256__c1__i1 status=success ttft=0.5145 latency=0.8733
+2026-07-03 00:54:14,236 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:14,822 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:14,944 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:14,958 INFO medium__mt256__c1__i2 status=success ttft=0.588 latency=0.7856
+2026-07-03 00:54:15,539 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:15,658 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:15,672 INFO medium__mt256__c1__i3 status=success ttft=0.5975 latency=0.714
+2026-07-03 00:54:16,256 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:16,347 INFO medium__mt256__c1__i4 status=success ttft=0.6002 latency=0.6778
+2026-07-03 00:54:16,348 INFO Cell bucket=medium max_tokens=256 concurrency=2: dispatching 5 requests
+2026-07-03 00:54:16,372 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:16,375 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:16,973 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:16,976 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:17,040 INFO medium__mt256__c2__i0 status=success ttft=0.6029 latency=0.6787
+2026-07-03 00:54:17,064 INFO medium__mt256__c2__i1 status=success ttft=0.6034 latency=0.7128
+2026-07-03 00:54:17,085 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:17,207 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:17,588 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:17,622 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:17,680 INFO medium__mt256__c2__i2 status=success ttft=0.5043 latency=0.6383
+2026-07-03 00:54:17,798 INFO medium__mt256__c2__i3 status=success ttft=0.4171 latency=0.7225
+2026-07-03 00:54:17,936 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:18,320 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:18,472 INFO medium__mt256__c2__i4 status=success ttft=0.3855 latency=0.7934
+2026-07-03 00:54:18,473 INFO Cell bucket=medium max_tokens=256 concurrency=4: dispatching 5 requests
+2026-07-03 00:54:18,936 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:18,940 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:18,943 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:18,948 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:19,344 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:19,490 INFO medium__mt256__c4__i1 status=success ttft=0.4063 latency=1.0039
+2026-07-03 00:54:19,508 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:19,586 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:19,677 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:19,679 INFO medium__mt256__c4__i0 status=success ttft=0.562 latency=1.1914
+2026-07-03 00:54:19,710 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:19,861 INFO medium__mt256__c4__i3 status=success ttft=0.7759 latency=1.3731
+2026-07-03 00:54:19,917 INFO medium__mt256__c4__i2 status=success ttft=0.7354 latency=1.4404
+2026-07-03 00:54:20,148 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:20,306 INFO medium__mt256__c4__i4 status=success ttft=0.5641 latency=0.8161
+2026-07-03 00:54:20,307 INFO Cell bucket=medium max_tokens=256 concurrency=8: dispatching 5 requests
+2026-07-03 00:54:20,309 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:20,313 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:20,317 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:20,321 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:20,325 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:54:20,762 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:20,765 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:20,840 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:20,888 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:20,925 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:54:20,929 INFO medium__mt256__c8__i1 status=success ttft=0.4519 latency=0.6046
+2026-07-03 00:54:20,932 INFO medium__mt256__c8__i3 status=success ttft=0.4463 latency=0.6012
+2026-07-03 00:54:21,014 INFO medium__mt256__c8__i4 status=success ttft=0.5174 latency=0.6864
+2026-07-03 00:54:21,130 INFO medium__mt256__c8__i2 status=success ttft=0.6093 latency=0.8013
+2026-07-03 00:54:21,172 INFO medium__mt256__c8__i0 status=success ttft=0.5818 latency=0.8627
+2026-07-03 00:54:21,174 INFO Cell bucket=long max_tokens=64 concurrency=1: dispatching 5 requests
+2026-07-03 00:55:12,488 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:13,089 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:13,292 INFO long__mt64__c1__i0 status=success ttft=0.6033 latency=52.0986
+2026-07-03 00:55:13,501 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:14,010 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:14,226 INFO long__mt64__c1__i1 status=success ttft=0.5115 latency=0.9412
+2026-07-03 00:55:14,247 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:14,932 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:14,983 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:14,998 INFO long__mt64__c1__i2 status=success ttft=0.6871 latency=0.7686
+2026-07-03 00:55:15,649 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:15,790 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:15,804 INFO long__mt64__c1__i3 status=success ttft=0.667 latency=0.8063
+2026-07-03 00:55:16,263 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:16,410 INFO long__mt64__c1__i4 status=success ttft=0.4748 latency=0.6081
+2026-07-03 00:55:16,411 INFO Cell bucket=long max_tokens=64 concurrency=2: dispatching 5 requests
+2026-07-03 00:55:16,412 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:16,417 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:16,767 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:16,836 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:16,983 INFO long__mt64__c2__i0 status=success ttft=0.4255 latency=0.5593
+2026-07-03 00:55:16,996 INFO long__mt64__c2__i1 status=success ttft=0.3523 latency=0.5781
+2026-07-03 00:55:17,096 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:17,217 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:17,697 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:17,760 INFO long__mt64__c2__i3 status=success ttft=0.6033 latency=0.7517
+2026-07-03 00:55:17,902 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:17,947 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:18,061 INFO long__mt64__c2__i2 status=success ttft=0.687 latency=1.0757
+2026-07-03 00:55:18,516 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:18,659 INFO long__mt64__c2__i4 status=success ttft=0.571 latency=0.8982
+2026-07-03 00:55:18,660 INFO Cell bucket=long max_tokens=64 concurrency=4: dispatching 5 requests
+2026-07-03 00:55:18,946 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:18,950 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:18,954 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:18,958 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:19,540 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:19,543 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:19,546 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:19,550 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:19,593 INFO long__mt64__c4__i3 status=success ttft=0.6058 latency=0.9184
+2026-07-03 00:55:19,596 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:19,601 INFO long__mt64__c4__i2 status=success ttft=0.5862 latency=0.9376
+2026-07-03 00:55:19,617 INFO long__mt64__c4__i0 status=success ttft=0.5978 latency=0.955
+2026-07-03 00:55:19,690 INFO long__mt64__c4__i1 status=success ttft=0.5884 latency=1.0269
+2026-07-03 00:55:20,052 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:20,182 INFO long__mt64__c4__i4 status=success ttft=0.4585 latency=0.5898
+2026-07-03 00:55:20,183 INFO Cell bucket=long max_tokens=64 concurrency=8: dispatching 5 requests
+2026-07-03 00:55:20,319 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:20,323 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:20,326 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:20,331 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:20,334 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:55:20,808 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:20,847 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:20,931 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:20,969 INFO long__mt64__c8__i0 status=success ttft=0.4788 latency=0.7721
+2026-07-03 00:55:21,034 INFO long__mt64__c8__i4 status=success ttft=0.523 latency=0.846
+2026-07-03 00:55:21,059 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:21,062 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:55:21,109 INFO long__mt64__c8__i2 status=success ttft=0.6111 latency=0.9212
+2026-07-03 00:55:21,263 INFO long__mt64__c8__i3 status=success ttft=0.7268 latency=1.0659
+2026-07-03 00:55:21,266 INFO long__mt64__c8__i1 status=success ttft=0.7456 latency=1.0781
+2026-07-03 00:55:21,268 INFO Cell bucket=long max_tokens=128 concurrency=1: dispatching 5 requests
+2026-07-03 00:56:12,498 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:12,994 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:13,050 INFO long__mt128__c1__i0 status=success ttft=0.4976 latency=51.7632
+2026-07-03 00:56:13,511 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:14,222 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:14,355 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:14,370 INFO long__mt128__c1__i1 status=success ttft=0.7128 latency=1.3232
+2026-07-03 00:56:14,829 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:15,032 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:15,046 INFO long__mt128__c1__i2 status=success ttft=0.4751 latency=0.6761
+2026-07-03 00:56:15,554 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:15,730 INFO long__mt128__c1__i3 status=success ttft=0.524 latency=0.6867
+2026-07-03 00:56:15,800 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:16,400 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:16,559 INFO long__mt128__c1__i4 status=success ttft=0.6019 latency=0.8289
+2026-07-03 00:56:16,560 INFO Cell bucket=long max_tokens=128 concurrency=2: dispatching 5 requests
+2026-07-03 00:56:16,561 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:16,565 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:17,192 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:17,195 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:17,269 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:17,281 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:17,284 INFO long__mt128__c2__i1 status=success ttft=0.6312 latency=0.704
+2026-07-03 00:56:17,287 INFO long__mt128__c2__i0 status=success ttft=0.6334 latency=0.7201
+2026-07-03 00:56:17,887 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:17,940 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:18,065 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:18,079 INFO long__mt128__c2__i3 status=success ttft=0.6079 latency=0.7837
+2026-07-03 00:56:18,138 INFO long__mt128__c2__i2 status=success ttft=0.6719 latency=0.8677
+2026-07-03 00:56:18,448 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:18,600 INFO long__mt128__c2__i4 status=success ttft=0.3851 latency=0.5236
+2026-07-03 00:56:18,601 INFO Cell bucket=long max_tokens=128 concurrency=4: dispatching 5 requests
+2026-07-03 00:56:18,957 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:18,961 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:18,964 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:18,969 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:19,445 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:19,449 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:19,479 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:19,518 INFO long__mt128__c4__i1 status=success ttft=0.4818 latency=0.9041
+2026-07-03 00:56:19,523 INFO long__mt128__c4__i2 status=success ttft=0.4831 latency=0.9084
+2026-07-03 00:56:19,563 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:19,606 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:19,705 INFO long__mt128__c4__i3 status=success ttft=0.524 latency=1.0886
+2026-07-03 00:56:19,708 INFO long__mt128__c4__i0 status=success ttft=0.6046 latency=1.0909
+2026-07-03 00:56:20,013 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:20,170 INFO long__mt128__c4__i4 status=success ttft=0.4084 latency=0.6522
+2026-07-03 00:56:20,172 INFO Cell bucket=long max_tokens=128 concurrency=8: dispatching 5 requests
+2026-07-03 00:56:20,329 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:20,333 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:20,336 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:20,340 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:20,344 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:56:20,776 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:20,780 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:20,798 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:20,814 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:20,895 INFO long__mt128__c8__i1 status=success ttft=0.4338 latency=0.7106
+2026-07-03 00:56:20,928 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:56:20,940 INFO long__mt128__c8__i2 status=success ttft=0.4453 latency=0.765
+2026-07-03 00:56:20,963 INFO long__mt128__c8__i0 status=success ttft=0.4606 latency=0.7885
+2026-07-03 00:56:21,014 INFO long__mt128__c8__i4 status=success ttft=0.4829 latency=0.8378
+2026-07-03 00:56:21,096 INFO long__mt128__c8__i3 status=success ttft=0.6007 latency=0.9191
+2026-07-03 00:56:21,097 INFO Cell bucket=long max_tokens=256 concurrency=1: dispatching 5 requests
+2026-07-03 00:57:12,508 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:13,103 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:13,204 INFO long__mt256__c1__i0 status=success ttft=0.5967 latency=52.0867
+2026-07-03 00:57:13,521 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:13,921 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:14,037 INFO long__mt256__c1__i1 status=success ttft=0.4018 latency=0.8394
+2026-07-03 00:57:14,366 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:14,818 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:15,036 INFO long__mt256__c1__i2 status=success ttft=0.4537 latency=0.9981
+2026-07-03 00:57:15,042 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:15,559 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:15,741 INFO long__mt256__c1__i3 status=success ttft=0.5192 latency=0.7051
+2026-07-03 00:57:15,811 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:16,400 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:16,489 INFO long__mt256__c1__i4 status=success ttft=0.5908 latency=0.7475
+2026-07-03 00:57:16,490 INFO Cell bucket=long max_tokens=256 concurrency=2: dispatching 5 requests
+2026-07-03 00:57:16,571 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:16,575 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:17,316 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:17,321 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:17,322 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:17,337 INFO long__mt256__c2__i1 status=success ttft=0.7469 latency=0.8294
+2026-07-03 00:57:17,360 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:17,364 INFO long__mt256__c2__i0 status=success ttft=0.7481 latency=0.8694
+2026-07-03 00:57:17,785 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:17,930 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:17,948 INFO long__mt256__c2__i3 status=success ttft=0.4268 latency=0.5761
+2026-07-03 00:57:18,075 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:18,146 INFO long__mt256__c2__i2 status=success ttft=0.6112 latency=0.8138
+2026-07-03 00:57:18,750 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:18,766 INFO long__mt256__c2__i4 status=success ttft=0.6764 latency=0.8176
+2026-07-03 00:57:18,767 INFO Cell bucket=long max_tokens=256 concurrency=4: dispatching 5 requests
+2026-07-03 00:57:18,967 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:18,970 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:18,974 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:18,978 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:19,390 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:19,431 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:19,550 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:19,563 INFO long__mt256__c4__i2 status=success ttft=0.4246 latency=0.7776
+2026-07-03 00:57:19,568 INFO long__mt256__c4__i3 status=success ttft=0.4589 latency=0.7957
+2026-07-03 00:57:19,616 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:19,717 INFO long__mt256__c4__i1 status=success ttft=0.5819 latency=0.937
+2026-07-03 00:57:19,750 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:20,023 INFO long__mt256__c4__i0 status=success ttft=0.7729 latency=1.2433
+2026-07-03 00:57:20,036 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:20,219 INFO long__mt256__c4__i4 status=success ttft=0.422 latency=0.6601
+2026-07-03 00:57:20,220 INFO Cell bucket=long max_tokens=256 concurrency=8: dispatching 5 requests
+2026-07-03 00:57:20,340 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:20,343 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:20,347 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:20,350 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:20,354 INFO AFC is enabled with max remote calls: 10.
+2026-07-03 00:57:20,783 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:20,785 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:20,800 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:20,883 INFO long__mt256__c8__i3 status=success ttft=0.4448 latency=0.6495
+2026-07-03 00:57:20,913 INFO long__mt256__c8__i4 status=success ttft=0.4431 latency=0.689
+2026-07-03 00:57:20,949 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:20,958 INFO long__mt256__c8__i0 status=success ttft=0.4553 latency=0.735
+2026-07-03 00:57:21,083 INFO HTTP Request: POST https://aiplatform.googleapis.com/v1beta1/projects/hypnotic-surge-492117-c4/locations/global/publishers/google/models/gemini-3.1-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+2026-07-03 00:57:21,140 INFO long__mt256__c8__i1 status=success ttft=0.6006 latency=0.905
+2026-07-03 00:57:21,240 INFO long__mt256__c8__i2 status=success ttft=0.7309 latency=1.0156
+Gemini API calibration
+  output_dir:        /home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/gemini_pilot_20260703T044905Z
+  planned_requests:  180
+  worst_case_input_tokens:  165360
+  worst_case_output_tokens: 26880
+  worst_case_cost_usd:      $0.0273
+  completed: 180
+  failed:    0
+  skipped:   0
+  estimated_cost_usd: $0.016507
