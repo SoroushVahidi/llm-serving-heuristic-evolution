@@ -8,6 +8,7 @@ HTTP/SSE dispatch path end-to-end.
 """
 from __future__ import annotations
 
+import dataclasses
 import importlib.util
 import json
 import subprocess
@@ -486,6 +487,288 @@ def test_require_our_method_succeeds_with_valid_artifact(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# Multi-regime request plans
+# ---------------------------------------------------------------------------
+
+def test_legacy_plan_call_preserves_pure_burst_arrival():
+    """Omitting `regimes` must reproduce the exact pre-regime-support plan:
+    every row arrival_time == 0.0, regime label 'steady_moderate', using
+    DEFAULT_SLO_CLASSES -- this is the already-committed tiny-pilot's plan
+    shape, and must not silently change under it."""
+    mod = _load_module()
+    plan = mod.build_request_plan(["short", "medium"], [64, 128], [1, 2], 2, seed=20260703)
+    assert all(row.arrival_time == 0.0 for row in plan)
+    assert all(row.regime == "steady_moderate" for row in plan)
+
+
+def test_explicit_steady_moderate_regime_spreads_arrivals():
+    mod = _load_module()
+    plan = mod.build_request_plan(
+        ["short"], [64], [1], 10, seed=1, regimes=["steady_moderate"],
+    )
+    arrival_times = [row.arrival_time for row in plan]
+    assert any(t > 0.0 for t in arrival_times), "steady_moderate should spread arrivals over time"
+    assert sorted(arrival_times) == arrival_times, "arrival times within a cell should be sorted"
+    assert all(0.0 <= t <= mod.STEADY_ARRIVAL_WINDOW_S for t in arrival_times)
+
+
+def test_bursty_and_overloaded_regimes_are_pure_burst():
+    mod = _load_module()
+    plan = mod.build_request_plan(
+        ["short"], [64], [1], 5, seed=1, regimes=["bursty_tight", "overloaded_mixed_priority"],
+    )
+    assert all(row.arrival_time == 0.0 for row in plan)
+    regimes_seen = {row.regime for row in plan}
+    assert regimes_seen == {"bursty_tight", "overloaded_mixed_priority"}
+
+
+def test_regime_slo_classes_differ_from_each_other():
+    mod = _load_module()
+    for regime, classes in mod.REGIME_SLO_CLASSES.items():
+        assert classes, f"{regime} has no SLO classes"
+    slacks = {
+        regime: sorted(c.slo_slack for c in classes)
+        for regime, classes in mod.REGIME_SLO_CLASSES.items()
+    }
+    # bursty_tight and overloaded_mixed_priority must be tighter than steady_moderate
+    assert max(slacks["bursty_tight"]) < max(slacks["steady_moderate"])
+    assert max(slacks["overloaded_mixed_priority"]) < max(slacks["steady_moderate"])
+
+
+def test_unknown_regime_raises():
+    mod = _load_module()
+    with pytest.raises(ValueError, match="Unknown regime"):
+        mod.build_request_plan(["short"], [64], [1], 2, seed=1, regimes=["not_a_real_regime"])
+
+
+def test_cli_rejects_unknown_arrival_regime(tmp_path):
+    mod = _load_module()
+    result = mod.main([
+        "--mock", "--policies", "fifo", "--arrival-regimes", "not_a_real_regime",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 2
+
+
+def test_multi_regime_end_to_end_writes_regime_field(tmp_path):
+    mod = _load_module()
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf",
+        "--arrival-regimes", "steady_moderate,bursty_tight",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 0
+    rows = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    regimes_seen = {r["regime"] for r in rows}
+    assert regimes_seen == {"steady_moderate", "bursty_tight"}
+    assert (tmp_path / "aggregate_by_policy_and_regime.csv").exists()
+
+
+# ---------------------------------------------------------------------------
+# Dropped-request recording (regression test: a policy that legitimately
+# never admits a request must not silently vanish it from requests.jsonl)
+# ---------------------------------------------------------------------------
+
+def test_dropped_request_is_recorded_not_silently_lost():
+    mod = _load_module()
+    plan = mod.build_request_plan(["short"], [64], [1], 1, seed=1)
+    # Force an unmeetable deadline deterministically (no timing flakiness):
+    # slo_deadline = arrival_time(0) + slack, so a deeply negative slack
+    # guarantees negative laxity regardless of wall-clock timing.
+    impossible_row = dataclasses.replace(plan[0], slo_slack_seconds=-1000.0)
+    results = mod.run_cell_for_policy(
+        "scorpio_style_slo_guard", [impossible_row], concurrency=1,
+        model="m", base_url=None, mock=True, timeout_s=5,
+    )
+    assert len(results) == 1, "the request must appear in results, not vanish"
+    assert results[0].status == "dropped"
+    assert results[0].slo_violated is True
+    assert results[0].request_id == impossible_row.request_id
+
+
+def test_dropped_requests_counted_in_policy_metrics_as_failed():
+    mod = _load_module()
+    rows = [
+        {"policy": "p", "status": "success", "priority": 1.0, "slo_violated": False,
+         "server_request_latency_seconds": 0.1, "ttft_seconds": 0.01,
+         "total_wall_time_seconds": 0.1, "output_tokens": 10.0},
+        {"policy": "p", "status": "dropped", "priority": 1.0, "slo_violated": True,
+         "server_request_latency_seconds": None, "ttft_seconds": None,
+         "total_wall_time_seconds": None, "output_tokens": None},
+    ]
+    m = mod.compute_policy_metrics(rows, policy_wall_clock_s=10.0)
+    assert m["n_total"] == 2
+    assert m["n_completed"] == 1
+    assert m["n_failed"] == 1  # dropped counts as failed
+    # arrival-normalized WG denominator includes the dropped request as zero credit
+    assert m["arrival_normalized_weighted_goodput"] == pytest.approx(0.5)
+
+
+def test_dropped_request_never_calls_real_network():
+    """The dropped-row path must not attempt dispatch -- confirms this is a
+    pure admission-refusal, not a masked network failure."""
+    mod = _load_module()
+    plan = mod.build_request_plan(["short"], [64], [1], 1, seed=1)
+    impossible_row = dataclasses.replace(plan[0], slo_slack_seconds=-1000.0)
+    # base_url=None + mock=False would normally raise on dispatch; since the
+    # request is dropped before ever being admitted, no dispatch happens and
+    # no exception propagates.
+    results = mod.run_cell_for_policy(
+        "scorpio_style_slo_guard", [impossible_row], concurrency=1,
+        model="m", base_url=None, mock=False, timeout_s=5,
+    )
+    assert len(results) == 1
+    assert results[0].status == "dropped"
+    assert results[0].error_type == "PolicyNeverAdmitted"
+
+
+# ---------------------------------------------------------------------------
+# Decision divergence: Kendall tau, cell-level comparison, examples
+# ---------------------------------------------------------------------------
+
+def test_kendall_tau_identical_orders():
+    mod = _load_module()
+    tau = mod._kendall_tau([1, 2, 3], [1, 2, 3], {1, 2, 3})
+    assert tau == pytest.approx(1.0)
+
+
+def test_kendall_tau_fully_reversed_orders():
+    mod = _load_module()
+    tau = mod._kendall_tau([1, 2, 3], [3, 2, 1], {1, 2, 3})
+    assert tau == pytest.approx(-1.0)
+
+
+def test_kendall_tau_needs_at_least_two_common_ids():
+    mod = _load_module()
+    assert mod._kendall_tau([1], [1], {1}) is None
+    assert mod._kendall_tau([], [], set()) is None
+
+
+def _divergence_row(policy, request_id, admission_time_s, slo_violated, **overrides):
+    base = {
+        "policy": policy, "request_id": request_id, "regime": "steady_moderate",
+        "prompt_bucket": "short", "target_output_tokens": 64, "concurrency_level": 1,
+        "admission_time_s": admission_time_s, "slo_violated": slo_violated, "status": "success",
+    }
+    base.update(overrides)
+    return base
+
+
+def test_compute_decision_divergence_detects_slo_outcome_change():
+    mod = _load_module()
+    all_rows = [
+        _divergence_row("selector", 1, 0.0, True),   # selector: violated
+        _divergence_row("selector", 2, 0.1, False),
+        _divergence_row("fifo", 1, 0.0, False),        # fifo: same request, NOT violated
+        _divergence_row("fifo", 2, 0.1, False),
+    ]
+    divergence_rows, example_rows = mod.compute_decision_divergence(all_rows, baselines=("fifo",))
+    assert len(divergence_rows) == 1
+    assert divergence_rows[0]["n_slo_outcome_changed"] == 1
+    assert divergence_rows[0]["kendall_tau"] == pytest.approx(1.0)  # same admission order
+    assert len(example_rows) == 1
+    assert example_rows[0]["request_id"] == 1
+
+
+def test_compute_decision_divergence_no_selector_returns_empty():
+    mod = _load_module()
+    all_rows = [_divergence_row("fifo", 1, 0.0, False)]
+    divergence_rows, example_rows = mod.compute_decision_divergence(all_rows, baselines=("fifo",))
+    assert divergence_rows == []
+    assert example_rows == []
+
+
+def test_write_decision_divergence_outputs_handles_no_examples(tmp_path):
+    mod = _load_module()
+    mod.write_decision_divergence_outputs(tmp_path, [], [])
+    assert (tmp_path / "decision_divergence.csv").exists()
+    md = (tmp_path / "selector_vs_baselines_examples.md").read_text()
+    assert "No SLO-outcome divergence found" in md
+
+
+# ---------------------------------------------------------------------------
+# Bootstrap confidence intervals
+# ---------------------------------------------------------------------------
+
+def test_bootstrap_ci_basic_shape():
+    mod = _load_module()
+    all_rows = []
+    for rid in range(20):
+        all_rows.append({"policy": "fifo", "request_id": rid, "priority": 1.0,
+                          "status": "success", "slo_violated": rid % 5 == 0})
+        all_rows.append({"policy": "selector", "request_id": rid, "priority": 1.0,
+                          "status": "success", "slo_violated": rid % 10 == 0})
+    ci_rows = mod.compute_bootstrap_ci(all_rows, ["fifo", "selector"], n_boot=200, seed=1)
+    by_policy = {r["policy"]: r for r in ci_rows}
+    assert "fifo" in by_policy and "selector" in by_policy
+    assert "selector_minus_fifo" in by_policy
+    for r in ci_rows:
+        assert r["ci_low_2.5pct"] <= r["ci_high_97.5pct"]
+    # selector violates less often (1/10 vs 1/5) -> selector should score higher
+    assert by_policy["selector_minus_fifo"]["point_estimate_wg"] > 0
+
+
+def test_bootstrap_ci_empty_rows_returns_empty():
+    mod = _load_module()
+    assert mod.compute_bootstrap_ci([], [], n_boot=10) == []
+
+
+# ---------------------------------------------------------------------------
+# End-to-end: decision-divergence-report + bootstrap-ci flags wired into main()
+# ---------------------------------------------------------------------------
+
+def test_decision_divergence_and_bootstrap_flags_produce_populated_reports(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path, subdir="artifact")
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf,selector",
+        "--selector-artifact", str(artifact_path),
+        "--arrival-regimes", "steady_moderate,bursty_tight",
+        "--decision-divergence-report", "--bootstrap-ci",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    assert (out_dir / "decision_divergence.csv").exists()
+    assert (out_dir / "selector_vs_baselines_examples.md").exists()
+    assert (out_dir / "bootstrap_confidence_intervals.csv").exists()
+    divergence_content = (out_dir / "decision_divergence.csv").read_text()
+    assert "kendall_tau" in divergence_content
+    ci_content = (out_dir / "bootstrap_confidence_intervals.csv").read_text()
+    assert "selector_minus_fifo" in ci_content
+
+
+def test_no_decision_divergence_flag_writes_empty_placeholder(tmp_path):
+    mod = _load_module()
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "1",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 0
+    assert (tmp_path / "decision_divergence.csv").exists()
+    assert "Not computed for this run" in (tmp_path / "selector_vs_baselines_examples.md").read_text()
+    assert not (tmp_path / "bootstrap_confidence_intervals.csv").exists()
+
+
+# ---------------------------------------------------------------------------
+# GPU memory capture (best-effort, must never raise)
+# ---------------------------------------------------------------------------
+
+def test_capture_gpu_mem_never_raises_without_nvidia_smi(tmp_path, monkeypatch):
+    mod = _load_module()
+    monkeypatch.setenv("PATH", "/nonexistent")  # nvidia-smi won't be found
+    out_path = tmp_path / "gpu_mem.txt"
+    mod.capture_gpu_mem(out_path)  # must not raise
+    assert out_path.exists()
+
+
+# ---------------------------------------------------------------------------
 # Real HTTP/SSE dispatch against a fake server (not real vLLM)
 # ---------------------------------------------------------------------------
 
@@ -562,8 +845,9 @@ def test_no_secrets_written_to_outputs(tmp_path, monkeypatch):
 
 REQUIRED_FILES = (
     "request_plan.jsonl", "requests.jsonl", "summary.json", "summary.md",
-    "aggregate_by_policy.csv", "aggregate_by_concurrency.csv",
+    "aggregate_by_policy.csv", "aggregate_by_policy_and_regime.csv", "aggregate_by_concurrency.csv",
     "aggregate_by_target_output_tokens.csv", "aggregate_by_prompt_bucket.csv",
+    "decision_divergence.csv", "selector_vs_baselines_examples.md",
     "manifest.json", "run_config.json", "reproducibility.md", "errors.jsonl",
 )
 

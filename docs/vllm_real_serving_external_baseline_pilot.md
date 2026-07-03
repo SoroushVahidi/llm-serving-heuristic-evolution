@@ -1,5 +1,14 @@
 # vLLM Real-Serving External-Baseline Pilot
 
+**Superseded in part by `docs/vllm_real_serving_scaled_comparison.md`.** That
+doc covers: (1) a corrected-objective selector artifact
+(`results/corrected_selector_artifact_regression_anwg/`) now wired in and
+included in comparisons — the "not wired" selector/generated-heuristic
+section below is now selector-specific stale info; (2) a broader
+multi-regime, higher-volume real-vLLM grid superseding this doc's
+24-req/policy smoke numbers. This doc remains accurate as the **first**
+real-vLLM run and for its methodology/environment notes, which still apply.
+
 **Status: real results.** This is the project's first comparison of its own
 scheduling/admission policies against each other on a **real, running vLLM
 server** — not a simulation, not a mock, not a dry-run. A tiny (24
