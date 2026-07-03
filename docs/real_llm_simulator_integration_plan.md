@@ -162,6 +162,18 @@ the Cohere/Gemini v2 pilots) — `run_status:
 planned_only_vllm_not_installed` in its own `run_config.json`/
 `reproducibility.md` says so explicitly.
 
+**Paper-safe status, stated plainly:**
+- The vLLM code path has been exercised in `--dry-run`, `--mock`, and
+  against a fake local HTTP server standing in for vLLM's SSE protocol.
+  It has **not** been exercised against a real vLLM server.
+- The current environment cannot install/run vLLM directly — this is a
+  CUDA/PyTorch compatibility constraint, not a choice, and not something
+  worked around by installing packages into this repo's main environment.
+- **Do not cite this as a completed real-serving experiment.** The correct
+  characterization until a real server actually runs and completes
+  requests is "vLLM scaffold only, awaiting a compatible runtime" — not
+  "vLLM baseline pilot" or "validated against vLLM."
+
 To actually run it once vLLM is available on compatible hardware:
 
 ```
