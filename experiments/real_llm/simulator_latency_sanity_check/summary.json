@@ -1,0 +1,120 @@
+{
+  "inputs": {
+    "fitted_config": "/home/soroush/llm-serving-heuristic-evolution/configs/real_llm_latency/cohere_gemini_v2_fit.yaml",
+    "fitted_model_dir": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/latency_model_fit_v2",
+    "calibration_file": "/home/soroush/llm-serving-heuristic-evolution/results/gpu_calibration/service_curves.json",
+    "step_size": 0.001
+  },
+  "findings": {
+    "simulator_synthetic_decode_rate_tokens_per_sec": 1000.0,
+    "hosted_decode_rates_tokens_per_sec": {
+      "cohere": 88.49,
+      "gemini": 288.93
+    },
+    "simulator_synthetic_closest_hosted_provider": "gemini",
+    "simulator_synthetic_faster_than_all_hosted": true,
+    "calibrated_model_available": true,
+    "simulator_decode_time_linear_in_output_tokens": true,
+    "simulator_has_ttft_analogue_by_default": false
+  },
+  "comparison_by_target_output_tokens": [
+    {
+      "target_output_tokens": 64,
+      "simulator_synthetic_decode_rate_tokens_per_sec": 1000.0,
+      "simulator_synthetic_decode_time_s": 0.064,
+      "simulator_calibrated_b1_decode_rate_tokens_per_sec": 167.66986603649048,
+      "simulator_calibrated_b1_decode_time_s": 0.38170245800799707,
+      "simulator_calibrated_b8_decode_rate_tokens_per_sec": 108.98681122700914,
+      "simulator_calibrated_b8_decode_time_s": 0.5872270165487647,
+      "Cohere_mean_latency_s": 0.8923055555555555,
+      "Cohere_mean_ttft_s": 0.23755,
+      "Cohere_mean_output_tokens": 51.97222222222222,
+      "simulator_synthetic_vs_Cohere_speed_ratio": 13.942274305555554,
+      "Gemini_mean_latency_s": 1.0447916666666666,
+      "Gemini_mean_ttft_s": 0.6608444444444443,
+      "Gemini_mean_output_tokens": 66.66666666666667,
+      "simulator_synthetic_vs_Gemini_speed_ratio": 16.324869791666664
+    },
+    {
+      "target_output_tokens": 128,
+      "simulator_synthetic_decode_rate_tokens_per_sec": 1000.0,
+      "simulator_synthetic_decode_time_s": 0.128,
+      "simulator_calibrated_b1_decode_rate_tokens_per_sec": 164.49004509787204,
+      "simulator_calibrated_b1_decode_time_s": 0.7781625929024436,
+      "simulator_calibrated_b8_decode_rate_tokens_per_sec": 107.63432526385434,
+      "simulator_calibrated_b8_decode_time_s": 1.189211709983979,
+      "Cohere_mean_latency_s": 1.8430805555555554,
+      "Cohere_mean_ttft_s": 0.24739444444444444,
+      "Cohere_mean_output_tokens": 127.55555555555556,
+      "simulator_synthetic_vs_Cohere_speed_ratio": 14.399066840277776,
+      "Gemini_mean_latency_s": 1.1121833333333333,
+      "Gemini_mean_ttft_s": 0.648775,
+      "Gemini_mean_output_tokens": 118.66666666666667,
+      "simulator_synthetic_vs_Gemini_speed_ratio": 8.688932291666665
+    },
+    {
+      "target_output_tokens": 256,
+      "simulator_synthetic_decode_rate_tokens_per_sec": 1000.0,
+      "simulator_synthetic_decode_time_s": 0.256,
+      "simulator_calibrated_b1_decode_rate_tokens_per_sec": 158.4790082815662,
+      "simulator_calibrated_b1_decode_time_s": 1.6153558933506853,
+      "simulator_calibrated_b8_decode_rate_tokens_per_sec": 105.02761759095105,
+      "simulator_calibrated_b8_decode_time_s": 2.437454127513756,
+      "Cohere_mean_latency_s": 3.081786111111111,
+      "Cohere_mean_ttft_s": 0.2536638888888889,
+      "Cohere_mean_output_tokens": 241.58333333333334,
+      "simulator_synthetic_vs_Cohere_speed_ratio": 12.038226996527778,
+      "Gemini_mean_latency_s": 1.6454833333333334,
+      "Gemini_mean_ttft_s": 0.7126305555555555,
+      "Gemini_mean_output_tokens": 232.66666666666666,
+      "simulator_synthetic_vs_Gemini_speed_ratio": 6.427669270833333
+    }
+  ],
+  "comparison_by_provider": [
+    {
+      "entity": "cohere",
+      "source": "hosted_api",
+      "model": "command-r7b-12-2024",
+      "decode_rate_tokens_per_sec": 88.49,
+      "decode_rate_r2": 0.8866,
+      "ttft_or_prefill_analogue_s": 0.2462,
+      "notes": "client-observed, includes network + provider scheduling"
+    },
+    {
+      "entity": "gemini",
+      "source": "hosted_api",
+      "model": "gemini-3.1-flash-lite",
+      "decode_rate_tokens_per_sec": 288.93,
+      "decode_rate_r2": 0.8334,
+      "ttft_or_prefill_analogue_s": 0.6741,
+      "notes": "client-observed, includes network + provider scheduling"
+    },
+    {
+      "entity": "simulator_synthetic_default",
+      "source": "simulator",
+      "model": "ServiceModel (enable_prefill_modeling=False)",
+      "decode_rate_tokens_per_sec": 1000.0,
+      "decode_rate_r2": null,
+      "ttft_or_prefill_analogue_s": 0.0,
+      "notes": "constant per-token decode time; prefill instantaneous by default (no TTFT analogue at all)"
+    },
+    {
+      "entity": "simulator_calibrated_rtx5060ti_b1",
+      "source": "simulator",
+      "model": "CalibratedServiceModel (Qwen2.5-0.5B, RTX 5060 Ti)",
+      "decode_rate_tokens_per_sec": 147.68515276338852,
+      "decode_rate_r2": null,
+      "ttft_or_prefill_analogue_s": 0.017,
+      "notes": "local GPU prefill compute only; no network/provider-scheduling component"
+    },
+    {
+      "entity": "simulator_calibrated_rtx5060ti_b8",
+      "source": "simulator",
+      "model": "CalibratedServiceModel (Qwen2.5-0.5B, RTX 5060 Ti)",
+      "decode_rate_tokens_per_sec": 100.17548151517312,
+      "decode_rate_r2": null,
+      "ttft_or_prefill_analogue_s": 0.017,
+      "notes": "local GPU prefill compute only; no network/provider-scheduling component"
+    }
+  ]
+}

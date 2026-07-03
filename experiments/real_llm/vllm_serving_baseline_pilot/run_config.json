@@ -1,0 +1,29 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B",
+  "seed": 20260703,
+  "prompt_buckets": [
+    "short",
+    "medium",
+    "long"
+  ],
+  "target_output_tokens_list": [
+    64,
+    128,
+    256
+  ],
+  "concurrency_list": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "requests_per_cell": 3,
+  "timeout_seconds": 120.0,
+  "max_total_requests": 108,
+  "min_output_token_ratio": 0.7,
+  "record_output_text_preview_chars": 80,
+  "mock": false,
+  "server_url": null,
+  "launch_server": false,
+  "run_status": "planned_only_vllm_not_installed"
+}

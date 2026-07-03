@@ -1,0 +1,230 @@
+{
+  "git_branch": "phase2c1-real-trace-ingestion-validation",
+  "git_commit": "f9130ebe326db7a5de12f6c0ad742d77bb83fccb",
+  "git_dirty": true,
+  "planned_requests": 108,
+  "cells": [
+    [
+      "long",
+      64,
+      1
+    ],
+    [
+      "long",
+      64,
+      2
+    ],
+    [
+      "long",
+      64,
+      4
+    ],
+    [
+      "long",
+      64,
+      8
+    ],
+    [
+      "long",
+      128,
+      1
+    ],
+    [
+      "long",
+      128,
+      2
+    ],
+    [
+      "long",
+      128,
+      4
+    ],
+    [
+      "long",
+      128,
+      8
+    ],
+    [
+      "long",
+      256,
+      1
+    ],
+    [
+      "long",
+      256,
+      2
+    ],
+    [
+      "long",
+      256,
+      4
+    ],
+    [
+      "long",
+      256,
+      8
+    ],
+    [
+      "medium",
+      64,
+      1
+    ],
+    [
+      "medium",
+      64,
+      2
+    ],
+    [
+      "medium",
+      64,
+      4
+    ],
+    [
+      "medium",
+      64,
+      8
+    ],
+    [
+      "medium",
+      128,
+      1
+    ],
+    [
+      "medium",
+      128,
+      2
+    ],
+    [
+      "medium",
+      128,
+      4
+    ],
+    [
+      "medium",
+      128,
+      8
+    ],
+    [
+      "medium",
+      256,
+      1
+    ],
+    [
+      "medium",
+      256,
+      2
+    ],
+    [
+      "medium",
+      256,
+      4
+    ],
+    [
+      "medium",
+      256,
+      8
+    ],
+    [
+      "short",
+      64,
+      1
+    ],
+    [
+      "short",
+      64,
+      2
+    ],
+    [
+      "short",
+      64,
+      4
+    ],
+    [
+      "short",
+      64,
+      8
+    ],
+    [
+      "short",
+      128,
+      1
+    ],
+    [
+      "short",
+      128,
+      2
+    ],
+    [
+      "short",
+      128,
+      4
+    ],
+    [
+      "short",
+      128,
+      8
+    ],
+    [
+      "short",
+      256,
+      1
+    ],
+    [
+      "short",
+      256,
+      2
+    ],
+    [
+      "short",
+      256,
+      4
+    ],
+    [
+      "short",
+      256,
+      8
+    ]
+  ],
+  "requests_preview": [
+    {
+      "request_id": "short__tgt64__c1__i0",
+      "prompt_bucket": "short",
+      "target_output_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 0,
+      "intended_prompt_tokens": 168
+    },
+    {
+      "request_id": "short__tgt64__c1__i1",
+      "prompt_bucket": "short",
+      "target_output_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 1,
+      "intended_prompt_tokens": 168
+    },
+    {
+      "request_id": "short__tgt64__c1__i2",
+      "prompt_bucket": "short",
+      "target_output_tokens": 64,
+      "concurrency_level": 1,
+      "request_index": 2,
+      "intended_prompt_tokens": 168
+    },
+    {
+      "request_id": "short__tgt64__c2__i0",
+      "prompt_bucket": "short",
+      "target_output_tokens": 64,
+      "concurrency_level": 2,
+      "request_index": 0,
+      "intended_prompt_tokens": 168
+    },
+    {
+      "request_id": "short__tgt64__c2__i1",
+      "prompt_bucket": "short",
+      "target_output_tokens": 64,
+      "concurrency_level": 2,
+      "request_index": 1,
+      "intended_prompt_tokens": 168
+    }
+  ]
+}

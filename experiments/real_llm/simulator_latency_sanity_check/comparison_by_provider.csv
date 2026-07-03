@@ -1,0 +1,6 @@
+entity,source,model,decode_rate_tokens_per_sec,decode_rate_r2,ttft_or_prefill_analogue_s,notes
+cohere,hosted_api,command-r7b-12-2024,88.49,0.8866,0.2462,"client-observed, includes network + provider scheduling"
+gemini,hosted_api,gemini-3.1-flash-lite,288.93,0.8334,0.6741,"client-observed, includes network + provider scheduling"
+simulator_synthetic_default,simulator,ServiceModel (enable_prefill_modeling=False),1000.0,,0.0,constant per-token decode time; prefill instantaneous by default (no TTFT analogue at all)
+simulator_calibrated_rtx5060ti_b1,simulator,"CalibratedServiceModel (Qwen2.5-0.5B, RTX 5060 Ti)",147.68515276338852,,0.017,local GPU prefill compute only; no network/provider-scheduling component
+simulator_calibrated_rtx5060ti_b8,simulator,"CalibratedServiceModel (Qwen2.5-0.5B, RTX 5060 Ti)",100.17548151517312,,0.017,local GPU prefill compute only; no network/provider-scheduling component
