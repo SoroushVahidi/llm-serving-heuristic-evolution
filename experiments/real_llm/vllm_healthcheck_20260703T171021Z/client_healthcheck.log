@@ -1,0 +1,39 @@
+=== Non-streaming request ===
+{
+  "id": "cmpl-88c08025e3d76937",
+  "object": "text_completion",
+  "created": 1783098863,
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "choices": [
+    {
+      "index": 0,
+      "text": " A GPU scheduler is responsible for managing the allocation of compute resources on a graphics processing unit (GPU) to execute tasks in parallel across multiple GPUs or CPU cores. It ensures that each task gets its fair share of computing power and optimizes resource utilization by dynamically adjusting the number of threads per block and the size of the blocks",
+      "logprobs": null,
+      "finish_reason": "length",
+      "stop_reason": null,
+      "token_ids": null,
+      "prompt_logprobs": null,
+      "prompt_token_ids": null,
+      "routed_experts": null
+    }
+  ],
+  "service_tier": null,
+  "system_fingerprint": "vllm-0.24.0-nohash",
+  "usage": {
+    "prompt_tokens": 14,
+    "total_tokens": 78,
+    "completion_tokens": 64,
+    "prompt_tokens_details": null
+  },
+  "kv_transfer_params": null
+}
+
+=== Streaming request ===
+chunks received: 65
+text:  A GPU scheduler is responsible for managing the allocation of compute resources on a graphics processing unit (GPU) to execute tasks in parallel across multiple GPUs or CPU cores. It ensures that each task gets its fair share of computing power and optimizes resource utilization by dynamically adjusting the number of threads per block and the size of the blocks
+finish_reason: length
+usage: {'prompt_tokens': 14, 'total_tokens': 78, 'completion_tokens': 64}
+TTFT (s): 0.014525278005748987
+total latency (s): 0.3221
+
+WROTE RESULT JSON

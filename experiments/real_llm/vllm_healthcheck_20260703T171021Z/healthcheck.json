@@ -1,0 +1,40 @@
+{
+  "generated_at_utc": "2026-07-03T17:14:41.102272+00:00",
+  "server": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "vllm_version": "0.24.0",
+    "endpoint": "http://127.0.0.1:8001/v1",
+    "server_flags": "--gpu-memory-utilization 0.5 --max-model-len 4096 --enforce-eager",
+    "env_overrides": "CUDA_HOME=<venv>/nvidia/cu13, PATH+=<venv>/nvidia/cu13/bin:<venv>/bin, VLLM_USE_FLASHINFER_SAMPLER=0"
+  },
+  "gpu_memory_before": "8267 MiB, 16311 MiB, 0 %",
+  "gpu_memory_after": "8267 MiB, 16311 MiB, 0 %",
+  "non_streaming_request": {
+    "status": "success",
+    "total_latency_seconds": 0.3483,
+    "text": " A GPU scheduler is responsible for managing the allocation of compute resources on a graphics processing unit (GPU) to execute tasks in parallel across multiple GPUs or CPU cores. It ensures that each task gets its fair share of computing power and optimizes resource utilization by dynamically adjusting the number of threads per block and the size of the blocks",
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 14,
+      "total_tokens": 78,
+      "completion_tokens": 64,
+      "prompt_tokens_details": null
+    }
+  },
+  "streaming_request": {
+    "status": "success",
+    "n_chunks": 65,
+    "ttft_seconds": 0.0145,
+    "total_latency_seconds": 0.3221,
+    "text": " A GPU scheduler is responsible for managing the allocation of compute resources on a graphics processing unit (GPU) to execute tasks in parallel across multiple GPUs or CPU cores. It ensures that each task gets its fair share of computing power and optimizes resource utilization by dynamically adjusting the number of threads per block and the size of the blocks",
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 14,
+      "total_tokens": 78,
+      "completion_tokens": 64
+    }
+  },
+  "token_usage_fields_present": true,
+  "ttft_measurable": true,
+  "server_crashed": false
+}

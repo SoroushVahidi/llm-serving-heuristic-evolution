@@ -1,0 +1,2 @@
+{"request_id": -1, "prompt_bucket": "short", "target_output_tokens": 64, "status": "success", "ttft_seconds": 0.02935018000425771, "server_request_latency_seconds": 0.6683823650237173, "total_wall_time_seconds": 0.6684, "output_tokens": 128.0, "finish_reason": "length"}
+{"request_id": -2, "prompt_bucket": "medium", "target_output_tokens": 128, "status": "success", "ttft_seconds": 0.015265927999280393, "server_request_latency_seconds": 1.3116077469894662, "total_wall_time_seconds": 1.3117, "output_tokens": 256.0, "finish_reason": "length"}

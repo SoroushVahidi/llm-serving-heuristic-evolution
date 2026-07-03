@@ -1,0 +1,13 @@
+python scripts/run_vllm_external_baseline_comparison.py \
+  --allow-live-server --server-url http://127.0.0.1:8001 \
+  --model Qwen/Qwen2.5-0.5B-Instruct \
+  --warmup \
+  --prompt-buckets short,medium \
+  --target-output-tokens-list 64,128 \
+  --concurrency-list 1,2,4 \
+  --requests-per-cell 2 \
+  --seed 20260703 \
+  --timeout-seconds 180 \
+  --fail-fast \
+  --policies vllm_default,fifo,edf,shortest_output_first,least_laxity_first,estimated_service_time_first \
+  --output-dir experiments/real_llm/vllm_baseline_comparison_pilot_20260703T172103Z

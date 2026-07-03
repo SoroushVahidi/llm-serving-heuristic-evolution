@@ -1,0 +1,12 @@
+vLLM external-admission baseline comparison
+  output_dir:        /home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/vllm_baseline_comparison_pilot_20260703T172103Z
+  planned per policy: 24
+  policies:          ['vllm_direct', 'fifo', 'edf', 'shortest_output_first', 'least_laxity_first', 'estimated_service_time_first']
+  run_status:        completed
+  Running warm-up phase (not counted in policy metrics)...
+  [edf] completed=24/24 arrival_norm_wg=0.7954545454545454
+  [estimated_service_time_first] completed=24/24 arrival_norm_wg=0.7954545454545454
+  [fifo] completed=24/24 arrival_norm_wg=0.75
+  [least_laxity_first] completed=24/24 arrival_norm_wg=0.7954545454545454
+  [shortest_output_first] completed=24/24 arrival_norm_wg=0.75
+  [vllm_direct] completed=24/24 arrival_norm_wg=0.75
