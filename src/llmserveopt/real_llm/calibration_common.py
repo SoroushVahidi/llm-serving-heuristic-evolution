@@ -111,6 +111,51 @@ def approx_token_count(text: str) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Proposed v2 workload: length-targeted prompts (NOT wired into any live
+# script — see docs/real_llm_v2_workload_proposal.md). build_prompt() above
+# asks for "one short sentence," so generated output stayed ~22-35 tokens
+# regardless of max_tokens in both the Cohere and Gemini v1 pilots, never
+# exercising output-length scaling. build_length_targeted_prompt() is a
+# candidate replacement that instructs the model to write approximately
+# `target_output_tokens` tokens of content, reusing the same deterministic,
+# non-copyrighted synthetic sentence bank as build_prompt() so a v2 pilot
+# keeps the same safety properties (no real user data, no scraped text).
+# ---------------------------------------------------------------------------
+
+PROPOSED_V2_TARGET_OUTPUT_TOKENS = (64, 128, 256)
+
+
+def build_length_targeted_prompt(bucket: str, target_output_tokens: int, seed: int, variant_index: int) -> str:
+    """Deterministically build a prompt whose instruction asks for
+    approximately `target_output_tokens` tokens of output, using the same
+    input-side prompt-bucket body and synthetic sentence bank as
+    build_prompt(). Word-count instructions are a heuristic, not a
+    guarantee — a v2 pilot should measure actual output_tokens per target
+    and report the achieved-vs-target ratio, the same way this codebase
+    discovered v1's gap.
+    """
+    target_input_tokens = PROMPT_BUCKET_TARGET_TOKENS[bucket]
+    target_input_words = max(8, int(target_input_tokens * 0.75))
+    words: List[str] = []
+    idx = 0
+    while len(words) < target_input_words:
+        sentence = _SENTENCE_BANK[idx % len(_SENTENCE_BANK)]
+        words.extend(sentence.split())
+        idx += 1
+    body = " ".join(words[:target_input_words])
+    variant_tag = f"(request variant {seed}-{bucket}-{target_output_tokens}-{variant_index})"
+    target_output_words = max(20, int(target_output_tokens * 0.75))
+    instruction = (
+        f"Using only the concepts mentioned in the text above, write a "
+        f"plain-text explanation of approximately {target_output_words} "
+        "words (not more than a few words short or over). Use complete "
+        "sentences and paragraphs. Do not use lists, markdown, headings, "
+        "or code blocks. Do not introduce any topic not mentioned above."
+    )
+    return f"{body} {variant_tag}\n\n{instruction}"
+
+
+# ---------------------------------------------------------------------------
 # Plan data structures (shared schema across all providers)
 # ---------------------------------------------------------------------------
 
@@ -152,9 +197,10 @@ class RequestResult:
     request_index: int
     start_time_iso: str
     end_time_iso: str
-    elapsed_seconds: float
+    rate_limiter_wait_seconds: float
+    provider_request_latency_seconds: Optional[float]
     ttft_seconds: Optional[float]
-    total_latency_seconds: Optional[float]
+    total_wall_time_seconds: float
     output_text_length_chars: int
     output_tokens: Optional[float]
     billed_units: Optional[Dict[str, Optional[float]]]
@@ -580,10 +626,14 @@ def execute_one_request(
     retry_count = 0
     last_exc: Optional[Exception] = None
     start = datetime.now(timezone.utc)
-    t_start = time.monotonic()
+    t_wall_start = time.monotonic()
+    total_wait = 0.0
 
     while retry_count <= MAX_RETRIES_PER_REQUEST:
+        wait_t0 = time.monotonic()
         rpm_limiter.acquire()
+        total_wait += time.monotonic() - wait_t0
+        t_provider_start = time.monotonic()
         try:
             if mock:
                 out = mock_call_fn(planned, stream)
@@ -592,7 +642,8 @@ def execute_one_request(
             else:
                 out = call_non_streaming_fn(client, planned, timeout_s)
             end = datetime.now(timezone.utc)
-            elapsed = time.monotonic() - t_start
+            provider_latency = time.monotonic() - t_provider_start
+            wall_time = time.monotonic() - t_wall_start
             return RequestResult(
                 request_id=planned.request_id,
                 experiment_id=planned.experiment_id,
@@ -605,9 +656,10 @@ def execute_one_request(
                 request_index=planned.request_index,
                 start_time_iso=start.isoformat(),
                 end_time_iso=end.isoformat(),
-                elapsed_seconds=round(elapsed, 4),
+                rate_limiter_wait_seconds=round(total_wait, 4),
+                provider_request_latency_seconds=round(provider_latency, 4),
                 ttft_seconds=round(out["ttft_seconds"], 4) if out["ttft_seconds"] is not None else None,
-                total_latency_seconds=round(elapsed, 4),
+                total_wall_time_seconds=round(wall_time, 4),
                 output_text_length_chars=len(out["text"]),
                 output_tokens=out["output_tokens"],
                 billed_units={
@@ -630,7 +682,7 @@ def execute_one_request(
             break
 
     end = datetime.now(timezone.utc)
-    elapsed = time.monotonic() - t_start
+    wall_time = time.monotonic() - t_wall_start
     status = classify_exception(last_exc, retryable_error_names) if last_exc else "error"
     return RequestResult(
         request_id=planned.request_id,
@@ -644,9 +696,10 @@ def execute_one_request(
         request_index=planned.request_index,
         start_time_iso=start.isoformat(),
         end_time_iso=end.isoformat(),
-        elapsed_seconds=round(elapsed, 4),
+        rate_limiter_wait_seconds=round(total_wait, 4),
+        provider_request_latency_seconds=None,
         ttft_seconds=None,
-        total_latency_seconds=None,
+        total_wall_time_seconds=round(wall_time, 4),
         output_text_length_chars=0,
         output_tokens=None,
         billed_units=None,
@@ -673,9 +726,10 @@ def make_skipped_result(planned: PlannedRequest, reason: str) -> RequestResult:
         request_index=planned.request_index,
         start_time_iso=now,
         end_time_iso=now,
-        elapsed_seconds=0.0,
+        rate_limiter_wait_seconds=0.0,
+        provider_request_latency_seconds=None,
         ttft_seconds=None,
-        total_latency_seconds=None,
+        total_wall_time_seconds=0.0,
         output_text_length_chars=0,
         output_tokens=None,
         billed_units=None,
@@ -835,9 +889,10 @@ def run_requests(
                 writer.write(result)
                 fail_fast.record(result.status)
                 logging.info(
-                    "%s status=%s ttft=%s latency=%s",
+                    "%s status=%s ttft=%s provider_latency=%s rpm_wait=%s",
                     result.request_id, result.status,
-                    result.ttft_seconds, result.total_latency_seconds,
+                    result.ttft_seconds, result.provider_request_latency_seconds,
+                    result.rate_limiter_wait_seconds,
                 )
 
     writer.close()
@@ -891,8 +946,12 @@ def aggregate_results(
         status_counts[row["status"]] = status_counts.get(row["status"], 0) + 1
 
     successes = [r for r in rows if r["status"] == "success"]
-    latencies = [r["total_latency_seconds"] for r in successes if r["total_latency_seconds"] is not None]
+    latencies = [
+        r["provider_request_latency_seconds"] for r in successes
+        if r.get("provider_request_latency_seconds") is not None
+    ]
     ttfts = [r["ttft_seconds"] for r in successes if r.get("ttft_seconds") is not None]
+    waits = [r["rate_limiter_wait_seconds"] for r in rows if r.get("rate_limiter_wait_seconds") is not None]
     output_tokens = [r["output_tokens"] for r in successes if r.get("output_tokens")]
     total_input_tokens = sum(r.get("actual_prompt_tokens") or 0 for r in successes)
     total_output_tokens = sum(r.get("output_tokens") or 0 for r in successes)
@@ -901,9 +960,9 @@ def aggregate_results(
     )
 
     tokens_per_sec = [
-        r["output_tokens"] / r["total_latency_seconds"]
+        r["output_tokens"] / r["provider_request_latency_seconds"]
         for r in successes
-        if r.get("output_tokens") and r.get("total_latency_seconds")
+        if r.get("output_tokens") and r.get("provider_request_latency_seconds")
     ]
 
     overall = {
@@ -914,6 +973,9 @@ def aggregate_results(
         "total_billed_input_tokens": total_input_tokens,
         "total_billed_output_tokens": total_output_tokens,
         "estimated_cost_usd": round(estimated_cost, 6),
+        "n_requests_with_rate_limiter_wait": sum(1 for w in waits if w > 0),
+        "total_rate_limiter_wait_seconds": round(sum(waits), 4) if waits else 0.0,
+        "max_rate_limiter_wait_seconds": round(max(waits), 4) if waits else 0.0,
         **_stats_block(latencies, ttfts),
     }
 
@@ -926,7 +988,7 @@ def aggregate_results(
         for keys, sub in df.groupby(group_cols):
             keys = keys if isinstance(keys, tuple) else (keys,)
             sub_success = sub[sub["status"] == "success"]
-            lat = sub_success["total_latency_seconds"].dropna().tolist()
+            lat = sub_success["provider_request_latency_seconds"].dropna().tolist()
             ttft = sub_success["ttft_seconds"].dropna().tolist()
             rec = dict(zip(group_cols, keys))
             rec.update({
@@ -955,6 +1017,173 @@ def aggregate_results(
     return overall
 
 
+# ---------------------------------------------------------------------------
+# Legacy log reprocessing
+# ---------------------------------------------------------------------------
+#
+# Logs written before the rate_limiter_wait_seconds / provider_request_latency
+# _seconds split (see execute_one_request above) only recorded a single
+# elapsed_seconds/total_latency_seconds field that could include time spent
+# blocked in the local RPM limiter. That split cannot be recovered exactly
+# after the fact — the raw records don't say how much of the elapsed time was
+# limiter wait vs. provider response. What CAN be done without rerunning any
+# API calls: (1) ttft_seconds was always measured from inside the provider
+# call itself, so it was never polluted by limiter wait and remains fully
+# reliable in old logs; (2) requests whose recorded latency is far larger
+# than their ttft_seconds are very likely RPM-wait-polluted (a request that
+# streamed its first token in ~0.2s does not organically take 53s to finish
+# ~30 more tokens), so they can be heuristically flagged and excluded to
+# produce a "corrected" percentile view alongside the untouched raw one.
+
+LEGACY_LATENCY_FIELDS = ("provider_request_latency_seconds", "total_latency_seconds")
+
+
+def legacy_latency_seconds(row: Dict[str, Any]) -> Optional[float]:
+    for field_name in LEGACY_LATENCY_FIELDS:
+        if row.get(field_name) is not None:
+            return row[field_name]
+    return None
+
+
+def flag_likely_rate_limiter_wait_outliers(
+    rows: List[Dict[str, Any]],
+    *,
+    min_ttft_gap_seconds: float = 5.0,
+    min_absolute_latency_seconds: float = 10.0,
+) -> List[str]:
+    """Heuristically flag successful requests whose recorded latency is
+    implausibly larger than their TTFT, suggesting most of the recorded time
+    was local RPM-limiter wait rather than provider response time.
+
+    A request is flagged if `latency - ttft > min_ttft_gap_seconds` (when
+    ttft is known), or if ttft is unknown (e.g. non-streaming) and latency
+    alone exceeds `min_absolute_latency_seconds`. This is a heuristic, not an
+    exact recovery: it cannot distinguish "genuinely slow provider response"
+    from "RPM wait" for a request with no ttft. It is intended for legacy
+    logs that predate rate_limiter_wait_seconds.
+    """
+    flagged: List[str] = []
+    for row in rows:
+        if row.get("status") != "success":
+            continue
+        latency = legacy_latency_seconds(row)
+        if latency is None:
+            continue
+        ttft = row.get("ttft_seconds")
+        if ttft is not None:
+            if latency - ttft > min_ttft_gap_seconds:
+                flagged.append(row["request_id"])
+        elif latency > min_absolute_latency_seconds:
+            flagged.append(row["request_id"])
+    return flagged
+
+
+def reprocess_legacy_summary(
+    requests_path: Path,
+    *,
+    min_ttft_gap_seconds: float = 5.0,
+    min_absolute_latency_seconds: float = 10.0,
+) -> Dict[str, Any]:
+    """Regenerate a corrected-vs-raw latency summary from an existing
+    requests.jsonl written before the rate_limiter_wait_seconds field
+    existed. Makes no API calls; reads only what's already on disk.
+
+    Returns raw stats (all successful requests, exactly what summary.json
+    already reported), corrected stats (excluding heuristically flagged
+    likely-RPM-wait outliers), the flagged request_ids, and a caveat
+    explaining what is and is not recoverable from these fields.
+    """
+    rows = list(load_completed_request_ids(requests_path).values())
+    successes = [r for r in rows if r.get("status") == "success"]
+    has_new_schema = any(r.get("rate_limiter_wait_seconds") is not None for r in rows)
+
+    flagged_ids = set(
+        flag_likely_rate_limiter_wait_outliers(
+            rows,
+            min_ttft_gap_seconds=min_ttft_gap_seconds,
+            min_absolute_latency_seconds=min_absolute_latency_seconds,
+        )
+    )
+    clean = [r for r in successes if r["request_id"] not in flagged_ids]
+
+    raw_latencies = [legacy_latency_seconds(r) for r in successes]
+    raw_latencies = [v for v in raw_latencies if v is not None]
+    corrected_latencies = [legacy_latency_seconds(r) for r in clean]
+    corrected_latencies = [v for v in corrected_latencies if v is not None]
+    ttfts = [r["ttft_seconds"] for r in successes if r.get("ttft_seconds") is not None]
+
+    return {
+        "requests_path": str(requests_path),
+        "n_total_records": len(rows),
+        "n_success": len(successes),
+        "n_flagged_likely_rate_limiter_wait": len(flagged_ids),
+        "flagged_request_ids": sorted(flagged_ids),
+        "has_rate_limiter_wait_field": has_new_schema,
+        "raw_stats": _stats_block(raw_latencies, ttfts),
+        "corrected_stats_excluding_flagged": _stats_block(corrected_latencies, ttfts),
+        "caveat": (
+            "This log predates the rate_limiter_wait_seconds/"
+            "provider_request_latency_seconds split, so the exact amount of "
+            "local RPM-limiter wait inside each request's recorded latency "
+            "cannot be recovered. 'corrected_stats_excluding_flagged' drops "
+            f"requests where latency exceeded ttft by more than "
+            f"{min_ttft_gap_seconds}s (or exceeded "
+            f"{min_absolute_latency_seconds}s absolute for non-streaming "
+            "requests with no ttft) as likely-RPM-wait-polluted, rather than "
+            "correcting their value. ttft_seconds was always measured from "
+            "inside the provider call and is unaffected by this artifact in "
+            "either raw or corrected form. p50 latency is typically also "
+            "reliable since the artifact affects a small number of outliers "
+            "concentrated at the tail (compare raw vs. corrected p50 below "
+            "to confirm for this specific log)."
+        ) if not has_new_schema else (
+            "This log already has rate_limiter_wait_seconds/"
+            "provider_request_latency_seconds recorded per-request; use "
+            "aggregate_results()/summary.json directly rather than this "
+            "heuristic reprocessing path."
+        ),
+    }
+
+
+def write_legacy_reprocessed_summary(out_dir: Path, reprocessed: Dict[str, Any]) -> None:
+    (out_dir / "summary_corrected.json").write_text(json.dumps(reprocessed, indent=2))
+
+    def _fmt_stats(stats: Dict[str, Optional[float]], prefix: str) -> List[str]:
+        return [
+            f"- {prefix} count: {stats.get('count')}",
+            f"- {prefix} mean / p50 / p95 / p99 latency (s): "
+            f"{stats.get('mean_latency_s')} / {stats.get('p50_latency_s')} / "
+            f"{stats.get('p95_latency_s')} / {stats.get('p99_latency_s')}",
+            f"- {prefix} mean / p50 / p95 / p99 TTFT (s): "
+            f"{stats.get('mean_ttft_s')} / {stats.get('p50_ttft_s')} / "
+            f"{stats.get('p95_ttft_s')} / {stats.get('p99_ttft_s')}",
+        ]
+
+    lines = [
+        "# Corrected Summary (reprocessed from existing requests.jsonl)",
+        "",
+        f"Source: `{reprocessed['requests_path']}`",
+        f"Has native rate_limiter_wait_seconds field: {reprocessed['has_rate_limiter_wait_field']}",
+        "",
+        "## Caveat",
+        "",
+        reprocessed["caveat"],
+        "",
+        "## Raw stats (all successful requests, unmodified)",
+        *_fmt_stats(reprocessed["raw_stats"], "raw"),
+        "",
+        "## Corrected stats (flagged likely-RPM-wait outliers excluded)",
+        *_fmt_stats(reprocessed["corrected_stats_excluding_flagged"], "corrected"),
+        "",
+        f"## Flagged requests ({reprocessed['n_flagged_likely_rate_limiter_wait']} of "
+        f"{reprocessed['n_success']} successful)",
+        "```",
+        *(reprocessed["flagged_request_ids"] or ["(none)"]),
+        "```",
+    ]
+    (out_dir / "summary_corrected.md").write_text("\n".join(lines) + "\n")
+
+
 def write_summary(
     out_dir: Path,
     overall: Dict[str, Any],
@@ -976,6 +1205,9 @@ def write_summary(
         "```",
         "",
         "## Latency / TTFT (successful requests)",
+        "Latency here is `provider_request_latency_seconds` — timed from after",
+        "the local RPM limiter released the request, so it excludes local",
+        "rate-limiter wait. See 'Local rate-limiter wait' below for that.",
         f"- count: {overall.get('count')}",
         f"- mean latency (s): {overall.get('mean_latency_s')}",
         f"- p50 / p95 / p99 latency (s): {overall.get('p50_latency_s')} / "
@@ -984,9 +1216,14 @@ def write_summary(
         f"- p50 / p95 / p99 TTFT (s): {overall.get('p50_ttft_s')} / "
         f"{overall.get('p95_ttft_s')} / {overall.get('p99_ttft_s')}",
         "",
+        "## Local rate-limiter wait (all dispatched requests)",
+        f"- requests with nonzero wait: {overall.get('n_requests_with_rate_limiter_wait')}",
+        f"- total wait (s): {overall.get('total_rate_limiter_wait_seconds')}",
+        f"- max wait (s): {overall.get('max_rate_limiter_wait_seconds')}",
+        "",
         "## Throughput / cost",
         f"- mean output tokens: {overall.get('mean_output_tokens')}",
-        f"- mean tokens/sec: {overall.get('mean_tokens_per_sec')}",
+        f"- mean tokens/sec (provider latency basis): {overall.get('mean_tokens_per_sec')}",
         f"- total billed input tokens: {overall.get('total_billed_input_tokens')}",
         f"- total billed output tokens: {overall.get('total_billed_output_tokens')}",
         f"- estimated cost (USD, approximate pricing): ${overall.get('estimated_cost_usd')}",

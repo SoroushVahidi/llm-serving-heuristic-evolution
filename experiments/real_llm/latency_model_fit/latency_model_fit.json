@@ -1,0 +1,148 @@
+{
+  "generated_at_utc": "2026-07-03T13:03:05.781842+00:00",
+  "inputs": {
+    "experiment_dirs": [
+      "experiments/real_llm/cohere_pilot_20260703T040421Z",
+      "experiments/real_llm/gemini_pilot_20260703T044905Z"
+    ],
+    "labels": null,
+    "exclude_rpm_wait_outliers": true,
+    "targets": "both",
+    "latency_model_form": "ttft_plus_decode",
+    "pooled": true
+  },
+  "providers": {
+    "Gemini": {
+      "provider": "Gemini",
+      "model": "gemini-3.1-flash-lite",
+      "n_records": 172,
+      "n_rpm_wait_flagged_excluded": 0,
+      "ttft_stats": {
+        "n": 172,
+        "mean": 0.5511965116279071,
+        "p50": 0.56155,
+        "p95": 0.7329249999999999,
+        "p99": 0.77377,
+        "min": 0.3412,
+        "max": 0.8943
+      },
+      "latency_stats": {
+        "n": 172,
+        "mean": 0.7738348837209302,
+        "p50": 0.7374,
+        "p95": 1.07678,
+        "p99": 1.3926169999999993,
+        "min": 0.4611,
+        "max": 2.1621
+      },
+      "ttft_model": {
+        "fit": true,
+        "n": 172,
+        "intercept": 0.31293950933864983,
+        "r2": 0.04466962947500808,
+        "coef_prompt_tokens": 5.708734302858041e-06,
+        "coef_output_tokens": 0.010939672001445267,
+        "coef_concurrency_level": -0.005471186701817836
+      },
+      "latency_model": {
+        "fit": true,
+        "n": 172,
+        "intercept": 0.30763332280923233,
+        "r2": 0.0008551469159918668,
+        "coef_output_tokens": -0.0036493089174208593,
+        "form": "ttft_plus_decode",
+        "decode_intercept_s": 0.30763332280923233,
+        "effective_decode_rate_tokens_per_sec": null
+      }
+    },
+    "cohere": {
+      "provider": "cohere",
+      "model": "command-r7b-12-2024",
+      "n_records": 172,
+      "n_rpm_wait_flagged_excluded": 0,
+      "ttft_stats": {
+        "n": 172,
+        "mean": 0.27450697674418606,
+        "p50": 0.25965,
+        "p95": 0.43529,
+        "p99": 0.5317969999999999,
+        "min": 0.1679,
+        "max": 0.5509
+      },
+      "latency_stats": {
+        "n": 172,
+        "mean": 0.7212668604651163,
+        "p50": 0.6828,
+        "p95": 0.99798,
+        "p99": 1.1438879999999998,
+        "min": 0.4666,
+        "max": 1.1577
+      },
+      "ttft_model": {
+        "fit": true,
+        "n": 172,
+        "intercept": 0.17977467281071435,
+        "r2": 0.27652568481684536,
+        "coef_prompt_tokens": -6.349463121852814e-06,
+        "coef_output_tokens": 0.0012282926444491865,
+        "coef_concurrency_level": 0.01566242872196139
+      },
+      "latency_model": {
+        "fit": true,
+        "n": 172,
+        "intercept": -0.07162542122229314,
+        "r2": 0.07736953098525279,
+        "coef_output_tokens": 0.0162172194343824,
+        "form": "ttft_plus_decode",
+        "decode_intercept_s": -0.07162542122229314,
+        "effective_decode_rate_tokens_per_sec": 61.662851886919846
+      }
+    }
+  },
+  "pooled": {
+    "providers": [
+      "Gemini",
+      "cohere"
+    ],
+    "baseline_provider": "Gemini",
+    "n_records": 344,
+    "ttft_stats": {
+      "n": 344,
+      "mean": 0.4128517441860465,
+      "p50": 0.4118,
+      "p95": 0.6861749999999999,
+      "p99": 0.7565029999999999,
+      "min": 0.1679,
+      "max": 0.8943
+    },
+    "latency_stats": {
+      "n": 344,
+      "mean": 0.7475508720930233,
+      "p50": 0.7131000000000001,
+      "p95": 1.02053,
+      "p99": 1.2888429999999995,
+      "min": 0.4611,
+      "max": 2.1621
+    },
+    "ttft_model": {
+      "fit": true,
+      "n": 344,
+      "intercept": 0.4432857622149175,
+      "r2": 0.7133368220413323,
+      "coef_prompt_tokens": -3.1172606456130613e-06,
+      "coef_output_tokens": 0.00390023268385958,
+      "coef_concurrency_level": 0.005061432097375916,
+      "coef_is_cohere": -0.310491791267151
+    },
+    "latency_model": {
+      "fit": true,
+      "n": 344,
+      "intercept": -0.31834214829728263,
+      "r2": 0.35340914459898265,
+      "coef_output_tokens": 0.02363701588954812,
+      "form": "ttft_plus_decode",
+      "decode_intercept_s": -0.31834214829728263,
+      "effective_decode_rate_tokens_per_sec": 42.30652484530345
+    }
+  }
+}

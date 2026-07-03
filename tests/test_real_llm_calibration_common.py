@@ -5,6 +5,7 @@ provider script.
 from __future__ import annotations
 
 import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -31,12 +32,43 @@ def test_request_result_fields_are_stable():
         "request_id", "experiment_id", "model", "prompt_bucket",
         "intended_prompt_tokens", "actual_prompt_tokens", "max_tokens",
         "concurrency_level", "request_index", "start_time_iso", "end_time_iso",
-        "elapsed_seconds", "ttft_seconds", "total_latency_seconds",
+        "rate_limiter_wait_seconds", "provider_request_latency_seconds",
+        "ttft_seconds", "total_wall_time_seconds",
         "output_text_length_chars", "output_tokens", "billed_units",
         "finish_reason", "status", "error_type", "error_message",
         "retry_count", "was_resumed",
     }
     assert cc.REQUEST_RESULT_FIELDS == expected
+
+
+def test_build_length_targeted_prompt_is_deterministic():
+    p1 = cc.build_length_targeted_prompt("short", 128, seed=42, variant_index=0)
+    p2 = cc.build_length_targeted_prompt("short", 128, seed=42, variant_index=0)
+    assert p1 == p2
+
+
+def test_build_length_targeted_prompt_varies_by_variant_and_target():
+    base = cc.build_length_targeted_prompt("short", 64, seed=1, variant_index=0)
+    other_variant = cc.build_length_targeted_prompt("short", 64, seed=1, variant_index=1)
+    other_target = cc.build_length_targeted_prompt("short", 256, seed=1, variant_index=0)
+    assert base != other_variant
+    assert base != other_target
+
+
+def test_build_length_targeted_prompt_instruction_scales_with_target():
+    small = cc.build_length_targeted_prompt("short", 64, seed=1, variant_index=0)
+    large = cc.build_length_targeted_prompt("short", 256, seed=1, variant_index=0)
+    # The instruction should ask for a proportionally larger word count.
+    assert "words" in small and "words" in large
+    assert cc.PROPOSED_V2_TARGET_OUTPUT_TOKENS == (64, 128, 256)
+
+
+def test_build_length_targeted_prompt_no_copyrighted_or_pii_markers():
+    prompt = cc.build_length_targeted_prompt("long", 256, seed=99, variant_index=3)
+    # Only the deterministic synthetic sentence bank should appear; no
+    # external text was pulled in.
+    for banned in ("http://", "https://", "@", "Copyright", "©"):
+        assert banned not in prompt
 
 
 def test_estimate_cost_usd():
@@ -169,3 +201,96 @@ def test_run_calibration_main_dry_run_generic(tmp_path):
     manifest = json.loads((tmp_path / "manifest.json").read_text())
     assert manifest["planned_requests"] == 2 * 2 * 2 * 2  # 16
     assert not (tmp_path / "requests.jsonl").exists()
+
+
+# ---------------------------------------------------------------------------
+# RPM-wait / provider-latency separation (regression test for the
+# measurement artifact where an artificial local rate-limiter wait used to
+# be counted as provider latency, inflating p95/p99 with a purely local
+# scheduling delay).
+# ---------------------------------------------------------------------------
+
+class _ArtificialWaitLimiter:
+    """A limiter whose first acquire() blocks for a fixed, known duration,
+    simulating an RPM-budget wait, so the test can assert that duration
+    lands in rate_limiter_wait_seconds and NOT in provider latency."""
+
+    def __init__(self, wait_seconds: float) -> None:
+        self._wait_seconds = wait_seconds
+        self._acquired_once = False
+
+    def acquire(self) -> None:
+        if not self._acquired_once:
+            self._acquired_once = True
+            if self._wait_seconds > 0:
+                time.sleep(self._wait_seconds)
+
+
+def _fast_call_fn(client, planned, timeout_s):
+    # Deliberately fast provider call so any inflation from the limiter
+    # wait would be obvious in provider_request_latency_seconds.
+    return {
+        "text": "ok",
+        "finish_reason": "COMPLETE",
+        "prompt_tokens": float(planned.intended_prompt_tokens),
+        "output_tokens": 5.0,
+        "ttft_seconds": None,
+    }
+
+
+def test_artificial_rate_limiter_wait_does_not_inflate_provider_latency():
+    plan = cc.expand_call_plan(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        max_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    wait_seconds = 0.3
+    limiter = _ArtificialWaitLimiter(wait_seconds)
+    result = cc.execute_one_request(
+        plan[0],
+        client=None,
+        stream=False,
+        timeout_s=5,
+        mock=False,
+        rpm_limiter=limiter,
+        was_resumed=False,
+        call_streaming_fn=None,
+        call_non_streaming_fn=_fast_call_fn,
+    )
+    assert result.status == "success"
+    # The artificial wait must show up as rate-limiter wait...
+    assert result.rate_limiter_wait_seconds == pytest.approx(wait_seconds, abs=0.05)
+    # ...and must NOT pollute provider latency, which should reflect only
+    # the (near-instant) call to _fast_call_fn.
+    assert result.provider_request_latency_seconds < 0.05
+    # Wall time still reflects the full request including the wait, so
+    # throughput accounting is not blind to it.
+    assert result.total_wall_time_seconds >= wait_seconds
+
+
+def test_aggregate_results_latency_stats_exclude_rate_limiter_wait(tmp_path):
+    plan = cc.expand_call_plan(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        max_tokens_list=[64], concurrency_list=[1], requests_per_cell=3, seed=1,
+    )
+    writer = cc.JsonlWriter(tmp_path / "requests.jsonl")
+    # First request pays a large artificial rate-limiter wait; the rest do not.
+    waits = [5.0, 0.0, 0.0]
+    for planned, wait in zip(plan, waits):
+        limiter = _ArtificialWaitLimiter(wait)
+        result = cc.execute_one_request(
+            planned, client=None, stream=False, timeout_s=5, mock=False,
+            rpm_limiter=limiter, was_resumed=False,
+            call_streaming_fn=None, call_non_streaming_fn=_fast_call_fn,
+        )
+        writer.write(result)
+    writer.close()
+
+    overall = cc.aggregate_results(
+        tmp_path, price_per_m_input_usd=0.1, price_per_m_output_usd=0.1,
+    )
+    # p99 provider latency must stay small even though one request waited 5s
+    # locally for the rate limiter — that wait belongs in the separate
+    # rate-limiter-wait accounting, not in the latency percentile stats.
+    assert overall["p99_latency_s"] < 0.1
+    assert overall["n_requests_with_rate_limiter_wait"] == 1
+    assert overall["total_rate_limiter_wait_seconds"] == pytest.approx(5.0, abs=0.05)
