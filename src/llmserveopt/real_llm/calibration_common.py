@@ -170,6 +170,10 @@ class PlannedRequest:
     request_index: int  # index within the (bucket, max_tokens, concurrency) cell
     intended_prompt_tokens: int
     prompt_text: str = field(repr=False)
+    # Set only by the v2 length-targeted grid (expand_call_plan_length_targeted);
+    # None/"v1" for the original build_prompt() grid.
+    target_output_tokens: Optional[int] = None
+    workload_version: str = "v1"
 
     def to_manifest_dict(self) -> Dict[str, Any]:
         return {
@@ -181,6 +185,8 @@ class PlannedRequest:
             "concurrency_level": self.concurrency_level,
             "request_index": self.request_index,
             "intended_prompt_tokens": self.intended_prompt_tokens,
+            "target_output_tokens": self.target_output_tokens,
+            "workload_version": self.workload_version,
         }
 
 
@@ -210,6 +216,13 @@ class RequestResult:
     error_message: Optional[str]
     retry_count: int
     was_resumed: bool
+    # v2 length-targeted workload fields (None/"v1" for the original grid).
+    target_output_tokens: Optional[int] = None
+    workload_version: str = "v1"
+    # Short, truncated preview only (see output_text_preview_chars); the full
+    # generated text is never persisted anywhere in this schema.
+    output_text_preview: Optional[str] = None
+    reached_target_output_range: Optional[bool] = None
 
 
 REQUEST_RESULT_FIELDS = frozenset(RequestResult.__dataclass_fields__.keys())
@@ -242,6 +255,51 @@ def expand_call_plan(
                     request_index=i,
                     intended_prompt_tokens=approx_token_count(prompt_text),
                     prompt_text=prompt_text,
+                )
+            )
+    return plan
+
+
+DEFAULT_MAX_TOKENS_HEADROOM_MULTIPLIER = 2.0
+
+
+def expand_call_plan_length_targeted(
+    experiment_id: str,
+    model: str,
+    prompt_buckets: Sequence[str],
+    target_output_tokens_list: Sequence[int],
+    concurrency_list: Sequence[int],
+    requests_per_cell: int,
+    seed: int,
+    max_tokens_headroom_multiplier: float = DEFAULT_MAX_TOKENS_HEADROOM_MULTIPLIER,
+) -> List[PlannedRequest]:
+    """v2 grid: one cell per (bucket, target_output_tokens, concurrency), using
+    build_length_targeted_prompt() instead of build_prompt(). `max_tokens` is
+    set to `target_output_tokens * max_tokens_headroom_multiplier` so the
+    model has headroom to reach the target without being truncated first —
+    see docs/real_llm_v2_workload_proposal.md.
+    """
+    plan: List[PlannedRequest] = []
+    for bucket, target_output_tokens, concurrency in product(
+        prompt_buckets, target_output_tokens_list, concurrency_list
+    ):
+        max_tokens = int(round(target_output_tokens * max_tokens_headroom_multiplier))
+        for i in range(requests_per_cell):
+            prompt_text = build_length_targeted_prompt(bucket, target_output_tokens, seed, i)
+            request_id = f"{bucket}__tgt{target_output_tokens}__c{concurrency}__i{i}"
+            plan.append(
+                PlannedRequest(
+                    request_id=request_id,
+                    experiment_id=experiment_id,
+                    model=model,
+                    prompt_bucket=bucket,
+                    max_tokens=max_tokens,
+                    concurrency_level=concurrency,
+                    request_index=i,
+                    intended_prompt_tokens=approx_token_count(prompt_text),
+                    prompt_text=prompt_text,
+                    target_output_tokens=target_output_tokens,
+                    workload_version="v2",
                 )
             )
     return plan
@@ -622,6 +680,8 @@ def execute_one_request(
     call_non_streaming_fn: Optional[CallFn],
     retryable_error_names: FrozenSet[str] = DEFAULT_RETRYABLE_ERROR_NAMES,
     mock_call_fn: Callable[[PlannedRequest, bool], Dict[str, Any]] = mock_call,
+    min_output_token_ratio: float = 0.0,
+    output_text_preview_chars: int = 0,
 ) -> RequestResult:
     retry_count = 0
     last_exc: Optional[Exception] = None
@@ -644,6 +704,13 @@ def execute_one_request(
             end = datetime.now(timezone.utc)
             provider_latency = time.monotonic() - t_provider_start
             wall_time = time.monotonic() - t_wall_start
+            output_tokens = out["output_tokens"]
+            reached_target: Optional[bool] = None
+            if planned.target_output_tokens is not None and output_tokens is not None:
+                reached_target = output_tokens >= min_output_token_ratio * planned.target_output_tokens
+            preview: Optional[str] = None
+            if output_text_preview_chars > 0 and out["text"]:
+                preview = out["text"][:output_text_preview_chars]
             return RequestResult(
                 request_id=planned.request_id,
                 experiment_id=planned.experiment_id,
@@ -661,10 +728,10 @@ def execute_one_request(
                 ttft_seconds=round(out["ttft_seconds"], 4) if out["ttft_seconds"] is not None else None,
                 total_wall_time_seconds=round(wall_time, 4),
                 output_text_length_chars=len(out["text"]),
-                output_tokens=out["output_tokens"],
+                output_tokens=output_tokens,
                 billed_units={
                     "input_tokens": out["prompt_tokens"],
-                    "output_tokens": out["output_tokens"],
+                    "output_tokens": output_tokens,
                 },
                 finish_reason=out["finish_reason"],
                 status="success",
@@ -672,6 +739,10 @@ def execute_one_request(
                 error_message=None,
                 retry_count=retry_count,
                 was_resumed=was_resumed,
+                target_output_tokens=planned.target_output_tokens,
+                workload_version=planned.workload_version,
+                output_text_preview=preview,
+                reached_target_output_range=reached_target,
             )
         except Exception as exc:  # noqa: BLE001 - classify broadly, log safely
             last_exc = exc
@@ -709,6 +780,10 @@ def execute_one_request(
         error_message=str(last_exc)[:500] if last_exc else None,
         retry_count=retry_count,
         was_resumed=was_resumed,
+        target_output_tokens=planned.target_output_tokens,
+        workload_version=planned.workload_version,
+        output_text_preview=None,
+        reached_target_output_range=None,
     )
 
 
@@ -739,6 +814,10 @@ def make_skipped_result(planned: PlannedRequest, reason: str) -> RequestResult:
         error_message=reason[:500],
         retry_count=0,
         was_resumed=False,
+        target_output_tokens=planned.target_output_tokens,
+        workload_version=planned.workload_version,
+        output_text_preview=None,
+        reached_target_output_range=None,
     )
 
 
@@ -815,6 +894,8 @@ def run_requests(
     rpm_limit = getattr(args, "rpm_limit", 60)
     stream = getattr(args, "stream", False)
     fail_fast_enabled = getattr(args, "fail_fast", False)
+    min_output_token_ratio = getattr(args, "min_output_token_ratio", 0.0)
+    output_text_preview_chars = getattr(args, "record_output_text_preview_chars", 0)
     rpm_limiter = RpmLimiter(rpm_limit)
     budget = BudgetTracker(
         args,
@@ -878,6 +959,8 @@ def run_requests(
                 call_non_streaming_fn=call_non_streaming_fn,
                 retryable_error_names=retryable_error_names,
                 mock_call_fn=mock_call_fn,
+                min_output_token_ratio=min_output_token_ratio,
+                output_text_preview_chars=output_text_preview_chars,
             )
             budget.record_actual(planned, result.actual_prompt_tokens, result.output_tokens)
             return result
@@ -965,6 +1048,11 @@ def aggregate_results(
         if r.get("output_tokens") and r.get("provider_request_latency_seconds")
     ]
 
+    reached_flags = [
+        r["reached_target_output_range"] for r in successes
+        if r.get("reached_target_output_range") is not None
+    ]
+
     overall = {
         "total_records": len(rows),
         "status_counts": status_counts,
@@ -976,6 +1064,9 @@ def aggregate_results(
         "n_requests_with_rate_limiter_wait": sum(1 for w in waits if w > 0),
         "total_rate_limiter_wait_seconds": round(sum(waits), 4) if waits else 0.0,
         "max_rate_limiter_wait_seconds": round(max(waits), 4) if waits else 0.0,
+        "frac_reached_target_output_range": (
+            sum(reached_flags) / len(reached_flags) if reached_flags else None
+        ),
         **_stats_block(latencies, ttfts),
     }
 
@@ -1008,6 +1099,34 @@ def aggregate_results(
     by_cell.to_csv(out_dir / "aggregate_by_cell.csv", index=False)
     by_concurrency.to_csv(out_dir / "aggregate_by_concurrency.csv", index=False)
     by_bucket.to_csv(out_dir / "aggregate_by_prompt_bucket.csv", index=False)
+
+    # v2-only: achieved-vs-target output length, one row per distinct
+    # target_output_tokens value (empty for v1 runs, where this field is
+    # always None on every row).
+    by_target_records: List[Dict[str, Any]] = []
+    if not df.empty and "target_output_tokens" in df.columns:
+        sub = df[df["target_output_tokens"].notna()]
+        for target_raw, g in sub.groupby("target_output_tokens"):
+            target = float(target_raw)
+            g_success = g[g["status"] == "success"]
+            out_toks = [float(v) for v in g_success["output_tokens"].dropna().tolist()]
+            reached = [bool(v) for v in g_success["reached_target_output_range"].dropna().tolist()]
+            by_target_records.append({
+                "target_output_tokens": int(target),
+                "n_total": int(len(g)),
+                "n_success": int(len(g_success)),
+                "mean_output_tokens": (sum(out_toks) / len(out_toks)) if out_toks else None,
+                "p50_output_tokens": _percentile(out_toks, 0.50),
+                "mean_output_token_ratio": (
+                    sum(ot / target for ot in out_toks) / len(out_toks) if out_toks else None
+                ),
+                "frac_reached_target_range": (sum(reached) / len(reached)) if reached else None,
+            })
+    by_target_records.sort(key=lambda r: r["target_output_tokens"])
+    pd.DataFrame(by_target_records).to_csv(
+        out_dir / "aggregate_by_target_output_tokens.csv", index=False
+    )
+    overall["by_target_output_tokens"] = by_target_records
 
     errors = [r for r in rows if r["status"] in ("error", "timeout", "rate_limited")]
     with open(out_dir / "errors.jsonl", "w") as f:
@@ -1228,9 +1347,33 @@ def write_summary(
         f"- total billed output tokens: {overall.get('total_billed_output_tokens')}",
         f"- estimated cost (USD, approximate pricing): ${overall.get('estimated_cost_usd')}",
         "",
+    ]
+
+    by_target = overall.get("by_target_output_tokens") or []
+    if cfg.get("workload_version") == "v2" and by_target:
+        lines += [
+            "## Output length vs. target (v2 length-targeted workload)",
+            f"- overall fraction reaching target range (>= "
+            f"{cfg.get('min_output_token_ratio')} x target): "
+            f"{overall.get('frac_reached_target_output_range')}",
+            "",
+            "| target_output_tokens | n_success | mean_output_tokens | "
+            "p50_output_tokens | mean_output_token_ratio | frac_reached_target_range |",
+            "|---|---|---|---|---|---|",
+        ]
+        for rec in by_target:
+            lines.append(
+                f"| {rec['target_output_tokens']} | {rec['n_success']} | "
+                f"{rec['mean_output_tokens']} | {rec['p50_output_tokens']} | "
+                f"{rec['mean_output_token_ratio']} | {rec['frac_reached_target_range']} |"
+            )
+        lines.append("")
+
+    lines += [
         "See `aggregate_by_cell.csv`, `aggregate_by_concurrency.csv`, "
-        "`aggregate_by_prompt_bucket.csv` for breakdowns, and `errors.jsonl` "
-        "for failure detail.",
+        "`aggregate_by_prompt_bucket.csv` for breakdowns, "
+        "`aggregate_by_target_output_tokens.csv` for v2 achieved-vs-target "
+        "output length, and `errors.jsonl` for failure detail.",
     ]
     (out_dir / "summary.md").write_text("\n".join(lines) + "\n")
 
@@ -1349,16 +1492,36 @@ def run_calibration_main(
         return 3
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    workload_version = getattr(args, "workload_version", "v1")
+    target_output_tokens_list = getattr(args, "target_output_tokens_list", None)
+    if workload_version == "v2" and not target_output_tokens_list:
+        print(
+            "ERROR: --workload-version v2 requires --target-output-tokens-list "
+            "(e.g. 64,128,256).", file=sys.stderr,
+        )
+        return 2
+
     experiment_id = out_dir.name
-    plan = expand_call_plan(
-        experiment_id=experiment_id,
-        model=args.model,
-        prompt_buckets=args.prompt_buckets,
-        max_tokens_list=args.max_tokens_list,
-        concurrency_list=args.concurrency_list,
-        requests_per_cell=args.requests_per_cell,
-        seed=args.seed,
-    )
+    if workload_version == "v2":
+        plan = expand_call_plan_length_targeted(
+            experiment_id=experiment_id,
+            model=args.model,
+            prompt_buckets=args.prompt_buckets,
+            target_output_tokens_list=target_output_tokens_list,
+            concurrency_list=args.concurrency_list,
+            requests_per_cell=args.requests_per_cell,
+            seed=args.seed,
+        )
+    else:
+        plan = expand_call_plan(
+            experiment_id=experiment_id,
+            model=args.model,
+            prompt_buckets=args.prompt_buckets,
+            max_tokens_list=args.max_tokens_list,
+            concurrency_list=args.concurrency_list,
+            requests_per_cell=args.requests_per_cell,
+            seed=args.seed,
+        )
 
     violations = validate_call_plan(
         plan, args,
@@ -1388,6 +1551,7 @@ def run_calibration_main(
         "resume": args.resume,
         "mock": args.mock,
         "mode": "live" if args.allow_live_api else "dry_run",
+        "workload_version": workload_version,
     }
     if hasattr(args, "rpm_limit"):
         cfg["rpm_limit"] = args.rpm_limit
@@ -1395,6 +1559,10 @@ def run_calibration_main(
         cfg["fail_fast"] = args.fail_fast
     if hasattr(args, "stream"):
         cfg["stream"] = args.stream
+    if workload_version == "v2":
+        cfg["target_output_tokens_list"] = target_output_tokens_list
+        cfg["min_output_token_ratio"] = getattr(args, "min_output_token_ratio", 0.0)
+        cfg["record_output_text_preview_chars"] = getattr(args, "record_output_text_preview_chars", 0)
     if extra_cfg:
         cfg.update(extra_cfg)
 

@@ -1,0 +1,65 @@
+Cohere v2 length-targeted live pilot — exact commands used
+============================================================
+
+Dry-run (confirmed 108 planned requests, no API call, cost $0.0087 < $5 cap):
+
+python scripts/run_cohere_api_calibration.py \
+  --dry-run \
+  --stream \
+  --model command-r7b-12-2024 \
+  --workload-version v2 \
+  --prompt-buckets short,medium,long \
+  --target-output-tokens-list 64,128,256 \
+  --concurrency-list 1,2,4,8 \
+  --requests-per-cell 3 \
+  --timeout-seconds 120 \
+  --rpm-limit 20 \
+  --max-total-requests 108 \
+  --max-total-input-tokens 250000 \
+  --max-total-output-tokens 50000 \
+  --max-estimated-cost-usd 5 \
+  --seed 20260703 \
+  --fail-fast \
+  --output-dir experiments/real_llm/cohere_v2_length_targeted_DRYRUN
+
+Live pilot (tmux session: cohere-v2-length-calibration):
+
+Rather than a single fragile inline `tmux new-session -d -s ... "bash -lc '...'"`
+command (nested quoting around the EXP_DIR=$(date ...) substitution proved
+error-prone), the run logic was written to a small script and launched via
+tmux, which is the exact working invocation:
+
+  chmod +x scripts/_run_cohere_v2_live_pilot.sh
+  tmux new-session -d -s cohere-v2-length-calibration \
+    "bash /home/soroush/llm-serving-heuristic-evolution/scripts/_run_cohere_v2_live_pilot.sh"
+
+scripts/_run_cohere_v2_live_pilot.sh contains:
+
+  #!/usr/bin/env bash
+  set -euo pipefail
+  cd /home/soroush/llm-serving-heuristic-evolution
+  EXP_DIR="experiments/real_llm/cohere_v2_length_targeted_$(date -u +%Y%m%dT%H%M%SZ)"
+  mkdir -p "$EXP_DIR"
+  python scripts/run_cohere_api_calibration.py \
+    --allow-live-api \
+    --stream \
+    --model command-r7b-12-2024 \
+    --workload-version v2 \
+    --prompt-buckets short,medium,long \
+    --target-output-tokens-list 64,128,256 \
+    --concurrency-list 1,2,4,8 \
+    --requests-per-cell 3 \
+    --timeout-seconds 120 \
+    --rpm-limit 20 \
+    --max-total-requests 108 \
+    --max-total-input-tokens 250000 \
+    --max-total-output-tokens 50000 \
+    --max-estimated-cost-usd 5 \
+    --seed 20260703 \
+    --fail-fast \
+    --output-dir "$EXP_DIR" \
+    2>&1 | tee "$EXP_DIR/run.log"
+
+Session name: cohere-v2-length-calibration
+Output directory: printed by the script at start of run.log and recorded in
+the final report once the run completes (experiments/real_llm/cohere_v2_length_targeted_<UTC timestamp>/).

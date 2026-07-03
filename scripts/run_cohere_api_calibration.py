@@ -51,6 +51,21 @@ Usage (live pilot — review hard caps first):
         --seed 20260703 --fail-fast \\
         --output-dir experiments/real_llm/cohere_pilot_20260703T000000Z
 
+Usage (v2 length-targeted workload — see docs/real_llm_v2_workload_proposal.md):
+    python scripts/run_cohere_api_calibration.py \\
+        --allow-live-api --stream \\
+        --model command-r7b-12-2024 \\
+        --workload-version v2 \\
+        --prompt-buckets short,medium,long \\
+        --target-output-tokens-list 64,128,256 \\
+        --concurrency-list 1,2,4,8 \\
+        --requests-per-cell 3 \\
+        --timeout-seconds 120 --rpm-limit 20 \\
+        --max-total-requests 108 --max-total-input-tokens 250000 \\
+        --max-total-output-tokens 50000 --max-estimated-cost-usd 5 \\
+        --seed 20260703 --fail-fast \\
+        --output-dir experiments/real_llm/cohere_v2_length_targeted_20260703T000000Z
+
 See docs/cohere_api_calibration.md for the full design and safety notes.
 """
 from __future__ import annotations
@@ -93,8 +108,10 @@ KNOWN_PROMPT_BUCKETS = cc.KNOWN_PROMPT_BUCKETS
 PlannedRequest = cc.PlannedRequest
 RequestResult = cc.RequestResult
 build_prompt = cc.build_prompt
+build_length_targeted_prompt = cc.build_length_targeted_prompt
 approx_token_count = cc.approx_token_count
 expand_call_plan = cc.expand_call_plan
+expand_call_plan_length_targeted = cc.expand_call_plan_length_targeted
 RpmLimiter = cc.RpmLimiter
 JsonlWriter = cc.JsonlWriter
 load_completed_request_ids = cc.load_completed_request_ids
@@ -244,6 +261,36 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--stream", dest="stream", action="store_true")
     parser.add_argument("--no-stream", dest="stream", action="store_false")
     parser.set_defaults(stream=False)
+    parser.add_argument(
+        "--workload-version", choices=["v1", "v2"], default="v1",
+        help=(
+            "v1: original build_prompt() grid, swept over --max-tokens-list "
+            "(output length does not vary with max_tokens — see "
+            "docs/real_llm_v2_workload_proposal.md). v2: length-targeted "
+            "build_length_targeted_prompt() grid, swept over "
+            "--target-output-tokens-list, with max_tokens set to "
+            f"{cc.DEFAULT_MAX_TOKENS_HEADROOM_MULTIPLIER}x each target for headroom."
+        ),
+    )
+    parser.add_argument(
+        "--target-output-tokens-list", type=cc.csv_int_list, default=None,
+        help="Comma-separated target output token counts (v2 only), e.g. 64,128,256.",
+    )
+    parser.add_argument(
+        "--min-output-token-ratio", type=float, default=0.70,
+        help=(
+            "v2 only: a request's reached_target_output_range is True when "
+            "output_tokens >= this ratio x target_output_tokens."
+        ),
+    )
+    parser.add_argument(
+        "--record-output-text-preview-chars", type=int, default=80,
+        help=(
+            "Max characters of generated text to store per request as "
+            "output_text_preview (0 disables preview storage). Full model "
+            "output is never persisted regardless of this setting."
+        ),
+    )
     return parser.parse_args(argv)
 
 

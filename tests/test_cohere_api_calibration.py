@@ -559,3 +559,211 @@ def test_manifest_env_var_presence_is_boolean_only(tmp_path, monkeypatch):
     manifest = json.loads((tmp_path / "manifest.json").read_text())
     assert manifest["env_var_presence"] == {"COHERE_API_KEY_present": True}
     assert "sk-should-not-appear-anywhere" not in json.dumps(manifest)
+
+
+# ---------------------------------------------------------------------------
+# v2 length-targeted workload CLI
+# ---------------------------------------------------------------------------
+
+V2_GRID_ARGS = [
+    "--stream",
+    "--model", "command-r7b-12-2024",
+    "--workload-version", "v2",
+    "--prompt-buckets", "short,medium,long",
+    "--target-output-tokens-list", "64,128,256",
+    "--concurrency-list", "1,2,4,8",
+    "--requests-per-cell", "3",
+    "--timeout-seconds", "120",
+    "--rpm-limit", "20",
+    "--max-total-requests", "108",
+    "--max-total-input-tokens", "250000",
+    "--max-total-output-tokens", "50000",
+    "--max-estimated-cost-usd", "5",
+    "--seed", "20260703",
+    "--fail-fast",
+]
+
+
+def test_v2_dry_run_plans_108_requests(tmp_path):
+    mod = _load_runner()
+    result = mod.main(
+        ["--dry-run", *V2_GRID_ARGS, "--output-dir", str(tmp_path)]
+    )
+    assert result == 0
+    manifest = json.loads((tmp_path / "manifest.json").read_text())
+    assert manifest["planned_requests"] == 3 * 3 * 4 * 3 == 108
+    assert not (tmp_path / "requests.jsonl").exists()
+
+
+def test_v2_dry_run_records_target_output_tokens_in_plan(tmp_path):
+    mod = _load_runner()
+    mod.main(["--dry-run", *V2_GRID_ARGS, "--output-dir", str(tmp_path)])
+    manifest = json.loads((tmp_path / "manifest.json").read_text())
+    targets = {r["target_output_tokens"] for r in manifest["requests_preview"]}
+    assert targets <= {64, 128, 256}
+    assert all(r["workload_version"] == "v2" for r in manifest["requests_preview"])
+
+
+def test_v2_dry_run_no_cohere_import(tmp_path, monkeypatch):
+    for key in list(sys.modules.keys()):
+        if key == "cohere" or key.startswith("cohere."):
+            monkeypatch.delitem(sys.modules, key, raising=False)
+    mod = _load_runner()
+    result = mod.main(["--dry-run", *V2_GRID_ARGS, "--output-dir", str(tmp_path)])
+    assert result == 0
+    assert "cohere" not in sys.modules
+
+
+def test_v2_requires_target_output_tokens_list(tmp_path):
+    mod = _load_runner()
+    result = mod.main([
+        "--dry-run", "--workload-version", "v2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 2
+
+
+def test_v2_dry_run_worst_case_cost_below_cap(tmp_path, capsys):
+    mod = _load_runner()
+    result = mod.main(["--dry-run", *V2_GRID_ARGS, "--output-dir", str(tmp_path)])
+    assert result == 0
+    out = capsys.readouterr().out
+    assert "worst_case_cost_usd" in out
+
+
+def test_v2_mock_run_schema_has_v2_fields(tmp_path, monkeypatch):
+    monkeypatch.setenv("COHERE_API_KEY", "fake_key_for_test")
+    mod = _load_runner()
+    result = mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 0
+    lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    assert len(lines) == 1 * 2 * 1 * 2  # 4
+    for row in lines:
+        assert row["workload_version"] == "v2"
+        assert row["target_output_tokens"] in (64, 128)
+        assert row["status"] == "success"
+
+
+def test_v2_provider_latency_not_polluted_by_rate_limiter_wait(tmp_path, monkeypatch):
+    """Regression: the v2 path must reuse the same rate_limiter_wait_seconds
+    / provider_request_latency_seconds split as v1 — not recombine them."""
+    monkeypatch.setenv("COHERE_API_KEY", "fake_key_for_test")
+    mod = _load_runner()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    for row in lines:
+        assert row["rate_limiter_wait_seconds"] == 0.0
+        assert row["provider_request_latency_seconds"] is not None
+        assert row["provider_request_latency_seconds"] < 1.0
+
+
+def test_v2_summary_reports_output_token_distribution_by_target(tmp_path, monkeypatch):
+    monkeypatch.setenv("COHERE_API_KEY", "fake_key_for_test")
+    mod = _load_runner()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short,medium", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert (tmp_path / "aggregate_by_target_output_tokens.csv").exists()
+    import pandas as pd
+    by_target = pd.read_csv(tmp_path / "aggregate_by_target_output_tokens.csv")
+    assert set(by_target["target_output_tokens"]) == {64, 128}
+    summary = json.loads((tmp_path / "summary.json").read_text())
+    assert len(summary["by_target_output_tokens"]) == 2
+
+
+def test_v2_output_text_preview_capped_at_80_chars_by_default(tmp_path, monkeypatch):
+    monkeypatch.setenv("COHERE_API_KEY", "fake_key_for_test")
+    mod = _load_runner()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    for row in lines:
+        assert row["output_text_preview"] is not None
+        assert len(row["output_text_preview"]) <= 80
+
+
+def test_v2_resume_skips_completed_requests(tmp_path, monkeypatch):
+    monkeypatch.setenv("COHERE_API_KEY", "fake_key_for_test")
+    mod = _load_runner()
+    base_args = [
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--seed", "5",
+        "--output-dir", str(tmp_path),
+    ]
+    assert mod.main(base_args) == 0
+    first_lines = (tmp_path / "requests.jsonl").read_text().strip().splitlines()
+    assert len(first_lines) == 1 * 2 * 1 * 2  # 4
+
+    expanded_args = [
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2", "--resume",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128,256",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--seed", "5",
+        "--output-dir", str(tmp_path),
+    ]
+    assert mod.main(expanded_args) == 0
+    all_lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    ids = [r["request_id"] for r in all_lines]
+    assert len(ids) == len(set(ids)), "resume must not duplicate request_ids"
+    assert len(all_lines) == 1 * 3 * 1 * 2  # 6
+
+
+def test_v2_refuses_to_overwrite_nonempty_output_dir(tmp_path, monkeypatch):
+    monkeypatch.setenv("COHERE_API_KEY", "fake_key_for_test")
+    mod = _load_runner()
+    args = [
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ]
+    assert mod.main(args) == 0
+    assert mod.main(args) == 3
+
+
+def test_v2_api_key_never_written_to_output_files(tmp_path, monkeypatch):
+    # NOTE: git_diff.patch is excluded here because it is an intentional full
+    # working-tree diff snapshot (collect_reproducibility_metadata); if this
+    # test's own source line assigning `secret` is itself uncommitted, that
+    # diff legitimately contains it. That is a source-control hygiene
+    # concern, not a harness runtime-secret leak, which is what this test
+    # guards against — see the equivalent v1 test above for the same pattern.
+    secret = "sk-COHERE-V2-SECRET-TEST-VALUE-12345"
+    monkeypatch.setenv("COHERE_API_KEY", secret)
+    mod = _load_runner()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    for f in tmp_path.rglob("*"):
+        if f.is_file() and f.name != "git_diff.patch":
+            assert secret not in f.read_text(errors="ignore"), f"secret leaked into {f}"

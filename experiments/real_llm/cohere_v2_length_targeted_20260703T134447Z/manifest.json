@@ -1,0 +1,305 @@
+{
+  "generated_at_utc": "2026-07-03T13:44:47.543492+00:00",
+  "git_branch": "phase2c1-real-trace-ingestion-validation",
+  "git_commit": "395ccbcd214535a6e42b3161993e3f1ba6c54895",
+  "git_dirty": true,
+  "git_diff_stat": "scripts/run_cohere_api_calibration.py          |  47 ++++++\n src/llmserveopt/real_llm/calibration_common.py | 194 +++++++++++++++++++++--\n tests/test_cohere_api_calibration.py           | 208 +++++++++++++++++++++++++\n tests/test_real_llm_calibration_common.py      | 199 +++++++++++++++++++++++\n 4 files changed, 635 insertions(+), 13 deletions(-)",
+  "git_diff_file": "git_diff.patch",
+  "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "platform": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+  "hostname": "al-khwarizmi",
+  "cwd": "/home/soroush/llm-serving-heuristic-evolution",
+  "sdk_package_name": "cohere",
+  "sdk_version": "6.1.0",
+  "command_line": "scripts/run_cohere_api_calibration.py --allow-live-api --stream --model command-r7b-12-2024 --workload-version v2 --prompt-buckets short,medium,long --target-output-tokens-list 64,128,256 --concurrency-list 1,2,4,8 --requests-per-cell 3 --timeout-seconds 120 --rpm-limit 20 --max-total-requests 108 --max-total-input-tokens 250000 --max-total-output-tokens 50000 --max-estimated-cost-usd 5 --seed 20260703 --fail-fast --output-dir experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z",
+  "env_var_presence": {
+    "COHERE_API_KEY_present": true
+  },
+  "config": {
+    "provider": "Cohere",
+    "experiment_id": "cohere_v2_length_targeted_20260703T134447Z",
+    "model": "command-r7b-12-2024",
+    "seed": 20260703,
+    "prompt_buckets": [
+      "short",
+      "medium",
+      "long"
+    ],
+    "max_tokens_list": [
+      64,
+      128,
+      256
+    ],
+    "concurrency_list": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "requests_per_cell": 3,
+    "timeout_seconds": 120,
+    "max_total_requests": 108,
+    "max_total_input_tokens": 250000,
+    "max_total_output_tokens": 50000,
+    "max_estimated_cost_usd": 5.0,
+    "resume": false,
+    "mock": false,
+    "mode": "live",
+    "workload_version": "v2",
+    "rpm_limit": 20,
+    "fail_fast": true,
+    "stream": true,
+    "target_output_tokens_list": [
+      64,
+      128,
+      256
+    ],
+    "min_output_token_ratio": 0.7,
+    "record_output_text_preview_chars": 80
+  },
+  "planned_requests": 108,
+  "cells": [
+    [
+      "long",
+      128,
+      1
+    ],
+    [
+      "long",
+      128,
+      2
+    ],
+    [
+      "long",
+      128,
+      4
+    ],
+    [
+      "long",
+      128,
+      8
+    ],
+    [
+      "long",
+      256,
+      1
+    ],
+    [
+      "long",
+      256,
+      2
+    ],
+    [
+      "long",
+      256,
+      4
+    ],
+    [
+      "long",
+      256,
+      8
+    ],
+    [
+      "long",
+      512,
+      1
+    ],
+    [
+      "long",
+      512,
+      2
+    ],
+    [
+      "long",
+      512,
+      4
+    ],
+    [
+      "long",
+      512,
+      8
+    ],
+    [
+      "medium",
+      128,
+      1
+    ],
+    [
+      "medium",
+      128,
+      2
+    ],
+    [
+      "medium",
+      128,
+      4
+    ],
+    [
+      "medium",
+      128,
+      8
+    ],
+    [
+      "medium",
+      256,
+      1
+    ],
+    [
+      "medium",
+      256,
+      2
+    ],
+    [
+      "medium",
+      256,
+      4
+    ],
+    [
+      "medium",
+      256,
+      8
+    ],
+    [
+      "medium",
+      512,
+      1
+    ],
+    [
+      "medium",
+      512,
+      2
+    ],
+    [
+      "medium",
+      512,
+      4
+    ],
+    [
+      "medium",
+      512,
+      8
+    ],
+    [
+      "short",
+      128,
+      1
+    ],
+    [
+      "short",
+      128,
+      2
+    ],
+    [
+      "short",
+      128,
+      4
+    ],
+    [
+      "short",
+      128,
+      8
+    ],
+    [
+      "short",
+      256,
+      1
+    ],
+    [
+      "short",
+      256,
+      2
+    ],
+    [
+      "short",
+      256,
+      4
+    ],
+    [
+      "short",
+      256,
+      8
+    ],
+    [
+      "short",
+      512,
+      1
+    ],
+    [
+      "short",
+      512,
+      2
+    ],
+    [
+      "short",
+      512,
+      4
+    ],
+    [
+      "short",
+      512,
+      8
+    ]
+  ],
+  "requests_preview": [
+    {
+      "request_id": "short__tgt64__c1__i0",
+      "experiment_id": "cohere_v2_length_targeted_20260703T134447Z",
+      "model": "command-r7b-12-2024",
+      "prompt_bucket": "short",
+      "max_tokens": 128,
+      "concurrency_level": 1,
+      "request_index": 0,
+      "intended_prompt_tokens": 168,
+      "target_output_tokens": 64,
+      "workload_version": "v2"
+    },
+    {
+      "request_id": "short__tgt64__c1__i1",
+      "experiment_id": "cohere_v2_length_targeted_20260703T134447Z",
+      "model": "command-r7b-12-2024",
+      "prompt_bucket": "short",
+      "max_tokens": 128,
+      "concurrency_level": 1,
+      "request_index": 1,
+      "intended_prompt_tokens": 168,
+      "target_output_tokens": 64,
+      "workload_version": "v2"
+    },
+    {
+      "request_id": "short__tgt64__c1__i2",
+      "experiment_id": "cohere_v2_length_targeted_20260703T134447Z",
+      "model": "command-r7b-12-2024",
+      "prompt_bucket": "short",
+      "max_tokens": 128,
+      "concurrency_level": 1,
+      "request_index": 2,
+      "intended_prompt_tokens": 168,
+      "target_output_tokens": 64,
+      "workload_version": "v2"
+    },
+    {
+      "request_id": "short__tgt64__c2__i0",
+      "experiment_id": "cohere_v2_length_targeted_20260703T134447Z",
+      "model": "command-r7b-12-2024",
+      "prompt_bucket": "short",
+      "max_tokens": 128,
+      "concurrency_level": 2,
+      "request_index": 0,
+      "intended_prompt_tokens": 168,
+      "target_output_tokens": 64,
+      "workload_version": "v2"
+    },
+    {
+      "request_id": "short__tgt64__c2__i1",
+      "experiment_id": "cohere_v2_length_targeted_20260703T134447Z",
+      "model": "command-r7b-12-2024",
+      "prompt_bucket": "short",
+      "max_tokens": 128,
+      "concurrency_level": 2,
+      "request_index": 1,
+      "intended_prompt_tokens": 168,
+      "target_output_tokens": 64,
+      "workload_version": "v2"
+    }
+  ]
+}

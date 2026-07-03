@@ -37,6 +37,8 @@ def test_request_result_fields_are_stable():
         "output_text_length_chars", "output_tokens", "billed_units",
         "finish_reason", "status", "error_type", "error_message",
         "retry_count", "was_resumed",
+        "target_output_tokens", "workload_version",
+        "output_text_preview", "reached_target_output_range",
     }
     assert cc.REQUEST_RESULT_FIELDS == expected
 
@@ -294,3 +296,200 @@ def test_aggregate_results_latency_stats_exclude_rate_limiter_wait(tmp_path):
     assert overall["p99_latency_s"] < 0.1
     assert overall["n_requests_with_rate_limiter_wait"] == 1
     assert overall["total_rate_limiter_wait_seconds"] == pytest.approx(5.0, abs=0.05)
+
+
+# ---------------------------------------------------------------------------
+# v2 length-targeted workload: grid construction
+# ---------------------------------------------------------------------------
+
+def test_expand_call_plan_length_targeted_shape():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short", "medium", "long"],
+        target_output_tokens_list=[64, 128, 256], concurrency_list=[1, 2, 4, 8],
+        requests_per_cell=3, seed=1,
+    )
+    assert len(plan) == 3 * 3 * 4 * 3 == 108
+
+
+def test_expand_call_plan_length_targeted_sets_target_and_version():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64], concurrency_list=[1],
+        requests_per_cell=1, seed=1,
+    )
+    p = plan[0]
+    assert p.target_output_tokens == 64
+    assert p.workload_version == "v2"
+    assert p.prompt_text == cc.build_length_targeted_prompt("short", 64, seed=1, variant_index=0)
+
+
+def test_expand_call_plan_length_targeted_max_tokens_has_headroom():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64, 128], concurrency_list=[1],
+        requests_per_cell=1, seed=1,
+    )
+    by_target = {p.target_output_tokens: p.max_tokens for p in plan}
+    # Default headroom multiplier is 2x, matching docs/real_llm_v2_workload_proposal.md.
+    assert by_target[64] == 128
+    assert by_target[128] == 256
+
+
+def test_expand_call_plan_v1_leaves_target_fields_at_default():
+    plan = cc.expand_call_plan(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        max_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    assert plan[0].target_output_tokens is None
+    assert plan[0].workload_version == "v1"
+
+
+# ---------------------------------------------------------------------------
+# v2: reached_target_output_range / output_text_preview computed by
+# execute_one_request
+# ---------------------------------------------------------------------------
+
+def _long_output_call_fn(client, planned, timeout_s):
+    return {
+        "text": "word " * 200,
+        "finish_reason": "COMPLETE",
+        "prompt_tokens": float(planned.intended_prompt_tokens),
+        "output_tokens": 60.0,
+        "ttft_seconds": None,
+    }
+
+
+class _NoWaitLimiter:
+    def acquire(self) -> None:
+        return None
+
+
+def test_reached_target_output_range_true_above_ratio():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    result = cc.execute_one_request(
+        plan[0], client=None, stream=False, timeout_s=5, mock=False,
+        rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+        call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+        min_output_token_ratio=0.70,
+    )
+    # 60 output tokens / 64 target = 0.9375 >= 0.70 ratio.
+    assert result.reached_target_output_range is True
+    assert result.target_output_tokens == 64
+    assert result.workload_version == "v2"
+
+
+def test_reached_target_output_range_false_below_ratio():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[256], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    result = cc.execute_one_request(
+        plan[0], client=None, stream=False, timeout_s=5, mock=False,
+        rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+        call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+        min_output_token_ratio=0.70,
+    )
+    # 60 / 256 = 0.234 < 0.70 ratio.
+    assert result.reached_target_output_range is False
+
+
+def test_v1_request_has_no_reached_target_flag():
+    plan = cc.expand_call_plan(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        max_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    result = cc.execute_one_request(
+        plan[0], client=None, stream=False, timeout_s=5, mock=False,
+        rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+        call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+        min_output_token_ratio=0.70,
+    )
+    assert result.reached_target_output_range is None
+    assert result.target_output_tokens is None
+
+
+def test_output_text_preview_truncated_to_configured_length():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    result = cc.execute_one_request(
+        plan[0], client=None, stream=False, timeout_s=5, mock=False,
+        rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+        call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+        output_text_preview_chars=80,
+    )
+    assert result.output_text_preview is not None
+    assert len(result.output_text_preview) <= 80
+    assert result.output_text_preview == ("word " * 200)[:80]
+
+
+def test_output_text_preview_disabled_by_default():
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    result = cc.execute_one_request(
+        plan[0], client=None, stream=False, timeout_s=5, mock=False,
+        rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+        call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+    )
+    assert result.output_text_preview is None
+
+
+def test_full_model_output_never_stored_beyond_preview_cap():
+    """Requirement: no full output text is persisted, only a short preview."""
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64], concurrency_list=[1], requests_per_cell=1, seed=1,
+    )
+    full_text = "word " * 200
+    result = cc.execute_one_request(
+        plan[0], client=None, stream=False, timeout_s=5, mock=False,
+        rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+        call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+        output_text_preview_chars=80,
+    )
+    assert result.output_text_preview != full_text
+    assert len(result.output_text_preview) < len(full_text)
+
+
+# ---------------------------------------------------------------------------
+# v2: aggregation reports output-token distribution by target length
+# ---------------------------------------------------------------------------
+
+def test_aggregate_by_target_output_tokens_csv_and_summary(tmp_path):
+    plan = cc.expand_call_plan_length_targeted(
+        experiment_id="t", model="m", prompt_buckets=["short"],
+        target_output_tokens_list=[64, 128], concurrency_list=[1],
+        requests_per_cell=2, seed=1,
+    )
+    writer = cc.JsonlWriter(tmp_path / "requests.jsonl")
+    for planned in plan:
+        result = cc.execute_one_request(
+            planned, client=None, stream=False, timeout_s=5, mock=False,
+            rpm_limiter=_NoWaitLimiter(), was_resumed=False,
+            call_streaming_fn=None, call_non_streaming_fn=_long_output_call_fn,
+            min_output_token_ratio=0.70, output_text_preview_chars=80,
+        )
+        writer.write(result)
+    writer.close()
+
+    overall = cc.aggregate_results(
+        tmp_path, price_per_m_input_usd=0.1, price_per_m_output_usd=0.1,
+    )
+    assert (tmp_path / "aggregate_by_target_output_tokens.csv").exists()
+    by_target = {rec["target_output_tokens"]: rec for rec in overall["by_target_output_tokens"]}
+    assert set(by_target.keys()) == {64, 128}
+    assert by_target[64]["n_success"] == 2
+    assert by_target[64]["mean_output_tokens"] == pytest.approx(60.0)
+    assert by_target[64]["frac_reached_target_range"] == pytest.approx(1.0)
+    assert by_target[128]["frac_reached_target_range"] == pytest.approx(0.0)
+    assert overall["frac_reached_target_output_range"] == pytest.approx(0.5)
+
+    import json as _json
+    # Whole overall dict (including by_target_output_tokens) must be JSON-safe.
+    _json.dumps(overall)

@@ -1,0 +1,53 @@
+{
+  "total_records": 108,
+  "status_counts": {
+    "success": 108
+  },
+  "mean_output_tokens": 140.37037037037038,
+  "mean_tokens_per_sec": 69.75810694906207,
+  "total_billed_input_tokens": 93924.0,
+  "total_billed_output_tokens": 15160.0,
+  "estimated_cost_usd": 0.005796,
+  "n_requests_with_rate_limiter_wait": 32,
+  "total_rate_limiter_wait_seconds": 276.4793,
+  "max_rate_limiter_wait_seconds": 44.4258,
+  "frac_reached_target_output_range": 0.9444444444444444,
+  "count": 108,
+  "mean_latency_s": 1.9390574074074076,
+  "p50_latency_s": 1.85955,
+  "p95_latency_s": 3.77436,
+  "p99_latency_s": 4.069901999999999,
+  "mean_ttft_s": 0.24620277777777777,
+  "p50_ttft_s": 0.23515,
+  "p95_ttft_s": 0.33625499999999997,
+  "p99_ttft_s": 0.38657299999999994,
+  "by_target_output_tokens": [
+    {
+      "target_output_tokens": 64,
+      "n_total": 36,
+      "n_success": 36,
+      "mean_output_tokens": 51.97222222222222,
+      "p50_output_tokens": 52.0,
+      "mean_output_token_ratio": 0.8120659722222222,
+      "frac_reached_target_range": 0.8333333333333334
+    },
+    {
+      "target_output_tokens": 128,
+      "n_total": 36,
+      "n_success": 36,
+      "mean_output_tokens": 127.55555555555556,
+      "p50_output_tokens": 125.0,
+      "mean_output_token_ratio": 0.9965277777777778,
+      "frac_reached_target_range": 1.0
+    },
+    {
+      "target_output_tokens": 256,
+      "n_total": 36,
+      "n_success": 36,
+      "mean_output_tokens": 241.58333333333334,
+      "p50_output_tokens": 232.0,
+      "mean_output_token_ratio": 0.9436848958333334,
+      "frac_reached_target_range": 1.0
+    }
+  ]
+}

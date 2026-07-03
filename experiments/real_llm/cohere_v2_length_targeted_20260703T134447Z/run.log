@@ -1,0 +1,262 @@
+2026-07-03 09:44:47,778 INFO Cell bucket=short max_tokens=128 concurrency=1: dispatching 3 requests
+2026-07-03 09:44:48,007 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:48,718 INFO short__tgt64__c1__i0 status=success ttft=0.2455 provider_latency=0.9272 rpm_wait=0.0
+2026-07-03 09:44:48,905 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:49,653 INFO short__tgt64__c1__i1 status=success ttft=0.2077 provider_latency=0.9353 rpm_wait=0.0
+2026-07-03 09:44:49,850 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:50,424 INFO short__tgt64__c1__i2 status=success ttft=0.2166 provider_latency=0.7716 rpm_wait=0.0
+2026-07-03 09:44:50,424 INFO Cell bucket=short max_tokens=128 concurrency=2: dispatching 3 requests
+2026-07-03 09:44:50,616 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:50,628 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:51,147 INFO short__tgt64__c2__i0 status=success ttft=0.2397 provider_latency=0.7031 rpm_wait=0.0
+2026-07-03 09:44:51,194 INFO short__tgt64__c2__i1 status=success ttft=0.2253 provider_latency=0.7627 rpm_wait=0.0
+2026-07-03 09:44:51,300 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:51,996 INFO short__tgt64__c2__i2 status=success ttft=0.1802 provider_latency=0.8566 rpm_wait=0.0
+2026-07-03 09:44:51,997 INFO Cell bucket=short max_tokens=128 concurrency=4: dispatching 3 requests
+2026-07-03 09:44:52,177 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:52,235 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:52,244 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:52,731 INFO short__tgt64__c4__i0 status=success ttft=0.1873 provider_latency=0.7214 rpm_wait=0.0
+2026-07-03 09:44:52,969 INFO short__tgt64__c4__i1 status=success ttft=0.2547 provider_latency=0.9558 rpm_wait=0.0
+2026-07-03 09:44:52,973 INFO short__tgt64__c4__i2 status=success ttft=0.2404 provider_latency=0.9547 rpm_wait=0.0
+2026-07-03 09:44:52,974 INFO Cell bucket=short max_tokens=128 concurrency=8: dispatching 3 requests
+2026-07-03 09:44:53,142 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:53,157 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:53,169 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:53,794 INFO short__tgt64__c8__i0 status=success ttft=0.1756 provider_latency=0.8087 rpm_wait=0.0
+2026-07-03 09:44:53,798 INFO short__tgt64__c8__i2 status=success ttft=0.196 provider_latency=0.8044 rpm_wait=0.0
+2026-07-03 09:44:53,854 INFO short__tgt64__c8__i1 status=success ttft=0.197 provider_latency=0.874 rpm_wait=0.0
+2026-07-03 09:44:53,854 INFO Cell bucket=short max_tokens=256 concurrency=1: dispatching 3 requests
+2026-07-03 09:44:54,040 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:55,379 INFO short__tgt128__c1__i0 status=success ttft=0.2046 provider_latency=1.5083 rpm_wait=0.0
+2026-07-03 09:44:55,561 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:57,290 INFO short__tgt128__c1__i1 status=success ttft=0.2166 provider_latency=1.9119 rpm_wait=0.0
+2026-07-03 09:44:57,447 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:59,221 INFO short__tgt128__c1__i2 status=success ttft=0.1795 provider_latency=1.9331 rpm_wait=0.0
+2026-07-03 09:44:59,221 INFO Cell bucket=short max_tokens=256 concurrency=2: dispatching 3 requests
+2026-07-03 09:44:59,554 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:44:59,560 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:01,408 INFO short__tgt128__c2__i1 status=success ttft=0.3725 provider_latency=2.1625 rpm_wait=0.0
+2026-07-03 09:45:01,411 INFO short__tgt128__c2__i0 status=success ttft=0.3796 provider_latency=2.1732 rpm_wait=0.0
+2026-07-03 09:45:01,569 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:03,353 INFO short__tgt128__c2__i2 status=success ttft=0.1878 provider_latency=1.952 rpm_wait=0.0
+2026-07-03 09:45:03,353 INFO Cell bucket=short max_tokens=256 concurrency=4: dispatching 3 requests
+2026-07-03 09:45:03,574 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:03,580 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:04,980 INFO short__tgt128__c4__i1 status=success ttft=0.2498 provider_latency=1.6085 rpm_wait=0.0
+2026-07-03 09:45:05,270 INFO short__tgt128__c4__i0 status=success ttft=0.2544 provider_latency=1.9052 rpm_wait=0.0
+2026-07-03 09:45:48,030 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:49,699 INFO short__tgt128__c4__i2 status=success ttft=0.25 provider_latency=1.8975 rpm_wait=44.4258
+2026-07-03 09:45:49,700 INFO Cell bucket=short max_tokens=256 concurrency=8: dispatching 3 requests
+2026-07-03 09:45:49,961 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:49,966 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:50,666 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:51,220 INFO short__tgt128__c8__i1 status=success ttft=0.2925 provider_latency=1.5009 rpm_wait=0.0
+2026-07-03 09:45:51,675 INFO short__tgt128__c8__i0 status=success ttft=0.3017 provider_latency=1.9563 rpm_wait=0.0
+2026-07-03 09:45:52,316 INFO short__tgt128__c8__i2 status=success ttft=0.2363 provider_latency=1.8656 rpm_wait=0.7302
+2026-07-03 09:45:52,317 INFO Cell bucket=short max_tokens=512 concurrency=1: dispatching 3 requests
+2026-07-03 09:45:52,520 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:55,455 INFO short__tgt256__c1__i0 status=success ttft=0.2104 provider_latency=3.1166 rpm_wait=0.0
+2026-07-03 09:45:55,695 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:45:58,206 INFO short__tgt256__c1__i1 status=success ttft=0.2682 provider_latency=2.7519 rpm_wait=0.0
+2026-07-03 09:45:58,352 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:01,233 INFO short__tgt256__c1__i2 status=success ttft=0.1736 provider_latency=3.0276 rpm_wait=0.0
+2026-07-03 09:46:01,233 INFO Cell bucket=short max_tokens=512 concurrency=2: dispatching 3 requests
+2026-07-03 09:46:01,419 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:01,425 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:04,094 INFO short__tgt256__c2__i1 status=success ttft=0.231 provider_latency=2.8302 rpm_wait=0.0
+2026-07-03 09:46:04,275 INFO short__tgt256__c2__i0 status=success ttft=0.2285 provider_latency=3.0291 rpm_wait=0.0
+2026-07-03 09:46:04,315 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:06,989 INFO short__tgt256__c2__i2 status=success ttft=0.2556 provider_latency=2.9009 rpm_wait=0.0
+2026-07-03 09:46:06,989 INFO Cell bucket=short max_tokens=512 concurrency=4: dispatching 3 requests
+2026-07-03 09:46:07,267 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:07,272 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:07,272 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:09,312 INFO short__tgt256__c4__i0 status=success ttft=0.2854 provider_latency=2.279 rpm_wait=0.0
+2026-07-03 09:46:09,529 INFO short__tgt256__c4__i1 status=success ttft=0.3184 provider_latency=2.5234 rpm_wait=0.0
+2026-07-03 09:46:10,070 INFO short__tgt256__c4__i2 status=success ttft=0.294 provider_latency=3.0593 rpm_wait=0.0
+2026-07-03 09:46:10,070 INFO Cell bucket=short max_tokens=512 concurrency=8: dispatching 3 requests
+2026-07-03 09:46:10,251 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:10,453 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:10,461 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:11,484 INFO short__tgt256__c8__i1 status=success ttft=0.1856 provider_latency=1.3843 rpm_wait=0.0
+2026-07-03 09:46:13,538 INFO short__tgt256__c8__i2 status=success ttft=0.3878 provider_latency=3.4477 rpm_wait=0.0
+2026-07-03 09:46:13,847 INFO short__tgt256__c8__i0 status=success ttft=0.387 provider_latency=3.7759 rpm_wait=0.0
+2026-07-03 09:46:13,848 INFO Cell bucket=medium max_tokens=128 concurrency=1: dispatching 3 requests
+2026-07-03 09:46:14,127 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:14,647 INFO medium__tgt64__c1__i0 status=success ttft=0.295 provider_latency=0.7861 rpm_wait=0.0
+2026-07-03 09:46:14,802 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:15,431 INFO medium__tgt64__c1__i1 status=success ttft=0.1769 provider_latency=0.7831 rpm_wait=0.0
+2026-07-03 09:46:15,663 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:16,362 INFO medium__tgt64__c1__i2 status=success ttft=0.254 provider_latency=0.9323 rpm_wait=0.0
+2026-07-03 09:46:16,363 INFO Cell bucket=medium max_tokens=128 concurrency=2: dispatching 3 requests
+2026-07-03 09:46:16,585 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:17,117 INFO medium__tgt64__c2__i0 status=success ttft=0.2291 provider_latency=0.7419 rpm_wait=0.0
+2026-07-03 09:46:48,021 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:48,572 INFO medium__tgt64__c2__i2 status=success ttft=0.2309 provider_latency=0.7703 rpm_wait=30.6932
+2026-07-03 09:46:49,970 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:50,575 INFO medium__tgt64__c2__i1 status=success ttft=0.2674 provider_latency=0.852 rpm_wait=33.3431
+2026-07-03 09:46:50,575 INFO Cell bucket=medium max_tokens=128 concurrency=4: dispatching 3 requests
+2026-07-03 09:46:50,787 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:50,792 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:51,404 INFO medium__tgt64__c4__i0 status=success ttft=0.2597 provider_latency=0.8116 rpm_wait=0.0
+2026-07-03 09:46:51,546 INFO medium__tgt64__c4__i1 status=success ttft=0.2421 provider_latency=0.9536 rpm_wait=0.0
+2026-07-03 09:46:52,510 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:53,272 INFO medium__tgt64__c4__i2 status=success ttft=0.1896 provider_latency=0.9321 rpm_wait=1.7459
+2026-07-03 09:46:53,273 INFO Cell bucket=medium max_tokens=128 concurrency=8: dispatching 3 requests
+2026-07-03 09:46:55,610 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:56,376 INFO medium__tgt64__c8__i2 status=success ttft=0.1732 provider_latency=0.9119 rpm_wait=2.1707
+2026-07-03 09:46:58,570 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:46:59,184 INFO medium__tgt64__c8__i1 status=success ttft=0.3809 provider_latency=0.9671 rpm_wait=4.9231
+2026-07-03 09:47:01,540 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:02,130 INFO medium__tgt64__c8__i0 status=success ttft=0.3036 provider_latency=0.8659 rpm_wait=7.9712
+2026-07-03 09:47:02,131 INFO Cell bucket=medium max_tokens=256 concurrency=1: dispatching 3 requests
+2026-07-03 09:47:02,358 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:03,853 INFO medium__tgt128__c1__i0 status=success ttft=0.2354 provider_latency=1.7086 rpm_wait=0.0
+2026-07-03 09:47:04,304 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:05,755 INFO medium__tgt128__c1__i1 status=success ttft=0.2323 provider_latency=1.6624 rpm_wait=0.2391
+2026-07-03 09:47:07,154 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:08,331 INFO medium__tgt128__c1__i2 status=success ttft=0.1613 provider_latency=1.3108 rpm_wait=1.2585
+2026-07-03 09:47:08,331 INFO Cell bucket=medium max_tokens=256 concurrency=2: dispatching 3 requests
+2026-07-03 09:47:08,604 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:08,610 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:10,045 INFO medium__tgt128__c2__i0 status=success ttft=0.3177 provider_latency=1.7016 rpm_wait=0.0
+2026-07-03 09:47:10,188 INFO medium__tgt128__c2__i1 status=success ttft=0.3142 provider_latency=1.8401 rpm_wait=0.0
+2026-07-03 09:47:10,282 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:12,190 INFO medium__tgt128__c2__i2 status=success ttft=0.2038 provider_latency=2.0928 rpm_wait=0.0524
+2026-07-03 09:47:12,191 INFO Cell bucket=medium max_tokens=256 concurrency=4: dispatching 3 requests
+2026-07-03 09:47:12,394 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:12,399 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:14,065 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:14,161 INFO medium__tgt128__c4__i1 status=success ttft=0.2325 provider_latency=1.9522 rpm_wait=0.0
+2026-07-03 09:47:14,255 INFO medium__tgt128__c4__i0 status=success ttft=0.2492 provider_latency=2.0586 rpm_wait=0.0
+2026-07-03 09:47:15,813 INFO medium__tgt128__c4__i2 status=success ttft=0.2497 provider_latency=1.9417 rpm_wait=1.6604
+2026-07-03 09:47:15,814 INFO Cell bucket=medium max_tokens=256 concurrency=8: dispatching 3 requests
+2026-07-03 09:47:15,995 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:16,012 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:16,558 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:17,654 INFO medium__tgt128__c8__i1 status=success ttft=0.1841 provider_latency=1.8212 rpm_wait=0.0
+2026-07-03 09:47:17,818 INFO medium__tgt128__c8__i0 status=success ttft=0.2042 provider_latency=1.9879 rpm_wait=0.0
+2026-07-03 09:47:18,337 INFO medium__tgt128__c8__i2 status=success ttft=0.2377 provider_latency=1.9497 rpm_wait=0.5523
+2026-07-03 09:47:18,338 INFO Cell bucket=medium max_tokens=512 concurrency=1: dispatching 3 requests
+2026-07-03 09:47:48,002 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:51,670 INFO medium__tgt256__c1__i0 status=success ttft=0.2007 provider_latency=3.8398 rpm_wait=29.4707
+2026-07-03 09:47:51,920 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:55,741 INFO medium__tgt256__c1__i1 status=success ttft=0.2795 provider_latency=4.0777 rpm_wait=0.0
+2026-07-03 09:47:55,914 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:59,519 INFO medium__tgt256__c1__i2 status=success ttft=0.195 provider_latency=3.7715 rpm_wait=0.0
+2026-07-03 09:47:59,519 INFO Cell bucket=medium max_tokens=512 concurrency=2: dispatching 3 requests
+2026-07-03 09:47:59,702 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:47:59,713 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:03,292 INFO medium__tgt256__c2__i1 status=success ttft=0.1859 provider_latency=3.7473 rpm_wait=0.0
+2026-07-03 09:48:03,440 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:03,703 INFO medium__tgt256__c2__i0 status=success ttft=0.2006 provider_latency=4.172 rpm_wait=0.0
+2026-07-03 09:48:06,613 INFO medium__tgt256__c2__i2 status=success ttft=0.1783 provider_latency=3.3222 rpm_wait=0.0
+2026-07-03 09:48:06,613 INFO Cell bucket=medium max_tokens=512 concurrency=4: dispatching 3 requests
+2026-07-03 09:48:06,871 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:06,890 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:06,909 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:08,943 INFO medium__tgt256__c4__i1 status=success ttft=0.2752 provider_latency=2.2985 rpm_wait=0.0
+2026-07-03 09:48:09,002 INFO medium__tgt256__c4__i0 status=success ttft=0.2645 provider_latency=2.3871 rpm_wait=0.0
+2026-07-03 09:48:10,600 INFO medium__tgt256__c4__i2 status=success ttft=0.2905 provider_latency=3.9663 rpm_wait=0.0
+2026-07-03 09:48:10,601 INFO Cell bucket=medium max_tokens=512 concurrency=8: dispatching 3 requests
+2026-07-03 09:48:10,864 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:10,869 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:10,875 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:12,629 INFO medium__tgt256__c8__i0 status=success ttft=0.3268 provider_latency=2.0145 rpm_wait=0.0
+2026-07-03 09:48:14,077 INFO medium__tgt256__c8__i1 status=success ttft=0.3176 provider_latency=3.4579 rpm_wait=0.0
+2026-07-03 09:48:14,489 INFO medium__tgt256__c8__i2 status=success ttft=0.3379 provider_latency=3.8699 rpm_wait=0.0
+2026-07-03 09:48:14,490 INFO Cell bucket=long max_tokens=128 concurrency=1: dispatching 3 requests
+2026-07-03 09:48:14,709 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:15,668 INFO long__tgt64__c1__i0 status=success ttft=0.2269 provider_latency=1.1642 rpm_wait=0.0
+2026-07-03 09:48:15,882 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:16,596 INFO long__tgt64__c1__i1 status=success ttft=0.2349 provider_latency=0.9277 rpm_wait=0.0
+2026-07-03 09:48:16,804 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:17,582 INFO long__tgt64__c1__i2 status=success ttft=0.2289 provider_latency=0.9873 rpm_wait=0.0
+2026-07-03 09:48:17,582 INFO Cell bucket=long max_tokens=128 concurrency=2: dispatching 3 requests
+2026-07-03 09:48:17,781 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:17,808 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:18,433 INFO long__tgt64__c2__i1 status=success ttft=0.201 provider_latency=0.829 rpm_wait=0.0
+2026-07-03 09:48:18,617 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:18,657 INFO long__tgt64__c2__i0 status=success ttft=0.233 provider_latency=1.0608 rpm_wait=0.0
+2026-07-03 09:48:19,383 INFO long__tgt64__c2__i2 status=success ttft=0.2092 provider_latency=0.953 rpm_wait=0.0
+2026-07-03 09:48:19,384 INFO Cell bucket=long max_tokens=128 concurrency=4: dispatching 3 requests
+2026-07-03 09:48:19,664 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:19,671 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:20,393 INFO long__tgt64__c4__i0 status=success ttft=0.3332 provider_latency=0.9953 rpm_wait=0.0
+2026-07-03 09:48:20,468 INFO long__tgt64__c4__i1 status=success ttft=0.3211 provider_latency=1.076 rpm_wait=0.0
+2026-07-03 09:48:48,035 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:48,902 INFO long__tgt64__c4__i2 status=success ttft=0.2241 provider_latency=1.0643 rpm_wait=28.4285
+2026-07-03 09:48:48,903 INFO Cell bucket=long max_tokens=128 concurrency=8: dispatching 3 requests
+2026-07-03 09:48:51,927 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:52,519 INFO long__tgt64__c8__i1 status=success ttft=0.2753 provider_latency=0.8408 rpm_wait=2.7548
+2026-07-03 09:48:56,023 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:48:56,586 INFO long__tgt64__c8__i2 status=success ttft=0.2947 provider_latency=0.8302 rpm_wait=6.8321
+2026-07-03 09:48:59,724 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:00,560 INFO long__tgt64__c8__i0 status=success ttft=0.2011 provider_latency=1.011 rpm_wait=10.6263
+2026-07-03 09:49:00,561 INFO Cell bucket=long max_tokens=256 concurrency=1: dispatching 3 requests
+2026-07-03 09:49:00,757 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:02,601 INFO long__tgt128__c1__i0 status=success ttft=0.2027 provider_latency=2.0271 rpm_wait=0.0
+2026-07-03 09:49:03,499 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:05,024 INFO long__tgt128__c1__i1 status=success ttft=0.2251 provider_latency=1.7232 rpm_wait=0.6927
+2026-07-03 09:49:06,814 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:08,169 INFO long__tgt128__c1__i2 status=success ttft=0.1979 provider_latency=1.5259 rpm_wait=1.6191
+2026-07-03 09:49:08,170 INFO Cell bucket=long max_tokens=256 concurrency=2: dispatching 3 requests
+2026-07-03 09:49:08,414 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:08,427 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:10,166 INFO long__tgt128__c2__i0 status=success ttft=0.2631 provider_latency=1.9826 rpm_wait=0.0
+2026-07-03 09:49:10,262 INFO long__tgt128__c2__i1 status=success ttft=0.2466 provider_latency=2.0851 rpm_wait=0.0
+2026-07-03 09:49:10,869 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:12,454 INFO long__tgt128__c2__i2 status=success ttft=0.265 provider_latency=1.8224 rpm_wait=0.4587
+2026-07-03 09:49:12,455 INFO Cell bucket=long max_tokens=256 concurrency=4: dispatching 3 requests
+2026-07-03 09:49:12,714 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:12,720 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:14,256 INFO long__tgt128__c4__i1 status=success ttft=0.2951 provider_latency=1.7825 rpm_wait=0.0
+2026-07-03 09:49:14,310 INFO long__tgt128__c4__i0 status=success ttft=0.3073 provider_latency=1.8535 rpm_wait=0.0
+2026-07-03 09:49:14,763 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:16,233 INFO long__tgt128__c4__i2 status=success ttft=0.2703 provider_latency=1.719 rpm_wait=2.0396
+2026-07-03 09:49:16,234 INFO Cell bucket=long max_tokens=256 concurrency=8: dispatching 3 requests
+2026-07-03 09:49:16,503 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:16,785 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:17,799 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:18,362 INFO long__tgt128__c8__i2 status=success ttft=0.1967 provider_latency=1.74 rpm_wait=0.3589
+2026-07-03 09:49:18,363 INFO long__tgt128__c8__i0 status=success ttft=0.2768 provider_latency=2.1277 rpm_wait=0.0
+2026-07-03 09:49:19,165 INFO long__tgt128__c8__i1 status=success ttft=0.2122 provider_latency=1.5593 rpm_wait=1.3544
+2026-07-03 09:49:19,166 INFO Cell bucket=long max_tokens=512 concurrency=1: dispatching 3 requests
+2026-07-03 09:49:19,473 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:22,156 INFO long__tgt256__c1__i0 status=success ttft=0.3139 provider_latency=2.97 rpm_wait=0.0
+2026-07-03 09:49:22,340 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:25,180 INFO long__tgt256__c1__i1 status=success ttft=0.2111 provider_latency=3.023 rpm_wait=0.0
+2026-07-03 09:49:25,360 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:28,015 INFO long__tgt256__c1__i2 status=success ttft=0.2087 provider_latency=2.8357 rpm_wait=0.0
+2026-07-03 09:49:28,015 INFO Cell bucket=long max_tokens=512 concurrency=2: dispatching 3 requests
+2026-07-03 09:49:28,272 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:30,835 INFO long__tgt256__c2__i0 status=success ttft=0.2636 provider_latency=2.7999 rpm_wait=0.0
+2026-07-03 09:49:48,151 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:51,004 INFO long__tgt256__c2__i2 status=success ttft=0.3295 provider_latency=3.1554 rpm_wait=17.0134
+2026-07-03 09:49:51,853 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:54,356 INFO long__tgt256__c2__i1 status=success ttft=0.192 provider_latency=2.6726 rpm_wait=23.6486
+2026-07-03 09:49:54,356 INFO Cell bucket=long max_tokens=512 concurrency=4: dispatching 3 requests
+2026-07-03 09:49:55,963 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:49:59,371 INFO long__tgt256__c4__i1 status=success ttft=0.2234 provider_latency=3.6037 rpm_wait=1.39
+2026-07-03 09:49:59,819 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:50:00,772 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:50:02,375 INFO long__tgt256__c4__i2 status=success ttft=0.2867 provider_latency=2.8222 rpm_wait=5.1828
+2026-07-03 09:50:03,159 INFO long__tgt256__c4__i0 status=success ttft=0.2057 provider_latency=2.5733 rpm_wait=6.2166
+2026-07-03 09:50:03,160 INFO Cell bucket=long max_tokens=512 concurrency=8: dispatching 3 requests
+2026-07-03 09:50:03,498 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:50:06,718 INFO long__tgt256__c8__i2 status=success ttft=0.214 provider_latency=3.4059 rpm_wait=0.1315
+2026-07-03 09:50:06,834 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:50:08,370 INFO HTTP Request: POST https://api.cohere.com/v2/chat "HTTP/1.1 200 OK"
+2026-07-03 09:50:09,710 INFO long__tgt256__c8__i0 status=success ttft=0.2076 provider_latency=3.0557 rpm_wait=3.4745
+2026-07-03 09:50:11,170 INFO long__tgt256__c8__i1 status=success ttft=0.1977 provider_latency=2.9763 rpm_wait=5.0202
+Cohere API calibration
+  output_dir:        /home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/cohere_v2_length_targeted_20260703T134447Z
+  planned_requests:  108
+  worst_case_input_tokens:  103104
+  worst_case_output_tokens: 32256
+  worst_case_cost_usd:      $0.0087
+  completed: 108
+  failed:    0
+  skipped:   0
+  estimated_cost_usd: $0.005796
