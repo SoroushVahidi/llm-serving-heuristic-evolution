@@ -8,11 +8,13 @@ a real network call, so response-parsing bugs are caught before any live
 credit is spent. Full dry-run/mock/resume/cap coverage lives in
 tests/test_real_llm_provider_skeletons.py (parametrized across all
 providers); this file covers only what's specific to Gemini's response
-shapes.
+shapes, plus the v2 length-targeted workload CLI (mirroring
+tests/test_cohere_api_calibration.py's v2 section).
 """
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -272,3 +274,175 @@ def test_build_client_falls_back_to_vertex(monkeypatch):
     result = mod._build_client()
     assert result == "fake-client"
     assert captured == {"vertexai": True, "project": "some-project", "location": "us-east1"}
+
+
+# ---------------------------------------------------------------------------
+# v2 length-targeted workload CLI (mirrors test_cohere_api_calibration.py)
+# ---------------------------------------------------------------------------
+
+V2_GRID_ARGS = [
+    "--stream",
+    "--model", "gemini-3.1-flash-lite",
+    "--workload-version", "v2",
+    "--prompt-buckets", "short,medium,long",
+    "--target-output-tokens-list", "64,128,256",
+    "--concurrency-list", "1,2,4,8",
+    "--requests-per-cell", "3",
+    "--timeout-seconds", "120",
+    "--rpm-limit", "20",
+    "--max-total-requests", "108",
+    "--max-total-input-tokens", "250000",
+    "--max-total-output-tokens", "50000",
+    "--max-estimated-cost-usd", "5",
+    "--seed", "20260703",
+    "--fail-fast",
+]
+
+
+def test_v2_dry_run_plans_108_requests(tmp_path):
+    mod = _load()
+    result = mod.main(["--dry-run", *V2_GRID_ARGS, "--output-dir", str(tmp_path)])
+    assert result == 0
+    manifest = json.loads((tmp_path / "manifest.json").read_text())
+    assert manifest["planned_requests"] == 3 * 3 * 4 * 3 == 108
+    assert not (tmp_path / "requests.jsonl").exists()
+
+
+def test_v2_dry_run_records_target_output_tokens_in_plan(tmp_path):
+    mod = _load()
+    mod.main(["--dry-run", *V2_GRID_ARGS, "--output-dir", str(tmp_path)])
+    manifest = json.loads((tmp_path / "manifest.json").read_text())
+    targets = {r["target_output_tokens"] for r in manifest["requests_preview"]}
+    assert targets <= {64, 128, 256}
+    assert all(r["workload_version"] == "v2" for r in manifest["requests_preview"])
+
+
+def test_v2_requires_target_output_tokens_list(tmp_path):
+    mod = _load()
+    result = mod.main([
+        "--dry-run", "--workload-version", "v2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 2
+
+
+def test_v2_mock_run_schema_has_v2_fields_and_corrected_latency(tmp_path, monkeypatch):
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "fake-project-for-test")
+    mod = _load()
+    result = mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 0
+    lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    assert len(lines) == 1 * 2 * 1 * 2  # 4
+    for row in lines:
+        assert row["workload_version"] == "v2"
+        assert row["target_output_tokens"] in (64, 128)
+        assert row["status"] == "success"
+        # Corrected latency schema, not the pre-fix elapsed_seconds field.
+        assert "rate_limiter_wait_seconds" in row
+        assert "provider_request_latency_seconds" in row
+        assert "ttft_seconds" in row
+        assert "total_wall_time_seconds" in row
+
+
+def test_v2_provider_latency_not_polluted_by_rate_limiter_wait(tmp_path, monkeypatch):
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "fake-project-for-test")
+    mod = _load()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    for row in lines:
+        assert row["rate_limiter_wait_seconds"] == 0.0
+        assert row["provider_request_latency_seconds"] is not None
+        assert row["provider_request_latency_seconds"] < 1.0
+
+
+def test_v2_summary_reports_output_token_distribution_by_target(tmp_path, monkeypatch):
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "fake-project-for-test")
+    mod = _load()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short,medium", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    assert (tmp_path / "aggregate_by_target_output_tokens.csv").exists()
+    import pandas as pd
+    by_target = pd.read_csv(tmp_path / "aggregate_by_target_output_tokens.csv")
+    assert set(by_target["target_output_tokens"]) == {64, 128}
+    summary = json.loads((tmp_path / "summary.json").read_text())
+    assert len(summary["by_target_output_tokens"]) == 2
+
+
+def test_v2_resume_skips_completed_requests(tmp_path, monkeypatch):
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "fake-project-for-test")
+    mod = _load()
+    base_args = [
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--seed", "5",
+        "--output-dir", str(tmp_path),
+    ]
+    assert mod.main(base_args) == 0
+    first_lines = (tmp_path / "requests.jsonl").read_text().strip().splitlines()
+    assert len(first_lines) == 1 * 2 * 1 * 2  # 4
+
+    expanded_args = [
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2", "--resume",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128,256",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--seed", "5",
+        "--output-dir", str(tmp_path),
+    ]
+    assert mod.main(expanded_args) == 0
+    all_lines = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
+    ids = [r["request_id"] for r in all_lines]
+    assert len(ids) == len(set(ids)), "resume must not duplicate request_ids"
+    assert len(all_lines) == 1 * 3 * 1 * 2  # 6
+
+
+def test_v2_refuses_to_overwrite_nonempty_output_dir(tmp_path, monkeypatch):
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "fake-project-for-test")
+    mod = _load()
+    args = [
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ]
+    assert mod.main(args) == 0
+    assert mod.main(args) == 3
+
+
+def test_v2_api_key_never_written_to_output_files(tmp_path, monkeypatch):
+    # See the equivalent Cohere test for why git_diff.patch is excluded: it
+    # is an intentional full working-tree diff snapshot, not harness output,
+    # and would otherwise flag this test's own uncommitted source line.
+    secret = "fake-project-SECRET-TEST-VALUE-12345"
+    monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", secret)
+    mod = _load()
+    mod.main([
+        "--allow-live-api", "--mock", "--stream", "--workload-version", "v2",
+        "--rpm-limit", "100000",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(tmp_path),
+    ])
+    for f in tmp_path.rglob("*"):
+        if f.is_file() and f.name != "git_diff.patch":
+            assert secret not in f.read_text(errors="ignore"), f"secret leaked into {f}"
