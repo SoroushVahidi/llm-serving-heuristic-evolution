@@ -76,6 +76,9 @@ from llmserveopt.core.types import (  # noqa: E402
     Request, ObservableRequest, ObservableGPUState, ObservableState,
 )
 from llmserveopt.policies.registry import make_policy  # noqa: E402
+from llmserveopt.selector.candidates import SELECTOR_CANDIDATES  # noqa: E402
+from llmserveopt.selector.features import extract_features, FeatureMode  # noqa: E402
+from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector  # noqa: E402
 from llmserveopt.workloads.synthetic import DEFAULT_SLO_CLASSES, SLOClass  # noqa: E402
 import run_vllm_serving_baseline_pilot as vllm_mod  # noqa: E402
 
@@ -87,6 +90,12 @@ WIRED_POLICIES = (
     "least_laxity_first", "estimated_service_time_first",
 )
 
+# "selector" is neither always-wired nor never-wired: it requires
+# --selector-artifact to point at a manifest-validated, corrected-objective
+# artifact (see load_and_validate_selector_artifact). Requesting it without
+# a valid artifact fails clearly before the benchmark starts.
+CONDITIONAL_POLICIES = ("selector",)
+
 # "vllm_default" is the natural name for "no external admission control at
 # all" from the vLLM side; it is mechanically identical to vllm_direct here
 # (see the module docstring's "vllm_direct vs. the policies" section).
@@ -97,42 +106,143 @@ def normalize_policy_name(name: str) -> str:
     return POLICY_ALIASES.get(name, name)
 
 # Requested-but-not-implemented policies and why, surfaced verbatim to the
-# user rather than silently ignored or faked. Investigated (not assumed)
-# before this task concluded they aren't safely wirable today:
+# user rather than silently ignored or faked.
+#
+# UPDATE (corrected-objective selector-artifact persistence): the ML selector gap
+# described below is CLOSED for one selector, `regression_anwg` ("strongest
+# deployable selector under arrival-norm WG" per docs/result_claims.md),
+# via scripts/persist_corrected_selector_artifact.py, which retrains it on
+# the exact Phase 2B.15 train split and verifies it reproduces the
+# published Phase 2B.16 held-out number (0.9856 ANWG on 174 fresh windows)
+# before persisting. Pass --selector-artifact results/
+# corrected_selector_artifact_regression_anwg/regression_anwg_selector.joblib
+# and request --policies ...,selector to use it here. See
+# load_and_validate_selector_artifact() for the manifest check that rejects
+# any artifact not declared as trained under arrival_normalized_wg.
+#
+# `generated_heuristic`/`best_generated` remain NOT wired: investigated (not
+# assumed) before this task concluded they aren't safely wirable today:
 #   - Most of the selector's 18 features (src/llmserveopt/selector/
 #     features.py: queue_length, active_sequence_count, free_sequence_ratio,
 #     prompt/output-length stats, slack stats, arrival-rate/burstiness,
 #     recent SLO violation rate) ARE reconstructable from this harness's own
-#     client-side bookkeeping. Only kv_utilization has no honest client-side
-#     substitute without scraping vLLM's /metrics endpoint (not implemented
-#     here).
-#   - More fundamentally: the only serialized model artifacts on disk
-#     (results/phase2a2_selector_dataset/, phase2a3_selector_eval/,
-#     phase2a4_2b4_final_eval/ -- all *.joblib) were trained under the
-#     PRE-CORRECTION objective that Phase 2B.14's metric audit found flawed
-#     (completed-only WG denominator). The corrected, validated retraining
-#     (Phase 2B.15/16 -- the one actually described as "best" going
-#     forward) was evaluated only in-memory by one-off scripts and was
-#     never persisted as a loadable model. Loading a pre-correction
-#     artifact and calling it "our best selector" would misrepresent this
-#     project's own findings, so neither policy is wired here.
+#     client-side bookkeeping (see extract_features() usage below). Only
+#     kv_utilization has no honest client-side substitute without scraping
+#     vLLM's /metrics endpoint (not implemented here) -- it is passed as an
+#     explicit, documented 0.0 placeholder (kv_utilization_available=False).
+#   - The LLM-generated heuristic DSL shortlist (results/phase2a4_2b4_
+#     final_eval/frozen_shortlist/) was selected by validation WG on
+#     2026-06-25, one day BEFORE the Phase 2B.14 objective correction
+#     (2026-06-26), and was never re-evaluated under arrival_normalized_wg.
+#     Re-ranking it would require re-running the Phase 2A/2B evaluation
+#     pipeline against the corrected objective, which was out of scope for
+#     this task (the ML selector path above was sufficient to produce one
+#     honestly corrected-objective "our method" artifact).
 NOT_WIRED_POLICIES = {
     "generated_heuristic": (
-        "No current, methodologically-valid model artifact exists to load "
-        "(see the module-level comment above): the only serialized "
-        "*.joblib files on disk predate the Phase 2B.14 objective "
-        "correction. Wiring this safely would require re-running the "
-        "Phase 2B.15/16 corrected-objective training pipeline to produce a "
-        "fresh artifact, then building a feature adapter for the ~17 of 18 "
-        "features that ARE client-observable plus an honest placeholder "
-        "(or /metrics scrape) for kv_utilization. Neither is done here."
+        "The LLM-generated heuristic DSL shortlist predates the Phase 2B.14 "
+        "objective correction and was never re-evaluated under "
+        "arrival_normalized_wg (see module-level comment above). Use "
+        "--policies ...,selector with --selector-artifact instead -- that "
+        "path IS corrected-objective and wired."
     ),
     "best_generated": "alias of generated_heuristic -- see that entry.",
-    "selector": (
-        "Same gap as generated_heuristic: no current corrected-objective "
-        "selector model was ever persisted to disk. Not wired."
-    ),
 }
+
+
+# ---------------------------------------------------------------------------
+# Corrected-objective selector artifact loading
+# ---------------------------------------------------------------------------
+
+class SelectorArtifactError(Exception):
+    """Raised when a selector artifact fails validation. Never caught silently
+    -- callers must surface this and abort before starting the benchmark."""
+
+
+def load_and_validate_selector_artifact(
+    artifact_path: Path,
+) -> Tuple[PerPolicyRegressionAnwgSelector, Dict[str, Any]]:
+    """Load a selector .joblib plus its sibling manifest.json, refusing
+    anything not explicitly declared as trained under the Phase
+    2B.14-corrected `arrival_normalized_wg` objective.
+
+    This rejects every pre-correction artifact on disk (results/
+    phase2a2_selector_dataset/, phase2a3_selector_eval/, phase2a4_2b4_
+    final_eval/) automatically: none of them ship a manifest.json, because
+    they predate this validation contract entirely.
+    """
+    if not artifact_path.exists():
+        raise SelectorArtifactError(f"Selector artifact not found: {artifact_path}")
+    manifest_path = artifact_path.parent / "manifest.json"
+    if not manifest_path.exists():
+        raise SelectorArtifactError(
+            f"No manifest.json next to {artifact_path}. Refusing to load an "
+            "undocumented selector artifact -- every pre-correction *.joblib "
+            "on disk lacks a manifest for exactly this reason (see "
+            "NOT_WIRED_POLICIES comment above)."
+        )
+    manifest = json.loads(manifest_path.read_text())
+    objective = manifest.get("objective_definition", {}).get("name")
+    if objective != "arrival_normalized_wg":
+        raise SelectorArtifactError(
+            f"Selector manifest at {manifest_path} declares "
+            f"objective_definition.name={objective!r}, expected "
+            "'arrival_normalized_wg' (the Phase 2B.14-corrected objective). "
+            "Refusing to load a stale/pre-correction selector artifact."
+        )
+    selector_class = manifest.get("selector_class")
+    if selector_class != "PerPolicyRegressionAnwgSelector":
+        raise SelectorArtifactError(
+            f"Selector manifest declares selector_class={selector_class!r}; "
+            "this harness only knows how to load PerPolicyRegressionAnwgSelector."
+        )
+    selector = PerPolicyRegressionAnwgSelector.load(str(artifact_path))
+    return selector, manifest
+
+
+def selector_choose_subpolicy(
+    selector: PerPolicyRegressionAnwgSelector,
+    *,
+    waiting_requests: List[Request],
+    now: float,
+    active_sequence_count: int,
+    concurrency: int,
+    recent_violation_rate: float,
+) -> str:
+    """Compute the 18 online-observable features for the current decision
+    point and ask the selector which candidate policy to use next.
+
+    Uses extract_features() in CAUSAL mode -- the same feature-extraction
+    code path used to build the training data this selector was fit on
+    (results/phase2b13_selector_training_and_suspicion_audit/per_window.csv
+    and results/phase2b16_fresh_corrected_objective_validation/
+    fresh_per_window.csv), so this is not a re-derived/approximate feature
+    adapter. kv_utilization_available=False is an honest placeholder (see
+    NOT_WIRED_POLICIES comment): this harness has no /metrics scrape, so
+    that one feature is always 0.0 here, exactly as extract_features()
+    documents for callers that cannot observe it.
+    """
+    free_sequence_ratio = 1.0 - (active_sequence_count / concurrency if concurrency > 0 else 0.0)
+    features = extract_features(
+        window_requests=waiting_requests,
+        window_start_time=now,
+        mode=FeatureMode.CAUSAL,
+        prefix_requests=None,
+        recent_violation_rate=recent_violation_rate,
+        recent_violation_available=True,
+        active_sequence_count=active_sequence_count,
+        kv_utilization=0.0,
+        kv_utilization_available=False,
+        free_sequence_ratio=free_sequence_ratio,
+        free_sequence_ratio_available=True,
+    )
+    feat_row = {f"feat_{k}": v for k, v in features.items()}
+    chosen = selector.predict_one(feat_row)
+    if chosen not in SELECTOR_CANDIDATES:
+        raise SelectorArtifactError(
+            f"Selector predicted unknown policy {chosen!r}, not in SELECTOR_CANDIDATES."
+        )
+    return chosen
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +400,7 @@ class ComparisonResultRow:
     status: str
     error_type: Optional[str]
     error_message: Optional[str]
+    selector_chosen_policy: Optional[str] = None
 
 
 def _dispatch(planned_row: PlanRow, *, model: str, base_url: Optional[str], mock: bool, timeout_s: float) -> Dict[str, Any]:
@@ -310,8 +421,13 @@ def _dispatch(planned_row: PlanRow, *, model: str, base_url: Optional[str], mock
 def run_cell_for_policy(
     policy_name: str, cell_plan: List[PlanRow], concurrency: int, *,
     model: str, base_url: Optional[str], mock: bool, timeout_s: float,
+    selector_model: Optional[PerPolicyRegressionAnwgSelector] = None,
 ) -> List[ComparisonResultRow]:
-    policy = None if policy_name == "vllm_direct" else make_policy(policy_name)
+    is_meta_selector = policy_name == "selector"
+    if is_meta_selector and selector_model is None:
+        raise SelectorArtifactError("policy_name='selector' but no selector_model was provided.")
+    policy = None if policy_name in ("vllm_direct", "selector") else make_policy(policy_name)
+    subpolicy_cache: Dict[str, Any] = {}
 
     requests = [
         Request(
@@ -331,15 +447,23 @@ def run_cell_for_policy(
 
     results: List[ComparisonResultRow] = []
     active: Dict[int, Tuple[concurrent.futures.Future, float]] = {}
+    admission_choice: Dict[int, Optional[str]] = {}
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=max(1, concurrency))
     t0 = time.monotonic()
     completed_count = 0
     step = 0
 
+    def _recent_violation_rate() -> float:
+        completed = [r for r in results if r.status == "success"]
+        if not completed:
+            return 0.0
+        return sum(1 for r in completed if r.slo_violated) / len(completed)
+
     try:
         while waiting or active:
             now = time.monotonic() - t0
-            if policy is not None:
+            chosen_name: Optional[str] = None
+            if policy is not None or is_meta_selector:
                 # Policies mutate gpu.active_request_ids/current_kv_tokens as
                 # internal bookkeeping ("avoid over-admission within the same
                 # action" — see e.g. fifo.py). That must land on a disposable
@@ -360,7 +484,19 @@ def run_cell_for_policy(
                     time=now, waiting_queue=list(waiting), gpu_states=[gpu_snapshot],
                     completed_count=completed_count, step=step,
                 )
-                action = policy.select_action(state)
+                if is_meta_selector:
+                    waiting_ids = {w.request_id for w in waiting}
+                    waiting_requests = [r for r in requests if r.request_id in waiting_ids]
+                    chosen_name = normalize_policy_name(selector_choose_subpolicy(
+                        selector_model, waiting_requests=waiting_requests, now=now,
+                        active_sequence_count=len(gpu_state.active_request_ids),
+                        concurrency=concurrency, recent_violation_rate=_recent_violation_rate(),
+                    ))
+                    if chosen_name not in subpolicy_cache:
+                        subpolicy_cache[chosen_name] = make_policy(chosen_name)
+                    action = subpolicy_cache[chosen_name].select_action(state)
+                else:
+                    action = policy.select_action(state)
                 admitted_ids = action.all_admitted_ids()
             else:  # vllm_direct: strict arrival-order admission bounded by concurrency
                 free = gpu_state.max_active_sequences - len(gpu_state.active_request_ids)
@@ -378,6 +514,7 @@ def run_cell_for_policy(
                     _dispatch, by_id[rid], model=model, base_url=base_url, mock=mock, timeout_s=timeout_s,
                 )
                 active[rid] = (fut, admission_time)
+                admission_choice[rid] = chosen_name
                 gpu_state.active_request_ids.append(rid)
 
             if not active:
@@ -407,6 +544,7 @@ def run_cell_for_policy(
                         slo_violated=completion_time > row.slo_slack_seconds,
                         output_tokens=output_tokens, status="success",
                         error_type=None, error_message=None,
+                        selector_chosen_policy=admission_choice.get(rid),
                     ))
                 except Exception as exc:  # noqa: BLE001
                     status = "timeout" if "timed out" in str(exc).lower() else "error"
@@ -421,6 +559,7 @@ def run_cell_for_policy(
                         slo_deadline_s=row.slo_slack_seconds, slo_violated=None,
                         output_tokens=None, status=status, error_type=type(exc).__name__,
                         error_message=str(exc)[:500],
+                        selector_chosen_policy=admission_choice.get(rid),
                     ))
                 del active[rid]
                 gpu_state.active_request_ids.remove(rid)
@@ -642,6 +781,25 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "kernel compilation latency spike. Not counted in policy metrics; "
         "written to warmup_requests.jsonl/warmup_summary.md instead.",
     )
+    parser.add_argument(
+        "--selector-artifact", default=None,
+        help="Path to a corrected-objective selector .joblib (must have a "
+        "sibling manifest.json declaring objective_definition.name == "
+        "'arrival_normalized_wg'). Required if --policies includes "
+        "'selector' or --require-our-method is passed.",
+    )
+    parser.add_argument(
+        "--heuristic-artifact", default=None,
+        help="Reserved for a future corrected-objective generated-heuristic "
+        "artifact. No such artifact currently exists (see NOT_WIRED_POLICIES "
+        "for generated_heuristic/best_generated) -- passing this today is a no-op.",
+    )
+    parser.add_argument(
+        "--require-our-method", action="store_true",
+        help="Fail before starting the benchmark unless a valid "
+        "corrected-objective selector artifact loads successfully. Requires "
+        "--policies to include 'selector' and --selector-artifact to be set.",
+    )
     parser.add_argument("--output-dir", required=True)
     return parser.parse_args(argv)
 
@@ -655,9 +813,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
     args.policies = [normalize_policy_name(p) for p in args.policies]
 
-    unknown = set(args.policies) - set(WIRED_POLICIES) - set(NOT_WIRED_POLICIES.keys())
+    unknown = (
+        set(args.policies) - set(WIRED_POLICIES) - set(NOT_WIRED_POLICIES.keys()) - set(CONDITIONAL_POLICIES)
+    )
     if unknown:
-        print(f"ERROR: unknown policies: {sorted(unknown)}. Known: {WIRED_POLICIES}", file=sys.stderr)
+        print(f"ERROR: unknown policies: {sorted(unknown)}. Known: {WIRED_POLICIES + CONDITIONAL_POLICIES}", file=sys.stderr)
         return 2
     requested_not_wired = set(args.policies) & set(NOT_WIRED_POLICIES.keys())
     if requested_not_wired:
@@ -673,6 +833,37 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.allow_live_server and not args.mock and not args.server_url:
         print("ERROR: --allow-live-server requires --server-url.", file=sys.stderr)
         return 2
+
+    if args.require_our_method and "selector" not in args.policies:
+        print(
+            "ERROR: --require-our-method requires --policies to include 'selector'.",
+            file=sys.stderr,
+        )
+        return 9
+
+    selector_model: Optional[PerPolicyRegressionAnwgSelector] = None
+    selector_manifest: Optional[Dict[str, Any]] = None
+    needs_selector = "selector" in args.policies or args.require_our_method
+    if needs_selector:
+        if not args.selector_artifact:
+            print(
+                "ERROR: --policies includes 'selector' (or --require-our-method was "
+                "passed) but --selector-artifact was not given.",
+                file=sys.stderr,
+            )
+            return 9
+        try:
+            selector_model, selector_manifest = load_and_validate_selector_artifact(
+                repo_path(ROOT, args.selector_artifact)
+            )
+        except SelectorArtifactError as exc:
+            print(f"ERROR: selector artifact validation failed: {exc}", file=sys.stderr)
+            return 9
+        print(
+            f"  Loaded selector artifact: {args.selector_artifact} "
+            f"(objective={selector_manifest['objective_definition']['name']}, "
+            f"class={selector_manifest['selector_class']})"
+        )
 
     out_dir = repo_path(ROOT, args.output_dir)
     requests_path = out_dir / "requests.jsonl"
@@ -709,6 +900,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         "max_total_requests": args.max_total_requests, "fail_fast": args.fail_fast, "seed": args.seed,
         "mock": args.mock, "server_url": args.server_url, "run_status": run_status,
         "not_wired_policies": NOT_WIRED_POLICIES,
+        "selector_artifact": args.selector_artifact,
+        "selector_manifest": selector_manifest,
+        "require_our_method": args.require_our_method,
     }
     write_request_plan(plan, out_dir)
     write_manifest_and_repro(out_dir, plan, cfg)
@@ -754,6 +948,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             cell_results = run_cell_for_policy(
                 policy_name, cell_plan, concurrency, model=args.model,
                 base_url=args.server_url, mock=args.mock, timeout_s=args.timeout_seconds,
+                selector_model=selector_model,
             )
             for r in cell_results:
                 all_rows.append(asdict(r))

@@ -333,6 +333,70 @@ class RandomForestSelector:
         return obj
 
 
+class PerPolicyRegressionAnwgSelector:
+    """One RandomForestRegressor per candidate policy, predicting
+    arrival_normalized_wg; predict() takes the argmax across regressors.
+
+    Originally developed in Phase 2B.15 (scripts/run_phase2b15_corrected_
+    objective_selector_retraining.py) to retrain selectors under the
+    corrected arrival_normalized_wg objective (Phase 2B.14). Moved here in
+    corrected-objective selector-artifact persistence work (see
+    scripts/persist_corrected_selector_artifact.py) so trained instances have
+    a stable, picklable import path (`llmserveopt.selector.models.
+    PerPolicyRegressionAnwgSelector`) instead of only existing as an
+    in-memory class inside a one-off script.
+
+    Feature-only at predict() time -- no oracle/hindsight fields are used
+    to choose a policy. docs/result_claims.md (Phase 2B.16 safe claims)
+    reports this as "the strongest deployable selector under arrival-norm
+    WG": 0.9856 arrival_normalized_wg on 174 fresh held-out windows,
+    +0.0170 vs always-SCORPIO, 95% CI [0.0127, 0.0213].
+    """
+
+    name = "regression_anwg"
+
+    def __init__(self, n_estimators: int = 100, max_depth: int = 8, random_state: int = 42):
+        _check_sklearn()
+        self._params = dict(n_estimators=n_estimators, max_depth=max_depth, random_state=random_state)
+        self._regressors: Dict[str, object] = {}
+
+    def fit(self, rows: List[Dict]) -> "PerPolicyRegressionAnwgSelector":
+        from sklearn.ensemble import RandomForestRegressor
+        X = _feature_matrix(rows)
+        for p in SELECTOR_CANDIDATES:
+            comp_frac = np.array([float(r.get(f"completion_{p}", 1.0) or 1.0) for r in rows])
+            cond_wg = np.array([float(r.get(f"reward_{p}", 0.0) or 0.0) for r in rows])
+            y = comp_frac * cond_wg
+            reg = RandomForestRegressor(**self._params)
+            reg.fit(X, y)
+            self._regressors[p] = reg
+        return self
+
+    def predict(self, rows: List[Dict]) -> List[str]:
+        X = _feature_matrix(rows)
+        preds_by_policy = {p: reg.predict(X) for p, reg in self._regressors.items()}
+        return [
+            max(SELECTOR_CANDIDATES, key=lambda p: preds_by_policy[p][i])
+            for i in range(len(rows))
+        ]
+
+    def predict_one(self, features: Dict[str, float]) -> str:
+        return self.predict([features])[0]
+
+    def save(self, path: str) -> None:
+        import joblib
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        joblib.dump(self, path)
+
+    @classmethod
+    def load(cls, path: str) -> "PerPolicyRegressionAnwgSelector":
+        import joblib
+        obj = joblib.load(path)
+        if not isinstance(obj, cls):
+            raise TypeError(f"{path} does not contain a {cls.__name__} instance (got {type(obj)})")
+        return obj
+
+
 def evaluate_selector(
     selector,
     test_rows: List[Dict],

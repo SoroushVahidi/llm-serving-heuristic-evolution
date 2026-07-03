@@ -1,0 +1,77 @@
+{
+  "git_branch": "phase2c1-real-trace-ingestion-validation",
+  "git_commit": "6938b8b29efd5ddfcd98110d8381a4570fc8a1ae",
+  "git_dirty": true,
+  "planned_requests_per_policy": 24,
+  "policies": [
+    "vllm_direct",
+    "fifo",
+    "edf",
+    "shortest_output_first",
+    "least_laxity_first",
+    "estimated_service_time_first",
+    "selector"
+  ],
+  "cells": [
+    [
+      "medium",
+      64,
+      1
+    ],
+    [
+      "medium",
+      64,
+      2
+    ],
+    [
+      "medium",
+      64,
+      4
+    ],
+    [
+      "medium",
+      128,
+      1
+    ],
+    [
+      "medium",
+      128,
+      2
+    ],
+    [
+      "medium",
+      128,
+      4
+    ],
+    [
+      "short",
+      64,
+      1
+    ],
+    [
+      "short",
+      64,
+      2
+    ],
+    [
+      "short",
+      64,
+      4
+    ],
+    [
+      "short",
+      128,
+      1
+    ],
+    [
+      "short",
+      128,
+      2
+    ],
+    [
+      "short",
+      128,
+      4
+    ]
+  ]
+}

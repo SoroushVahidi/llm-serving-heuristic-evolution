@@ -108,14 +108,21 @@ def test_unsupported_policy_fails_clearly(tmp_path):
     assert not (tmp_path / "requests.jsonl").exists()
 
 
-def test_generated_heuristic_and_selector_rejected_with_explanation(tmp_path):
+def test_generated_heuristic_rejected_with_explanation(tmp_path):
     mod = _load_module()
     result = mod.main(["--mock", "--policies", "fifo,generated_heuristic", "--output-dir", str(tmp_path)])
     assert result == 8
-    result2 = mod.main(["--mock", "--policies", "selector", "--output-dir", str(tmp_path)])
-    assert result2 == 8
     result3 = mod.main(["--mock", "--policies", "best_generated", "--output-dir", str(tmp_path)])
     assert result3 == 8
+
+
+def test_selector_without_artifact_fails_clearly(tmp_path):
+    """'selector' is conditionally wired: requesting it without
+    --selector-artifact must fail before any benchmark work happens."""
+    mod = _load_module()
+    result = mod.main(["--mock", "--policies", "selector", "--output-dir", str(tmp_path)])
+    assert result == 9
+    assert not (tmp_path / "requests.jsonl").exists()
 
 
 # ---------------------------------------------------------------------------
@@ -282,6 +289,200 @@ def test_no_warmup_flag_skips_warmup_files(tmp_path):
         "--output-dir", str(tmp_path),
     ])
     assert not (tmp_path / "warmup_requests.jsonl").exists()
+
+
+# ---------------------------------------------------------------------------
+# Corrected-objective selector artifact: loading, validation, wiring
+# ---------------------------------------------------------------------------
+
+def _write_valid_selector_artifact(tmp_path: Path, subdir: str = "artifact") -> Path:
+    """Build a tiny, real (not mocked) PerPolicyRegressionAnwgSelector, fit on
+    synthetic rows, and persist it with a valid corrected-objective manifest
+    -- mirrors scripts/persist_corrected_selector_artifact.py's contract
+    without depending on the real 18MB repo artifact."""
+    pytest.importorskip("sklearn")
+    from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
+    from llmserveopt.selector.features import FEATURE_NAMES
+    from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector
+
+    rows = []
+    for i in range(40):
+        row = {f"feat_{name}": float((i * 3 + idx) % 7) for idx, name in enumerate(FEATURE_NAMES)}
+        for p in SELECTOR_CANDIDATES:
+            row[f"completion_{p}"] = 1.0
+            row[f"reward_{p}"] = 0.5 + 0.01 * ((i + hash(p)) % 10)
+        rows.append(row)
+
+    sel = PerPolicyRegressionAnwgSelector(n_estimators=5, max_depth=3, random_state=0)
+    sel.fit(rows)
+
+    out_dir = tmp_path / subdir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    artifact_path = out_dir / "regression_anwg_selector.joblib"
+    sel.save(str(artifact_path))
+    manifest = {
+        "artifact_type": "selector",
+        "selector_name": "regression_anwg",
+        "selector_class": "PerPolicyRegressionAnwgSelector",
+        "objective_definition": {"name": "arrival_normalized_wg"},
+    }
+    (out_dir / "manifest.json").write_text(json.dumps(manifest))
+    return artifact_path
+
+
+def test_selector_artifact_missing_manifest_rejected(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    (artifact_path.parent / "manifest.json").unlink()
+    with pytest.raises(mod.SelectorArtifactError, match="manifest"):
+        mod.load_and_validate_selector_artifact(artifact_path)
+
+
+def test_selector_artifact_wrong_objective_rejected(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    manifest_path = artifact_path.parent / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["objective_definition"]["name"] = "completed_request_quality"  # pre-correction metric
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(mod.SelectorArtifactError, match="arrival_normalized_wg"):
+        mod.load_and_validate_selector_artifact(artifact_path)
+
+
+def test_real_pre_correction_artifacts_rejected():
+    """Every actual pre-Phase-2B.14 *.joblib on disk must be rejected: none
+    of them ship a manifest.json (the validation contract postdates them)."""
+    mod = _load_module()
+    stale_paths = [
+        ROOT / "results/phase2a2_selector_dataset/smoke_selector_model/model_random_forest.joblib",
+        ROOT / "results/phase2a4_2b4_final_eval/selector_models/random_forest/model.joblib",
+    ]
+    for p in stale_paths:
+        if not p.exists():
+            continue  # environment without these large result files checked out
+        with pytest.raises(mod.SelectorArtifactError):
+            mod.load_and_validate_selector_artifact(p)
+
+
+def test_selector_artifact_missing_file_rejected(tmp_path):
+    mod = _load_module()
+    with pytest.raises(mod.SelectorArtifactError, match="not found"):
+        mod.load_and_validate_selector_artifact(tmp_path / "does_not_exist.joblib")
+
+
+def test_selector_artifact_loads_and_runs_end_to_end(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path, subdir="artifact")
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf,selector",
+        "--selector-artifact", str(artifact_path),
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    summary = json.loads((out_dir / "summary.json").read_text())
+    assert "selector" in summary["per_policy"]
+    assert summary["per_policy"]["selector"]["n_completed"] > 0
+
+    # Our method appears in aggregate_by_policy.csv
+    agg = (out_dir / "aggregate_by_policy.csv").read_text()
+    assert "\nselector," in agg or agg.startswith("selector,")
+
+    # selector_chosen_policy is recorded and is always a real candidate policy
+    from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
+    rows = [json.loads(l) for l in (out_dir / "requests.jsonl").read_text().strip().splitlines()]
+    selector_rows = [r for r in rows if r["policy"] == "selector"]
+    assert len(selector_rows) > 0
+    for r in selector_rows:
+        assert r["selector_chosen_policy"] in SELECTOR_CANDIDATES
+    non_selector_rows = [r for r in rows if r["policy"] != "selector"]
+    assert all(r["selector_chosen_policy"] is None for r in non_selector_rows)
+
+
+def test_selector_choose_subpolicy_is_feature_only(tmp_path):
+    """The selector's decision must come only from extract_features() output
+    (online-observable state), never from hindsight fields like actual
+    output length or completion status."""
+    mod = _load_module()
+    from llmserveopt.core.types import Request
+
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    selector, _ = mod.load_and_validate_selector_artifact(artifact_path)
+
+    waiting_requests = [
+        Request(
+            request_id=i, arrival_time=0.0, prompt_tokens=100,
+            predicted_output_tokens=64, actual_output_tokens=64,
+            slo_deadline=10.0, priority=1.0, class_id="default",
+        )
+        for i in range(3)
+    ]
+    chosen = mod.selector_choose_subpolicy(
+        selector, waiting_requests=waiting_requests, now=0.5,
+        active_sequence_count=1, concurrency=2, recent_violation_rate=0.0,
+    )
+    from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
+    assert chosen in SELECTOR_CANDIDATES
+
+    # Swapping in wildly different actual_output_tokens must not change the
+    # decision -- the feature adapter never reads it (extract_features()
+    # only reads prompt_tokens/predicted_output_tokens/slo_deadline/
+    # priority/class_id). Request is frozen, so build a fresh list.
+    mutated_requests = [
+        Request(
+            request_id=r.request_id, arrival_time=r.arrival_time,
+            prompt_tokens=r.prompt_tokens, predicted_output_tokens=r.predicted_output_tokens,
+            actual_output_tokens=999999.0, slo_deadline=r.slo_deadline,
+            priority=r.priority, class_id=r.class_id,
+        )
+        for r in waiting_requests
+    ]
+    chosen_after_mutation = mod.selector_choose_subpolicy(
+        selector, waiting_requests=mutated_requests, now=0.5,
+        active_sequence_count=1, concurrency=2, recent_violation_rate=0.0,
+    )
+    assert chosen_after_mutation == chosen
+
+
+def test_require_our_method_without_selector_in_policies_fails(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf", "--require-our-method",
+        "--selector-artifact", str(artifact_path),
+        "--output-dir", str(tmp_path / "run"),
+    ])
+    assert result == 9
+
+
+def test_require_our_method_fails_before_benchmark_starts_on_bad_artifact(tmp_path):
+    mod = _load_module()
+    bad_path = tmp_path / "nonexistent.joblib"
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,selector", "--require-our-method",
+        "--selector-artifact", str(bad_path),
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 9
+    assert not out_dir.exists() or not (out_dir / "requests.jsonl").exists()
+
+
+def test_require_our_method_succeeds_with_valid_artifact(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,selector", "--require-our-method",
+        "--selector-artifact", str(artifact_path),
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    assert (out_dir / "requests.jsonl").exists()
 
 
 # ---------------------------------------------------------------------------

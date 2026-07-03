@@ -149,3 +149,89 @@ def test_random_forest_feature_importances():
     fi = rf.feature_importances()
     assert set(fi.keys()) == set(FEATURE_NAMES)
     assert abs(sum(fi.values()) - 1.0) < 1e-6
+
+
+# --- PerPolicyRegressionAnwgSelector (only if sklearn available) ---
+
+def _make_anwg_rows(n: int = 60) -> list:
+    """Synthetic rows with completion_/reward_ columns for every candidate,
+    matching the schema PerPolicyRegressionAnwgSelector trains on."""
+    rows = []
+    for i in range(n):
+        row = {f"feat_{name}": float((i * 7 + idx) % 11) for idx, name in enumerate(FEATURE_NAMES)}
+        for pname in SELECTOR_CANDIDATES:
+            row[f"completion_{pname}"] = 1.0
+            row[f"reward_{pname}"] = 0.5 + 0.01 * (hash((i, pname)) % 10)
+        rows.append(row)
+    return rows
+
+
+def test_regression_anwg_predict_length():
+    pytest.importorskip("sklearn")
+    from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector
+
+    rows = _make_anwg_rows(60)
+    sel = PerPolicyRegressionAnwgSelector(n_estimators=10, max_depth=4, random_state=0)
+    sel.fit(rows)
+    preds = sel.predict(rows)
+    assert len(preds) == 60
+    assert all(p in SELECTOR_CANDIDATES for p in preds)
+
+
+def test_regression_anwg_predict_one():
+    pytest.importorskip("sklearn")
+    from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector
+
+    rows = _make_anwg_rows(60)
+    sel = PerPolicyRegressionAnwgSelector(n_estimators=10, max_depth=4, random_state=0)
+    sel.fit(rows)
+    pred = sel.predict_one(rows[0])
+    assert pred in SELECTOR_CANDIDATES
+
+
+def test_regression_anwg_is_feature_only_at_predict_time():
+    """predict() must not require completion_/reward_ (hindsight) columns --
+    only feat_* columns. This is the online-observable-field guarantee."""
+    pytest.importorskip("sklearn")
+    from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector
+
+    rows = _make_anwg_rows(60)
+    sel = PerPolicyRegressionAnwgSelector(n_estimators=10, max_depth=4, random_state=0)
+    sel.fit(rows)
+
+    feature_only_rows = [
+        {k: v for k, v in r.items() if k.startswith("feat_")} for r in rows
+    ]
+    preds_full = sel.predict(rows)
+    preds_feature_only = sel.predict(feature_only_rows)
+    assert preds_full == preds_feature_only
+
+
+def test_regression_anwg_save_load(tmp_path):
+    pytest.importorskip("sklearn")
+    pytest.importorskip("joblib")
+    from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector
+
+    rows = _make_anwg_rows(60)
+    sel = PerPolicyRegressionAnwgSelector(n_estimators=10, max_depth=4, random_state=0)
+    sel.fit(rows)
+    path = str(tmp_path / "regression_anwg.joblib")
+    sel.save(path)
+    sel2 = PerPolicyRegressionAnwgSelector.load(path)
+    assert sel.predict(rows) == sel2.predict(rows)
+
+
+def test_regression_anwg_load_rejects_wrong_type(tmp_path):
+    pytest.importorskip("sklearn")
+    pytest.importorskip("joblib")
+    import joblib
+    from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector, RandomForestSelector
+
+    rows = _make_rows(50)
+    rf = RandomForestSelector(n_estimators=5, max_depth=3, random_state=0, n_jobs=1)
+    rf.fit(rows)
+    path = str(tmp_path / "wrong_type.joblib")
+    joblib.dump(rf._clf, path)  # not a PerPolicyRegressionAnwgSelector instance
+
+    with pytest.raises(TypeError):
+        PerPolicyRegressionAnwgSelector.load(path)
