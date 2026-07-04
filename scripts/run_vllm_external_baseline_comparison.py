@@ -97,6 +97,48 @@ WIRED_POLICIES = (
 CONDITIONAL_POLICIES = ("selector",)
 
 # ---------------------------------------------------------------------------
+# Selector action space vs. what the harness can dispatch
+# ---------------------------------------------------------------------------
+#
+# The selector's output range is SELECTOR_CANDIDATES (every online-deployable
+# registered baseline, oracle excluded). When --policies includes "selector",
+# run_cell_for_policy dispatches each chosen sub-policy via make_policy(). For
+# that to be honest and never fail mid-run, EVERY label the selector can emit
+# must be constructible here. SELECTOR_DISPATCHABLE records exactly that set,
+# and the import-time check below fails loudly if a candidate the selector
+# could emit is not make_policy-constructible (e.g. a future registry change).
+#
+# This is the Option-1 fix for the Phase-2C selector action-space mismatch:
+# the selector's action space stays honest and unchanged; the harness is made
+# to execute the whole of it, and a preflight (preflight_selector_action_space)
+# verifies this over the actual request plan BEFORE any live request is sent,
+# so a request can never be dropped merely because a sub-policy adapter is
+# missing. See docs/vllm_real_serving_scaled_comparison.md.
+SELECTOR_DISPATCHABLE = tuple(SELECTOR_CANDIDATES)
+
+
+def _policy_constructible(name: str) -> bool:
+    """True iff make_policy(name) succeeds. Used by the import-time action-space
+    check and the runtime preflight -- a selector may only emit labels for
+    which this holds, or the harness could drop requests with no adapter."""
+    try:
+        make_policy(name)
+        return True
+    except Exception:  # noqa: BLE001 - any construction failure means not dispatchable
+        return False
+
+
+# Verified at import (not just at test time): every label the selector can emit
+# must be dispatchable by this harness. If this ever fails, a selector run could
+# hit an unconstructible sub-policy mid-benchmark -- catch it at import instead.
+_unbuildable = [name for name in SELECTOR_DISPATCHABLE if not _policy_constructible(name)]
+assert not _unbuildable, (
+    "SELECTOR_DISPATCHABLE contains labels make_policy() cannot construct: "
+    f"{_unbuildable}. The selector could emit these; every selector output "
+    "must be dispatchable by this harness (see Option-1 action-space fix)."
+)
+
+# ---------------------------------------------------------------------------
 # Arrival/SLO regimes
 # ---------------------------------------------------------------------------
 #
@@ -299,6 +341,113 @@ def selector_choose_subpolicy(
             f"Selector predicted unknown policy {chosen!r}, not in SELECTOR_CANDIDATES."
         )
     return chosen
+
+
+class SelectorActionSpaceError(SelectorArtifactError):
+    """Raised by the preflight when a selector could emit a label this harness
+    cannot dispatch. A subclass of SelectorArtifactError so existing callers
+    that abort on SelectorArtifactError also abort here -- always before any
+    live vLLM request is sent."""
+
+
+def preflight_selector_action_space(
+    selector: PerPolicyRegressionAnwgSelector,
+    plan: List["PlanRow"],
+    concurrency_list: List[int],
+) -> Dict[str, Any]:
+    """Verify, BEFORE any live request, that every policy label the selector
+    could emit over this exact request plan is dispatchable by the harness.
+
+    Two layers of checking:
+
+    1. Static superset guarantee. The selector's entire output range is
+       SELECTOR_CANDIDATES (enforced in selector_choose_subpolicy). If
+       SELECTOR_CANDIDATES is a subset of SELECTOR_DISPATCHABLE and every
+       SELECTOR_DISPATCHABLE label is make_policy-constructible, then NO label
+       the selector can ever emit -- on this plan or any other -- is
+       unsupported. This is the strongest guarantee and the primary abort gate.
+
+    2. Dynamic enumeration over the plan. We additionally invoke the selector at
+       the first decision point of every (regime, bucket, target, concurrency)
+       cell (all cell requests waiting, no in-flight work) and record the
+       realized label distribution. This exercises the real feature-extraction
+       + predict() path against the actual plan and catches any predict()-time
+       error before live requests, plus reports which sub-policies this workload
+       actually elicits. Any realized label not in SELECTOR_DISPATCHABLE is a
+       hard failure.
+
+    Returns a JSON-serializable report. Raises SelectorActionSpaceError if any
+    label (static or dynamic) is not dispatchable -- callers must let this
+    propagate and abort with no HTTP sent.
+    """
+    static_unsupported = sorted(set(SELECTOR_CANDIDATES) - set(SELECTOR_DISPATCHABLE))
+    unbuildable = sorted(name for name in SELECTOR_DISPATCHABLE if not _policy_constructible(name))
+
+    # Group plan into cells, exactly as the benchmark loop does.
+    cells: Dict[Tuple[str, str, int, int], List["PlanRow"]] = {}
+    for row in plan:
+        cells.setdefault(
+            (row.regime, row.prompt_bucket, row.target_output_tokens, row.concurrency_level), []
+        ).append(row)
+
+    emitted_counts: Dict[str, int] = {}
+    dynamic_errors: List[str] = []
+    for (regime, bucket, target, concurrency), cell_plan in cells.items():
+        requests = [
+            Request(
+                request_id=row.request_id, arrival_time=row.arrival_time,
+                prompt_tokens=row.intended_prompt_tokens,
+                predicted_output_tokens=row.target_output_tokens,
+                actual_output_tokens=row.target_output_tokens,
+                slo_deadline=row.arrival_time + row.slo_slack_seconds,
+                priority=row.priority, class_id=row.class_id,
+            )
+            for row in cell_plan
+        ]
+        try:
+            chosen = normalize_policy_name(selector_choose_subpolicy(
+                selector, waiting_requests=requests, now=0.0,
+                active_sequence_count=0, concurrency=concurrency,
+                recent_violation_rate=0.0,
+            ))
+        except Exception as exc:  # noqa: BLE001
+            dynamic_errors.append(
+                f"cell (regime={regime}, bucket={bucket}, target={target}, "
+                f"concurrency={concurrency}): selector predict failed: "
+                f"{type(exc).__name__}: {exc}"
+            )
+            continue
+        emitted_counts[chosen] = emitted_counts.get(chosen, 0) + 1
+
+    dynamic_unsupported = sorted(
+        label for label in emitted_counts if label not in SELECTOR_DISPATCHABLE
+    )
+
+    report = {
+        "selector_output_range": list(SELECTOR_CANDIDATES),
+        "harness_dispatchable": list(SELECTOR_DISPATCHABLE),
+        "labels_emitted_over_plan": dict(sorted(emitted_counts.items())),
+        "labels_supported": sorted(set(emitted_counts) & set(SELECTOR_DISPATCHABLE)),
+        "labels_unsupported_static": static_unsupported,
+        "labels_unsupported_dynamic": dynamic_unsupported,
+        "unbuildable_dispatchable_labels": unbuildable,
+        "n_cells_enumerated": len(cells),
+        "dynamic_predict_errors": dynamic_errors,
+        "ok": not (static_unsupported or unbuildable or dynamic_unsupported or dynamic_errors),
+    }
+
+    if not report["ok"]:
+        raise SelectorActionSpaceError(
+            "Selector action-space preflight failed -- aborting before any live "
+            "request. "
+            f"static_unsupported={static_unsupported} "
+            f"dynamic_unsupported={dynamic_unsupported} "
+            f"unbuildable={unbuildable} "
+            f"predict_errors={dynamic_errors}. "
+            "Every label the selector can emit must be dispatchable by this "
+            "harness (see SELECTOR_DISPATCHABLE / Option-1 action-space fix)."
+        )
+    return report
 
 
 # ---------------------------------------------------------------------------
@@ -638,16 +787,47 @@ def run_cell_for_policy(
                     step += 1
                     continue
                 if waiting:
-                    # Nothing active, nothing pending, but the chosen
-                    # policy still refuses to admit everyone left in
-                    # `waiting` (e.g. admission_control's laxity check
-                    # judging a deadline already unmeetable). Record these
-                    # explicitly as dropped -- never silently lose a
-                    # planned request from requests.jsonl -- so
-                    # n_total stays equal to len(cell_plan) for every
-                    # policy and compute_policy_metrics() counts them as
-                    # zero (per the arrival-normalized-WG denominator
-                    # convention: all arrivals, dropped = zero credit).
+                    # Nothing active, nothing pending, but the chosen policy
+                    # still refuses to admit everyone left in `waiting` (e.g.
+                    # scorpio_style_slo_guard's laxity guard judging a deadline
+                    # already unmeetable, or admission_control with a finite
+                    # laxity_threshold). Record these explicitly as dropped --
+                    # never silently lose a planned request from requests.jsonl
+                    # -- so n_total stays equal to len(cell_plan) for every
+                    # policy and compute_policy_metrics() counts them as zero
+                    # (arrival-normalized-WG convention: all arrivals, dropped =
+                    # zero credit).
+                    #
+                    # Error-type taxonomy (Part E of the action-space fix):
+                    #   - PolicyDeclinedAdmission: the chosen policy IS
+                    #     constructible/supported and deliberately admitted
+                    #     nothing (intentional load-shed / laxity guard). This
+                    #     is expected policy behavior, still zero-credit, and is
+                    #     NOT a harness/adapter failure.
+                    #   - PolicyNeverAdmitted: reserved for the (preflight-
+                    #     prevented) case where the chosen label has no
+                    #     dispatchable adapter at all. If we ever reach here with
+                    #     an unconstructible policy, that is a genuine harness bug
+                    #     and is labeled distinctly so it can never be confused
+                    #     with intentional shedding.
+                    declined_policy = chosen_name or policy_name
+                    adapter_missing = not _policy_constructible(declined_policy)
+                    if adapter_missing:
+                        drop_error_type = "PolicyNeverAdmitted"
+                        drop_message = (
+                            f"Policy '{declined_policy}' has no dispatchable adapter in this "
+                            "harness (make_policy failed). This should have been caught by the "
+                            "selector action-space preflight before any live request -- reaching "
+                            "it at runtime indicates a harness bug, not intentional load-shedding."
+                        )
+                    else:
+                        drop_error_type = "PolicyDeclinedAdmission"
+                        drop_message = (
+                            f"Policy '{declined_policy}' evaluated the waiting queue and "
+                            "deliberately admitted nothing (intentional load-shed / laxity guard: "
+                            "the remaining requests were judged unmeetable). Counted as zero-credit "
+                            "toward arrival-normalized WG; NOT a network/dispatch/adapter failure."
+                        )
                     drop_time = time.monotonic() - t0
                     for w in waiting:
                         row = by_id[w.request_id]
@@ -660,12 +840,8 @@ def run_cell_for_policy(
                             ttft_seconds=None, server_request_latency_seconds=None,
                             total_wall_time_seconds=None,
                             slo_deadline_s=row.slo_slack_seconds, slo_violated=True,
-                            output_tokens=None, status="dropped", error_type="PolicyNeverAdmitted",
-                            error_message=(
-                                f"Policy '{chosen_name or policy_name}' never admitted this request "
-                                "before the cell ran out of in-flight work (queue starvation, not a "
-                                "network/dispatch error)."
-                            ),
+                            output_tokens=None, status="dropped", error_type=drop_error_type,
+                            error_message=drop_message,
                             selector_chosen_policy=chosen_name if is_meta_selector else None,
                             regime=row.regime,
                         ))
@@ -733,6 +909,12 @@ def compute_policy_metrics(rows: List[Dict[str, Any]], policy_wall_clock_s: floa
     total = len(rows)
     completed = [r for r in rows if r["status"] == "success"]
     failed = [r for r in rows if r["status"] in ("error", "timeout", "dropped")]
+    dropped = [r for r in rows if r["status"] == "dropped"]
+    # Distinguish intentional load-shed (a supported policy chose to admit
+    # nothing) from a genuine missing-adapter drop. Post-preflight the latter
+    # must be zero; reporting both makes any future regression obvious.
+    n_declined_admission = sum(1 for r in dropped if r.get("error_type") == "PolicyDeclinedAdmission")
+    n_never_admitted = sum(1 for r in dropped if r.get("error_type") == "PolicyNeverAdmitted")
 
     def stats(values: List[float]) -> Dict[str, Optional[float]]:
         values = [v for v in values if v is not None]
@@ -770,6 +952,9 @@ def compute_policy_metrics(rows: List[Dict[str, Any]], policy_wall_clock_s: floa
         "n_total": total,
         "n_completed": len(completed),
         "n_failed": len(failed),
+        "n_dropped": len(dropped),
+        "n_declined_admission": n_declined_admission,
+        "n_never_admitted": n_never_admitted,
         "completion_fraction": completion_fraction,
         "ttft_stats": ttft_stats,
         "server_latency_stats": latency_stats,
@@ -1109,14 +1294,15 @@ def write_summary_md(out_dir: Path, overall: Dict[str, Any], cfg: Dict[str, Any]
     lines += [
         "## Policies compared",
         "",
-        "| Policy | n_total | n_completed | n_failed | Arrival-norm. WG | SLO violation (completed) | Mean TTFT (s) | Mean server latency (s) | Req/s |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "| Policy | n_total | n_completed | n_failed | Declined (load-shed) | Never-admitted (adapter bug) | Arrival-norm. WG | SLO violation (completed) | Mean TTFT (s) | Mean server latency (s) | Req/s |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for policy, m in overall["per_policy"].items():
         anwg = m["arrival_normalized_weighted_goodput"]
         slo = m["slo_violation_rate_among_completed"]
         lines.append(
             f"| {policy} | {m['n_total']} | {m['n_completed']} | {m['n_failed']} | "
+            f"{m.get('n_declined_admission', 0)} | {m.get('n_never_admitted', 0)} | "
             f"{anwg:.4f} | {(slo if slo is not None else float('nan')):.4f} | "
             f"{(m['ttft_stats']['mean'] or float('nan')):.4f} | "
             f"{(m['server_latency_stats']['mean'] or float('nan')):.4f} | "
@@ -1367,6 +1553,31 @@ def main(argv: Optional[List[str]] = None) -> int:
         )
         return 4
 
+    # Selector action-space preflight (Part E): before ANY live request, verify
+    # every label the selector could emit over this exact plan is dispatchable.
+    # If not, abort now -- no HTTP is sent, no server touched. --require-our-method
+    # thereby fails fast on an unsupported selector output label.
+    selector_preflight: Optional[Dict[str, Any]] = None
+    if selector_model is not None:
+        try:
+            selector_preflight = preflight_selector_action_space(
+                selector_model, plan, args.concurrency_list
+            )
+        except SelectorActionSpaceError as exc:
+            (out_dir / "selector_action_space_preflight.json").write_text(
+                json.dumps({"ok": False, "error": str(exc)}, indent=2)
+            )
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 9
+        (out_dir / "selector_action_space_preflight.json").write_text(
+            json.dumps(selector_preflight, indent=2)
+        )
+        print(
+            "  Selector action-space preflight OK: "
+            f"{selector_preflight['n_cells_enumerated']} cells enumerated, "
+            f"labels emitted={selector_preflight['labels_emitted_over_plan']}"
+        )
+
     run_status = "planned_only"
     if args.allow_live_server and not args.mock:
         run_status = "completed"
@@ -1388,6 +1599,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "arrival_regimes": args.arrival_regimes or ["steady_moderate (legacy burst)"],
         "decision_divergence_report": args.decision_divergence_report,
         "bootstrap_ci": args.bootstrap_ci,
+        "selector_action_space_preflight": selector_preflight,
     }
     write_request_plan(plan, out_dir)
     write_manifest_and_repro(out_dir, plan, cfg)

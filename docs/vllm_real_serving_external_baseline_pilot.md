@@ -9,6 +9,21 @@ multi-regime, higher-volume real-vLLM grid superseding this doc's
 24-req/policy smoke numbers. This doc remains accurate as the **first**
 real-vLLM run and for its methodology/environment notes, which still apply.
 
+**Selector caveat + harness fix (Phase 2C action-space remediation).** In the
+scaled run the selector arm was **completed but confounded**: it dropped 59/540
+requests, all because it routed to `scorpio_style_slo_guard`, a load-shedding
+admission policy whose deliberate declines the harness recorded as
+`PolicyNeverAdmitted`. Every selector-emittable sub-policy is in fact
+constructible via `make_policy()` (no missing adapter), so the fix keeps the
+selector's action space honest and unchanged and instead (a) adds a
+**preflight** that enumerates every label the selector can emit over the request
+plan and aborts before any live request if one is not dispatchable (so
+`--require-our-method` fails fast on an unsupported label), and (b) relabels
+intentional load-shed declines as `PolicyDeclinedAdmission`, reserving
+`PolicyNeverAdmitted` for the now-preflight-prevented missing-adapter case. See
+`docs/vllm_real_serving_scaled_comparison.md` for the full caveated result and
+`scripts/run_vllm_external_baseline_comparison.py` for the fix.
+
 **Status: real results.** This is the project's first comparison of its own
 scheduling/admission policies against each other on a **real, running vLLM
 server** — not a simulation, not a mock, not a dry-run. A tiny (24

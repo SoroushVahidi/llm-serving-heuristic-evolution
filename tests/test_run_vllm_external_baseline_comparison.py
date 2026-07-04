@@ -608,7 +608,10 @@ def test_dropped_requests_counted_in_policy_metrics_as_failed():
 
 def test_dropped_request_never_calls_real_network():
     """The dropped-row path must not attempt dispatch -- confirms this is a
-    pure admission-refusal, not a masked network failure."""
+    pure admission-refusal, not a masked network failure. A supported policy
+    that deliberately declines a doomed request is labeled
+    PolicyDeclinedAdmission (intentional load-shed), NOT PolicyNeverAdmitted
+    (reserved for a missing adapter, which cannot happen post-preflight)."""
     mod = _load_module()
     plan = mod.build_request_plan(["short"], [64], [1], 1, seed=1)
     impossible_row = dataclasses.replace(plan[0], slo_slack_seconds=-1000.0)
@@ -621,7 +624,9 @@ def test_dropped_request_never_calls_real_network():
     )
     assert len(results) == 1
     assert results[0].status == "dropped"
-    assert results[0].error_type == "PolicyNeverAdmitted"
+    # scorpio_style_slo_guard IS a supported/constructible policy; a decline is
+    # an intentional load-shed, not a missing-adapter PolicyNeverAdmitted.
+    assert results[0].error_type == "PolicyDeclinedAdmission"
 
 
 # ---------------------------------------------------------------------------
@@ -863,3 +868,185 @@ def test_all_required_output_files_present(tmp_path):
     assert result == 0
     for fname in REQUIRED_FILES:
         assert (tmp_path / fname).exists(), f"missing {fname}"
+
+
+# ---------------------------------------------------------------------------
+# Selector action-space: every selector-emittable label is dispatchable, and
+# the preflight aborts BEFORE any live request on an unsupported label.
+# ---------------------------------------------------------------------------
+
+def test_selector_dispatchable_set_covers_full_selector_output_range():
+    """The selector's entire output range (SELECTOR_CANDIDATES) must be a
+    subset of what the harness can dispatch (SELECTOR_DISPATCHABLE); otherwise
+    a selector run could route to a policy the harness cannot execute."""
+    mod = _load_module()
+    from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
+    assert set(SELECTOR_CANDIDATES) <= set(mod.SELECTOR_DISPATCHABLE)
+
+
+def test_every_dispatchable_policy_is_constructible_and_selects_without_error():
+    """Every label the selector may emit must be make_policy-constructible and
+    able to run select_action() on a realistic observable state -- this is the
+    Option-1 guarantee that the harness can execute the whole action space."""
+    mod = _load_module()
+    from llmserveopt.core.types import (
+        ObservableGPUState, ObservableRequest, ObservableState, Request,
+    )
+    reqs = [
+        Request(request_id=i, arrival_time=0.0, prompt_tokens=100,
+                predicted_output_tokens=64, actual_output_tokens=64,
+                slo_deadline=10.0, priority=1.0, class_id="default")
+        for i in range(3)
+    ]
+    waiting = [ObservableRequest.from_request(r) for r in reqs]
+    gpu = ObservableGPUState(
+        gpu_id=0, max_active_sequences=2, max_batch_tokens=10**9, max_kv_tokens=10**9,
+        active_request_ids=[], active_requests_info=[], current_kv_tokens=0,
+        tokens_decoded_per_request={},
+    )
+    state = ObservableState(time=0.0, waiting_queue=list(waiting), gpu_states=[gpu],
+                            completed_count=0, step=0)
+    for name in mod.SELECTOR_DISPATCHABLE:
+        assert mod._policy_constructible(name), f"{name} not constructible"
+        policy = mod.make_policy(name)
+        action = policy.select_action(state)  # must not raise
+        assert action is not None
+
+
+def test_preflight_passes_for_valid_selector_over_plan(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    selector, _ = mod.load_and_validate_selector_artifact(artifact_path)
+    plan = mod.build_request_plan(["short", "medium"], [64, 128], [1, 2], 2, seed=1)
+    report = mod.preflight_selector_action_space(selector, plan, [1, 2])
+    assert report["ok"] is True
+    assert report["labels_unsupported_static"] == []
+    assert report["labels_unsupported_dynamic"] == []
+    assert report["n_cells_enumerated"] > 0
+    # every emitted label is dispatchable
+    for label in report["labels_emitted_over_plan"]:
+        assert label in mod.SELECTOR_DISPATCHABLE
+
+
+def test_preflight_aborts_when_selector_emits_unsupported_label(tmp_path):
+    """If a selector could emit a label the harness cannot dispatch, the
+    preflight must raise before any live request is sent."""
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    selector, _ = mod.load_and_validate_selector_artifact(artifact_path)
+    plan = mod.build_request_plan(["short"], [64], [1], 2, seed=1)
+
+    # Shrink the harness's dispatchable set so a normally-supported emitted
+    # label becomes "unsupported", exercising the dynamic-unsupported abort.
+    original = mod.SELECTOR_DISPATCHABLE
+    try:
+        mod.SELECTOR_DISPATCHABLE = ("fifo",)  # deliberately too small
+        with pytest.raises(mod.SelectorActionSpaceError):
+            mod.preflight_selector_action_space(selector, plan, [1])
+    finally:
+        mod.SELECTOR_DISPATCHABLE = original
+
+
+def test_selector_action_space_error_is_selector_artifact_error():
+    mod = _load_module()
+    assert issubclass(mod.SelectorActionSpaceError, mod.SelectorArtifactError)
+
+
+def test_main_writes_preflight_report_and_runs_with_valid_selector(tmp_path):
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,selector", "--require-our-method",
+        "--selector-artifact", str(artifact_path),
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    preflight = json.loads((out_dir / "selector_action_space_preflight.json").read_text())
+    assert preflight["ok"] is True
+    assert preflight["labels_unsupported_static"] == []
+    # run_config.json records the preflight result too
+    cfg = json.loads((out_dir / "run_config.json").read_text())
+    assert cfg["selector_action_space_preflight"]["ok"] is True
+
+
+def test_main_aborts_before_live_request_when_preflight_fails(tmp_path, monkeypatch):
+    """--require-our-method must fail before any request when the selector's
+    action space is not fully dispatchable. No requests.jsonl is produced."""
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    out_dir = tmp_path / "run"
+    monkeypatch.setattr(mod, "SELECTOR_DISPATCHABLE", ("fifo",))  # too small on purpose
+    result = mod.main([
+        "--mock", "--policies", "fifo,selector", "--require-our-method",
+        "--selector-artifact", str(artifact_path),
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 9
+    assert not (out_dir / "requests.jsonl").exists()
+    preflight = json.loads((out_dir / "selector_action_space_preflight.json").read_text())
+    assert preflight["ok"] is False
+
+
+# ---------------------------------------------------------------------------
+# Load-shed vs missing-adapter taxonomy (Part E)
+# ---------------------------------------------------------------------------
+
+def test_declined_admission_labeled_distinctly_from_never_admitted():
+    """A constructible policy that deliberately admits nothing is a
+    PolicyDeclinedAdmission (intentional load-shed), never a
+    PolicyNeverAdmitted (missing adapter)."""
+    mod = _load_module()
+    plan = mod.build_request_plan(["short"], [64], [1], 1, seed=1)
+    impossible = dataclasses.replace(plan[0], slo_slack_seconds=-1000.0)
+    results = mod.run_cell_for_policy(
+        "scorpio_style_slo_guard", [impossible], concurrency=1,
+        model="m", base_url=None, mock=True, timeout_s=5,
+    )
+    assert len(results) == 1
+    assert results[0].status == "dropped"
+    assert results[0].error_type == "PolicyDeclinedAdmission"
+    assert results[0].error_type != "PolicyNeverAdmitted"
+
+
+def test_metrics_report_declined_and_never_admitted_counts():
+    mod = _load_module()
+    rows = [
+        {"policy": "p", "status": "success", "priority": 1.0, "slo_violated": False,
+         "server_request_latency_seconds": 0.1, "ttft_seconds": 0.01,
+         "total_wall_time_seconds": 0.1, "output_tokens": 10.0, "error_type": None},
+        {"policy": "p", "status": "dropped", "priority": 1.0, "slo_violated": True,
+         "server_request_latency_seconds": None, "ttft_seconds": None,
+         "total_wall_time_seconds": None, "output_tokens": None,
+         "error_type": "PolicyDeclinedAdmission"},
+    ]
+    m = mod.compute_policy_metrics(rows, policy_wall_clock_s=10.0)
+    assert m["n_dropped"] == 1
+    assert m["n_declined_admission"] == 1
+    assert m["n_never_admitted"] == 0
+    assert m["arrival_normalized_weighted_goodput"] == pytest.approx(0.5)
+
+
+def test_no_never_admitted_when_selector_runs_supported_action_space(tmp_path):
+    """End-to-end mock selector run: because the preflight guarantees the whole
+    action space is dispatchable, no request may be dropped with
+    PolicyNeverAdmitted (the missing-adapter failure mode)."""
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf,selector",
+        "--selector-artifact", str(artifact_path),
+        "--arrival-regimes", "steady_moderate,bursty_tight",
+        "--prompt-buckets", "short,medium", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    rows = [json.loads(l) for l in (out_dir / "requests.jsonl").read_text().strip().splitlines()]
+    never_admitted = [r for r in rows if r.get("error_type") == "PolicyNeverAdmitted"]
+    assert never_admitted == [], "no request may be dropped for a missing adapter post-preflight"

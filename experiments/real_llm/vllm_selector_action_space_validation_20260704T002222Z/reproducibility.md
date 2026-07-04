@@ -1,0 +1,257 @@
+# Reproducibility Metadata
+
+- Generated: 2026-07-04T00:22:34.659053+00:00
+- Git branch: `phase2c1-real-trace-ingestion-validation`
+- Git commit: `6a269f1b962b8ae81b8797ae2cbefbc33d0069d2`
+- Git dirty: True
+- Run status: `completed`
+
+## Config
+```json
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "policies": [
+    "vllm_direct",
+    "fifo",
+    "edf",
+    "shortest_output_first",
+    "least_laxity_first",
+    "estimated_service_time_first",
+    "selector"
+  ],
+  "prompt_buckets": [
+    "short",
+    "medium"
+  ],
+  "target_output_tokens_list": [
+    64,
+    128
+  ],
+  "concurrency_list": [
+    1,
+    2,
+    4
+  ],
+  "requests_per_cell": 2,
+  "timeout_seconds": 180.0,
+  "max_total_requests": 400,
+  "fail_fast": true,
+  "seed": 20260703,
+  "mock": false,
+  "server_url": "http://127.0.0.1:8001",
+  "run_status": "completed",
+  "not_wired_policies": {
+    "generated_heuristic": "The LLM-generated heuristic DSL shortlist predates the Phase 2B.14 objective correction and was never re-evaluated under arrival_normalized_wg (see module-level comment above). Use --policies ...,selector with --selector-artifact instead -- that path IS corrected-objective and wired.",
+    "best_generated": "alias of generated_heuristic -- see that entry."
+  },
+  "selector_artifact": "results/corrected_selector_artifact_regression_anwg/regression_anwg_selector.joblib",
+  "selector_manifest": {
+    "artifact_type": "selector",
+    "selector_name": "regression_anwg",
+    "selector_class": "PerPolicyRegressionAnwgSelector",
+    "description": "Per-policy RandomForestRegressor (one regressor per candidate policy, predicting arrival_normalized_wg); predict() takes the argmax across regressors' predictions for each window. Feature-only at inference time -- no oracle/hindsight fields.",
+    "created_at_utc": "2026-07-03T19:06:44.888395+00:00",
+    "created_by_script": "scripts/persist_corrected_selector_artifact.py",
+    "git_commit": "6938b8b29efd5ddfcd98110d8381a4570fc8a1ae",
+    "git_dirty_at_creation": true,
+    "objective_definition": {
+      "name": "arrival_normalized_wg",
+      "formula": "completion_fraction(policy, window) * completed_request_quality(policy, window)",
+      "completed_request_quality_formula": "sum(priority_i * slo_met_i for i in completed_requests) / sum(priority_i for i in completed_requests)",
+      "denominator_note": "arrival_normalized_wg's completion_fraction term folds ALL arrivals into the effective denominator: dropped/rejected/ unfinished requests count as zero via the completion_fraction multiplier, rather than being excluded outright as in the pre-correction completed_request_quality-only metric.",
+      "source_correction": "Phase 2B.14 metric audit (commit abf7989)"
+    },
+    "training": {
+      "input_csv": "results/phase2b13_selector_training_and_suspicion_audit/per_window.csv",
+      "input_csv_sha256": "93777ecc28d6952e70c9351ec7f8bf3051479378012f54925394b41424c94656",
+      "input_csv_rows": 319,
+      "train_diversity_seeds": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "val_diversity_seeds": [
+        11
+      ],
+      "n_train_windows": 245,
+      "n_val_windows": 41,
+      "n_test_windows_b13_heldout": 33,
+      "model_params": {
+        "n_estimators": 100,
+        "max_depth": 8,
+        "random_state": 42
+      },
+      "sklearn_version": "1.8.0",
+      "python_version": "3.12.3"
+    },
+    "features": {
+      "names": [
+        "queue_length",
+        "active_sequence_count",
+        "kv_utilization",
+        "free_sequence_ratio",
+        "mean_prompt_tokens",
+        "p95_prompt_tokens",
+        "mean_pred_output_tokens",
+        "p95_pred_output_tokens",
+        "pred_output_cv",
+        "fraction_tight_slo",
+        "mean_slack",
+        "p10_slack",
+        "min_slack",
+        "mean_waiting_time",
+        "p95_waiting_time",
+        "arrival_rate_est",
+        "burstiness_cv",
+        "recent_slo_violation_rate"
+      ],
+      "count": 18,
+      "kv_utilization_caveat": "kv_utilization (feat index 2) has no honest client-side substitute in an external-admission harness talking to a real vLLM server over HTTP -- it requires scraping vLLM's /metrics endpoint, which is not implemented in scripts/run_vllm_external_baseline_comparison.py. The remaining 17/18 features ARE reconstructable from client-side request bookkeeping (queue state, prompt/output-length stats, slack, arrival timing, recent SLO violations)."
+    },
+    "baseline_set_candidates": [
+      "fifo",
+      "edf",
+      "shortest_output_first",
+      "shortest_prompt_first",
+      "greedy_token_fill",
+      "least_loaded",
+      "multi_bin_batching",
+      "random_feasible",
+      "first_fit",
+      "best_fit",
+      "orca_style",
+      "vllm_style_token_budget",
+      "sarathi_style",
+      "splitfuse_style",
+      "slo_slack_score",
+      "weighted_shortest_processing",
+      "least_laxity_first",
+      "estimated_service_time_first",
+      "admission_control",
+      "scorpio_style_slo_guard"
+    ],
+    "held_out_performance": {
+      "phase2b13_heldout_33_windows": {
+        "source": "phase2b13_per_window.csv (heldout split, n=33)",
+        "n_windows": 33,
+        "selector_mean_anwg": 0.9722,
+        "always_scorpio_mean_anwg": 0.9638,
+        "always_wsp_mean_anwg": 0.9463,
+        "oracle_mean_anwg": 0.9883,
+        "gap_vs_always_scorpio": 0.0084,
+        "gap_vs_always_wsp": 0.0259,
+        "gap_vs_oracle": -0.0161,
+        "chosen_policy_distribution": {
+          "scorpio_style_slo_guard": "12",
+          "fifo": "9",
+          "admission_control": "6",
+          "edf": "3",
+          "least_laxity_first": "2",
+          "weighted_shortest_processing": "1"
+        }
+      },
+      "phase2b16_fresh_174_windows": {
+        "source": "phase2b16_fresh_per_window.csv (n=174, disjoint seeds/workloads)",
+        "n_windows": 174,
+        "selector_mean_anwg": 0.9856,
+        "always_scorpio_mean_anwg": 0.9686,
+        "always_wsp_mean_anwg": 0.9648,
+        "oracle_mean_anwg": 0.9879,
+        "gap_vs_always_scorpio": 0.017,
+        "gap_vs_always_wsp": 0.0208,
+        "gap_vs_oracle": -0.0023,
+        "chosen_policy_distribution": {
+          "edf": "70",
+          "fifo": "57",
+          "admission_control": "28",
+          "scorpio_style_slo_guard": "16",
+          "weighted_shortest_processing": "2",
+          "shortest_output_first": "1"
+        }
+      },
+      "reproducibility_check_vs_published_claim": {
+        "published_selector_mean_anwg": 0.9856,
+        "published_gap_vs_scorpio": 0.017,
+        "freshly_computed_selector_mean_anwg": 0.9856,
+        "freshly_computed_gap_vs_scorpio": 0.017,
+        "matches_published_claim": true
+      }
+    },
+    "known_limitations": [
+      "rf_anwg (a related but different selector) loses to always-SCORPIO on the fresh_targeted workload subset; regression_anwg does not (per docs/result_claims.md), but this was not independently re-verified per-workload-group in this script -- only the aggregate 174-window number was reproduced here.",
+      "93.1% of the 174 fresh windows are near-ties (margin < 0.005); gains are concentrated in a minority of meaningful windows.",
+      "kv_utilization is not client-observable in the real-vLLM external-admission harness (see features.kv_utilization_caveat) -- any live deployment must use a placeholder or /metrics scrape for that one feature."
+    ]
+  },
+  "require_our_method": true,
+  "arrival_regimes": [
+    "steady_moderate (legacy burst)"
+  ],
+  "decision_divergence_report": true,
+  "bootstrap_ci": true,
+  "selector_action_space_preflight": {
+    "selector_output_range": [
+      "fifo",
+      "edf",
+      "shortest_output_first",
+      "shortest_prompt_first",
+      "greedy_token_fill",
+      "least_loaded",
+      "multi_bin_batching",
+      "random_feasible",
+      "first_fit",
+      "best_fit",
+      "orca_style",
+      "vllm_style_token_budget",
+      "sarathi_style",
+      "splitfuse_style",
+      "slo_slack_score",
+      "weighted_shortest_processing",
+      "least_laxity_first",
+      "estimated_service_time_first",
+      "admission_control",
+      "scorpio_style_slo_guard"
+    ],
+    "harness_dispatchable": [
+      "fifo",
+      "edf",
+      "shortest_output_first",
+      "shortest_prompt_first",
+      "greedy_token_fill",
+      "least_loaded",
+      "multi_bin_batching",
+      "random_feasible",
+      "first_fit",
+      "best_fit",
+      "orca_style",
+      "vllm_style_token_budget",
+      "sarathi_style",
+      "splitfuse_style",
+      "slo_slack_score",
+      "weighted_shortest_processing",
+      "least_laxity_first",
+      "estimated_service_time_first",
+      "admission_control",
+      "scorpio_style_slo_guard"
+    ],
+    "labels_emitted_over_plan": {
+      "admission_control": 3,
+      "edf": 5,
+      "fifo": 4
+    },
+    "labels_supported": [
+      "admission_control",
+      "edf",
+      "fifo"
+    ],
+    "labels_unsupported_static": [],
+    "labels_unsupported_dynamic": [],
+    "unbuildable_dispatchable_labels": [],
+    "n_cells_enumerated": 12,
+    "dynamic_predict_errors": [],
+    "ok": true
+  }
+}
+```

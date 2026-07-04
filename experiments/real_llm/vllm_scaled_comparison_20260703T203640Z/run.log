@@ -1,0 +1,14 @@
+  Loaded selector artifact: results/corrected_selector_artifact_regression_anwg/regression_anwg_selector.joblib (objective=arrival_normalized_wg, class=PerPolicyRegressionAnwgSelector)
+vLLM external-admission baseline comparison
+  output_dir:        /home/soroush/llm-serving-heuristic-evolution/experiments/real_llm/vllm_scaled_comparison_20260703T203640Z
+  planned per policy: 540
+  policies:          ['vllm_direct', 'fifo', 'edf', 'least_laxity_first', 'estimated_service_time_first', 'shortest_output_first', 'selector']
+  run_status:        completed
+  Running warm-up phase (not counted in policy metrics)...
+  [edf] completed=540/540 arrival_norm_wg=0.2303082191780822
+  [estimated_service_time_first] completed=540/540 arrival_norm_wg=0.22345890410958905
+  [fifo] completed=540/540 arrival_norm_wg=0.2440068493150685
+  [least_laxity_first] completed=540/540 arrival_norm_wg=0.22773972602739725
+  [selector] completed=481/540 arrival_norm_wg=0.22742316784869973
+  [shortest_output_first] completed=540/540 arrival_norm_wg=0.24315068493150685
+  [vllm_direct] completed=540/540 arrival_norm_wg=0.24143835616438356

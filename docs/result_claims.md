@@ -193,6 +193,41 @@ Safe phrasing: "We evaluate LLM-generated deterministic heuristics under a calib
 | "rf_anwg generalizes better than dt_anwg" | rf_anwg shows slight gains within the current eval set; CI overlap with dt_anwg |
 | "Adding more external policies closes the envelope gap" | Not tested; envelope gap is a structural property of the training distribution |
 
+## Safe claims (Phase 2C — real-vLLM scaled external-admission comparison)
+
+Source: `experiments/real_llm/vllm_scaled_comparison_20260703T203640Z/`,
+documented in `docs/vllm_real_serving_scaled_comparison.md`. Real vLLM server
+(`Qwen/Qwen2.5-0.5B-Instruct`, port 8001), 3780 requests (7 policies × 540), 3
+arrival regimes. No hosted API called.
+
+- "In a real multi-regime vLLM external-admission comparison, FIFO,
+  shortest-output-first, and vLLM-direct achieved the highest
+  arrival-normalized weighted goodput **as executed** (0.2440 / 0.2432 /
+  0.2414), ahead of the selector as executed (0.2274, rank 6/7)."
+- "All six fixed baseline policies completed 540/540 requests with zero
+  network/timeout failures; their ranking is a valid real-vLLM
+  external-admission result."
+- "The selector arm is **caveated/confounded**: it dropped 59/540 (10.9%)
+  requests, all because it routed to `scorpio_style_slo_guard`, which
+  load-sheds requests it judges unmeetable. The selector's conditional quality
+  among served requests (0.2553) was the highest of any policy."
+- "No selector-vs-baseline arrival-normalized WG difference is statistically
+  distinguishable from zero (all six paired bootstrap 95% CIs include zero)."
+- "Decision-divergence analysis over the identical plan found 186 requests
+  whose real SLO outcome differed between the selector and at least one
+  baseline (648 cells compared)."
+- "This measures external admission control layered on top of vLLM, not vLLM's
+  own internal scheduler."
+
+## Unsafe claims (Phase 2C real-vLLM scaled comparison)
+
+| Claim | Why Unsafe |
+|---|---|
+| "The selector is intrinsically worse than FIFO/SOF/vLLM-direct" | Its action space includes a load-shedding sub-policy (`scorpio_style_slo_guard`) whose declines the harness recorded as drops; the comparison is not like-for-like until the full action space is executed on equal admission terms or the selector is restricted to a non-shedding executable action set |
+| "The selector beats any baseline on real vLLM" | All six selector-minus-baseline bootstrap CIs include zero |
+| "This compares our method against vLLM's scheduler" | It does not observe vLLM's internal batching/KV scheduler |
+| "The 59 dropped requests are network/harness failures" | They are intentional load-shedding by `scorpio_style_slo_guard`, correctly executed; now labeled `PolicyDeclinedAdmission` |
+
 ## How to harden claims for Phase 2+
 
 - Validate against real vLLM / Sarathi / DeepSpeed-FastGen serving traces

@@ -1,0 +1,62 @@
+{
+  "selector_output_range": [
+    "fifo",
+    "edf",
+    "shortest_output_first",
+    "shortest_prompt_first",
+    "greedy_token_fill",
+    "least_loaded",
+    "multi_bin_batching",
+    "random_feasible",
+    "first_fit",
+    "best_fit",
+    "orca_style",
+    "vllm_style_token_budget",
+    "sarathi_style",
+    "splitfuse_style",
+    "slo_slack_score",
+    "weighted_shortest_processing",
+    "least_laxity_first",
+    "estimated_service_time_first",
+    "admission_control",
+    "scorpio_style_slo_guard"
+  ],
+  "harness_dispatchable": [
+    "fifo",
+    "edf",
+    "shortest_output_first",
+    "shortest_prompt_first",
+    "greedy_token_fill",
+    "least_loaded",
+    "multi_bin_batching",
+    "random_feasible",
+    "first_fit",
+    "best_fit",
+    "orca_style",
+    "vllm_style_token_budget",
+    "sarathi_style",
+    "splitfuse_style",
+    "slo_slack_score",
+    "weighted_shortest_processing",
+    "least_laxity_first",
+    "estimated_service_time_first",
+    "admission_control",
+    "scorpio_style_slo_guard"
+  ],
+  "labels_emitted_over_plan": {
+    "admission_control": 3,
+    "edf": 5,
+    "fifo": 4
+  },
+  "labels_supported": [
+    "admission_control",
+    "edf",
+    "fifo"
+  ],
+  "labels_unsupported_static": [],
+  "labels_unsupported_dynamic": [],
+  "unbuildable_dispatchable_labels": [],
+  "n_cells_enumerated": 12,
+  "dynamic_predict_errors": [],
+  "ok": true
+}
