@@ -22,6 +22,17 @@ from llmserveopt.selector.dataset_v2.features import (
     selector_v2_feature_columns,
 )
 from llmserveopt.selector.dataset_v2.scenario_families import all_scenario_family_specs
+from llmserveopt.selector.dataset_v2.scenario_redesign import (
+    DISCRIMINATIVE_POOL,
+    REPRESENTATIVE_POOL,
+    bottleneck_taxonomy_specs,
+    sampled_bottleneck_specs,
+    transform_requests,
+)
+from llmserveopt.selector.dataset_v2.scenario_search import (
+    TrialSummary,
+    retained_pool_for_trial,
+)
 from llmserveopt.selector.dataset_v2.schema import (
     PolicyOutcomeVector,
     ScenarioIdentifiers,
@@ -226,6 +237,26 @@ def test_near_tie_classification_and_regret_computation():
     assert regrets["c"] == pytest.approx(0.3)
 
 
+def test_practical_threshold_logic_separates_near_moderate_strong():
+    objective = Objective("weighted_goodput", True, lambda o: o.weighted_goodput)
+    near = compute_discriminativeness([
+        PolicyOutcomeVector("a", "historical", weighted_goodput=1.0),
+        PolicyOutcomeVector("b", "historical", weighted_goodput=0.9985),
+        PolicyOutcomeVector("c", "historical", weighted_goodput=0.9),
+    ], objective)
+    moderate = compute_discriminativeness([
+        PolicyOutcomeVector("a", "historical", weighted_goodput=1.0),
+        PolicyOutcomeVector("b", "historical", weighted_goodput=0.99),
+    ], objective)
+    strong = compute_discriminativeness([
+        PolicyOutcomeVector("a", "historical", weighted_goodput=1.0),
+        PolicyOutcomeVector("b", "historical", weighted_goodput=0.96),
+    ], objective)
+    assert near.classification == "NEAR_TIE"
+    assert moderate.classification == "MODERATELY_DISCRIMINATIVE"
+    assert strong.classification == "STRONGLY_DISCRIMINATIVE"
+
+
 def test_lower_is_better_regret_computation():
     objective = Objective("p95_latency", False, lambda o: o.p95_latency)
     outcomes = [
@@ -240,6 +271,7 @@ def test_lower_is_better_regret_computation():
 def test_policy_compatibility_by_topology():
     mono = monolithic_candidate_policies()
     assert {"vllm_faithful", "sarathi_faithful"}.issubset(set(mono))
+    assert {"shortest_output_first", "estimated_service_time_first", "best_fit", "multi_bin_batching"}.issubset(set(mono))
     assert is_policy_compatible_with_topology("fifo", "monolithic")
     assert not is_policy_compatible_with_topology("fifo", "disaggregated_prefill_decode")
     assert not is_policy_compatible_with_topology("distserve_faithful", "monolithic")
@@ -254,9 +286,87 @@ def test_missing_metric_handling_uses_none_not_zero():
     metrics.weighted_goodput = math.nan
     outcome = metrics_to_outcome_vector("fifo", metrics, {"admit": 0, "preempt": 0, "swap": 0, "migrate": 0}, 1)
 
-    assert outcome.weighted_goodput is None
+    assert outcome.weighted_goodput == pytest.approx(0.0)
     assert outcome.p50_ttft is None
     assert outcome.p99_tpot is None
-    assert "weighted_goodput" not in outcome.available_metrics
+    assert "weighted_goodput" in outcome.available_metrics
     assert outcome.num_dropped == 10
     assert outcome.rejection_rate == pytest.approx(1.0)
+
+
+def test_redesigned_scenario_generation_is_deterministic_and_preserves_ancestor():
+    specs_a = sampled_bottleneck_specs(seed=1234, count=4)
+    specs_b = sampled_bottleneck_specs(seed=1234, count=4)
+    assert [s.family_id for s in specs_a] == [s.family_id for s in specs_b]
+    assert [s.request_plan_ancestor_id for s in specs_a] == [s.request_plan_ancestor_id for s in specs_b]
+    assert all(s.scenario_pool == DISCRIMINATIVE_POOL for s in specs_a)
+    reqs_a = specs_a[0].build(99)
+    reqs_b = specs_b[0].build(99)
+    assert reqs_a == reqs_b
+
+
+def test_transform_requests_preserves_request_order_and_source_grouping_inputs():
+    base = [_req(i, float(i), pred=10, actual=20, slack=10.0) for i in range(12)]
+    transformed_a = transform_requests(
+        base,
+        time_scale=0.5,
+        slo_scale=0.2,
+        prediction_noise_rel=0.1,
+        prediction_bias=0.5,
+        burst_amplification=3.0,
+        seed=7,
+    )
+    transformed_b = transform_requests(
+        base,
+        time_scale=0.5,
+        slo_scale=0.2,
+        prediction_noise_rel=0.1,
+        prediction_bias=0.5,
+        burst_amplification=3.0,
+        seed=7,
+    )
+    assert transformed_a == transformed_b
+    assert [r.request_id for r in transformed_a] == list(range(12))
+    assert transformed_a[-1].arrival_time < base[-1].arrival_time
+    assert transformed_a[0].slo_deadline - transformed_a[0].arrival_time == pytest.approx(2.0)
+
+
+def test_adaptive_retention_logic_prefers_discriminative_trials():
+    summary = TrialSummary(
+        family_id="f",
+        seed=1,
+        bottleneck_class="kv_pressure",
+        source_trace="synthetic",
+        request_plan_ancestor_id="ancestor",
+        num_windows=4,
+        class_counts={"STRONGLY_DISCRIMINATIVE": 2, "NEAR_TIE": 2},
+        winner_counts={"weighted_shortest_processing": 2, "scorpio_style_slo_guard": 2},
+        max_spread=0.15,
+        mean_spread=0.08,
+        mean_best_score=0.8,
+        mean_best_fixed_score=0.75,
+        oracle_headroom=0.05,
+    )
+    pool, reason = retained_pool_for_trial(summary, {}, 0, 0)
+    assert pool == DISCRIMINATIVE_POOL
+    assert reason in {
+        "discriminative_underrepresented_winner",
+        "discriminative_oracle_headroom",
+        "discriminative_density",
+    }
+
+
+def test_bottleneck_taxonomy_has_required_classes_and_pool_labels():
+    specs = bottleneck_taxonomy_specs()
+    required = {
+        "admission_pressure",
+        "kv_pressure",
+        "prefill_heavy",
+        "decode_heavy",
+        "slo_heterogeneous",
+        "prediction_noise",
+        "bursty_transient",
+        "resource_scarcity",
+    }
+    assert required.issubset({s.bottleneck_class for s in specs})
+    assert all(s.scenario_pool in {REPRESENTATIVE_POOL, DISCRIMINATIVE_POOL} for s in specs)
