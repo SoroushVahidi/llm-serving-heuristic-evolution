@@ -92,12 +92,24 @@ class GPUState:
         req: InternalRequest,
         admission_time: float,
         service_model: Optional[ServiceModel] = None,
+        is_relocation: bool = False,
     ) -> bool:
         """Admit a request.  Returns False and warns if constraints violated.
 
         When service_model is provided, initialises prefill_remaining per the
         configured prefill cost.  When service_model is None (or Phase 1 mode),
         prefill_remaining stays 0 (instant prefill).
+
+        is_relocation=True (added for llumnix_faithful; see
+        docs/llumnix_faithful_scheduler_reference.md): this call is resuming
+        an already-in-service request that a policy live-migrated here via
+        Action.migrate, not admitting it for the first time. `admission_time`
+        (the overall service-start anchor used for queuing-delay/TTFT/latency
+        metrics) and `prefill_remaining` are left exactly as they already are
+        (preserved across the relocation by GPUState.evict(preserve_progress=True)
+        on the source GPU) rather than being recomputed/reset, so a live
+        migration is invisible to end-to-end service-time metrics -- exactly
+        the paper's own intent ("live migration... near-zero overhead").
         """
         violations = check_admission(self.config, self.active_requests, [req])
         if violations:
@@ -108,18 +120,20 @@ class GPUState:
             return False
         req.phase = RequestPhase.ACTIVE
         req.gpu_id = self.gpu_id
-        req.admission_time = admission_time
         req.transfer_ready_time = -1.0   # no longer migrating, if it was
-        if self.config.role == "decode":
-            # Disaggregated decode-side GPU: prefill already happened on a
-            # role="prefill" GPU before this request was handed off here.
-            req.prefill_remaining = 0
-        elif service_model is not None:
-            req.prefill_remaining = service_model.compute_prefill_tokens(
-                req.request.prompt_tokens
-            )
-        else:
-            req.prefill_remaining = 0   # Phase 1: instant prefill
+        req.migration_destination_gpu_id = -1   # no longer relocating, if it was
+        if not is_relocation:
+            req.admission_time = admission_time
+            if self.config.role == "decode":
+                # Disaggregated decode-side GPU: prefill already happened on a
+                # role="prefill" GPU before this request was handed off here.
+                req.prefill_remaining = 0
+            elif service_model is not None:
+                req.prefill_remaining = service_model.compute_prefill_tokens(
+                    req.request.prompt_tokens
+                )
+            else:
+                req.prefill_remaining = 0   # Phase 1: instant prefill
         self._active[req.request_id] = req
         return True
 
@@ -146,20 +160,30 @@ class GPUState:
         for re-queuing the returned request into the bridge queue as
         immediately transfer-ready, not the ordinary waiting queue.
 
+        preserve_progress=True is also used by llumnix_faithful's live
+        migration (Action's `migrate` field; see
+        docs/llumnix_faithful_scheduler_reference.md): in that case
+        `admission_time` (the overall service-start anchor -- see
+        GPUState.admit's `is_relocation` parameter) is ALSO preserved
+        (unlike a plain preempt/swap re-admission, which always overwrites
+        it with the current time regardless of what evict() leaves it as),
+        so a live migration is invisible to end-to-end service-time
+        metrics, matching the paper's own "near-zero overhead" claim.
+
         Returns the InternalRequest (for the caller to re-enqueue) or None
         if request_id is not currently active on this GPU. Backward
-        compatible: only invoked when an Action's `preempt`/`swap` field is
-        non-empty, which no existing policy other than distserve_faithful
-        (for `swap`) or vllm_faithful/sarathi_faithful (for `preempt`) ever
-        sets.
+        compatible: only invoked when an Action's `preempt`/`swap`/`migrate`
+        field is non-empty, which no existing policy other than
+        distserve_faithful (for `swap`), llumnix_faithful (for `migrate`),
+        or vllm_faithful/sarathi_faithful (for `preempt`) ever sets.
         """
         req = self._active.pop(request_id, None)
         if req is None:
             return None
         req.phase = RequestPhase.WAITING
         req.gpu_id = -1
-        req.admission_time = -1.0
         if not preserve_progress:
+            req.admission_time = -1.0
             req.tokens_decoded = 0
             req.prefill_remaining = 0
             req.first_token_time = -1.0

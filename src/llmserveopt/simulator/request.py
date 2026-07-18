@@ -19,6 +19,25 @@ docs/distserve_faithful_scheduler_reference.md)
 * transfer_ready_time : wall-clock time at which this request's transfer
   delay elapses (only meaningful while phase == MIGRATING). -1.0 for every
   request that never migrates.
+
+Live cross-instance relocation addition (opt-in; see
+docs/llumnix_faithful_scheduler_reference.md)
+-------------------------------------------------
+* RequestPhase.RELOCATING : an already-active (typically already-decoding)
+  request that a policy has moved off its current GPU/instance toward a
+  specific OTHER instance for load-balancing/fragmentation/priority
+  reasons -- NOT a disaggregated prefill->decode handoff (RequestPhase.
+  MIGRATING; see above). Deliberately a separate phase and a separate
+  simulator-level container (Simulator._relocating), reusing
+  `transfer_ready_time` for the timestamp field (same concept: "when does
+  this request become admission-eligible elsewhere") but never sharing the
+  bridge queue's any-decode-GPU-may-claim-it semantics -- a relocating
+  request has one fixed destination, tracked in
+  `migration_destination_gpu_id`. Only ever produced when a policy sets
+  Action.migrate; no existing policy does.
+* migration_destination_gpu_id : the gpu_id this request must be admitted
+  onto once its relocation transfer completes (only meaningful while
+  phase == RELOCATING). -1 for every request that never relocates.
 """
 from __future__ import annotations
 
@@ -29,10 +48,11 @@ from ..core.types import Request
 
 
 class RequestPhase(Enum):
-    WAITING    = auto()
-    ACTIVE     = auto()     # covers both prefill and decode sub-phases
-    MIGRATING  = auto()     # disaggregated mode only -- see module docstring
-    COMPLETED  = auto()
+    WAITING     = auto()
+    ACTIVE      = auto()     # covers both prefill and decode sub-phases
+    MIGRATING   = auto()     # disaggregated prefill/decode mode only -- see module docstring
+    RELOCATING  = auto()     # live cross-instance relocation only -- see module docstring
+    COMPLETED   = auto()
 
 
 @dataclass
@@ -49,6 +69,8 @@ class InternalRequest:
     first_token_time: float = -1.0   # time of first decoded token output
     # Disaggregated prefill/decode field (opt-in; -1.0 = not migrating)
     transfer_ready_time: float = -1.0
+    # Live cross-instance relocation field (opt-in; -1 = not relocating)
+    migration_destination_gpu_id: int = -1
 
     # ------------------------------------------------------------------ #
     # Phase properties

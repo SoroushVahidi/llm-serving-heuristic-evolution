@@ -110,6 +110,16 @@ class ObservableGPUState:
     # Disaggregated prefill/decode execution (opt-in; mirrors GPUConfig.role).
     # None for every legacy/colocated GPU.
     role: Optional[str] = None
+    # Live cross-instance relocation (opt-in; see
+    # docs/llumnix_faithful_scheduler_reference.md): requests whose
+    # migration transfer to THIS specific GPU has already completed and
+    # are awaiting admission here. Distinct from ObservableState's own
+    # migrating_queue (disaggregated prefill/decode bridge queue, any
+    # decode-role GPU may claim those) -- a relocation always has exactly
+    # one fixed destination, fixed at the moment a policy issued
+    # Action.migrate. Always empty unless a policy has ever set
+    # Action.migrate.
+    incoming_migrations: List[ObservableRequest] = field(default_factory=list)
 
     @property
     def free_sequences(self) -> int:

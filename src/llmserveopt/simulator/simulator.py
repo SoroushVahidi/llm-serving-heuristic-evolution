@@ -72,6 +72,17 @@ class Simulator:
         # is set.
         self._migrating: deque[InternalRequest] = deque()
         self._migrating_map: Dict[int, InternalRequest] = {}
+        # Live cross-instance relocation "in-flight" tracking (opt-in; see
+        # docs/llumnix_faithful_scheduler_reference.md): requests moved via
+        # Action.migrate, awaiting admission onto their fixed
+        # migration_destination_gpu_id once transfer_ready_time elapses.
+        # Deliberately separate from the bridge queue above -- see that
+        # doc's §C for why the two are not the same primitive. A plain
+        # dict (not a deque+map pair like the bridge queue) suffices: each
+        # relocating request has exactly one destination, no FCFS ordering
+        # concept applies. Always empty unless a policy ever sets
+        # Action.migrate.
+        self._relocating: Dict[int, InternalRequest] = {}
         self._pending_arrivals: List[InternalRequest] = []   # sorted by arrival_time
         self._completed: List[CompletedRequest] = []
         self._step: int = 0
@@ -163,12 +174,16 @@ class Simulator:
             # --- 7. Termination check ---
             all_arrivals_done = arrival_idx >= n_arrivals
             all_active_done = total_active == 0
-            # A request mid-transfer (in the bridge queue) is neither
-            # "active" on any GPU nor in the ordinary waiting queue -- it
-            # must still block termination/idle-fast-forward, or the
-            # simulation could end (or skip ahead) while a request is
-            # genuinely in flight.
-            queue_empty = len(self._waiting) == 0 and len(self._migrating) == 0
+            # A request mid-transfer (in the bridge queue, or -- llumnix_faithful
+            # -- mid-relocation) is neither "active" on any GPU nor in the
+            # ordinary waiting queue -- it must still block termination/
+            # idle-fast-forward, or the simulation could end (or skip
+            # ahead) while a request is genuinely in flight.
+            queue_empty = (
+                len(self._waiting) == 0
+                and len(self._migrating) == 0
+                and len(self._relocating) == 0
+            )
 
             if all_arrivals_done:
                 steps_since_last_arrival += 1
@@ -198,13 +213,15 @@ class Simulator:
         sim_duration = self._time
         wall_elapsed = _time.perf_counter() - wall_start
 
-        # Requests still in waiting queue (or, in disaggregated mode,
-        # mid-transfer -- should not normally happen given the
-        # termination-check fix above, but included defensively) at end
-        # = dropped.
-        dropped = [ir.request for ir in self._waiting] + [
-            ir.request for ir in self._migrating
-        ]
+        # Requests still in waiting queue (or, in disaggregated/llumnix
+        # mode, mid-transfer/mid-relocation -- should not normally happen
+        # given the termination-check fix above, but included defensively)
+        # at end = dropped.
+        dropped = (
+            [ir.request for ir in self._waiting]
+            + [ir.request for ir in self._migrating]
+            + [ir.request for ir in self._relocating.values()]
+        )
 
         return compute_metrics(
             completed=self._completed,
@@ -235,6 +252,7 @@ class Simulator:
         self._waiting_map.clear()
         self._migrating.clear()
         self._migrating_map.clear()
+        self._relocating.clear()
         self._completed.clear()
         self._step = 0
         self._time = 0.0
@@ -252,6 +270,7 @@ class Simulator:
             ir.prefill_remaining = 0
             ir.first_token_time = -1.0
             ir.transfer_ready_time = -1.0
+            ir.migration_destination_gpu_id = -1
 
     def _build_observable_state(self) -> ObservableState:
         waiting_obs = [
@@ -269,6 +288,19 @@ class Simulator:
             if ir.transfer_ready_time <= self._time
         ]
         gpu_obs = [g.to_observable() for g in self._gpus]
+        # Live cross-instance relocation (opt-in; see
+        # docs/llumnix_faithful_scheduler_reference.md): expose each
+        # transfer-ready relocating request only on its fixed destination
+        # GPU's own incoming_migrations list. Always empty unless a policy
+        # has ever set Action.migrate.
+        if self._relocating:
+            gpu_obs_by_id = {g.gpu_id: g for g in gpu_obs}
+            for ir in self._relocating.values():
+                if ir.transfer_ready_time > self._time:
+                    continue
+                dest = gpu_obs_by_id.get(ir.migration_destination_gpu_id)
+                if dest is not None:
+                    dest.incoming_migrations.append(ObservableRequest.from_request(ir.request))
         return ObservableState(
             time=self._time,
             waiting_queue=waiting_obs,
@@ -279,15 +311,18 @@ class Simulator:
         )
 
     def _apply_action(self, action: Action) -> None:
-        # Preemptions and swaps are applied first (matching the pinned
-        # vllm_faithful/distserve_faithful references: eviction decisions
-        # are made before new admissions from `waiting`/the bridge queue in
-        # the same scheduling iteration). No existing policy other than
-        # vllm_faithful/sarathi_faithful (preempt) or distserve_faithful
-        # (swap) ever sets these, so this is a no-op for all legacy behavior.
+        # Preemptions, swaps, and migrations are applied first (matching
+        # the pinned vllm_faithful/distserve_faithful/llumnix_faithful
+        # references: eviction decisions are made before new admissions
+        # from `waiting`/the bridge queue/incoming-migrations in the same
+        # scheduling iteration). No existing policy other than
+        # vllm_faithful/sarathi_faithful (preempt), distserve_faithful
+        # (swap), or llumnix_faithful (migrate) ever sets these, so this is
+        # a no-op for all legacy behavior.
         preempted_ids = self._apply_preemptions(action)
         swapped_ids = self._apply_swaps(action)
-        evicted_ids = preempted_ids | swapped_ids
+        migrated_ids = self._apply_migrations(action)
+        evicted_ids = preempted_ids | swapped_ids | migrated_ids
 
         admitted_ids = set()
 
@@ -309,25 +344,31 @@ class Simulator:
                     continue
 
                 if rid in evicted_ids:
-                    # A request cannot be preempted/swapped and re-admitted
-                    # within the same step's Action (mirrors the pinned
-                    # reference's own "if seq_group in preempted: break" guard).
+                    # A request cannot be preempted/swapped/migrated and
+                    # re-admitted within the same step's Action (mirrors
+                    # the pinned reference's own "if seq_group in
+                    # preempted: break" guard).
                     if self.config.warn_on_invalid_action:
                         warnings.warn(
-                            f"Request {rid} was preempted/swapped and admitted in the "
-                            "same action; skipping the admit (it is back in a queue)."
+                            f"Request {rid} was preempted/swapped/migrated and admitted "
+                            "in the same action; skipping the admit (it is back in a queue)."
                         )
                     continue
 
                 # Resolve the request from wherever it is currently
-                # eligible: the ordinary waiting queue, or (disaggregated
-                # mode only) the bridge queue of transfer-ready requests.
+                # eligible: the ordinary waiting queue, the bridge queue of
+                # transfer-ready requests (disaggregated mode), or the
+                # relocation in-flight table (llumnix_faithful mode).
                 from_migrating = False
+                from_relocating = False
                 if rid in self._waiting_map:
                     ir = self._waiting_map[rid]
                 elif rid in self._migrating_map:
                     ir = self._migrating_map[rid]
                     from_migrating = True
+                elif rid in self._relocating:
+                    ir = self._relocating[rid]
+                    from_relocating = True
                 else:
                     if self.config.warn_on_invalid_action:
                         warnings.warn(
@@ -346,6 +387,27 @@ class Simulator:
                                 f"(ready at {ir.transfer_ready_time}, now {self._time}); skipped."
                             )
                         continue
+                elif from_relocating:
+                    # Transfer-ready check, same rationale as the bridge
+                    # queue above.
+                    if ir.transfer_ready_time > self._time:
+                        if self.config.warn_on_invalid_action:
+                            warnings.warn(
+                                f"Request {rid} is still mid-relocation "
+                                f"(ready at {ir.transfer_ready_time}, now {self._time}); skipped."
+                            )
+                        continue
+                    # Destination check: a relocation has exactly one fixed
+                    # destination, decided by the policy at the moment of
+                    # migration -- admitting it onto any OTHER GPU is
+                    # rejected (see docs/llumnix_faithful_scheduler_reference.md).
+                    if gpu_id != ir.migration_destination_gpu_id:
+                        if self.config.warn_on_invalid_action:
+                            warnings.warn(
+                                f"Request {rid} is relocating to gpu_id="
+                                f"{ir.migration_destination_gpu_id}, not {gpu_id}; skipped."
+                            )
+                        continue
                 else:
                     # Validate arrival: request must have arrived by now
                     if ir.request.arrival_time > self._time:
@@ -360,10 +422,13 @@ class Simulator:
                     ir,
                     admission_time=self._time,
                     service_model=self.config.service_model,
+                    is_relocation=from_relocating,
                 )
                 if ok:
                     if from_migrating:
                         self._migrating_map.pop(rid)
+                    elif from_relocating:
+                        self._relocating.pop(rid)
                     else:
                         self._waiting_map.pop(rid)
                     admitted_ids.add(rid)
@@ -472,6 +537,70 @@ class Simulator:
                 self._migrating_map[rid] = ir
 
         return swapped_ids
+
+    def _apply_migrations(self, action: Action) -> set:
+        """Evict each (request_id, destination_gpu_id) pair named in
+        action.migrate WITHOUT discarding progress (see
+        docs/llumnix_faithful_scheduler_reference.md), placing the request
+        into the relocation in-flight table with a fixed destination and a
+        `llumnix_migration_delay`-based transfer-ready time. Returns the
+        set of request IDs actually migrated. A no-op whenever
+        action.migrate is empty -- true for every policy except
+        llumnix_faithful."""
+        if not action.migrate:
+            return set()
+
+        migrated_ids: set = set()
+        for gpu_id, pairs in action.migrate.items():
+            if gpu_id not in self._gpu_map:
+                if self.config.warn_on_invalid_action:
+                    warnings.warn(
+                        f"Action references unknown gpu_id={gpu_id} in migrate; skipped."
+                    )
+                continue
+
+            gpu = self._gpu_map[gpu_id]
+
+            for rid, dest_gpu_id in pairs:
+                if rid in migrated_ids:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} appears more than once in migrate; skipped."
+                        )
+                    continue
+
+                if dest_gpu_id not in self._gpu_map:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} migration references unknown destination "
+                            f"gpu_id={dest_gpu_id}; skipped."
+                        )
+                    continue
+
+                if dest_gpu_id == gpu_id:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} migration source and destination are both "
+                            f"gpu_id={gpu_id}; skipped."
+                        )
+                    continue
+
+                ir = gpu.evict(rid, preserve_progress=True)
+                if ir is None:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Action references request {rid} for migration but it is "
+                            f"not active on gpu_id={gpu_id}; skipped."
+                        )
+                    continue
+
+                migrated_ids.add(rid)
+                ir.phase = RequestPhase.RELOCATING
+                ir.migration_destination_gpu_id = dest_gpu_id
+                ir.transfer_ready_time = self._time + self.config.service_model.llumnix_migration_delay
+                self._relocating[rid] = ir
+
+        return migrated_ids
 
     def _advance_decode(self) -> List[CompletedRequest]:
         completed: List[CompletedRequest] = []

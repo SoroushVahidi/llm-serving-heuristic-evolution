@@ -25,11 +25,28 @@ since by the time a request reaches the decode stage its (potentially
 cross-machine) prefill work is a sunk cost not worth re-paying. Defaults to
 empty; every pre-existing policy (including vllm_faithful/sarathi_faithful)
 leaves it empty, so behavior is completely unchanged for them.
+
+`migrate` (added for the llumnix_faithful baseline; see
+docs/llumnix_faithful_scheduler_reference.md) is a fourth, narrowly-scoped
+verb: it maps each SOURCE GPU ID to a list of (request_id, destination_gpu_id)
+pairs -- live relocation of an already-ACTIVE request from one independent
+GPU/instance to a specific OTHER one, preserving progress (see
+GPUState.evict(preserve_progress=True)), for load-balancing/fragmentation/
+priority reasons. Deliberately distinct from `swap`: a swapped request has
+no fixed destination (any decode-role GPU may later re-admit it via the
+ordinary bridge queue); a migrated request has a policy-chosen destination
+fixed at the moment of migration, tracked by the simulator
+(InternalRequest.migration_destination_gpu_id) and exposed per-destination
+via ObservableGPUState.incoming_migrations, and admission onto any OTHER
+GPU is rejected. Defaults to empty; every pre-existing policy (including
+vllm_faithful/sarathi_faithful/distserve_faithful/
+tetriinfer_paper_reimplementation) leaves it empty, so behavior is
+completely unchanged for them.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Tuple
 
 
 @dataclass
@@ -37,6 +54,7 @@ class Action:
     admit: Dict[int, List[int]] = field(default_factory=dict)
     preempt: Dict[int, List[int]] = field(default_factory=dict)
     swap: Dict[int, List[int]] = field(default_factory=dict)
+    migrate: Dict[int, List[Tuple[int, int]]] = field(default_factory=dict)
 
     def all_admitted_ids(self) -> Set[int]:
         ids: Set[int] = set()
@@ -56,22 +74,32 @@ class Action:
             ids.update(req_list)
         return ids
 
+    def all_migrated_ids(self) -> Set[int]:
+        ids: Set[int] = set()
+        for pairs in self.migrate.values():
+            ids.update(rid for rid, _dest_gpu_id in pairs)
+        return ids
+
     def is_empty(self) -> bool:
         return (
             all(len(v) == 0 for v in self.admit.values())
             and all(len(v) == 0 for v in self.preempt.values())
             and all(len(v) == 0 for v in self.swap.values())
+            and all(len(v) == 0 for v in self.migrate.values())
         )
 
     def __repr__(self) -> str:
         total = sum(len(v) for v in self.admit.values())
         total_preempted = sum(len(v) for v in self.preempt.values())
         total_swapped = sum(len(v) for v in self.swap.values())
+        total_migrated = sum(len(v) for v in self.migrate.values())
         extra = ""
         if total_preempted:
             extra += f", total_preempted={total_preempted}, preempt={self.preempt}"
         if total_swapped:
             extra += f", total_swapped={total_swapped}, swap={self.swap}"
+        if total_migrated:
+            extra += f", total_migrated={total_migrated}, migrate={self.migrate}"
         if extra:
             return f"Action(total_admitted={total}, by_gpu={self.admit}{extra})"
         return f"Action(total_admitted={total}, by_gpu={self.admit})"

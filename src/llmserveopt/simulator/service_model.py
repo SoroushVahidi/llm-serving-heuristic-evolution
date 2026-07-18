@@ -28,6 +28,19 @@ False / 0.0 (no behavior change for any existing config). Requires
 enable_prefill_modeling=True to have an observable effect (a request must
 have a genuine prefill phase to hand off from).
 
+Live cross-instance relocation (llumnix_migration_delay)
+-----------------------------------------------------------
+Opt-in; see docs/llumnix_faithful_scheduler_reference.md. Independent of
+`enable_disaggregation`/`migration_transfer_delay` above (a genuinely
+separate mechanism -- see that field's own docstring in
+simulator/request.py's RequestPhase.RELOCATING for why the two are not
+conflated): the wall-clock seconds a live migration of an already-active
+request between two ordinary (role=None) GPUs/instances takes, applied via
+Action.migrate. Defaults to 0.0 (no behavior change for any existing
+config, and independently configurable from `migration_transfer_delay` so
+an experiment could in principle use both disaggregation and Llumnix-style
+migration at once with different delays for each).
+
 TODO (Phase 2+)
 ---------------
 * Memory-bandwidth-limited decode slow-down at large batch sizes.
@@ -55,6 +68,9 @@ class ServiceModel:
     # --- Disaggregated prefill/decode (opt-in; see docs/distserve_faithful_scheduler_reference.md) ---
     enable_disaggregation: bool = False        # hand off prefill-done requests instead of continuing in place
     migration_transfer_delay: float = 0.0      # wall-clock seconds a handoff takes; 0.0 = zero-cost mode
+
+    # --- Live cross-instance relocation (opt-in; see docs/llumnix_faithful_scheduler_reference.md) ---
+    llumnix_migration_delay: float = 0.0       # wall-clock seconds a live migration takes; 0.0 = zero-cost mode
 
     # --- Legacy (Phase 1 compat, not actively used in Phase 1.5) ---
     prefill_tokens_per_step: int = 512         # kept for doc purposes
