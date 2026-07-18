@@ -24,6 +24,8 @@ class WorkloadSourceEntry:
     schema_summary: str
     real_fields: str               # which fields are genuinely real/measured
     synthetic_fields: str          # which fields this project synthesizes on top
+    version: str = ""
+    checksum: str = ""
     notes: str = ""
 
 
@@ -37,6 +39,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="CSV: timestamp, request/response token counts, model name (columns auto-detected by workloads/burstgpt.py's _detect_column).",
         real_fields="Arrival timestamps; prompt and response token counts.",
         synthetic_fields="SLO deadlines, priority classes, and predicted_output_tokens (via prediction_noise on the real actual_output_tokens) are ALL added by this project -- BurstGPT itself has no SLO/priority/prediction concept.",
+        version="Local raw file BurstGPT_1.csv; processed scaled_moderate/high variants use seed=17 and deterministic time scaling.",
+        checksum="raw BurstGPT_1.csv sha256=46fc9480ef0b748ecb2b51d512ff08c196b031782cbe6f78e28044d768e86d5a",
         notes="Already present locally (49MB); used directly by scenario_families.load_burstgpt_real_trace_scenario.",
     ),
     WorkloadSourceEntry(
@@ -48,6 +52,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="JSON conversation records; workloads/sharegpt.py extracts prompt/response text pairs and tokenizes via whitespace tokenization.",
         real_fields="Real human/assistant conversation text (prompt and response content).",
         synthetic_fields="Arrival times (synthesized via workloads/sharegpt.py's _generate_arrivals, not real), SLO deadlines, priority classes, predicted_output_tokens (noised).",
+        version="Not acquired locally.",
+        checksum="N/A",
         notes="Conversion code exists and is tested (tests/test_sharegpt_loader.py) but the raw file is not present in this environment -- acquisition is a separate, explicit future step, not performed by this task.",
     ),
     WorkloadSourceEntry(
@@ -59,6 +65,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="WorkloadConfig: arrival process (poisson/bursty), prompt/output distributions (lognormal/uniform/pareto), prediction noise, SLO-class mixture.",
         real_fields="None -- every field is synthesized. Distribution PARAMETERS (lognormal shape, etc.) are chosen to resemble published real-trace summary statistics, but no real per-request data underlies any individual generated request.",
         synthetic_fields="Everything.",
+        version="Repository source at current commit.",
+        checksum="N/A",
         notes="Used for both 'real_distribution_synthetic' and 'controlled_stress' dataset families (see scenario_families.py) -- the distinction is INTENT (matching a real distribution's shape vs. deliberately stressing one axis), not data provenance; both are 100% synthetic.",
     ),
     WorkloadSourceEntry(
@@ -70,6 +78,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="Per-invocation input/output token counts and arrival timestamps for two production Azure LLM inference services; 2023 sample (single day, Nov 11 2023; underlies the Splitwise/ISCA 2024 paper), 2024 sample (one week; underlies the DynamoLLM/HPCA 2025 paper), plus a 2025 multimodal (LMM) variant.",
         real_fields="Arrival timestamps, input/output token counts -- genuinely real production measurements.",
         synthetic_fields="No prompt/response CONTENT at all (redacted for customer privacy/GDPR) -- any prompt-content-dependent feature would need to be synthesized on top if this source is acquired.",
+        version="2023 code/conv traces acquired locally; 2024/2025 are acquisition candidates, not downloaded here.",
+        checksum="raw code_2023 sha256=54e9a6d2a4bd06ba1e060304b900abbc74cbea53de96506e60fe5bb4f2277fb6; raw conv_2023 sha256=2f1e5b666d4e3055fdbba98598ce2ec307767b9064e03e2fa46676dbcc7d0bf8; processed code jsonl sha256=49a1aec622c8503872504ae5fe631d34128b034a73f9655153da5f9031365173; processed conv jsonl sha256=5de02a43248667ff3dba389c23492c1e1a5896e7a106b110a84ceacf3c7b804a",
         notes="2023 code and conversation traces are already present locally and converted. RECOMMENDED future acquisition: Azure 2024/2025 traces for broader OOD evaluation, subject to explicit download approval because the files are large.",
     ),
     WorkloadSourceEntry(
@@ -81,6 +91,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="Replayed production trace for the Kimi (Moonshot AI) serving stack: arrival times, token counts, and remapped KV-cache block hashes (for studying prefix-cache/KV-reuse-aware scheduling).",
         real_fields="Arrival timestamps, token counts, block-hash structure (remapped/anonymized but structurally real).",
         synthetic_fields="No prompt content; SLO/priority overlay would need to be synthesized as with every other source here.",
+        version="Not acquired locally; inspect primary repository release/traces directory at acquisition time.",
+        checksum="N/A until acquired.",
         notes="RECOMMENDED for acquisition, specifically for any future KV-cache-reuse-aware feature/policy work -- this project does not currently model prefix caching at all, so the block-hash field would be unused until that capability exists. Verified via live web search of the primary GitHub repository.",
     ),
     WorkloadSourceEntry(
@@ -92,6 +104,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="~4,300 coding-agent sessions, ~350K LLM steps, ~430K tool calls, from real Claude Code / Codex usage; includes long-horizon agentic loops beyond chat-style serving traces.",
         real_fields="Coding-agent session/step/tool-call structure as released by TraceLab; exact per-request timestamp/token fields require repository schema inspection at acquisition time.",
         synthetic_fields="Any SLOs, priority classes, and selector prediction-noise fields would be synthesized by this project.",
+        version="Not acquired locally; paper/blog release is 2026 and repository schema must be inspected before use.",
+        checksum="N/A until acquired.",
         notes="RECOMMENDED for a later acquisition pass if selector claims need agentic-serving OOD coverage; do not use until the repository schema and license are inspected.",
     ),
     WorkloadSourceEntry(
@@ -103,6 +117,8 @@ WORKLOAD_SOURCE_MANIFEST: List[WorkloadSourceEntry] = [
         schema_summary="Generator framework for realistic LLM serving workloads based on Alibaba Cloud production workload characterization.",
         real_fields="No raw production per-request trace is assumed available to this project; ServeGen is treated as a generator unless repository inspection proves otherwise.",
         synthetic_fields="Generated arrivals/token lengths/client composition from ServeGen; project-specific SLOs/priorities/prediction noise still require explicit provenance.",
+        version="Not acquired locally; NSDI 2026 artifact/repository should be pinned at acquisition time.",
+        checksum="N/A until acquired.",
         notes="RECOMMENDED as a generator acquisition candidate after license/schema inspection; useful for coverage-aware synthetic families without a naive Cartesian product.",
     ),
 ]

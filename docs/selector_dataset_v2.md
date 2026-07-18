@@ -428,6 +428,132 @@ Policy-specialization observations from
 The redesigned methodology improved headroom and reduced all-complete windows,
 but the dataset is still not ready for large-scale generation.
 
+## Targeted Counterexample Discovery
+
+Follow-up targeted discovery added deterministic counterexample families for
+underrepresented policies. These are search hypotheses, not labels:
+
+- `counterexample__sarathi_faithful__*`: long prompts, moderate outputs,
+  prefill modeling enabled, decode-first scheduling, varied step token budget
+  and max prefill chunk size.
+- `counterexample__vllm_faithful__*`: decode-heavy, high-variance outputs,
+  varied KV capacity and sequence cap under looser SLOs.
+- `counterexample__deadline_policy__*`: heterogeneous deadlines and mixed
+  priorities under moderate overload for EDF, SLO-slack, admission-control,
+  WSP, and ESTF-style policies.
+
+Adaptive retention was tightened after an audit found that the first targeted
+run retained "target-policy" trials when the target policy only won
+all-complete or near-tie windows. The corrected retention path uses
+strong-window winner counts separately from overall winner counts.
+
+Two diagnostic runs are recorded under `results/selector_dataset_v2/`:
+
+- `targeted_discovery_pilot`: permissive retention, 307 windows.
+- `targeted_discovery_pilot_strict_small`: corrected strict retention, 9
+  windows, one seed, compact target search.
+
+Primary weighted-goodput result from the permissive targeted run:
+
+- windows: 307
+- weighted-goodput all-complete/equivalent fraction: 43.97%
+- near-tie fraction: 28.66%
+- strongly discriminative fraction: 27.36%
+- strong-window winners: `scorpio_style_slo_guard` 84/84
+- global best fixed: `scorpio_style_slo_guard`
+- global best fixed WG: 0.9967426710
+- per-window oracle WG: 0.9975570033
+- oracle headroom: 0.0008143322
+- discriminative oracle headroom: 0.0
+
+Corrected strict targeted search did not find a strong primary-objective
+Sarathi or vLLM counterexample. It retained only one prefill-heavy trial:
+
+- windows: 9
+- strong-window winners: `scorpio_style_slo_guard` 2/2
+- global best fixed: `sarathi_faithful`
+- global best fixed WG: 0.9546964193
+- per-window oracle WG: 1.0
+- oracle headroom: 0.0453035807
+
+That strict run is scientifically useful because it shows Sarathi can be the
+best fixed policy in a prefill-heavy region, but the primary objective still
+does not produce strong per-window Sarathi labels. The strong windows are
+SCORPIO wins caused by selective completion/rejection.
+
+### SCORPIO Dominance Evidence
+
+For 84 strongly discriminative SCORPIO wins in the targeted run, compared to
+the second-best weighted-goodput policy:
+
+- weighted-goodput gap mean: 0.3046
+- completion-fraction gap mean: -0.4296
+- rejection-rate gap mean: +0.4296
+- SLO-attainment gap mean: +0.2490
+- p95 TTFT gap mean: -0.2518 s
+- p95 TPOT/TBT gap mean: approximately 0
+- p95 latency gap mean: -0.3148 s
+- median KV pressure: 0.0803
+- median token-budget pressure: 0.3985
+
+Interpretation: under the current primary weighted-goodput metric, SCORPIO's
+strong wins are primarily selective-service wins. It rejects or leaves many
+more requests incomplete, but its completed subset has better SLO attainment
+and lower TTFT/latency. This is not just a workload-generator bias toward
+admission pressure: the same targeted run contains many vLLM/Sarathi wins in
+near-tie/equivalent windows and many non-SCORPIO winners under secondary
+objectives.
+
+### Objective Sensitivity
+
+The primary objective remains unchanged for now, but the targeted run strongly
+suggests that the current weighted-goodput implementation structurally favors
+rejection-heavy policies because completed-request SLO goodput is not penalized
+enough by arrivals that were dropped or never completed.
+
+Secondary objective audit on `targeted_discovery_pilot`:
+
+- weighted_goodput: strong wins = `scorpio_style_slo_guard` 84; oracle
+  headroom = 0.000814
+- arrival-normalized / completion-adjusted weighted goodput: best fixed =
+  `edf`; all-window wins include `vllm_faithful` 129, `sarathi_faithful` 52,
+  `fifo` 72, `edf` 30; strong wins include `scorpio_style_slo_guard` 11,
+  `shortest_output_first` 2, `admission_control` 1; oracle headroom = 0.00658
+- request throughput: best fixed = `fifo`; strong wins include
+  `admission_control` 14, `estimated_service_time_first` 5,
+  `shortest_output_first` 2, `weighted_shortest_processing` 1,
+  `scorpio_style_slo_guard` 1; oracle headroom = 0.30745
+- p95-latency-constrained goodput: strong wins include
+  `scorpio_style_slo_guard` 178, `vllm_faithful` 28,
+  `estimated_service_time_first` 4, `admission_control` 3; oracle headroom =
+  2.31966
+
+Do not silently switch objectives. Before final selector training, decide
+whether manuscript-primary utility should remain completed-request weighted
+goodput or move to an arrival-normalized/completion-adjusted utility that
+properly prices rejected or unfinished requests.
+
+### Local Source Provenance
+
+Current local real traces:
+
+- BurstGPT raw `data/raw/burstgpt/BurstGPT_1.csv`
+  - sha256: `46fc9480ef0b748ecb2b51d512ff08c196b031782cbe6f78e28044d768e86d5a`
+  - real fields: arrival timestamps, prompt/request tokens, response tokens
+  - synthetic fields: SLOs, priority classes, predicted output tokens
+- Azure 2023 code raw `data/raw/azure/AzureLLMInferenceTrace_code_2023.csv`
+  - sha256: `54e9a6d2a4bd06ba1e060304b900abbc74cbea53de96506e60fe5bb4f2277fb6`
+  - processed sha256:
+    `49a1aec622c8503872504ae5fe631d34128b034a73f9655153da5f9031365173`
+- Azure 2023 conversation raw
+  `data/raw/azure/AzureLLMInferenceTrace_conv_2023.csv`
+  - sha256: `2f1e5b666d4e3055fdbba98598ce2ec307767b9064e03e2fa46676dbcc7d0bf8`
+  - processed sha256:
+    `5de02a43248667ff3dba389c23492c1e1a5896e7a106b110a84ceacf3c7b804a`
+
+All real-trace stress variants preserve `request_plan_ancestor_id`; variants
+of one raw ancestor must not be split casually across train/OOD boundaries.
+
 ## Pilot and Learning-Curve Targets
 
 Pilot targets:
