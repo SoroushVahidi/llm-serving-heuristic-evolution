@@ -1,6 +1,6 @@
 # Research Status
 
-**Last updated:** 2026-06-27  
+**Last updated:** 2026-07-18  
 **Current branch:** `phase2c1-real-trace-ingestion-validation`  
 **Current phase:** Phase 2C — Paused after Phase 2C.3 (external-aware analysis)
 
