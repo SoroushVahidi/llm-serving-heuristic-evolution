@@ -160,10 +160,11 @@ requests each consume 1 token; remainder goes to new prefill admissions.
 
 ---
 
-## Faithful (non-proxy) baselines: `vllm_faithful`
+## Faithful (non-proxy) baselines: `vllm_faithful`, `sarathi_faithful`
 
-This repository has **three distinct kinds of "vLLM" thing**, and they must
-never be conflated:
+This repository has **three distinct kinds of "vLLM" thing**, and an
+analogous **two distinct kinds of "Sarathi" thing** — none of which may be
+conflated:
 
 | | `vllm_style_token_budget` | `vllm_faithful` | External real-vLLM HTTP harness |
 |---|---|---|---|
@@ -171,6 +172,14 @@ never be conflated:
 | Where | `src/llmserveopt/policies/vllm_style_token_budget.py` | `src/llmserveopt/policies/vllm_faithful.py` | `scripts/run_vllm_external_baseline_comparison.py` |
 | Fidelity claim | "vLLM-inspired" only | Algorithm/memory-semantics fidelity to a **named, pinned commit** | Real system, but vLLM's internal scheduler is a black box |
 | Registered baseline? | Yes (one of the 20) | **No — see below** | N/A (not a simulator policy) |
+
+| | `sarathi_style` | `sarathi_faithful` |
+|---|---|---|
+| What it is | Lightweight admission-rate proxy heuristic (no separate prefill phase modeled) | Faithful independent reimplementation of a pinned Sarathi-Serve scheduler version |
+| Where | `src/llmserveopt/policies/sarathi_style.py` | `src/llmserveopt/policies/sarathi_faithful.py` |
+| Fidelity claim | "Sarathi-style" only | Algorithm/memory-semantics fidelity to a **named, pinned commit** |
+| Requires `enable_prefill_modeling=True`? | No (Phase 1 admission-rate heuristic) | Only to make chunked-prefill *behavior* observable; runs without crashing either way |
+| Registered baseline? | Yes (one of the 20) | **No — see below** |
 
 ### `vllm_faithful`
 
@@ -208,6 +217,46 @@ downstream effects (selector retraining, evaluation-sweep counts, every doc
 that states "20 deployable policies") that were out of scope for
 introducing this baseline. Promoting it to a selectable/deployable baseline
 is a deliberate follow-up decision for a future PR.
+
+### `sarathi_faithful`
+
+**Manuscript label:** "Faithful independent reimplementation of Sarathi-
+Serve's stall-free chunked-prefill scheduler"
+
+**Pinned reference:** microsoft/sarathi-serve, branch `osdi-sarathi-serve`,
+commit `ceaa0660ea2487976101a8167aad5c8046e85b27`, corresponding to Agrawal
+et al., "Taming Throughput-Latency Tradeoff in LLM Inference with
+Sarathi-Serve," OSDI 2024 (arXiv:2403.02310). Full source-provenance
+record, algorithm summary, existing-infrastructure audit, and explicit
+exclusions: `docs/sarathi_faithful_scheduler_reference.md`.
+
+Unlike `sarathi_style` (an admission-rate heuristic with no separate
+prefill phase), `sarathi_faithful` reimplements the pinned reference's
+actual scheduling algorithm: already-decoding sequences are reserved a
+decode slot every iteration BEFORE any prefill work is considered
+(stall-free / decode-first), continuing and new prefills share whatever
+`chunk_size` budget remains, admission of new requests stops entirely (not
+skip-and-continue) at the first request that cannot be allocated or would
+get a 0-token chunk, and preemption uses the identical recompute/
+victim-selection algorithm as `vllm_faithful` — because Sarathi-Serve's own
+memory model literally reuses vLLM's `BlockSpaceManager` unchanged. This
+baseline reuses this project's `KVBlockSpaceManager` and
+`Action.preempt`/`GPUState.evict()` infrastructure (built for
+`vllm_faithful`) rather than introducing anything new.
+
+- **Safe claim:** "Faithful reimplementation of Sarathi-Serve's stall-free
+  chunked-prefill scheduler's scheduling/memory *decisions*, as of commit
+  `ceaa0660`."
+- **Unsafe claim:** "Official Sarathi-Serve code", "exact runtime
+  reproduction", "a full Sarathi-Serve performance/hardware-timing model",
+  or a claim about the project's current scheduler (MoE support,
+  pipeline-parallel fixes, etc. postdate this pin and are not represented).
+
+**Not currently a registered baseline**, for the same reason as
+`vllm_faithful` above: fully implemented and unit-tested
+(`llmserveopt.policies.sarathi_faithful.SarathiFaithfulPolicy`), but
+deliberately not added to `registry.py`'s `BASELINE_NAMES` /
+`SELECTOR_CANDIDATE_NAMES` in the PR that introduced it.
 
 ---
 
