@@ -255,6 +255,10 @@ Monolithic candidates:
 - `slo_slack_score`
 - `admission_control`
 - `weighted_shortest_processing`
+- `shortest_output_first`
+- `estimated_service_time_first`
+- `best_fit`
+- `multi_bin_batching`
 
 Inclusion criteria:
 
@@ -262,10 +266,167 @@ Inclusion criteria:
 - online deployable, not an oracle
 - scientifically distinct scheduling/admission behavior
 - either a faithful external baseline or a strong/diagnostic historical policy
+- length-specialist and placement/batching policies are included in the
+  redesigned pilot because v1 did not sufficiently expose KV/decode/resource
+  bottlenecks
 
 Disaggregated and migratory topologies are represented in schema/infrastructure,
 but no final selector should be trained until there are enough legitimate
 within-class candidates and scenarios.
+
+## Pilot v1 Failure Analysis
+
+The first Dataset v2 pilot produced 260 windows and 2,340 policy evaluations.
+Using the original summary, 78.46% of windows had every policy complete every
+request. Under the stricter practical-equivalence threshold introduced here,
+90.0% of windows are weighted-goodput equivalent or all-complete/effectively
+tied.
+
+Quantitative causes from `results/selector_dataset_v2/pilot/failure_analysis.json`:
+
+- KV pressure was negligible in equivalent windows: p50 `pred_output_p95 /
+  kv_capacity` was 0.0078, p90 was 0.0279.
+- Service-token pressure did not translate into weighted-goodput differences
+  because the v1 pilot used the default service model with instantaneous
+  prefill; p50 prompt/token-budget pressure was only 0.623.
+- Weighted goodput saturated: 234/260 windows had zero practical WG spread.
+- Differentiation appeared in non-primary metrics more often than in WG:
+  arrival-normalized WG and throughput differentiated 56 windows, p95 latency
+  37, SLO attainment and WG only 26.
+- Strong WG windows were concentrated in KV/mixed/decode families and 25/25
+  strong windows were won by `scorpio_style_slo_guard`.
+- Sarathi's intended chunked-prefill advantage was mostly invisible because
+  `ServiceModel(enable_prefill_modeling=False)` makes prefill instantaneous.
+
+Conclusion: the v1 pilot was not merely too small; it was structurally
+under-stressed for the primary weighted-goodput objective and did not expose
+topology-specific mechanisms.
+
+## Scenario Redesign
+
+The redesigned scenario taxonomy is implemented in
+`src/llmserveopt/selector/dataset_v2/scenario_redesign.py`.
+
+Targeted bottleneck classes:
+
+- `admission_pressure`: overloaded tight-SLO and mixed-priority regimes.
+- `kv_pressure`: low KV capacity with long/high-variance outputs.
+- `prefill_heavy`: long prompts, short outputs, constrained prefill token
+  budget, and `enable_prefill_modeling=True`.
+- `decode_heavy`: long-running decode occupancy with output variance.
+- `slo_heterogeneous`: mixed tight/loose SLOs and heterogeneous priorities.
+- `prediction_noise`: exact/noisy/biased predicted output lengths.
+- `bursty_transient`: short queue shocks and recovery windows.
+- `resource_scarcity`: independently varied sequence cap, token budget, and KV
+  capacity.
+
+Real-trace stress transforms are applied to local BurstGPT and Azure 2023
+traces:
+
+- time compression/expansion
+- burst amplification
+- SLO scaling
+- prediction-noise and underprediction transforms
+- resource scaling
+
+Every transformed real-trace variant keeps a shared `request_plan_ancestor_id`,
+so split assignment can hold siblings together.
+
+## Adaptive Search
+
+The redesigned pilot script is:
+
+```bash
+python scripts/build_selector_dataset_v2_redesigned_pilot.py \
+  --output-dir results/selector_dataset_v2/redesigned_pilot
+```
+
+The search loop:
+
+1. samples or enumerates a candidate bottleneck scenario
+2. runs a core policy subset for search-time cost control
+3. computes weighted-goodput spread, winner identity, and local oracle headroom
+4. retains trials into either `REPRESENTATIVE_POOL` or `DISCRIMINATIVE_POOL`
+5. skips redundant trials once one winner dominates the retained pool
+6. rebuilds retained trials with the full monolithic candidate set
+
+The search is deterministic for fixed seeds. It deliberately refuses to pad the
+dataset with redundant SCORPIO-only windows just to hit a row-count target.
+
+## Thresholds
+
+Weighted-goodput thresholds now use practical significance rather than purely
+relative numerical thresholds:
+
+- equivalent/all-complete: max-min WG spread <= 0.002
+- near tie: top-2 gap <= 0.002 or relative gap < 0.5%
+- moderate: non-equivalent but top-2 gap < 0.02 and relative gap < 3%
+- strong: top-2 gap >= 0.02 or relative gap >= 3%
+
+These thresholds avoid treating tiny floating-point or tie-break differences as
+selector ground truth.
+
+## Redesigned Pilot Result
+
+The first redesigned run was intentionally stopped from padding with redundant
+SCORPIO-heavy scenarios. It retained 51 windows and 663 policy evaluations, so
+it is a diagnostic pilot, not a target-size dataset.
+
+Redesigned pilot statistics:
+
+- all-complete/effectively tied fraction: 23.53%
+- near-tie fraction: 21.57%
+- moderately discriminative fraction: 0.0%
+- strongly discriminative fraction: 54.90%
+- global best fixed policy: `scorpio_style_slo_guard`
+- global best fixed WG: 0.9411764706
+- per-scenario oracle WG: 0.9929557008
+- oracle headroom: 0.0517792302
+- discriminative oracle headroom: 0.0678571429
+
+Win distribution:
+
+- `scorpio_style_slo_guard`: 27
+- `vllm_faithful`: 20
+- `sarathi_faithful`: 2
+- `edf`: 2
+
+Discriminative-window wins after correcting the gate to exclude near/equivalent
+windows:
+
+- `scorpio_style_slo_guard`: 26
+- `vllm_faithful`: 2
+
+Quality gates passed:
+
+- all-complete fraction below 40%
+- moderate+strong discriminative fraction increased
+- nontrivial overall oracle headroom
+- nontrivial discriminative oracle headroom
+- real-trace representation preserved
+
+Quality gates failed:
+
+- only 51 retained windows, below the 500-1,000 target
+- fewer than 3 policies win genuinely discriminative windows
+- faithful baselines do not yet win enough discriminative windows
+- strong-window top-policy share is 92.86%, above the 85% cap
+- OOD split was not defined because the retained set did not keep the Azure
+  ancestor needed for OOD holdout
+
+Policy-specialization observations from
+`results/selector_dataset_v2/redesigned_pilot/policy_specialization.json`:
+
+- `scorpio_style_slo_guard` wins strongly under tight-SLO, high-burst,
+  high-load windows, especially admission-pressure and bursty-transient cases.
+- `vllm_faithful` wins many easy/representative or resource-scarcity windows,
+  but most are equivalent or near-tie; only 2 are strongly discriminative.
+- `sarathi_faithful` appears in long-prompt/resource-scarcity regions, but its
+  wins are near ties in this run.
+- `edf` appears only in near-tie burst/noise windows.
+
+The redesigned methodology improved headroom and reduced all-complete windows,
+but the dataset is still not ready for large-scale generation.
 
 ## Pilot and Learning-Curve Targets
 
