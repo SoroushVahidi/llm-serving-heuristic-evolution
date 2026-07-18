@@ -329,6 +329,76 @@ requires a disaggregated two-GPU (`role="prefill"`/`role="decode"`)
 topology that ordinary single-pool experiment configs do not provide,
 making blanket registration inapplicable without further config work.
 
+### `tetriinfer_paper_reimplementation`
+
+**This baseline is deliberately NOT labeled `_faithful`.** Every other
+baseline in this section is pinned to a specific, author-maintained source
+commit; TetriInfer has none. See
+docs/tetriinfer_reference.md section 0 for the full reproducibility
+determination — summarized here: **no official code repository, artifact,
+or author-maintained implementation exists** for TetriInfer (verified live
+via `gh api`/`gh search code`/web search), and it has **no peer-reviewed
+venue** (arXiv preprint only, confirmed via the Semantic Scholar API and
+DBLP's "CoRR" bucket). `tetriinfer_paper_reimplementation` is the
+scientifically defensible label for a reimplementation built from the
+paper's own prose description rather than a pinned commit.
+
+**Manuscript label:** "Independent reimplementation of TetriInfer's core
+two-level scheduling algorithm (as described in the paper), built on this
+project's disaggregated prefill/decode infrastructure."
+
+**Primary source:** arXiv:2401.11181, "Inference without Interference:
+Disaggregate LLM Inference for Mixed Downstream Workloads" (Hu, Huang, Xu,
+Chen, Xu, Chen, Feng, Wang, Wang, Bao, Sun, Shan; UCAS/ICT-CAS + Huawei
+Cloud), v1 (only version), 2024-01-20, CC BY 4.0. Full source-provenance
+record, exactly which algorithmic details are paper-specified vs. this
+project's own disclosed adaptations, and the reproducibility determination:
+docs/tetriinfer_reference.md.
+
+Unlike `distserve_faithful` (exactly one prefill-role and one decode-role
+GPU, per DistServe's own pinned single-worker-per-stage architecture),
+this is **the first baseline in this project requiring genuine
+multi-instance decode-side routing**: it accepts any number of
+`role="prefill"` and `role="decode"` GPUs. It reimplements: a global
+scheduler (least-loaded prefill-instance assignment, assigned once per
+request); a local prefill scheduler (FCFS/SJF/LJF, non-preemptive,
+batch-size/token-budget/KV-capacity bounded); a length-prediction
+abstraction (`tetriinfer_length_prediction.py` — bucketed, deterministic,
+no ML model, no external/paid API, with an optional configurable noise
+path to study prediction-error sensitivity, and a structural guarantee
+that it is never given ground-truth output length); an inter-instance
+decode dispatcher (`tetriinfer_routing.py` — power-of-two random candidate
+sampling from resource-eligible instances, tie-broken by the paper's own
+stated "spread heavy decode requests evenly" objective); and a local
+decode scheduler (greedy / reserve-static / reserve-dynamic admission
+gates). Unlike `distserve_faithful`, this policy **never uses swap** —
+TetriInfer's own decode-side story is admission-time avoidance of
+thrashing, not runtime eviction.
+
+- **Safe claim:** "Independent reimplementation of TetriInfer's
+  paper-described two-level scheduling algorithm (dispatcher routing,
+  reserve-static/reserve-dynamic admission gates, chunked-prefill-
+  compatible context stage), evaluated against this project's own
+  disclosed, non-ML length-prediction abstraction."
+- **Unsafe claim:** "Official TetriInfer code" (none exists), "verified
+  against TetriInfer's source" (no source exists to verify against), "an
+  OSDI/peer-reviewed TetriInfer paper" (arXiv preprint only), a
+  reproduction of the paper's own OPT-125M length predictor or its 74.9%
+  empirical accuracy figure (this project's predictor is a disclosed,
+  deterministic, non-ML substitute), or a claim about instance-flip
+  elasticity (not implemented — see docs/tetriinfer_reference.md §E).
+
+**Not registered as a deployable baseline or selector candidate**: fully
+implemented and unit-tested
+(`llmserveopt.policies.tetriinfer_paper_reimplementation.TetriInferPaperReimplementationPolicy`),
+but deliberately not added to `registry.py`'s `BASELINE_NAMES` /
+`SELECTOR_CANDIDATE_NAMES` — both because of the lower source-confidence
+label (a paper reimplementation, not a pinned-commit-verified baseline)
+and because it requires a multi-GPU disaggregated topology that ordinary
+single-pool experiment configs do not provide. Historical policy counts
+(currently 20 deployable/selector-candidate policies, see
+docs/research_status.md) are unaffected.
+
 ---
 
 ## Dispatch vs. batching

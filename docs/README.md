@@ -60,6 +60,7 @@ Core design decisions are recorded in:
 - [vllm_faithful_scheduler_reference.md](vllm_faithful_scheduler_reference.md) — pinned-commit source provenance for `vllm_faithful`, the faithful (non-proxy) vLLM v0.1.0 scheduler/KV-block reimplementation
 - [sarathi_faithful_scheduler_reference.md](sarathi_faithful_scheduler_reference.md) — pinned-commit source provenance for `sarathi_faithful`, the faithful (non-proxy) Sarathi-Serve chunked-prefill scheduler reimplementation
 - [distserve_faithful_scheduler_reference.md](distserve_faithful_scheduler_reference.md) — pinned-commit source provenance for `distserve_faithful`, the faithful (non-proxy) DistServe context/decode-stage scheduler reimplementation (online scheduling only; offline parallelism/placement planning excluded)
+- [tetriinfer_reference.md](tetriinfer_reference.md) — primary-source provenance and reproducibility determination for `tetriinfer_paper_reimplementation`; no official TetriInfer code/artifact exists (verified live), so this is a paper-description reimplementation, not a `_faithful` pinned-commit baseline — see section 0 for the full determination
 
 ---
 
