@@ -62,6 +62,7 @@ Core design decisions are recorded in:
 - [distserve_faithful_scheduler_reference.md](distserve_faithful_scheduler_reference.md) — pinned-commit source provenance for `distserve_faithful`, the faithful (non-proxy) DistServe context/decode-stage scheduler reimplementation (online scheduling only; offline parallelism/placement planning excluded)
 - [tetriinfer_reference.md](tetriinfer_reference.md) — primary-source provenance and reproducibility determination for `tetriinfer_paper_reimplementation`; no official TetriInfer code/artifact exists (verified live), so this is a paper-description reimplementation, not a `_faithful` pinned-commit baseline — see section 0 for the full determination
 - [llumnix_faithful_scheduler_reference.md](llumnix_faithful_scheduler_reference.md) — pinned-commit source provenance for `llumnix_faithful` (OSDI 2024 artifact repo, not the continuously-evolving `AlibabaPAI/llumnix`/`llumnix-project/llumnix`), the faithful cluster-scheduling reimplementation (dispatch, migration-pair selection, LCFS migration-candidate selection, destination admission) built on a new live cross-instance migration primitive
+- [external_baseline_integration.md](external_baseline_integration.md) — unified integration audit of all five external baselines (vllm/sarathi/distserve/tetriinfer/llumnix faithful): topology comparability matrix, resource-normalization protocols (A/B/C), evaluation harness, smoke validation, invariants, and the selector-eligibility / architecture-vs-policy-selection analysis
 
 ---
 

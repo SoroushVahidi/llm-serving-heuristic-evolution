@@ -160,12 +160,18 @@ requests each consume 1 token; remainder goes to new prefill admissions.
 
 ---
 
-## Faithful (non-proxy) baselines: `vllm_faithful`, `sarathi_faithful`, `distserve_faithful`
+## Faithful (non-proxy) baselines: `vllm_faithful`, `sarathi_faithful`, `distserve_faithful`, `tetriinfer_paper_reimplementation`, `llumnix_faithful`
 
 This repository has **three distinct kinds of "vLLM" thing**, an
-analogous **two distinct kinds of "Sarathi" thing**, and (as of
-`distserve_faithful`) a distinct **"DistServe" thing** — none of which may
-be conflated:
+analogous **two distinct kinds of "Sarathi" thing**, and a distinct
+**"DistServe" thing**, **"TetriInfer" thing**, and **"Llumnix" thing** —
+none of which may be conflated. These five span three structurally
+different GPU topologies (monolithic, disaggregated prefill/decode,
+multi-instance migratory) and are **not** all directly comparable to each
+other without an explicit resource-normalization protocol — see
+[external_baseline_integration.md](external_baseline_integration.md) for
+the full topology-comparability matrix, resource-normalization protocols,
+and selector-eligibility analysis across all five together.
 
 | | `vllm_style_token_budget` | `vllm_faithful` | External real-vLLM HTTP harness |
 |---|---|---|---|
