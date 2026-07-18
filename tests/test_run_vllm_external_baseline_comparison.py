@@ -11,6 +11,7 @@ from __future__ import annotations
 import dataclasses
 import importlib.util
 import json
+import platform
 import subprocess
 import sys
 import threading
@@ -49,6 +50,13 @@ class _FakeVllmHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(b'{"data": [{"id": "fake-model"}]}')
+        elif self.path == "/version":
+            # Mirrors real vLLM's OpenAI-compatible server (confirmed live:
+            # `curl http://127.0.0.1:8001/version` -> {"version": "0.24.0"}).
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(b'{"version": "0.24.0-fake"}')
         else:
             self.send_response(404)
             self.end_headers()
@@ -800,8 +808,33 @@ def test_end_to_end_against_fake_server(tmp_path, fake_vllm_server):
     assert (tmp_path / "server_status.json").exists()
     server_status = json.loads((tmp_path / "server_status.json").read_text())
     assert "data" in server_status
+    # Reproducibility metadata (Part F): the vLLM version that matters is the
+    # server's, queried live, not whatever's importable from this harness's
+    # own venv; harness_python_version is always present, network or not.
+    assert server_status["vllm_server_version"] == "0.24.0-fake"
+    assert server_status["harness_python_version"] == platform.python_version()
     rows = [json.loads(l) for l in (tmp_path / "requests.jsonl").read_text().strip().splitlines()]
     assert all(r["status"] == "success" for r in rows)
+
+
+def test_server_status_records_version_error_gracefully_when_unreachable(tmp_path):
+    """If --server-url points at nothing reachable, the harness must still
+    complete (mock mode covers the request path) and record a version-query
+    error rather than raising."""
+    mod = _load_module()
+    result = mod.main([
+        "--allow-live-server", "--server-url", "http://127.0.0.1:1",  # nothing listens here
+        "--mock",
+        "--policies", "fifo",
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "1",
+        "--output-dir", str(tmp_path),
+    ])
+    assert result == 0
+    server_status = json.loads((tmp_path / "server_status.json").read_text())
+    assert "error" in server_status
+    assert "vllm_server_version_error" in server_status
+    assert server_status["harness_python_version"] == platform.python_version()
 
 
 # ---------------------------------------------------------------------------

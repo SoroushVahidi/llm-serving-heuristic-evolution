@@ -57,6 +57,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import json
+import platform
 import sys
 import time
 import urllib.error
@@ -1921,9 +1922,22 @@ def main(argv: Optional[List[str]] = None) -> int:
         try:
             req = urllib.request.Request(f"{args.server_url.rstrip('/')}/v1/models")
             with urllib.request.urlopen(req, timeout=10) as resp:
-                (out_dir / "server_status.json").write_text(resp.read().decode("utf-8"))
+                status: Dict[str, Any] = json.loads(resp.read().decode("utf-8"))
         except Exception as exc:  # noqa: BLE001
-            (out_dir / "server_status.json").write_text(json.dumps({"error": str(exc)}))
+            status = {"error": str(exc)}
+        # Best-effort reproducibility metadata: the vLLM version that matters
+        # is the SERVER's (a separate process, possibly a separate machine),
+        # not whatever (if anything) is importable from this harness's own
+        # venv -- so query the server's own /version endpoint rather than
+        # introspecting local package metadata. Never blocks the run.
+        try:
+            req = urllib.request.Request(f"{args.server_url.rstrip('/')}/version")
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                status["vllm_server_version"] = json.loads(resp.read().decode("utf-8")).get("version")
+        except Exception as exc:  # noqa: BLE001
+            status["vllm_server_version_error"] = str(exc)
+        status["harness_python_version"] = platform.python_version()
+        (out_dir / "server_status.json").write_text(json.dumps(status, indent=2))
 
     if not args.mock:
         capture_gpu_mem(out_dir / "gpu_mem_before.txt")
