@@ -14,7 +14,7 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) + KNN/regression/fallback variants |
-| Test count | **1277 collected** (broader non-GPU smoke passes after fixing the `scripts` import path in `test_phase2c1_real_trace_runner.py`) |
+| Test count | **1560 collected** (2026-07-17; broader non-GPU smoke passes after fixing the `scripts` import path in `test_phase2c1_real_trace_runner.py`) |
 | Phase 2C.2 eval windows | **325** (real Azure 2023 + BurstGPT traces) |
 | Phase 2C.2 best selector ANWG | **0.8021** (`native_non_oracle_dt`) |
 | Phase 2C.3 result | **Negative finding** — orca_style: 0 full-pool training labels |
@@ -70,6 +70,19 @@ external-style envelope. azure_2023_conv is the main failure workload.
 2. **Azure-conv-like synthetic training:** Generate targeted windows for long-prompt + mixed-SLO regime.
 3. **Regime-gated selector:** Route azure_conv_like windows to a specialized sub-selector.
 4. **Gemini live calibration:** 10-call pilot after credentials/caps review.
+
+### Since the 2026-06-27 pause — real-serving validation (outside numbered phases)
+
+Work continued on a separate track from Phase 2C.4: real-LLM API latency
+calibration (Cohere, Gemini — length-targeted v2 pilots) and a real, running-vLLM
+external-baseline + corrected-objective-selector comparison. Key references:
+[docs/real_llm_latency_model_v2.md](real_llm_latency_model_v2.md),
+[docs/vllm_real_serving_external_baseline_pilot.md](vllm_real_serving_external_baseline_pilot.md)
+(first real-vLLM run), and
+[docs/vllm_real_serving_scaled_comparison.md](vllm_real_serving_scaled_comparison.md)
+(status: completed but caveated — the selector arm was confounded by an
+action-space bug, since fixed). No conclusions from this track have been folded
+into the Phase 2C.2/2C.3 ANWG numbers above.
 
 ---
 
