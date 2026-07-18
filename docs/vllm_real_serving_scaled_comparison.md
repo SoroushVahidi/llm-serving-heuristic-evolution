@@ -1,5 +1,11 @@
 # vLLM Real-Serving Scaled External-Baseline + Selector Comparison
 
+> **Status: superseded (selector arm only).** The `PolicyNeverAdmitted`
+> confound described below has been fixed and re-run; see
+> [`docs/vllm_real_serving_scaled_comparison_corrected.md`](vllm_real_serving_scaled_comparison_corrected.md)
+> for the corrected selector-arm results. The baseline arms here remain
+> valid and are retained for historical context.
+
 **Status: completed but caveated.** This is a real, multi-regime, higher-volume
 comparison of this project's admission/scheduling policies **and its corrected-
 objective selector** run as external admission controllers on top of a real,
