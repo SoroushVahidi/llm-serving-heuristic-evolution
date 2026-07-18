@@ -20,7 +20,7 @@ group-aware split, and assemble the final `WindowRecordV2` list.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Tuple
 
 from ...core.metrics import RunMetrics
 from ...core.types import GPUConfig, Request
@@ -39,7 +39,13 @@ from .features import extract_selector_v2_features
 from .splits import assign_group_aware_split, split_for_group
 from ..windows import make_windows  # re-exported below for convenience
 
-__all__ = ["make_windows", "run_candidate_policy_on_window", "metrics_to_outcome_vector", "build_selector_dataset_v2"]
+__all__ = [
+    "make_windows",
+    "run_candidate_policy_on_window",
+    "metrics_to_outcome_vector",
+    "build_selector_dataset_v2",
+    "build_selector_dataset_v2_trials",
+]
 
 
 def metrics_to_outcome_vector(
@@ -63,6 +69,10 @@ def metrics_to_outcome_vector(
     slo_attainment = (1.0 - slo_violation_rate) if slo_violation_rate is not None else None
     completion_fraction = _nan_to_none(metrics.completion_fraction)
     weighted_goodput = _nan_to_none(metrics.weighted_goodput)
+    if weighted_goodput is None and metrics.num_total > 0 and metrics.num_completed == 0:
+        weighted_goodput = 0.0
+    if completion_fraction is None and metrics.num_total > 0:
+        completion_fraction = metrics.num_completed / metrics.num_total
     arrival_normalized_wg = (
         completion_fraction * weighted_goodput
         if completion_fraction is not None and weighted_goodput is not None
@@ -172,8 +182,21 @@ def _run_scenario(
     requests = spec.build(seed)
     if not requests:
         return []
+    effective_gpus = spec.effective_gpu_configs(gpu_configs)
+    effective_service_model = spec.effective_service_model(service_model)
     scenario_id = f"{spec.family_id}__seed{seed}"
-    resource_configuration_id = f"gpus{len(gpu_configs)}_kv{sum(g.max_kv_tokens for g in gpu_configs)}"
+    service_part = ""
+    if effective_service_model is not None:
+        service_part = (
+            f"_prefill{int(effective_service_model.enable_prefill_modeling)}"
+            f"_tb{effective_service_model.step_token_budget}"
+        )
+    resource_configuration_id = (
+        f"gpus{len(effective_gpus)}"
+        f"_seq{sum(g.max_active_sequences for g in effective_gpus)}"
+        f"_kv{sum(g.max_kv_tokens for g in effective_gpus)}"
+        f"{service_part}"
+    )
 
     windows = make_windows(requests, trace_id=scenario_id, window_size=window_size)
     reqs_list = list(requests)
@@ -183,13 +206,17 @@ def _run_scenario(
         prefix = reqs_list[:w.start_request_index]
         feats = extract_selector_v2_features(
             window_requests=w.requests, window_start_time=w.start_time,
-            prefix_requests=prefix, gpu_configs=gpu_configs,
+            prefix_requests=prefix, gpu_configs=effective_gpus,
             topology_class=topology_class,
+            step_token_budget=(
+                effective_service_model.step_token_budget
+                if effective_service_model is not None else None
+            ),
         )
 
         outcomes = [
             run_candidate_policy_on_window(
-                pname, w.requests, gpu_configs, service_model,
+                pname, w.requests, effective_gpus, effective_service_model,
                 workload_tag=f"{scenario_id}_w{w.window_id}", seed=seed, drain_steps=drain_steps,
             )
             for pname in candidate_policies
@@ -199,6 +226,9 @@ def _run_scenario(
             source_trace=spec.source_trace, seed=seed, topology_class=topology_class,
             resource_configuration_id=resource_configuration_id, window_id=w.window_id,
             temporal_block_id=spec.temporal_block_id,
+            request_plan_ancestor_id=spec.request_plan_ancestor_id or spec.family_id,
+            scenario_pool=spec.scenario_pool,
+            bottleneck_class=spec.bottleneck_class,
         )
         raw_windows.append(_RawWindow(identifiers=identifiers, features=feats, outcomes=outcomes))
 
@@ -219,15 +249,34 @@ def build_selector_dataset_v2(
     (see `assemble_dataset_rows`) applied when flattening to rows, so the
     same built records can be re-split under different train/val
     fractions without re-running any simulation."""
+    trials = [(spec, seed) for spec in scenario_specs for seed in seeds]
+    return build_selector_dataset_v2_trials(
+        trials=trials,
+        gpu_configs=gpu_configs,
+        candidate_policies=candidate_policies,
+        service_model=service_model,
+        window_size=window_size,
+        drain_steps=drain_steps,
+        topology_class=topology_class,
+        verbose=verbose,
+    )
+
+
+def build_selector_dataset_v2_trials(
+    trials: List[Tuple[ScenarioFamilySpec, int]], gpu_configs: List[GPUConfig],
+    candidate_policies: List[str], service_model: Optional[ServiceModel] = None,
+    window_size: int = 30, drain_steps: int = 20_000, topology_class: str = "monolithic",
+    verbose: bool = False,
+) -> List[WindowRecordV2]:
+    """Build v2 records for an explicit list of (scenario spec, seed) trials."""
     all_raw_windows: List[_RawWindow] = []
-    for spec in scenario_specs:
-        for seed in seeds:
-            if verbose:
-                print(f"  running {spec.family_id} seed={seed} ...")
-            all_raw_windows.extend(_run_scenario(
-                spec, seed, gpu_configs, service_model, candidate_policies,
-                window_size, drain_steps, topology_class,
-            ))
+    for spec, seed in trials:
+        if verbose:
+            print(f"  running {spec.family_id} seed={seed} ...")
+        all_raw_windows.extend(_run_scenario(
+            spec, seed, gpu_configs, service_model, candidate_policies,
+            window_size, drain_steps, topology_class,
+        ))
 
     # Pass 2: dataset-wide best-fixed-policy value per objective.
     all_outcomes_lists = [rw.outcomes for rw in all_raw_windows]

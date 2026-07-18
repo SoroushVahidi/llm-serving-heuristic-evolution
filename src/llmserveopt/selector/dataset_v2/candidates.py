@@ -49,14 +49,25 @@ MONOLITHIC_EXTERNAL_BASELINES: List[str] = [
 #:     gating, not just ordering) from every other policy in this subset.
 #:   - weighted_shortest_processing: service-time-aware, distinct
 #:     scheduling principle from the deadline/SLO-aware entries above.
+#:   - shortest_output_first, estimated_service_time_first: included for the
+#:     redesigned bottleneck pilot because the first v2 pilot showed that KV
+#:     and decode-heavy regimes need explicit length-specialist comparators;
+#:     both are online deployable and monolithic-compatible.
+#:   - best_fit, multi_bin_batching: included for resource-scarcity regimes,
+#:     where placement and batching can be materially different from SLO-rank
+#:     policies.
 STRONG_HISTORICAL_MONOLITHIC_POLICIES: List[str] = [
     "fifo",
     "edf",
+    "shortest_output_first",
     "scorpio_style_slo_guard",
     "orca_style",
     "slo_slack_score",
     "admission_control",
     "weighted_shortest_processing",
+    "estimated_service_time_first",
+    "best_fit",
+    "multi_bin_batching",
 ]
 
 # Verified at import time, not just at test time (mirrors

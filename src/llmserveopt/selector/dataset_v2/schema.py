@@ -34,6 +34,9 @@ class ScenarioIdentifiers:
     resource_configuration_id: str
     window_id: int
     temporal_block_id: Optional[str] = None  # only meaningful for real-trace temporal slices
+    request_plan_ancestor_id: Optional[str] = None
+    scenario_pool: str = "REPRESENTATIVE_POOL"
+    bottleneck_class: Optional[str] = None
 
 
 @dataclass(frozen=True)

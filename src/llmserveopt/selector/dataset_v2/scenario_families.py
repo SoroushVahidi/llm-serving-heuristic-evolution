@@ -17,9 +17,10 @@ adding one spec, not multiplying every existing axis by every other axis.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Sequence, Tuple
 
-from ...core.types import Request
+from ...core.types import GPUConfig, Request
+from ...simulator.service_model import ServiceModel
 from ...workloads.synthetic import SLOClass, WorkloadConfig, generate_workload
 
 
@@ -31,6 +32,17 @@ class ScenarioFamilySpec:
     build: Callable[[int], List[Request]]   # (seed) -> requests
     source_trace: str = "synthetic"
     temporal_block_id: Optional[str] = None
+    request_plan_ancestor_id: Optional[str] = None
+    scenario_pool: str = "REPRESENTATIVE_POOL"
+    bottleneck_class: Optional[str] = None
+    gpu_configs: Optional[Tuple[GPUConfig, ...]] = None
+    service_model: Optional[ServiceModel] = None
+
+    def effective_gpu_configs(self, default: Sequence[GPUConfig]) -> List[GPUConfig]:
+        return list(self.gpu_configs) if self.gpu_configs is not None else list(default)
+
+    def effective_service_model(self, default: Optional[ServiceModel]) -> Optional[ServiceModel]:
+        return self.service_model if self.service_model is not None else default
 
 
 def _tight_slo_classes() -> List[SLOClass]:

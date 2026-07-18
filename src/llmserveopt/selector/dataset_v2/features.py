@@ -20,6 +20,9 @@ IDENTIFIER_FIELDS = {
     "topology_class",
     "resource_configuration_id",
     "window_id",
+    "request_plan_ancestor_id",
+    "scenario_pool",
+    "bottleneck_class",
     "split",
 }
 
@@ -43,6 +46,7 @@ def extract_selector_v2_features(
     prefix_requests: Sequence[Request] = (),
     gpu_configs: Sequence[GPUConfig] = (),
     topology_class: str = "monolithic",
+    step_token_budget: FeatureValue = None,
     recent_violation_rate: FeatureValue = None,
     active_sequence_count: int = 0,
     aggregate_kv_utilization: FeatureValue = None,
@@ -77,7 +81,7 @@ def extract_selector_v2_features(
     features.update(_token_stats("pred_output", [r.predicted_output_tokens for r in recent]))
     features.update(_slo_features(recent, window_start_time, recent_violation_rate))
     features.update(_priority_features(recent))
-    features.update(_resource_features(gpu_configs))
+    features.update(_resource_features(gpu_configs, step_token_budget))
 
     features.update({
         "monolithic_aggregate_kv_utilization": aggregate_kv_utilization if topology_class == "monolithic" else None,
@@ -205,18 +209,25 @@ def _priority_features(requests: Sequence[Request]) -> Dict[str, FeatureValue]:
     }
 
 
-def _resource_features(gpu_configs: Sequence[GPUConfig]) -> Dict[str, FeatureValue]:
+def _resource_features(
+    gpu_configs: Sequence[GPUConfig],
+    step_token_budget: FeatureValue,
+) -> Dict[str, FeatureValue]:
     gpu_count = len(gpu_configs)
     total_kv = sum(g.max_kv_tokens for g in gpu_configs)
     total_seq = sum(g.max_active_sequences for g in gpu_configs)
-    token_budget = sum(g.max_batch_tokens for g in gpu_configs)
+    token_budget = (
+        float(step_token_budget) * gpu_count
+        if step_token_budget is not None
+        else float(sum(g.max_batch_tokens for g in gpu_configs))
+    )
     block_size = 16.0
     return {
         "resource_gpu_count": float(gpu_count),
         "resource_kv_capacity": float(total_kv),
         "resource_block_size": block_size,
         "resource_sequence_capacity": float(total_seq),
-        "resource_token_budget": float(token_budget),
+        "resource_token_budget": token_budget,
     }
 
 

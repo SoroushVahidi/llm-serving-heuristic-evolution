@@ -13,12 +13,10 @@ from typing import Callable, Dict, List, Optional
 
 from .schema import DiscriminativenessResult, PolicyOutcomeVector, RegretRecord
 
-# Near-tie threshold: continuity with Phase 2B.16's own established
-# "margin < 0.005" near-tie criterion (see docs/research_status.md's
-# Phase 2B.16 summary) -- reused deliberately, not reinvented.
+PRACTICAL_EQUIVALENCE_ABSOLUTE_MARGIN = 0.002
+MODERATELY_DISCRIMINATIVE_ABSOLUTE_MARGIN = 0.005
+STRONGLY_DISCRIMINATIVE_ABSOLUTE_MARGIN = 0.02
 NEAR_TIE_RELATIVE_MARGIN = 0.005
-# Strongly-discriminative threshold: this project's own new, disclosed
-# choice for Dataset v2 -- no prior phase defined this boundary.
 STRONGLY_DISCRIMINATIVE_RELATIVE_MARGIN = 0.03
 
 
@@ -27,14 +25,17 @@ class Objective:
     name: str
     higher_is_better: bool
     extractor: Callable[[PolicyOutcomeVector], Optional[float]]
+    practical_equivalence_abs: float = PRACTICAL_EQUIVALENCE_ABSOLUTE_MARGIN
+    strong_abs_margin: float = STRONGLY_DISCRIMINATIVE_ABSOLUTE_MARGIN
+    strong_relative_margin: float = STRONGLY_DISCRIMINATIVE_RELATIVE_MARGIN
 
 
 STANDARD_OBJECTIVES: List[Objective] = [
     Objective("weighted_goodput", True, lambda o: o.weighted_goodput),
     Objective("arrival_normalized_weighted_goodput", True, lambda o: o.arrival_normalized_weighted_goodput),
-    Objective("p95_latency", False, lambda o: o.p95_latency),
+    Objective("p95_latency", False, lambda o: o.p95_latency, practical_equivalence_abs=0.001, strong_abs_margin=0.02),
     Objective("slo_attainment", True, lambda o: o.slo_attainment),
-    Objective("request_throughput", True, lambda o: o.request_throughput),
+    Objective("request_throughput", True, lambda o: o.request_throughput, practical_equivalence_abs=0.01, strong_abs_margin=0.5),
 ]
 
 
@@ -66,14 +67,18 @@ def compute_discriminativeness(
     denom = abs(best_val) if abs(best_val) > epsilon else epsilon
     rel_margin = abs_margin / denom
 
-    tie_epsilon = max(epsilon, abs(best_val) * 0.001)
+    practical_epsilon = max(epsilon, objective.practical_equivalence_abs)
+    tie_epsilon = max(practical_epsilon, abs(best_val) * 0.001)
     tie_set = sorted(name for name, val in values.items() if abs(val - best_val) <= tie_epsilon)
 
-    if max_min_spread <= epsilon:
+    if max_min_spread <= practical_epsilon:
         classification = "ALL_COMPLETE_OR_EFFECTIVELY_TIED"
-    elif rel_margin < NEAR_TIE_RELATIVE_MARGIN:
+    elif abs_margin <= practical_epsilon or rel_margin < NEAR_TIE_RELATIVE_MARGIN:
         classification = "NEAR_TIE"
-    elif rel_margin < STRONGLY_DISCRIMINATIVE_RELATIVE_MARGIN:
+    elif (
+        abs_margin < objective.strong_abs_margin
+        and rel_margin < objective.strong_relative_margin
+    ):
         classification = "MODERATELY_DISCRIMINATIVE"
     else:
         classification = "STRONGLY_DISCRIMINATIVE"
