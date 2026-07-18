@@ -160,11 +160,12 @@ requests each consume 1 token; remainder goes to new prefill admissions.
 
 ---
 
-## Faithful (non-proxy) baselines: `vllm_faithful`, `sarathi_faithful`
+## Faithful (non-proxy) baselines: `vllm_faithful`, `sarathi_faithful`, `distserve_faithful`
 
-This repository has **three distinct kinds of "vLLM" thing**, and an
-analogous **two distinct kinds of "Sarathi" thing** — none of which may be
-conflated:
+This repository has **three distinct kinds of "vLLM" thing**, an
+analogous **two distinct kinds of "Sarathi" thing**, and (as of
+`distserve_faithful`) a distinct **"DistServe" thing** — none of which may
+be conflated:
 
 | | `vllm_style_token_budget` | `vllm_faithful` | External real-vLLM HTTP harness |
 |---|---|---|---|
@@ -257,6 +258,76 @@ baseline reuses this project's `KVBlockSpaceManager` and
 (`llmserveopt.policies.sarathi_faithful.SarathiFaithfulPolicy`), but
 deliberately not added to `registry.py`'s `BASELINE_NAMES` /
 `SELECTOR_CANDIDATE_NAMES` in the PR that introduced it.
+
+### `distserve_faithful`
+
+**Manuscript label:** "Faithful independent simulator-side reimplementation
+of the pinned DistServe camera-ready FCFS online scheduling behavior, using
+the repository's disaggregated prefill/decode infrastructure."
+
+**Pinned reference:** LLMServe/DistServe, branch `camera-ready-simulator`,
+commit `0ec355c8743d3fbd2d02f3cd62b5be6eae368f92`, corresponding to Zhong et
+al., "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized
+Large Language Model Serving," OSDI 2024 (arXiv:2401.09670). Full
+source-provenance record, architecture audit, and explicit exclusions:
+`docs/distserve_faithful_scheduler_reference.md`.
+
+Unlike `vllm_faithful`/`sarathi_faithful` (both single-pool schedulers),
+`distserve_faithful` reimplements a **two-stage** scheduler on top of this
+repository's disaggregated prefill/decode infrastructure (`GPUConfig.role`,
+the bridge queue, `RequestPhase.MIGRATING`): a context (prefill) stage that
+FCFS-admits whole prompts bounded by batch-size/token-budget/KV-block
+capacity and stops entirely (not skip-and-continue) at the first
+non-admittable request; a bridge-queue handoff that exposes a request for
+decode-side admission only once its transfer delay has elapsed; and a
+decode stage that FCFS-admits from the bridge queue (giving strict priority
+to requests it previously swapped out over new migrations, and throttling
+new-migration acceptance via a `waiting_block_prop_threshold` congestion
+gate) and manages capacity via **swap** (`Action.swap` /
+`GPUState.evict(preserve_progress=True)`) rather than vLLM/Sarathi-style
+recompute preemption — confirmed genuinely core to the pinned reference's
+`_step()`, not an optional mode. The pinned reference's core `LLMEngine` is
+single-context-worker/single-decode-worker (not a multi-worker pool — that
+exists only in DistServe's secondary `simdistserve` exploratory tool), so
+this policy requires and validates exactly one `role="prefill"` GPU and one
+`role="decode"` GPU, raising `ValueError` otherwise.
+
+**Scope boundary:** this PR implements only the pinned reference's *online
+request scheduling* (context-stage admission, decode-stage admission +
+swap, bridge-queue handoff). It does **not** implement and does **not**
+claim to reproduce DistServe's *offline* parallelism/placement planner (the
+paper's goodput-optimized configuration-search algorithm) — that is a
+separate, unimplemented capability.
+
+**Disclosed, non-fabricated defaults:** `waiting_block_prop_threshold=0.05`
+and `block_size=16` are verified values read directly from the pinned
+source (`DecodingStageSchedConfig.__init__`; vLLM's own block-manager
+default, which DistServe's block manager subclasses unchanged).
+`context_max_batch_size`, `context_max_tokens_per_batch`,
+`decode_max_batch_size`, and `decode_max_tokens_per_batch` have **no**
+verified default in the pinned source or its evaluation scripts (unlike
+Sarathi's clearly-sourced chunk size of 512) — the values shipped here are
+this project's own conservative choices, exposed as explicit constructor
+parameters precisely so they are never silently assumed as "the paper's."
+
+- **Safe claim:** "Faithful reimplementation of the pinned DistServe
+  camera-ready commit's online context-stage/decode-stage FCFS scheduling
+  and swap-based decode-capacity *decisions*, on a single-prefill-worker/
+  single-decode-worker topology."
+- **Unsafe claim:** "Official DistServe code", "exact runtime/network
+  reproduction", "a full DistServe performance/hardware-timing model", "a
+  reproduction of DistServe's offline parallelism/placement planner", or
+  any multi-worker routing/load-balancing claim (not part of the pinned
+  reference's core scheduler).
+
+**Not currently a registered baseline**, for the same reason as
+`vllm_faithful`/`sarathi_faithful` above: fully implemented and
+unit-tested (`llmserveopt.policies.distserve_faithful.DistServeFaithfulPolicy`),
+but deliberately not added to `registry.py`'s `BASELINE_NAMES` /
+`SELECTOR_CANDIDATE_NAMES` in the PR that introduced it — and it also
+requires a disaggregated two-GPU (`role="prefill"`/`role="decode"`)
+topology that ordinary single-pool experiment configs do not provide,
+making blanket registration inapplicable without further config work.
 
 ---
 

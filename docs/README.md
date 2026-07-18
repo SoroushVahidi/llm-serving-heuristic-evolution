@@ -59,6 +59,7 @@ Core design decisions are recorded in:
 - [external_baseline_correctness_audit.md](external_baseline_correctness_audit.md) — per-policy fidelity/correctness audit (algorithm fidelity, oracle-leak checks, safe wording) for the "style" baselines
 - [vllm_faithful_scheduler_reference.md](vllm_faithful_scheduler_reference.md) — pinned-commit source provenance for `vllm_faithful`, the faithful (non-proxy) vLLM v0.1.0 scheduler/KV-block reimplementation
 - [sarathi_faithful_scheduler_reference.md](sarathi_faithful_scheduler_reference.md) — pinned-commit source provenance for `sarathi_faithful`, the faithful (non-proxy) Sarathi-Serve chunked-prefill scheduler reimplementation
+- [distserve_faithful_scheduler_reference.md](distserve_faithful_scheduler_reference.md) — pinned-commit source provenance for `distserve_faithful`, the faithful (non-proxy) DistServe context/decode-stage scheduler reimplementation (online scheduling only; offline parallelism/placement planning excluded)
 
 ---
 

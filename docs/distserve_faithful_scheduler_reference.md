@@ -6,9 +6,22 @@ defines the boundary between (A) behavior directly supported by the pinned
 source, (B) simulator abstractions required to reproduce it, (C) existing
 infrastructure reused unchanged, (D) new shared infrastructure added in
 this stage, and (E) differences that cannot be faithfully represented in
-this simulator. **This stage adds infrastructure only — no
-`distserve_faithful` scheduling policy is implemented yet** (see
-`docs/baselines.md` for the current baseline inventory).
+this simulator.
+
+> **Update (distserve_faithful implementation stage):** the source was
+> re-read directly (not from memory) before implementing the
+> `distserve_faithful` policy. Two corrections/additions from that
+> re-verification are folded in below: (1) the CORE production reference
+> (`distserve/engine.py`'s `LLMEngine`, `distserve/single_stage_engine.py`)
+> is a **single context worker + single decode worker** system — the
+> "multiple workers with load-balancing routing" architecture mentioned
+> below under "Worker/resource partition assumption" is confirmed to exist
+> **only** in the secondary `simdistserve` tool, not in the core FCFS
+> baseline this project pins to; see the corrected note in that section.
+> (2) Swap-based decode-side capacity management is confirmed to be part
+> of the **always-active** decode-stage step execution (not an optional/
+> secondary path) — see the new "Swap-based decode-side capacity
+> management" subsection under A, and its corresponding entries in C/D.
 
 ## Paper
 
@@ -57,11 +70,16 @@ Source files read directly (via `gh api repos/LLMServe/DistServe/contents/...
   profiled compute-time model (prefill/decode), for contrast with the
   migration cost model
 - `simdistserve/base/scheduler.py` (88 lines) — a second, independent
-  SimPy-based simulation tool in the same repo, used only to confirm the
-  general "separate prefill/decode worker pools with load-balancing
-  routing" architecture (secondary source; the scheduling algorithm itself
-  is pinned to `distserve/*_stage_scheduler.py` above, the actual
-  production scheduler code, not this exploratory tool)
+  SimPy-based simulation tool in the same repo (see the corrected "Worker/
+  resource partition assumption" note below: this tool's multi-worker
+  routing is NOT part of the core FCFS baseline pinned here)
+- `distserve/engine.py` (347 lines) — `LLMEngine`, the actual production
+  orchestrator class; its own docstring is the authoritative description of
+  the single-context-worker/single-decode-worker architecture
+- `distserve/single_stage_engine.py` (710 lines) — `ContextStageLLMEngine`
+  and `DecodingStageLLMEngine`, confirming exactly one instance of each
+  runs per `LLMEngine`, and that swap in/out is invoked unconditionally
+  inside `DecodingStageLLMEngine._step()`, not behind any optional flag
 
 ## A. Behavior directly supported by the pinned source
 
@@ -144,15 +162,42 @@ compute time**, which is instead modeled via
 justifies this project's own choice (see D below) of a simple, configurable
 fixed-delay transfer model rather than inventing a bandwidth-based one.
 
-### Worker/resource partition assumption
+### Worker/resource partition assumption (corrected)
 
-Prefill and decode run as **separate GPU pools** (confirmed by both the
-primary scheduler code's clean separation into two scheduler classes with
-no shared state, and `simdistserve/base/scheduler.py`'s explicit
-`_prefill_heads` / `_decode_heads` worker-pool routing with least-loaded
-round-robin selection within each pool). This is a hard architectural
-assumption of the paper, not an implementation detail — the entire
-contribution is *not* colocating the two phases.
+Prefill and decode run as **separate GPUs/resource pools** — a hard
+architectural assumption of the paper (the entire contribution is *not*
+colocating the two phases), confirmed by the scheduler code's clean
+separation into two classes with no shared state.
+
+**Correction from the original infrastructure-stage audit:** the CORE
+production reference is a **single context worker + single decode worker**
+per `LLMEngine`, not a multi-worker pool with load-balancing routing.
+`distserve/engine.py`'s `LLMEngine` docstring describes exactly one
+`ContextStageScheduler` and one `DecodingStageScheduler`, and
+`distserve/single_stage_engine.py` instantiates exactly one
+`ContextStageLLMEngine` and one `DecodingStageLLMEngine` per `LLMEngine`.
+The "`_prefill_heads`/`_decode_heads` worker-pool least-loaded routing"
+architecture previously cited here is real, but exists **only** in
+`simdistserve/base/scheduler.py` — a second, independent SimPy tool in the
+same repository, not the core FCFS baseline's production code path. Since
+this project pins to the production scheduler classes
+(`distserve/context_stage_scheduler.py` / `decoding_stage_scheduler.py`),
+`distserve_faithful` targets exactly one prefill-role GPU and one
+decode-role GPU, consistent with the actual `LLMEngine` architecture —
+using only verified behavior rather than substituting a generic
+load-balancer the pinned core reference does not itself use.
+
+### Swap-based decode-side capacity management (always-active, not optional)
+
+Re-verified directly in `distserve/single_stage_engine.py`:
+`DecodingStageLLMEngine._step()` unconditionally calls into swap in/out
+logic every iteration ("this may trigger swap_in if some requests have
+been swapped out to CPU... this may also trigger swap_out if GPU blocks
+are not enough" — read directly from the source comment). This is *not*
+behind any optional flag or ablation switch — it is how the core FCFS
+decode-stage scheduler manages capacity, full stop. `distserve_faithful`
+therefore implements it (see D and C below), rather than deferring it as
+optional.
 
 ## B. Simulator abstractions required to reproduce this
 
@@ -227,6 +272,25 @@ values (disaggregation is opt-in and off by default):
   a request coming from `RequestPhase.MIGRATING`, regardless of what
   `ServiceModel` would otherwise compute for it.
 
+**Added in the `distserve_faithful` implementation stage** (swap support,
+confirmed genuinely core — see above):
+
+- `Action.swap: Dict[int, List[int]]` — a new, narrowly-scoped third action
+  verb. Unlike `preempt` (discard-and-restart, vLLM/Sarathi's recompute
+  semantics), `swap` evicts an active DECODING request while **preserving**
+  its progress (`tokens_decoded`, `first_token_time` untouched) and routes
+  it into the bridge queue as **immediately transfer-ready**
+  (`transfer_ready_time = now`), matching DistServe's own "swapped requests
+  re-admitted with priority over ordinary waiting" behavior — the policy is
+  responsible for that priority ordering (it controls what it puts into
+  `admit` and in what order), not the simulator. Defaults to empty; every
+  pre-existing policy (including `vllm_faithful`/`sarathi_faithful`) never
+  sets it, so this is fully backward compatible.
+- `GPUState.evict(request_id, preserve_progress=False)` — the existing
+  eviction method gains an optional parameter (default `False` = the
+  original recompute behavior, unchanged) that, when `True`, skips
+  resetting `tokens_decoded`/`first_token_time`.
+
 ## E. Differences that cannot be (or are not) faithfully represented
 
 - **Pipeline parallelism** (`parallel_config.pipeline_parallel_size`,
@@ -236,10 +300,9 @@ values (disaggregation is opt-in and off by default):
 - **Advanced decode-stage policies** (`srpt`, `mlfq`, `sj-mlfq`): the
   pinned `DecodingStageSchedConfig` supports these, but `fcfs` is the
   paper's core/baseline algorithm and the only one implemented in the
-  context-stage scheduler at all; a future `distserve_faithful` policy
-  should pin to `fcfs` on both sides for the same "core algorithm, not
-  every ablation" reasoning already applied to Sarathi-Serve's dynamic
-  chunking schedule.
+  context-stage scheduler at all; `DistServeFaithfulPolicy` pins `fcfs` on
+  both sides, for the same "core algorithm, not every ablation" reasoning
+  already applied to Sarathi-Serve's dynamic chunking schedule.
 - **Bandwidth/network-topology-aware KV-transfer cost**: the paper
   discusses placement-aware bandwidth optimization, but DistServe's own
   reference *simulator* (the primary source for timing assumptions, as
@@ -257,10 +320,37 @@ values (disaggregation is opt-in and off by default):
   `max_tokens_per_batch` for the two stages was found in the pinned
   commit's `distserve/evaluation/` scripts in the time available for this
   audit. `waiting_block_prop_threshold=0.05` **is** a verified default
-  (from `DecodingStageSchedConfig.__init__`). A future `distserve_faithful`
-  policy should choose its own defaults and document that they are *not*
-  sourced from a specific paper evaluation run, unlike `sarathi_faithful`'s
-  `chunk_size=512`.
+  (from `DecodingStageSchedConfig.__init__`) and `block_size=16` is
+  inherited from vLLM's own block-manager default (reused unchanged by
+  DistServe's block manager). `DistServeFaithfulPolicy`'s
+  `context_max_batch_size=32`, `context_max_tokens_per_batch=4096`,
+  `decode_max_batch_size=128`, and `decode_max_tokens_per_batch=4096` are
+  this project's own conservative choices, documented in the policy's
+  module docstring as *not* sourced from a specific paper evaluation run,
+  unlike `sarathi_faithful`'s `chunk_size=512` — exposed as explicit
+  constructor parameters precisely so they are never silently assumed as
+  "the paper's."
+
+### Implementation note: `waiting_block_prop_threshold`'s per-round semantics
+
+`DecodingStageFCFSScheduler.post_process`'s `should_accept` check compares
+the pinned reference's own decode-side `waiting_queue` (requests already
+accepted from the bridge/`unaccepted_queue` but not yet batched) against
+the threshold, and is invoked in a `while` loop that re-checks the
+condition **after each acceptance** — so the gate is against a backlog
+that starts small and grows as more requests are pulled in during the same
+round, not a one-shot check against the bridge queue's full, static
+backlog. This simulator has no separate persistent "accepted but not yet
+batched" tier distinct from the bridge queue itself, so
+`DistServeFaithfulPolicy._run_decode_stage` reconstructs the same
+semantics directly: it walks the bridge queue's new-migration candidates
+FCFS, maintaining an `accepted_blocks` counter that starts at **zero every
+call** and stops accepting the instant `accepted_blocks >=
+waiting_block_prop_threshold * total_decode_blocks`. Implementing this as
+a single check against the whole static backlog instead (an earlier,
+incorrect draft of this policy did so) causes permanent starvation as soon
+as the backlog exceeds a few requests, since `waiting_block_prop_threshold`
+defaults to a small fraction (0.05) of capacity.
 
 ## Do not use current `main` blindly
 
