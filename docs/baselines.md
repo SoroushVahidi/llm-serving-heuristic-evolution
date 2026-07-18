@@ -399,6 +399,77 @@ single-pool experiment configs do not provide. Historical policy counts
 (currently 20 deployable/selector-candidate policies, see
 docs/research_status.md) are unaffected.
 
+### `llumnix_faithful`
+
+**Manuscript label:** "Faithful independent reimplementation of Llumnix's
+core cluster scheduling algorithm (initial dispatch, periodic migration-
+pair selection, LCFS migration-candidate selection, destination admission
+gating), composing with `vllm_faithful` for local per-instance scheduling."
+
+**Pinned reference:** the OSDI 2024 artifact repository
+`alibaba/llm-scheduling-artifact`, commit
+`a90824307249573f9c7548645c22994c65f83a08` (pushed 2024-06-05, the same
+day as the paper's arXiv v1 submission), corresponding to Sun et al.,
+"Llumnix: Dynamic Scheduling for Large Language Model Serving," OSDI 2024
+(arXiv:2406.03243). **Not** `AlibabaPAI/llumnix` ("Llumnix v0", a separate,
+continuously-evolving Ray-based project) or `llumnix-project/llumnix`
+("Llumnix v1", a March-2026 architecture rewrite) — both post-date and
+diverge from the pinned artifact; see
+docs/llumnix_faithful_scheduler_reference.md §3 for the full relationship.
+Full source-provenance record, algorithm summary, and explicit exclusions:
+docs/llumnix_faithful_scheduler_reference.md.
+
+Unlike the other faithful baselines here (each single- or fixed-role-
+topology), Llumnix requires genuinely **independent, role-identical
+instances** (every GPU runs the full request lifecycle, no prefill/decode
+split) with a NEW live-migration primitive: `Action.migrate` moves an
+already-active (already-decoding) request from one instance to another,
+preserving decoded progress and its overall service-time anchor
+(admission_time), via a dedicated in-flight table
+(`Simulator._relocating`) deliberately kept separate from the DistServe/
+TetriInfer bridge queue (`Simulator._migrating`) — a bridge-queue request
+has produced zero output tokens and may be claimed by any decode-role GPU;
+a Llumnix migration candidate has always decoded at least one token and
+has one fixed, policy-chosen destination. This baseline implements the
+pinned reference's **verified defaults only**: `dispatch_strategy='naive'`
+(round-robin, session-sticky — degenerates to plain round-robin in this
+simulator, which has no session/multi-turn concept), `migrate_strategy=
+'LCFS'` (migrate the most-recently-admitted decoding, non-priority-exempt
+request from an overloaded instance), `load_metric='consumed_speed'`, and
+`enable_load_control_prefill=False`'s migration-pair selection (including
+its exact migration-benefit condition and its unconditional migrate-out
+trigger for any instance with a currently-preempted/stalled request).
+Local per-instance scheduling is composed directly with
+`VLLMFaithfulPolicy`'s own per-GPU worker (not duplicated) — see the
+reference doc's §E for the one disclosed divergence this composition
+carries forward (the pinned Llumnix source's own local scheduler uses
+swap preemption; `vllm_faithful` models only recompute, a difference
+already disclosed in `vllm_faithful`'s own reference doc, not new here).
+
+- **Safe claim:** "Faithful reimplementation of the pinned Llumnix OSDI
+  2024 artifact's default cluster-scheduling *decisions* — dispatch,
+  migration triggering, migration-pair selection, migration-candidate
+  selection, and destination admission — composed with `vllm_faithful`'s
+  existing local scheduler."
+- **Unsafe claim:** "Official Llumnix code", "exact Ray/vLLM runtime
+  reproduction", a claim about `AlibabaPAI/llumnix` ("v0") or
+  `llumnix-project/llumnix` ("v1") behavior (both post-date and diverge
+  from this pin), a reproduction of any non-default dispatch/migration
+  strategy (`'balanced'`/`'load'`/`'block'`/global `FFIT`/`FCFS`/`BE`/
+  `SJF`/`LJF` dispatch, `'SJF'`/`'LJF'` migration), auto-scaling, or a
+  claim about session/multi-turn behavior (this simulator has no session
+  concept at all).
+
+**Not registered as a deployable baseline or selector candidate**: fully
+implemented and unit-tested
+(`llmserveopt.policies.llumnix_faithful.LlumnixFaithfulPolicy`), but
+deliberately not added to `registry.py`'s `BASELINE_NAMES` /
+`SELECTOR_CANDIDATE_NAMES` — it requires a genuine multi-instance
+(N independent, role=None GPU) topology that ordinary single-pool
+experiment configs do not provide. Historical policy counts (currently 20
+deployable/selector-candidate policies, see docs/research_status.md) are
+unaffected.
+
 ---
 
 ## Dispatch vs. batching
