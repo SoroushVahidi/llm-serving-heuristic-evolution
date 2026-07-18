@@ -1,0 +1,309 @@
+# Selector Dataset v2
+
+Selector Dataset v2 is the replacement methodology for training and evaluating
+the next-generation policy selector. It is topology-aware, leakage-constrained,
+regret-aware, and preserves the full policy-performance vector for each
+scenario/window rather than reducing construction output to one winner label.
+
+This work does **not** train the final selector.
+
+## Motivation
+
+The historical selector datasets are insufficient for final manuscript claims:
+
+- They contain too few windows for learning-curve-backed selector evaluation.
+- Later selector datasets contain many near-tie or all-complete windows.
+- Always-SCORPIO was nearly as good as the per-window oracle in held-out tests.
+- The five faithful external baselines are absent from historical selector data.
+- Existing selector features are too narrow for topology-specific selectors.
+- Several legacy datasets use `online_prefix`, which is now explicitly treated as
+  `offline_window_lookahead` and is not deployable for selector claims.
+
+## Historical Dataset Audit
+
+Classification legend:
+
+- `REUSE_AS_TRAINING`: acceptable as final selector training data.
+- `REUSE_AS_AUXILIARY`: useful for auxiliary analyses, calibration, or coverage design.
+- `REUSE_AS_REGRESSION_ONLY`: useful only to ensure old behavior remains reproducible.
+- `RETIRE_FROM_FINAL_SELECTOR`: do not use for final selector training/evaluation.
+- `NEEDS_REVIEW`: requires manual inspection before reuse.
+
+| Dataset | Scenarios | Windows | Policy portfolio | Topology | Workload sources | Synthetic vs real | Seeds | Split methodology | Label distribution | Near-tie rate | All-complete rate | Top-policy concentration | Faithful external baselines | Leakage risks | Useful? | Classification |
+|---|---:|---:|---|---|---|---|---|---|---|---:|---:|---:|---|---|---|---|
+| Phase 2A.2 smoke selector | ~1 | 4 | 16 historical deployable policies | Monolithic | Synthetic smoke | Synthetic | config seed | none/smoke | best_fit 4/4 | 100% | n/a | 100% | No | `online_prefix` lookahead; tiny | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2A.3 train | multiple config workloads | 19 | 16 historical policies | Monolithic | Synthetic config workloads | Synthetic | config seeds | separate config files | multi_bin_batching 6, shortest_output_first 5, edf 5, others 3 | 78.9% | n/a | 31.6% | No | `online_prefix` lookahead; tiny; derived configs may cross splits | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2A.3 validation | multiple config workloads | 8 | 16 historical policies | Monolithic | Synthetic config workloads | Synthetic | config seeds | separate config files | best_fit 3, shortest_output_first 3, edf 1, weighted_shortest_processing 1 | 87.5% | n/a | 37.5% | No | `online_prefix` lookahead; tiny | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2A.3 test | multiple config workloads | 9 | 16 historical policies | Monolithic | Synthetic config workloads | Synthetic | config seeds | separate config files | multi_bin_batching 4, weighted_shortest_processing 2, others 3 | 55.6% | n/a | 44.4% | No | `online_prefix` lookahead; tiny | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2A.4 train | multiple config workloads | 30 | 18 historical policies | Monolithic | Synthetic config workloads | Synthetic | config seeds | separate config files | multi_bin_batching 11, shortest_output_first 8, edf 5, others 6 | 66.7% | n/a | 36.7% | No | `online_prefix` lookahead; tiny | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2A.4 validation | multiple config workloads | 13 | 18 historical policies | Monolithic | Synthetic config workloads | Synthetic | config seeds | separate config files | best_fit 8, shortest_output_first 3, edf 1, estimated_service_time_first 1 | 92.3% | n/a | 61.5% | No | `online_prefix` lookahead; tiny | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2A.4 test | multiple config workloads | 9 | 18 historical policies | Monolithic | Synthetic config workloads | Synthetic | config seeds | separate config files | multi_bin_batching 4, weighted_shortest_processing 2, others 3 | 55.6% | n/a | 44.4% | No | `online_prefix` lookahead; tiny | Regression only | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2B.9 robustness | n/a | summary-only in current tree | historical selector variants | Monolithic | robustness configs | Synthetic | config seeds | dev/heldout summaries | per-window CSV absent in current tree | n/a | n/a | n/a | No | cannot reconstruct full rows from current files | Audit context only | `NEEDS_REVIEW` |
+| Phase 2B.12 diversity | 12+ workloads | 172 | 20 historical policies | Monolithic | diversity synthetic workloads | Synthetic | config seeds | dev/heldout summaries | scorpio_style_slo_guard 79, admission_control 29, best_fit 14, edf 14, shortest_output_first 13 | 74.4% | n/a | 45.9% | No | label-only framing; near ties dominate | Auxiliary diversity signal | `REUSE_AS_AUXILIARY` |
+| Phase 2B.13 selector training and suspicion audit | 12+ workloads | 319 | 20 historical policies | Monolithic | diversity synthetic workloads | Synthetic | config seeds | dev/heldout summaries | scorpio_style_slo_guard 176, admission_control 37, best_fit 28, edf 20, multi_bin_batching 19 | 60.5% | 33.5% | 55.2% | No | many near-tie/all-complete windows; no external baselines | Auxiliary/negative evidence | `REUSE_AS_AUXILIARY` |
+| Phase 2B.13 after diversity | 12+ workloads | 256 | 20 historical policies | Monolithic | diversity synthetic workloads | Synthetic | config seeds | dev/heldout summaries | scorpio_style_slo_guard 112, admission_control 37, best_fit 36, edf 20, multi_bin_batching 18 | 75.0% | n/a | 43.8% | No | many near ties; label-only | Auxiliary only | `REUSE_AS_AUXILIARY` |
+| Phase 2B.15 corrected objective | n/a | 20 policy aggregate rows | 20 historical policies | Monolithic | inherited B13/B16 data | Synthetic | inherited | train/val/test summary | policy table, not window dataset | n/a | n/a | n/a | No | not a scenario/window dataset | Regression/objective audit | `REUSE_AS_REGRESSION_ONLY` |
+| Phase 2B.16 fresh corrected validation | multiple fresh workloads | 174 | 20 historical policies | Monolithic | fresh validation synthetic workloads | Synthetic | config seeds | fresh heldout | scorpio_style_slo_guard 71, admission_control 28, best_fit 20, edf 20, multi_bin_batching 10 | 83.3% | 42.5% | 40.8% | No | near-tie/all-complete dominated | Auxiliary/negative evidence | `REUSE_AS_AUXILIARY` |
+| Phase 2C labeled selector | 611 rows | 611 | 20 historical policies plus pairwise labels | Monolithic | mixed real/synthetic selector rows | Mixed | generated manifest | train/val/eval files | selected_policy empty 286, scorpio 241, fifo 49, edf 35 | n/a | 17.2% | 39.4% over all rows | No | label task differs; blank labels; no new baselines | Auxiliary only | `REUSE_AS_AUXILIARY` |
+| Phase 2C1 real trace validation | 6 workloads | 325 | 20 historical policies | Monolithic | BurstGPT, Azure 2023 | Real traces with synthetic SLO/priority/prediction overlay | manifest/config | real-trace validation | scorpio_style_slo_guard 309, multi_bin_batching 11, admission_control 3, edf 1, shortest_output_first 1 | 25.2% | 0.0% | 95.1% | No | external baselines absent; single-policy dominance | Real-trace auxiliary/regression | `REUSE_AS_AUXILIARY` |
+| Phase 2C2 causal selector retraining | mixed rows | 286 train rows | 20 historical policies | Monolithic | inherited B13/B16/real-trace rows | Mixed | inherited | causal train/val | scorpio_style_slo_guard 155, admission_control 33, best_fit 27, multi_bin_batching 19, edf 17 | 59.8% | 36.7% | 54.2% | No | no faithful external baselines; many near ties | Auxiliary only | `REUSE_AS_AUXILIARY` |
+| Phase 2C3 external-aware ORCA recovery | smoke outputs only | per-window file absent at audited path | recovery labels, not selector-v2 portfolio | Monolithic | Azure-derived diagnosis | Mixed | smoke timestamp | smoke | unavailable from current path | n/a | n/a | n/a | No | incomplete artifact path | Review only | `NEEDS_REVIEW` |
+
+Conclusion: no historical dataset is classified `REUSE_AS_TRAINING` for the
+final selector. The useful material is methodology, failure evidence, real-trace
+ingestion code, and regression fixtures.
+
+## Dataset Unit and Schema
+
+The fundamental flattened row is:
+
+```text
+scenario/window x topology x policy
+```
+
+Each `WindowRecordV2` contains:
+
+- identifiers: `scenario_id`, `scenario_family_id`, `dataset_family`,
+  `source_trace`, `temporal_block_id`, `seed`, `topology_class`,
+  `resource_configuration_id`, `window_id`
+- leakage-safe selector features with a `feat_` prefix
+- one `PolicyOutcomeVector` per compatible policy
+- discriminativeness records per objective
+- regret records per objective/policy
+
+The machine-readable manifest is `DatasetManifestV2` in
+`src/llmserveopt/selector/dataset_v2/schema.py`. A generated dataset must include
+at least:
+
+- `schema_version`
+- `topology_class`
+- `candidate_policies`
+- `feature_names`
+- `objectives`
+- scenario/window/policy-evaluation counts
+- scenario families, sources, seeds
+- split group key and split counts
+- quality gate results
+- generation configuration
+
+## Leakage Prevention
+
+Feature extraction for Dataset v2 is implemented in
+`src/llmserveopt/selector/dataset_v2/features.py`.
+
+Rules:
+
+- Never use `actual_output_tokens` as a selector feature.
+- Never use future arrivals inside the current window.
+- Never use post-hoc latency/completion/SLO outcomes as selector features.
+- Identifier/provenance columns are retained in rows but are not model features.
+- Model feature columns are only the explicit `feat_` columns.
+- Group-aware splits operate on source/trace/family groups, not individual rows.
+
+Tests prove:
+
+- changing `actual_output_tokens` does not change features
+- mutating later within-window requests does not change current features
+- held-out trace/source identifiers are excluded from model feature columns
+- OOD groups cannot appear in non-OOD splits
+
+## Features
+
+Dataset v2 feature families are causal and online-available:
+
+- arrival/load: recent and prefix arrival-rate estimates, inter-arrival CV,
+  burstiness, queue length, recent queue growth, active sequence count,
+  saturation estimate
+- prompt: mean, median, p90, p95, variance, CV
+- predicted output: mean, median, p90, p95, variance, CV
+- SLO: tight-SLO fraction, mean slack, p10 slack, minimum slack, recent SLO
+  violation rate when legitimately available
+- priority: mean, p90, high-priority fraction, priority-class count
+- resource: GPU count, KV capacity, block size, sequence capacity, token budget
+- monolithic: aggregate KV utilization, active batch size when available
+- disaggregated: role counts, prefill/decode/bridge queue and utilization fields
+  when infrastructure exposes them
+- multi-instance: instance count, load/KV imbalance, incoming migration count,
+  migration pressure when infrastructure exposes them
+
+Unavailable topology metrics are stored as missing/`None`, not zero.
+
+## Full Policy Outcomes
+
+For every compatible policy, Dataset v2 preserves:
+
+- weighted goodput
+- arrival-normalized weighted goodput
+- completion fraction
+- SLO attainment and violation rate
+- request/token throughput
+- mean, p50/median, p95, p99 latency where available
+- mean, p50, p95, p99 TTFT/TPOT/TBT where available
+- admission/rejection rates and dropped request counts
+- preemption, swap, migration event counts
+- policy-decision overhead
+- simulation wall time
+- resource GPU count
+- disaggregated per-role and queue statistics when infrastructure supports them
+
+Unavailable values are `None` plus `available_metrics` metadata.
+
+## Objectives and Regret
+
+The dataset does not reduce immediately to one classification target. It
+preserves `score(scenario, policy)` and computes best policy, ranking, tie set,
+winner margin, top-2 gap, and regret for:
+
+- weighted goodput
+- arrival-normalized weighted goodput
+- p95 latency
+- SLO attainment
+- request throughput
+
+Regret is sign-aware:
+
+```text
+regret(s, p) = score(best compatible policy for s) - score(p)
+```
+
+For lower-is-better metrics, the sign is reversed so regret remains nonnegative.
+
+## Near-Tie Handling
+
+Every window/objective records:
+
+- best score
+- second-best score
+- absolute winner margin
+- relative winner margin
+- max-min policy spread
+- tie set
+- class: `STRONGLY_DISCRIMINATIVE`, `MODERATELY_DISCRIMINATIVE`, `NEAR_TIE`,
+  or `ALL_COMPLETE_OR_EFFECTIVELY_TIED`
+
+Near-tie windows are realistic and must remain in final evaluation, but they
+must not dominate training. Training should use regret-aware weights and
+stratified sampling/reporting by discriminativeness. Alphabetical tie-breaking
+is not meaningful ground truth.
+
+## Workload Sources
+
+Local available sources:
+
+- BurstGPT raw CSV and processed JSONL are present under `data/raw/burstgpt/`
+  and `data/processed/burstgpt/`.
+- Azure LLM 2023 code/conversation raw CSV and processed JSONL are present under
+  `data/raw/azure/` and `data/processed/azure/`.
+- Synthetic workload generator is present in `src/llmserveopt/workloads/synthetic.py`.
+- ShareGPT conversion code and tests exist, but the raw ShareGPT file is not
+  present locally.
+
+Recommended future acquisitions, without silent download:
+
+- Azure 2024/2025 LLM/LMM traces from `https://github.com/Azure/AzurePublicDataset`
+- Mooncake/Kimi traces from `https://github.com/kvcache-ai/Mooncake`
+- ServeGen from `https://github.com/alibaba/ServeGen`
+- TraceLab from `https://github.com/uw-syfi/TraceLab.git`
+
+For each source, the manifest records real fields, synthesized fields, schema,
+license note, official URL, and local acquisition state. Real timestamps/token
+lengths are never conflated with synthetic SLOs/priorities/prediction noise.
+
+## Scenario-Family Design
+
+Dataset v2 combines:
+
+- real production trace scenarios: temporal slices/windows from BurstGPT and
+  Azure 2023 locally, with additional sources only after explicit acquisition
+- real-distribution synthetic scenarios: seeded lognormal/heavy-tail scenarios
+  using existing workload generators
+- controlled stress scenarios: low load, moderate load, near saturation,
+  overload, burst overload, KV pressure, prefill-heavy, decode-heavy, mixed
+  short/long jobs, high prediction noise, tight SLOs, mixed priorities, rapid
+  shifts
+
+The design is coverage-aware, not a naive Cartesian product.
+
+## Splits
+
+Required splits:
+
+- `TRAIN`
+- `VALIDATION`
+- `ID_TEST`
+- `OOD_TEST`
+
+Splits are group-aware. Candidate grouping units include source trace,
+temporal block, scenario family, base synthetic distribution, and request-plan
+ancestor. Derived variants of a base trace must not casually appear across
+train and test. OOD should hold out at least one full workload-source family
+when source coverage permits.
+
+## Topology and Candidate Policy
+
+Phase 1 prioritizes the monolithic selector dataset because it has enough
+legitimate within-class candidates.
+
+Monolithic candidates:
+
+- `vllm_faithful`
+- `sarathi_faithful`
+- `fifo`
+- `edf`
+- `scorpio_style_slo_guard`
+- `orca_style`
+- `slo_slack_score`
+- `admission_control`
+- `weighted_shortest_processing`
+
+Inclusion criteria:
+
+- compatible with monolithic shared-queue topology
+- online deployable, not an oracle
+- scientifically distinct scheduling/admission behavior
+- either a faithful external baseline or a strong/diagnostic historical policy
+
+Disaggregated and migratory topologies are represented in schema/infrastructure,
+but no final selector should be trained until there are enough legitimate
+within-class candidates and scenarios.
+
+## Pilot and Learning-Curve Targets
+
+Pilot targets:
+
+- 250 informative windows
+- 500 windows
+- 1,000 windows
+- 2,000 windows
+- 5,000+ windows
+
+Final size should be justified by validation regret, held-out regret,
+learning-curve saturation, label/policy diversity, scenario-family coverage,
+and nontrivial regret headroom over the best fixed policy. Large near-tie
+counts do not count as informative coverage.
+
+The CPU-only pilot script is:
+
+```bash
+python scripts/build_selector_dataset_v2_pilot.py --output-dir results/selector_dataset_v2/pilot
+```
+
+It writes a small full-outcome dataset, `manifest.json`, `pilot_summary.json`,
+and `workload_source_manifest.json`. It does not train a selector.
+
+## Quality Gates
+
+Before large-scale generation:
+
+- leakage tests pass
+- no request duplication/loss in targeted policy runs
+- deterministic reproducibility tests pass
+- at least three policies have meaningful wins, not tie-break wins
+- no single policy dominates more than 85% of strongly discriminative windows
+  unless reported as a scientific finding
+- substantial nonzero regret headroom over the globally best fixed policy
+- real-trace representation exists
+- controlled-stress representation exists
+- OOD split is defined
+
+If gates fail, redesign scenario coverage before generating more data.
