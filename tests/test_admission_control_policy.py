@@ -15,7 +15,6 @@ Example (step_size=0.001, alpha=0.5, beta=1.0):
 import pytest
 from llmserveopt.policies.admission_control import AdmissionControlPolicy
 from llmserveopt.policies.registry import BASELINE_NAMES, ORACLE_POLICY_NAMES, make_policy
-from llmserveopt.core.action import Action
 from llmserveopt.core.types import ObservableGPUState, ObservableRequest, ObservableState
 
 STEP = 0.001  # default step_size

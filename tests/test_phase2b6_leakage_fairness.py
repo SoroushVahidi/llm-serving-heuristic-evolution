@@ -8,7 +8,6 @@ Guards:
 5. SELECTOR_CANDIDATES == BASELINE_NAMES (no oracle, no extras)
 6. fair_sweep config includes all 19 deployable policies
 """
-import math
 import pytest
 
 
@@ -45,8 +44,6 @@ def test_selector_candidates_equals_baseline_names():
 
 def test_oracle_srtf_injection_raises():
     """Injecting oracle_srtf into SELECTOR_CANDIDATES should trigger assertion."""
-    import importlib
-    import sys
     from llmserveopt.selector import candidates as cand_module
 
     original = list(cand_module.SELECTOR_CANDIDATES)

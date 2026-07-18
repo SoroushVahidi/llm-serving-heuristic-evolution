@@ -1,5 +1,12 @@
 # External Baseline Coverage Report
 
+> **Status: Superseded.** This planning document has been superseded by
+> [`docs/external_baseline_decision.md`](external_baseline_decision.md), the
+> decisive Phase 2B.9 specification. It is retained here for historical
+> context only. Note the baseline/policy counts below reflect the Phase
+> 2B.5 portfolio at the time and predate later portfolio growth (see
+> [`docs/research_status.md`](research_status.md) for the current count).
+
 **Branch:** phase2b5-external-baselines  
 **Date:** 2026-06-25  
 **Auditor:** automated audit (Phase 2B.5)

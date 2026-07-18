@@ -22,17 +22,13 @@ import sys
 
 def gather_status() -> dict:
     """Return a structured status dict derived from live code."""
-    import os
     from pathlib import Path
     from llmserveopt.policies.registry import (
         BASELINE_NAMES,
         ORACLE_POLICY_NAMES,
-        SELECTOR_CANDIDATE_NAMES,
     )
     from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
     from llmserveopt.selector.models import (
-        DecisionTreeSelector,
-        RandomForestSelector,
         RuleBasedSelector,
     )
 

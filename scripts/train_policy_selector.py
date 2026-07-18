@@ -26,15 +26,12 @@ from __future__ import annotations
 
 import argparse
 import csv
-import json
 import math
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
-from llmserveopt.selector.features import FEATURE_NAMES
 from llmserveopt.selector.models import (
     RuleBasedSelector,
     evaluate_selector,

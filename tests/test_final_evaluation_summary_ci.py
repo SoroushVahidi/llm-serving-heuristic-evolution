@@ -11,11 +11,8 @@ Verifies:
 import csv
 import math
 import random
-import tempfile
-import sys
 from pathlib import Path
 
-import pytest
 
 
 def _import_summarize():

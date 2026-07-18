@@ -87,9 +87,12 @@ def _load_sibling_module(name: str, filename: str):
     return mod
 
 
-vext = _load_sibling_module("run_vllm_external_baseline_comparison", "run_vllm_external_baseline_comparison.py")
-cohere_mod = _load_sibling_module("run_cohere_api_calibration", "run_cohere_api_calibration.py")
-gemini_mod = _load_sibling_module("run_gemini_real_llm_calibration", "run_gemini_real_llm_calibration.py")
+# Sibling scripts (vext/cohere_mod/gemini_mod) and PROVIDER_CONFIG are loaded
+# lazily on first use rather than at import time -- see _ensure_siblings_loaded
+# and the module-level __getattr__ below. This keeps `import
+# run_hosted_policy_comparison` (e.g. for introspection or testing) free of
+# side effects until something actually needs the sibling scripts.
+_SIBLINGS_LOADED = False
 
 # Policies this harness compares over hosted providers. No vllm_direct (not
 # a meaningful concept without vLLM) and no generated_heuristic/best_generated
@@ -99,24 +102,49 @@ HOSTED_POLICIES = (
 )
 CONDITIONAL_POLICIES = ("selector",)
 
-PROVIDER_CONFIG: Dict[str, Dict[str, Any]] = {
-    "cohere": {
-        "default_model": cohere_mod.DEFAULT_MODEL,
-        "price_per_m_input_usd": cohere_mod._PRICE_PER_M_INPUT_USD,
-        "price_per_m_output_usd": cohere_mod._PRICE_PER_M_OUTPUT_USD,
-        "api_key_env_var": "COHERE_API_KEY",
-        "build_client": cohere_mod._build_client,
-        "call_fn": cohere_mod._call_cohere_streaming,
-    },
-    "gemini": {
-        "default_model": gemini_mod.DEFAULT_MODEL,
-        "price_per_m_input_usd": gemini_mod._PRICE_PER_M_INPUT_USD,
-        "price_per_m_output_usd": gemini_mod._PRICE_PER_M_OUTPUT_USD,
-        "api_key_env_var": "GOOGLE_API_KEY",
-        "build_client": gemini_mod._build_client,
-        "call_fn": gemini_mod._call_gemini_streaming,
-    },
-}
+
+def _ensure_siblings_loaded() -> None:
+    """Load vext/cohere_mod/gemini_mod and build PROVIDER_CONFIG on first use.
+
+    Deferred out of module scope so importing this module never triggers
+    sibling-script execution; called at the top of every function that
+    touches vext/cohere_mod/gemini_mod/PROVIDER_CONFIG.
+    """
+    global _SIBLINGS_LOADED, vext, cohere_mod, gemini_mod, PROVIDER_CONFIG
+    if _SIBLINGS_LOADED:
+        return
+    vext = _load_sibling_module("run_vllm_external_baseline_comparison", "run_vllm_external_baseline_comparison.py")
+    cohere_mod = _load_sibling_module("run_cohere_api_calibration", "run_cohere_api_calibration.py")
+    gemini_mod = _load_sibling_module("run_gemini_real_llm_calibration", "run_gemini_real_llm_calibration.py")
+    PROVIDER_CONFIG = {
+        "cohere": {
+            "default_model": cohere_mod.DEFAULT_MODEL,
+            "price_per_m_input_usd": cohere_mod._PRICE_PER_M_INPUT_USD,
+            "price_per_m_output_usd": cohere_mod._PRICE_PER_M_OUTPUT_USD,
+            "api_key_env_var": "COHERE_API_KEY",
+            "build_client": cohere_mod._build_client,
+            "call_fn": cohere_mod._call_cohere_streaming,
+        },
+        "gemini": {
+            "default_model": gemini_mod.DEFAULT_MODEL,
+            "price_per_m_input_usd": gemini_mod._PRICE_PER_M_INPUT_USD,
+            "price_per_m_output_usd": gemini_mod._PRICE_PER_M_OUTPUT_USD,
+            "api_key_env_var": "GOOGLE_API_KEY",
+            "build_client": gemini_mod._build_client,
+            "call_fn": gemini_mod._call_gemini_streaming,
+        },
+    }
+    _SIBLINGS_LOADED = True
+
+
+def __getattr__(name: str):
+    """PEP 562 module __getattr__: lazily resolve vext/cohere_mod/gemini_mod/
+    PROVIDER_CONFIG for external access (e.g. `mod.PROVIDER_CONFIG` in tests)
+    that happens before any function call has triggered the lazy load."""
+    if name in ("vext", "cohere_mod", "gemini_mod", "PROVIDER_CONFIG"):
+        _ensure_siblings_loaded()
+        return globals()[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 UNSUPPORTED_PROVIDERS = {
     "azure": "Azure is explicitly out of scope for this task -- not implemented.",
@@ -148,6 +176,7 @@ def _dispatch_hosted(
     row, *, provider: str, model: str, mock: bool, timeout_s: float,
     rpm_limiter: Optional["cc.RpmLimiter"], budget: Optional["cc.BudgetTracker"],
 ) -> Dict[str, Any]:
+    _ensure_siblings_loaded()
     planned = _planned_request_from_row(row, model, experiment_id=f"hosted_policy_comparison_{provider}")
     if budget is not None and not budget.try_reserve(planned):
         raise RuntimeError(
@@ -195,6 +224,7 @@ def run_cell_for_policy_hosted(
 ) -> List:
     import concurrent.futures
 
+    _ensure_siblings_loaded()
     is_meta_selector = policy_name == "selector"
     if is_meta_selector and selector_model is None:
         raise vext.SelectorArtifactError("policy_name='selector' but no selector_model was provided.")
@@ -373,6 +403,7 @@ def run_cell_for_policy_hosted(
 # ---------------------------------------------------------------------------
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    _ensure_siblings_loaded()
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--provider", required=True, choices=list(PROVIDER_CONFIG) + list(UNSUPPORTED_PROVIDERS))
     parser.add_argument("--model", default=None)
@@ -413,6 +444,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    _ensure_siblings_loaded()
     args = parse_args(argv)
     args.policies = [vext.normalize_policy_name(p) for p in args.policies]
 

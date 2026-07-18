@@ -1,5 +1,4 @@
 """Tests that selector candidates equal deployable policy names minus oracle names."""
-import pytest
 
 from llmserveopt.policies.registry import BASELINE_NAMES, ORACLE_POLICY_NAMES
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES, SELECTOR_CANDIDATE_COUNT

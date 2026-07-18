@@ -11,7 +11,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
 
 ROOT = Path(__file__).parent.parent
 RUNNER_PATH = ROOT / "scripts" / "run_cohere_api_calibration.py"
@@ -126,7 +125,6 @@ def test_expand_call_plan_request_ids_stable_across_calls():
 # ---------------------------------------------------------------------------
 
 def _make_args(**overrides):
-    mod = _load_runner()
     defaults = dict(
         max_total_requests=1000,
         max_total_input_tokens=10_000_000,

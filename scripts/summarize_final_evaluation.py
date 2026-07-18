@@ -16,10 +16,8 @@ from __future__ import annotations
 
 import argparse
 import csv
-import json
 import math
 import random
-import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -312,10 +310,9 @@ def build_final_summary_md(
                 d_mean, d_lo, d_hi = bootstrap_ci(deltas, n=n_bootstrap, level=ci_level, rng=rng)
             elif len(wg_vals) >= 2:
                 # Unpaired: bootstrap on raw values, CI less meaningful
-                d_mean = delta
                 d_lo, d_hi = float("nan"), float("nan")
             else:
-                d_mean, d_lo, d_hi = delta, float("nan"), float("nan")
+                d_lo, d_hi = float("nan"), float("nan")
             paired_rows.append({
                 "method": name,
                 "source": d["source"],

@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from llmserveopt.core.types import GPUConfig
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.dataset import DatasetConfig, build_selector_dataset, save_dataset
-from llmserveopt.selector.features import FeatureMode, parse_feature_mode
+from llmserveopt.selector.features import parse_feature_mode
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, generate_workload

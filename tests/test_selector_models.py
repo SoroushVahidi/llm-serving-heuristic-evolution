@@ -1,6 +1,5 @@
 """Tests for selector model wrappers (using tiny synthetic CSV data)."""
 import pytest
-import math
 
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.features import FEATURE_NAMES

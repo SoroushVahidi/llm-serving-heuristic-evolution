@@ -3,9 +3,8 @@ import math
 import pytest
 
 from llmserveopt.core.metrics import RunMetrics
-from llmserveopt.policies.registry import ORACLE_POLICY_NAMES
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
-from llmserveopt.selector.labels import label_window, label_windows, WindowLabel
+from llmserveopt.selector.labels import label_window, label_windows
 
 
 def _metrics(policy: str, weighted_goodput: float, slo_rate: float = 0.1,
@@ -83,7 +82,6 @@ def test_tie_breaking_by_alphabetical():
 def test_oracle_not_in_best_policy():
     m = _candidate_metrics("fifo", best_wg=0.5)
     # Add oracle with very high weighted_goodput
-    from llmserveopt.core.metrics import RunMetrics
     oracle_m = _metrics("oracle_srtf", weighted_goodput=0.99)
     m["oracle_srtf"] = oracle_m
     lbl = label_window(m)

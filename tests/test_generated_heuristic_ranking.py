@@ -1,9 +1,7 @@
 """Tests for ranking logic."""
 import csv
-import math
 import tempfile
 from pathlib import Path
-import pytest
 from llmserveopt.llm_generation.evaluation import CandidateResult
 from llmserveopt.llm_generation.ranking import (
     build_summary_md,

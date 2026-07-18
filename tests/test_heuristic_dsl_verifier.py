@@ -1,5 +1,4 @@
 """Tests for the DSL heuristic verifier."""
-import pytest
 from llmserveopt.heuristics.verifier import verify_heuristic
 from llmserveopt.heuristics.examples import fifo_like, edf_like, slo_kv_balanced, throughput_oriented
 

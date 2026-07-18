@@ -57,14 +57,32 @@ from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.features import FEATURE_NAMES
 from llmserveopt.selector.models import PerPolicyRegressionAnwgSelector
 
-# Import data-plumbing helpers (df_to_rows/relabel_rows/split_rows/_anwg) from
-# the Phase 2B.15 script by file path (scripts/ has no __init__.py, so it
+# Data-plumbing helpers (df_to_rows/relabel_rows/split_rows/_anwg) are loaded
+# from the Phase 2B.15 script by file path (scripts/ has no __init__.py, so it
 # isn't an importable package). These are plain functions, not pickled model
-# classes, so no sys.modules registration is needed for them.
+# classes, so no sys.modules registration is needed for them. Loaded lazily
+# (see _load_b15 below) so importing this module has no side effects.
 _B15_PATH = ROOT / "scripts" / "run_phase2b15_corrected_objective_selector_retraining.py"
-_spec = importlib.util.spec_from_file_location("phase2b15_mod", _B15_PATH)
-b15 = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(b15)
+_b15_module = None
+
+
+def _load_b15():
+    global _b15_module
+    if _b15_module is None:
+        spec = importlib.util.spec_from_file_location("phase2b15_mod", _B15_PATH)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _b15_module = module
+    return _b15_module
+
+
+def __getattr__(name: str):
+    """PEP 562 module __getattr__: lazily resolve `b15` for external access
+    (e.g. `mod.b15` in tests) that happens before any function call has
+    triggered the lazy load."""
+    if name == "b15":
+        return _load_b15()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 TRAIN_CSV = ROOT / "results/phase2b13_selector_training_and_suspicion_audit/per_window.csv"
 FRESH_CSV = ROOT / "results/phase2b16_fresh_corrected_objective_validation/fresh_per_window.csv"
@@ -103,6 +121,7 @@ def git_dirty() -> bool:
 
 def evaluate_on(rows: list[dict], selector, label_rows_source: str) -> dict:
     """Feature-only prediction; compare against always-SCORPIO / always-WSP / oracle."""
+    b15 = _load_b15()
     preds = selector.predict(rows)
     sel_anwg = np.array([b15._anwg(r, p) for r, p in zip(rows, preds)])
     scorpio_anwg = np.array([b15._anwg(r, "scorpio_style_slo_guard") for r in rows])
@@ -125,6 +144,7 @@ def evaluate_on(rows: list[dict], selector, label_rows_source: str) -> dict:
 
 
 def main() -> None:
+    b15 = _load_b15()
     if not TRAIN_CSV.exists():
         print(f"FATAL: training data not found at {TRAIN_CSV}", file=sys.stderr)
         sys.exit(1)

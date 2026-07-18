@@ -1,8 +1,6 @@
 """Tests for search-phase ranking (by validation performance)."""
-import math
 import tempfile
 from pathlib import Path
-import pytest
 from llmserveopt.llm_generation.multi_regime_evaluation import AggregatedCandidateResult
 from llmserveopt.llm_generation.search_ranking import (
     build_search_summary_md,

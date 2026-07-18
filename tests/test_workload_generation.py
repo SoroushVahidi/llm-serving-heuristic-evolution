@@ -1,15 +1,12 @@
 """
 Tests: workload generators produce valid, reproducible request traces.
 """
-import pytest
 
 from llmserveopt.workloads.synthetic import (
-    generate_workload,
     make_small_debug_trace,
     make_medium_trace,
     make_heavy_tail_trace,
     make_bursty_trace,
-    WorkloadConfig,
 )
 from llmserveopt.workloads.trace_io import save_jsonl, load_jsonl, save_csv, load_csv
 

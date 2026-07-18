@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT / "src"))
 def test_model_loads():
     """Model loads on GPU without OOM."""
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForCausalLM
 
     model = AutoModelForCausalLM.from_pretrained(
         "Qwen/Qwen2.5-0.5B",

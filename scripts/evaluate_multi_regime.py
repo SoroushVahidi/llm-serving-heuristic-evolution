@@ -46,7 +46,6 @@ from llmserveopt.llm_generation.search_ranking import (
     save_per_regime_csv,
     save_search_ranking_csv,
 )
-from llmserveopt.llm_generation.ranking import rank_candidates, save_ranking_csv
 
 
 def _select_regimes(split: str):
@@ -125,7 +124,6 @@ def main(argv=None) -> int:
     regime_results = evaluate_multi_regime(records, cfg, verbose=verbose)
 
     # Aggregate
-    all_records = records  # include baselines implicitly via evaluate_multi_regime
     agg = aggregate_regime_results(regime_results, candidate_records=records)
 
     regime_names = [rr.regime_name for rr in regime_results]
@@ -148,7 +146,7 @@ def main(argv=None) -> int:
                           source_filter="baseline")
 
     # Load generation stats from index
-    n_gen = n_ver = n_rep = n_fail = n_dup = 0
+    n_gen = n_ver = n_rep = n_fail = 0
     index_path = candidates_dir / "index.csv"
     if index_path.exists():
         with open(index_path) as f:
@@ -248,7 +246,7 @@ def _save_top_candidates(
     top_ranked, candidates_dir: Path, top_dir: Path,
     agg, regime_results, baselines,
 ) -> None:
-    import shutil, math
+    import shutil
     for rank, r in enumerate(top_ranked, 1):
         # Find candidate JSON in archive
         for d in sorted(candidates_dir.iterdir()):

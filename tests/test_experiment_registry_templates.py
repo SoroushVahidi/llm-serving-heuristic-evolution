@@ -1,5 +1,4 @@
 """Tests for Phase 2B.6 experiment registry templates and report script updates."""
-import csv
 import json
 import subprocess
 import sys

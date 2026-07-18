@@ -17,9 +17,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import shutil
-import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -381,7 +379,7 @@ def plot_latency_comparison(all_data: dict[str, pd.DataFrame | None]) -> None:
         return
 
     fig, ax = plt.subplots(figsize=(10, 5))
-    bars = ax.bar(range(len(labels)), best_vals)
+    ax.bar(range(len(labels)), best_vals)
     ax.set_xticks(range(len(labels)))
     ax.set_xticklabels(labels, rotation=35, ha="right", fontsize=8)
     ax.set_ylabel("Best mean latency (s)")

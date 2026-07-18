@@ -1,5 +1,4 @@
 """Tests for workloads/burstgpt.py using the tiny fixture."""
-import json
 import tempfile
 from pathlib import Path
 
@@ -15,7 +14,6 @@ from llmserveopt.workloads.burstgpt import (
     load_burstgpt_raw,
     load_burstgpt_trace,
 )
-from llmserveopt.workloads.augmentation import AugmentationConfig
 from llmserveopt.workloads.trace_io_extended import save_extended_jsonl, load_extended_jsonl
 
 FIXTURE = Path(__file__).parent / "fixtures" / "burstgpt_tiny.csv"
@@ -96,7 +94,6 @@ def test_slo_deadlines_after_arrival():
 
 def test_slo_class_proportions_approximate():
     df = load_burstgpt_raw(FIXTURE)
-    config = BurstGPTConversionConfig(max_requests=None)
     requests, _ = convert_burstgpt_to_requests(df.iloc[:1] * 1000, seed=0)
     df_big = pd.concat([load_burstgpt_raw(FIXTURE)] * 100, ignore_index=True)
     requests, _ = convert_burstgpt_to_requests(df_big, seed=0)

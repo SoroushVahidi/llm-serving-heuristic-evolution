@@ -8,7 +8,6 @@ Verifies:
 4. Config workload counts are within expected ranges.
 5. All 18 selector candidate policies are available in the registry.
 """
-import pytest
 import yaml
 from pathlib import Path
 

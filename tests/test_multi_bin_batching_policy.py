@@ -237,7 +237,6 @@ def test_baselines_doc_says_inspired_not_official():
         pytest.skip("baselines.md missing")
     text = doc.read_text()
     # Should say "inspired" or "style" or "approximate", not "official implementation"
-    import re
     # The multi_bin_batching entry must not claim to be official
     assert "official" not in text.lower() or "not" in text.lower(), (
         "baselines.md must not claim multi_bin_batching is an official implementation"

@@ -37,7 +37,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from llmserveopt.selector.features import FeatureMode, FEATURE_NAMES, parse_feature_mode, feature_mode_is_deployable
+from llmserveopt.selector.features import parse_feature_mode, feature_mode_is_deployable
 from llmserveopt.selector.roles import (
     classify_selectors,
     is_deployable_headline_selector,

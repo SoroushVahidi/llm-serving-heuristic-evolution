@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import inspect
 
-import pytest
 
 from llmserveopt.core.action import Action
 from llmserveopt.core.types import ObservableGPUState, ObservableRequest, ObservableState

@@ -29,7 +29,6 @@ IMPORTANT: These files are NOT committed to git (data/raw/* is gitignored).
 from __future__ import annotations
 
 import argparse
-import hashlib
 import sys
 import urllib.request
 from pathlib import Path

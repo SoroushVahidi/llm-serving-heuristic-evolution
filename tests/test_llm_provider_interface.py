@@ -1,6 +1,5 @@
 """Tests for LLM provider interface and mock provider."""
 import json
-import pytest
 from llmserveopt.llm_generation.provider_base import LLMProvider, LLMResponse
 from llmserveopt.llm_generation.providers import MockProvider, build_providers
 

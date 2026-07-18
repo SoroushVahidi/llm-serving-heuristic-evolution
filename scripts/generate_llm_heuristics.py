@@ -61,7 +61,7 @@ def main() -> None:
 
     design_targets = None
     if args.design_targets:
-        from llmserveopt.llm_generation.diversity import DESIGN_TARGETS, DEFAULT_TARGET_CYCLE
+        from llmserveopt.llm_generation.diversity import DEFAULT_TARGET_CYCLE
         if args.design_targets.lower() == "all":
             design_targets = DEFAULT_TARGET_CYCLE
         else:

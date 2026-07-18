@@ -2,7 +2,6 @@
 import json
 import tempfile
 from pathlib import Path
-import pytest
 from llmserveopt.llm_generation.generation_loop import GenerationConfig, run_generation_loop
 from llmserveopt.llm_generation.candidate_io import load_verified_candidates
 from llmserveopt.llm_generation.repair import extract_json
@@ -159,7 +158,7 @@ def test_load_verified_candidates_from_dry_run():
             dry_run=True,
             verbose=False,
         )
-        summary = run_generation_loop(cfg)
+        run_generation_loop(cfg)
         records = load_verified_candidates(out)
         assert isinstance(records, list)
         for r in records:

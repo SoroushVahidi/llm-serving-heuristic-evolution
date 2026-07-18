@@ -7,7 +7,6 @@ import os
 import sys
 from pathlib import Path
 
-import pytest
 
 ROOT = Path(__file__).parent.parent
 RUNNER_PATH = ROOT / "scripts" / "run_gemini_api_calibration.py"
@@ -126,7 +125,6 @@ def test_validate_rejects_oversized_prompt():
 def test_max_calls_override_respected(tmp_path):
     mod = _load_runner()
     cfg = _load_cfg()
-    calls = mod.expand_call_plan(cfg)
     cap = int(cfg["hard_caps"]["max_calls"])
     # Override must not exceed config cap
     result = mod.main([

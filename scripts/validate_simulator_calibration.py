@@ -72,7 +72,6 @@ def main() -> None:
     from llmserveopt.calibration.curve_fitting import load_service_curves
     from llmserveopt.simulator.calibrated_service_model import CalibratedServiceModel
 
-    import numpy as np
     import pandas as pd
 
     # Run validation GPU measurements
@@ -86,7 +85,7 @@ def main() -> None:
     val_results = backend.run_validation_grid(grid_config, output_csv=val_csv)
 
     # Load service curves
-    curves = load_service_curves(curves_path)
+    load_service_curves(curves_path)
     csm = CalibratedServiceModel(calibration_file=curves_path, step_size=0.001)
 
     # Build comparison table
@@ -178,7 +177,6 @@ def _generate_validation_plots(val_df: "pd.DataFrame", plots_dir: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    import numpy as np
 
     plots_dir.mkdir(parents=True, exist_ok=True)
 

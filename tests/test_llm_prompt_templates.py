@@ -5,7 +5,7 @@ from llmserveopt.llm_generation.prompt_templates import (
     build_repair_messages,
 )
 from llmserveopt.heuristics.dsl_schema import (
-    ALLOWED_VARS, FORBIDDEN_SUBSTRINGS, ALLOWED_TIE_BREAKERS,
+    FORBIDDEN_SUBSTRINGS, ALLOWED_TIE_BREAKERS,
 )
 
 

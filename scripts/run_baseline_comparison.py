@@ -8,7 +8,6 @@ Usage:
 """
 import argparse
 import datetime
-import json
 import sys
 from pathlib import Path
 
@@ -27,8 +26,7 @@ from llmserveopt.evaluation.aggregate import (
 from llmserveopt.evaluation.compare import compare_policies, generate_traces_for_seeds
 from llmserveopt.plotting.figures import plot_all
 from llmserveopt.plotting.tables import to_latex, to_markdown
-from llmserveopt.policies.registry import make_policy, make_oracle_policy, ORACLE_POLICY_NAMES
-from llmserveopt.simulator.service_model import ServiceModel
+from llmserveopt.policies.registry import make_policy, make_oracle_policy
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, DEFAULT_SLO_CLASSES
 

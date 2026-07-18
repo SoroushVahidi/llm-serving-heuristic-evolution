@@ -133,7 +133,6 @@ def _generate_plots(df: "pd.DataFrame", curves: object, plots_dir: Path) -> None
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     import numpy as np
-    import pandas as pd
 
     plots_dir.mkdir(parents=True, exist_ok=True)
     df_ok = df[df["skipped"] == False].copy()  # noqa: E712

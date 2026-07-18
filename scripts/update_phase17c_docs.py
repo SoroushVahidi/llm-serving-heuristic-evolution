@@ -14,7 +14,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -194,7 +193,6 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"Updating Phase 1.7C docs...")
     now = datetime.now().isoformat()
-    commit = get_git_commit()
     pytest_result = get_pytest_result()
     exp_table = generate_experiment_table()
     noise_summary = generate_noise_summary()

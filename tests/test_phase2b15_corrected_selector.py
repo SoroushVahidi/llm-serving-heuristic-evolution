@@ -15,11 +15,9 @@ Covers:
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
-from typing import Dict, List
-from unittest.mock import MagicMock
+from typing import Dict
 
 import numpy as np
 import pytest

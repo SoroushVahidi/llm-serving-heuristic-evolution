@@ -5,6 +5,13 @@ never touch a network, and cohere/google.genai SDK imports inside
 run_cohere_api_calibration.py / run_gemini_real_llm_calibration.py are
 lazy (only inside _build_client()), so importing this module never
 requires those SDKs to be installed.
+
+Sibling-script loading (vext/cohere_mod/gemini_mod, and the PROVIDER_CONFIG
+dict built from them) is itself lazy: exec_module for those siblings only
+runs on first actual use (a function call, or external attribute access via
+the module-level __getattr__), never merely from importing this module. See
+test_import_does_not_trigger_sibling_load / test_provider_config_lazy_load /
+test_vext_attribute_lazy_load below.
 """
 from __future__ import annotations
 
@@ -20,6 +27,12 @@ ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
+_SIBLING_MODULE_NAMES = (
+    "run_vllm_external_baseline_comparison",
+    "run_cohere_api_calibration",
+    "run_gemini_real_llm_calibration",
+)
+
 
 def _load_module():
     spec = importlib.util.spec_from_file_location(
@@ -30,6 +43,56 @@ def _load_module():
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     return mod
+
+
+@pytest.fixture(autouse=True)
+def _clean_sibling_modules_from_sys_modules():
+    for name in _SIBLING_MODULE_NAMES:
+        sys.modules.pop(name, None)
+    yield
+    for name in _SIBLING_MODULE_NAMES:
+        sys.modules.pop(name, None)
+
+
+def test_import_does_not_trigger_sibling_load():
+    """Importing the module alone must not exec_module vext/cohere_mod/gemini_mod."""
+    mod = _load_module()
+    assert mod._SIBLINGS_LOADED is False
+    for name in _SIBLING_MODULE_NAMES:
+        assert name not in sys.modules
+
+
+def test_provider_config_lazy_load():
+    """`mod.PROVIDER_CONFIG` (external attribute access, no main() call) must
+    still work via the module-level __getattr__, lazily loading siblings."""
+    mod = _load_module()
+    assert mod._SIBLINGS_LOADED is False
+    pc = mod.PROVIDER_CONFIG
+    assert mod._SIBLINGS_LOADED is True
+    assert set(pc.keys()) == {"cohere", "gemini"}
+
+
+def test_vext_attribute_lazy_load():
+    mod = _load_module()
+    assert mod._SIBLINGS_LOADED is False
+    v = mod.vext
+    assert mod._SIBLINGS_LOADED is True
+    assert v.__name__ == "run_vllm_external_baseline_comparison"
+
+
+def test_getattr_unknown_name_raises():
+    mod = _load_module()
+    with pytest.raises(AttributeError):
+        mod.not_a_real_attribute
+
+
+def test_main_still_triggers_lazy_load_and_runs(tmp_path):
+    """The original runtime path (main()) must still work end-to-end."""
+    mod = _load_module()
+    assert mod._SIBLINGS_LOADED is False
+    result = mod.main(["--provider", "cohere", "--dry-run-cost-check", "--output-dir", str(tmp_path)])
+    assert result == 0
+    assert mod._SIBLINGS_LOADED is True
 
 
 def _write_valid_selector_artifact(tmp_path: Path, subdir: str = "artifact") -> Path:

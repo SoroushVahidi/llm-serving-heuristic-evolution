@@ -1,7 +1,6 @@
 """Tests for workloads/sharegpt.py using the tiny fixture."""
 from pathlib import Path
 
-import numpy as np
 import pytest
 
 from llmserveopt.workloads.sharegpt import (

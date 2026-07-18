@@ -9,7 +9,6 @@ Key invariants:
 4. Running oracle without an actual_output_map raises TypeError (no default).
 5. all_baseline_policies() does not include oracle_srtf.
 """
-import warnings
 import pytest
 
 from llmserveopt.core.types import ObservableRequest, Request

@@ -16,7 +16,6 @@ Tests cover:
 from __future__ import annotations
 
 import json
-import math
 import sys
 from pathlib import Path
 
@@ -92,7 +91,7 @@ class TestPhase2B14Config:
 
 class TestScorpioAblations:
     def test_ablation_module_importable(self):
-        from llmserveopt.policies.scorpio_ablations import ABLATION_NAMES, make_ablation
+        from llmserveopt.policies.scorpio_ablations import ABLATION_NAMES
         assert len(ABLATION_NAMES) >= 8
 
     def test_ablation_names_all_distinct(self):
@@ -183,7 +182,7 @@ class TestMetricVariants:
         import numpy as np
         sys.path.insert(0, str(ROOT / "scripts"))
         from run_phase2b14_metric_audit_scorpio_ablation import (
-            cond_wg, comp_frac, arrival_norm_wg
+            cond_wg, arrival_norm_wg
         )
         df = pd.DataFrame({
             "reward_fifo": [0.8, 0.9, 0.7],
