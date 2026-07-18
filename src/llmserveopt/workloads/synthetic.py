@@ -3,9 +3,8 @@ Synthetic workload generators for the LLM serving simulator.
 """
 from __future__ import annotations
 
-import dataclasses
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import List
 
 import numpy as np
 

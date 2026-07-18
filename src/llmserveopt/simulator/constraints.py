@@ -7,7 +7,7 @@ admission; invalid admissions are silently dropped with a warning.
 """
 from __future__ import annotations
 
-from typing import List, Sequence
+from typing import List
 
 from ..core.types import GPUConfig
 from .request import InternalRequest

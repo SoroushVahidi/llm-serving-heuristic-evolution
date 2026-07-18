@@ -4,7 +4,6 @@ Base class for all scheduling policies.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
 
 from ..core.action import Action
 from ..core.types import ObservableGPUState, ObservableRequest, ObservableState

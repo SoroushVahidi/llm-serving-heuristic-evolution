@@ -9,8 +9,8 @@ Phase 1.5 additions
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from dataclasses import dataclass
+from typing import Dict, List
 
 
 @dataclass(frozen=True)

@@ -103,9 +103,6 @@ class Simulator:
 
         arrival_idx = 0
         n_arrivals = len(self._pending_arrivals)
-        last_arrival_time = (
-            self._pending_arrivals[-1].request.arrival_time if n_arrivals > 0 else 0.0
-        )
 
         step_size = self.config.service_model.step_size
         max_steps = self.config.max_steps

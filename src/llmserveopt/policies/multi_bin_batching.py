@@ -14,7 +14,6 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Dict, List
 
-import numpy as np
 
 from ..core.action import Action
 from ..core.types import ObservableRequest, ObservableState

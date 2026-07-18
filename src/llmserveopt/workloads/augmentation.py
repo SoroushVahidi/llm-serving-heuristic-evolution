@@ -8,7 +8,7 @@ Fields produced here are clearly labeled as synthetic in trace metadata.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
 import numpy as np
 

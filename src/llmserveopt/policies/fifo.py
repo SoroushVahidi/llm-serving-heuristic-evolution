@@ -19,7 +19,6 @@ class FIFOPolicy(BasePolicy):
         n_gpus = len(state.gpu_states)
 
         for req in queue:
-            placed = False
             for offset in range(n_gpus):
                 gpu = state.gpu_states[(gpu_idx + offset) % n_gpus]
                 if self._feasible_on_gpu(gpu, req):
@@ -28,8 +27,7 @@ class FIFOPolicy(BasePolicy):
                     gpu.active_request_ids.append(req.request_id)
                     gpu.current_kv_tokens += req.prompt_tokens
                     gpu_idx = (gpu_idx + offset + 1) % n_gpus
-                    placed = True
                     break
-            # If not placed, skip this request for this step
+            # If no GPU is feasible, this request is skipped for this step
 
         return Action(admit=admit)

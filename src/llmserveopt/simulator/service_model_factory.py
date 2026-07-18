@@ -26,7 +26,6 @@ from typing import Union
 from .service_model import ServiceModel
 from .calibrated_service_model import (
     CalibratedServiceModel,
-    load_calibrated_service_model_from_config,
 )
 
 _log = logging.getLogger(__name__)

@@ -19,12 +19,11 @@ Tie-breaking (when scores are equal within floating-point tolerance)
 """
 from __future__ import annotations
 
-import time
 from collections import deque
 from typing import Any, Deque, Dict, List, Optional, Tuple
 
 from ..core.action import Action
-from ..core.types import ObservableGPUState, ObservableRequest, ObservableState
+from ..core.types import ObservableRequest, ObservableState
 from ..policies.base import BasePolicy
 from .compiler import CompiledHeuristic, compile_heuristic
 
@@ -222,11 +221,7 @@ class HeuristicPolicy(BasePolicy):
         gpu_kv: Dict[int, int] = {g.gpu_id: g.current_kv_tokens for g in state.gpu_states}
         gpu_active: Dict[int, int] = {g.gpu_id: len(g.active_request_ids) for g in state.gpu_states}
 
-        # Build a quick lookup for GPU objects
-        gpu_map = {g.gpu_id: g for g in state.gpu_states}
-
         for req in ranked:
-            placed = False
             for gpu in state.gpu_states:
                 gid = gpu.gpu_id
                 new_active = gpu_active[gid] + 1
@@ -245,7 +240,6 @@ class HeuristicPolicy(BasePolicy):
                         admitted.append(req)
                         gpu_active[gid] = new_active
                         gpu_kv[gid] = new_kv
-                        placed = True
                         break
             # (If no GPU can take the request, skip it)
 

@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from ..workloads.synthetic import WorkloadConfig, SLOClass
-from .evaluation import CandidateResult, EvaluationConfig, evaluate_candidates
+from .evaluation import CandidateResult, EvaluationConfig
 
 
 # ---------------------------------------------------------------------------

@@ -20,7 +20,6 @@ import json
 import logging
 import os
 import platform
-import random
 import socket
 import subprocess
 import sys

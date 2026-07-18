@@ -20,7 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
-from .dsl_schema import ALLOWED_TIE_BREAKERS, DEFAULT_LIMITS
+from .dsl_schema import DEFAULT_LIMITS
 from .expressions import ExpressionError, evaluate_expression
 from .verifier import VerificationResult, verify_heuristic
 

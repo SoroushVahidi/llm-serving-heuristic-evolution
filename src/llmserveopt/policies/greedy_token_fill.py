@@ -7,7 +7,7 @@ remaining capacity, trying the next GPU before giving up on a request.
 from __future__ import annotations
 
 from ..core.action import Action
-from ..core.types import ObservableGPUState, ObservableRequest, ObservableState
+from ..core.types import ObservableState
 from .base import BasePolicy
 
 

@@ -7,7 +7,7 @@ and never in SELECTOR_CANDIDATE_NAMES.
 """
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Sequence
 
 from .admission_control import AdmissionControlPolicy
 from .base import BasePolicy
