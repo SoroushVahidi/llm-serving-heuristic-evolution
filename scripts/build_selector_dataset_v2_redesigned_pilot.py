@@ -30,10 +30,12 @@ from llmserveopt.selector.dataset_v2.scenario_redesign import (
     local_real_trace_stress_specs,
     representative_easy_specs,
     sampled_bottleneck_specs,
+    targeted_counterexample_specs,
 )
 from llmserveopt.selector.dataset_v2.scenario_search import (
     DISCRIMINATIVE_CLASSES,
     attach_retention,
+    diversity_aware_retained_pool_for_trial,
     retained_pool_for_trial,
     spec_with_retained_pool,
     summarize_trial,
@@ -153,6 +155,113 @@ def summarize_records(records: List[WindowRecordV2], policies: List[str]) -> dic
             "vllm_faithful": discriminative_win_counts.get("vllm_faithful", 0),
             "sarathi_faithful": discriminative_win_counts.get("sarathi_faithful", 0),
         },
+        "secondary_objective_winners": secondary_objective_winners(records),
+    }
+
+
+def secondary_objective_winners(records: List[WindowRecordV2]) -> dict:
+    """Objective-sensitivity audit without changing the primary objective."""
+    objectives = [
+        "weighted_goodput",
+        "arrival_normalized_weighted_goodput",
+        "slo_attainment",
+        "request_throughput",
+    ]
+    out: dict[str, dict] = {}
+    for objective in objectives:
+        wins = Counter()
+        strong = Counter()
+        oracle_values = []
+        policy_values = defaultdict(list)
+        for record in records:
+            disc = next((d for d in record.discriminativeness if d.objective_name == objective), None)
+            if disc is None:
+                continue
+            wins[disc.best_policy] += 1
+            if disc.classification == "STRONGLY_DISCRIMINATIVE":
+                strong[disc.best_policy] += 1
+            oracle_values.append(disc.best_value)
+            for outcome in record.outcomes:
+                value = getattr(outcome, objective, None)
+                if value is not None:
+                    policy_values[outcome.policy_name].append(value)
+        means = {p: sum(v) / len(v) for p, v in policy_values.items() if v}
+        best_fixed = max(means, key=means.get) if means else None
+        oracle = sum(oracle_values) / len(oracle_values) if oracle_values else None
+        out[objective] = {
+            "win_distribution": dict(wins),
+            "strong_win_distribution": dict(strong),
+            "best_fixed_policy": best_fixed,
+            "best_fixed_score": means.get(best_fixed) if best_fixed else None,
+            "oracle_score": oracle,
+            "oracle_headroom": (
+                oracle - means[best_fixed]
+                if oracle is not None and best_fixed is not None else None
+            ),
+        }
+
+    out["completion_adjusted_weighted_goodput"] = _derived_objective_summary(
+        records,
+        lambda o: (
+            o.weighted_goodput * o.completion_fraction
+            if o.weighted_goodput is not None and o.completion_fraction is not None
+            else None
+        ),
+        higher_is_better=True,
+    )
+    out["p95_latency_constrained_goodput"] = _derived_objective_summary(
+        records,
+        _p95_latency_constrained_goodput,
+        higher_is_better=True,
+    )
+    return out
+
+
+def _p95_latency_constrained_goodput(outcome) -> float | None:
+    if outcome.weighted_goodput is None or outcome.p95_latency is None:
+        return None
+    if outcome.slo_attainment is None:
+        return outcome.weighted_goodput
+    return outcome.weighted_goodput * outcome.slo_attainment / max(outcome.p95_latency, 1e-9)
+
+
+def _derived_objective_summary(records: List[WindowRecordV2], extractor, *, higher_is_better: bool) -> dict:
+    sign = 1.0 if higher_is_better else -1.0
+    wins = Counter()
+    strong = Counter()
+    oracle_values = []
+    policy_values = defaultdict(list)
+    for record in records:
+        values = {
+            outcome.policy_name: extractor(outcome)
+            for outcome in record.outcomes
+        }
+        values = {p: v for p, v in values.items() if v is not None}
+        if len(values) < 2:
+            continue
+        ranked = sorted(values.items(), key=lambda item: -sign * item[1])
+        best_policy, best = ranked[0]
+        second = ranked[1][1]
+        margin = sign * (best - second)
+        wins[best_policy] += 1
+        if margin >= 0.02:
+            strong[best_policy] += 1
+        oracle_values.append(best)
+        for policy, value in values.items():
+            policy_values[policy].append(value)
+    means = {p: sum(v) / len(v) for p, v in policy_values.items() if v}
+    best_fixed = max(means, key=lambda p: sign * means[p]) if means else None
+    oracle = sum(oracle_values) / len(oracle_values) if oracle_values else None
+    return {
+        "win_distribution": dict(wins),
+        "strong_win_distribution": dict(strong),
+        "best_fixed_policy": best_fixed,
+        "best_fixed_score": means.get(best_fixed) if best_fixed else None,
+        "oracle_score": oracle,
+        "oracle_headroom": (
+            sign * (oracle - means[best_fixed])
+            if oracle is not None and best_fixed is not None else None
+        ),
     }
 
 
@@ -237,11 +346,14 @@ def run_adaptive_search(args, policies: List[str]) -> tuple[list[tuple], list[di
     candidates.extend(representative_easy_specs())
     candidates.extend(local_real_trace_stress_specs(ROOT, max_requests=args.max_real_requests))
     candidates.extend(bottleneck_taxonomy_specs())
+    if args.include_counterexamples:
+        candidates.extend(targeted_counterexample_specs(args.search_seed + 17, count_per_target=args.counterexamples_per_target))
     candidates.extend(sampled_bottleneck_specs(args.search_seed, count=args.sampled_candidates))
 
     retained: list[tuple] = []
     trace: list[dict] = []
     winner_counts: Counter[str] = Counter()
+    strong_winner_counts: Counter[str] = Counter()
     representative_windows = 0
     discriminative_windows = 0
     target_windows = args.target_windows
@@ -262,13 +374,25 @@ def run_adaptive_search(args, policies: List[str]) -> tuple[list[tuple], list[di
                 verbose=False,
             )
             summary = summarize_trial(spec, seed, trial_records)
-            pool, reason = retained_pool_for_trial(
-                summary,
-                winner_counts,
-                representative_windows,
-                discriminative_windows,
-                max_representative_fraction=args.max_representative_fraction,
-            )
+            if args.diversity_aware_retention:
+                pool, reason = diversity_aware_retained_pool_for_trial(
+                    summary,
+                    winner_counts,
+                    strong_winner_counts,
+                    representative_windows,
+                    discriminative_windows,
+                    target_policies=set(args.target_policies),
+                    max_representative_fraction=args.max_representative_fraction,
+                    max_single_strong_winner_share=args.max_search_winner_share,
+                )
+            else:
+                pool, reason = retained_pool_for_trial(
+                    summary,
+                    winner_counts,
+                    representative_windows,
+                    discriminative_windows,
+                    max_representative_fraction=args.max_representative_fraction,
+                )
             kept_summary = attach_retention(summary, pool, reason)
             trace.append(kept_summary.to_dict())
             if pool is None:
@@ -290,6 +414,9 @@ def run_adaptive_search(args, policies: List[str]) -> tuple[list[tuple], list[di
             retained.append((retained_spec, seed))
             for policy, count in summary.winner_counts.items():
                 winner_counts[policy] += count
+            strong_trial_counts = _strong_winners_for_records(trial_records)
+            for policy, count in strong_trial_counts.items():
+                strong_winner_counts[policy] += count
             if pool == REPRESENTATIVE_POOL:
                 representative_windows += summary.num_windows
             else:
@@ -310,6 +437,15 @@ def _adds_winner_diversity(summary, winner_counts: Counter[str]) -> bool:
     return any(winner_counts.get(policy, 0) == 0 for policy in summary.winner_counts)
 
 
+def _strong_winners_for_records(records: List[WindowRecordV2]) -> Counter[str]:
+    counts = Counter()
+    for record in records:
+        disc = _wg_disc(record)
+        if disc.classification == "STRONGLY_DISCRIMINATIVE":
+            counts[disc.best_policy] += 1
+    return counts
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", default="results/selector_dataset_v2/redesigned_pilot")
@@ -317,6 +453,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seeds", nargs="+", type=int, default=[11, 17])
     parser.add_argument("--search-seed", type=int, default=20260718)
     parser.add_argument("--sampled-candidates", type=int, default=56)
+    parser.add_argument("--include-counterexamples", action="store_true", default=True)
+    parser.add_argument("--no-counterexamples", dest="include_counterexamples", action="store_false")
+    parser.add_argument("--counterexamples-per-target", type=int, default=36)
+    parser.add_argument("--diversity-aware-retention", action="store_true", default=True)
+    parser.add_argument("--legacy-retention", dest="diversity_aware_retention", action="store_false")
+    parser.add_argument(
+        "--target-policies",
+        nargs="+",
+        default=[
+            "sarathi_faithful",
+            "vllm_faithful",
+            "edf",
+            "slo_slack_score",
+            "admission_control",
+            "weighted_shortest_processing",
+            "estimated_service_time_first",
+        ],
+    )
     parser.add_argument("--target-windows", type=int, default=720)
     parser.add_argument("--max-real-requests", type=int, default=144)
     parser.add_argument("--window-size", type=int, default=12)

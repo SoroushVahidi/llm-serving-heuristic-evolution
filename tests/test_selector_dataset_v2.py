@@ -26,11 +26,14 @@ from llmserveopt.selector.dataset_v2.scenario_redesign import (
     DISCRIMINATIVE_POOL,
     REPRESENTATIVE_POOL,
     bottleneck_taxonomy_specs,
+    local_real_trace_stress_specs,
     sampled_bottleneck_specs,
+    targeted_counterexample_specs,
     transform_requests,
 )
 from llmserveopt.selector.dataset_v2.scenario_search import (
     TrialSummary,
+    diversity_aware_retained_pool_for_trial,
     retained_pool_for_trial,
 )
 from llmserveopt.selector.dataset_v2.schema import (
@@ -354,6 +357,93 @@ def test_adaptive_retention_logic_prefers_discriminative_trials():
         "discriminative_oracle_headroom",
         "discriminative_density",
     }
+
+
+def test_diversity_aware_retention_rewards_underrepresented_target_winner():
+    summary = TrialSummary(
+        family_id="counterexample__sarathi_faithful__000",
+        seed=1,
+        bottleneck_class="prefill_heavy",
+        source_trace="synthetic",
+        request_plan_ancestor_id="counterexample__sarathi_faithful",
+        num_windows=4,
+        class_counts={"STRONGLY_DISCRIMINATIVE": 3, "NEAR_TIE": 1},
+        winner_counts={"sarathi_faithful": 3, "scorpio_style_slo_guard": 1},
+        strong_winner_counts={"sarathi_faithful": 3},
+        max_spread=0.10,
+        mean_spread=0.06,
+        mean_best_score=0.82,
+        mean_best_fixed_score=0.75,
+        oracle_headroom=0.07,
+    )
+    pool, reason = diversity_aware_retained_pool_for_trial(
+        summary,
+        current_winner_counts={"scorpio_style_slo_guard": 50},
+        strong_winner_counts={"scorpio_style_slo_guard": 50},
+        representative_windows=0,
+        discriminative_windows=50,
+        target_policies={"sarathi_faithful", "vllm_faithful"},
+    )
+    assert pool == DISCRIMINATIVE_POOL
+    assert reason == "strong_target_policy_winner"
+
+
+def test_diversity_aware_retention_caps_redundant_scorpio_strong_wins():
+    summary = TrialSummary(
+        family_id="admission_pressure__more_scorpio",
+        seed=2,
+        bottleneck_class="admission_pressure",
+        source_trace="synthetic",
+        request_plan_ancestor_id="admission_pressure",
+        num_windows=4,
+        class_counts={"STRONGLY_DISCRIMINATIVE": 4},
+        winner_counts={"scorpio_style_slo_guard": 4},
+        strong_winner_counts={"scorpio_style_slo_guard": 4},
+        max_spread=0.20,
+        mean_spread=0.12,
+        mean_best_score=0.9,
+        mean_best_fixed_score=0.8,
+        oracle_headroom=0.1,
+    )
+    pool, reason = diversity_aware_retained_pool_for_trial(
+        summary,
+        current_winner_counts={"scorpio_style_slo_guard": 80},
+        strong_winner_counts={"scorpio_style_slo_guard": 80, "vllm_faithful": 10},
+        representative_windows=0,
+        discriminative_windows=90,
+        target_policies={"sarathi_faithful", "vllm_faithful"},
+        max_single_strong_winner_share=0.85,
+    )
+    assert pool is None
+    assert reason == "skipped_dominant_strong_winner_cap"
+
+
+def test_targeted_counterexample_generation_is_deterministic_without_forced_labels():
+    specs_a = targeted_counterexample_specs(seed=2026, count_per_target=3)
+    specs_b = targeted_counterexample_specs(seed=2026, count_per_target=3)
+    assert [s.family_id for s in specs_a] == [s.family_id for s in specs_b]
+    assert [s.request_plan_ancestor_id for s in specs_a] == [s.request_plan_ancestor_id for s in specs_b]
+    assert all(s.scenario_pool == DISCRIMINATIVE_POOL for s in specs_a)
+    assert {s.bottleneck_class for s in specs_a}.issuperset({"prefill_heavy", "decode_heavy", "slo_heterogeneous"})
+    assert all("winner" not in s.description.lower() for s in specs_a)
+    assert specs_a[0].build(3) == specs_b[0].build(3)
+
+
+def test_local_real_source_variants_preserve_ancestor_groups_when_present(tmp_path):
+    data_dir = tmp_path / "data" / "processed" / "azure"
+    data_dir.mkdir(parents=True)
+    trace = data_dir / "azure_llm_2023_code.jsonl"
+    trace.write_text(
+        "\n".join([
+            '{"request_id": 0, "arrival_time": 0.0, "prompt_tokens": 64, "predicted_output_tokens": 32, "actual_output_tokens": 32, "slo_deadline": 5.0, "priority": 1.0, "class_id": "medium"}',
+            '{"request_id": 1, "arrival_time": 1.0, "prompt_tokens": 80, "predicted_output_tokens": 40, "actual_output_tokens": 40, "slo_deadline": 6.0, "priority": 1.0, "class_id": "medium"}',
+        ])
+        + "\n"
+    )
+    specs = local_real_trace_stress_specs(tmp_path, max_requests=2)
+    assert specs
+    assert {s.request_plan_ancestor_id for s in specs} == {"real_trace__azure_2023_code"}
+    assert {s.source_trace for s in specs} == {"azure_llm_2023"}
 
 
 def test_bottleneck_taxonomy_has_required_classes_and_pool_labels():

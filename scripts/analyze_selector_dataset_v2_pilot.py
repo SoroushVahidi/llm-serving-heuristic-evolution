@@ -48,6 +48,7 @@ def analyze_rows(rows: list[dict]) -> dict:
     strong_by_family: Counter[str] = Counter()
     differentiated_metrics: Counter[str] = Counter()
     window_records: list[dict] = []
+    scorpio_strong_gap_records: list[dict] = []
 
     for (_scenario_id, _window_id), wrs in by_window.items():
         first = wrs[0]
@@ -76,6 +77,7 @@ def analyze_rows(rows: list[dict]) -> dict:
         completions = [_f(r.get("metric_completion_fraction")) for r in wrs]
         weighted_goodput = [_f(r.get("metric_weighted_goodput")) for r in wrs]
         p95_latency = [_f(r.get("metric_p95_latency")) for r in wrs]
+        by_policy = {r["policy_name"]: r for r in wrs}
         window_records.append({
             "family": family,
             "pool": first.get("scenario_pool"),
@@ -101,6 +103,18 @@ def analyze_rows(rows: list[dict]) -> dict:
             "max_weighted_goodput": max((v for v in weighted_goodput if not math.isnan(v)), default=math.nan),
             "max_p95_latency": max((v for v in p95_latency if not math.isnan(v)), default=math.nan),
         })
+        if wg_class == "STRONGLY_DISCRIMINATIVE" and winner == "scorpio_style_slo_guard":
+            scorpio = by_policy.get("scorpio_style_slo_guard")
+            alternatives = [r for r in wrs if r["policy_name"] != "scorpio_style_slo_guard"]
+            if scorpio and alternatives:
+                second = max(alternatives, key=lambda r: _f(r.get("metric_weighted_goodput")))
+                best_completion = max(alternatives, key=lambda r: _f(r.get("metric_completion_fraction")))
+                scorpio_strong_gap_records.append(_policy_gap_record(
+                    first,
+                    scorpio,
+                    second,
+                    best_completion,
+                ))
 
     total = len(window_records)
     feature_fields = [
@@ -146,6 +160,7 @@ def analyze_rows(rows: list[dict]) -> dict:
         },
         "by_discriminativeness": by_class,
         "failure_cause_evidence": _failure_cause_evidence(window_records),
+        "scorpio_strong_win_diagnostics": _scorpio_diagnostics(scorpio_strong_gap_records),
     }
 
 
@@ -168,6 +183,74 @@ def _failure_cause_evidence(window_records: list[dict]) -> dict:
         "non_all_slo_tightness": _summary([r["slo_tightness"] for r in non_all]),
         "non_all_token_budget_pressure": _summary([r["token_budget_pressure"] for r in non_all]),
         "non_all_kv_pressure": _summary([r["kv_pressure"] for r in non_all]),
+    }
+
+
+def _policy_gap_record(window: dict, scorpio: dict, second: dict, best_completion: dict) -> dict:
+    def gap(field: str, other: dict = second) -> float:
+        return _f(scorpio.get(field)) - _f(other.get(field))
+
+    return {
+        "scenario_family_id": window.get("scenario_family_id"),
+        "source_trace": window.get("source_trace"),
+        "bottleneck_class": window.get("bottleneck_class"),
+        "second_policy": second.get("policy_name"),
+        "best_completion_policy": best_completion.get("policy_name"),
+        "offered_load_estimate": _f(window.get("feat_saturation_load_estimate")),
+        "realized_arrival_rate": _f(window.get("feat_arrival_rate_prefix")),
+        "queue_growth": _f(window.get("feat_recent_queue_growth_rate")),
+        "kv_pressure": _safe_ratio(_f(window.get("feat_pred_output_p95")), _f(window.get("feat_resource_kv_capacity"))),
+        "token_budget_pressure": _safe_ratio(_f(window.get("feat_prompt_p95")), _f(window.get("feat_resource_token_budget"))),
+        "p10_slack": _f(window.get("feat_p10_slack")),
+        "burstiness_cv": _f(window.get("feat_burstiness_cv")),
+        "prompt_mean": _f(window.get("feat_prompt_mean")),
+        "pred_output_mean": _f(window.get("feat_pred_output_mean")),
+        "weighted_goodput_gap_vs_second": gap("metric_weighted_goodput"),
+        "completion_fraction_gap_vs_second": gap("metric_completion_fraction"),
+        "completion_fraction_gap_vs_best_completion": gap("metric_completion_fraction", best_completion),
+        "admission_rate_gap_vs_second": gap("metric_admission_rate"),
+        "rejection_rate_gap_vs_second": gap("metric_rejection_rate"),
+        "slo_attainment_gap_vs_second": gap("metric_slo_attainment"),
+        "p95_latency_gap_vs_second": gap("metric_p95_latency"),
+        "p95_ttft_gap_vs_second": gap("metric_p95_ttft"),
+        "p95_tpot_gap_vs_second": gap("metric_p95_tpot"),
+        "preemption_gap_vs_second": gap("metric_num_preempt_events"),
+    }
+
+
+def _scorpio_diagnostics(records: list[dict]) -> dict:
+    if not records:
+        return {"windows": 0}
+    fields = [
+        "offered_load_estimate",
+        "realized_arrival_rate",
+        "queue_growth",
+        "kv_pressure",
+        "token_budget_pressure",
+        "p10_slack",
+        "burstiness_cv",
+        "prompt_mean",
+        "pred_output_mean",
+        "weighted_goodput_gap_vs_second",
+        "completion_fraction_gap_vs_second",
+        "completion_fraction_gap_vs_best_completion",
+        "admission_rate_gap_vs_second",
+        "rejection_rate_gap_vs_second",
+        "slo_attainment_gap_vs_second",
+        "p95_latency_gap_vs_second",
+        "p95_ttft_gap_vs_second",
+        "p95_tpot_gap_vs_second",
+        "preemption_gap_vs_second",
+    ]
+    return {
+        "windows": len(records),
+        "second_policy_counts": dict(Counter(r["second_policy"] for r in records)),
+        "best_completion_policy_counts": dict(Counter(r["best_completion_policy"] for r in records)),
+        "bottleneck_counts": dict(Counter(r["bottleneck_class"] for r in records)),
+        "field_summaries": {
+            field: _summary([r[field] for r in records])
+            for field in fields
+        },
     }
 
 

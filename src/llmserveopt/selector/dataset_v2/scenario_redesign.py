@@ -393,6 +393,179 @@ def sampled_bottleneck_specs(seed: int, count: int = 48) -> list[ScenarioFamilyS
     return specs
 
 
+def targeted_counterexample_specs(seed: int, count_per_target: int = 36) -> list[ScenarioFamilySpec]:
+    """Deterministic counterexample candidates for underrepresented policies.
+
+    These are still ordinary workload/resource configurations. The policy
+    names in the family ids describe the *hypothesized* specialization region
+    being searched, not a forced label or retention rule.
+    """
+    rng = np.random.default_rng(seed)
+    specs: list[ScenarioFamilySpec] = []
+    specs.extend(_sarathi_counterexample_specs(rng, count_per_target))
+    specs.extend(_vllm_counterexample_specs(rng, count_per_target))
+    specs.extend(_deadline_counterexample_specs(rng, count_per_target))
+    return specs
+
+
+def _sarathi_counterexample_specs(
+    rng: np.random.Generator,
+    count: int,
+) -> list[ScenarioFamilySpec]:
+    specs: list[ScenarioFamilySpec] = []
+    for idx in range(count):
+        arrival = float(rng.uniform(18.0, 95.0))
+        prompt_mean = float(rng.choice([900.0, 1400.0, 2200.0, 3200.0, 4200.0]))
+        output_mean = float(rng.choice([24.0, 48.0, 96.0, 160.0]))
+        token_budget = int(rng.choice([64, 96, 128, 192, 256, 384]))
+        chunk = int(rng.choice([128, 256, 512, 768]))
+        seq_cap = int(rng.choice([8, 10, 12, 16, 20]))
+        # Keep KV realistic for long prompts; scarcity is in the per-step
+        # prefill token budget, not impossible memory.
+        kv_cap = int(max(prompt_mean * rng.uniform(8.0, 18.0), 18_000))
+        tight = float(rng.uniform(0.10, 0.55))
+        config = WorkloadConfig(
+            arrival_process="poisson",
+            arrival_rate=arrival,
+            duration=float(rng.uniform(2.4, 4.4)),
+            prompt_mean=prompt_mean,
+            prompt_sigma=float(rng.uniform(0.35, 0.75)),
+            prompt_high=int(max(4096, prompt_mean * 2.4)),
+            output_mean=output_mean,
+            output_sigma=float(rng.uniform(0.35, 0.85)),
+            output_high=int(max(256, output_mean * 5)),
+            prediction_noise_rel=float(rng.choice([0.0, 0.08, 0.18])),
+            slo_classes=slo_classes(
+                tight,
+                high_priority_fraction=float(rng.uniform(0.02, min(0.18, tight))),
+                tight_slack=float(rng.uniform(0.22, 0.75)),
+                medium_slack=float(rng.uniform(1.0, 2.5)),
+                loose_slack=float(rng.uniform(4.0, 8.0)),
+            ),
+            tag=f"counterexample_sarathi_{idx:03d}",
+        )
+        specs.append(_synthetic_spec(
+            family_id=f"counterexample__sarathi_faithful__{idx:03d}",
+            bottleneck_class="prefill_heavy",
+            config=config,
+            gpu=scarcity_gpu(
+                max_active_sequences=seq_cap,
+                max_batch_tokens=seq_cap,
+                max_kv_tokens=kv_cap,
+            ),
+            service=service_model(
+                prefill=True,
+                step_token_budget=token_budget,
+                max_prefill_chunk_tokens=chunk,
+                decode_first=True,
+            ),
+            ancestor_id="counterexample__sarathi_faithful",
+        ))
+    return specs
+
+
+def _vllm_counterexample_specs(
+    rng: np.random.Generator,
+    count: int,
+) -> list[ScenarioFamilySpec]:
+    specs: list[ScenarioFamilySpec] = []
+    for idx in range(count):
+        output_mean = float(rng.choice([180.0, 320.0, 520.0, 760.0, 1050.0]))
+        prompt_mean = float(rng.choice([24.0, 48.0, 96.0, 160.0]))
+        seq_cap = int(rng.choice([12, 16, 20, 24, 32]))
+        kv_cap = int(rng.choice([3600, 5200, 7600, 10_000, 14_000]))
+        arrival = float(rng.uniform(45.0, 155.0))
+        config = WorkloadConfig(
+            arrival_process="poisson",
+            arrival_rate=arrival,
+            duration=float(rng.uniform(2.0, 4.0)),
+            prompt_mean=prompt_mean,
+            prompt_sigma=float(rng.uniform(0.25, 0.55)),
+            prompt_high=512,
+            output_dist="pareto",
+            output_mean=output_mean,
+            output_sigma=float(rng.uniform(0.55, 1.0)),
+            output_high=int(max(1800, output_mean * 4)),
+            prediction_noise_rel=float(rng.choice([0.0, 0.1, 0.25])),
+            slo_classes=slo_classes(
+                tight_fraction=float(rng.uniform(0.05, 0.35)),
+                high_priority_fraction=float(rng.uniform(0.0, 0.08)),
+                tight_slack=float(rng.uniform(0.55, 1.4)),
+                medium_slack=float(rng.uniform(2.0, 5.0)),
+                loose_slack=float(rng.uniform(8.0, 16.0)),
+            ),
+            tag=f"counterexample_vllm_{idx:03d}",
+        )
+        specs.append(_synthetic_spec(
+            family_id=f"counterexample__vllm_faithful__{idx:03d}",
+            bottleneck_class="decode_heavy",
+            config=config,
+            gpu=scarcity_gpu(
+                max_active_sequences=seq_cap,
+                max_batch_tokens=seq_cap,
+                max_kv_tokens=kv_cap,
+            ),
+            service=service_model(prefill=False),
+            ancestor_id="counterexample__vllm_faithful",
+        ))
+    return specs
+
+
+def _deadline_counterexample_specs(
+    rng: np.random.Generator,
+    count: int,
+) -> list[ScenarioFamilySpec]:
+    specs: list[ScenarioFamilySpec] = []
+    for idx in range(count):
+        target = str(rng.choice([
+            "edf",
+            "slo_slack_score",
+            "weighted_shortest_processing",
+            "estimated_service_time_first",
+            "admission_control",
+        ]))
+        prompt_mean = float(rng.choice([48.0, 96.0, 180.0, 320.0]))
+        output_mean = float(rng.choice([48.0, 110.0, 220.0, 360.0]))
+        arrival = float(rng.uniform(70.0, 185.0))
+        config = WorkloadConfig(
+            arrival_process="bursty" if idx % 4 == 0 else "poisson",
+            arrival_rate=arrival,
+            duration=float(rng.uniform(2.0, 3.6)),
+            burst_factor=float(rng.uniform(3.0, 8.0)),
+            burst_fraction=float(rng.uniform(0.08, 0.18)),
+            prompt_mean=prompt_mean,
+            prompt_sigma=float(rng.uniform(0.35, 0.75)),
+            prompt_high=2048,
+            output_dist="pareto" if output_mean >= 220 else "lognormal",
+            output_mean=output_mean,
+            output_sigma=float(rng.uniform(0.35, 0.9)),
+            output_high=int(max(512, output_mean * 5)),
+            prediction_noise_rel=float(rng.choice([0.0, 0.1, 0.3, 0.55])),
+            slo_classes=slo_classes(
+                tight_fraction=float(rng.uniform(0.25, 0.65)),
+                high_priority_fraction=float(rng.uniform(0.0, 0.20)),
+                tight_slack=float(rng.uniform(0.16, 0.55)),
+                medium_slack=float(rng.uniform(0.8, 2.2)),
+                loose_slack=float(rng.uniform(4.0, 9.0)),
+            ),
+            tag=f"counterexample_deadline_{target}_{idx:03d}",
+        )
+        seq_cap = int(rng.choice([8, 10, 12, 16]))
+        specs.append(_synthetic_spec(
+            family_id=f"counterexample__deadline_policy__{target}__{idx:03d}",
+            bottleneck_class="slo_heterogeneous",
+            config=config,
+            gpu=scarcity_gpu(
+                max_active_sequences=seq_cap,
+                max_batch_tokens=seq_cap,
+                max_kv_tokens=int(rng.choice([5500, 7500, 10_000, 14_000])),
+            ),
+            service=service_model(prefill=False),
+            ancestor_id=f"counterexample__deadline_policy__{target}",
+        ))
+    return specs
+
+
 def local_real_trace_stress_specs(
     root: Path,
     *,
