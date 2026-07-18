@@ -65,6 +65,13 @@ class Simulator:
         self._gpu_map: Dict[int, GPUState] = {g.gpu_id: g for g in self._gpus}
         self._waiting: deque[InternalRequest] = deque()
         self._waiting_map: Dict[int, InternalRequest] = {}
+        # Disaggregated prefill/decode "bridge queue" (opt-in; see
+        # docs/distserve_faithful_scheduler_reference.md): requests that
+        # finished prefill on a role="prefill" GPU and are awaiting transfer
+        # completion. Always empty unless ServiceModel.enable_disaggregation
+        # is set.
+        self._migrating: deque[InternalRequest] = deque()
+        self._migrating_map: Dict[int, InternalRequest] = {}
         self._pending_arrivals: List[InternalRequest] = []   # sorted by arrival_time
         self._completed: List[CompletedRequest] = []
         self._step: int = 0
@@ -139,6 +146,11 @@ class Simulator:
             step_completed = self._advance_decode()
             self._completed.extend(step_completed)
 
+            # --- 5b. Collect any disaggregated prefill->decode handoffs
+            # produced this step (always a no-op unless
+            # ServiceModel.enable_disaggregation is set).
+            self._collect_handoffs()
+
             # --- 6. Record per-step metrics ---
             total_active = sum(g.num_active for g in self._gpus)
             n_gpus = len(self._gpus)
@@ -151,7 +163,12 @@ class Simulator:
             # --- 7. Termination check ---
             all_arrivals_done = arrival_idx >= n_arrivals
             all_active_done = total_active == 0
-            queue_empty = len(self._waiting) == 0
+            # A request mid-transfer (in the bridge queue) is neither
+            # "active" on any GPU nor in the ordinary waiting queue -- it
+            # must still block termination/idle-fast-forward, or the
+            # simulation could end (or skip ahead) while a request is
+            # genuinely in flight.
+            queue_empty = len(self._waiting) == 0 and len(self._migrating) == 0
 
             if all_arrivals_done:
                 steps_since_last_arrival += 1
@@ -181,8 +198,13 @@ class Simulator:
         sim_duration = self._time
         wall_elapsed = _time.perf_counter() - wall_start
 
-        # Requests still in waiting queue at end = dropped
-        dropped = [ir.request for ir in self._waiting]
+        # Requests still in waiting queue (or, in disaggregated mode,
+        # mid-transfer -- should not normally happen given the
+        # termination-check fix above, but included defensively) at end
+        # = dropped.
+        dropped = [ir.request for ir in self._waiting] + [
+            ir.request for ir in self._migrating
+        ]
 
         return compute_metrics(
             completed=self._completed,
@@ -208,8 +230,11 @@ class Simulator:
             g._active.clear()
             g.step_active_counts.clear()
             g.step_kv_used.clear()
+            g._pending_handoff.clear()
         self._waiting.clear()
         self._waiting_map.clear()
+        self._migrating.clear()
+        self._migrating_map.clear()
         self._completed.clear()
         self._step = 0
         self._time = 0.0
@@ -226,11 +251,22 @@ class Simulator:
             ir.tokens_decoded = 0
             ir.prefill_remaining = 0
             ir.first_token_time = -1.0
+            ir.transfer_ready_time = -1.0
 
     def _build_observable_state(self) -> ObservableState:
         waiting_obs = [
             ObservableRequest.from_request(ir.request)
             for ir in self._waiting
+        ]
+        # Disaggregated prefill/decode: only requests whose transfer delay
+        # has already elapsed are exposed as admission-eligible (still-in-
+        # transit ones are invisible to policies, matching "decode begins
+        # only after handoff/transfer completion"). Always empty unless
+        # ServiceModel.enable_disaggregation is set.
+        migrating_obs = [
+            ObservableRequest.from_request(ir.request)
+            for ir in self._migrating
+            if ir.transfer_ready_time <= self._time
         ]
         gpu_obs = [g.to_observable() for g in self._gpus]
         return ObservableState(
@@ -239,6 +275,7 @@ class Simulator:
             gpu_states=gpu_obs,
             completed_count=len(self._completed),
             step=self._step,
+            migrating_queue=migrating_obs,
         )
 
     def _apply_action(self, action: Action) -> None:
@@ -279,23 +316,42 @@ class Simulator:
                         )
                     continue
 
-                if rid not in self._waiting_map:
+                # Resolve the request from wherever it is currently
+                # eligible: the ordinary waiting queue, or (disaggregated
+                # mode only) the bridge queue of transfer-ready requests.
+                from_migrating = False
+                if rid in self._waiting_map:
+                    ir = self._waiting_map[rid]
+                elif rid in self._migrating_map:
+                    ir = self._migrating_map[rid]
+                    from_migrating = True
+                else:
                     if self.config.warn_on_invalid_action:
                         warnings.warn(
                             f"Action references request {rid} not in waiting queue; skipped."
                         )
                     continue
 
-                ir = self._waiting_map[rid]
-
-                # Validate arrival: request must have arrived by now
-                if ir.request.arrival_time > self._time:
-                    if self.config.warn_on_invalid_action:
-                        warnings.warn(
-                            f"Request {rid} has arrival_time={ir.request.arrival_time} "
-                            f"> current time={self._time}; skipped."
-                        )
-                    continue
+                if from_migrating:
+                    # Transfer-ready check: a still-in-transit request must
+                    # never be admitted early (mirrors the arrival-time
+                    # check below for ordinary waiting requests).
+                    if ir.transfer_ready_time > self._time:
+                        if self.config.warn_on_invalid_action:
+                            warnings.warn(
+                                f"Request {rid} is still mid-transfer "
+                                f"(ready at {ir.transfer_ready_time}, now {self._time}); skipped."
+                            )
+                        continue
+                else:
+                    # Validate arrival: request must have arrived by now
+                    if ir.request.arrival_time > self._time:
+                        if self.config.warn_on_invalid_action:
+                            warnings.warn(
+                                f"Request {rid} has arrival_time={ir.request.arrival_time} "
+                                f"> current time={self._time}; skipped."
+                            )
+                        continue
 
                 ok = gpu.admit(
                     ir,
@@ -303,13 +359,19 @@ class Simulator:
                     service_model=self.config.service_model,
                 )
                 if ok:
-                    self._waiting_map.pop(rid)
+                    if from_migrating:
+                        self._migrating_map.pop(rid)
+                    else:
+                        self._waiting_map.pop(rid)
                     admitted_ids.add(rid)
 
-        # Remove admitted requests from the waiting deque
+        # Remove admitted requests from the waiting/migrating deques
         if admitted_ids:
             self._waiting = deque(
                 ir for ir in self._waiting if ir.request_id not in admitted_ids
+            )
+            self._migrating = deque(
+                ir for ir in self._migrating if ir.request_id not in admitted_ids
             )
 
     def _apply_preemptions(self, action: Action) -> set:
@@ -371,3 +433,13 @@ class Simulator:
                 )
             )
         return completed
+
+    def _collect_handoffs(self) -> None:
+        """Move requests handed off this step (prefill just finished on a
+        role="prefill" GPU, disaggregated mode) into the bridge queue.
+        Always a no-op unless ServiceModel.enable_disaggregation is set --
+        every GPU's pop_pending_handoff() returns an empty list otherwise."""
+        for g in self._gpus:
+            for ir in g.pop_pending_handoff():
+                self._migrating.append(ir)
+                self._migrating_map[ir.request_id] = ir

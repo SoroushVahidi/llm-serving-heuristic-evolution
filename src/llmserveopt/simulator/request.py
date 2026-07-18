@@ -7,6 +7,18 @@ Phase 1.5 additions
   Zero when enable_prefill_modeling=False (backward-compat Phase 1 behaviour).
 * first_token_time  : wall-clock time when the first decode token was produced
   (= TTFT anchor).  -1.0 if not yet recorded.
+
+Disaggregated prefill/decode addition (opt-in; see
+docs/distserve_faithful_scheduler_reference.md)
+-------------------------------------------------
+* RequestPhase.MIGRATING : a request that finished prefill on a
+  role="prefill" GPU and is awaiting transfer completion before it is
+  eligible for admission onto a role="decode" GPU. Only ever produced when
+  ServiceModel.enable_disaggregation is set; no existing code path
+  produces or checks this phase.
+* transfer_ready_time : wall-clock time at which this request's transfer
+  delay elapses (only meaningful while phase == MIGRATING). -1.0 for every
+  request that never migrates.
 """
 from __future__ import annotations
 
@@ -17,9 +29,10 @@ from ..core.types import Request
 
 
 class RequestPhase(Enum):
-    WAITING   = auto()
-    ACTIVE    = auto()     # covers both prefill and decode sub-phases
-    COMPLETED = auto()
+    WAITING    = auto()
+    ACTIVE     = auto()     # covers both prefill and decode sub-phases
+    MIGRATING  = auto()     # disaggregated mode only -- see module docstring
+    COMPLETED  = auto()
 
 
 @dataclass
@@ -34,6 +47,8 @@ class InternalRequest:
     # Phase 1.5 fields (zero = no prefill / Phase 1 backward-compat)
     prefill_remaining: int = 0       # prompt tokens left to prefill
     first_token_time: float = -1.0   # time of first decoded token output
+    # Disaggregated prefill/decode field (opt-in; -1.0 = not migrating)
+    transfer_ready_time: float = -1.0
 
     # ------------------------------------------------------------------ #
     # Phase properties

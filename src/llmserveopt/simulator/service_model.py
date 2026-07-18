@@ -17,6 +17,17 @@ Phase 1.5 (enable_prefill_modeling=True)
   If decode_first=True the decode budget is guaranteed first; prefill only
   gets the remainder (Sarathi-style stall-free principle).
 
+Disaggregated prefill/decode (enable_disaggregation=True)
+-----------------------------------------------------------
+Opt-in; see docs/distserve_faithful_scheduler_reference.md. When a request
+finishes prefill on a GPUConfig(role="prefill") GPU, instead of continuing
+to decode in place (the Phase 1.5 behavior above), it is handed off into a
+"migrating" state for migration_transfer_delay seconds before becoming
+eligible for admission onto a GPUConfig(role="decode") GPU. Defaults to
+False / 0.0 (no behavior change for any existing config). Requires
+enable_prefill_modeling=True to have an observable effect (a request must
+have a genuine prefill phase to hand off from).
+
 TODO (Phase 2+)
 ---------------
 * Memory-bandwidth-limited decode slow-down at large batch sizes.
@@ -40,6 +51,10 @@ class ServiceModel:
     step_token_budget: int = 4096             # total token budget per GPU per step
     decode_first: bool = False                 # guarantee decode budget before prefill
     allow_chunked_prefill: bool = True         # allow multi-step chunked prefill
+
+    # --- Disaggregated prefill/decode (opt-in; see docs/distserve_faithful_scheduler_reference.md) ---
+    enable_disaggregation: bool = False        # hand off prefill-done requests instead of continuing in place
+    migration_transfer_delay: float = 0.0      # wall-clock seconds a handoff takes; 0.0 = zero-cost mode
 
     # --- Legacy (Phase 1 compat, not actively used in Phase 1.5) ---
     prefill_tokens_per_step: int = 512         # kept for doc purposes

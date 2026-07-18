@@ -9,8 +9,8 @@ Phase 1.5 additions
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, List
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 
 
 @dataclass(frozen=True)
@@ -35,12 +35,23 @@ class Request:
             raise ValueError(f"arrival_time must be non-negative, got {self.arrival_time}")
 
 
+#: Valid GPUConfig.role values for disaggregated prefill/decode execution
+#: (see docs/distserve_faithful_scheduler_reference.md). None (the default)
+#: means legacy/colocated: a GPU that runs both prefill and decode, exactly
+#: as every existing config already does.
+DISAGGREGATION_ROLES = ("prefill", "decode")
+
+
 @dataclass(frozen=True)
 class GPUConfig:
     gpu_id: int
     max_active_sequences: int   # max concurrently active requests
     max_batch_tokens: int       # max tokens processed in one step (all active reqs)
     max_kv_tokens: int          # total KV-cache capacity in tokens
+    # Disaggregated prefill/decode execution (opt-in; see
+    # docs/distserve_faithful_scheduler_reference.md). None = legacy/colocated
+    # GPU, unchanged behavior. Every existing config leaves this unset.
+    role: Optional[str] = None
 
     def __post_init__(self) -> None:
         if self.max_active_sequences <= 0:
@@ -49,6 +60,10 @@ class GPUConfig:
             raise ValueError("max_batch_tokens must be positive")
         if self.max_kv_tokens <= 0:
             raise ValueError("max_kv_tokens must be positive")
+        if self.role is not None and self.role not in DISAGGREGATION_ROLES:
+            raise ValueError(
+                f"role must be one of {DISAGGREGATION_ROLES} or None, got {self.role!r}"
+            )
 
 
 @dataclass
@@ -92,6 +107,9 @@ class ObservableGPUState:
     # Phase 1.5: phase-split counts (0 when enable_prefill_modeling=False)
     prefilling_count: int = 0
     decoding_count: int = 0
+    # Disaggregated prefill/decode execution (opt-in; mirrors GPUConfig.role).
+    # None for every legacy/colocated GPU.
+    role: Optional[str] = None
 
     @property
     def free_sequences(self) -> int:
@@ -121,6 +139,14 @@ class ObservableState:
     gpu_states: List[ObservableGPUState]
     completed_count: int
     step: int
+    # Disaggregated prefill/decode execution (opt-in; see
+    # docs/distserve_faithful_scheduler_reference.md): requests that have
+    # finished prefill on a role="prefill" GPU and whose transfer delay has
+    # already elapsed -- eligible for admission onto a role="decode" GPU via
+    # the same Action.admit mechanism. Distinct from waiting_queue, which
+    # holds only genuinely-new, needs-prefill requests. Always empty unless
+    # ServiceModel.enable_disaggregation is set.
+    migrating_queue: List[ObservableRequest] = field(default_factory=list)
 
 
 @dataclass

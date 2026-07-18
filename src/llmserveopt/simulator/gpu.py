@@ -8,6 +8,18 @@ Phase 1.5 changes
 * to_observable() exposes prefilling_count and decoding_count so that
   serving-style policies (Sarathi, SplitFuse) can reason about phase.
 * KV tracking uses InternalRequest.kv_tokens, which grows during prefill.
+
+Disaggregated prefill/decode addition (opt-in; see
+docs/distserve_faithful_scheduler_reference.md)
+-------------------------------------------------
+* admit() skips prefill entirely when this GPU's role is "decode" (the
+  request is assumed already-prefilled elsewhere -- the only correct
+  interpretation for that role).
+* When service_model.enable_disaggregation is set and this GPU's role is
+  "prefill", a request whose prefill JUST completed this step is handed
+  off (removed from _active, phase set to MIGRATING) instead of
+  continuing to decode in place. Buffered in _pending_handoff for the
+  Simulator to drain via pop_pending_handoff().
 """
 from __future__ import annotations
 
@@ -26,6 +38,9 @@ class GPUState:
         self._active: Dict[int, InternalRequest] = {}
         self.step_active_counts: List[int] = []
         self.step_kv_used: List[int] = []
+        # Disaggregated prefill/decode: requests handed off this step,
+        # awaiting collection by the Simulator (always empty otherwise).
+        self._pending_handoff: List[InternalRequest] = []
 
     # ------------------------------------------------------------------ #
     # Properties
@@ -94,7 +109,12 @@ class GPUState:
         req.phase = RequestPhase.ACTIVE
         req.gpu_id = self.gpu_id
         req.admission_time = admission_time
-        if service_model is not None:
+        req.transfer_ready_time = -1.0   # no longer migrating, if it was
+        if self.config.role == "decode":
+            # Disaggregated decode-side GPU: prefill already happened on a
+            # role="prefill" GPU before this request was handed off here.
+            req.prefill_remaining = 0
+        elif service_model is not None:
             req.prefill_remaining = service_model.compute_prefill_tokens(
                 req.request.prompt_tokens
             )
@@ -127,7 +147,21 @@ class GPUState:
         req.tokens_decoded = 0
         req.prefill_remaining = 0
         req.first_token_time = -1.0
+        req.transfer_ready_time = -1.0
         return req
+
+    # ------------------------------------------------------------------ #
+    # Disaggregated prefill/decode handoff
+    # ------------------------------------------------------------------ #
+
+    def pop_pending_handoff(self) -> List[InternalRequest]:
+        """Drain and return requests handed off (prefill just finished on
+        this role="prefill" GPU) during the most recent step() call.
+        Always empty unless ServiceModel.enable_disaggregation is set and
+        this GPU has role="prefill" -- see docs/distserve_faithful_scheduler_reference.md."""
+        handed_off = self._pending_handoff
+        self._pending_handoff = []
+        return handed_off
 
     # ------------------------------------------------------------------ #
     # Step
@@ -221,6 +255,7 @@ class GPUState:
                 to_remove.append(req.request_id)
 
         # --- Advance prefill with remaining budget ---
+        handoff_ids: List[int] = []
         for req in prefilling:
             if prefill_budget <= 0:
                 break  # no budget left for prefill this step
@@ -231,10 +266,25 @@ class GPUState:
             )
             if chunk <= 0:
                 continue
-            req.advance_prefill(chunk)
+            prefill_just_finished = req.advance_prefill(chunk)
             prefill_budget -= chunk
-            # Prefill just completed → first decode token will be next step
-            # (first_token_time is set in advance_decode on the following step)
+            if (
+                prefill_just_finished
+                and service_model.enable_disaggregation
+                and self.config.role == "prefill"
+            ):
+                # Disaggregated mode: hand off to the "migrating" pool
+                # instead of continuing to decode in place (see
+                # docs/distserve_faithful_scheduler_reference.md).
+                req.phase = RequestPhase.MIGRATING
+                req.transfer_ready_time = current_time + service_model.migration_transfer_delay
+                req.gpu_id = -1
+                handoff_ids.append(req.request_id)
+            # Otherwise: prefill just completed → first decode token will be
+            # next step (first_token_time is set in advance_decode then).
+
+        for rid in handoff_ids:
+            self._pending_handoff.append(self._active.pop(rid))
 
         for rid in to_remove:
             del self._active[rid]
@@ -265,4 +315,5 @@ class GPUState:
             },
             prefilling_count=self.prefilling_count,
             decoding_count=self.decoding_count,
+            role=self.config.role,
         )

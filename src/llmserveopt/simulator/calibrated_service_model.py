@@ -53,6 +53,11 @@ class CalibratedServiceModel:
     max_prefill_chunk_tokens: int = 512   # tokens processed per prefill chunk per step
     step_token_budget: int = 8192         # total token budget per GPU per step
     decode_first: bool = False            # guarantee decode budget before prefill
+    # Disaggregated prefill/decode fields (opt-in; see
+    # docs/distserve_faithful_scheduler_reference.md). Defaults match
+    # ServiceModel's own defaults (disaggregation off).
+    enable_disaggregation: bool = False
+    migration_transfer_delay: float = 0.0
 
     # These are populated on first use via _load_curves()
     _curves: Optional[object] = None
