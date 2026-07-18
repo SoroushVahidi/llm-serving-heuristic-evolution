@@ -127,16 +127,31 @@ class GPUState:
     # Eviction (preemption)
     # ------------------------------------------------------------------ #
 
-    def evict(self, request_id: int) -> Optional[InternalRequest]:
-        """Forcibly remove an ACTIVE request and reset it to a clean
+    def evict(self, request_id: int, preserve_progress: bool = False) -> Optional[InternalRequest]:
+        """Forcibly remove an ACTIVE request.
+
+        preserve_progress=False (default, unchanged): reset to a clean
         WAITING-equivalent state (recompute-on-resume semantics: all decode/
         prefill progress is discarded, matching vLLM's recompute preemption
-        mode -- see docs/vllm_faithful_scheduler_reference.md).
+        mode -- see docs/vllm_faithful_scheduler_reference.md). Invoked via
+        an Action's `preempt` field.
+
+        preserve_progress=True (added for distserve_faithful; see
+        docs/distserve_faithful_scheduler_reference.md): swap semantics --
+        tokens_decoded/first_token_time are left untouched, matching
+        DistServe's decode-stage swap-out (progress is not discarded,
+        since by the time a request is decoding its prefill/migration is
+        already a sunk cost not worth re-paying). Invoked via an Action's
+        `swap` field; the caller (Simulator._apply_action) is responsible
+        for re-queuing the returned request into the bridge queue as
+        immediately transfer-ready, not the ordinary waiting queue.
 
         Returns the InternalRequest (for the caller to re-enqueue) or None
         if request_id is not currently active on this GPU. Backward
-        compatible: only invoked when an Action's `preempt` field is
-        non-empty, which no existing policy ever sets.
+        compatible: only invoked when an Action's `preempt`/`swap` field is
+        non-empty, which no existing policy other than distserve_faithful
+        (for `swap`) or vllm_faithful/sarathi_faithful (for `preempt`) ever
+        sets.
         """
         req = self._active.pop(request_id, None)
         if req is None:
@@ -144,9 +159,10 @@ class GPUState:
         req.phase = RequestPhase.WAITING
         req.gpu_id = -1
         req.admission_time = -1.0
-        req.tokens_decoded = 0
-        req.prefill_remaining = 0
-        req.first_token_time = -1.0
+        if not preserve_progress:
+            req.tokens_decoded = 0
+            req.prefill_remaining = 0
+            req.first_token_time = -1.0
         req.transfer_ready_time = -1.0
         return req
 

@@ -279,12 +279,15 @@ class Simulator:
         )
 
     def _apply_action(self, action: Action) -> None:
-        # Preemptions are applied first (matching the pinned vllm_faithful
-        # reference: preemption decisions are made before new admissions from
-        # `waiting` in the same scheduling iteration -- see
-        # docs/vllm_faithful_scheduler_reference.md). No existing policy ever
-        # sets action.preempt, so this is a no-op for all legacy behavior.
+        # Preemptions and swaps are applied first (matching the pinned
+        # vllm_faithful/distserve_faithful references: eviction decisions
+        # are made before new admissions from `waiting`/the bridge queue in
+        # the same scheduling iteration). No existing policy other than
+        # vllm_faithful/sarathi_faithful (preempt) or distserve_faithful
+        # (swap) ever sets these, so this is a no-op for all legacy behavior.
         preempted_ids = self._apply_preemptions(action)
+        swapped_ids = self._apply_swaps(action)
+        evicted_ids = preempted_ids | swapped_ids
 
         admitted_ids = set()
 
@@ -305,14 +308,14 @@ class Simulator:
                         )
                     continue
 
-                if rid in preempted_ids:
-                    # A request cannot be preempted and re-admitted within
-                    # the same step's Action (mirrors the pinned reference's
-                    # own "if seq_group in preempted: break" guard).
+                if rid in evicted_ids:
+                    # A request cannot be preempted/swapped and re-admitted
+                    # within the same step's Action (mirrors the pinned
+                    # reference's own "if seq_group in preempted: break" guard).
                     if self.config.warn_on_invalid_action:
                         warnings.warn(
-                            f"Request {rid} was preempted and admitted in the same "
-                            "action; skipping the admit (it is back in the waiting queue)."
+                            f"Request {rid} was preempted/swapped and admitted in the "
+                            "same action; skipping the admit (it is back in a queue)."
                         )
                     continue
 
@@ -421,6 +424,54 @@ class Simulator:
                 self._waiting_map[rid] = ir
 
         return preempted_ids
+
+    def _apply_swaps(self, action: Action) -> set:
+        """Evict each request named in action.swap WITHOUT discarding
+        progress (see docs/distserve_faithful_scheduler_reference.md),
+        re-queuing it into the bridge queue as immediately transfer-ready
+        (so it is admission-eligible again as soon as the policy chooses,
+        with no additional transfer delay -- it never actually left the
+        decode side's memory pool in the real system this models). Returns
+        the set of request IDs actually swapped. A no-op whenever
+        action.swap is empty -- true for every policy except
+        distserve_faithful."""
+        if not action.swap:
+            return set()
+
+        swapped_ids: set = set()
+        for gpu_id, req_ids in action.swap.items():
+            if gpu_id not in self._gpu_map:
+                if self.config.warn_on_invalid_action:
+                    warnings.warn(
+                        f"Action references unknown gpu_id={gpu_id} in swap; skipped."
+                    )
+                continue
+
+            gpu = self._gpu_map[gpu_id]
+
+            for rid in req_ids:
+                if rid in swapped_ids:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} appears more than once in swap; skipped."
+                        )
+                    continue
+
+                ir = gpu.evict(rid, preserve_progress=True)
+                if ir is None:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Action references request {rid} for swap but it is "
+                            f"not active on gpu_id={gpu_id}; skipped."
+                        )
+                    continue
+
+                swapped_ids.add(rid)
+                ir.transfer_ready_time = self._time  # immediately re-admission-eligible
+                self._migrating.appendleft(ir)
+                self._migrating_map[rid] = ir
+
+        return swapped_ids
 
     def _advance_decode(self) -> List[CompletedRequest]:
         completed: List[CompletedRequest] = []
