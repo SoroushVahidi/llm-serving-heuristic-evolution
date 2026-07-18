@@ -14,6 +14,8 @@ Core design decisions are recorded in:
 - [problem_formulation.md](problem_formulation.md) — mathematical problem statement, constraints, objectives
 - [simulator_design.md](simulator_design.md) — iteration-level simulator design, timing model, step semantics
 - [roadmap.md](roadmap.md) — phase-by-phase research roadmap
+- [research_status.md](research_status.md) — **canonical current-status doc**, updated per phase
+- [experiment_tracking.md](experiment_tracking.md) — how experiment runs/results are tracked and named
 
 ---
 
@@ -30,6 +32,8 @@ Core design decisions are recorded in:
 - [workload_realism.md](workload_realism.md) — synthetic workload realism assessment
 - [data_field_provenance.md](data_field_provenance.md) — which fields are real vs. synthetically augmented
 - [real_trace_replay.md](real_trace_replay.md) — BurstGPT and ShareGPT replay pipeline
+- [dataset_workload_decision.md](dataset_workload_decision.md) — dataset/workload selection decision record
+- [dataset_workload_plan.md](dataset_workload_plan.md) — earlier dataset/workload survey (superseded by the decision doc above)
 
 ---
 
@@ -50,6 +54,9 @@ Core design decisions are recorded in:
 ## 6. Baselines
 
 - [baselines.md](baselines.md) — all 20 registered policies + non-deployable oracle, safe/unsafe labels, provenance table
+- [external_baseline_decision.md](external_baseline_decision.md) — scope decision on which external systems (vLLM, Sarathi-Serve, DistServe, etc.) get simulator-level proxies vs. cite-only treatment
+- [external_baseline_coverage_report.md](external_baseline_coverage_report.md) — earlier survey of external-baseline coverage (superseded in part by the decision doc above)
+- [external_baseline_correctness_audit.md](external_baseline_correctness_audit.md) — per-policy fidelity/correctness audit (algorithm fidelity, oracle-leak checks, safe wording) for the "style" baselines
 
 ---
 
@@ -68,7 +75,9 @@ See [planning_specs.md](planning_specs.md) for a summary.
 Full report: `results/selector_design_spec/selector_design_spec.md`
 
 Design for a supervised classifier that selects the best online scheduling policy
-per workload window (Phase 2A). See [planning_specs.md](planning_specs.md).
+per workload window (Phase 2A). See [planning_specs.md](planning_specs.md) for the
+original design, or [selector.md](selector.md) for the current selector implementation
+and candidate-policy set.
 
 ---
 
@@ -77,7 +86,9 @@ per workload window (Phase 2A). See [planning_specs.md](planning_specs.md).
 Full report: `results/llm_heuristic_dsl_spec/llm_heuristic_dsl_spec.md`
 
 Design for a two-level JSON DSL for LLM-generated scheduling heuristics with a
-recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md).
+recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md) for the
+original design, or [llm_heuristic_dsl.md](llm_heuristic_dsl.md) for the current DSL
+schema/verifier/compiler reference (implemented under `src/llmserveopt/heuristics/`).
 
 ---
 
@@ -178,6 +189,23 @@ Key facts for Phase 2C:
 
 ---
 
-## 16. Future phases
+## 16. Real-serving validation (post-pause, outside the numbered phase sequence)
+
+- [real_llm_latency_model_v2.md](real_llm_latency_model_v2.md) — latency model fit from Cohere/Gemini v2 length-targeted pilots
+- [real_llm_simulator_integration_plan.md](real_llm_simulator_integration_plan.md) — plan for comparing simulator predictions against real-LLM latency
+- [vllm_real_serving_external_baseline_pilot.md](vllm_real_serving_external_baseline_pilot.md) — first real-vLLM-server external-baseline pilot (superseded in part, see below)
+- [vllm_real_serving_scaled_comparison.md](vllm_real_serving_scaled_comparison.md) — scaled real-vLLM comparison with our-method selector wired in (current)
+
+## 17. Phase audit trail
+
+`audits/` contains one detailed audit/summary document per research phase (failure-case
+mining, metric audits, selector-training audits, etc.), referenced from
+[research_status.md](research_status.md) and the phase sections above. Browse the
+directory directly for the full per-phase record; not every file is individually
+indexed here.
+
+---
+
+## 18. Future phases
 
 See [roadmap.md](roadmap.md).

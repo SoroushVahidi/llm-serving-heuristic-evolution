@@ -2,6 +2,12 @@
 
 All scripts are in `scripts/`. Run from the repository root.
 
+**Coverage note:** this file documents the Phase-1.7C-and-earlier data/GPU-calibration
+scripts below. Phase 2A/2B/2C selector, LLM-heuristic-generation, and real-LLM/vLLM
+scripts are not yet individually documented here — see
+[docs/research_status.md](../docs/research_status.md) and the per-phase docs under
+[docs/audits/](../docs/audits/) for which script produced which result.
+
 All scripts support `--help` safely (prints usage, no file writes). Scripts that
 write tracked docs or reports (`inspect_gpu_environment.py`, `update_phase17c_docs.py`)
 also support `--dry-run` to preview output without writing, and accept explicit

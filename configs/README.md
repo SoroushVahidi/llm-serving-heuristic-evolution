@@ -2,6 +2,13 @@
 
 All experiment configs are YAML files. Pass to a runner script with `--config`.
 
+**Coverage note:** this file documents the pre-Phase-2A synthetic/real-trace/GPU-calibration
+config families below. `configs/phase2b*.yaml`, `configs/phase2c*.yaml`, and the
+`selector/`, `heuristics/`, `api_calibration/`, `real_llm_latency/`, and `oracle/`
+subdirectories are not yet individually documented here — see
+[docs/research_status.md](../docs/research_status.md) for which config was used for
+which phase result.
+
 ---
 
 ## Synthetic workload configs (`configs/`)
