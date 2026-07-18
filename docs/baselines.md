@@ -160,6 +160,57 @@ requests each consume 1 token; remainder goes to new prefill admissions.
 
 ---
 
+## Faithful (non-proxy) baselines: `vllm_faithful`
+
+This repository has **three distinct kinds of "vLLM" thing**, and they must
+never be conflated:
+
+| | `vllm_style_token_budget` | `vllm_faithful` | External real-vLLM HTTP harness |
+|---|---|---|---|
+| What it is | Lightweight proxy/inspired heuristic | Faithful independent reimplementation of a pinned vLLM scheduler version | Client-side admission control in front of a REAL running vLLM server |
+| Where | `src/llmserveopt/policies/vllm_style_token_budget.py` | `src/llmserveopt/policies/vllm_faithful.py` | `scripts/run_vllm_external_baseline_comparison.py` |
+| Fidelity claim | "vLLM-inspired" only | Algorithm/memory-semantics fidelity to a **named, pinned commit** | Real system, but vLLM's internal scheduler is a black box |
+| Registered baseline? | Yes (one of the 20) | **No — see below** | N/A (not a simulator policy) |
+
+### `vllm_faithful`
+
+**Manuscript label:** "Faithful independent reimplementation of vLLM's
+original (pre-chunked-prefill) FCFS scheduler and paged-KV block manager"
+
+**Pinned reference:** vLLM commit `67d96c29fba9b72cb4c4edbc26211c208a00ebdd`
+(tag `v0.1.0`), corresponding to Kwon et al., "Efficient Memory Management
+for Large Language Model Serving with PagedAttention," SOSP 2023
+(arXiv:2309.06180). Full source-provenance record, algorithm summary, and
+explicit exclusions: `docs/vllm_faithful_scheduler_reference.md`.
+
+Unlike `vllm_style_token_budget` (a heuristic *inspired by* the token-budget
+idea), `vllm_faithful` reimplements the pinned reference's actual scheduling
+algorithm: three request-group queues (waiting/running/swapped), FCFS
+per-iteration admission and preemption bounded by fixed-size KV blocks with
+a watermark reserve, and recompute-based preemption (discard-and-restart)
+for the lowest-priority running sequence when block capacity runs out.
+
+- **Safe claim:** "Faithful reimplementation of vLLM v0.1.0's FCFS scheduler
+  and paged-KV block manager's scheduling/memory *decisions*."
+- **Unsafe claim:** "Official vLLM code", "exact runtime reproduction", "a
+  full vLLM performance/hardware-timing model", or a claim about vLLM's
+  *current* scheduler (chunked prefill, prefix caching, the v1 engine, etc.
+  postdate this pin and are not represented).
+
+**Not currently a registered baseline.** `vllm_faithful` is fully
+implemented, unit-tested, and directly importable
+(`llmserveopt.policies.vllm_faithful.VLLMFaithfulPolicy`), but is
+deliberately **not** added to `registry.py`'s `BASELINE_NAMES` /
+`SELECTOR_CANDIDATE_NAMES` in the PR that introduced it. Doing so would
+silently change the deployable-policy count (currently 20 — see
+`docs/research_status.md`) and the selector's candidate pool, with real
+downstream effects (selector retraining, evaluation-sweep counts, every doc
+that states "20 deployable policies") that were out of scope for
+introducing this baseline. Promoting it to a selectable/deployable baseline
+is a deliberate follow-up decision for a future PR.
+
+---
+
 ## Dispatch vs. batching
 
 Most policies handle both **dispatch** (which GPU) and **batching** (which requests

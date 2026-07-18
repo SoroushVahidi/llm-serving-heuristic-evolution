@@ -57,6 +57,7 @@ Core design decisions are recorded in:
 - [external_baseline_decision.md](external_baseline_decision.md) — scope decision on which external systems (vLLM, Sarathi-Serve, DistServe, etc.) get simulator-level proxies vs. cite-only treatment
 - [external_baseline_coverage_report.md](external_baseline_coverage_report.md) — earlier survey of external-baseline coverage (superseded in part by the decision doc above)
 - [external_baseline_correctness_audit.md](external_baseline_correctness_audit.md) — per-policy fidelity/correctness audit (algorithm fidelity, oracle-leak checks, safe wording) for the "style" baselines
+- [vllm_faithful_scheduler_reference.md](vllm_faithful_scheduler_reference.md) — pinned-commit source provenance for `vllm_faithful`, the faithful (non-proxy) vLLM v0.1.0 scheduler/KV-block reimplementation
 
 ---
 
