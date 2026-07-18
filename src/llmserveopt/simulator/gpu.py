@@ -104,6 +104,32 @@ class GPUState:
         return True
 
     # ------------------------------------------------------------------ #
+    # Eviction (preemption)
+    # ------------------------------------------------------------------ #
+
+    def evict(self, request_id: int) -> Optional[InternalRequest]:
+        """Forcibly remove an ACTIVE request and reset it to a clean
+        WAITING-equivalent state (recompute-on-resume semantics: all decode/
+        prefill progress is discarded, matching vLLM's recompute preemption
+        mode -- see docs/vllm_faithful_scheduler_reference.md).
+
+        Returns the InternalRequest (for the caller to re-enqueue) or None
+        if request_id is not currently active on this GPU. Backward
+        compatible: only invoked when an Action's `preempt` field is
+        non-empty, which no existing policy ever sets.
+        """
+        req = self._active.pop(request_id, None)
+        if req is None:
+            return None
+        req.phase = RequestPhase.WAITING
+        req.gpu_id = -1
+        req.admission_time = -1.0
+        req.tokens_decoded = 0
+        req.prefill_remaining = 0
+        req.first_token_time = -1.0
+        return req
+
+    # ------------------------------------------------------------------ #
     # Step
     # ------------------------------------------------------------------ #
 

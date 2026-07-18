@@ -242,6 +242,13 @@ class Simulator:
         )
 
     def _apply_action(self, action: Action) -> None:
+        # Preemptions are applied first (matching the pinned vllm_faithful
+        # reference: preemption decisions are made before new admissions from
+        # `waiting` in the same scheduling iteration -- see
+        # docs/vllm_faithful_scheduler_reference.md). No existing policy ever
+        # sets action.preempt, so this is a no-op for all legacy behavior.
+        preempted_ids = self._apply_preemptions(action)
+
         admitted_ids = set()
 
         for gpu_id, req_ids in action.admit.items():
@@ -258,6 +265,17 @@ class Simulator:
                     if self.config.warn_on_invalid_action:
                         warnings.warn(
                             f"Request {rid} appears in multiple GPUs in the same action; skipped."
+                        )
+                    continue
+
+                if rid in preempted_ids:
+                    # A request cannot be preempted and re-admitted within
+                    # the same step's Action (mirrors the pinned reference's
+                    # own "if seq_group in preempted: break" guard).
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} was preempted and admitted in the same "
+                            "action; skipping the admit (it is back in the waiting queue)."
                         )
                     continue
 
@@ -293,6 +311,54 @@ class Simulator:
             self._waiting = deque(
                 ir for ir in self._waiting if ir.request_id not in admitted_ids
             )
+
+    def _apply_preemptions(self, action: Action) -> set:
+        """Evict each request named in action.preempt back to the FRONT of
+        the waiting queue, discarding its progress (recompute-on-resume;
+        see docs/vllm_faithful_scheduler_reference.md). Returns the set of
+        request IDs actually preempted. A no-op whenever action.preempt is
+        empty -- true for every policy except vllm_faithful."""
+        if not action.preempt:
+            return set()
+
+        preempted_ids: set = set()
+        for gpu_id, req_ids in action.preempt.items():
+            if gpu_id not in self._gpu_map:
+                if self.config.warn_on_invalid_action:
+                    warnings.warn(
+                        f"Action references unknown gpu_id={gpu_id} in preempt; skipped."
+                    )
+                continue
+
+            gpu = self._gpu_map[gpu_id]
+
+            for rid in req_ids:
+                if rid in preempted_ids:
+                    # Prevent double-preemption (same request listed twice)
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Request {rid} appears more than once in preempt; skipped."
+                        )
+                    continue
+
+                ir = gpu.evict(rid)
+                if ir is None:
+                    if self.config.warn_on_invalid_action:
+                        warnings.warn(
+                            f"Action references request {rid} for preemption but it is "
+                            f"not active on gpu_id={gpu_id}; skipped."
+                        )
+                    continue
+
+                preempted_ids.add(rid)
+                # Recompute-preempted requests re-enter at the FRONT of the
+                # waiting queue, in the order the policy listed them (matches
+                # the pinned reference's own `waiting.insert(0, seq_group)`
+                # called once per victim).
+                self._waiting.appendleft(ir)
+                self._waiting_map[rid] = ir
+
+        return preempted_ids
 
     def _advance_decode(self) -> List[CompletedRequest]:
         completed: List[CompletedRequest] = []
