@@ -14,7 +14,6 @@ import json
 import subprocess
 import sys
 import threading
-import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
@@ -1050,3 +1049,457 @@ def test_no_never_admitted_when_selector_runs_supported_action_space(tmp_path):
     rows = [json.loads(l) for l in (out_dir / "requests.jsonl").read_text().strip().splitlines()]
     never_admitted = [r for r in rows if r.get("error_type") == "PolicyNeverAdmitted"]
     assert never_admitted == [], "no request may be dropped for a missing adapter post-preflight"
+
+
+# ---------------------------------------------------------------------------
+# Loss-case reporting (Part C): every (request, baseline) pair where the
+# selector's real execution lost to a baseline's real execution.
+# ---------------------------------------------------------------------------
+
+def _base_row(**overrides) -> dict:
+    row = {
+        "policy": "selector", "request_id": 0, "prompt_bucket": "short",
+        "target_output_tokens": 64, "concurrency_level": 1, "class_id": "medium",
+        "priority": 1.0, "arrival_time_s": 0.0, "admission_time_s": 0.0,
+        "completion_time_s": 0.5, "queuing_delay_s": 0.0, "ttft_seconds": 0.05,
+        "server_request_latency_seconds": 0.5, "total_wall_time_seconds": 0.5,
+        "slo_deadline_s": 1.0, "slo_violated": False, "output_tokens": 64.0,
+        "status": "success", "error_type": None, "error_message": None,
+        "selector_chosen_policy": None, "regime": "steady_moderate",
+    }
+    row.update(overrides)
+    return row
+
+
+def _one_row_plan(**overrides) -> list:
+    from run_vllm_external_baseline_comparison import PlanRow  # noqa: PLC0415
+    defaults = dict(
+        request_id=0, prompt_bucket="short", target_output_tokens=64, concurrency_level=1,
+        request_index=0, intended_prompt_tokens=100, priority=1.0, slo_slack_seconds=1.0,
+        class_id="medium", regime="steady_moderate", arrival_time=0.0, prompt_text="hi",
+    )
+    defaults.update(overrides)
+    return [PlanRow(**defaults)]
+
+
+def test_loss_case_recorded_when_selector_misses_slo_and_baseline_meets(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=True,
+                   selector_chosen_policy="scorpio_style_slo_guard"),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    loss = loss_rows[0]
+    assert loss["request_id"] == 0
+    assert loss["baseline"] == "fifo"
+    assert loss["selector_slo_met"] is False
+    assert loss["baseline_slo_met"] is True
+    assert loss["selector_chosen_subpolicy"] == "scorpio_style_slo_guard"
+    assert loss["delta_wg_contribution"] < 0
+
+
+def test_loss_case_recorded_when_selector_declines_and_baseline_succeeds(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(
+            policy="selector", status="dropped", slo_violated=True, output_tokens=None,
+            ttft_seconds=None, server_request_latency_seconds=None, completion_time_s=None,
+            admission_time_s=None, error_type="PolicyDeclinedAdmission",
+            selector_chosen_policy="scorpio_style_slo_guard",
+        ),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    loss = loss_rows[0]
+    assert loss["loss_reason_category"] == "policy_declined_admission"
+    assert loss["selector_status"] == "dropped"
+    assert loss["baseline_status"] == "success"
+
+
+def test_no_loss_case_when_selector_ties_or_beats_baseline(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=False),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert loss_rows == []
+
+
+def test_loss_case_files_created_with_headers_when_zero_losses(tmp_path):
+    mod = _load_module()
+    mod.write_loss_case_outputs(tmp_path, [])
+    assert (tmp_path / "loss_cases.jsonl").exists()
+    assert (tmp_path / "loss_cases.jsonl").read_text() == ""
+    csv_text = (tmp_path / "loss_cases.csv").read_text()
+    assert "request_id" in csv_text and "loss_reason_category" in csv_text
+    summary = (tmp_path / "loss_case_summary.md").read_text()
+    assert "Zero loss cases" in summary
+    examples = (tmp_path / "loss_case_examples.md").read_text()
+    assert "No loss cases" in examples
+
+
+def test_loss_case_summary_aggregates_by_regime_baseline_subpolicy(tmp_path):
+    mod = _load_module()
+    plan = (
+        _one_row_plan(request_id=0, regime="steady_moderate")
+        + _one_row_plan(request_id=1, regime="bursty_tight")
+    )
+    all_rows = [
+        _base_row(policy="selector", request_id=0, regime="steady_moderate", status="success",
+                   slo_violated=True, selector_chosen_policy="fifo"),
+        _base_row(policy="fifo", request_id=0, regime="steady_moderate", status="success", slo_violated=False),
+        _base_row(policy="selector", request_id=1, regime="bursty_tight", status="success",
+                   slo_violated=True, selector_chosen_policy="edf"),
+        _base_row(policy="edf", request_id=1, regime="bursty_tight", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo", "edf"))
+    mod.write_loss_case_outputs(tmp_path, loss_rows)
+    summary = (tmp_path / "loss_case_summary.md").read_text()
+    assert "Losses by baseline" in summary
+    assert "Losses by regime" in summary
+    assert "Losses by selector-chosen sub-policy" in summary
+    assert "steady_moderate" in summary and "bursty_tight" in summary
+
+
+def test_loss_case_report_end_to_end_writes_all_files(tmp_path):
+    """--loss-case-report on an end-to-end mock run must produce all four
+    artifacts and record the count in summary.json, regardless of whether
+    any losses were found (a run with zero losses still writes headers)."""
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,edf,selector",
+        "--selector-artifact", str(artifact_path),
+        "--prompt-buckets", "short,medium", "--target-output-tokens-list", "64,128",
+        "--concurrency-list", "1,2", "--requests-per-cell", "2",
+        "--loss-case-report",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    for fname in ("loss_cases.jsonl", "loss_cases.csv", "loss_case_summary.md", "loss_case_examples.md"):
+        assert (out_dir / fname).exists(), f"missing {fname}"
+    summary = json.loads((out_dir / "summary.json").read_text())
+    assert "loss_case_n_total" in summary
+
+
+def test_loss_case_report_noop_without_loss_case_flag(tmp_path):
+    """Without --loss-case-report, loss-case files must not be produced --
+    matches the existing no-op convention for --decision-divergence-report."""
+    mod = _load_module()
+    artifact_path = _write_valid_selector_artifact(tmp_path)
+    out_dir = tmp_path / "run"
+    result = mod.main([
+        "--mock", "--policies", "fifo,selector",
+        "--selector-artifact", str(artifact_path),
+        "--prompt-buckets", "short", "--target-output-tokens-list", "64",
+        "--concurrency-list", "1", "--requests-per-cell", "2",
+        "--output-dir", str(out_dir),
+    ])
+    assert result == 0
+    assert not (out_dir / "loss_cases.jsonl").exists()
+
+
+# ---------------------------------------------------------------------------
+# Loss-case reporting: _classify_loss_reason branch coverage.
+#
+# Each test isolates exactly one branch of the priority-ordered taxonomy by
+# setting sel_row/base_row so earlier (higher-priority) branches cannot
+# match. Field values chosen to only just clear (or stay under) each
+# branch's threshold so the test also pins the threshold itself.
+# ---------------------------------------------------------------------------
+
+def test_loss_reason_backend_artifact_for_never_admitted(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="dropped", slo_violated=True, output_tokens=None,
+                   ttft_seconds=None, server_request_latency_seconds=None, completion_time_s=None,
+                   admission_time_s=None, error_type="PolicyNeverAdmitted"),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "backend/server artifact"
+
+
+def test_loss_reason_backend_artifact_for_error_status(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="error", slo_violated=True, output_tokens=None,
+                   ttft_seconds=None, server_request_latency_seconds=None, completion_time_s=None,
+                   error_type="ConnectionError"),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "backend/server artifact"
+
+
+def test_loss_reason_timeout(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="timeout", slo_violated=None, output_tokens=None,
+                   ttft_seconds=None, server_request_latency_seconds=None, completion_time_s=None,
+                   error_type="TimeoutError"),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "timeout"
+
+
+def test_loss_reason_tight_slo(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=True,
+                   class_id="tight", slo_deadline_s=0.3, priority=1.0,
+                   output_tokens=64.0, target_output_tokens=64),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "tight SLO"
+
+
+def test_loss_reason_high_priority(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=True,
+                   class_id="medium", slo_deadline_s=1.0, priority=3.0,
+                   output_tokens=64.0, target_output_tokens=64),
+        _base_row(policy="fifo", status="success", slo_violated=False),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "high-priority request missed"
+
+
+def test_loss_reason_long_output_underestimation(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan(target_output_tokens=64)
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=True,
+                   class_id="medium", slo_deadline_s=1.0, priority=1.0,
+                   output_tokens=100.0, target_output_tokens=64),
+        _base_row(policy="fifo", status="success", slo_violated=False, target_output_tokens=64),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "long-output underestimation"
+
+
+def test_loss_reason_overload(tmp_path):
+    """Overload requires the lost request's own concurrency_level to equal
+    the plan-wide max concurrency AND more requests queued in its cell than
+    that concurrency budget -- built here via a 3-request plan cell at
+    concurrency=2 (queue_size=3 > max_concurrency=2)."""
+    mod = _load_module()
+    plan = (
+        _one_row_plan(request_id=0, concurrency_level=2)
+        + _one_row_plan(request_id=1, concurrency_level=2)
+        + _one_row_plan(request_id=2, concurrency_level=2)
+    )
+    all_rows = [
+        _base_row(policy="selector", request_id=0, status="success", slo_violated=True,
+                   class_id="medium", slo_deadline_s=1.0, priority=1.0,
+                   output_tokens=64.0, target_output_tokens=64, concurrency_level=2),
+        _base_row(policy="fifo", request_id=0, status="success", slo_violated=False, concurrency_level=2),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "overload"
+
+
+def test_loss_reason_different_ordering(tmp_path):
+    """A single-request cell (queue_size=1, concurrency=1) cannot be
+    'overload'; with admission times present on both sides it falls through
+    to 'different ordering'."""
+    mod = _load_module()
+    plan = _one_row_plan(concurrency_level=1)
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=True,
+                   class_id="medium", slo_deadline_s=1.0, priority=1.0,
+                   output_tokens=64.0, target_output_tokens=64, concurrency_level=1,
+                   admission_time_s=0.2),
+        _base_row(policy="fifo", status="success", slo_violated=False, concurrency_level=1,
+                   admission_time_s=0.0),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "different ordering"
+
+
+def test_loss_reason_unknown_fallback(tmp_path):
+    """Same as 'different ordering' but with the selector's admission_time_s
+    missing -- no branch matches, so the taxonomy must fall back to
+    'unknown' rather than mis-labeling."""
+    mod = _load_module()
+    plan = _one_row_plan(concurrency_level=1)
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=True,
+                   class_id="medium", slo_deadline_s=1.0, priority=1.0,
+                   output_tokens=64.0, target_output_tokens=64, concurrency_level=1,
+                   admission_time_s=None),
+        _base_row(policy="fifo", status="success", slo_violated=False, concurrency_level=1,
+                   admission_time_s=0.0),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    assert loss_rows[0]["loss_reason_category"] == "unknown"
+
+
+# ---------------------------------------------------------------------------
+# Loss-case reporting: latency-only / TTFT-only loss triggers.
+# Both sides meet SLO with identical weighted-goodput contribution, so the
+# ONLY way `is_loss` can be True is the latency or TTFT regression term.
+# ---------------------------------------------------------------------------
+
+def test_latency_only_loss_detected_when_slo_and_wg_tie(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=2.0, ttft_seconds=0.05),
+        _base_row(policy="fifo", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=1.0, ttft_seconds=0.05),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    loss = loss_rows[0]
+    assert loss["selector_slo_met"] is True and loss["baseline_slo_met"] is True
+    assert loss["delta_wg_contribution"] == 0.0
+    assert loss["delta_latency"] == pytest.approx(1.0)
+
+
+def test_latency_loss_below_threshold_is_not_a_loss(tmp_path):
+    """(sel_lat - base_lat) must exceed max(0.5, 0.3*base_lat); a smaller
+    gap must not be reported as a loss."""
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=1.2, ttft_seconds=0.05),
+        _base_row(policy="fifo", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=1.0, ttft_seconds=0.05),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert loss_rows == []
+
+
+def test_ttft_only_loss_detected_when_slo_and_wg_tie(tmp_path):
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=0.5, ttft_seconds=0.5),
+        _base_row(policy="fifo", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=0.5, ttft_seconds=0.05),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    loss = loss_rows[0]
+    assert loss["delta_wg_contribution"] == 0.0
+    assert loss["delta_latency"] == pytest.approx(0.0)
+    assert loss["delta_ttft"] == pytest.approx(0.45)
+
+
+def test_ttft_loss_below_threshold_is_not_a_loss(tmp_path):
+    """(sel_ttft - base_ttft) must exceed max(0.2, 0.3*base_ttft); a smaller
+    gap must not be reported as a loss."""
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=0.5, ttft_seconds=0.15),
+        _base_row(policy="fifo", status="success", slo_violated=False, priority=1.0,
+                   server_request_latency_seconds=0.5, ttft_seconds=0.05),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert loss_rows == []
+
+
+# ---------------------------------------------------------------------------
+# Loss-case reporting: candidate-list and example-table truncation.
+# ---------------------------------------------------------------------------
+
+def test_candidate_list_truncated_after_15_with_more_suffix(tmp_path):
+    """A cell with 20 planned requests must list at most 15 'other'
+    candidates in candidate_priorities/etc., with a '(+4 more)' suffix for
+    the remaining 4 (20 total - 1 self - 15 shown = 4)."""
+    mod = _load_module()
+    plan = []
+    for i in range(20):
+        plan += _one_row_plan(request_id=i, concurrency_level=1, priority=1.0)
+    all_rows = [
+        _base_row(policy="selector", request_id=0, status="success", slo_violated=True,
+                   priority=1.0, concurrency_level=1),
+        _base_row(policy="fifo", request_id=0, status="success", slo_violated=False, concurrency_level=1),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    candidates = loss_rows[0]["candidate_priorities"]
+    assert candidates.endswith("(+4 more)")
+    shown = candidates[: -len(" (+4 more)")]
+    assert len(shown.split(";")) == 15
+
+
+def test_write_loss_case_outputs_truncates_examples_to_20(tmp_path):
+    """25 real loss cases must produce exactly 20 rows in
+    loss_case_examples.md (the worst 20 by delta_wg_contribution), with the
+    '20 of 25' framing line."""
+    mod = _load_module()
+    plan = []
+    all_rows = []
+    for i in range(25):
+        plan += _one_row_plan(request_id=i, regime="steady_moderate")
+        all_rows.append(_base_row(policy="selector", request_id=i, status="success", slo_violated=True))
+        all_rows.append(_base_row(policy="fifo", request_id=i, status="success", slo_violated=False))
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 25
+    mod.write_loss_case_outputs(tmp_path, loss_rows)
+    examples = (tmp_path / "loss_case_examples.md").read_text()
+    assert "20 of 25" in examples
+    table_rows = [l for l in examples.splitlines() if l.startswith("| ") and not l.startswith("| Request")]
+    table_rows = [l for l in table_rows if not set(l.replace("|", "").strip()) <= {"-"}]
+    assert len(table_rows) == 20
+
+
+# ---------------------------------------------------------------------------
+# Loss-case reporting: NaN sanitization on the pandas round-trip.
+# ---------------------------------------------------------------------------
+
+def test_nan_sanitization_preserves_none_not_float_nan(tmp_path):
+    """A dropped request has ttft_seconds=None while other rows in the same
+    DataFrame column are floats; pandas silently upgrades that None to
+    float('nan') on the object-column round-trip. compute_loss_cases must
+    restore it to a real None so json.dumps never emits an invalid literal
+    NaN token."""
+    mod = _load_module()
+    plan = _one_row_plan()
+    all_rows = [
+        _base_row(policy="selector", status="dropped", slo_violated=True, output_tokens=None,
+                   ttft_seconds=None, server_request_latency_seconds=None, completion_time_s=None,
+                   admission_time_s=None, error_type="PolicyDeclinedAdmission"),
+        _base_row(policy="fifo", status="success", slo_violated=False, ttft_seconds=0.05),
+    ]
+    loss_rows = mod.compute_loss_cases(all_rows, plan, {"model": "m"}, tmp_path, baselines=("fifo",))
+    assert len(loss_rows) == 1
+    loss = loss_rows[0]
+    assert loss["selector_ttft"] is None
+    assert loss["delta_ttft"] is None
+    # Round-trip through json: None must serialize as `null`, never a bare
+    # `NaN` token (which json.loads would reject in strict/interop parsers).
+    reloaded = json.loads(json.dumps(loss))
+    assert reloaded["selector_ttft"] is None

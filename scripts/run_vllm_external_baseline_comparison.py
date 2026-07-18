@@ -1112,6 +1112,278 @@ def write_decision_divergence_outputs(
     (out_dir / "selector_vs_baselines_examples.md").write_text("\n".join(lines) + "\n")
 
 
+LOSS_CASE_COLUMNS = (
+    "experiment_id", "backend", "model", "regime", "prompt_bucket", "target_output_tokens",
+    "concurrency_level", "request_id", "arrival_time", "slo_deadline", "priority",
+    "predicted_output_tokens", "estimated_prompt_tokens",
+    "actual_output_tokens_selector", "actual_output_tokens_baseline",
+    "selector_chosen_subpolicy", "baseline",
+    "selector_decision_rank", "baseline_decision_rank",
+    "selector_completion_time", "baseline_completion_time",
+    "selector_ttft", "baseline_ttft",
+    "selector_provider_latency", "baseline_provider_latency",
+    "selector_slo_met", "baseline_slo_met",
+    "selector_wg_contribution", "baseline_wg_contribution",
+    "delta_latency", "delta_ttft", "delta_wg_contribution",
+    "loss_reason_category",
+    "queue_size", "in_flight_concurrency_budget",
+    "candidate_priorities", "candidate_deadline_slack_s", "candidate_predicted_output_tokens",
+    "selector_status", "baseline_status", "selector_error_type", "baseline_error_type",
+    "diagnostic_note",
+)
+
+
+def _wg_contribution(row: Dict[str, Any]) -> float:
+    """Same convention as compute_bootstrap_ci's _wg_for_ids: this single
+    request's contribution to the arrival-normalized-WG numerator (0 unless
+    it completed and met its SLO)."""
+    w = row["priority"] if row["priority"] > 0 else 1.0
+    if row["status"] == "success" and row["slo_violated"] is False:
+        return w
+    return 0.0
+
+
+def _classify_loss_reason(
+    sel_row: Dict[str, Any], base_row: Dict[str, Any], *, queue_size: int, max_concurrency: int,
+) -> str:
+    """Heuristic classification into the fixed loss-reason taxonomy required
+    by the loss-case report. This is a deterministic best-effort label from
+    the fields the harness records, NOT a causal analysis -- see
+    diagnostic_note on each row and loss_case_summary.md for the caveat.
+    Checked in priority order so the first applicable, most-specific reason
+    wins (e.g. an admission decline is reported as such even if the request
+    also happened to be high priority)."""
+    if sel_row["status"] == "dropped" and sel_row.get("error_type") == "PolicyDeclinedAdmission":
+        return "policy_declined_admission"
+    if sel_row["status"] == "dropped" and sel_row.get("error_type") == "PolicyNeverAdmitted":
+        return "backend/server artifact"
+    if sel_row["status"] == "error":
+        return "backend/server artifact"
+    if sel_row["status"] == "timeout":
+        return "timeout"
+    if sel_row.get("class_id") == "tight" and (sel_row.get("slo_deadline_s") or 0.0) <= 0.3:
+        return "tight SLO"
+    if (sel_row.get("priority") or 0.0) >= 3.0:
+        return "high-priority request missed"
+    actual = sel_row.get("output_tokens")
+    target = sel_row.get("target_output_tokens")
+    if actual is not None and target and actual > 1.2 * target:
+        return "long-output underestimation"
+    if sel_row.get("concurrency_level") == max_concurrency and queue_size > max_concurrency:
+        return "overload"
+    if sel_row.get("admission_time_s") is not None and base_row.get("admission_time_s") is not None:
+        return "different ordering"
+    return "unknown"
+
+
+def compute_loss_cases(
+    all_rows: List[Dict[str, Any]], plan: List["PlanRow"], cfg: Dict[str, Any], out_dir: Path,
+    selector_policy: str = "selector", baselines: Tuple[str, ...] = KENDALL_TAU_BASELINES,
+) -> List[Dict[str, Any]]:
+    """Per-request, per-baseline loss-case detection: a "loss" is any request
+    where the selector's REAL outcome (over the identical plan, real vLLM
+    execution) is worse than a baseline's REAL outcome on the same request,
+    by any of: SLO met-vs-missed, weighted-goodput contribution, or
+    substantially worse latency/TTFT. See LOSS_CASE_COLUMNS for the recorded
+    fields and _classify_loss_reason for the (heuristic) reason taxonomy."""
+    if selector_policy not in {r["policy"] for r in all_rows}:
+        return []
+
+    plan_by_id = {row.request_id: row for row in plan}
+    cell_cols = ["regime", "prompt_bucket", "target_output_tokens", "concurrency_level"]
+    plan_by_cell: Dict[Tuple[str, str, int, int], List["PlanRow"]] = {}
+    for row in plan:
+        plan_by_cell.setdefault(
+            (row.regime, row.prompt_bucket, row.target_output_tokens, row.concurrency_level), []
+        ).append(row)
+    max_concurrency = max((row.concurrency_level for row in plan), default=1)
+
+    def _sanitize_nan(record: Dict[str, Any]) -> Dict[str, Any]:
+        # pandas silently turns None into float('nan') in mixed-type object
+        # columns on the DataFrame round-trip below; json.dumps would then
+        # emit a literal `NaN` token, which is not valid JSON. Restore None.
+        return {k: (None if isinstance(v, float) and v != v else v) for k, v in record.items()}
+
+    import pandas as pd
+    df = pd.DataFrame(all_rows)
+    loss_rows: List[Dict[str, Any]] = []
+    experiment_id = out_dir.name
+
+    for cell_keys, group in df.groupby(cell_cols):
+        cell_keys = cell_keys if isinstance(cell_keys, tuple) else (cell_keys,)
+        regime, bucket, target, concurrency = cell_keys
+        cell_plan = plan_by_cell.get((regime, bucket, target, concurrency), [])
+        queue_size = len(cell_plan)
+        sel = group[group["policy"] == selector_policy].sort_values("admission_time_s", na_position="last")
+        if sel.empty:
+            continue
+        sel_by_id = {row["request_id"]: _sanitize_nan(row) for row in sel.to_dict("records")}
+        sel_rank = {rid: i for i, rid in enumerate(sel_by_id)}
+        for baseline in baselines:
+            base = group[group["policy"] == baseline].sort_values("admission_time_s", na_position="last")
+            if base.empty:
+                continue
+            base_by_id = {row["request_id"]: _sanitize_nan(row) for row in base.to_dict("records")}
+            base_rank = {rid: i for i, rid in enumerate(base_by_id)}
+            for rid in sorted(set(sel_by_id) & set(base_by_id)):
+                sel_row, base_row = sel_by_id[rid], base_by_id[rid]
+                sel_met = sel_row["status"] == "success" and sel_row["slo_violated"] is False
+                base_met = base_row["status"] == "success" and base_row["slo_violated"] is False
+                sel_contrib = _wg_contribution(sel_row)
+                base_contrib = _wg_contribution(base_row)
+                sel_lat, base_lat = sel_row.get("server_request_latency_seconds"), base_row.get("server_request_latency_seconds")
+                sel_ttft, base_ttft = sel_row.get("ttft_seconds"), base_row.get("ttft_seconds")
+                latency_loss = (
+                    sel_lat is not None and base_lat is not None
+                    and (sel_lat - base_lat) > max(0.5, 0.3 * base_lat)
+                )
+                ttft_loss = (
+                    sel_ttft is not None and base_ttft is not None
+                    and (sel_ttft - base_ttft) > max(0.2, 0.3 * base_ttft)
+                )
+                is_loss = (base_met and not sel_met) or (sel_contrib < base_contrib) or latency_loss or ttft_loss
+                if not is_loss:
+                    continue
+
+                plan_row = plan_by_id.get(rid)
+                others = [r for r in cell_plan if r.request_id != rid][:15]
+                truncated = len(cell_plan) - 1 - len(others)
+                candidate_note = f" (+{truncated} more)" if truncated > 0 else ""
+
+                reason = _classify_loss_reason(
+                    sel_row, base_row, queue_size=queue_size, max_concurrency=max_concurrency,
+                )
+                notes = []
+                if base_met and not sel_met:
+                    notes.append("selector missed SLO while baseline met it")
+                if sel_contrib < base_contrib:
+                    notes.append("selector had lower weighted-goodput contribution")
+                if latency_loss:
+                    notes.append("selector provider latency substantially worse (>30% or >0.5s)")
+                if ttft_loss:
+                    notes.append("selector TTFT substantially worse (>30% or >0.2s)")
+
+                loss_rows.append({
+                    "experiment_id": experiment_id, "backend": "vllm", "model": cfg.get("model"),
+                    "regime": regime, "prompt_bucket": bucket, "target_output_tokens": target,
+                    "concurrency_level": concurrency, "request_id": rid,
+                    "arrival_time": sel_row.get("arrival_time_s"),
+                    "slo_deadline": (
+                        (sel_row["arrival_time_s"] + sel_row["slo_deadline_s"])
+                        if sel_row.get("arrival_time_s") is not None and sel_row.get("slo_deadline_s") is not None
+                        else None
+                    ),
+                    "priority": sel_row.get("priority"),
+                    "predicted_output_tokens": sel_row.get("target_output_tokens"),
+                    "estimated_prompt_tokens": plan_row.intended_prompt_tokens if plan_row else None,
+                    "actual_output_tokens_selector": sel_row.get("output_tokens"),
+                    "actual_output_tokens_baseline": base_row.get("output_tokens"),
+                    "selector_chosen_subpolicy": sel_row.get("selector_chosen_policy"),
+                    "baseline": baseline,
+                    "selector_decision_rank": sel_rank.get(rid),
+                    "baseline_decision_rank": base_rank.get(rid),
+                    "selector_completion_time": sel_row.get("completion_time_s"),
+                    "baseline_completion_time": base_row.get("completion_time_s"),
+                    "selector_ttft": sel_ttft, "baseline_ttft": base_ttft,
+                    "selector_provider_latency": sel_lat, "baseline_provider_latency": base_lat,
+                    "selector_slo_met": sel_met, "baseline_slo_met": base_met,
+                    "selector_wg_contribution": sel_contrib, "baseline_wg_contribution": base_contrib,
+                    "delta_latency": (sel_lat - base_lat) if (sel_lat is not None and base_lat is not None) else None,
+                    "delta_ttft": (sel_ttft - base_ttft) if (sel_ttft is not None and base_ttft is not None) else None,
+                    "delta_wg_contribution": sel_contrib - base_contrib,
+                    "loss_reason_category": reason,
+                    "queue_size": queue_size, "in_flight_concurrency_budget": concurrency,
+                    "candidate_priorities": ";".join(str(r.priority) for r in others) + candidate_note,
+                    "candidate_deadline_slack_s": ";".join(str(r.slo_slack_seconds) for r in others) + candidate_note,
+                    "candidate_predicted_output_tokens": ";".join(str(r.target_output_tokens) for r in others) + candidate_note,
+                    "selector_status": sel_row["status"], "baseline_status": base_row["status"],
+                    "selector_error_type": sel_row.get("error_type"), "baseline_error_type": base_row.get("error_type"),
+                    "diagnostic_note": "; ".join(notes) if notes else "unclassified loss",
+                })
+    return loss_rows
+
+
+def write_loss_case_outputs(out_dir: Path, loss_rows: List[Dict[str, Any]]) -> None:
+    import pandas as pd
+
+    with open(out_dir / "loss_cases.jsonl", "w") as f:
+        for row in loss_rows:
+            f.write(json.dumps(row) + "\n")
+
+    df = pd.DataFrame(loss_rows, columns=list(LOSS_CASE_COLUMNS))
+    df.to_csv(out_dir / "loss_cases.csv", index=False)
+
+    summary_lines = ["# Loss-Case Summary — Selector vs. Fixed Baselines", ""]
+    if not loss_rows:
+        summary_lines += [
+            "**Zero loss cases found.** For every (request, baseline) pair "
+            "compared, the selector's real execution either matched or beat "
+            "the baseline's real execution on SLO outcome, weighted-goodput "
+            "contribution, and latency/TTFT (see compute_loss_cases' criteria "
+            "in scripts/run_vllm_external_baseline_comparison.py). "
+            "`loss_cases.jsonl` and `loss_cases.csv` are present with headers "
+            "only, as required, even though empty.",
+        ]
+        (out_dir / "loss_case_summary.md").write_text("\n".join(summary_lines) + "\n")
+        (out_dir / "loss_case_examples.md").write_text(
+            "# Loss-Case Examples — Selector vs. Fixed Baselines\n\n"
+            "No loss cases in this run; see loss_case_summary.md.\n"
+        )
+        return
+
+    n = len(loss_rows)
+    summary_lines.append(f"**Total loss cases:** {n} (request x baseline pairs where the selector lost)")
+    summary_lines.append("")
+
+    def _counts_table(col: str, title: str) -> List[str]:
+        counts = df[col].value_counts().sort_values(ascending=False)
+        lines = [f"## Losses by {title}", "", "| Value | Count |", "|---|---|"]
+        for val, cnt in counts.items():
+            lines.append(f"| {val} | {cnt} |")
+        lines.append("")
+        return lines
+
+    for col, title in [
+        ("baseline", "baseline"), ("regime", "regime"), ("prompt_bucket", "prompt bucket"),
+        ("target_output_tokens", "target output length"), ("concurrency_level", "concurrency"),
+        ("priority", "priority"), ("selector_chosen_subpolicy", "selector-chosen sub-policy"),
+        ("loss_reason_category", "reason category"),
+    ]:
+        summary_lines += _counts_table(col, title)
+
+    top_reasons = df["loss_reason_category"].value_counts().head(5)
+    summary_lines += ["## Top 5 recurring loss reasons", ""]
+    for reason, cnt in top_reasons.items():
+        summary_lines.append(f"- **{reason}**: {cnt} cases ({100 * cnt / n:.1f}%)")
+    summary_lines.append("")
+    summary_lines.append(
+        "Reason categories are assigned by a deterministic heuristic over "
+        "recorded fields (see `_classify_loss_reason`), not a causal analysis; "
+        "treat as a triage label, not ground truth."
+    )
+    (out_dir / "loss_case_summary.md").write_text("\n".join(summary_lines) + "\n")
+
+    examples_n = min(20, n)
+    examples = df.sort_values("delta_wg_contribution").head(examples_n)
+    ex_lines = [
+        "# Loss-Case Examples — Selector vs. Fixed Baselines", "",
+        f"{examples_n} of {n} representative loss cases (sorted by most-negative "
+        "delta weighted-goodput contribution, i.e. worst losses first).", "",
+        "| Request | Baseline | Regime | Bucket | Target tok | Concurrency | "
+        "Reason | Selector SLO met | Baseline SLO met | Delta WG contrib | Delta latency (s) |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
+    ]
+    for _, row in examples.iterrows():
+        delta_lat = "n/a" if row["delta_latency"] is None else f"{row['delta_latency']:.3f}"
+        ex_lines.append(
+            f"| {row['request_id']} | {row['baseline']} | {row['regime']} | {row['prompt_bucket']} | "
+            f"{row['target_output_tokens']} | {row['concurrency_level']} | {row['loss_reason_category']} | "
+            f"{row['selector_slo_met']} | {row['baseline_slo_met']} | {row['delta_wg_contribution']:.3f} | "
+            f"{delta_lat} |"
+        )
+    (out_dir / "loss_case_examples.md").write_text("\n".join(ex_lines) + "\n")
+
+
 def compute_bootstrap_ci(
     all_rows: List[Dict[str, Any]], policies: List[str], selector_policy: str = "selector",
     n_boot: int = 2000, seed: int = 20260703,
@@ -1183,6 +1455,7 @@ def compute_bootstrap_ci(
 def write_outputs(
     out_dir: Path, all_rows: List[Dict[str, Any]], per_policy_wall_clock: Dict[str, float], cfg: Dict[str, Any],
     *, decision_divergence_report: bool = False, bootstrap_ci: bool = False,
+    loss_case_report: bool = False, plan: Optional[List["PlanRow"]] = None,
 ) -> Dict[str, Any]:
     import pandas as pd
 
@@ -1271,6 +1544,14 @@ def write_outputs(
         pd.DataFrame(ci_rows).to_csv(out_dir / "bootstrap_confidence_intervals.csv", index=False)
         overall["bootstrap_ci"] = ci_rows
 
+    if loss_case_report:
+        loss_rows = compute_loss_cases(all_rows, plan or [], cfg, out_dir) if "selector" in policies else []
+        write_loss_case_outputs(out_dir, loss_rows)
+        overall["loss_case_n_total"] = len(loss_rows)
+        overall["loss_case_by_baseline"] = (
+            pd.DataFrame(loss_rows)["baseline"].value_counts().to_dict() if loss_rows else {}
+        )
+
     (out_dir / "summary.json").write_text(json.dumps(overall, indent=2))
     write_summary_md(out_dir, overall, cfg)
     return overall
@@ -1341,6 +1622,16 @@ def write_summary_md(out_dir: Path, overall: Dict[str, Any], cfg: Dict[str, Any]
             f"{overall['decision_divergence_n_slo_outcome_changes']}",
             "- See `decision_divergence.csv` (per-cell Kendall tau / rank mismatches) and "
             "`selector_vs_baselines_examples.md` (worked examples).",
+        ]
+
+    if "loss_case_n_total" in overall:
+        lines += [
+            "", "## Loss cases (selector vs. each baseline)",
+            "",
+            f"- Total loss cases: {overall['loss_case_n_total']}",
+            f"- By baseline: {overall.get('loss_case_by_baseline', {})}",
+            "- See `loss_cases.csv`/`loss_cases.jsonl` (full detail), `loss_case_summary.md` "
+            "(aggregates), and `loss_case_examples.md` (representative examples).",
         ]
 
     lines += [
@@ -1458,6 +1749,14 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help="Write bootstrap_confidence_intervals.csv: paired bootstrap 95%% "
         "CIs on arrival-normalized WG per policy, plus (selector - baseline) "
         "paired-difference CIs.",
+    )
+    parser.add_argument(
+        "--loss-case-report", action="store_true",
+        help="Write loss_cases.jsonl/csv, loss_case_summary.md, and "
+        "loss_case_examples.md: every (request, baseline) pair where the "
+        "selector's real execution lost to a baseline's real execution on "
+        "SLO outcome, weighted-goodput contribution, or latency/TTFT. "
+        "No-op (empty, header-only report) unless 'selector' is among --policies.",
     )
     parser.add_argument("--output-dir", required=True)
     return parser.parse_args(argv)
@@ -1599,6 +1898,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "arrival_regimes": args.arrival_regimes or ["steady_moderate (legacy burst)"],
         "decision_divergence_report": args.decision_divergence_report,
         "bootstrap_ci": args.bootstrap_ci,
+        "loss_case_report": args.loss_case_report,
         "selector_action_space_preflight": selector_preflight,
     }
     write_request_plan(plan, out_dir)
@@ -1668,6 +1968,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         out_dir, all_rows, per_policy_wall_clock, cfg,
         decision_divergence_report=args.decision_divergence_report,
         bootstrap_ci=args.bootstrap_ci,
+        loss_case_report=args.loss_case_report, plan=plan,
     )
 
     for policy_name, m in overall["per_policy"].items():

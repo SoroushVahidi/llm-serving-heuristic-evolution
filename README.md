@@ -35,7 +35,7 @@ data, a portfolio selector, and a restricted verifiable DSL for LLM-generated he
 > [docs/vllm_real_serving_scaled_comparison.md](docs/vllm_real_serving_scaled_comparison.md)
 > (status: completed but caveated — the selector arm was confounded by an action-space
 > bug that is now fixed) and [docs/real_llm_latency_model_v2.md](docs/real_llm_latency_model_v2.md).
-> 1560 tests collected.
+> 1594 tests collected.
 
 ---
 
@@ -112,11 +112,11 @@ python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt
 ## Running tests
 
 ```bash
-pytest                    # all tests (~1277 collected)
+pytest                    # all tests (~1594 collected)
 pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
 ```
 
-1560 tests collected on the current commit. Targeted Phase 2C stabilization tests and
+1594 tests collected on the current commit. Targeted Phase 2C stabilization tests and
 the `test_phase2c1_real_trace_runner.py` collection path both pass on this branch.
 
 ---
@@ -230,7 +230,7 @@ src/llmserveopt/
 scripts/         # CLI entry points (see scripts/README.md)
 configs/         # YAML experiment configs (see configs/README.md)
 docs/            # Design docs, milestones, claims, roadmap (see docs/README.md)
-tests/           # pytest suite (1560 tests collected on 2026-07-17)
+tests/           # pytest suite (1594 tests collected)
 data/            # Local datasets — not committed (see data/README.md)
 results/         # Experiment outputs — not committed (see results/.gitkeep)
 ```
