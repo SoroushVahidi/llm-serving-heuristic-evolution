@@ -1,0 +1,107 @@
+=== Regression test job 1111737 ===
+timestamp=2026-07-19T15:20:54Z
+branch=wulver-sarathi-runtime-validation
+commit=e15f57f25e85ff87305d608155481dd5ea29a570
+known_baseline=80 failed / 1783 passed / 79 skipped
+
+
+--- 1. Targeted tests (165 tests) ---
+tests/test_gpu_external_validity_audit.py .....                          [  3%]
+tests/test_sarathi_faithful_scheduler.py ..................              [ 13%]
+tests/test_vllm_faithful_scheduler.py ................                   [ 23%]
+tests/test_sarathi_style_performance.py .......                          [ 27%]
+tests/test_external_baseline_integration.py ............................ [ 44%]
+
+--- 2. Full non-GPU suite: failed test names only (tracebacks omitted -- see raw report on Wulver scratch for full detail) ---
+FAILED tests/test_calibration_gpu.py::test_model_loads - ModuleNotFoundError:...
+FAILED tests/test_calibration_gpu.py::test_prefill_measurement_runs - ModuleN...
+FAILED tests/test_calibration_gpu.py::test_calibration_grid_tiny - ModuleNotF...
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_load_fitted_yaml_parses_providers
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_load_fitted_yaml_missing_file_returns_none
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_load_fitted_model_json_and_raw_by_target
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_raw_latency_by_target_handles_missing_field_gracefully
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_load_fitted_model_json_missing_dir_returns_none
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_synthetic_service_model_decode_rate
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_synthetic_prefill_is_zero_by_default
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_calibrated_service_model_missing_file_returns_none
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_calibrated_service_model_loads_real_curves
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_comparison_by_target_without_calibrated_model
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_comparison_by_target_with_empty_hosted_data
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_comparison_by_provider_without_yaml_or_calibrated_model
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_build_findings_identifies_closest_provider
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_script_end_to_end_writes_all_required_outputs
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_script_handles_missing_fitted_model_dir_gracefully
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_script_refuses_gracefully_when_no_inputs_at_all
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_script_never_imports_provider_sdks
+FAILED tests/test_compare_simulator_to_real_llm_latency.py::test_no_secrets_written_to_outputs
+FAILED tests/test_experiment_registry_templates.py::test_report_script_checks_templates
+FAILED tests/test_experiment_registry_templates.py::test_report_script_templates_all_present
+FAILED tests/test_experiment_registry_templates.py::test_report_script_check_mode_passes
+FAILED tests/test_gemini_api_calibration.py::test_module_loads_without_google_sdk
+FAILED tests/test_gemini_api_calibration.py::test_config_loads -   File "/mmf...
+FAILED tests/test_gemini_api_calibration.py::test_dry_run_expands_within_max_calls
+FAILED tests/test_gemini_api_calibration.py::test_call_plan_has_required_fields
+FAILED tests/test_gemini_api_calibration.py::test_call_plan_covers_all_buckets
+FAILED tests/test_gemini_api_calibration.py::test_validate_call_plan_passes_for_valid_config
+FAILED tests/test_gemini_api_calibration.py::test_validate_rejects_too_many_calls
+FAILED tests/test_gemini_api_calibration.py::test_validate_rejects_oversized_prompt
+FAILED tests/test_gemini_api_calibration.py::test_max_calls_override_respected
+FAILED tests/test_gemini_api_calibration.py::test_max_calls_override_refuses_if_above_cap
+FAILED tests/test_gemini_api_calibration.py::test_live_mode_requires_allow_live_api_flag
+FAILED tests/test_gemini_api_calibration.py::test_live_mode_refuses_without_credentials
+FAILED tests/test_gemini_api_calibration.py::test_manifest_has_required_fields
+FAILED tests/test_gemini_api_calibration.py::test_manifest_calls_have_prompt_output_concurrency_fields
+FAILED tests/test_gemini_api_calibration.py::test_manifest_contains_no_secrets
+FAILED tests/test_gemini_api_calibration.py::test_default_output_dir_is_under_results
+FAILED tests/test_gemini_api_calibration.py::test_dry_run_creates_summary_markdown
+FAILED tests/test_gemini_api_calibration.py::test_dry_run_succeeds_without_google_sdk
+FAILED tests/test_gemini_api_calibration.py::test_mock_live_run_records_results
+FAILED tests/test_gemini_api_calibration.py::test_mock_live_run_respects_max_calls_cap
+FAILED tests/test_gemini_api_calibration.py::test_estimate_cost_is_nonnegative
+FAILED tests/test_gemini_api_calibration.py::test_estimate_cost_within_budget_cap
+FAILED tests/test_gemini_real_llm_calibration.py::test_call_non_streaming_parses_text_and_usage
+FAILED tests/test_gemini_real_llm_calibration.py::test_call_non_streaming_passes_model_and_max_tokens
+FAILED tests/test_gemini_real_llm_calibration.py::test_call_non_streaming_handles_missing_usage
+FAILED tests/test_gemini_real_llm_calibration.py::test_call_streaming_measures_ttft_and_joins_chunks
+FAILED tests/test_gemini_real_llm_calibration.py::test_call_streaming_no_text_chunks_gives_none_ttft
+FAILED tests/test_gemini_real_llm_calibration.py::test_build_client_raises_clearly_with_no_credentials
+FAILED tests/test_gemini_real_llm_calibration.py::test_build_client_prefers_api_key_when_present
+FAILED tests/test_gemini_real_llm_calibration.py::test_build_client_falls_back_to_vertex
+FAILED tests/test_phase2a4_selector_configs.py::test_referenced_trace_files_exist
+FAILED tests/test_phase2b12_workload_diversity.py::TestPhase2B12SelectorIntegration::test_burstgpt_files_exist
+FAILED tests/test_phase2b13_selector_training.py::TestPhase2B13SelectorIntegration::test_burstgpt_files_exist
+FAILED tests/test_phase2b13_selector_training.py::TestPhase2B13SmokeOutputs::test_smoke_output_files_exist
+FAILED tests/test_phase2b13_selector_training.py::TestPhase2B13SmokeOutputs::test_failure_cases_csv_has_rows
+FAILED tests/test_phase2c1_real_trace_runner.py::test_phase2c1_smoke_writes_deployable_selector_summary
+FAILED tests/test_phase2c_labeled_selector_dataset.py::test_mock_api_annotations_are_marked_mock
+FAILED tests/test_report_research_status.py::test_script_runs_cleanly - Asser...
+FAILED tests/test_report_research_status.py::test_json_output_is_valid - Asse...
+FAILED tests/test_report_research_status.py::test_json_deployable_count - jso...
+FAILED tests/test_report_research_status.py::test_json_oracle_excluded - json...
+FAILED tests/test_report_research_status.py::test_json_admission_control_registered
+FAILED tests/test_report_research_status.py::test_json_rule_based_not_fifo_placeholder
+FAILED tests/test_report_research_status.py::test_json_no_invariant_violations
+FAILED tests/test_report_research_status.py::test_text_output_contains_admission_control
+FAILED tests/test_report_research_status.py::test_text_output_oracle_not_deployable
+FAILED tests/test_report_research_status.py::test_json_admission_control_unit_fixed
+FAILED tests/test_report_research_status.py::test_json_multi_bin_tests_exist
+FAILED tests/test_report_research_status.py::test_json_failure_cases_section
+FAILED tests/test_report_research_status.py::test_json_api_ledger_section - j...
+FAILED tests/test_report_research_status.py::test_json_rule_based_kv_repair_applied
+FAILED tests/test_report_research_status.py::test_json_tight_slo_not_routed_to_llf
+FAILED tests/test_report_research_status.py::test_text_output_kv_repair_mentioned
+FAILED tests/test_run_vllm_external_baseline_comparison.py::test_loss_case_summary_aggregates_by_regime_baseline_subpolicy
+FAILED tests/test_run_vllm_external_baseline_comparison.py::test_write_loss_case_outputs_truncates_examples_to_20
+FAILED tests/test_run_vllm_external_baseline_comparison.py::test_nan_sanitization_preserves_none_not_float_nan
+
+====== 80 failed, 1783 passed, 79 skipped, 1 warning in 242.45s (0:04:02) ======
+
+--- 3. git diff --check ---
+diffcheck_status=0
+
+=== Compact verdict ===
+full_suite: 80 failed / 1783 passed (known baseline: 80 failed / 1783 passed)
+verdict=NO_NEW_REGRESSIONS (failed count at or below known baseline)
+
+(Full raw pytest output, including per-file progress dots and failure tracebacks, preserved at:
+ /mmfs1/scratch/ikoutis/sv96/sarathi_regression_tests_1111737_report.txt on Wulver scratch storage)

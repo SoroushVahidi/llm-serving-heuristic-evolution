@@ -333,6 +333,20 @@ def _patch_get_and_verify_max_len_for_default_rope_type() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="Qwen/Qwen2.5-7B-Instruct")
+    parser.add_argument(
+        "--dtype", default=None,
+        help=(
+            "Model dtype passed to sarathi.config.ModelConfig. Default (None) omits "
+            "the kwarg entirely so this vendored fork's own ModelConfig default "
+            "(float16, see sarathi/config/config.py) applies -- its FlashInfer "
+            "prefill-wrapper integration was found (job 1111711) to plan for "
+            "float16 regardless of the model's configured dtype, so forcing "
+            "bfloat16 (as every real-vLLM run in this investigation used) causes "
+            "a dtype-mismatch ValueError at the first forward pass. Pass an "
+            "explicit value (e.g. bfloat16) only if this fork's own default path "
+            "is confirmed broken for a different reason."
+        ),
+    )
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.35)
     parser.add_argument("--max-num-seqs", type=int, default=16)
     parser.add_argument("--chunk-size", type=int, default=512)
@@ -373,7 +387,12 @@ def main() -> int:
     _patch_get_and_verify_max_len_for_default_rope_type()
 
     replica_config = ReplicaConfig(output_dir=str(out_dir / "sarathi_engine_output"))
-    model_config = ModelConfig(model=args.model, dtype="bfloat16", max_model_len=args.max_model_len, trust_remote_code=False)
+    model_config_kwargs: dict[str, Any] = {
+        "model": args.model, "max_model_len": args.max_model_len, "trust_remote_code": False,
+    }
+    if args.dtype is not None:
+        model_config_kwargs["dtype"] = args.dtype
+    model_config = ModelConfig(**model_config_kwargs)
     worker_config = WorkerConfig(gpu_memory_utilization=args.gpu_memory_utilization)
     cache_config = CacheConfig(block_size=args.block_size)
     parallel_config = ParallelConfig(tensor_parallel_size=1, pipeline_parallel_size=1)
@@ -388,6 +407,8 @@ def main() -> int:
         "model": args.model, "gpu_memory_utilization": args.gpu_memory_utilization,
         "max_num_seqs": args.max_num_seqs, "chunk_size": args.chunk_size,
         "block_size": args.block_size, "max_model_len": args.max_model_len,
+        "dtype_arg": args.dtype,
+        "effective_dtype": args.dtype if args.dtype is not None else "float16 (fork ModelConfig default; --dtype not passed)",
     }
 
     engine_build_start = time.monotonic()

@@ -1,0 +1,27 @@
+{
+  "env": {
+    "timestamp_utc": "2026-07-19T14:47:56.140314+00:00",
+    "torch_version": "2.9.0+cu128",
+    "torch_cuda_version": "12.8",
+    "cuda_available": true,
+    "device_count": 1,
+    "gpu_name": "NVIDIA A100-SXM4-80GB",
+    "sarathi_version": "0.1.8",
+    "cuda_extensions_import_ok": true,
+    "server_config": {
+      "model": "mistralai/Mistral-7B-Instruct-v0.1",
+      "gpu_memory_utilization": 0.35,
+      "max_num_seqs": 16,
+      "chunk_size": 512,
+      "block_size": 16,
+      "max_model_len": 16384,
+      "dtype_arg": null,
+      "effective_dtype": "float16 (fork ModelConfig default; --dtype not passed)"
+    },
+    "engine_build_seconds": 84.9833217379637
+  },
+  "num_scenarios": 6,
+  "num_requests": 42,
+  "num_success": 42,
+  "completion_fraction": 1.0
+}

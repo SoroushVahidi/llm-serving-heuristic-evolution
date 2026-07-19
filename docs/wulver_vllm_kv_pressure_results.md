@@ -802,4 +802,170 @@ implementation task, are both honored here. Selecting the exact upstream
 commit/tag to pin (a real chunked-prefill-era vLLM release, ideally close
 enough to 0.24.0's scheduler behavior to be maximally relevant to this
 validation effort) requires the same primary-source archaeology used for
-the existing two reference docs and is left as a scoped follow-up.
+the existing two reference docs and is left as a scoped follow-up. A
+concrete follow-up recommendation (`v0.4.2`) and its provenance now exist
+in `docs/vllm_chunked_prefill_faithful_design_audit.md` (session 3, below).
+
+---
+
+## Follow-up (2026-07-19, session 3): real Sarathi runtime validation succeeds
+
+Resolves the blocker from session 2: Sarathi's vendored fork forced
+`bfloat16` model weights through a FlashInfer prefill-wrapper that had
+planned for `float16`, causing a dtype-mismatch `ValueError` on every
+forward pass (job 1111711). The fix — confirmed scientifically justified by
+the fork's own `ModelConfig.dtype` default (`"float16"`, not `"bfloat16"`)
+— was to stop forcing `bfloat16` and let the fork use its own default.
+`scripts/run_sarathi_gpu_smoke_and_validation.py` gained an optional
+`--dtype` flag (default `None`, meaning "omit the kwarg entirely and let
+`ModelConfig`'s own default apply"); no vendored source was touched.
+
+### Job 1111723: SUCCESS — first real Sarathi runtime validation in this investigation
+
+- Smoke test passed (short and long prompts both completed, long prompt
+  exceeded `chunk_size` as intended, confirming chunked prefill was
+  structurally exercised).
+- Full 6-scenario matrix completed automatically in the same job/process
+  (smoke gates the matrix in-process; no Slurm dependency needed for this
+  part): **42/42 requests, completion_fraction 1.0**.
+- Server log confirmed the fix taking effect at startup: `WARNING
+  hf_utils.py:52] Casting torch.bfloat16 to torch.float16` /
+  `dtype=torch.float16` in the engine-init line.
+- Total job wall time: 3m51s (engine build alone: ~85s).
+
+### Real Sarathi vs. real vLLM (job 1111706) vs. both faithful simulators
+
+Produced by `scripts/compare_sarathi_vllm_matched_runtime.py` (new;
+combines already-collected data, does not rerun anything) and a CPU-only
+postprocessing job (1111736, `--dependency=afterok:1111723`, though by the
+time it ran 1111723 had already completed — the dependency condition was
+satisfied trivially). Full table: `experiments/gpu_external_validity/
+sarathi_vs_vllm_mistral_comparison/matched_comparison.md`.
+
+| Scenario | Real vLLM TTFT | Real Sarathi TTFT | Real vLLM E2E | Real Sarathi E2E | TTFT winner | E2E winner |
+|---|---:|---:|---:|---:|---|---|
+| long_prompt_moderate_output | 0.501s | 0.454s | 3.889s | 4.285s | sarathi | vllm |
+| active_decode_plus_arriving_prefill | 0.151s | 0.168s | 1.647s | 0.612s | vllm | **sarathi (2.7x)** |
+| prefill_heavy_burst | 0.575s | 0.629s | 1.215s | 1.371s | vllm | vllm |
+| mixed_prompt_lengths | 0.266s | 0.293s | 0.824s | 1.162s | vllm | vllm |
+| kv_pressure (matched to stress_kv_pressure) | 1.057s | 1.185s | 13.616s | 12.852s | vllm | sarathi |
+| short_context_control | n/a | 0.071s | 0.081s | 0.562s | n/a | vllm |
+
+**The clearest real-hardware signal**: `active_decode_plus_arriving_prefill`
+— vLLM has marginally better TTFT (0.151s vs 0.168s, ~11% difference), but
+**Sarathi's E2E latency is 2.7x lower** (0.612s vs 1.647s). This is exactly
+Sarathi-Serve's headline claimed mechanism — protecting already-decoding
+sequences from being stalled by newly arriving long prefills — showing up
+as a real, measured effect on real A100 hardware, not just in the paper or
+the simulator. The same direction, smaller magnitude, appears in
+`kv_pressure` (Sarathi E2E 12.852s vs vLLM 13.616s). vLLM wins cleanly
+(both TTFT and E2E) on `prefill_heavy_burst` and `mixed_prompt_lengths` —
+scenarios without the specific "protect active decode from a new arrival"
+shape.
+
+**Simulator winner-identity agreement** (comparing real-hardware
+TTFT/E2E winner per scenario against `vllm_faithful`/`sarathi_faithful`'s
+simulated winner for the same scenario): TTFT 4/5, E2E 4/6.
+
+**Most important simulator mismatch**: on `active_decode_plus_arriving_prefill`
+— the one scenario with the clearest real Sarathi advantage — the
+simulator picks **vLLM** as the E2E winner, the opposite of what real
+hardware shows. This is concrete, quantified evidence (not just the
+general timing-scale caveat already documented above) that the current
+simulator's timing/queueing abstractions miss at least one genuine,
+real Sarathi advantage regime: the specific dynamic of an already-admitted,
+mid-decode sequence competing against a newly arriving long-prefill request
+for the next scheduling slot is not modeled with enough fidelity to
+reproduce which system actually wins. This is a different, sharper finding
+than "the simulator's absolute timing is off by ~15x" (established in
+session 1) — it's a case where the simulator gets the *relative ranking*
+wrong, which matters much more for a selector that only needs to pick a
+winner, not match absolute latency.
+
+**Caveat, stated plainly**: every number above is a single run per system,
+no repeated trials, no variance/confidence interval. The two servers were
+configured to be *comparable* (matched `gpu-memory-utilization`,
+`max-num-seqs`, and per-step token budget — `--max-num-batched-tokens 512`
+for vLLM matching `chunk_size=512` for Sarathi) but are not identical
+scheduling systems, so "winner" here means "won on this one measured run
+under this one comparable-but-not-identical configuration," not "wins in
+general."
+
+### Design audit doc verified complete
+
+`docs/vllm_chunked_prefill_faithful_design_audit.md` (written earlier this
+session, extended with one more live-verified finding) covers: the
+recommended pin (`v0.4.2`, commit `c7f2cf2b7f67bce5842fedfdba508440fe257375`,
+the first vLLM release whose own notes call chunked prefill "ready for
+testing"), the exact scheduler code paths (`SchedulingBudget`,
+`enable_chunking`), the `block_manager_v1` vs `block_manager_v2` split at
+this pin with `use_v2_block_manager` defaulting to `False` (so v1, the
+reference already compatible with the existing shared `KVBlockSpaceManager`,
+is the default — v2 is flagged as a required explicit exclusion for the
+eventual real reference doc), required shared simulator primitives (mostly
+already exist, built for `sarathi_faithful`), backward-compatibility
+strategy (new file, new registry entry, zero changes to `vllm_faithful`),
+and required tests (headlined by a chunked-admission test that is the
+direct negative-image of this whole investigation's long-context-drop
+finding). **Not implemented** — audit and recommendation only, per
+instruction.
+
+### Regression check
+
+CPU-only regression job (1111737, `--dependency=afterok:1111736`): 165/165
+targeted tests passed (`test_gpu_external_validity_audit.py`,
+`test_sarathi_faithful_scheduler.py`, `test_vllm_faithful_scheduler.py`,
+`test_sarathi_style_performance.py`, `test_external_baseline_integration.py`,
+`test_selector_objective_analysis.py`). Full non-GPU suite: 80 failed /
+1783 passed / 79 skipped — an **exact match**, same failing test names, to
+the baseline established across all three prior sessions on this branch
+lineage. `git diff --check`: clean. **No new regressions.**
+
+### Safe claims
+
+- Sarathi-Serve (this vendored fork, commit `96f9911`, built successfully
+  on Wulver's A100 partition) can run `mistralai/Mistral-7B-Instruct-v0.1`
+  in float16 and complete a real, measured 6-scenario, 42-request runtime
+  matrix with 100% completion.
+- On this one comparable-but-not-identical-config comparison, real Sarathi
+  showed a real, substantial (2.7x) E2E latency advantage over real vLLM
+  specifically in the "active decode streams plus arriving long prefill"
+  scenario shape — the scenario shape that most directly exercises
+  Sarathi's stall-free decode-protection claim.
+- The `vllm_faithful`/`sarathi_faithful` simulators get the real-hardware
+  winner direction right in most (4/5 TTFT, 4/6 E2E) but not all matched
+  scenarios; the one scenario where they disagree with real hardware is
+  precisely the scenario carrying Sarathi's clearest real advantage.
+- The float16 fix, the new `--dtype` flag, the new comparison script, and
+  the new design-audit doc introduced zero regressions in the existing
+  test suite (exact baseline match, 165/165 new targeted tests passing).
+
+### Unsafe claims
+
+- Do NOT claim Sarathi is faster than vLLM in general, or in any regime
+  beyond the one specific matched scenario shape and one specific
+  comparable-but-not-identical server configuration tested here.
+- Do NOT claim this result is statistically robust — it is one run per
+  system per scenario, no repeated trials, no confidence interval.
+- Do NOT claim the simulator's winner-identity mismatch on
+  `active_decode_plus_arriving_prefill` has been root-caused at the
+  scheduler-algorithm level — it is an observed, quantified discrepancy,
+  not yet a diagnosed one (unlike the long-context-drop finding from
+  session 2, which was traced to a specific, named code path).
+- Do NOT treat the 42-request, single-configuration comparison as
+  sufficient grounds to resume Selector Dataset v2 generation — see the
+  updated implication below.
+
+### Updated implication for Selector Dataset v2
+
+Real Sarathi-vs-vLLM data now exists for the first time, and it shows a
+real, measurable advantage regime the simulator currently mis-ranks. This
+strengthens, not weakens, the case from session 1 that Selector Dataset v2
+should not resume until: (1) the simulator's handling of the
+active-decode-plus-arriving-prefill dynamic is understood well enough to
+explain the winner-identity mismatch found here, and (2) the long-context
+gap (`vllm_faithful`'s structural inability to admit >2,560-token prompts)
+is closed via the `vllm_chunked_prefill_faithful` baseline (Part 8/session
+2) or explicitly scoped around. `SELECTOR_DATASET_V2_DECISION` remains
+**`MORE_RUNTIME_VALIDATION_REQUIRED`**, now with one additional, concrete,
+quantified reason rather than a purely structural one.
