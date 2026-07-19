@@ -14,6 +14,7 @@ from llmserveopt.selector.dataset_v2.candidates import (
 )
 from llmserveopt.selector.dataset_v2.discriminativeness import (
     Objective,
+    PRIMARY_SELECTOR_OBJECTIVE,
     compute_discriminativeness,
     compute_regrets,
 )
@@ -22,6 +23,7 @@ from llmserveopt.selector.dataset_v2.features import (
     selector_v2_feature_columns,
 )
 from llmserveopt.selector.dataset_v2.scenario_families import all_scenario_family_specs
+from llmserveopt.selector.dataset_v2.scenario_families import ScenarioFamilySpec
 from llmserveopt.selector.dataset_v2.scenario_redesign import (
     DISCRIMINATIVE_POOL,
     REPRESENTATIVE_POOL,
@@ -35,6 +37,7 @@ from llmserveopt.selector.dataset_v2.scenario_search import (
     TrialSummary,
     diversity_aware_retained_pool_for_trial,
     retained_pool_for_trial,
+    summarize_trial,
 )
 from llmserveopt.selector.dataset_v2.schema import (
     PolicyOutcomeVector,
@@ -260,6 +263,35 @@ def test_practical_threshold_logic_separates_near_moderate_strong():
     assert strong.classification == "STRONGLY_DISCRIMINATIVE"
 
 
+def test_corrected_primary_objective_penalizes_selective_service_winner():
+    objective = Objective(
+        PRIMARY_SELECTOR_OBJECTIVE,
+        True,
+        lambda o: o.arrival_normalized_weighted_goodput,
+    )
+    outcomes = [
+        PolicyOutcomeVector(
+            "selective",
+            "historical",
+            weighted_goodput=1.0,
+            weighted_completion_fraction=0.2,
+            arrival_normalized_weighted_goodput=0.2,
+        ),
+        PolicyOutcomeVector(
+            "serves_workload",
+            "historical",
+            weighted_goodput=0.8,
+            weighted_completion_fraction=1.0,
+            arrival_normalized_weighted_goodput=0.8,
+        ),
+    ]
+    disc = compute_discriminativeness(outcomes, objective)
+    assert disc is not None
+    assert disc.best_policy == "serves_workload"
+    assert disc.absolute_winner_margin == pytest.approx(0.6)
+    assert disc.classification == "STRONGLY_DISCRIMINATIVE"
+
+
 def test_lower_is_better_regret_computation():
     objective = Objective("p95_latency", False, lambda o: o.p95_latency)
     outcomes = [
@@ -295,6 +327,88 @@ def test_missing_metric_handling_uses_none_not_zero():
     assert "weighted_goodput" in outcome.available_metrics
     assert outcome.num_dropped == 10
     assert outcome.rejection_rate == pytest.approx(1.0)
+
+
+def test_metrics_to_outcome_vector_preserves_corrected_utility_fields():
+    metrics = RunMetrics(policy_name="fifo", workload_tag="w", seed=1)
+    metrics.num_total = 10
+    metrics.num_completed = 8
+    metrics.num_dropped = 2
+    metrics.weighted_goodput = 0.75
+    metrics.weighted_completion_fraction = 0.8
+    metrics.arrival_normalized_weighted_goodput = 0.6
+    metrics.request_throughput = 5.0
+    outcome = metrics_to_outcome_vector(
+        "fifo",
+        metrics,
+        {"admit": 8, "preempt": 0, "swap": 0, "migrate": 0},
+        1,
+    )
+    assert outcome.weighted_goodput == pytest.approx(0.75)
+    assert outcome.weighted_completion_fraction == pytest.approx(0.8)
+    assert outcome.arrival_normalized_weighted_goodput == pytest.approx(0.6)
+    assert outcome.rejection_fraction == pytest.approx(0.2)
+    assert outcome.slo_success_throughput == pytest.approx(3.0)
+    assert "slo_success_throughput" in outcome.available_metrics
+
+
+def test_trial_summary_uses_arrival_normalized_primary_objective():
+    spec = ScenarioFamilySpec(
+        family_id="unit",
+        dataset_family="controlled_stress",
+        description="unit",
+        build=lambda seed: [],
+        source_trace="synthetic",
+        request_plan_ancestor_id="ancestor",
+        bottleneck_class="unit",
+    )
+    outcomes = [
+        PolicyOutcomeVector(
+            "scorpio_style_slo_guard",
+            "historical",
+            weighted_goodput=1.0,
+            weighted_completion_fraction=0.2,
+            arrival_normalized_weighted_goodput=0.2,
+        ),
+        PolicyOutcomeVector(
+            "vllm_faithful",
+            "faithful",
+            weighted_goodput=0.8,
+            weighted_completion_fraction=1.0,
+            arrival_normalized_weighted_goodput=0.8,
+        ),
+    ]
+    identifiers = ScenarioIdentifiers(
+        scenario_id="s",
+        scenario_family_id="unit",
+        dataset_family="controlled_stress",
+        source_trace="synthetic",
+        seed=1,
+        topology_class="monolithic",
+        resource_configuration_id="gpus1",
+        window_id=0,
+        request_plan_ancestor_id="ancestor",
+        bottleneck_class="unit",
+    )
+    primary = compute_discriminativeness(
+        outcomes,
+        Objective(PRIMARY_SELECTOR_OBJECTIVE, True, lambda o: o.arrival_normalized_weighted_goodput),
+    )
+    historical = compute_discriminativeness(
+        outcomes,
+        Objective("weighted_goodput", True, lambda o: o.weighted_goodput),
+    )
+    record = WindowRecordV2(
+        identifiers=identifiers,
+        features={},
+        outcomes=outcomes,
+        discriminativeness=[historical, primary],
+        regrets=[],
+    )
+    summary = summarize_trial(spec, seed=1, records=[record])
+    assert summary.winner_counts == {"vllm_faithful": 1}
+    assert summary.strong_winner_counts == {"vllm_faithful": 1}
+    assert summary.mean_best_score == pytest.approx(0.8)
 
 
 def test_redesigned_scenario_generation_is_deterministic_and_preserves_ancestor():

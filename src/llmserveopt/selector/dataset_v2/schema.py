@@ -58,6 +58,7 @@ class PolicyOutcomeVector:
     slo_attainment: Optional[float] = None   # 1 - slo_violation_rate, kept explicit for clarity
     request_throughput: Optional[float] = None
     token_throughput: Optional[float] = None
+    slo_success_throughput: Optional[float] = None
 
     mean_latency: Optional[float] = None
     median_latency: Optional[float] = None

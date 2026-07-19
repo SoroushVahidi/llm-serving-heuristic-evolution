@@ -259,9 +259,15 @@ def _scores_for_objective(
 
 def _objective_value(row: Mapping[str, object], objective_name: str) -> float:
     if objective_name == COMPLETION_ADJUSTED_OBJECTIVE:
-        return _f(row.get(f"metric_{HISTORICAL_CONDITIONAL_OBJECTIVE}")) * _f(row.get("metric_completion_fraction"))
+        weighted_completion = _f(row.get("metric_weighted_completion_fraction"))
+        if math.isnan(weighted_completion):
+            weighted_completion = _f(row.get("metric_completion_fraction"))
+        return _f(row.get(f"metric_{HISTORICAL_CONDITIONAL_OBJECTIVE}")) * weighted_completion
     if objective_name == SLO_SUCCESS_THROUGHPUT_OBJECTIVE:
-        return _f(row.get("metric_request_throughput")) * _f(row.get(f"metric_{HISTORICAL_CONDITIONAL_OBJECTIVE}"))
+        stored = _f(row.get("metric_slo_success_throughput"))
+        if not math.isnan(stored):
+            return stored
+        return _f(row.get("metric_request_throughput")) * _f(row.get(f"metric_{ARRIVAL_NORMALIZED_OBJECTIVE}"))
     return _f(row.get(f"metric_{objective_name}"))
 
 

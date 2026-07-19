@@ -18,6 +18,8 @@ MODERATELY_DISCRIMINATIVE_ABSOLUTE_MARGIN = 0.005
 STRONGLY_DISCRIMINATIVE_ABSOLUTE_MARGIN = 0.02
 NEAR_TIE_RELATIVE_MARGIN = 0.005
 STRONGLY_DISCRIMINATIVE_RELATIVE_MARGIN = 0.03
+HISTORICAL_CONDITIONAL_OBJECTIVE = "weighted_goodput"
+PRIMARY_SELECTOR_OBJECTIVE = "arrival_normalized_weighted_goodput"
 
 
 @dataclass(frozen=True)
@@ -31,8 +33,12 @@ class Objective:
 
 
 STANDARD_OBJECTIVES: List[Objective] = [
-    Objective("weighted_goodput", True, lambda o: o.weighted_goodput),
-    Objective("arrival_normalized_weighted_goodput", True, lambda o: o.arrival_normalized_weighted_goodput),
+    Objective(HISTORICAL_CONDITIONAL_OBJECTIVE, True, lambda o: o.weighted_goodput),
+    # Primary Selector Dataset v2 utility after the objective audit. This is
+    # a 0-1 arrival-normalized weighted utility, so 0.002 is a 0.2 percentage
+    # point practical-equivalence band and 0.02 is a 2 point strong margin.
+    Objective(PRIMARY_SELECTOR_OBJECTIVE, True, lambda o: o.arrival_normalized_weighted_goodput),
+    Objective("slo_success_throughput", True, lambda o: o.slo_success_throughput, practical_equivalence_abs=0.01, strong_abs_margin=0.5),
     Objective("p95_latency", False, lambda o: o.p95_latency, practical_equivalence_abs=0.001, strong_abs_margin=0.02),
     Objective("slo_attainment", True, lambda o: o.slo_attainment),
     Objective("request_throughput", True, lambda o: o.request_throughput, practical_equivalence_abs=0.01, strong_abs_margin=0.5),

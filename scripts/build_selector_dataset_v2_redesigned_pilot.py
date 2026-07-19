@@ -22,7 +22,20 @@ from llmserveopt.selector.dataset_v2.builder import (
     build_selector_dataset_v2_trials,
 )
 from llmserveopt.selector.dataset_v2.candidates import candidate_policies_for_topology
-from llmserveopt.selector.dataset_v2.discriminativeness import STANDARD_OBJECTIVES
+from llmserveopt.selector.dataset_v2.discriminativeness import (
+    HISTORICAL_CONDITIONAL_OBJECTIVE,
+    PRIMARY_SELECTOR_OBJECTIVE,
+    STANDARD_OBJECTIVES,
+)
+from llmserveopt.selector.dataset_v2.objective_analysis import (
+    ARRIVAL_NORMALIZED_OBJECTIVE,
+    COMPLETION_ADJUSTED_OBJECTIVE,
+    CONSTRAINED_ARRIVAL_NORMALIZED_OBJECTIVE,
+    SLO_SUCCESS_THROUGHPUT_OBJECTIVE,
+    ConstrainedRankingConfig,
+    objective_summary,
+    sensitivity_grid,
+)
 from llmserveopt.selector.dataset_v2.scenario_redesign import (
     DISCRIMINATIVE_POOL,
     REPRESENTATIVE_POOL,
@@ -61,11 +74,16 @@ def _write_json(data: object, path: Path) -> None:
         json.dump(data, f, indent=2, sort_keys=True)
 
 
-def _wg_disc(record: WindowRecordV2):
-    return next(d for d in record.discriminativeness if d.objective_name == "weighted_goodput")
+def _primary_disc(record: WindowRecordV2, objective_name: str = PRIMARY_SELECTOR_OBJECTIVE):
+    return next(d for d in record.discriminativeness if d.objective_name == objective_name)
 
 
-def summarize_records(records: List[WindowRecordV2], policies: List[str]) -> dict:
+def summarize_records(
+    records: List[WindowRecordV2],
+    policies: List[str],
+    *,
+    primary_objective: str = PRIMARY_SELECTOR_OBJECTIVE,
+) -> dict:
     win_counts = Counter()
     discriminative_win_counts = Counter()
     strong_win_counts = Counter()
@@ -81,7 +99,7 @@ def summarize_records(records: List[WindowRecordV2], policies: List[str]) -> dic
     rule_values = []
 
     for record in records:
-        disc = _wg_disc(record)
+        disc = _primary_disc(record, primary_objective)
         class_counts[disc.classification] += 1
         win_counts[disc.best_policy] += 1
         if disc.classification in DISCRIMINATIVE_CLASSES:
@@ -92,7 +110,11 @@ def summarize_records(records: List[WindowRecordV2], policies: List[str]) -> dic
         bottleneck_counts[record.identifiers.bottleneck_class or "unknown"] += 1
         oracle_values.append(disc.best_value)
 
-        by_policy = {o.policy_name: o.weighted_goodput for o in record.outcomes if o.weighted_goodput is not None}
+        by_policy = {
+            o.policy_name: getattr(o, primary_objective, None)
+            for o in record.outcomes
+            if getattr(o, primary_objective, None) is not None
+        }
         for policy, value in by_policy.items():
             policy_values[policy].append(value)
         if disc.classification in DISCRIMINATIVE_CLASSES:
@@ -127,7 +149,8 @@ def summarize_records(records: List[WindowRecordV2], policies: List[str]) -> dic
 
     return {
         "num_windows": total,
-        "weighted_goodput_discriminativeness": dict(class_counts),
+        "primary_objective": primary_objective,
+        "primary_objective_discriminativeness": dict(class_counts),
         "all_complete_fraction": class_counts["ALL_COMPLETE_OR_EFFECTIVELY_TIED"] / total if total else 0.0,
         "near_tie_fraction": class_counts["NEAR_TIE"] / total if total else 0.0,
         "moderately_discriminative_fraction": class_counts["MODERATELY_DISCRIMINATIVE"] / total if total else 0.0,
@@ -162,8 +185,9 @@ def summarize_records(records: List[WindowRecordV2], policies: List[str]) -> dic
 def secondary_objective_winners(records: List[WindowRecordV2]) -> dict:
     """Objective-sensitivity audit without changing the primary objective."""
     objectives = [
-        "weighted_goodput",
-        "arrival_normalized_weighted_goodput",
+        PRIMARY_SELECTOR_OBJECTIVE,
+        HISTORICAL_CONDITIONAL_OBJECTIVE,
+        "slo_success_throughput",
         "slo_attainment",
         "request_throughput",
     ]
@@ -203,8 +227,8 @@ def secondary_objective_winners(records: List[WindowRecordV2]) -> dict:
     out["completion_adjusted_weighted_goodput"] = _derived_objective_summary(
         records,
         lambda o: (
-            o.weighted_goodput * o.completion_fraction
-            if o.weighted_goodput is not None and o.completion_fraction is not None
+            o.weighted_goodput * o.weighted_completion_fraction
+            if o.weighted_goodput is not None and o.weighted_completion_fraction is not None
             else None
         ),
         higher_is_better=True,
@@ -218,11 +242,11 @@ def secondary_objective_winners(records: List[WindowRecordV2]) -> dict:
 
 
 def _p95_latency_constrained_goodput(outcome) -> float | None:
-    if outcome.weighted_goodput is None or outcome.p95_latency is None:
+    if outcome.arrival_normalized_weighted_goodput is None or outcome.p95_latency is None:
         return None
     if outcome.slo_attainment is None:
-        return outcome.weighted_goodput
-    return outcome.weighted_goodput * outcome.slo_attainment / max(outcome.p95_latency, 1e-9)
+        return outcome.arrival_normalized_weighted_goodput
+    return outcome.arrival_normalized_weighted_goodput * outcome.slo_attainment / max(outcome.p95_latency, 1e-9)
 
 
 def _derived_objective_summary(records: List[WindowRecordV2], extractor, *, higher_is_better: bool) -> dict:
@@ -281,7 +305,7 @@ def _rule_policy_for_record(record: WindowRecordV2) -> str:
 def specialization_report(records: List[WindowRecordV2]) -> dict:
     rows_by_winner = defaultdict(list)
     for record in records:
-        disc = _wg_disc(record)
+        disc = _primary_disc(record)
         rows_by_winner[disc.best_policy].append((record, disc))
 
     report = {}
@@ -294,8 +318,10 @@ def specialization_report(records: List[WindowRecordV2]) -> dict:
             classes[disc.classification] += 1
             for name in [
                 "arrival_rate_prefix",
+                "arrival_rate_realized",
                 "saturation_load_estimate",
                 "prompt_mean",
+                "prompt_p95",
                 "pred_output_mean",
                 "pred_output_p95",
                 "resource_kv_capacity",
@@ -303,6 +329,7 @@ def specialization_report(records: List[WindowRecordV2]) -> dict:
                 "p10_slack",
                 "tight_slo_fraction",
                 "burstiness_cv",
+                "prediction_noise_estimate",
             ]:
                 value = record.features.get(name)
                 if value is not None:
@@ -402,7 +429,7 @@ def run_adaptive_search(args, policies: List[str]) -> tuple[list[tuple], list[di
             if pool == DISCRIMINATIVE_POOL and not _adds_winner_diversity(summary, winner_counts):
                 primary_winner, _count = Counter(summary.winner_counts).most_common(1)[0]
                 retained_disc_wins = sum(winner_counts.values())
-                if retained_disc_wins and (
+                if primary_winner == "scorpio_style_slo_guard" and retained_disc_wins and (
                     winner_counts[primary_winner] / retained_disc_wins
                 ) >= args.max_search_winner_share:
                     kept_summary = attach_retention(summary, None, "skipped_dominant_redundant_winner")
@@ -440,15 +467,90 @@ def _adds_winner_diversity(summary, winner_counts: Counter[str]) -> bool:
 def _strong_winners_for_records(records: List[WindowRecordV2]) -> Counter[str]:
     counts = Counter()
     for record in records:
-        disc = _wg_disc(record)
+        disc = _primary_disc(record)
         if disc.classification == "STRONGLY_DISCRIMINATIVE":
             counts[disc.best_policy] += 1
     return counts
 
 
+def objective_stability_report(rows: list[dict]) -> dict:
+    objectives = [
+        ARRIVAL_NORMALIZED_OBJECTIVE,
+        HISTORICAL_CONDITIONAL_OBJECTIVE,
+        COMPLETION_ADJUSTED_OBJECTIVE,
+        SLO_SUCCESS_THROUGHPUT_OBJECTIVE,
+    ]
+    summaries = {name: objective_summary(rows, name) for name in objectives}
+    constrained = ConstrainedRankingConfig(0.8, 0.2)
+    summaries[CONSTRAINED_ARRIVAL_NORMALIZED_OBJECTIVE] = objective_summary(
+        rows,
+        CONSTRAINED_ARRIVAL_NORMALIZED_OBJECTIVE,
+        config=constrained,
+    )
+    return {
+        "objective_summaries": summaries,
+        "constraint_sensitivity": sensitivity_grid(rows),
+        "winner_changes_vs_primary": _winner_changes_vs_primary(rows),
+    }
+
+
+def _winner_changes_vs_primary(rows: list[dict]) -> dict:
+    grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for row in rows:
+        grouped[(str(row["scenario_id"]), str(row["window_id"]))].append(row)
+
+    out = {}
+    for objective in [
+        HISTORICAL_CONDITIONAL_OBJECTIVE,
+        COMPLETION_ADJUSTED_OBJECTIVE,
+        SLO_SUCCESS_THROUGHPUT_OBJECTIVE,
+    ]:
+        changed = 0
+        comparable = 0
+        for policy_rows in grouped.values():
+            primary = _winner_from_rows(policy_rows, ARRIVAL_NORMALIZED_OBJECTIVE)
+            other = _winner_from_rows(policy_rows, objective)
+            if primary is None or other is None:
+                continue
+            comparable += 1
+            if primary != other:
+                changed += 1
+        out[objective] = {
+            "comparable_windows": comparable,
+            "winner_changed_windows": changed,
+            "winner_changed_fraction": changed / comparable if comparable else None,
+        }
+    return out
+
+
+def _winner_from_rows(policy_rows: list[dict], objective: str) -> str | None:
+    values: dict[str, float] = {}
+    for row in policy_rows:
+        if objective == COMPLETION_ADJUSTED_OBJECTIVE:
+            wg = _float_or_none(row.get("metric_weighted_goodput"))
+            wcf = _float_or_none(row.get("metric_weighted_completion_fraction"))
+            value = wg * wcf if wg is not None and wcf is not None else None
+        elif objective == SLO_SUCCESS_THROUGHPUT_OBJECTIVE:
+            value = _float_or_none(row.get("metric_slo_success_throughput"))
+        else:
+            value = _float_or_none(row.get(f"metric_{objective}"))
+        if value is not None:
+            values[str(row["policy_name"])] = value
+    return max(values, key=values.get) if values else None
+
+
+def _float_or_none(value) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-dir", default="results/selector_dataset_v2/redesigned_pilot")
+    parser.add_argument("--output-dir", default="results/selector_dataset_v2/corrected_objective_pilot")
     parser.add_argument("--topology-class", default="monolithic")
     parser.add_argument("--seeds", nargs="+", type=int, default=[11, 17])
     parser.add_argument("--search-seed", type=int, default=20260718)
@@ -471,7 +573,7 @@ def parse_args() -> argparse.Namespace:
             "estimated_service_time_first",
         ],
     )
-    parser.add_argument("--target-windows", type=int, default=720)
+    parser.add_argument("--target-windows", type=int, default=360)
     parser.add_argument("--max-real-requests", type=int, default=144)
     parser.add_argument("--window-size", type=int, default=12)
     parser.add_argument("--drain-steps", type=int, default=30_000)
@@ -521,6 +623,7 @@ def main() -> int:
 
     summary = summarize_records(records, policies)
     specialization = specialization_report(records)
+    objective_stability = objective_stability_report(rows)
     elapsed = time.perf_counter() - t0
     split_counts = Counter(row["split"] for row in rows)
     quality_gates = {
@@ -531,14 +634,14 @@ def main() -> int:
         "at_least_3_policies_win_discriminative_windows": len(summary["discriminative_policy_win_distribution"]) >= 3,
         "single_policy_strong_window_dominance_lte_85pct": summary["strong_window_top_policy_share"] <= 0.85,
         "nontrivial_oracle_headroom": (summary["oracle_headroom"] or 0.0) >= 0.01,
-        "nontrivial_discriminative_oracle_headroom": (summary["discriminative_oracle_headroom"] or 0.0) >= 0.02,
+        "nontrivial_discriminative_oracle_headroom": (summary["discriminative_oracle_headroom"] or 0.0) >= 0.03,
         "faithful_external_baseline_wins": sum(summary["faithful_baseline_discriminative_wins"].values()) >= 10,
         "real_trace_representation": any(r.identifiers.dataset_family == "real_trace" for r in records),
         "ood_split_defined": bool(ood),
     }
 
     manifest = DatasetManifestV2(
-        dataset_name="selector_dataset_v2_redesigned_pilot",
+        dataset_name="selector_dataset_v2_corrected_objective_pilot",
         schema_version="2.1",
         topology_class=args.topology_class,
         candidate_policies=policies,
@@ -560,19 +663,21 @@ def main() -> int:
             "search_seed": args.search_seed,
             "drain_steps": args.drain_steps,
             "elapsed_seconds": round(elapsed, 3),
+            "primary_objective": PRIMARY_SELECTOR_OBJECTIVE,
         },
         notes=[
-            "Redesigned CPU-only pilot; not a final selector-training dataset.",
-            "Adaptive search retains representative and discriminative pools separately.",
+            "Corrected-objective CPU-only pilot; not a final selector-training dataset.",
+            "Adaptive search retains representative and discriminative pools separately using arrival-normalized weighted goodput.",
             "No RF/DT final selector is trained by this script.",
         ],
     )
 
-    _write_csv(rows, out_dir / "selector_dataset_v2_redesigned_pilot.csv")
+    _write_csv(rows, out_dir / "selector_dataset_v2_corrected_objective_pilot.csv")
     _write_json(manifest.to_dict(), out_dir / "manifest.json")
     _write_json(summary, out_dir / "pilot_summary.json")
     _write_json(search_trace, out_dir / "search_trace.json")
     _write_json(specialization, out_dir / "policy_specialization.json")
+    _write_json(objective_stability, out_dir / "objective_stability.json")
     print(json.dumps({
         "output_dir": str(out_dir),
         "elapsed_seconds": round(elapsed, 3),

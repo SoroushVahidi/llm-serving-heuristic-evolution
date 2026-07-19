@@ -6,11 +6,13 @@ from dataclasses import asdict, dataclass, field
 from typing import Dict, List, Sequence
 
 from .schema import WindowRecordV2
+from .discriminativeness import PRIMARY_SELECTOR_OBJECTIVE
 from .scenario_families import ScenarioFamilySpec
 from .scenario_redesign import DISCRIMINATIVE_POOL, REPRESENTATIVE_POOL, with_pool
 
 
-WG_OBJECTIVE = "weighted_goodput"
+PRIMARY_OBJECTIVE = PRIMARY_SELECTOR_OBJECTIVE
+WG_OBJECTIVE = PRIMARY_OBJECTIVE
 DISCRIMINATIVE_CLASSES = {
     "MODERATELY_DISCRIMINATIVE",
     "STRONGLY_DISCRIMINATIVE",
@@ -45,6 +47,7 @@ def summarize_trial(
     spec: ScenarioFamilySpec,
     seed: int,
     records: Sequence[WindowRecordV2],
+    objective_name: str = PRIMARY_OBJECTIVE,
 ) -> TrialSummary:
     class_counts: Counter[str] = Counter()
     winner_counts: Counter[str] = Counter()
@@ -54,7 +57,7 @@ def summarize_trial(
     policy_values: dict[str, list[float]] = {}
 
     for record in records:
-        disc = next((d for d in record.discriminativeness if d.objective_name == WG_OBJECTIVE), None)
+        disc = next((d for d in record.discriminativeness if d.objective_name == objective_name), None)
         if disc is None:
             continue
         class_counts[disc.classification] += 1
@@ -64,8 +67,9 @@ def summarize_trial(
         spreads.append(disc.max_min_spread)
         best_scores.append(disc.best_value)
         for outcome in record.outcomes:
-            if outcome.weighted_goodput is not None:
-                policy_values.setdefault(outcome.policy_name, []).append(outcome.weighted_goodput)
+            value = getattr(outcome, objective_name, None)
+            if value is not None:
+                policy_values.setdefault(outcome.policy_name, []).append(value)
 
     means = {
         policy: sum(vals) / len(vals)
@@ -216,10 +220,13 @@ def spec_with_retained_pool(spec: ScenarioFamilySpec, pool: str) -> ScenarioFami
     return with_pool(spec, pool)
 
 
-def strongly_discriminative_winner_counts(records: Sequence[WindowRecordV2]) -> Counter[str]:
+def strongly_discriminative_winner_counts(
+    records: Sequence[WindowRecordV2],
+    objective_name: str = PRIMARY_OBJECTIVE,
+) -> Counter[str]:
     counts: Counter[str] = Counter()
     for record in records:
-        disc = next((d for d in record.discriminativeness if d.objective_name == WG_OBJECTIVE), None)
+        disc = next((d for d in record.discriminativeness if d.objective_name == objective_name), None)
         if disc is not None and disc.classification == STRONG_CLASS:
             counts[disc.best_policy] += 1
     return counts

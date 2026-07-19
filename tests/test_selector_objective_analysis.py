@@ -4,7 +4,9 @@ import pytest
 
 from llmserveopt.selector.dataset_v2.objective_analysis import (
     ARRIVAL_NORMALIZED_OBJECTIVE,
+    COMPLETION_ADJUSTED_OBJECTIVE,
     CONSTRAINED_ARRIVAL_NORMALIZED_OBJECTIVE,
+    SLO_SUCCESS_THROUGHPUT_OBJECTIVE,
     ConstrainedRankingConfig,
     constrained_winner,
     objective_summary,
@@ -23,8 +25,10 @@ def _row(
     completion: float,
     rejection: float,
     throughput: float = 1.0,
+    weighted_completion: float | None = None,
+    slo_success_throughput: float | None = None,
 ) -> dict:
-    return {
+    row = {
         "scenario_id": scenario,
         "window_id": str(window),
         "policy_name": policy,
@@ -33,10 +37,16 @@ def _row(
         "metric_weighted_goodput": conditional,
         "metric_arrival_normalized_weighted_goodput": arrival_norm,
         "metric_completion_fraction": completion,
+        "metric_weighted_completion_fraction": (
+            completion if weighted_completion is None else weighted_completion
+        ),
         "metric_rejection_fraction": rejection,
         "metric_rejection_rate": rejection,
         "metric_request_throughput": throughput,
     }
+    if slo_success_throughput is not None:
+        row["metric_slo_success_throughput"] = slo_success_throughput
+    return row
 
 
 def test_constrained_ranking_filters_low_completion_high_rejection_policy():
@@ -95,3 +105,41 @@ def test_objective_summary_supports_arrival_normalized_and_constrained_objective
     assert anwg["policy_win_distribution"] == {"edf": 1, "scorpio": 1}
     assert constrained["policy_win_distribution"] == {"edf": 1, "scorpio": 1}
     assert anwg["oracle_headroom"] == pytest.approx(0.1)
+
+
+def test_completion_adjusted_objective_uses_weighted_completion_fraction():
+    rows = [
+        _row("s", 0, "a", conditional=1.0, arrival_norm=0.2, completion=1.0, weighted_completion=0.2, rejection=0.0),
+        _row("s", 0, "b", conditional=0.8, arrival_norm=0.8, completion=1.0, weighted_completion=1.0, rejection=0.0),
+    ]
+    summary = objective_summary(rows, COMPLETION_ADJUSTED_OBJECTIVE)
+    assert summary["policy_win_distribution"] == {"b": 1}
+
+
+def test_slo_success_throughput_prefers_stored_corrected_metric():
+    rows = [
+        _row(
+            "s",
+            0,
+            "a",
+            conditional=1.0,
+            arrival_norm=0.2,
+            completion=0.2,
+            rejection=0.8,
+            throughput=10.0,
+            slo_success_throughput=2.0,
+        ),
+        _row(
+            "s",
+            0,
+            "b",
+            conditional=0.8,
+            arrival_norm=0.8,
+            completion=1.0,
+            rejection=0.0,
+            throughput=10.0,
+            slo_success_throughput=8.0,
+        ),
+    ]
+    summary = objective_summary(rows, SLO_SUCCESS_THROUGHPUT_OBJECTIVE)
+    assert summary["policy_win_distribution"] == {"b": 1}

@@ -79,6 +79,12 @@ def metrics_to_outcome_vector(
         weighted_completion_fraction = completion_fraction
     if arrival_normalized_wg is None and weighted_completion_fraction is not None and weighted_goodput is not None:
         arrival_normalized_wg = weighted_completion_fraction * weighted_goodput
+    request_throughput = _nan_to_none(metrics.request_throughput)
+    slo_success_throughput = (
+        request_throughput * arrival_normalized_wg
+        if request_throughput is not None and arrival_normalized_wg is not None
+        else None
+    )
     rejection_fraction = (
         metrics.num_dropped / metrics.num_total
         if metrics.num_total else None
@@ -91,8 +97,9 @@ def metrics_to_outcome_vector(
         "completion_fraction": completion_fraction,
         "slo_violation_rate": slo_violation_rate,
         "slo_attainment": slo_attainment,
-        "request_throughput": _nan_to_none(metrics.request_throughput),
+        "request_throughput": request_throughput,
         "token_throughput": _nan_to_none(metrics.token_throughput),
+        "slo_success_throughput": slo_success_throughput,
         "mean_latency": _nan_to_none(metrics.mean_latency),
         "median_latency": _nan_to_none(metrics.median_latency),
         "p95_latency": _nan_to_none(metrics.p95_latency),
