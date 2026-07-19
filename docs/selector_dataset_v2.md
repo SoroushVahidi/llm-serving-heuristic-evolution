@@ -351,7 +351,7 @@ The search loop:
 
 1. samples or enumerates a candidate bottleneck scenario
 2. runs a core policy subset for search-time cost control
-3. computes weighted-goodput spread, winner identity, and local oracle headroom
+3. computes primary-objective spread, winner identity, and local oracle headroom
 4. retains trials into either `REPRESENTATIVE_POOL` or `DISCRIMINATIVE_POOL`
 5. skips redundant trials once one winner dominates the retained pool
 6. rebuilds retained trials with the full monolithic candidate set
@@ -361,10 +361,12 @@ dataset with redundant SCORPIO-only windows just to hit a row-count target.
 
 ## Thresholds
 
-Weighted-goodput thresholds now use practical significance rather than purely
-relative numerical thresholds:
+Corrected-objective thresholds use practical significance rather than purely
+relative numerical thresholds. For the primary
+`arrival_normalized_weighted_goodput` objective, the utility is on a 0-1 scale
+over weighted arrivals:
 
-- equivalent/all-complete: max-min WG spread <= 0.002
+- equivalent/all-complete: max-min objective spread <= 0.002
 - near tie: top-2 gap <= 0.002 or relative gap < 0.5%
 - moderate: non-equivalent but top-2 gap < 0.02 and relative gap < 3%
 - strong: top-2 gap >= 0.02 or relative gap >= 3%
@@ -534,10 +536,141 @@ Secondary objective audit on `targeted_discovery_pilot`:
   `estimated_service_time_first` 4, `admission_control` 3; oracle headroom =
   2.31966
 
-Do not silently switch objectives. Before final selector training, decide
-whether manuscript-primary utility should remain completed-request weighted
-goodput or move to an arrival-normalized/completion-adjusted utility that
-properly prices rejected or unfinished requests.
+The objective audit in `docs/selector_objective_audit.md` resolved this: new
+Selector Dataset v2 generation uses `arrival_normalized_weighted_goodput` as
+the manuscript-primary selector objective while preserving historical
+`weighted_goodput`/`conditional_weighted_slo_attainment` for reproduction.
+
+## Corrected-Objective Pilot
+
+The corrected-objective pilot was generated with:
+
+```bash
+python scripts/build_selector_dataset_v2_redesigned_pilot.py \
+  --output-dir results/selector_dataset_v2/corrected_objective_pilot \
+  --target-windows 260 \
+  --sampled-candidates 36 \
+  --counterexamples-per-target 18 \
+  --seeds 11 17 \
+  --max-real-requests 96 \
+  --window-size 12 \
+  --search-drain-steps 1500 \
+  --drain-steps 8000
+```
+
+This is a CPU-only pilot and does not train a selector. The first attempted
+360-window run was interrupted before writing artifacts because the search pass
+was too slow for pilot iteration. The retained 266-window run is the reported
+artifact.
+
+Primary objective:
+
+```text
+arrival_normalized_weighted_goodput
+```
+
+Corrected pilot statistics:
+
+- windows: 266
+- policy evaluations: 3,458
+- source traces: `burstgpt`, `azure_llm_2023`, `synthetic`
+- split groups: `request_plan_ancestor_id`
+- splits: TRAIN 1,976 rows; VALIDATION 767; ID_TEST 507; OOD_TEST 208
+- OOD group: `real_trace__azure_2023_conv`
+- all-complete/effectively tied fraction: 11.65%
+- near-tie fraction: 76.69%
+- moderately discriminative fraction: 0.0%
+- strongly discriminative fraction: 11.65%
+- global best fixed policy: `weighted_shortest_processing`
+- global best fixed ANWG: 0.4297888538
+- per-window oracle ANWG: 0.4412524070
+- oracle headroom: 0.0114635532
+- discriminative oracle headroom: 0.0437143093
+- random-policy baseline ANWG: 0.4090268268
+- simple rule-selector baseline ANWG: 0.3037251687
+
+Primary-objective win distribution:
+
+- `vllm_faithful`: 173
+- `fifo`: 28
+- `scorpio_style_slo_guard`: 25
+- `edf`: 13
+- `shortest_output_first`: 9
+- `sarathi_faithful`: 8
+- `admission_control`: 4
+- `weighted_shortest_processing`: 3
+- `orca_style`: 2
+- `multi_bin_batching`: 1
+
+Strong-window win distribution:
+
+- `scorpio_style_slo_guard`: 24
+- `admission_control`: 3
+- `weighted_shortest_processing`: 2
+- `multi_bin_batching`: 1
+- `shortest_output_first`: 1
+
+Objective stability:
+
+- completion-adjusted WG differs from ANWG in 1/266 windows.
+- historical conditional `weighted_goodput` differs from ANWG in 221/266
+  windows and gives SCORPIO 237 total wins, with winner mean completion
+  fraction 0.4596 and rejection fraction 0.5404.
+- SLO-success throughput differs from ANWG in 80/266 windows; its best fixed
+  policy is `orca_style`, with oracle headroom 0.15346.
+- constrained ANWG with completion >= 0.8 and rejection <= 0.2 gives
+  `vllm_faithful` 182 total wins and `sarathi_faithful` 8, but strong wins are
+  still historical-policy wins.
+
+Policy-specialization observations under ANWG:
+
+- `vllm_faithful` wins many admission-pressure, bursty-transient,
+  prediction-noise, and resource-scarcity windows, but all 173 wins are
+  near-tie or all-equivalent under the current practical thresholds.
+- `sarathi_faithful` wins 8 prediction-noise/long-prompt windows, also all
+  near-tie. The current monolithic simulator still does not expose a strong
+  chunked-prefill advantage against the full candidate set.
+- `scorpio_style_slo_guard` wins strongly in decode-heavy and KV-pressure
+  windows with long outputs, low prompt lengths, and tighter slack.
+- `admission_control`, `weighted_shortest_processing`, `multi_bin_batching`,
+  and `shortest_output_first` provide genuine non-SCORPIO strong wins, mostly
+  under bursty, KV/resource-pressure, and admission-pressure windows.
+
+Corrected-objective quality gates passed:
+
+- all-equivalent fraction below 40%
+- at least three policies win strongly discriminative windows
+- no single policy exceeds 85% of strongly discriminative wins
+- overall oracle headroom >= 0.01
+- discriminative oracle headroom >= 0.03
+- real-trace representation exists
+- OOD split is defined
+
+Corrected-objective quality gates failed:
+
+- faithful external baselines have many total ANWG wins but 0 strongly
+  discriminative wins after full-candidate evaluation
+- moderate+strong discriminative fraction is only 11.65%, below the 35%
+  search target
+- `sarathi_faithful` meaningful wins remain near-tie rather than strong
+
+Conclusion: the corrected objective makes a selector more plausible than the
+historical metric because oracle headroom is nonzero and several non-SCORPIO
+policies have strong wins. However, the current retained pilot is not ready for
+large-scale generation because faithful external baselines do not yet win
+strongly discriminative windows. Do not scale this dataset until either
+faithful-baseline strong regions are discovered or the absence of such regions
+is accepted as a reported scientific finding.
+
+## Source Acquisition Plan
+
+| Source | Official source | License | Approximate size | Real fields | Synthetic fields needed | Expected usefulness |
+|---|---|---|---|---|---|---|
+| Azure LLM 2024 | `https://github.com/Azure/AzurePublicDataset` and `AzureLLMInferenceDataset2024.md` | CC BY 4.0 per repository license | one-week sample; inspect file sizes before download | arrival timestamps, input tokens, output tokens | SLOs, priority, prediction noise | High: stronger OOD temporal/source coverage for monolithic selector |
+| Azure LMM 2025 | `https://github.com/Azure/AzurePublicDataset` and `AzureLMMInferenceDataset2025.md` | CC BY 4.0 per repository license | one-week multimodal sample; inspect before download | timestamps, image count, input/output tokens | text-only projection, SLOs, priority, prediction noise | Medium: useful OOD, but multimodal fields need careful projection |
+| Mooncake/Kimi | `https://github.com/kvcache-ai/Mooncake`, `FAST25-release/traces/` | verify repository license before redistribution | JSONL trace; inspect before download | arrivals, token counts, anonymized/remapped KV block-hash structure | SLOs, priorities, monolithic projection unless prefix cache is modeled | High later: especially useful once prefix/KV-cache features are modeled |
+| ServeGen | `https://github.com/alibaba/ServeGen` and NSDI 2026 paper page | verify repository license before use | generator code; no GitHub releases observed during audit | generator parameters from Alibaba workload characterization, not raw production rows | project SLOs/priorities and generated request plans | High for coverage-aware synthetic generation without naive grids |
+| TraceLab | `https://github.com/uw-syfi/TraceLab` | code Apache-2.0; public trace dataset CC BY 4.0 per repository | public normalized JSONL and DuckDB release; inspect release size | coding-agent sessions, LLM steps, tool-call structure | serving-window extraction, SLOs, priorities, token normalization | Medium/high OOD for agentic-serving selector evaluation |
 
 ### Local Source Provenance
 
