@@ -69,19 +69,25 @@ def metrics_to_outcome_vector(
     slo_attainment = (1.0 - slo_violation_rate) if slo_violation_rate is not None else None
     completion_fraction = _nan_to_none(metrics.completion_fraction)
     weighted_goodput = _nan_to_none(metrics.weighted_goodput)
+    weighted_completion_fraction = _nan_to_none(metrics.weighted_completion_fraction)
+    arrival_normalized_wg = _nan_to_none(metrics.arrival_normalized_weighted_goodput)
     if weighted_goodput is None and metrics.num_total > 0 and metrics.num_completed == 0:
         weighted_goodput = 0.0
     if completion_fraction is None and metrics.num_total > 0:
         completion_fraction = metrics.num_completed / metrics.num_total
-    arrival_normalized_wg = (
-        completion_fraction * weighted_goodput
-        if completion_fraction is not None and weighted_goodput is not None
-        else None
+    if weighted_completion_fraction is None and completion_fraction is not None:
+        weighted_completion_fraction = completion_fraction
+    if arrival_normalized_wg is None and weighted_completion_fraction is not None and weighted_goodput is not None:
+        arrival_normalized_wg = weighted_completion_fraction * weighted_goodput
+    rejection_fraction = (
+        metrics.num_dropped / metrics.num_total
+        if metrics.num_total else None
     )
 
     fields = {
         "weighted_goodput": weighted_goodput,
         "arrival_normalized_weighted_goodput": arrival_normalized_wg,
+        "weighted_completion_fraction": weighted_completion_fraction,
         "completion_fraction": completion_fraction,
         "slo_violation_rate": slo_violation_rate,
         "slo_attainment": slo_attainment,
@@ -108,9 +114,9 @@ def metrics_to_outcome_vector(
             if metrics.num_total else None
         ),
         "rejection_rate": (
-            metrics.num_dropped / metrics.num_total
-            if metrics.num_total else None
+            rejection_fraction
         ),
+        "rejection_fraction": rejection_fraction,
         "num_total": metrics.num_total,
         "num_completed": metrics.num_completed,
         "num_dropped": metrics.num_dropped,

@@ -52,6 +52,7 @@ class PolicyOutcomeVector:
 
     weighted_goodput: Optional[float] = None
     arrival_normalized_weighted_goodput: Optional[float] = None
+    weighted_completion_fraction: Optional[float] = None
     completion_fraction: Optional[float] = None
     slo_violation_rate: Optional[float] = None
     slo_attainment: Optional[float] = None   # 1 - slo_violation_rate, kept explicit for clarity
@@ -79,6 +80,7 @@ class PolicyOutcomeVector:
 
     admission_rate: Optional[float] = None
     rejection_rate: Optional[float] = None
+    rejection_fraction: Optional[float] = None
 
     num_total: Optional[int] = None
     num_completed: Optional[int] = None
