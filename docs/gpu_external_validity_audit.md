@@ -170,3 +170,127 @@ contention, then either:
 - treat vLLM/Sarathi as reference baselines if their strongest advantages remain
   runtime-level effects outside the simulator model.
 
+## Second Bounded Stress Audit
+
+The second audit used the same harness with `--phase stress`, detached under
+tmux session `gpu-external-validity-2`, and checkpointed after every completed
+scenario.
+
+Initial larger-model attempt:
+
+- model: `Qwen/Qwen2.5-1.5B-Instruct`
+- revision: `main`
+- port: 8002
+- command: `/home/soroush/.venvs/vllm_baseline_pilot/bin/vllm serve Qwen/Qwen2.5-1.5B-Instruct --port 8002 --revision main --gpu-memory-utilization 0.38 --max-model-len 4096 --max-num-seqs 4 --max-num-batched-tokens 1024 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching --enforce-eager`
+- status: startup blocked; the server remained unready after about seven
+  minutes and produced no scenario checkpoints
+
+The larger-model attempt was stopped without touching the protected existing
+healthcheck server. Because the validation phase is bounded, the audit then
+fell back to a cached model with deliberately tighter scheduler limits.
+
+Successful stress run:
+
+- output directory:
+  `experiments/gpu_external_validity/vllm_qwen05b_stress2_20260718T2212`
+- model: `Qwen/Qwen2.5-0.5B-Instruct`
+- revision: `main`
+- port: 8003
+- command: `/home/soroush/.venvs/vllm_baseline_pilot/bin/vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8003 --revision main --gpu-memory-utilization 0.25 --max-model-len 4096 --max-num-seqs 2 --max-num-batched-tokens 512 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching --enforce-eager`
+- start: 2026-07-19T02:11:09Z
+- end: 2026-07-19T02:13:08Z
+- scenarios: 8
+- requests: 140
+- completed requests: 140
+
+Summary:
+
+- runtime mean latency: 6.7380 s
+- runtime mean TTFT: 5.2437 s
+- simulator vLLM mean latency: 0.3628 s
+- simulator Sarathi mean latency: 0.3735 s
+- median runtime/simulator-vLLM latency ratio: 17.51
+- scenarios with vLLM waiting queue: 8/8
+- maximum waiting queue: 22 requests
+- maximum running sequences: 2
+- maximum observed KV-cache usage: 0.0214
+- preemption events: 0
+
+Per-scenario stress results:
+
+| Scenario | Requests | Runtime latency | Runtime TTFT | Runtime TPOT | Throughput | Max running | Max waiting | Max KV | Preemptions |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `stress_high_concurrency_queue` | 24 | 5.0616 | 4.3733 | 0.00545 | 2.696 | 2 | 22 | 0.00247 | 0 |
+| `stress_long_decode_kv` | 16 | 6.8393 | 5.4166 | 0.00541 | 1.381 | 2 | 14 | 0.00461 | 0 |
+| `stress_long_prefill` | 16 | 2.6578 | 2.1263 | 0.00559 | 3.407 | 2 | 14 | 0.01599 | 0 |
+| `stress_kv_pressure` | 12 | 13.8003 | 9.8340 | 0.00544 | 0.474 | 2 | 10 | 0.02145 | 0 |
+| `stress_mixed_prefill_decode_contention` | 16 | 3.4361 | 2.6478 | 0.00551 | 2.429 | 2 | 13 | 0.01631 | 0 |
+| `stress_burst_overload_recovery` | 24 | 9.7045 | 8.1429 | 0.00544 | 1.256 | 2 | 19 | 0.01735 | 0 |
+| `stress_burstgpt_replay` | 16 | 8.0859 | 6.2440 | 0.00543 | 1.032 | 2 | 13 | 0.01365 | 0 |
+| `stress_azure_2023_replay` | 16 | 4.3181 | 3.1644 | 0.00548 | 1.566 | 2 | 11 | 0.01638 | 0 |
+
+The second audit achieved queue buildup and visible prefill/decode contention:
+TTFT dominated end-to-end latency once the server admitted only two concurrent
+sequences. It did not achieve meaningful KV pressure or preemption.
+
+The generated calibration profile is:
+
+```text
+experiments/gpu_external_validity/vllm_qwen05b_stress2_20260718T2212/calibration_profile.json
+```
+
+It is an opt-in artifact only and does not change simulator defaults. Its
+observed fit is:
+
+- TTFT fit: `ttft_seconds ~= 4.57685 + 0.000735846 * prompt_tokens`
+- mean TPOT: 0.005470 s/token
+- warning: KV usage stayed below 20%, so KV-pressure calibration remains
+  incomplete
+
+## Sarathi Runtime Probe
+
+The official Sarathi-Serve repository is
+`https://github.com/microsoft/sarathi-serve`. Its README states that the project
+has been tested with CUDA 12.3 on H100 and A100 GPUs and gives source-install
+instructions using a Python environment and `pip install -e .`.
+
+An isolated PyPI probe was attempted in `/tmp/sarathi_serve_probe`:
+
+```bash
+python -m venv /tmp/sarathi_serve_probe
+/tmp/sarathi_serve_probe/bin/python -m pip install --upgrade pip
+/tmp/sarathi_serve_probe/bin/python -m pip install sarathi-serve
+```
+
+Result:
+
+```text
+ERROR: Could not find a version that satisfies the requirement sarathi-serve
+ERROR: No matching distribution found for sarathi-serve
+```
+
+Sarathi runtime validation remains blocked until a source install is attempted
+in an isolated environment compatible with this host's CUDA 13.0 / Python stack,
+or a containerized CUDA 12.3-compatible path is prepared.
+
+## Updated Classification
+
+vLLM:
+
+- status: `NEEDS_CALIBRATION`
+- reason: the second audit validates queue buildup and TTFT growth under
+  bounded scheduler pressure, but KV pressure and preemption remain unvalidated.
+
+Sarathi:
+
+- status: `RUNTIME_VALIDATION_BLOCKED`
+- reason: no installable runtime package is available via PyPI, and official
+  source-install requirements target a different tested CUDA/hardware envelope.
+
+Dataset action:
+
+- do not launch large-scale Dataset v2 generation yet
+- use the stress-run calibration profile only as diagnostic evidence
+- run one additional targeted KV-pressure experiment after either freeing the
+  protected old vLLM server or selecting a larger/cached model that can start
+  reliably

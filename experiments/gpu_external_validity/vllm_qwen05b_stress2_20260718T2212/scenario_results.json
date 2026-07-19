@@ -1,0 +1,466 @@
+[
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "burst concurrency above max_num_seqs",
+      "max_kv_cache_usage": 0.0024697777200052284,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 22.0,
+      "mean_latency_s": 5.061569316584307,
+      "mean_output_tokens": 127.25,
+      "mean_prompt_tokens": 168.58333333333334,
+      "mean_tpot_s": 0.0054519257234121295,
+      "mean_ttft_s": 4.373274386491782,
+      "num_requests": 24,
+      "num_success": 24,
+      "p50_latency_s": 5.409156685927883,
+      "p50_ttft_s": 4.721616934984922,
+      "p95_latency_s": 8.807028164854273,
+      "p95_ttft_s": 8.211214286042377,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 2.6962950246470876,
+      "scenario_family": "high_concurrency",
+      "scenario_name": "stress_high_concurrency_queue"
+    },
+    "scenario": {
+      "description": "burst concurrency above max_num_seqs",
+      "max_client_concurrency": 24,
+      "name": "stress_high_concurrency_queue",
+      "scenario_family": "high_concurrency"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.13258333333333336,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.005583333333333333,
+        "num_completed": 24,
+        "num_dropped": 0,
+        "p95_latency_s": 0.136,
+        "p95_ttft_s": 0.009000000000000001,
+        "request_throughput": 176.47058823529412
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.128375,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0013750000000000001,
+        "num_completed": 24,
+        "num_dropped": 0,
+        "p95_latency_s": 0.129,
+        "p95_ttft_s": 0.002,
+        "request_throughput": 187.5
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "long decode with overlapping sequences",
+      "max_kv_cache_usage": 0.004614584687378187,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 14.0,
+      "mean_latency_s": 6.839302413689438,
+      "mean_output_tokens": 263.6875,
+      "mean_prompt_tokens": 169.375,
+      "mean_tpot_s": 0.005411486202527886,
+      "mean_ttft_s": 5.416599293457693,
+      "num_requests": 16,
+      "num_success": 16,
+      "p50_latency_s": 7.181118214968592,
+      "p50_ttft_s": 5.994820493040606,
+      "p95_latency_s": 11.43485828791745,
+      "p95_ttft_s": 10.700261058053002,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 1.3814755912927068,
+      "scenario_family": "decode_heavy",
+      "scenario_name": "stress_long_decode_kv"
+    },
+    "scenario": {
+      "description": "long decode with overlapping sequences",
+      "max_client_concurrency": 16,
+      "name": "stress_long_decode_kv",
+      "scenario_family": "decode_heavy"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.5151875,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0041875,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.51725,
+        "p95_ttft_s": 0.00625,
+        "request_throughput": 30.94777562862669
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.5120625,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0010625,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.51225,
+        "p95_ttft_s": 0.00125,
+        "request_throughput": 31.25
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "long prompt prefill contention",
+      "max_kv_cache_usage": 0.015988561029507298,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 14.0,
+      "mean_latency_s": 2.6578097725869156,
+      "mean_output_tokens": 96.0,
+      "mean_prompt_tokens": 1871.375,
+      "mean_tpot_s": 0.0055946015956578775,
+      "mean_ttft_s": 2.1263226209994173,
+      "num_requests": 16,
+      "num_success": 16,
+      "p50_latency_s": 2.9318971049506217,
+      "p50_ttft_s": 2.398689719848335,
+      "p95_latency_s": 4.681025229161605,
+      "p95_ttft_s": 4.149569682078436,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 3.4069413749834077,
+      "scenario_family": "prefill_heavy",
+      "scenario_name": "stress_long_prefill"
+    },
+    "scenario": {
+      "description": "long prompt prefill contention",
+      "max_client_concurrency": 16,
+      "name": "stress_long_prefill",
+      "scenario_family": "prefill_heavy"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.132,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.037,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.16025,
+        "p95_ttft_s": 0.06525,
+        "request_throughput": 98.15950920245399
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.10350000000000001,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0085,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.11025,
+        "p95_ttft_s": 0.01525,
+        "request_throughput": 145.45454545454547
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "long context plus long decode",
+      "max_kv_cache_usage": 0.021448069673729364,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 10.0,
+      "mean_latency_s": 13.80031460756436,
+      "mean_output_tokens": 729.3333333333334,
+      "mean_prompt_tokens": 1873.1666666666667,
+      "mean_tpot_s": 0.00544326864981334,
+      "mean_ttft_s": 9.833988959571192,
+      "num_requests": 12,
+      "num_success": 12,
+      "p50_latency_s": 14.45302623603493,
+      "p50_ttft_s": 10.274763032095507,
+      "p95_latency_s": 22.935569304972887,
+      "p95_ttft_s": 18.746075754985213,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 0.4743501235835485,
+      "scenario_family": "kv_pressure",
+      "scenario_name": "stress_kv_pressure"
+    },
+    "scenario": {
+      "description": "long context plus long decode",
+      "max_client_concurrency": 12,
+      "name": "stress_kv_pressure",
+      "scenario_family": "kv_pressure"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.7955833333333334,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.028583333333333336,
+        "num_completed": 12,
+        "num_dropped": 0,
+        "p95_latency_s": 0.81625,
+        "p95_ttft_s": 0.04925,
+        "request_throughput": 14.669926650366747
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.7735,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.0065,
+        "num_completed": 12,
+        "num_dropped": 0,
+        "p95_latency_s": 0.77845,
+        "p95_ttft_s": 0.011449999999999998,
+        "request_throughput": 15.424164524421593
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "new long-prefill arrivals while long decodes are active",
+      "max_kv_cache_usage": 0.016313531782139568,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 13.0,
+      "mean_latency_s": 3.4361253766255686,
+      "mean_output_tokens": 143.9375,
+      "mean_prompt_tokens": 1023.5,
+      "mean_tpot_s": 0.005514976095572066,
+      "mean_ttft_s": 2.6477520229382208,
+      "num_requests": 16,
+      "num_success": 16,
+      "p50_latency_s": 3.605293673928827,
+      "p50_ttft_s": 2.79689383902587,
+      "p95_latency_s": 5.760224262019619,
+      "p95_ttft_s": 5.056955639040098,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 2.4291290951810214,
+      "scenario_family": "mixed_prefill_decode",
+      "scenario_name": "stress_mixed_prefill_decode_contention"
+    },
+    "scenario": {
+      "description": "new long-prefill arrivals while long decodes are active",
+      "max_client_concurrency": 16,
+      "name": "stress_mixed_prefill_decode_contention",
+      "scenario_family": "mixed_prefill_decode"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.3305625,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.01156250000000001,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.515,
+        "p95_ttft_s": 0.03200000000000003,
+        "request_throughput": 17.563117453347967
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.32175000000000004,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0027500000000000024,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.512,
+        "p95_ttft_s": 0.0072500000000000064,
+        "request_throughput": 18.099547511312217
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "burst above sustainable capacity followed by recovery arrivals",
+      "max_kv_cache_usage": 0.017353438190562898,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 19.0,
+      "mean_latency_s": 9.70450126984118,
+      "mean_output_tokens": 288.0,
+      "mean_prompt_tokens": 980.6666666666666,
+      "mean_tpot_s": 0.00543997347398599,
+      "mean_ttft_s": 8.142946923083704,
+      "num_requests": 24,
+      "num_success": 24,
+      "p50_latency_s": 11.338613391853869,
+      "p50_ttft_s": 9.262849115999416,
+      "p95_latency_s": 15.86024789698422,
+      "p95_ttft_s": 14.496364585822448,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 1.2558706788825817,
+      "scenario_family": "bursty_transient",
+      "scenario_name": "stress_burst_overload_recovery"
+    },
+    "scenario": {
+      "description": "burst above sustainable capacity followed by recovery arrivals",
+      "max_client_concurrency": 24,
+      "name": "stress_burst_overload_recovery",
+      "scenario_family": "bursty_transient"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.30220833333333336,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.015208333333333381,
+        "num_completed": 24,
+        "num_dropped": 0,
+        "p95_latency_s": 0.4028,
+        "p95_ttft_s": 0.03385,
+        "request_throughput": 6.8434559452523525
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.2913333333333334,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.004333333333333315,
+        "num_completed": 24,
+        "num_dropped": 0,
+        "p95_latency_s": 0.3887,
+        "p95_ttft_s": 0.01,
+        "request_throughput": 6.847360912981455
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "stress burstgpt replay with synthetic prompt text",
+      "max_kv_cache_usage": 0.013648771610555,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 13.0,
+      "mean_latency_s": 8.085881345832604,
+      "mean_output_tokens": 340.8125,
+      "mean_prompt_tokens": 626.75,
+      "mean_tpot_s": 0.0054263350671368915,
+      "mean_ttft_s": 6.244030620335252,
+      "num_requests": 16,
+      "num_success": 16,
+      "p50_latency_s": 8.966819316148758,
+      "p50_ttft_s": 7.005896492861211,
+      "p95_latency_s": 12.817436324898154,
+      "p95_ttft_s": 11.404946020105854,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 1.032044045012736,
+      "scenario_family": "real_trace_stress",
+      "scenario_name": "stress_burstgpt_replay"
+    },
+    "scenario": {
+      "description": "stress burstgpt replay with synthetic prompt text",
+      "max_client_concurrency": 16,
+      "name": "stress_burstgpt_replay",
+      "scenario_family": "real_trace_stress"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.47575,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.007000000000000029,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.52625,
+        "p95_ttft_s": 0.01525,
+        "request_throughput": 7.952286282306163
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.47062500000000007,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0018750000000000142,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.515,
+        "p95_ttft_s": 0.004,
+        "request_throughput": 7.956240676280457
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "stress azure_llm_2023 replay with synthetic prompt text",
+      "max_kv_cache_usage": 0.016378525932666088,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 11.0,
+      "mean_latency_s": 4.318136174071697,
+      "mean_output_tokens": 212.5,
+      "mean_prompt_tokens": 536.125,
+      "mean_tpot_s": 0.005480544578231339,
+      "mean_ttft_s": 3.164420394328772,
+      "num_requests": 16,
+      "num_success": 16,
+      "p50_latency_s": 4.753969331970438,
+      "p50_ttft_s": 3.793689965037629,
+      "p95_latency_s": 7.366061001084745,
+      "p95_ttft_s": 5.564386377111077,
+      "preemption_events_delta": 0.0,
+      "prefix_cache_hits_delta": 0.0,
+      "prefix_cache_queries_delta": 0.0,
+      "request_throughput": 1.565792306288675,
+      "scenario_family": "real_trace_stress",
+      "scenario_name": "stress_azure_2023_replay"
+    },
+    "scenario": {
+      "description": "stress azure_llm_2023 replay with synthetic prompt text",
+      "max_client_concurrency": 16,
+      "name": "stress_azure_2023_replay",
+      "scenario_family": "real_trace_stress"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.3044375,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.004687500000000022,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.51925,
+        "p95_ttft_s": 0.009000000000000001,
+        "request_throughput": 8.311688311688311
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.3010625,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.0013125000000000142,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.51325,
+        "p95_ttft_s": 0.0022500000000000003,
+        "request_throughput": 8.320332813312532
+      }
+    }
+  }
+]

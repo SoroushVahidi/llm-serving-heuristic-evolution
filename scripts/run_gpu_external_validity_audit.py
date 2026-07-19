@@ -12,6 +12,8 @@ import argparse
 import csv
 import json
 import math
+import os
+import signal
 import statistics
 import subprocess
 import sys
@@ -37,6 +39,7 @@ from llmserveopt.workloads.trace_io_extended import load_extended_jsonl  # noqa:
 
 DEFAULT_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 DEFAULT_SERVER_URL = "http://127.0.0.1:8001"
+DEFAULT_VLLM_EXECUTABLE = "/home/soroush/.venvs/vllm_baseline_pilot/bin/vllm"
 
 
 @dataclass(frozen=True)
@@ -174,6 +177,20 @@ def build_scenarios(root: Path, *, include_real_traces: bool = True) -> list[Run
     return scenarios
 
 
+def build_stress_scenarios(root: Path, *, include_real_traces: bool = True) -> list[RuntimeScenario]:
+    scenarios = [
+        _scenario("stress_high_concurrency_queue", "burst concurrency above max_num_seqs", ["short"], [128], 24, "burst", 24, "high_concurrency"),
+        _scenario("stress_long_decode_kv", "long decode with overlapping sequences", ["short"], [512], 16, "burst", 16, "decode_heavy"),
+        _scenario("stress_long_prefill", "long prompt prefill contention", ["long"], [96], 16, "burst", 16, "prefill_heavy"),
+        _scenario("stress_kv_pressure", "long context plus long decode", ["long"], [768], 12, "burst", 12, "kv_pressure"),
+        _mixed_contention_scenario(),
+        _burst_recovery_scenario(),
+    ]
+    if include_real_traces:
+        scenarios.extend(_stress_real_trace_scenarios(root))
+    return scenarios
+
+
 def _scenario(
     name: str,
     description: str,
@@ -208,6 +225,88 @@ def _arrivals(n: int, pattern: str) -> list[float]:
     if pattern == "spread":
         return [0.15 * i for i in range(n)]
     raise ValueError(pattern)
+
+
+def _mixed_contention_scenario() -> RuntimeScenario:
+    requests: list[PlannedRequest] = []
+    arrivals = [0.0] * 8 + [0.75] * 8
+    for i in range(16):
+        bucket = "short" if i < 8 else "long"
+        target = 512 if i < 8 else 128
+        prompt = cc.build_length_targeted_prompt(bucket, target, seed=20260718, variant_index=1000 + i)
+        requests.append(PlannedRequest(
+            scenario_name="stress_mixed_prefill_decode_contention",
+            request_id=i,
+            arrival_time_s=arrivals[i],
+            prompt_bucket=bucket,
+            target_output_tokens=target,
+            intended_prompt_tokens=cc.approx_token_count(prompt),
+            prompt_text=prompt,
+        ))
+    return RuntimeScenario(
+        "stress_mixed_prefill_decode_contention",
+        "new long-prefill arrivals while long decodes are active",
+        requests,
+        16,
+        "mixed_prefill_decode",
+    )
+
+
+def _burst_recovery_scenario() -> RuntimeScenario:
+    requests: list[PlannedRequest] = []
+    arrivals = [0.0] * 16 + [1.5 + 0.25 * i for i in range(8)]
+    for i in range(24):
+        bucket = "medium" if i % 3 else "long"
+        target = 256 if i % 4 else 384
+        prompt = cc.build_length_targeted_prompt(bucket, target, seed=20260718, variant_index=2000 + i)
+        requests.append(PlannedRequest(
+            scenario_name="stress_burst_overload_recovery",
+            request_id=i,
+            arrival_time_s=arrivals[i],
+            prompt_bucket=bucket,
+            target_output_tokens=target,
+            intended_prompt_tokens=cc.approx_token_count(prompt),
+            prompt_text=prompt,
+        ))
+    return RuntimeScenario(
+        "stress_burst_overload_recovery",
+        "burst above sustainable capacity followed by recovery arrivals",
+        requests,
+        24,
+        "bursty_transient",
+    )
+
+
+def _stress_real_trace_scenarios(root: Path) -> list[RuntimeScenario]:
+    specs = [
+        ("stress_burstgpt_replay", "burstgpt", root / "data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl"),
+        ("stress_azure_2023_replay", "azure_llm_2023", root / "data/processed/azure/azure_llm_2023_conv.jsonl"),
+    ]
+    out: list[RuntimeScenario] = []
+    for name, source, path in specs:
+        if not path.exists():
+            continue
+        reqs, _meta = load_extended_jsonl(path)
+        selected = list(reqs[:16])
+        if not selected:
+            continue
+        planned = []
+        for i, r in enumerate(selected):
+            bucket = "long" if r.prompt_tokens >= 1200 else "medium" if r.prompt_tokens >= 400 else "short"
+            target = max(64, min(512, int(r.actual_output_tokens) * 4))
+            prompt = cc.build_length_targeted_prompt(bucket, target, seed=20260718, variant_index=3000 + i)
+            planned.append(PlannedRequest(
+                scenario_name=name,
+                request_id=i,
+                arrival_time_s=0.0 if i < 10 else 1.0 + 0.1 * (i - 10),
+                prompt_bucket=bucket,
+                target_output_tokens=target,
+                intended_prompt_tokens=cc.approx_token_count(prompt),
+                prompt_text=prompt,
+                source_trace=source,
+            ))
+        out.append(RuntimeScenario(name, f"stress {source} replay with synthetic prompt text", planned, 16, "real_trace_stress"))
+    return out
 
 
 def _real_trace_scenarios(root: Path) -> list[RuntimeScenario]:
@@ -403,6 +502,9 @@ def _summarize_runtime(scenario: RuntimeScenario, results: list[RuntimeResult], 
         "max_vllm_running": max((s.get("running", 0.0) for s in samples), default=0.0),
         "max_vllm_waiting": max((s.get("waiting", 0.0) for s in samples), default=0.0),
         "max_kv_cache_usage": max((s.get("kv_cache_usage", 0.0) for s in samples), default=0.0),
+        "preemption_events_delta": _counter_delta(samples, "preemptions_total"),
+        "prefix_cache_queries_delta": _counter_delta(samples, "prefix_cache_queries_total"),
+        "prefix_cache_hits_delta": _counter_delta(samples, "prefix_cache_hits_total"),
     }
 
 
@@ -453,13 +555,67 @@ def write_outputs(out_dir: Path, env: dict, scenarios: list[RuntimeScenario], sc
             f.write(json.dumps(asdict(row), sort_keys=True) + "\n")
     with open(out_dir / "scenario_summary.csv", "w", newline="") as f:
         fieldnames = sorted({k for r in scenario_reports for k in r["runtime_summary"]})
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for r in scenario_reports:
             writer.writerow(r["runtime_summary"])
     summary = summarize_audit(scenario_reports)
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     (out_dir / "summary.md").write_text(_summary_md(summary, env, scenario_reports) + "\n")
+
+
+def load_checkpoint(out_dir: Path) -> tuple[list[dict], list[RuntimeResult]]:
+    reports_path = out_dir / "scenario_results.json"
+    requests_path = out_dir / "requests.jsonl"
+    reports = json.loads(reports_path.read_text()) if reports_path.exists() else []
+    request_rows: list[RuntimeResult] = []
+    if requests_path.exists():
+        for line in requests_path.read_text().splitlines():
+            if line.strip():
+                request_rows.append(RuntimeResult(**json.loads(line)))
+    return reports, request_rows
+
+
+def make_calibration_profile(env: dict, summary: dict, reports: list[dict]) -> dict:
+    prefill_points = [
+        (r["runtime_summary"].get("mean_prompt_tokens"), r["runtime_summary"].get("mean_ttft_s"))
+        for r in reports
+        if r["runtime_summary"].get("mean_prompt_tokens") is not None
+        and r["runtime_summary"].get("mean_ttft_s") is not None
+    ]
+    decode_points = [
+        r["runtime_summary"].get("mean_tpot_s")
+        for r in reports
+        if r["runtime_summary"].get("mean_tpot_s") is not None
+    ]
+    intercept, slope = _linear_fit(prefill_points)
+    warnings = []
+    if summary.get("scenarios_with_vllm_waiting", 0) == 0:
+        warnings.append("No waiting queue observed; saturation calibration remains incomplete.")
+    if (summary.get("max_observed_kv_cache_usage") or 0.0) < 0.2:
+        warnings.append("KV usage stayed below 20%; KV-pressure calibration remains incomplete.")
+    return {
+        "schema_version": "gpu_external_validity_calibration_profile_v1",
+        "created_utc": datetime.now(timezone.utc).isoformat(),
+        "model": env.get("model"),
+        "server_command": env.get("server_command"),
+        "server_url": env.get("server_url"),
+        "git_head": env.get("git_head"),
+        "summary": summary,
+        "prefill_latency_fit": {
+            "form": "ttft_seconds ~= intercept_s + slope_s_per_prompt_token * prompt_tokens",
+            "intercept_s": intercept,
+            "slope_s_per_prompt_token": slope,
+            "num_points": len(prefill_points),
+        },
+        "decode_tpot_summary": {
+            "mean_s_per_token": _mean(decode_points),
+            "median_s_per_token": statistics.median(decode_points) if decode_points else None,
+            "num_points": len(decode_points),
+        },
+        "warnings": warnings,
+        "historical_defaults_changed": False,
+    }
 
 
 def summarize_audit(scenario_reports: list[dict]) -> dict:
@@ -479,6 +635,8 @@ def summarize_audit(scenario_reports: list[dict]) -> dict:
         "sarathi_sim_vs_vllm_sim_latency_ratio_median": _median_ratio(sarathi_sim_lat, vllm_sim_lat),
         "scenarios_with_vllm_waiting": sum(1 for r in scenario_reports if r["runtime_summary"].get("max_vllm_waiting", 0.0) > 0.0),
         "max_observed_kv_cache_usage": max((r["runtime_summary"].get("max_kv_cache_usage", 0.0) for r in scenario_reports), default=0.0),
+        "max_observed_vllm_running": max((r["runtime_summary"].get("max_vllm_running", 0.0) for r in scenario_reports), default=0.0),
+        "preemption_events": sum((r["runtime_summary"].get("preemption_events_delta", 0.0) for r in scenario_reports), 0.0),
     }
 
 
@@ -497,12 +655,14 @@ def _summary_md(summary: dict, env: dict, reports: list[dict]) -> str:
         f"- Median runtime/sim-vLLM latency ratio: {summary['vllm_runtime_vs_sim_latency_ratio_median']}",
         f"- Median Sarathi-sim/vLLM-sim latency ratio: {summary['sarathi_sim_vs_vllm_sim_latency_ratio_median']}",
         f"- Scenarios with vLLM waiting >0: {summary['scenarios_with_vllm_waiting']}",
+        f"- Max observed vLLM running sequences: {summary['max_observed_vllm_running']}",
         f"- Max observed vLLM KV-cache usage: {summary['max_observed_kv_cache_usage']}",
+        f"- Preemption events: {summary['preemption_events']}",
         "",
         "## Scenario Table",
         "",
-        "| Scenario | Runtime mean latency | Runtime mean TTFT | vLLM sim mean latency | Sarathi sim mean latency | max waiting | max KV |",
-        "|---|---:|---:|---:|---:|---:|---:|",
+        "| Scenario | Runtime mean latency | Runtime mean TTFT | vLLM sim mean latency | Sarathi sim mean latency | max running | max waiting | max KV | preemptions |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for r in reports:
         rt = r["runtime_summary"]
@@ -510,17 +670,37 @@ def _summary_md(summary: dict, env: dict, reports: list[dict]) -> str:
         lines.append(
             f"| {rt['scenario_name']} | {_fmt(rt.get('mean_latency_s'))} | {_fmt(rt.get('mean_ttft_s'))} | "
             f"{_fmt(sim['vllm_faithful'].get('mean_latency_s'))} | {_fmt(sim['sarathi_faithful'].get('mean_latency_s'))} | "
-            f"{_fmt(rt.get('max_vllm_waiting'))} | {_fmt(rt.get('max_kv_cache_usage'))} |"
+            f"{_fmt(rt.get('max_vllm_running'))} | {_fmt(rt.get('max_vllm_waiting'))} | {_fmt(rt.get('max_kv_cache_usage'))} | "
+            f"{_fmt(rt.get('preemption_events_delta'))} |"
         )
     return "\n".join(lines)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--phase", choices=["smoke", "stress"], default="smoke")
     parser.add_argument("--server-url", default=DEFAULT_SERVER_URL)
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--model-revision", default=None)
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--allow-live-server", action="store_true")
+    parser.add_argument("--start-vllm-server", action="store_true")
+    parser.add_argument("--vllm-executable", default=DEFAULT_VLLM_EXECUTABLE)
+    parser.add_argument("--server-log", default=None)
+    parser.add_argument("--server-ready-timeout-seconds", type=float, default=900.0)
+    parser.add_argument("--port", type=int, default=None)
+    parser.add_argument("--gpu-memory-utilization", type=float, default=None)
+    parser.add_argument("--max-model-len", type=int, default=None)
+    parser.add_argument("--max-num-seqs", type=int, default=None)
+    parser.add_argument("--max-num-batched-tokens", type=int, default=None)
+    parser.add_argument("--block-size", type=int, default=None)
+    parser.add_argument("--enable-chunked-prefill", action="store_true")
+    parser.add_argument("--disable-chunked-prefill", action="store_true")
+    parser.add_argument("--disable-prefix-caching", action="store_true")
+    parser.add_argument("--enforce-eager", action="store_true")
+    parser.add_argument("--disable-log-requests", action="store_true")
+    parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--write-calibration-profile", action="store_true")
     parser.add_argument("--mock", action="store_true")
     parser.add_argument("--timeout-seconds", type=float, default=90.0)
     parser.add_argument("--limit-scenarios", type=int, default=None)
@@ -530,46 +710,100 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    if not args.allow_live_server and not args.mock:
-        print("ERROR: pass --allow-live-server or --mock", file=sys.stderr)
+    if not args.allow_live_server and not args.mock and not args.start_vllm_server:
+        print("ERROR: pass --allow-live-server, --start-vllm-server, or --mock", file=sys.stderr)
+        return 2
+    if args.enable_chunked_prefill and args.disable_chunked_prefill:
+        print("ERROR: choose at most one chunked-prefill mode", file=sys.stderr)
         return 2
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_dir = Path(args.output_dir) if args.output_dir else ROOT / "experiments" / "gpu_external_validity" / f"vllm_qwen05b_{timestamp}"
-    scenarios = build_scenarios(ROOT, include_real_traces=not args.no_real_traces)
+    out_dir = Path(args.output_dir) if args.output_dir else ROOT / "experiments" / "gpu_external_validity" / f"vllm_{args.phase}_{timestamp}"
+    scenarios = (
+        build_stress_scenarios(ROOT, include_real_traces=not args.no_real_traces)
+        if args.phase == "stress"
+        else build_scenarios(ROOT, include_real_traces=not args.no_real_traces)
+    )
     if args.limit_scenarios is not None:
         scenarios = scenarios[:args.limit_scenarios]
 
-    env = audit_environment(args.server_url, args.model)
-    request_rows: list[RuntimeResult] = []
-    reports: list[dict] = []
-    for scenario in scenarios:
-        print(f"running {scenario.name} ({len(scenario.requests)} requests)", flush=True)
-        runtime_rows, runtime_summary = run_runtime_scenario(
-            scenario,
-            server_url=args.server_url,
-            model=args.model,
-            timeout_s=args.timeout_seconds,
-            mock=args.mock,
-        )
-        simulator_summary = run_simulator_scenario(scenario)
-        request_rows.extend(runtime_rows)
-        reports.append({
-            "scenario": {
-                "name": scenario.name,
-                "description": scenario.description,
-                "max_client_concurrency": scenario.max_client_concurrency,
-                "scenario_family": scenario.scenario_family,
-            },
-            "runtime_summary": runtime_summary,
-            "simulator_summary": simulator_summary,
+    server_proc: subprocess.Popen | None = None
+    server_log_handle = None
+    if args.start_vllm_server:
+        args.server_url = _server_url_for_port(args.server_url, args.port)
+        server_log_path = Path(args.server_log) if args.server_log else out_dir / "server.log"
+        server_log_path.parent.mkdir(parents=True, exist_ok=True)
+        server_log_handle = open(server_log_path, "a")
+        server_cmd = _build_vllm_server_command(args)
+        server_proc = _start_vllm_server(server_cmd, server_log_handle)
+        _install_server_cleanup(server_proc)
+        if not _wait_for_server(args.server_url, args.server_ready_timeout_seconds):
+            print(f"ERROR: vLLM server did not become ready at {args.server_url}", file=sys.stderr)
+            _stop_vllm_server(server_proc)
+            return 1
+    else:
+        server_cmd = None
+
+    try:
+        env = audit_environment(args.server_url, args.model)
+        env.update({
+            "phase": args.phase,
+            "server_command": " ".join(server_cmd) if server_cmd else None,
+            "server_started_by_audit": bool(args.start_vllm_server),
+            "scenario_count_planned": len(scenarios),
         })
-    write_outputs(out_dir, env, scenarios, reports, request_rows)
-    print(json.dumps({"output_dir": str(out_dir), **summarize_audit(reports)}, indent=2, sort_keys=True))
+        if args.resume:
+            reports, request_rows = load_checkpoint(out_dir)
+        else:
+            reports, request_rows = [], []
+        completed = {r["scenario"]["name"] for r in reports}
+        for scenario in scenarios:
+            if scenario.name in completed:
+                print(f"skipping completed {scenario.name}", flush=True)
+                continue
+            print(f"running {scenario.name} ({len(scenario.requests)} requests)", flush=True)
+            runtime_rows, runtime_summary = run_runtime_scenario(
+                scenario,
+                server_url=args.server_url,
+                model=args.model,
+                timeout_s=args.timeout_seconds,
+                mock=args.mock,
+            )
+            simulator_summary = run_simulator_scenario(scenario)
+            request_rows.extend(runtime_rows)
+            reports.append({
+                "scenario": {
+                    "name": scenario.name,
+                    "description": scenario.description,
+                    "max_client_concurrency": scenario.max_client_concurrency,
+                    "scenario_family": scenario.scenario_family,
+                },
+                "runtime_summary": runtime_summary,
+                "simulator_summary": simulator_summary,
+            })
+            write_outputs(out_dir, env, scenarios, reports, request_rows)
+        summary = summarize_audit(reports)
+        if args.write_calibration_profile:
+            (out_dir / "calibration_profile.json").write_text(
+                json.dumps(make_calibration_profile(env, summary, reports), indent=2, sort_keys=True)
+            )
+        print(json.dumps({"output_dir": str(out_dir), **summary}, indent=2, sort_keys=True))
+    finally:
+        if server_proc is not None:
+            _stop_vllm_server(server_proc)
+        if server_log_handle is not None:
+            server_log_handle.close()
     return 0
 
 
 def _parse_vllm_metrics(text: str) -> dict[str, float]:
-    out = {"running": 0.0, "waiting": 0.0, "kv_cache_usage": 0.0}
+    out = {
+        "running": 0.0,
+        "waiting": 0.0,
+        "kv_cache_usage": 0.0,
+        "preemptions_total": 0.0,
+        "prefix_cache_queries_total": 0.0,
+        "prefix_cache_hits_total": 0.0,
+    }
     for line in text.splitlines():
         if line.startswith("vllm:num_requests_running"):
             out["running"] += _metric_value(line)
@@ -577,7 +811,109 @@ def _parse_vllm_metrics(text: str) -> dict[str, float]:
             out["waiting"] += _metric_value(line)
         elif line.startswith("vllm:kv_cache_usage_perc"):
             out["kv_cache_usage"] = max(out["kv_cache_usage"], _metric_value(line))
+        elif line.startswith("vllm:num_preemptions_total"):
+            out["preemptions_total"] += _metric_value(line)
+        elif line.startswith("vllm:prefix_cache_queries_total"):
+            out["prefix_cache_queries_total"] += _metric_value(line)
+        elif line.startswith("vllm:prefix_cache_hits_total"):
+            out["prefix_cache_hits_total"] += _metric_value(line)
     return out
+
+
+def _server_url_for_port(server_url: str, port: int | None) -> str:
+    if port is None:
+        return server_url
+    return f"http://127.0.0.1:{port}"
+
+
+def _build_vllm_server_command(args: argparse.Namespace) -> list[str]:
+    cmd = [args.vllm_executable, "serve", args.model]
+    port = args.port
+    if port is not None:
+        cmd.extend(["--port", str(port)])
+    flag_values = [
+        ("--revision", args.model_revision),
+        ("--gpu-memory-utilization", args.gpu_memory_utilization),
+        ("--max-model-len", args.max_model_len),
+        ("--max-num-seqs", args.max_num_seqs),
+        ("--max-num-batched-tokens", args.max_num_batched_tokens),
+        ("--block-size", args.block_size),
+    ]
+    for flag, value in flag_values:
+        if value is not None:
+            cmd.extend([flag, str(value)])
+    if args.enable_chunked_prefill:
+        cmd.append("--enable-chunked-prefill")
+    if args.disable_chunked_prefill:
+        cmd.append("--no-enable-chunked-prefill")
+    if args.disable_prefix_caching:
+        cmd.append("--no-enable-prefix-caching")
+    if args.enforce_eager:
+        cmd.append("--enforce-eager")
+    if args.disable_log_requests:
+        cmd.append("--disable-log-requests")
+    return cmd
+
+
+def _start_vllm_server(cmd: list[str], log_handle) -> subprocess.Popen:
+    env = os.environ.copy()
+    cuda_home = "/home/soroush/.venvs/vllm_baseline_pilot/lib/python3.12/site-packages/nvidia/cu13"
+    env["CUDA_HOME"] = env.get("CUDA_HOME", cuda_home)
+    env["PATH"] = f"{cuda_home}/bin:/home/soroush/.venvs/vllm_baseline_pilot/bin:{env.get('PATH', '')}"
+    env.setdefault("VLLM_USE_FLASHINFER_SAMPLER", "0")
+    print(f"starting vLLM server: {' '.join(cmd)}", flush=True)
+    log_handle.write(f"\n# starting vLLM server: {' '.join(cmd)}\n")
+    log_handle.flush()
+    return subprocess.Popen(
+        cmd,
+        stdout=log_handle,
+        stderr=subprocess.STDOUT,
+        env=env,
+        cwd=ROOT,
+        start_new_session=True,
+        text=True,
+    )
+
+
+def _wait_for_server(server_url: str, timeout_s: float) -> bool:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        try:
+            _urlopen_text(f"{server_url.rstrip('/')}/version", timeout_s=5.0)
+            _urlopen_text(f"{server_url.rstrip('/')}/v1/models", timeout_s=5.0)
+            return True
+        except Exception:
+            time.sleep(5.0)
+    return False
+
+
+def _install_server_cleanup(proc: subprocess.Popen) -> None:
+    def _handler(signum, _frame):
+        _stop_vllm_server(proc)
+        raise SystemExit(128 + int(signum))
+
+    signal.signal(signal.SIGTERM, _handler)
+    signal.signal(signal.SIGINT, _handler)
+
+
+def _stop_vllm_server(proc: subprocess.Popen) -> None:
+    if proc.poll() is not None:
+        return
+    try:
+        os.killpg(proc.pid, signal.SIGTERM)
+        proc.wait(timeout=60)
+    except Exception:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except Exception:
+            pass
+
+
+def _counter_delta(samples: list[dict[str, float]], key: str) -> float:
+    vals = [s[key] for s in samples if key in s]
+    if len(vals) < 2:
+        return 0.0
+    return max(0.0, vals[-1] - vals[0])
 
 
 def _metric_value(line: str) -> float:
@@ -619,6 +955,28 @@ def _median_ratio(numerators: Iterable[float | None], denominators: Iterable[flo
         if n is not None and d is not None and not math.isnan(n) and not math.isnan(d) and d > 0
     ]
     return statistics.median(ratios) if ratios else None
+
+
+def _linear_fit(points: Iterable[tuple[float | None, float | None]]) -> tuple[float | None, float | None]:
+    vals = [
+        (float(x), float(y))
+        for x, y in points
+        if x is not None and y is not None and not math.isnan(float(x)) and not math.isnan(float(y))
+    ]
+    if not vals:
+        return None, None
+    if len(vals) == 1:
+        return vals[0][1], 0.0
+    xs = [x for x, _ in vals]
+    ys = [y for _, y in vals]
+    x_mean = statistics.mean(xs)
+    y_mean = statistics.mean(ys)
+    denom = sum((x - x_mean) ** 2 for x in xs)
+    if denom == 0:
+        return y_mean, 0.0
+    slope = sum((x - x_mean) * (y - y_mean) for x, y in vals) / denom
+    intercept = y_mean - slope * x_mean
+    return intercept, slope
 
 
 def _fmt(value: Any) -> str:

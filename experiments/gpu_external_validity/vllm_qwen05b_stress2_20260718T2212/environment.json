@@ -1,0 +1,22 @@
+{
+  "git_branch": "selector-dataset-v2-corrected-objective",
+  "git_head": "ed2c6e72213547270166c6698fe289216481c972",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "models_endpoint": "{\"object\":\"list\",\"data\":[{\"id\":\"Qwen/Qwen2.5-0.5B-Instruct\",\"object\":\"model\",\"created\":1784427085,\"owned_by\":\"vllm\",\"root\":\"Qwen/Qwen2.5-0.5B-Instruct\",\"parent\":null,\"max_model_len\":4096,\"permission\":[{\"id\":\"modelperm-9473f551cb3ae9d0\",\"object\":\"model_permission\",\"created\":1784427085,\"allow_create_engine\":false,\"allow_sampling\":true,\"allow_logprobs\":true,\"allow_search_indices\":false,\"allow_view\":true,\"allow_fine_tuning\":false,\"organization\":\"*\",\"group\":null,\"is_blocking\":false}]}]}",
+  "nvidia_smi": "Sat Jul 18 22:11:25 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.159.03             Driver Version: 580.159.03     CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 5060 Ti     Off |   00000000:01:00.0 Off |                  N/A |\n|  0%   31C    P1             16W /  180W |   12508MiB /  16311MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|    0   N/A  N/A            1897      G   /usr/lib/xorg/Xorg                        4MiB |\n|    0   N/A  N/A          384735      C   VLLM::EngineCore                       4234MiB |\n|    0   N/A  N/A          982406      C   VLLM::EngineCore                       8246MiB |\n+-----------------------------------------------------------------------------------------+",
+  "nvidia_smi_query": "0, NVIDIA GeForce RTX 5060 Ti, 16311 MiB, 12508 MiB, 0 %, 580.159.03",
+  "phase": "stress",
+  "python_packages": {
+    "sarathi": null,
+    "sarathi-serve": null,
+    "torch": "2.11.0",
+    "transformers": "5.13.0",
+    "vllm": "0.24.0"
+  },
+  "scenario_count_planned": 8,
+  "server_command": "/home/soroush/.venvs/vllm_baseline_pilot/bin/vllm serve Qwen/Qwen2.5-0.5B-Instruct --port 8003 --revision main --gpu-memory-utilization 0.25 --max-model-len 4096 --max-num-seqs 2 --max-num-batched-tokens 512 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching --enforce-eager",
+  "server_started_by_audit": true,
+  "server_url": "http://127.0.0.1:8003",
+  "timestamp_utc": "2026-07-19T02:11:25.250554+00:00",
+  "vllm_http_version": "{\"version\":\"0.24.0\"}"
+}
