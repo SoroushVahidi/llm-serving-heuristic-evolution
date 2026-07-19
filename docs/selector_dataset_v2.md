@@ -7,6 +7,12 @@ scenario/window rather than reducing construction output to one winner label.
 
 This work does **not** train the final selector.
 
+Objective note: the historical field named `weighted_goodput` is preserved for
+reproducibility, but it is a completed-request conditional SLO-attainment metric.
+Use `arrival_normalized_weighted_goodput` for Selector Dataset v2 target
+construction. See `docs/selector_objective_audit.md` for the formula audit,
+rejection semantics, and manuscript recommendation.
+
 ## Motivation
 
 The historical selector datasets are insufficient for final manuscript claims:
