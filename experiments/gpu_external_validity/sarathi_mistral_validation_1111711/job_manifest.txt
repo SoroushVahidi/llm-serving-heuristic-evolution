@@ -1,0 +1,8 @@
+job_id=1111711
+host=n0092
+branch=wulver-overnight-validation-results
+commit=ccc47dd64014571e3cb9c3d1fefaf3e4bc502a78
+model=mistralai/Mistral-7B-Instruct-v0.1
+model_architecture=MistralForCausalLM
+name, memory.total [MiB], driver_version
+NVIDIA A100-SXM4-80GB, 81920 MiB, 580.159.04

@@ -1,0 +1,36 @@
+{
+  "created_utc": "2026-07-19T13:37:08.818547+00:00",
+  "decode_tpot_summary": {
+    "mean_s_per_token": 0.015357270019008756,
+    "median_s_per_token": 0.014255493670740785,
+    "num_points": 5
+  },
+  "git_head": "ccc47dd64014571e3cb9c3d1fefaf3e4bc502a78",
+  "historical_defaults_changed": false,
+  "model": "mistralai/Mistral-7B-Instruct-v0.1",
+  "prefill_latency_fit": {
+    "form": "ttft_seconds ~= intercept_s + slope_s_per_prompt_token * prompt_tokens",
+    "intercept_s": -0.3120542006837238,
+    "num_points": 5,
+    "slope_s_per_prompt_token": 0.0004748382929209003
+  },
+  "schema_version": "gpu_external_validity_calibration_profile_v1",
+  "server_command": "/mmfs1/project/ikoutis/sv96/conda_env/vllm-kv-pressure/bin/vllm serve mistralai/Mistral-7B-Instruct-v0.1 --port 8030 --gpu-memory-utilization 0.35 --max-model-len 16384 --max-num-seqs 16 --max-num-batched-tokens 512 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching",
+  "server_url": "http://127.0.0.1:8030",
+  "summary": {
+    "max_observed_kv_cache_usage": 0.2975788288288288,
+    "max_observed_vllm_running": 12.0,
+    "num_requests": 42,
+    "num_scenarios": 6,
+    "num_success": 42,
+    "preemption_events": 0.0,
+    "runtime_mean_latency_s": 3.545086163284093,
+    "runtime_mean_ttft_s": 0.5098117446468677,
+    "sarathi_sim_vs_vllm_sim_latency_ratio_median": 1.0327215426872767,
+    "scenarios_with_vllm_waiting": 5,
+    "sim_sarathi_mean_latency_s": 0.2348611111111111,
+    "sim_vllm_mean_latency_s": 0.22577777777777777,
+    "vllm_runtime_vs_sim_latency_ratio_median": 13.870500200522116
+  },
+  "warnings": []
+}

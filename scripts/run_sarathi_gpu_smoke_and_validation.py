@@ -121,6 +121,15 @@ def make_scenarios() -> list[dict]:
     ]
     scenarios.append(build_scenario("sarathi_matched_vllm_kv_pressure", reqs))
 
+    # F. Short-context control: cheap, low-KV baseline point for comparing
+    # against the longer-context scenarios above (and against the matched
+    # real-vLLM run's equivalent control scenario).
+    reqs = [
+        PlannedRequest(i, 0.0, cc.build_length_targeted_prompt("short", 64, 20260719, 600 + i), 64, "short")
+        for i in range(6)
+    ]
+    scenarios.append(build_scenario("sarathi_short_context_control", reqs))
+
     return scenarios
 
 
@@ -277,37 +286,48 @@ def run_simulator_scenario(scenario: dict) -> dict:
 def _patch_get_and_verify_max_len_for_default_rope_type() -> None:
     """Work around a compatibility bug in vendored sarathi-serve.
 
-    sarathi.utils.hf_utils.get_and_verify_max_len() unconditionally asserts
-    "factor" in rope_scaling whenever hf_config.rope_scaling is not None.
-    That was written before HuggingFace transformers started always
-    populating rope_scaling with a no-op {"rope_type": "default", ...} dict
-    (no "factor" key) for models that use standard RoPE with no scaling --
-    e.g. Qwen2.5-7B-Instruct. This raises AssertionError for any such model,
-    even though max_position_embeddings (32768) already comfortably covers
-    the max_model_len this script requests (16384).
+    Newer HuggingFace transformers always populates hf_config.rope_scaling
+    with a no-op {"rope_type": "default", "rope_theta": ...} dict (no "type"
+    or "factor" key) for models that use standard RoPE with no scaling --
+    e.g. Qwen2.5-7B-Instruct, Mistral-7B-Instruct-v0.1. This vendored
+    sarathi-serve fork predates that HF convention and assumes any non-None
+    rope_scaling means active scaling requiring the OLDER "type"/"factor"
+    keys, in (at least) two independent call sites:
 
-    This patches sarathi.config.config's bound reference to that function
-    (the name actually called by ModelConfig.__post_init__) so a "default"
-    rope_type with no "factor" key is treated as no scaling, matching how
-    vLLM itself handles this same HF config convention. It does not modify
-    the vendored sarathi-serve source tree, and it only changes behavior for
-    the specific no-op-rope_scaling case -- genuinely scaled models still
-    hit the original assertion.
+      1. sarathi.utils.hf_utils.get_and_verify_max_len() -- unconditionally
+         asserts "factor" in rope_scaling. Confirmed on Qwen2.5-7B-Instruct
+         (job 1111576): AssertionError, even though max_position_embeddings
+         (32768) already comfortably covers the max_model_len this script
+         requests (16384), so no real scaling behavior is even needed here.
+      2. sarathi.model_executor.layers.rotary_embedding.get_rope(), called
+         from each attention layer's __init__ (e.g. models/mistral.py) --
+         unconditionally reads rope_scaling["type"]. Confirmed on
+         mistralai/Mistral-7B-Instruct-v0.1 (job 1111705): KeyError: 'type'.
+
+    Rather than patch each consumer separately (which is how this was first
+    written, and which missed call site 2 on the first attempt), this
+    patches sarathi.config.config's bound reference to get_config() itself
+    -- the single point every consumer's hf_config flows through -- so a
+    "default"/no-"type"-no-"factor" rope_scaling dict is normalized to None
+    before anything downstream sees it, matching how vLLM itself handles
+    this same HF config convention. It does not modify the vendored
+    sarathi-serve source tree, and it only changes behavior for this
+    specific no-op-rope_scaling case -- genuinely scaled models (an explicit
+    "type"/"factor" pair, or a non-"default" rope_type) are returned
+    unchanged and still hit the original code paths.
     """
-    import copy
-
     import sarathi.config.config as sarathi_config_module
 
-    original = sarathi_config_module.get_and_verify_max_len
+    original_get_config = sarathi_config_module.get_config
 
-    def patched(hf_config, max_model_len):
+    def patched_get_config(model, trust_remote_code, revision=None):
+        hf_config = original_get_config(model, trust_remote_code, revision)
         rope_scaling = getattr(hf_config, "rope_scaling", None)
-        if isinstance(rope_scaling, dict) and rope_scaling.get("rope_type") == "default" and "factor" not in rope_scaling:
-            hf_config = copy.copy(hf_config)
+        if isinstance(rope_scaling, dict) and "type" not in rope_scaling and "factor" not in rope_scaling:
             hf_config.rope_scaling = None
-        return original(hf_config, max_model_len)
+        return hf_config
 
-    sarathi_config_module.get_and_verify_max_len = patched
+    sarathi_config_module.get_config = patched_get_config
 
 
 def main() -> int:

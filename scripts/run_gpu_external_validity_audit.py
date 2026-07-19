@@ -325,6 +325,86 @@ def build_xlong_stress_scenarios(root: Path, *, include_real_traces: bool = Fals
     ]
 
 
+# ---------------------------------------------------------------------------
+# "mistral_match" scenarios: byte-for-byte matched to
+# scripts/run_sarathi_gpu_smoke_and_validation.py's make_scenarios() (same
+# cc.build_length_targeted_prompt bucket/target_output_tokens/seed/
+# variant_index for every request), so a real-vLLM run against these
+# scenarios is a directly matched comparison point for the Sarathi runtime-
+# validation matrix, not just a similarly-shaped one. Kept separate from
+# build_stress_scenarios()/build_xlong_stress_scenarios() -- historical
+# scenario suites are unchanged.
+# ---------------------------------------------------------------------------
+
+def _matched_request(idx: int, arrival_s: float, bucket: str, target_output_tokens: int, variant_index: int, name: str = "") -> PlannedRequest:
+    prompt = cc.build_length_targeted_prompt(bucket, target_output_tokens, seed=20260719, variant_index=variant_index)
+    return PlannedRequest(
+        scenario_name=name,
+        request_id=idx,
+        arrival_time_s=arrival_s,
+        prompt_bucket=bucket,
+        target_output_tokens=target_output_tokens,
+        intended_prompt_tokens=cc.approx_token_count(prompt),
+        prompt_text=prompt,
+    )
+
+
+def build_mistral_match_scenarios(root: Path, *, include_real_traces: bool = False) -> list[RuntimeScenario]:
+    del root, include_real_traces
+    scenarios: list[RuntimeScenario] = []
+
+    # A. Long prompt + moderate output (matched to sarathi_long_prompt_moderate_output).
+    a_requests = [_matched_request(i, 0.0, "long", 256, 100 + i, "mistral_match_long_prompt_moderate_output") for i in range(4)]
+    scenarios.append(RuntimeScenario(
+        "mistral_match_long_prompt_moderate_output", "long prompt + moderate output (matched to sarathi_long_prompt_moderate_output)",
+        a_requests, 4, "long_prompt_moderate_output",
+    ))
+
+    # B. Active decode streams + arriving long prefills (matched to
+    # sarathi_active_decode_plus_arriving_prefill).
+    b_requests = (
+        [_matched_request(i, 0.0, "medium", 256, 200 + i, "mistral_match_active_decode_plus_arriving_prefill") for i in range(4)]
+        + [_matched_request(4 + i, 3.0 + 1.0 * i, "long", 64, 210 + i, "mistral_match_active_decode_plus_arriving_prefill") for i in range(4)]
+    )
+    scenarios.append(RuntimeScenario(
+        "mistral_match_active_decode_plus_arriving_prefill",
+        "active decode streams + arriving long prefills (matched to sarathi_active_decode_plus_arriving_prefill)",
+        b_requests, 8, "active_decode_plus_arriving_prefill",
+    ))
+
+    # C. Prefill-heavy burst (matched to sarathi_prefill_heavy_burst).
+    c_requests = [_matched_request(i, 0.0, "long", 32, 300 + i, "mistral_match_prefill_heavy_burst") for i in range(6)]
+    scenarios.append(RuntimeScenario(
+        "mistral_match_prefill_heavy_burst", "prefill-heavy burst (matched to sarathi_prefill_heavy_burst)",
+        c_requests, 6, "prefill_heavy_burst",
+    ))
+
+    # D. Mixed prompt lengths (matched to sarathi_mixed_prompt_lengths).
+    buckets = ["short", "medium", "long"]
+    d_requests = [_matched_request(i, 0.0, buckets[i % 3], 64, 400 + i, "mistral_match_mixed_prompt_lengths") for i in range(6)]
+    scenarios.append(RuntimeScenario(
+        "mistral_match_mixed_prompt_lengths", "mixed prompt lengths (matched to sarathi_mixed_prompt_lengths)",
+        d_requests, 6, "mixed_prompt_lengths",
+    ))
+
+    # E. Matched to vLLM stress_kv_pressure shape (and to
+    # sarathi_matched_vllm_kv_pressure).
+    e_requests = [_matched_request(i, 0.0, "long", 768, 500 + i, "mistral_match_kv_pressure") for i in range(12)]
+    scenarios.append(RuntimeScenario(
+        "mistral_match_kv_pressure", "long context + long decode (matched to sarathi_matched_vllm_kv_pressure)",
+        e_requests, 12, "kv_pressure",
+    ))
+
+    # F. Short-context control (matched to sarathi_short_context_control).
+    f_requests = [_matched_request(i, 0.0, "short", 64, 600 + i, "mistral_match_short_context_control") for i in range(6)]
+    scenarios.append(RuntimeScenario(
+        "mistral_match_short_context_control", "short-context control (matched to sarathi_short_context_control)",
+        f_requests, 6, "short_context_control",
+    ))
+
+    return scenarios
+
+
 def _scenario(
     name: str,
     description: str,
@@ -812,7 +892,7 @@ def _summary_md(summary: dict, env: dict, reports: list[dict]) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--phase", choices=["smoke", "stress", "xlong_stress"], default="smoke")
+    parser.add_argument("--phase", choices=["smoke", "stress", "xlong_stress", "mistral_match_stress"], default="smoke")
     parser.add_argument("--server-url", default=DEFAULT_SERVER_URL)
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--model-revision", default=None)
@@ -852,7 +932,9 @@ def main() -> int:
         return 2
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = Path(args.output_dir) if args.output_dir else ROOT / "experiments" / "gpu_external_validity" / f"vllm_{args.phase}_{timestamp}"
-    if args.phase == "xlong_stress":
+    if args.phase == "mistral_match_stress":
+        scenarios = build_mistral_match_scenarios(ROOT, include_real_traces=not args.no_real_traces)
+    elif args.phase == "xlong_stress":
         scenarios = build_xlong_stress_scenarios(ROOT, include_real_traces=not args.no_real_traces)
     elif args.phase == "stress":
         scenarios = build_stress_scenarios(ROOT, include_real_traces=not args.no_real_traces)
