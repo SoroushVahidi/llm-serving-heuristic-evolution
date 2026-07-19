@@ -1,0 +1,16 @@
+{
+  "git_branch": "wulver-gpu-validation-ready",
+  "git_head": "42635412a5dc441a514c94e84d89c8e99d3debfc",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "models_endpoint": "{\"object\":\"list\",\"data\":[{\"id\":\"Qwen/Qwen2.5-7B-Instruct\",\"object\":\"model\",\"created\":1784433010,\"owned_by\":\"vllm\",\"root\":\"Qwen/Qwen2.5-7B-Instruct\",\"parent\":null,\"max_model_len\":16384,\"permission\":[{\"id\":\"modelperm-95dec3da56ebf4c3\",\"object\":\"model_permission\",\"created\":1784433010,\"allow_create_engine\":false,\"allow_sampling\":true,\"allow_logprobs\":true,\"allow_search_indices\":false,\"allow_view\":true,\"allow_fine_tuning\":false,\"organization\":\"*\",\"group\":null,\"is_blocking\":false}]}]}",
+  "nvidia_smi": "Sat Jul 18 23:50:10 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:41:00.0 Off |                    0 |\n| N/A   29C    P0             72W /  500W |   66027MiB /  81920MiB |      0%      Default |\n|                                         |                        |             Disabled |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|    0   N/A  N/A         3008063      C   VLLM::EngineCore                      66016MiB |\n+-----------------------------------------------------------------------------------------+",
+  "nvidia_smi_query": "0, NVIDIA A100-SXM4-80GB, 81920 MiB, 66027 MiB, 0 %, 580.159.04",
+  "phase": "stress",
+  "python_packages": {},
+  "scenario_count_planned": 6,
+  "server_command": "/mmfs1/project/ikoutis/sv96/conda_env/vllm-kv-pressure/bin/vllm serve Qwen/Qwen2.5-7B-Instruct --port 8003 --revision main --gpu-memory-utilization 0.82 --max-model-len 16384 --max-num-seqs 8 --max-num-batched-tokens 2048 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching",
+  "server_started_by_audit": true,
+  "server_url": "http://127.0.0.1:8003",
+  "timestamp_utc": "2026-07-19T03:50:10.329355+00:00",
+  "vllm_http_version": "{\"version\":\"0.24.0\"}"
+}

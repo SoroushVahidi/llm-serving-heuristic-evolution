@@ -1,0 +1,89 @@
+# Opt-in hardware/model-specific calibration profile.
+#
+# Source: Wulver Slurm jobs 1111541 (baseline) and 1111545 (aggressive stress),
+# both on the wulver-gpu-validation-ready branch, commit
+# 42635412a5dc441a514c94e84d89c8e99d3debfc.
+#
+# This profile is NOT wired into any default ServiceModel or CalibratedServiceModel
+# path. It must be loaded explicitly by name. Historical simulator defaults are
+# unchanged by this file's presence.
+#
+# Scope: this profile only characterizes decode-step latency, which was the one
+# quantity that was stable across the two runs. TTFT/prefill numbers are recorded
+# for reference only and are explicitly marked unstable — do not use them as a
+# fixed offset in any model.
+
+schema_version: wulver_calibration_profile_v1
+provenance:
+  branch: wulver-gpu-validation-ready
+  commit: 42635412a5dc441a514c94e84d89c8e99d3debfc
+  jobs:
+    baseline: 1111541
+    aggressive_stress: 1111545
+  raw_output_dirs_on_wulver:
+    baseline: /mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_1111541
+    aggressive: /mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_aggressive_1111545
+
+hardware:
+  gpu: NVIDIA A100-SXM4-80GB
+  gpu_memory_mib: 81920
+  driver_version: "580.159.04"
+  cuda_runtime: "13.2" # nvidia/cu13 wheel toolchain used by the vllm-kv-pressure conda env
+
+software:
+  vllm_version: "0.24.0"
+  dtype: bfloat16
+
+model:
+  name: Qwen/Qwen2.5-7B-Instruct
+  revision: main
+  max_model_len: 16384
+  block_size: 16
+
+# Decode throughput is the only metric that was consistent (within ~13%) between
+# the two runs, which used very different --gpu-memory-utilization / --max-num-seqs
+# / --max-num-batched-tokens settings. That consistency is the justification for
+# promoting it to a reusable profile.
+decode:
+  mean_s_per_token:
+    baseline_1111541: 0.012134740270251363
+    aggressive_1111545: 0.013650187817597638
+  recommended_point_estimate_s_per_token: 0.0129 # mean of the two runs
+  spread_pct: 12.5
+  note: >
+    Measured at concurrency 8-24 (baseline) and 12-24 (aggressive). Per-token
+    decode cost rises slightly with higher concurrent batch occupancy; treat
+    this as a single representative point, not a batch-size curve.
+
+# Prefill/TTFT fits are reported for transparency but are NOT recommended for
+# reuse: they differ by ~2.7x (intercept) and ~6x (slope) between the two runs
+# because most of the measured TTFT was scheduler queueing delay induced by
+# --max-num-seqs, not intrinsic prefill compute time. See
+# docs/wulver_vllm_kv_pressure_results.md section "Calibration conclusion".
+prefill_ttft_fit_unstable_do_not_use_directly:
+  form: "ttft_seconds ~= intercept_s + slope_s_per_prompt_token * prompt_tokens"
+  baseline_1111541:
+    intercept_s: 1.6992897718238005
+    slope_s_per_prompt_token: 0.0003902859671171274
+  aggressive_1111545:
+    intercept_s: 0.6220112361800664
+    slope_s_per_prompt_token: 6.462644299096222e-05
+  reason_unstable: >
+    baseline used --max-num-seqs 8, which queued requests behind a hard
+    concurrency cap well below actual scenario burst sizes (up to 24). The
+    aggressive run raised the cap to 32 and observed ~3x higher concurrency
+    and ~67% lower mean TTFT with an unchanged model and GPU. The fitted
+    intercept/slope in both runs is dominated by this queueing effect, not by
+    GPU prefill compute, so it does not transfer to other scheduler configs.
+
+# For context only: the vLLM-runtime / simulator latency ratio was large and
+# in the same direction in both runs (simulator underestimates real latency by
+# roughly an order of magnitude), but the ratio itself moved with queueing
+# (18.7x baseline vs 14.0x aggressive), so it is not a fixed multiplier either.
+runtime_vs_simulator_latency_ratio_median:
+  baseline_1111541: 18.729325025433567
+  aggressive_1111545: 14.031643520126517
+  note: >
+    Reported for context. Do not apply as a blind correction factor to
+    simulator output; it is contaminated by the same queueing effect as the
+    prefill fit above.
