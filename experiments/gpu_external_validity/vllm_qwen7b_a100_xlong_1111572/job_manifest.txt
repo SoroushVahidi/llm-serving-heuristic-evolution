@@ -1,0 +1,16 @@
+job_id=1111572
+host=n0003
+branch=wulver-gpu-validation-results
+commit=d11a03aac566fab14a2666de1283a71a9476a3e5
+follow_up_to_jobs=1111541,1111545
+cuda_toolchain=/mmfs1/project/ikoutis/sv96/conda_env/vllm-kv-pressure/lib/python3.11/site-packages/nvidia/cu13
+Build cuda_13.2.r13.2/compiler.37953736_0
+vllm_version=0.24.0
+name, memory.total [MiB], driver_version
+NVIDIA A100-SXM4-80GB, 81920 MiB, 580.159.04
+--- estimated KV demand (see header comment for derivation) ---
+estimated_kv_pool_tokens=226960 (same gpu-memory-utilization=0.35 as job 1111545; server.log below has the authoritative measured value)
+estimated_max_concurrency_at_16384_tokens=13.85x (measured by vLLM itself in job 1111545 at this same config)
+scenario_burst16_expected_peak_tokens=~200000 (~88 pct of pool)
+scenario_saturate_expected_peak_tokens=~230000-310000 if all 24 admitted near target length (~101-137 pct of pool -- oversubscription is intentional)
+expected_headroom_ratio=~0.7x-1.1x (burst16) and plausibly <1x (saturate) -- this job intentionally targets low/negative headroom, unlike 1111541/1111545

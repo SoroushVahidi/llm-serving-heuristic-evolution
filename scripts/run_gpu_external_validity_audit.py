@@ -191,6 +191,140 @@ def build_stress_scenarios(root: Path, *, include_real_traces: bool = True) -> l
     return scenarios
 
 
+# ---------------------------------------------------------------------------
+# Long-context ("xlong") KV-pressure scenarios.
+#
+# These are deliberately kept out of build_stress_scenarios() so the
+# historical baseline/aggressive scenario suite (jobs 1111541, 1111545) is
+# unchanged. They are also kept out of calibration_common.KNOWN_PROMPT_BUCKETS
+# / PROMPT_BUCKET_TARGET_TOKENS: those are shared defaults consumed by other
+# calibration scripts (e.g. run_cohere_api_calibration.py,
+# run_vllm_serving_baseline_pilot.py) whose default --prompt-buckets sweep
+# would silently pick up a much larger/costlier prompt size if a new bucket
+# were added there. Instead this module builds long prompts locally with an
+# explicit numeric token target, reusing the same deterministic, non-
+# copyrighted synthetic-sentence approach as
+# calibration_common.build_length_targeted_prompt.
+# ---------------------------------------------------------------------------
+
+_XLONG_SENTENCE_BANK = [
+    "The request scheduler assigns incoming jobs to available GPU workers.",
+    "Each worker maintains a key-value cache that grows during decoding.",
+    "Batching multiple requests together can improve overall throughput.",
+    "A scheduling policy decides the order in which requests are served.",
+    "Prefill computes the initial hidden state for the full input prompt.",
+    "Decoding produces one output token at a time using the cached state.",
+    "Admission control can reject requests when the system is overloaded.",
+    "Latency service-level objectives constrain how long a request may wait.",
+    "Preemption allows a scheduler to pause one request to serve another.",
+    "Throughput and tail latency are often in tension with each other.",
+    "A simulator can replay traffic traces to compare scheduling policies.",
+    "Token generation speed depends on batch size and sequence length.",
+    "Streaming responses let a client observe output as it is produced.",
+    "Fairness across tenants is one goal of a multi-tenant serving system.",
+    "Cache eviction policies determine which sequences are dropped first.",
+]
+
+
+def _build_xlong_prompt(target_input_tokens: int, target_output_tokens: int, seed: int, variant_index: int) -> str:
+    target_input_words = max(8, int(target_input_tokens * 0.75))
+    words: list[str] = []
+    idx = 0
+    while len(words) < target_input_words:
+        sentence = _XLONG_SENTENCE_BANK[idx % len(_XLONG_SENTENCE_BANK)]
+        words.extend(sentence.split())
+        idx += 1
+    body = " ".join(words[:target_input_words])
+    variant_tag = f"(request variant {seed}-xlong-{target_output_tokens}-{variant_index})"
+    target_output_words = max(20, int(target_output_tokens * 0.75))
+    instruction = (
+        f"Using only the concepts mentioned in the text above, write a "
+        f"plain-text explanation of approximately {target_output_words} "
+        "words (not more than a few words short or over). Use complete "
+        "sentences and do not use lists, markdown, or code blocks."
+    )
+    return f"{body} {variant_tag}\n\n{instruction}"
+
+
+def _xlong_prompt_request(
+    name: str, request_id: int, arrival_time_s: float, target_input_tokens: int,
+    target_output_tokens: int, variant_index: int,
+) -> PlannedRequest:
+    prompt = _build_xlong_prompt(target_input_tokens, target_output_tokens, seed=20260719, variant_index=variant_index)
+    return PlannedRequest(
+        scenario_name=name,
+        request_id=request_id,
+        arrival_time_s=arrival_time_s,
+        prompt_bucket="xlong",
+        target_output_tokens=target_output_tokens,
+        intended_prompt_tokens=cc.approx_token_count(prompt),
+        prompt_text=prompt,
+    )
+
+
+def _xlong_context_burst_scenario() -> RuntimeScenario:
+    """16 concurrent ~12k-token-prompt requests, all arriving at once.
+
+    Sized against job 1111545's measured KV pool (226,960 tokens at
+    gpu-memory-utilization=0.35): 16 requests x ~12,500 tokens (12,000
+    prompt + up to 512 output) =~ 200,000 tokens, ~88% of that pool if all
+    16 are simultaneously near their target length.
+    """
+    n = 16
+    requests = [
+        _xlong_prompt_request("stress_xlong_context_burst16", i, 0.0, 12000, 512, 3000 + i)
+        for i in range(n)
+    ]
+    return RuntimeScenario(
+        "stress_xlong_context_burst16",
+        "16 concurrent ~12k-token-context requests arriving simultaneously",
+        requests,
+        n,
+        "xlong_kv_pressure",
+    )
+
+
+def _xlong_context_saturate_scenario() -> RuntimeScenario:
+    """24 requests total: 16 long-decode ~12k-token-prompt requests burst at
+    t=0 (sized to exceed the ~18-19-request capacity implied by job
+    1111545's pool once they are all admitted and decoding/growing), plus 8
+    more ~12k-token requests arriving staggered at t=15..50s while the
+    first 16 are still mid-decode. This keeps KV demand growing after the
+    initial admission wave, which is the condition under which vLLM's
+    recompute-based preemption is expected to trigger if the pool is
+    insufficient, rather than only testing admission-time queueing.
+    """
+    requests: list[PlannedRequest] = []
+    for i in range(16):
+        requests.append(_xlong_prompt_request(
+            "stress_xlong_context_saturate", i, 0.0, 12000, 1024, 4000 + i,
+        ))
+    late_arrivals = [15.0 + 5.0 * i for i in range(8)]
+    for j, arrival in enumerate(late_arrivals):
+        i = 16 + j
+        requests.append(_xlong_prompt_request(
+            "stress_xlong_context_saturate", i, arrival, 12000, 256, 4000 + i,
+        ))
+    return RuntimeScenario(
+        "stress_xlong_context_saturate",
+        "16 long-decode ~12k-context requests burst, plus 8 more ~12k-context "
+        "requests arriving while the first 16 are still mid-decode",
+        requests,
+        24,
+        "xlong_kv_pressure",
+    )
+
+
+def build_xlong_stress_scenarios(root: Path, *, include_real_traces: bool = False) -> list[RuntimeScenario]:
+    """Long-context KV-pressure/preemption scenarios (job 1111541/1111545
+    follow-up). Deliberately separate from build_stress_scenarios()."""
+    del root, include_real_traces  # no real-trace variants for this phase
+    return [
+        _xlong_context_burst_scenario(),
+        _xlong_context_saturate_scenario(),
+    ]
+
+
 def _scenario(
     name: str,
     description: str,
@@ -678,7 +812,7 @@ def _summary_md(summary: dict, env: dict, reports: list[dict]) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--phase", choices=["smoke", "stress"], default="smoke")
+    parser.add_argument("--phase", choices=["smoke", "stress", "xlong_stress"], default="smoke")
     parser.add_argument("--server-url", default=DEFAULT_SERVER_URL)
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--model-revision", default=None)
@@ -718,11 +852,12 @@ def main() -> int:
         return 2
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = Path(args.output_dir) if args.output_dir else ROOT / "experiments" / "gpu_external_validity" / f"vllm_{args.phase}_{timestamp}"
-    scenarios = (
-        build_stress_scenarios(ROOT, include_real_traces=not args.no_real_traces)
-        if args.phase == "stress"
-        else build_scenarios(ROOT, include_real_traces=not args.no_real_traces)
-    )
+    if args.phase == "xlong_stress":
+        scenarios = build_xlong_stress_scenarios(ROOT, include_real_traces=not args.no_real_traces)
+    elif args.phase == "stress":
+        scenarios = build_stress_scenarios(ROOT, include_real_traces=not args.no_real_traces)
+    else:
+        scenarios = build_scenarios(ROOT, include_real_traces=not args.no_real_traces)
     if args.limit_scenarios is not None:
         scenarios = scenarios[:args.limit_scenarios]
 

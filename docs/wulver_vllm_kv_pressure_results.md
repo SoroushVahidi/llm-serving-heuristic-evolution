@@ -299,3 +299,169 @@ parameters used on the real server, so its output can actually respond to
 those changes. The Sarathi-Serve side of this scoping is still pending a
 separate runtime-validation pass (see "Sarathi install status" below) and
 should be combined with this report before any resumption decision.
+
+---
+
+## Overnight follow-up (2026-07-19): long-context job 1111572 and Sarathi status
+
+This section extends the report above with a third vLLM run and the results
+of the Sarathi-Serve build/runtime-validation attempt recommended in section
+7. No further vLLM jobs were submitted beyond the one recommended run; the
+Sarathi install was not interrupted or modified, only investigated after it
+had already finished (and failed) on its own.
+
+### Job 1111572 (long-context KV-pressure follow-up)
+
+Directly implements section 7's recommendation: same server config as
+1111545 (`gpu-memory-utilization=0.35`, `max-num-seqs=32`,
+`max-num-batched-tokens=4096`, `max-model-len=16384`, all else identical),
+with two new scenarios (`stress_xlong_context_burst16`,
+`stress_xlong_context_saturate`, added to
+`scripts/run_gpu_external_validity_audit.py` as a new `xlong_stress` phase,
+kept fully separate from `build_stress_scenarios()`) using prompts targeting
+~12,000 tokens instead of the ~1,873-token mean used in 1111541/1111545.
+
+| | 1111541 (baseline) | 1111545 (aggressive) | 1111572 (xlong) |
+|---|---:|---:|---:|
+| Requests / completions | 108 / 108 | 108 / 108 | 40 / 40 |
+| Mean prompt tokens | ~169-1,873 (scenario-dependent) | same | ~10,581 |
+| Max KV usage | 2.2173% | 13.9594% | **83.6673%** |
+| Headroom ratio (1 / max KV usage) | ~45.1x | ~7.16x | **~1.195x** |
+| Max running sequences | 8 | 24 | 18 |
+| Max waiting queue | 16 | 10 | 15 |
+| Preemption events | 0 | 0 | **0** |
+| Mean TTFT (pooled) | 2.133s | 0.719s | 5.272s |
+| Mean E2E latency (pooled) | 4.854s | 3.821s | 20.378s |
+| Mean TPOT (pooled) | 0.01202 s/tok | 0.01365 s/tok | 0.02380 s/tok |
+| Throughput range (req/s) | 0.679-6.862 | 1.170-11.417 | 0.449-0.785 |
+
+KV pool sizes, measured by vLLM at startup: 925,824 tokens (1111541,
+`gpu-memory-utilization=0.82`), 226,960 tokens (1111545), 237,184 tokens
+(1111572, same `gpu-memory-utilization=0.35` as 1111545 — the small
+difference from 226,960 is normal run-to-run allocator variance, not a
+config change).
+
+**Updated preemption finding.** Across three runs spanning ~45x, ~7.16x, and
+~1.195x headroom, preemption never triggered — not even at 83.67% peak KV
+utilization with a genuinely oversubscribed scenario design (24 requests
+targeting ~12k-13k tokens each against a 237k-token pool). The mechanism is
+now visible in the data: `max_vllm_waiting` reached 14-15 in job 1111572
+even while `max_vllm_running` stayed at 18 (below the `max-num-seqs=32`
+cap) — vLLM's admission control queued new arrivals rather than admitting
+them and then evicting already-running work. This is a real, reportable
+property of vLLM's scheduler in these bursty-arrival scenarios, not merely
+"still not enough load." Reaching an actual preemption event would likely
+require running sequences to keep *growing* (via decode) past the pool's
+capacity *after* being admitted, which needs either a still-larger workload
+or a scenario specifically designed to grow admitted sequences past their
+initial footprint under sustained new arrivals.
+
+**Classification update:**
+
+- `PREEMPTION_CLASSIFICATION` remains **`PREEMPTION_NOT_REACHED_DUE_TO_HEADROOM`**
+  (technically correct — headroom never went negative), but the qualitative
+  finding is now much stronger than in the original report: this is an
+  admission-control-vs-eviction distinction, not an under-tested workload.
+- `KV_PRESSURE_CLASSIFICATION`: **`VALIDATED`** — genuine, substantial,
+  near-saturating KV pressure (83.67%, comfortably over the 70% bar) was
+  demonstrated on real A100 hardware. This is now a materially different
+  claim from anything in the original report and should be kept separate
+  from the (still unvalidated) preemption claim.
+
+**Simulator comparison update.** The `vllm_faithful` external-baseline
+simulator, run with this harness's fixed `GPUConfig(max_batch_tokens=2560)`,
+dropped **100% of requests** in both new long-context scenarios
+(`num_dropped == num_requests`, `completion_fraction == 0.0`) — it has no
+chunked-prefill modeling, so any request with `prompt_tokens > 2560` is
+never admitted. `sarathi_faithful` (which does model prefill chunking via
+`enable_prefill_modeling=True`) completed all 40 requests normally. This
+reclassifies `VLLM_SIMULATOR` from a timing-scale issue to a **structural**
+one for the long-context regime specifically:
+
+- `VLLM_SIMULATOR = MAJOR_MODEL_MISMATCH` for context lengths beyond
+  `max_batch_tokens` (2,560 tokens in this harness's fixed simulator config)
+  — it cannot represent the workload class this validation pass was built
+  to test at all, independent of any timing calibration.
+- For the shorter-context regime (1111541/1111545), the standing
+  classification from the original report holds: simulator dimensions
+  B/C/D/E remain `NOT_VALIDATED`, A remains `PARTIALLY_VALIDATED`.
+
+### Sarathi-Serve build and runtime validation
+
+**Build (job 1111574, compute-node, 1x A100): SUCCEEDED.** Root cause of the
+original login-node failure: `sarathi-serve/setup.py` selects target CUDA
+architectures via `torch.cuda.device_count()`; with no GPU visible (the
+login node), it silently falls back to building for *all six* supported
+architectures (`sm_70/75/80/86/89/90`), and that 6x-wider compile OOM-killed
+`cc1plus` on the memory-constrained login node. Running the build on a node
+with an A100 actually visible restricted codegen to just `sm_80`, a ~6x
+smaller compile, which completed cleanly with `MAX_JOBS=2`. Confirmed via
+`import sarathi` (version 0.1.8) and successful import of all four compiled
+CUDA extension modules (`pos_encoding_ops`, `layernorm_ops`,
+`activation_ops`, `moe_ops`). No changes were made to vLLM's environment or
+any historical simulator defaults.
+
+**GPU smoke+validation (jobs 1111576, then 1111663 after one corrected
+resubmission): FAILED, root cause identified, blocked pending a model or
+fork change.**
+
+- First attempt (1111576) failed in 38 seconds with `AssertionError` inside
+  `sarathi.utils.hf_utils.get_and_verify_max_len`: this vendored
+  Sarathi-Serve fork's RoPE-scaling validation unconditionally asserts
+  `"factor" in rope_scaling` whenever a model's HF config has a non-`None`
+  `rope_scaling` field. Qwen2.5-7B-Instruct's config sets
+  `rope_scaling={"rope_theta": 1000000.0, "rope_type": "default"}` — a
+  no-op dict (no scaling applied) that newer HuggingFace Transformers
+  versions always populate, which this older validation code
+  (pre-dating that convention) misreads as active scaling requiring a
+  `"factor"` key. `max_position_embeddings` (32,768) already comfortably
+  covers the requested `max_model_len` (16,384), so no real scaling issue
+  exists here. Fixed with a local monkeypatch in
+  `scripts/run_sarathi_gpu_smoke_and_validation.py`
+  (`_patch_get_and_verify_max_len_for_default_rope_type`) that treats a
+  `rope_type: "default"` dict with no `"factor"` key as no scaling,
+  matching how vLLM itself handles this same HF config convention. The
+  vendored Sarathi-Serve source tree itself was not modified.
+- Second attempt (1111663), using the fix above: got past RoPE validation,
+  loaded the model config, started a Ray worker, and failed with
+  `ValueError: Model architectures ['Qwen2ForCausalLM'] are not supported
+  for now. Supported architectures: ['FalconForCausalLM', 'LlamaForCausalLM',
+  'LLaMAForCausalLM', 'InternLMForCausalLM', 'MistralForCausalLM',
+  'MixtralForCausalLM', 'QWenLMHeadModel', 'YiForCausalLM']` from
+  `sarathi/model_executor/model_loader.py`. This vendored Sarathi-Serve
+  fork's model registry supports the original Qwen (v1, `QWenLMHeadModel`)
+  architecture but not Qwen2/Qwen2.5 (`Qwen2ForCausalLM`). This is a
+  structural model-support gap, not an environment or config problem — it
+  would require porting a `Qwen2ForCausalLM` model definition into the
+  fork's `sarathi/model_executor/models/`, which is real feature work, not
+  a low-risk fix. Per the bound on speculative retries, this was not
+  attempted; the finding is reported instead.
+
+**`SARATHI_SIMULATOR` classification: `RUNTIME_VALIDATION_BLOCKED`** — not
+by the build/environment (that is now fixed and confirmed working), but by
+this vendored fork's model architecture support. Recommended next steps
+(none attempted tonight, all require a human decision before proceeding):
+(a) rerun the same smoke+validation script with a model this fork already
+supports (e.g. `mistralai/Mistral-7B-Instruct-v0.1`, or the original
+`Qwen/Qwen-7B-Chat` which uses the supported `QWenLMHeadModel` class) to
+validate the harness and get a same-family Sarathi-vs-vLLM comparison point,
+accepting it won't be the identical Qwen2.5-7B-Instruct model used in
+1111541/1111545/1111572; or (b) update the vendored `sarathi-serve` checkout
+to a newer upstream commit with Qwen2 support, which is a real dependency
+version change and should go through normal review, not be done
+autonomously.
+
+### Updated Selector Dataset v2 implication
+
+KV pressure is now `VALIDATED` on real hardware (job 1111572), which
+resolves half of the original blocking condition in
+`docs/selector_dataset_v2.md`. Preemption specifically, and the simulator's
+structural inability to represent long-context vLLM workloads at all (the
+`vllm_faithful` 100%-drop finding above), remain open. Sarathi-side runtime
+validation is blocked on a model-architecture gap in the vendored fork, not
+resolved. **`SELECTOR_DATASET_V2_DECISION = MORE_RUNTIME_VALIDATION_REQUIRED`**
+— specifically: (1) resolve the Sarathi model-support gap (either path
+above) and get at least one real Sarathi-vs-vLLM runtime comparison, and (2)
+either extend the `vllm_faithful` simulator baseline to model chunked
+prefill for long contexts, or explicitly scope any Selector Dataset v2
+long-context scenarios as simulator-only until it can.

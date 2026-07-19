@@ -1,0 +1,16 @@
+job_id=1111574
+host=n0088
+sarathi_src_dir=/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve
+sarathi_src_commit=96f9911790ecc00af12ee9fae47cb8fa9ba0d199
+sarathi_env_prefix=/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve
+cuda_toolchain=/apps/easybuild/el9_5.x86_64/software/CUDA/12.8.0
+Build cuda_12.8.r12.8/compiler.35404655_0
+torch=2.9.0+cu128 torch_cuda=12.8
+cuda_visible=True device_count=1
+detected_compute_capability=80
+max_jobs=2
+name, memory.total [MiB], driver_version
+NVIDIA A100-SXM4-80GB, 81920 MiB, 580.159.04
+build_status=0
+sarathi_import_ok version=0.1.8
+sarathi_cuda_extensions_import_ok

@@ -1,28 +1,32 @@
 # Opt-in hardware/model-specific calibration profile.
 #
-# Source: Wulver Slurm jobs 1111541 (baseline) and 1111545 (aggressive stress),
-# both on the wulver-gpu-validation-ready branch, commit
-# 42635412a5dc441a514c94e84d89c8e99d3debfc.
+# Source: Wulver Slurm jobs 1111541 (baseline), 1111545 (aggressive stress),
+# and 1111572 (long-context follow-up, added in the overnight 2026-07-19
+# validation pass). All three on branch wulver-gpu-validation-ready /
+# wulver-gpu-validation-results, commit 42635412a5dc441a514c94e84d89c8e99d3debfc
+# (1111541/1111545) or d11a03aac566fab14a2666de1283a71a9476a3e5 (1111572).
 #
 # This profile is NOT wired into any default ServiceModel or CalibratedServiceModel
 # path. It must be loaded explicitly by name. Historical simulator defaults are
 # unchanged by this file's presence.
 #
 # Scope: this profile only characterizes decode-step latency, which was the one
-# quantity that was stable across the two runs. TTFT/prefill numbers are recorded
-# for reference only and are explicitly marked unstable — do not use them as a
-# fixed offset in any model.
+# quantity that was reasonably stable across all three runs. TTFT/prefill numbers
+# are recorded for reference only and are explicitly marked unstable — do not use
+# them as a fixed offset in any model.
 
 schema_version: wulver_calibration_profile_v1
 provenance:
-  branch: wulver-gpu-validation-ready
-  commit: 42635412a5dc441a514c94e84d89c8e99d3debfc
+  branch: wulver-gpu-validation-ready / wulver-gpu-validation-results
+  commit: 42635412a5dc441a514c94e84d89c8e99d3debfc (1111541, 1111545); d11a03aac566fab14a2666de1283a71a9476a3e5 (1111572)
   jobs:
     baseline: 1111541
     aggressive_stress: 1111545
+    xlong_context_kv_pressure: 1111572
   raw_output_dirs_on_wulver:
     baseline: /mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_1111541
     aggressive: /mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_aggressive_1111545
+    xlong: /mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_xlong_1111572
 
 hardware:
   gpu: NVIDIA A100-SXM4-80GB
@@ -40,20 +44,27 @@ model:
   max_model_len: 16384
   block_size: 16
 
-# Decode throughput is the only metric that was consistent (within ~13%) between
-# the two runs, which used very different --gpu-memory-utilization / --max-num-seqs
-# / --max-num-batched-tokens settings. That consistency is the justification for
-# promoting it to a reusable profile.
+# Decode throughput was the most stable metric across 1111541/1111545 (within
+# ~13%, at mean context lengths ~1,873 tokens). Job 1111572 (mean context
+# ~10,581 tokens, up to 18 concurrent, KV usage up to 83.7%) shows decode cost
+# nearly doubling relative to that pair -- this is expected (attention cost
+# per decode step grows with KV/context length and with concurrent-batch
+# occupancy) and is NOT a contradiction of the short-context estimate. Treat
+# these as two separate regimes, not one constant.
 decode:
   mean_s_per_token:
     baseline_1111541: 0.012134740270251363
     aggressive_1111545: 0.013650187817597638
-  recommended_point_estimate_s_per_token: 0.0129 # mean of the two runs
-  spread_pct: 12.5
+    xlong_1111572: 0.024282000233549927
+  recommended_point_estimate_s_per_token_short_context: 0.0129 # mean of 1111541/1111545, ~1,873-token mean context, concurrency 8-24
+  recommended_point_estimate_s_per_token_long_context: 0.0243 # 1111572, ~10,581-token mean context, concurrency up to 18, KV usage up to 83.7%
+  spread_pct_short_context: 12.5
   note: >
-    Measured at concurrency 8-24 (baseline) and 12-24 (aggressive). Per-token
-    decode cost rises slightly with higher concurrent batch occupancy; treat
-    this as a single representative point, not a batch-size curve.
+    Measured at concurrency 8-24 / context ~1,873 tokens (short-context pair)
+    and concurrency up to 18 / context ~10,581 tokens (1111572, only 2
+    scenarios -- a single long-context point, not yet a fitted curve). Do not
+    interpolate linearly between the two regimes without more long-context
+    data points at intermediate context lengths.
 
 # Prefill/TTFT fits are reported for transparency but are NOT recommended for
 # reuse: they differ by ~2.7x (intercept) and ~6x (slope) between the two runs
@@ -86,4 +97,41 @@ runtime_vs_simulator_latency_ratio_median:
   note: >
     Reported for context. Do not apply as a blind correction factor to
     simulator output; it is contaminated by the same queueing effect as the
-    prefill fit above.
+    prefill fit above. Job 1111572 could not extend this ratio: the
+    vllm_faithful simulator baseline dropped 100% of its long-context (>2,560
+    prompt token) requests in this harness's fixed-max_batch_tokens=2560
+    configuration, since that baseline does not model chunked prefill. See
+    kv_pressure_progression.vllm_faithful_simulator_long_context_gap below.
+
+# KV-pressure/preemption progression across all three runs (same model/GPU,
+# controlled server-config changes). Included here because it directly bears
+# on how much this profile's decode/prefill numbers should be trusted at a
+# given headroom level -- decode cost is measured at very different KV
+# occupancy across the three points.
+kv_pressure_progression:
+  headroom_ratio_1_over_max_kv_usage:
+    baseline_1111541: 45.1 # max KV usage 2.2173%
+    aggressive_1111545: 7.16 # max KV usage 13.9594%
+    xlong_1111572: 1.195 # max KV usage 83.6673%
+  preemption_events: 0 # all three runs, vllm:num_preemptions_total delta
+  note: >
+    Preemption was never triggered even at 83.67% peak KV utilization
+    (1111572). vLLM's admission control appears to prefer queueing new
+    arrivals (max_vllm_waiting up to 15 in 1111572) over admitting more
+    requests than fit and then evicting running ones. This profile's decode
+    cost numbers above should be read alongside this: the xlong_1111572
+    point was measured near this queueing-dominated regime, not a
+    memory-pressure-free one.
+  vllm_faithful_simulator_long_context_gap: >
+    scripts/run_gpu_external_validity_audit.py's run_simulator_scenario()
+    (and run_sarathi_gpu_smoke_and_validation.py's equivalent) call
+    make_external_baseline("vllm_faithful") with a fixed
+    GPUConfig(max_batch_tokens=2560). That vllm_faithful baseline has no
+    chunked-prefill modeling, so any request with prompt_tokens >
+    max_batch_tokens is never admitted -- confirmed in job 1111572's
+    scenario_results.json, where both long-context scenarios show
+    vllm_faithful num_dropped == num_requests (100% drop), while
+    sarathi_faithful (which does model prefill chunking) completed normally.
+    This is a structural simulator-harness limitation for the long-context
+    regime, not a calibration/timing-scale issue, and is not something this
+    calibration profile can paper over.
