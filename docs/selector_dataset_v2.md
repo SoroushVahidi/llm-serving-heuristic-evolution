@@ -13,6 +13,11 @@ Use `arrival_normalized_weighted_goodput` for Selector Dataset v2 target
 construction. See `docs/selector_objective_audit.md` for the formula audit,
 rejection semantics, and manuscript recommendation.
 
+External-validity note: GPU validation of the monolithic faithful baselines is
+tracked in `docs/gpu_external_validity_audit.md`. Large-scale Dataset v2
+generation should not resume until vLLM/Sarathi advantage regimes are either
+validated against GPU behavior or explicitly scoped as simulator limitations.
+
 ## Motivation
 
 The historical selector datasets are insufficient for final manuscript claims:
