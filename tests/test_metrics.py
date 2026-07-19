@@ -9,12 +9,12 @@ from llmserveopt.core.types import CompletedRequest, Request
 
 
 def _make_completed(rid, arrival, admission, completion, output_tokens=10,
-                    slo_deadline=100.0):
+                    slo_deadline=100.0, priority=1.0):
     req = Request(
         request_id=rid, arrival_time=arrival,
         prompt_tokens=20, predicted_output_tokens=output_tokens,
         actual_output_tokens=output_tokens,
-        slo_deadline=slo_deadline, priority=1.0, class_id="medium",
+        slo_deadline=slo_deadline, priority=priority, class_id="medium",
     )
     return CompletedRequest(
         request=req,
@@ -180,3 +180,123 @@ def test_completion_fraction_zero_num_total():
     # fallback: num_total = 0+0 = 0; fraction = NaN
     assert m.num_total == 0
     assert math.isnan(m.completion_fraction)
+
+
+def test_arrival_normalized_goodput_penalizes_selective_rejection_example():
+    all_a = [
+        _make_completed(i, 0.0, 0.0, 1.0 if i < 80 else 3.0, slo_deadline=2.0).request
+        for i in range(100)
+    ]
+    completed_a = [
+        _make_completed(i, 0.0, 0.0, 1.0 if i < 80 else 3.0, slo_deadline=2.0)
+        for i in range(100)
+    ]
+    all_b = [
+        Request(i, 0.0, 20, 10, 10, 2.0, 1.0, "medium")
+        for i in range(100)
+    ]
+    completed_b = [
+        CompletedRequest(all_b[i], admission_time=0.0, completion_time=1.0, gpu_id=0)
+        for i in range(20)
+    ]
+    dropped_b = all_b[20:]
+
+    a = compute_metrics(
+        completed=completed_a, dropped=[], sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=100, all_requests=all_a,
+    )
+    b = compute_metrics(
+        completed=completed_b, dropped=dropped_b, sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=100, all_requests=all_b,
+    )
+
+    assert a.weighted_goodput == pytest.approx(0.8)
+    assert b.weighted_goodput == pytest.approx(1.0)
+    assert a.weighted_completion_fraction == pytest.approx(1.0)
+    assert b.weighted_completion_fraction == pytest.approx(0.2)
+    assert a.arrival_normalized_weighted_goodput == pytest.approx(0.8)
+    assert b.arrival_normalized_weighted_goodput == pytest.approx(0.2)
+
+
+def test_arrival_normalized_goodput_all_rejected_is_zero_not_nan():
+    requests = [Request(i, 0.0, 20, 10, 10, 2.0, 1.0, "medium") for i in range(5)]
+    m = compute_metrics(
+        completed=[], dropped=requests, sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=5, all_requests=requests,
+    )
+    assert math.isnan(m.weighted_goodput)
+    assert m.weighted_completion_fraction == pytest.approx(0.0)
+    assert m.arrival_normalized_weighted_goodput == pytest.approx(0.0)
+
+
+def test_arrival_normalized_goodput_all_slo_missed_is_zero():
+    completed = [
+        _make_completed(i, 0.0, 0.0, 3.0, slo_deadline=2.0)
+        for i in range(5)
+    ]
+    m = compute_metrics(
+        completed=completed, dropped=[], sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=5, all_requests=[c.request for c in completed],
+    )
+    assert m.weighted_goodput == pytest.approx(0.0)
+    assert m.weighted_completion_fraction == pytest.approx(1.0)
+    assert m.arrival_normalized_weighted_goodput == pytest.approx(0.0)
+
+
+def test_arrival_normalized_goodput_mixed_priorities_uses_arrival_weight_denominator():
+    all_requests = [
+        Request(0, 0.0, 20, 10, 10, 2.0, 10.0, "high"),
+        Request(1, 0.0, 20, 10, 10, 2.0, 1.0, "low"),
+        Request(2, 0.0, 20, 10, 10, 2.0, 5.0, "mid"),
+    ]
+    completed = [
+        CompletedRequest(all_requests[0], admission_time=0.0, completion_time=1.0, gpu_id=0),
+        CompletedRequest(all_requests[1], admission_time=0.0, completion_time=3.0, gpu_id=0),
+    ]
+    m = compute_metrics(
+        completed=completed, dropped=[all_requests[2]], sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=3, all_requests=all_requests,
+    )
+    assert m.weighted_goodput == pytest.approx(10.0 / 11.0)
+    assert m.weighted_completion_fraction == pytest.approx(11.0 / 16.0)
+    assert m.arrival_normalized_weighted_goodput == pytest.approx(10.0 / 16.0)
+    assert (
+        m.weighted_goodput * m.weighted_completion_fraction
+        == pytest.approx(m.arrival_normalized_weighted_goodput)
+    )
+
+
+def test_arrival_normalized_goodput_counts_unfinished_arrivals_in_denominator():
+    all_requests = [Request(i, 0.0, 20, 10, 10, 2.0, 1.0, "medium") for i in range(4)]
+    completed = [
+        CompletedRequest(all_requests[0], admission_time=0.0, completion_time=1.0, gpu_id=0),
+        CompletedRequest(all_requests[1], admission_time=0.0, completion_time=1.0, gpu_id=0),
+    ]
+    m = compute_metrics(
+        completed=completed, dropped=[], sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=4, all_requests=all_requests,
+    )
+    assert m.completion_fraction == pytest.approx(0.5)
+    assert m.weighted_completion_fraction == pytest.approx(0.5)
+    assert m.weighted_goodput == pytest.approx(1.0)
+    assert m.arrival_normalized_weighted_goodput == pytest.approx(0.5)
+
+
+def test_metrics_to_dict_includes_corrected_goodput_fields_without_nan():
+    requests = [Request(i, 0.0, 20, 10, 10, 2.0, 1.0, "medium") for i in range(2)]
+    m = compute_metrics(
+        completed=[], dropped=requests, sim_duration=10.0,
+        gpu_utilization_history=[], active_batch_history=[],
+        num_total=2, all_requests=requests,
+    )
+    d = metrics_to_dict(m)
+    assert d["weighted_goodput"] is None
+    assert d["conditional_weighted_slo_attainment"] is None
+    assert d["arrival_normalized_weighted_goodput"] == pytest.approx(0.0)
+    assert d["weighted_completion_fraction"] == pytest.approx(0.0)

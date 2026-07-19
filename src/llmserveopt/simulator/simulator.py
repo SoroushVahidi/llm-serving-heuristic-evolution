@@ -236,6 +236,7 @@ class Simulator:
             wall_clock_s=wall_elapsed,
             idle_steps_skipped=self._idle_skipped,
             num_total=n_arrivals,
+            all_requests=[ir.request for ir in self._pending_arrivals],
         )
 
     # ------------------------------------------------------------------
