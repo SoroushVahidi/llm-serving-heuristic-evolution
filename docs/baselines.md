@@ -160,18 +160,18 @@ requests each consume 1 token; remainder goes to new prefill admissions.
 
 ---
 
-## Faithful (non-proxy) baselines: `vllm_faithful`, `sarathi_faithful`, `distserve_faithful`, `tetriinfer_paper_reimplementation`, `llumnix_faithful`
+## Faithful (non-proxy) baselines: `vllm_faithful`, `vllm_chunked_prefill_faithful`, `sarathi_faithful`, `distserve_faithful`, `tetriinfer_paper_reimplementation`, `llumnix_faithful`
 
-This repository has **three distinct kinds of "vLLM" thing**, an
+This repository has **four distinct kinds of "vLLM" thing**, an
 analogous **two distinct kinds of "Sarathi" thing**, and a distinct
 **"DistServe" thing**, **"TetriInfer" thing**, and **"Llumnix" thing** —
-none of which may be conflated. These five span three structurally
+none of which may be conflated. These six span three structurally
 different GPU topologies (monolithic, disaggregated prefill/decode,
 multi-instance migratory) and are **not** all directly comparable to each
 other without an explicit resource-normalization protocol — see
 [external_baseline_integration.md](external_baseline_integration.md) for
 the full topology-comparability matrix, resource-normalization protocols,
-and selector-eligibility analysis across all five together.
+and selector-eligibility analysis across all six together.
 
 | | `vllm_style_token_budget` | `vllm_faithful` | External real-vLLM HTTP harness |
 |---|---|---|---|
@@ -224,6 +224,50 @@ downstream effects (selector retraining, evaluation-sweep counts, every doc
 that states "20 deployable policies") that were out of scope for
 introducing this baseline. Promoting it to a selectable/deployable baseline
 is a deliberate follow-up decision for a future PR.
+
+### `vllm_chunked_prefill_faithful`
+
+**Manuscript label:** "Faithful independent reimplementation of pinned
+vLLM v0.4.2 scheduler/chunked-prefill/block_manager_v1 decisions"
+
+**Pinned reference:** vLLM commit `c7f2cf2b7f67bce5842fedfdba508440fe257375`
+(tag `v0.4.2`), the first vLLM release whose own notes call chunked prefill
+"ready for testing." Full source-provenance record, algorithm summary, and
+explicit exclusions (`block_manager_v2`, prefix caching, speculative
+decoding, LoRA, `delay_factor`):
+`docs/vllm_chunked_prefill_faithful_scheduler_reference.md`. Preliminary
+design audit (pin selection rationale, infrastructure survey):
+`docs/vllm_chunked_prefill_faithful_design_audit.md`.
+
+Separately pinned from `vllm_faithful` (v0.1.0, no chunked prefill at all)
+— this baseline models vLLM's later `_schedule_chunked_prefill` path: a
+shared per-iteration `SchedulingBudget`-equivalent, partial/chunked prompt
+admission instead of all-or-nothing, and (verified against the pinned
+source, not assumed) **no explicit decode-priority phase** — decode-phase
+and continuing-prefill-phase requests share one FCFS-by-arrival-time budget
+in `_schedule_running`, structurally different from `sarathi_faithful`'s
+own explicit decode-first Phase 1a/1b split. `block_manager_v1` (the
+default at this pin; `use_v2_block_manager=False`) is reused unchanged from
+`vllm_faithful`'s own `KVBlockSpaceManager`.
+
+- **Safe claim:** "Faithful reimplementation of vLLM v0.4.2's chunked-
+  prefill scheduling *decisions* (admission, chunking, preemption)."
+  Completes the `xlong_context_burst16` benchmark-pack fixture (16
+  ~12,000-token-prompt requests) that `vllm_faithful` structurally cannot
+  admit at all — this baseline's direct acceptance-test target.
+- **Unsafe claim:** that this baseline alone reproduces the real, robust
+  (N=5) Sarathi E2E advantage observed on `active_decode_plus_arriving_
+  prefill`/`kv_pressure` — it does not; both remain a `TIE_NEAR_TIE` under
+  a fair (equal-`ServiceModel`) comparison against `sarathi_faithful`, for
+  a specific, root-caused reason unrelated to this baseline's own
+  scheduling fidelity: see
+  `docs/vllm_chunked_prefill_faithful_root_cause_analysis.md`.
+
+**Not currently a registered baseline** — same rationale and mechanism as
+`vllm_faithful`/`sarathi_faithful`: present in `EXTERNAL_BASELINE_REGISTRY`
+(`llmserveopt.policies.vllm_chunked_prefill_faithful.
+VLLMChunkedPrefillFaithfulPolicy`), never in `registry.py`'s
+`BASELINE_NAMES`/`SELECTOR_CANDIDATE_NAMES`.
 
 ### `sarathi_faithful`
 
