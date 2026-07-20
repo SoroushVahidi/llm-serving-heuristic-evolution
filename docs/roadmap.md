@@ -1,10 +1,43 @@
 # Roadmap
 
 > **Note (2026-06-27):** The original phase structure below was written early in the
-> project. See [research_status.md](research_status.md) for the accurate up-to-date
-> phase-by-phase status. The table below reflects the actual completed phases.
+> project. The numbered-phase table reflects completed phases only through the
+> 2026-06-27 pause checkpoint -- see the current-track section immediately below for
+> everything since. For up-to-date status, see
+> [docs/current/PROJECT_STATUS.md](current/PROJECT_STATUS.md), not `research_status.md`
+> (retained only as a historical redirect).
 
-## Actual Phase Status (2026-06-27)
+## Current track: Selector v2 / external-baseline validation (unnumbered, active)
+
+Development did not stop at the Phase 2C pause below -- it continued on an
+**unnumbered track** not reflected anywhere in the phase table. In order:
+
+1. External faithful baseline implementation -- 6 pinned-commit
+   reimplementations (vLLM, vLLM-chunked-prefill, Sarathi-Serve, DistServe,
+   TetriInfer, Llumnix). `docs/external_baseline_integration.md`.
+2. Real-hardware runtime validation (local RTX 5060 Ti + Wulver A100,
+   including N=5-repeated-trial Sarathi-vs-vLLM comparisons and a committed
+   runtime-validation benchmark pack). `docs/wulver_sarathi_vllm_repeated_validation.md`.
+3. Objective correction: `weighted_goodput`'s completed-only-denominator bias
+   fixed via `arrival_normalized_weighted_goodput` (ANWG).
+   `docs/selector_objective_audit.md`.
+4. Selector Dataset v2 infrastructure, scenario redesign, and a
+   policy-independent SLO calibration fix. `docs/selector_dataset_v2.md`,
+   `docs/selector_v2_slo_calibrated_frontier_search.md`.
+5. Faithful-baseline scope audit -> **Option B** decision: the Selector v2
+   trainable action space is 8 of the 20 internal policies; faithful
+   baselines are evaluation-only. `docs/selector_v2_faithful_baseline_scope_audit.md`.
+6. Calibrated targeted pilot (250 windows, Option B scope) -- all pipeline
+   quality gates passed, but held-out selector performance is currently
+   mixed/weak (loses on VALIDATION and OOD_TEST). Not yet a finished result.
+
+**Full synthesis, in narrative order, with the current (mixed, unresolved)
+result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).
+**Next step:** [docs/current/NEXT_STEPS.md](current/NEXT_STEPS.md).
+
+---
+
+## Historical: numbered phase status (through 2026-06-27 pause)
 
 | Phase | Description | Status |
 |---|---|---|
