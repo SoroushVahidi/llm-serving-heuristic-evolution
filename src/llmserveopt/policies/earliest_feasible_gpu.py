@@ -1,4 +1,16 @@
 """
+UNREGISTERED HISTORICAL PROTOTYPE.
+
+Not present in `policies/registry.py::BASELINE_NAMES` or
+`policies/external_baselines_registry.py` -- has zero references anywhere
+else in this repository (verified by repo-wide search). Retained as a
+historical prototype, not deleted, since it is small, self-contained, and
+functionally complete (unlike a half-finished stub). If you need this
+behavior, register it explicitly first; do not assume it is already wired
+into any policy comparison, selector candidate set, or config. See
+`docs/baselines.md` and `docs/planning_specs.md`, which both already note
+its unregistered status.
+
 EarliestFeasibleGPU: dispatch each request to the first GPU that can admit it.
 
 Requests are processed FIFO.  For each request, GPUs are tried in gpu_id order
