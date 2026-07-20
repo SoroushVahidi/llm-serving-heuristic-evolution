@@ -1,5 +1,24 @@
 # Research Status
 
+> **NOTICE (added during repository audit):** this document's "Last updated,"
+> "Current branch," and "Current phase" fields below, and the Quick Facts
+> table's policy/test counts, are **stale**. They describe a 2026-06-27
+> checkpoint. Development has continued since then on an unnumbered Selector
+> v2 / external-faithful-baseline / GPU-runtime-validation program that this
+> document does not mention at all. A full rewrite of this document is
+> planned (tracked as a documentation-consolidation follow-up) but not yet
+> done. Until then, treat these as current instead:
+> - [selector_v2_faithful_baseline_scope_audit.md](selector_v2_faithful_baseline_scope_audit.md) — current Selector v2 status and action-space scope decision
+> - [selector_objective_audit.md](selector_objective_audit.md) — the corrected `arrival_normalized_weighted_goodput` (ANWG) objective
+> - [external_baseline_integration.md](external_baseline_integration.md) — the 6 faithful external baselines
+> - [wulver_sarathi_vllm_repeated_validation.md](wulver_sarathi_vllm_repeated_validation.md) and [runtime_validation_benchmark_pack.md](runtime_validation_benchmark_pack.md) — real-GPU-hardware validation
+> - [README.md](README.md)'s §16A for the full current doc index
+>
+> Actual current branch/HEAD as of this audit: `selector-v2-calibrated-targeted-pilot` /
+> commit `3406bc0`. Actual current test collection count: **2491** (measured via
+> `python -m pytest --collect-only -q`; the bare `pytest` on `PATH` resolves to
+> an interpreter missing `pandas` and undercounts — use `python -m pytest`).
+
 **Last updated:** 2026-07-18  
 **Current branch:** `phase2c1-real-trace-ingestion-validation`  
 **Current phase:** Phase 2C — Paused after Phase 2C.3 (external-aware analysis)

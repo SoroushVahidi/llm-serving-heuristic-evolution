@@ -271,6 +271,24 @@ Monolithic candidates:
 - `best_fit`
 - `multi_bin_batching`
 
+> **Superseded for the trainable action space:** the list above was this
+> design doc's original general monolithic candidate pool. The current
+> approved Selector v2 *trainable* action space is the narrower **Option B**
+> scope decided in `docs/selector_v2_faithful_baseline_scope_audit.md`: the
+> 8 historical-monolithic policies only (`fifo`, `edf`,
+> `scorpio_style_slo_guard`, `admission_control`,
+> `weighted_shortest_processing`, `estimated_service_time_first`,
+> `best_fit`, `multi_bin_batching`). `vllm_faithful`, `sarathi_faithful`,
+> and `vllm_chunked_prefill_faithful` (added after this list was written)
+> are confirmed genuinely dominated under ANWG and are evaluated
+> separately, never trained on. `orca_style`, `slo_slack_score`, and
+> `shortest_output_first` are also excluded from the trainable set under
+> Option B. The in-code candidate resolver at
+> `src/llmserveopt/selector/dataset_v2/candidates.py` has not yet been
+> reconciled with this narrower scope (tracked as follow-up work); the
+> actual current pipeline's candidate set lives in
+> `src/llmserveopt/selector/dataset_v2/calibrated_targeted_pilot.py`.
+
 Inclusion criteria:
 
 - compatible with monolithic shared-queue topology

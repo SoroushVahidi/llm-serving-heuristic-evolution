@@ -1,3 +1,17 @@
+> **HISTORICAL STATUS / SUPERSEDED DECISION:** This document records the
+> state at commit `e5bd2b1` (branch `selector-dataset-v2-corrected-objective`).
+> Its readiness verdict, `READY_TO_RESUME_SELECTOR_DATASET_V2: still no`
+> (see that section below), was superseded by later SLO-calibrated
+> scenario work: `docs/selector_v2_slo_calibrated_frontier_search.md`
+> fixed the fixed-`slo_deadline=1000.0` scenario-construction issue that
+> was the actual root cause of the "no," producing a "stark reversal" (0/900
+> to 16.6%/910 genuinely ANWG-discriminative windows) and a `yes` verdict.
+> The current action-space scope decision built on that reversal is
+> `docs/selector_v2_faithful_baseline_scope_audit.md`
+> (`SELECTOR_SCOPE_DECISION = OPTION B`). Retained below as a historical
+> checkpoint for reproducibility; do not treat its "still no" verdict as
+> current.
+>
 > **Update (decode_first fix):** Finding 2's dead `GPUState._step_phase15`
 > `decode_first` branch, referenced throughout this document as the reason
 > `prefill_heavy`/`decode_heavy` are `INVALID_UNTIL_SIMULATOR_EXTENSION`,

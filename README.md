@@ -7,6 +7,22 @@ heuristics for online LLM inference serving. It provides a GPU-calibrated discre
 simulator, a suite of 20 baseline policies, real-trace replay against BurstGPT arrival
 data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
 
+> **NOTICE (added during repository audit, not yet dated-updated below):** the
+> "Current status" section immediately below, the branch name, and the test
+> count are **stale** — they describe a 2026-06-27 checkpoint and have not been
+> updated for the substantial, active, unnumbered development that has
+> continued since (external faithful-baseline reimplementations, Selector v2 /
+> Dataset v2, GPU hardware validation, a corrected arrival-normalized
+> objective). This section is being superseded by that program; a full
+> rewrite is planned but not yet done. Until then, a new reader should start
+> from these current, authoritative docs instead of trusting the paragraph
+> below:
+> - [docs/selector_v2_faithful_baseline_scope_audit.md](docs/selector_v2_faithful_baseline_scope_audit.md) — current Selector v2 status and action-space scope decision
+> - [docs/selector_objective_audit.md](docs/selector_objective_audit.md) — the corrected `arrival_normalized_weighted_goodput` (ANWG) objective
+> - [docs/external_baseline_integration.md](docs/external_baseline_integration.md) — the 6 faithful external baselines (vLLM, vLLM-chunked-prefill, Sarathi, DistServe, TetriInfer, Llumnix)
+> - [docs/wulver_sarathi_vllm_repeated_validation.md](docs/wulver_sarathi_vllm_repeated_validation.md) and [docs/runtime_validation_benchmark_pack.md](docs/runtime_validation_benchmark_pack.md) — real-GPU-hardware validation
+> - [docs/README.md](docs/README.md)'s §16A for the full current doc index
+>
 > **Current status (2026-06-27):** Phase 2C paused after completing causal selector
 > retraining (2C.2) and external-aware analysis (2C.3). Branch:
 > `phase2c1-real-trace-ingestion-validation`. 1277 tests collected.
