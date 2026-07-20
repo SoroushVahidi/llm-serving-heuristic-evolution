@@ -5,20 +5,21 @@ Short and actionable. See [SELECTOR_V2.md](SELECTOR_V2.md) and
 
 ## Recommended sequence
 
-1. **Independently audit the calibrated pilot for leakage.** The pipeline's
-   own `no_leakage` gate reports `passed: true`, but the mixed
-   VALIDATION/ID_TEST results (§9 of [SELECTOR_V2.md](SELECTOR_V2.md)) are
-   reason enough to check independently rather than accept the automated
-   gate alone. This has **not been done yet** -- it is the actual first
-   step, not an assumed-complete precondition.
-2. If leakage is found: fix the split construction and regenerate a clean
-   250-500-window calibrated pilot.
-   If leakage is *not* found: investigate the alternative explanations --
-   training-set size (125 windows is small for 49 features), or a genuine
-   regime shift specific to the OOD split (every policy's ANWG collapses
-   there, not just the selector's).
-3. Verify zero leakage on whichever pilot you proceed with (don't just trust
-   the automated gate a second time either -- confirm by inspection).
+1. ~~Independently audit the calibrated pilot for leakage.~~ **DONE.** The
+   pipeline's own `no_leakage` gate reports `passed: true`, but an
+   independent audit (`scripts/audit_selector_v2_calibrated_pilot_leakage.py`,
+   full writeup in
+   `experiments/selector_v2_calibrated_pilot_20260720T163235Z/LEAKAGE_AUDIT.md`)
+   confirmed real cross-transform row-range leakage affecting 27 of 48
+   real-trace historical-pool windows across TRAIN/VALIDATION/ID_TEST.
+   OOD_TEST is confirmed leakage-free.
+2. **Fix the split construction**: group by underlying source-trace row
+   range across transforms (not just by transform name), so that windows
+   sharing underlying request content always land in the same split.
+   Regenerate a clean 250-500-window calibrated pilot.
+3. Verify zero leakage on the new pilot using the same audit script -- don't
+   just trust the pipeline's own gate a second time; run the independent
+   check again.
 4. Retrain the **same** prototype selector (no hyperparameter tuning yet --
    keep this an apples-to-apples check, not a fishing expedition).
 5. Evaluate cleanly on VALIDATION / ID_TEST / OOD_TEST.

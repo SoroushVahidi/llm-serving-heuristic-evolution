@@ -28,11 +28,12 @@ Development did not stop at the Phase 2C pause below -- it continued on an
    trainable action space is 8 of the 20 internal policies; faithful
    baselines are evaluation-only. `docs/selector_v2_faithful_baseline_scope_audit.md`.
 6. Calibrated targeted pilot (250 windows, Option B scope) -- all pipeline
-   quality gates passed, but held-out selector performance is currently
-   mixed/weak (loses on VALIDATION and OOD_TEST). Not yet a finished result.
+   quality gates passed, but an independent audit confirmed a real
+   cross-transform leakage bug in the non-OOD splits; the one confirmed-clean
+   split (OOD_TEST) loses to best-fixed. Not yet a finished result.
 
-**Full synthesis, in narrative order, with the current (mixed, unresolved)
-result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).
+**Full synthesis, in narrative order, with the current (confirmed leakage
+bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).
 **Next step:** [docs/current/NEXT_STEPS.md](current/NEXT_STEPS.md).
 
 ---

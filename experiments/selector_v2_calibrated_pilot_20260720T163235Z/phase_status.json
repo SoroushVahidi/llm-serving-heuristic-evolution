@@ -1,0 +1,12 @@
+{
+  "status": "generation_complete",
+  "n_attempts": 250,
+  "n_retained": 250,
+  "n_retained_real_trace": 79,
+  "n_retained_ood_reserved": 31,
+  "n_discarded_incomplete": 0,
+  "n_discarded_empty": 0,
+  "elapsed_s": 145.1,
+  "target_min_retained": 250,
+  "target_max_retained": 500
+}

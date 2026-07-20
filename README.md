@@ -71,16 +71,16 @@ is the corrected primary objective for all current selector work. See
 - Selector Dataset v2 infrastructure (SLO calibration, leakage-safe splits,
   automated quality gates): **complete and in active use**.
 - The most recent calibrated targeted pilot (250 windows, Option B scope)
-  passed all of the pipeline's own automated quality gates, but the trained
-  prototype selector shows **mixed, weak held-out performance** -- it loses
-  to the best fixed policy on the VALIDATION and OOD_TEST splits. **Do not
-  treat Selector v2 as a finished, working result.** A concern about
-  possible leakage in that pilot's non-OOD splits has been raised but **not
-  independently confirmed** -- the pipeline's own leakage gate reports
-  `passed: true`.
-- **Current blocker**: clean, confirmed held-out generalization for the
-  trained selector. Until that's resolved, comparing the selector against
-  the faithful external baselines (Protocol C) is premature.
+  passed all of the pipeline's own automated quality gates, but an
+  independent audit **confirmed a real leakage bug** in its non-OOD split
+  construction (cross-transform row-range reuse -- the automated gate
+  doesn't check for it). VALIDATION/ID_TEST are not trustworthy held-out
+  splits as a result; on OOD_TEST, the one confirmed-clean split, the
+  trained prototype selector loses to the best fixed policy. **Do not treat
+  Selector v2 as a finished, working result.**
+- **Current blocker**: fix the split-construction bug and regenerate a clean
+  pilot. Until a clean pilot exists, comparing the selector against the
+  faithful external baselines (Protocol C) is premature.
 
 Full detail: [docs/current/SELECTOR_V2.md](docs/current/SELECTOR_V2.md).
 
@@ -157,8 +157,8 @@ a decision (e.g. the most recent calibrated pilot).
 
 ## H. Current next step
 
-Independently audit the most recent calibrated pilot for the open leakage
-question, then proceed through the sequence in
+Fix the confirmed split-construction leakage bug and regenerate a clean
+calibrated pilot, then proceed through the sequence in
 [docs/current/NEXT_STEPS.md](docs/current/NEXT_STEPS.md) -- do not scale
 Dataset v2 generation or claim selector superiority before clean, confirmed
 held-out generalization exists.

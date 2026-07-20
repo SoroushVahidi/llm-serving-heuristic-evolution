@@ -55,12 +55,14 @@ systems (vLLM, Sarathi-Serve, DistServe, TetriInfer, Llumnix). See
 ## 3. Current Selector v2 status (verifiable claims only)
 
 The most recent pipeline run (`experiments/selector_v2_calibrated_pilot_20260720T163235Z/`,
-not yet committed to git) generated 250 retained windows under the Option B
-8-policy action space and trained a prototype RF regressor/classifier.
+small provenance/summary/audit files committed, large raw CSVs local-only)
+generated 250 retained windows under the Option B 8-policy action space and
+trained a prototype RF regressor/classifier.
 
 **What the pipeline's own automated checks report:** all 10 quality gates
 passed, including `no_leakage: {"passed": true, "detail": "verified"}`
-(read directly from `quality_gates.json`).
+(read directly from `quality_gates.json`) -- **now known to be an
+incomplete check** (see the leakage finding below).
 
 **What the held-out numbers actually show** (mean ANWG vs.
 `weighted_shortest_processing`, the best fixed policy on this pilot):
@@ -74,20 +76,26 @@ passed, including `no_leakage: {"passed": true, "detail": "verified"}`
 
 OOD_TEST is a markedly harder regime for every policy (mean ANWG ~0.14-0.26
 across the board, including oracle at 0.263), not just the learned selector.
+**VALIDATION and ID_TEST are also now known to be measured on a leaky
+split** (see below), so their numbers cannot be trusted as held-out evidence
+either -- OOD_TEST is the only split confirmed leakage-free, and it loses.
 
-**Conclusion: this is not a clean, confirmed win.** The regressor beats
-best-fixed on TRAIN and ID_TEST but loses on VALIDATION and OOD_TEST; the
-classifier loses on 3 of 4 splits. Full detail: [SELECTOR_V2.md](SELECTOR_V2.md).
+**Conclusion: this is not a clean, confirmed win, and the non-OOD splits
+cannot be trusted as held-out evidence.** Full detail: [SELECTOR_V2.md](SELECTOR_V2.md).
 
-**Open question, not yet resolved:** a leakage concern has been raised about
-this pilot's non-OOD splits. It has **not been independently verified** --
-the pipeline's own `no_leakage` gate reports `passed: true`, and no
-independent leakage audit artifact currently exists in this repository. Given
-the mixed VALIDATION/ID_TEST results, an independent leakage audit is a
-reasonable and recommended next step (see [NEXT_STEPS.md](NEXT_STEPS.md)),
-but until one is performed and produces a finding, **do not state that
-leakage was confirmed** -- state only that held-out generalization is
-currently weak/mixed and unresolved.
+**Leakage: CONFIRMED, independently reproduced.** A concern was raised about
+this pilot's non-OOD splits; it has now been independently audited, not just
+asserted. Finding: 19 cross-split row-range overlap pairs, 27 of 48
+real-trace historical-pool windows (56%) involved, spanning
+TRAIN-VALIDATION/ID_TEST-TRAIN/ID_TEST-VALIDATION. Mechanism: the same
+underlying trace row range, drawn under different transforms, is treated as
+independent groups by the split logic and can land in different splits.
+**OOD_TEST is unaffected** (zero overlaps involve it; the OOD row-range
+reservation's disjointness holds). Reproducible via
+`scripts/audit_selector_v2_calibrated_pilot_leakage.py`; full writeup in
+`experiments/selector_v2_calibrated_pilot_20260720T163235Z/LEAKAGE_AUDIT.md`.
+This is no longer an open question -- it is a confirmed data-quality problem
+in the split construction, with a known, fixable mechanism.
 
 ## 4. Current dataset status
 
@@ -118,12 +126,15 @@ without that specific hardware access.
 
 ## 7. Known issues / tracked follow-ups
 
-- `src/llmserveopt/selector/dataset_v2/candidates.py`'s `STRONG_HISTORICAL_MONOLITHIC_POLICIES`
-  constant (14 policies) has not been reconciled with the Option B 8-policy
-  scope decision -- the actual current pipeline's candidate set lives in
-  `calibrated_targeted_pilot.py`, not `candidates.py`. Deferred to a future
-  cleanup pass; source code intentionally not modified by this
-  documentation-only query.
+- ~~`src/llmserveopt/selector/dataset_v2/candidates.py`'s stale 14-policy
+  constant vs. the 8-policy Option B scope~~ -- **RESOLVED**: `candidates.py`
+  now defines `SELECTOR_V2_OPTION_B_POLICIES` as the canonical 8-policy
+  constant (import-time-asserted against both registries), and
+  `calibrated_targeted_pilot.py::CANDIDATE_POLICIES` imports it directly
+  instead of duplicating the list. The broader 14-policy pool is retained,
+  unchanged, under the clearer alias `MONOLITHIC_DIAGNOSTIC_POLICY_POOL` for
+  historical reproducibility and diagnostic exploration. See
+  [BASELINES.md](BASELINES.md) §B.
 - One orphaned branch, `phase2b13-selector-training-after-diversity`, has
   unique commits not merged into any current lineage (superseded by its
   sibling `phase2b13-selector-training-and-suspicion-audit`, which is
@@ -145,13 +156,15 @@ without that specific hardware access.
 
 ## 9. Current scientific blockers
 
-1. **Selector v2 held-out generalization is not yet demonstrated cleanly.**
-   VALIDATION and OOD_TEST both lose to best-fixed for both trained model
-   variants (see §3). This blocks any claim that Selector v2 "works."
-2. Whether that weak generalization is a data/leakage artifact, a
-   too-small training set (125 windows), or a genuine regime-shift problem
+1. **The calibrated pilot's split construction has a confirmed leakage bug**
+   (§3) -- VALIDATION and ID_TEST results are measured on a leaky split and
+   cannot be trusted. This must be fixed before those splits mean anything.
+2. **Even on the one leakage-free split (OOD_TEST), the selector loses to
+   best-fixed for both trained model variants.** Whether that is a
+   too-small training set (125 windows) or a genuine regime-shift problem
    (OOD_TEST's collapse affects every policy, not just the selector) is
-   **not yet diagnosed**.
+   **not yet diagnosed** -- and can't be, productively, until a clean pilot
+   exists to re-test against.
 3. Until #1-2 are resolved, comparing the trained selector against the 6
    faithful external baselines (Protocol C) is premature -- there is no
    confirmed-working selector yet to compare.
@@ -159,6 +172,7 @@ without that specific hardware access.
 ## 10. Next recommended action
 
 See [NEXT_STEPS.md](NEXT_STEPS.md) for the full sequence. Immediate next
-step: independently audit the calibrated pilot's splits for leakage
-(confirm or refute the open concern in §3) before deciding whether to scale
-Dataset v2 generation or retrain.
+step: fix the split-construction bug identified in §3 (group by underlying
+row range across transforms, not just by transform name) and regenerate a
+clean calibrated pilot, before deciding whether to scale Dataset v2
+generation or retrain.

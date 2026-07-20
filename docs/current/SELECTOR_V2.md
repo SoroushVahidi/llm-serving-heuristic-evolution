@@ -82,12 +82,16 @@ reserved for OOD, group-aware splits, full 8-policy utility vectors.
 
 ## 9. Current result (verifiable claims only)
 
-Run: `experiments/selector_v2_calibrated_pilot_20260720T163235Z/` (finished
-locally, not yet committed to git).
+Run: `experiments/selector_v2_calibrated_pilot_20260720T163235Z/` (small
+provenance/summary/audit files committed; the large raw policy-vector and
+window-feature CSVs remain local-only -- see
+[EXPERIMENTS_AND_RESULTS.md](EXPERIMENTS_AND_RESULTS.md)).
 
 **Pipeline's own automated checks:** all 10 quality gates passed, including
 `no_leakage: {"passed": true, "detail": "verified"}` (from
-`quality_gates.json`, read directly).
+`quality_gates.json`, read directly) -- **now known to be an incomplete
+check**; see §10, which independently confirms real leakage this gate does
+not detect.
 
 **Held-out performance is mixed, not a clean win:**
 
@@ -102,33 +106,57 @@ locally, not yet committed to git).
 numbers are low for *every* policy including oracle at 0.263 -- a harder
 regime overall, not a selector-specific collapse.)
 
-## 10. Open question: leakage (unresolved, not confirmed)
+## 10. Leakage: CONFIRMED, independently reproduced
 
-A concern has been raised that the pilot's non-OOD splits may have
-cross-transform / row-ancestry leakage that could explain the weak
-VALIDATION result. **This has not been independently verified.** The
-pipeline's own `no_leakage` gate reports `passed: true`, and no independent
-leakage-audit artifact exists in the repository as of this writing. Given
-the mixed results, an independent audit of this specific question is the
-right next step -- but until one is performed and produces an actual
-finding, this document states only that held-out generalization is
-currently weak/mixed and the cause is undiagnosed, not that leakage is a
-confirmed fact.
+A concern was raised that the pilot's non-OOD splits may have cross-transform
+row-range leakage. This has now been **independently audited and confirmed**
+(not just asserted) -- see
+`experiments/selector_v2_calibrated_pilot_20260720T163235Z/LEAKAGE_AUDIT.md`
+and the reproducible check at
+`scripts/audit_selector_v2_calibrated_pilot_leakage.py`.
+
+**Finding**: 19 cross-split row-range overlap pairs, involving 27 of the 48
+real-trace "historical"-pool windows (56%), spread across
+TRAIN-VALIDATION (8), ID_TEST-TRAIN (9), and ID_TEST-VALIDATION (2). The
+mechanism: the pipeline's group key is `source_trace x transform x pool`,
+so the *same* underlying trace row range drawn under different transforms
+(`representative`/`compressed_tight`/`burst_kv`/`noise_underpredict`) is
+treated as independent groups and can land in different splits, even though
+the underlying request content (prompt lengths, base ordering) is identical
+between such a pair -- only arrival timing/noise differs.
+
+**OOD_TEST is unaffected**: zero overlap pairs involve OOD_TEST, and zero
+`historical<->ood_reserved` pool violations were found -- the OOD
+reservation's row-disjointness holds as designed. OOD_TEST's separately weak
+absolute performance (§9) is a different, still-open question, not explained
+by this leakage mechanism.
+
+**Why the pipeline's own `no_leakage: passed=true` gate missed this**: it
+only verifies group-level split assignment (each group goes wholly to one
+split, which is true by construction), not cross-group row-range overlap on
+the underlying source data. That gap is now documented; fixing the gate
+itself is future work (see [NEXT_STEPS.md](NEXT_STEPS.md)).
+
+**Conclusion**: VALIDATION and ID_TEST results from this pilot should not be
+treated as clean, independent held-out evaluation. This is now a confirmed
+data-quality problem in the split construction, not an open question.
 
 ## 11. Current status statement
 
 **Selector v2 has not yet demonstrated a clean, confirmed win over
-best-fixed on held-out data.** It wins on TRAIN (expected) and, for the
-regressor only, on ID_TEST; it loses on VALIDATION for both model variants
-and on OOD_TEST for both model variants. Do not cite this pilot as a
-finished result. External-baseline (faithful, Protocol C) comparison
-against this selector has not yet been run and would be premature before
-this generalization question is resolved.
+best-fixed on held-out data -- and the VALIDATION/ID_TEST numbers reported
+in §9 are now known to be measured on a leaky split (§10), so they cannot be
+trusted as held-out evidence even where they showed a nominal win.**
+OOD_TEST -- the one split confirmed leakage-free -- loses to best-fixed for
+both model variants. Do not cite this pilot as a finished result. External-
+baseline (faithful, Protocol C) comparison against this selector has not
+yet been run and would be premature before a clean pilot exists.
 
 ## 12. Next step
 
-See [NEXT_STEPS.md](NEXT_STEPS.md). In order: independently audit for
-leakage -> if found, fix and regenerate a clean pilot; if not found,
-investigate the alternative explanations (training-set size, genuine
-regime shift) -> only then decide whether to scale Dataset v2 generation
-and train a final selector.
+See [NEXT_STEPS.md](NEXT_STEPS.md). The leakage question (§10) is now
+resolved -- confirmed, with a known mechanism and fix. Next: fix the split
+construction (group by underlying row range across transforms, not just by
+transform name) and regenerate a clean 250-500-window pilot; then retrain
+the same prototype selector and evaluate cleanly before deciding whether to
+scale Dataset v2 generation.

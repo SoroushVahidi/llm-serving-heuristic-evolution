@@ -1,0 +1,59 @@
+{
+  "pilot_name": "selector_v2_calibrated_targeted_pilot",
+  "scope_decision": "OPTION B (docs/selector_v2_faithful_baseline_scope_audit.md)",
+  "selector_action_space_8_policies": [
+    "fifo",
+    "edf",
+    "scorpio_style_slo_guard",
+    "admission_control",
+    "weighted_shortest_processing",
+    "estimated_service_time_first",
+    "best_fit",
+    "multi_bin_batching"
+  ],
+  "excluded_faithful_baselines": [
+    "vllm_faithful",
+    "vllm_chunked_prefill_faithful",
+    "sarathi_faithful"
+  ],
+  "excluded_cross_topology_baselines": [
+    "distserve_faithful",
+    "tetriinfer_paper_reimplementation",
+    "llumnix_faithful"
+  ],
+  "primary_objective": "arrival_normalized_weighted_goodput",
+  "slo_calibration_method": "v1_reference_service_model (policy-independent)",
+  "slo_calibration_multiplier": 2.0,
+  "slo_calibration_sensitivity_multipliers": [
+    1.5,
+    2.0,
+    3.0
+  ],
+  "target_retained_windows_min": 250,
+  "target_retained_windows_max": 500,
+  "synthetic_families": [
+    "A_same_arrival_heterogeneous_cluster",
+    "B_closely_spaced_heterogeneous_cluster",
+    "C_admission_reorder_boundary",
+    "D_long_prefill_overlap",
+    "E_kv_pressure_admission_order"
+  ],
+  "real_trace_base_files": [
+    "burstgpt_scaled_moderate",
+    "burstgpt_scaled_high",
+    "azure_2023_code",
+    "azure_2023_conv"
+  ],
+  "real_trace_transforms": [
+    "representative",
+    "compressed_tight",
+    "burst_kv",
+    "noise_underpredict"
+  ],
+  "real_trace_ood_reserved_fraction": 0.15,
+  "newer_time_slice_method": "Each real-trace processed JSONL is chronologically sorted by arrival_time (verified). The last OOD_RESERVED_FRACTION of rows (chronologically later, relative trace time -- no calendar date exists in these sources beyond that) is reserved, disjoint by row-index construction, exclusively for OOD_TEST. The prior 910-window SLO-calibrated pilot only sampled seeds 0-9 from the HISTORICAL pool (first 1-fraction of rows); this reservation is structural, not merely non-collision-by-luck.",
+  "search_seed": 20260720,
+  "max_attempts": 3000,
+  "batch_size": 25,
+  "drain_steps": 5000
+}

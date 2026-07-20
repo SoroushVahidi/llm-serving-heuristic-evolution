@@ -35,6 +35,19 @@ traces/
 # Experiment logs (runtime output; not source code)
 logs/
 
+# Raw GPU/server runtime logs under experiments/ -- these are verbose,
+# regeneratable raw stdout, not the canonical result. The small structured
+# artifacts alongside them (summary.md, summary.json, scenario_results.json,
+# manifest.json, etc.) are committed normally; only the raw server.log is
+# excluded here.
+#
+# Pre-existing exception (already tracked before this pattern was added;
+# new gitignore patterns do not untrack already-committed files, and these
+# are intentionally kept -- do not `git rm --cached` them):
+#   experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log
+#   experiments/real_llm/vllm_baseline_comparison_pilot_20260703T165438Z/server.log
+experiments/**/server.log
+
 # Large binary / model artifacts
 *.bin
 *.safetensors
