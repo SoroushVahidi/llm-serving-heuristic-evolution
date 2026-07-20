@@ -1,0 +1,41 @@
+{
+  "vllm_chunked_prefill_faithful": {
+    "n_scored": 150,
+    "win_count": 107,
+    "strong_or_moderate_win_count": 0,
+    "win_fraction": 0.7133,
+    "classification_counts": {
+      "NEAR_TIE": 150
+    },
+    "win_classification_counts": {
+      "NEAR_TIE": 107
+    },
+    "example_strong_or_moderate_wins": []
+  },
+  "sarathi_faithful": {
+    "n_scored": 150,
+    "win_count": 150,
+    "strong_or_moderate_win_count": 0,
+    "win_fraction": 1.0,
+    "classification_counts": {
+      "NEAR_TIE": 150
+    },
+    "win_classification_counts": {
+      "NEAR_TIE": 150
+    },
+    "example_strong_or_moderate_wins": []
+  },
+  "vllm_faithful": {
+    "n_scored": 150,
+    "win_count": 150,
+    "strong_or_moderate_win_count": 0,
+    "win_fraction": 1.0,
+    "classification_counts": {
+      "NEAR_TIE": 150
+    },
+    "win_classification_counts": {
+      "NEAR_TIE": 150
+    },
+    "example_strong_or_moderate_wins": []
+  }
+}
