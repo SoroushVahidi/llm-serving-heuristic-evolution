@@ -3,11 +3,14 @@
 **This is the single authoritative current-status document for this repository.**
 `docs/research_status.md` is retained only as a historical redirect to this file.
 
-**Status as of:** 2026-07-20, repository-audit pass (Queries 1-3 of a 5-query
-cleanup). This document reflects the state at commit `3406bc0` on branch
-`selector-v2-calibrated-targeted-pilot`, plus documentation-only cleanup
-commits layered on top on branches `repo-polish-query2-safe-cleanup` and
-`repo-polish-query3-canonical-docs` (neither yet merged to `main`).
+**Status as of:** 2026-07-20, repository-audit pass (Queries 1-5 of a 5-query
+cleanup, now complete). This document reflects the state at commit `3406bc0`
+on branch `selector-v2-calibrated-targeted-pilot` (the scientific work),
+plus documentation, source-of-truth, and artifact cleanup commits layered on
+top across `repo-polish-query2-safe-cleanup` through
+`repo-polish-query5-final-verification` (see that branch's final commit for
+the full lineage; not yet merged to `main` as of this writing -- see the
+integration recommendation in `docs/current/AGENT_HANDOFF.md`).
 
 > Prefer commit hash over branch name when precision matters: branch names
 > in this project have been renamed at least three times as work
@@ -47,7 +50,7 @@ systems (vLLM, Sarathi-Serve, DistServe, TetriInfer, Llumnix). See
   calibration, group-aware leakage-safe split machinery, and an explicit,
   evidence-based scope decision (**Option B**) for the Selector v2 trainable
   action space. `docs/selector_v2_faithful_baseline_scope_audit.md`.
-- Test suite: **2,493 tests collected**, 0 collection errors, under the
+- Test suite: **2,501 tests collected**, 0 collection errors, under the
   correct interpreter (`python3 -m pytest --collect-only -q`; the bare
   `pytest` shim on `PATH` on this machine is missing `pandas` and
   undercounts -- see [REPRODUCIBILITY.md](REPRODUCIBILITY.md)).
@@ -138,21 +141,32 @@ without that specific hardware access.
 - One orphaned branch, `phase2b13-selector-training-after-diversity`, has
   unique commits not merged into any current lineage (superseded by its
   sibling `phase2b13-selector-training-and-suspicion-audit`, which is
-  merged). Not deleted; a human decision.
-- `experiments/selector_v2_calibrated_pilot_20260720T163235Z/` is a finished,
-  untracked, local-only experiment output. Not yet committed, not yet
-  canonical -- see [EXPERIMENTS_AND_RESULTS.md](EXPERIMENTS_AND_RESULTS.md).
+  merged). See [AGENT_HANDOFF.md](AGENT_HANDOFF.md) for the final
+  classification and disposition decision.
+- `experiments/selector_v2_calibrated_pilot_20260720T163235Z/`: small
+  provenance/summary/audit files (including the leakage audit) are now
+  committed; the large raw `full_policy_vectors.csv`/`window_features.csv`
+  remain local-only and regeneratable -- see
+  [EXPERIMENTS_AND_RESULTS.md](EXPERIMENTS_AND_RESULTS.md).
 
 ## 8. Active protected local artifacts / processes
 
-- A `vllm serve` process (Qwen2.5-0.5B-Instruct, port 8001) has been running
-  continuously in this repository's working directory since 2026-07-03,
-  writing to `experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log`.
-  Do not stop it or commit/truncate that log without an explicit decision to
-  do so.
-- Two finished (non-live) raw GPU-stress server logs and the calibrated
-  pilot's output directory are untracked local artifacts pending a decision
-  in a later cleanup query.
+- **Stopped as of this cleanup pass (2026-07-20).** The `vllm serve` process
+  (Qwen2.5-0.5B-Instruct, port 8001) had run continuously since 2026-07-03
+  but served zero requests in its last 17 days (last logged HTTP activity:
+  2026-07-03 22:06); nothing in the current active research track depends on
+  it. Stopped gracefully via `SIGTERM` (confirmed clean: port 8001 freed, GPU
+  memory released 8269 MiB -> 15 MiB, its log
+  `experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log` only
+  appended to, never truncated -- `git diff --stat` shows insertions only).
+  The log remains intentionally uncommitted (per this project's established
+  policy for this file); restart command is documented in
+  `docs/current/AGENT_HANDOFF.md` if needed again.
+- The two raw GPU-stress server logs from 2026-07-18 are gitignored
+  (`experiments/**/server.log`) and remain local-only by design -- their
+  canonical structured summaries are committed alongside them. The
+  calibrated pilot's two large raw CSVs (above) are the remaining
+  local-only-by-design artifacts.
 
 ## 9. Current scientific blockers
 

@@ -10,7 +10,7 @@ confirm `python3 -c "import pandas"` succeeds in whatever interpreter you use.
 
 ```bash
 pip install -e ".[dev]"          # editable install, pulls pyproject.toml deps
-python3 -m pytest --collect-only -q   # should report ~2,493 tests, 0 errors
+python3 -m pytest --collect-only -q   # should report ~2,500 tests, 0 errors
 ```
 
 Dependencies are declared with loose `>=` bounds in `pyproject.toml` (no
@@ -83,7 +83,7 @@ CUDA -- 2 files, 8 tests, as of this writing.
 | Component | Classification |
 |---|---|
 | Core simulator experiments (synthetic configs) | `FULLY_REPRODUCIBLE` -- seeded via `numpy.random.default_rng`, same config + seed = identical results |
-| Selector Dataset v2 generation | `FULLY_REPRODUCIBLE` in principle (seeded, scripted); the calibrated targeted pilot specifically has an open leakage question to resolve first -- see [SELECTOR_V2.md](SELECTOR_V2.md) |
+| Selector Dataset v2 generation | `FULLY_REPRODUCIBLE` (seeded, scripted); the calibrated targeted pilot specifically has a **confirmed** split-construction leakage bug (independently audited, not just suspected) that must be fixed before its next run's VALIDATION/ID_TEST splits can be trusted -- see [SELECTOR_V2.md](SELECTOR_V2.md) §10 |
 | BurstGPT / Azure 2023 real-trace replay | `FULLY_REPRODUCIBLE` -- data already present under `data/` |
 | Wulver A100 validation | `REPRODUCIBLE_WITH_EXTERNAL_RESOURCES` -- requires that specific SLURM allocation |
 | Sarathi/vLLM real-runtime validation | `REPRODUCIBLE_WITH_EXTERNAL_RESOURCES` -- requires GPU hardware access (local RTX or Wulver A100) |
