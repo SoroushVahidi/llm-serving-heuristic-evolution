@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Build the redesigned, bottleneck-oriented Selector Dataset v2 pilot."""
+"""Build the redesigned, bottleneck-oriented Selector Dataset v2 pilot.
+
+HISTORICAL ENTRY POINT. Retained for reproducibility of the redesigned-pilot
+results documented in docs/selector_dataset_v2.md and
+docs/selector_dataset_v2_validity_after_chunked_prefill_baseline.md. Superseded
+by scripts/build_selector_dataset_v2_calibrated_targeted_pilot.py (current,
+Option B scope -- see docs/selector_v2_faithful_baseline_scope_audit.md).
+"""
 from __future__ import annotations
 
 import argparse

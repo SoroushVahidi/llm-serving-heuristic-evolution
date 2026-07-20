@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """Build a CPU-only Selector Dataset v2 pilot.
 
+HISTORICAL ENTRY POINT. This was the first Selector Dataset v2 pilot
+generator; retained for reproducibility of that early pilot's results. It
+was superseded by scripts/build_selector_dataset_v2_redesigned_pilot.py and
+then by scripts/build_selector_dataset_v2_calibrated_targeted_pilot.py
+(current, Option B scope). See docs/selector_dataset_v2.md for the full
+generation lineage.
+
 This script intentionally does not train a selector. It generates a small
 topology-aware full-outcome dataset plus summary/manifests suitable for deciding
 whether large-scale generation is warranted.

@@ -1,4 +1,9 @@
 #!/bin/bash
+# HISTORICAL POSTPROCESSING SCRIPT -- DO NOT RE-RUN FOR CURRENT RESULTS.
+# Phase 1.7C is long complete; this script is retained only for reference/
+# reproducibility of that phase's postprocessing steps. Per scripts/README.md,
+# re-running after the Phase 1.7C commit exists is not a supported operation.
+#
 # Phase 1.7C post-processing: run after all 7 experiments complete.
 # Generates summaries, runs tests, updates docs, commits.
 set -euo pipefail

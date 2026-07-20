@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 """
+HISTORICAL ENTRY POINT (Selector Dataset v1, Phase 2A).
+Retained for reproducibility of Phase 2A.2/2A.3 results only.
+For current Selector Dataset v2 generation (Option B scope, the approved
+8-policy historical-monolithic action space) use:
+    scripts/build_selector_dataset_v2_calibrated_targeted_pilot.py
+See docs/selector_v2_faithful_baseline_scope_audit.md and
+docs/selector_dataset_v2.md for the current design/rationale.
+
 Build a selector dataset: per-window features + per-policy rewards + labels.
 
 Usage
