@@ -26,6 +26,11 @@ in this order:
 
 ## Additional reference (not part of the core seven)
 
+- **[AGENT_HANDOFF.md](AGENT_HANDOFF.md)** -- operational handoff for a new
+  agent: current source-of-truth constants, protected artifact/process
+  status, the exact next task, workflow rules, and a do-not-do list. Read
+  this if you want the condensed operational summary instead of the full
+  seven-document set.
 - **[LOCAL_ARTIFACT_CLEANUP.md](LOCAL_ARTIFACT_CLEANUP.md)** -- classification
   of local-only, gitignored `results/` directories not cited by any doc
   (research-still-useful vs. checkpoint history vs. safe-to-delete audit
