@@ -255,7 +255,7 @@ python scripts/evaluate_multi_regime.py \
 # Bootstrap CI summary
 python scripts/summarize_final_evaluation.py \
     --eval-dir results/phase2a4_2b4_final_eval/final_heldout_eval \
-    --selector-eval-dir results/phase2a4_selector_eval \
+    --selector-eval-dir results/phase2a4_2b4_final_eval/selector_evaluation \
     --output-dir results/phase2a4_2b4_final_eval/final_summary
 
 # Plots
