@@ -1,0 +1,48 @@
+{
+  "fixture_id": "contention_e_controlled_kv_pressure",
+  "description": "Same shape as variant A, but max_kv_tokens is sized to only just fit the hog plus all runners' prompts at once (tight admission capacity alongside execution-budget contention).",
+  "interaction_shape": "single_hog_vs_small_runner_burst_tight_kv",
+  "step_token_budget": 514,
+  "max_prefill_chunk_tokens": 512,
+  "max_kv_tokens": 4100,
+  "max_active_sequences": 16,
+  "prefill_cost_per_token": 1.0,
+  "expected_to_diverge": false,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 4000,
+      "predicted_output_tokens": 1,
+      "actual_output_tokens": 1
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 40,
+      "actual_output_tokens": 40
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 40,
+      "actual_output_tokens": 40
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 40,
+      "actual_output_tokens": 40
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 40,
+      "actual_output_tokens": 40
+    }
+  ]
+}

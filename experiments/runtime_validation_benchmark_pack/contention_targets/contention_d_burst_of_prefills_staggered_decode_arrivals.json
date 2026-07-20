@@ -1,0 +1,76 @@
+{
+  "fixture_id": "contention_d_burst_of_prefills_staggered_decode_arrivals",
+  "description": "Three simultaneous long-prompt hogs (3000 tokens each) at t=0; six near-instant runners trickling in over the following few ms.",
+  "interaction_shape": "hog_burst_vs_staggered_runner_trickle",
+  "step_token_budget": 1540,
+  "max_prefill_chunk_tokens": 512,
+  "max_kv_tokens": 25000,
+  "max_active_sequences": 24,
+  "prefill_cost_per_token": 1.0,
+  "expected_to_diverge": false,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 3000,
+      "predicted_output_tokens": 1,
+      "actual_output_tokens": 1
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.0,
+      "prompt_tokens": 3000,
+      "predicted_output_tokens": 1,
+      "actual_output_tokens": 1
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.0,
+      "prompt_tokens": 3000,
+      "predicted_output_tokens": 1,
+      "actual_output_tokens": 1
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 35,
+      "actual_output_tokens": 35
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.002,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 35,
+      "actual_output_tokens": 35
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.003,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 35,
+      "actual_output_tokens": 35
+    },
+    {
+      "request_id": 6,
+      "arrival_time": 0.004,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 35,
+      "actual_output_tokens": 35
+    },
+    {
+      "request_id": 7,
+      "arrival_time": 0.005,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 35,
+      "actual_output_tokens": 35
+    },
+    {
+      "request_id": 8,
+      "arrival_time": 0.006,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 35,
+      "actual_output_tokens": 35
+    }
+  ]
+}
