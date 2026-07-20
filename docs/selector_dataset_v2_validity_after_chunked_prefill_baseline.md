@@ -1,3 +1,19 @@
+> **Update (decode_first fix):** Finding 2's dead `GPUState._step_phase15`
+> `decode_first` branch, referenced throughout this document as the reason
+> `prefill_heavy`/`decode_heavy` are `INVALID_UNTIL_SIMULATOR_EXTENSION`,
+> has since been fixed (opt-in, backward-compatible) -- see
+> `docs/decode_prefill_contention_execution_model.md`. The reclassification
+> this update implies is recorded in a new section near the end of this
+> document ("Reassessment after the decode_first fix") rather than edited
+> into the tables/prose below, which are left as a historical record of the
+> pre-fix state. **Net change: `prefill_heavy` and `decode_heavy` move from
+> `INVALID_UNTIL_SIMULATOR_EXTENSION` to `VALID_ONLY_WITH_CALIBRATION`**
+> (the blocking simulator extension has landed; empirical ranking validation
+> against real hardware has not). `short_context`/`medium_context`/
+> `long_context`/`high_kv_pressure` are unchanged. Selector Dataset v2
+> generation is still NOT resumed by this update -- see that section's own
+> `READY_TO_RESUME_SELECTOR_DATASET_V2`.
+
 # Selector Dataset v2 validity reassessment after `vllm_chunked_prefill_faithful`
 
 Per task instruction, this classifies six selector-relevant workload
@@ -127,3 +143,48 @@ generation; a smaller, targeted pilot restricted to
 completion-only structural cases (not winner-direction labels) is the
 appropriate next step -- see this task's final report's
 `NEXT_RECOMMENDED_ACTION`.
+
+## Reassessment after the `decode_first` fix
+
+Per `docs/decode_prefill_contention_execution_model.md`: `GPUState.
+_step_phase15`'s dead `decode_first` branch (this document's Finding-2
+citation for why `prefill_heavy`/`decode_heavy` were `INVALID_UNTIL_
+SIMULATOR_EXTENSION`) has been fixed, opt-in and backward-compatible. The
+"simulator extension" these two regimes were waiting on has landed: decode
+and prefill requests can now genuinely contend for a shared per-step
+budget (`ServiceModel(enable_decode_prefill_contention=True, decode_first=
+False)`), and a decode-phase request CAN now receive zero progress in a
+step because an earlier-arrival prefill request exhausted the budget --
+verified directly (`tests/test_decode_prefill_contention_execution.py`) on
+a constructed scenario.
+
+Revised classification:
+
+| Regime | Old classification | New classification | Why it changed |
+|---|---|---|---|
+| `short_context` | `VALID_FOR_SELECTOR_DATASET` | `VALID_FOR_SELECTOR_DATASET` (unchanged) | Decode-dominated; not the regime this fix touches. |
+| `medium_context` | `VALID_FOR_SELECTOR_DATASET` | `VALID_FOR_SELECTOR_DATASET` (unchanged) | Same. |
+| `long_context` | `VALID_ONLY_WITH_CALIBRATION` | `VALID_ONLY_WITH_CALIBRATION` (unchanged) | Structural completion was already fixed by `vllm_chunked_prefill_faithful` itself, independent of `decode_first`; the ranking caveat is unchanged by this fix (verified: `xlong_context_burst16` completion_fraction stays 1.0 under the new contention mode -- see the runtime-benchmark-pack revalidation). |
+| `prefill_heavy` | `INVALID_UNTIL_SIMULATOR_EXTENSION` | **`VALID_ONLY_WITH_CALIBRATION`** | The blocking condition ("decode protection is unconditional for every policy regardless of scheduling algorithm") is resolved -- the mechanism is now genuinely representable. Not yet `VALID_FOR_SELECTOR_DATASET`: the runtime-benchmark-pack revalidation shows the current canonical `prefill_heavy_burst`/`mixed_prompt_lengths` fixtures don't happen to exercise the new divergence (see that doc's arrival-order audit) -- ranking validity against real hardware for this regime is unverified, not disproven. |
+| `decode_heavy` | `INVALID_UNTIL_SIMULATOR_EXTENSION` | **`VALID_ONLY_WITH_CALIBRATION`** | Same reasoning as `prefill_heavy` -- `active_decode_plus_arriving_prefill` is the canonical decode-heavy-plus-arrival scenario; the mechanism is now representable but that specific fixture's decode-eligible requests all arrive no later than the competing prefill requests, so it still ties post-fix (verified). |
+| `high_kv_pressure` | `VALID_ONLY_WITH_CALIBRATION` | `VALID_ONLY_WITH_CALIBRATION` (unchanged) | `kv_pressure`'s own fixture has all 12 requests arriving simultaneously (t=0) -- the FCFS-by-arrival tie-break is identical under both execution models for simultaneous arrivals, so this fix doesn't change its (already-ties) outcome. Preemption-avoidance structural claim, already correctly represented, is unaffected either way. |
+
+### `READY_TO_RESUME_SELECTOR_DATASET_V2`: still no
+
+This fix removes a structural blocker for two regimes but does not, by
+itself, produce a single validated winner-direction label anywhere it
+didn't exist before -- every canonical benchmark-pack fixture re-run under
+the corrected mechanism still ties (see `docs/decode_prefill_contention_
+execution_model.md`'s Revalidation section). Resuming full-scale Selector
+Dataset v2 generation today would still risk encoding these ties as if
+they were genuine simulator judgments for `prefill_heavy`/`decode_heavy`.
+The appropriate next step is unchanged in kind, widened in scope: a
+targeted pilot using `short_context`/`medium_context`/`long_context`
+(structural, as before) COULD now also probe `prefill_heavy`/`decode_heavy`
+specifically with fixtures engineered so a decode-phase request arrives
+after a competing still-prefilling request on the same GPU (the one
+interaction shape none of the six existing canonical fixtures happens to
+construct) -- not as label generation, but as a targeted validation of
+whether the newly-representable mechanism, once actually exercised,
+reproduces the real-hardware Sarathi-advantage direction. See this task's
+final report's `NEXT_RECOMMENDED_ACTION`.

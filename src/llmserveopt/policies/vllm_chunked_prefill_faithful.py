@@ -55,19 +55,24 @@ This policy's ADMISSION-time accounting faithfully mirrors the pinned
 source's `_schedule_running(enable_chunking=True)`: decode-phase and
 still-prefilling ("continuing-prefill") requests share ONE FCFS-by-arrival
 budget, with no explicit decode-priority phase (see the reference doc).
-However, the simulator's shared EXECUTION layer,
-GPUState._step_phase15 (src/llmserveopt/simulator/gpu.py), unconditionally
-reserves one decode token per already-decoding request before allocating
-any leftover budget to prefill, for every Phase-1.5 policy, regardless of
-what that policy's own scheduler decided -- this is a pre-existing,
-already-relied-upon (by sarathi_faithful) piece of shared infrastructure,
-not something this policy introduces or can opt out of. Consequently, the
-one genuine vulnerability this baseline's algorithm faithfully models (a
-continuing-prefill request consuming shared budget ahead of a
-later-scheduled decode request, causing that decode request to receive 0
-tokens this iteration) is not currently observable in this simulator's
-execution numbers for ANY policy -- see
-docs/vllm_chunked_prefill_faithful_root_cause_analysis.md Finding 2/3.
+
+UPDATED: the simulator's shared EXECUTION layer, GPUState._step_phase15
+(src/llmserveopt/simulator/gpu.py), used to unconditionally reserve one
+decode token per already-decoding request before allocating any leftover
+budget to prefill, for every Phase-1.5 policy, regardless of what that
+policy's own scheduler decided (docs/vllm_chunked_prefill_faithful_root_
+cause_analysis.md Finding 2/3 -- a dead `decode_first` branch). This has
+been fixed: when the caller sets `ServiceModel(enable_decode_prefill_
+contention=True, decode_first=False)`, GPUState now genuinely reproduces
+this baseline's one real vulnerability (a continuing-prefill request
+consuming shared budget ahead of a later-arrival decode request, causing
+that decode request to receive 0 tokens that step) -- see
+docs/decode_prefill_contention_execution_model.md for the full design and
+docs/vllm_chunked_prefill_faithful_root_cause_analysis.md's own Finding
+2/3 for the pre-fix state this replaces. This is opt-in and backward-
+compatible: callers that do not set `enable_decode_prefill_contention`
+keep the historical decode-protected execution unconditionally, same as
+before.
 
 Like sarathi_faithful, this policy's admission decisions assume the
 simulator is configured with enable_prefill_modeling=True (a genuine

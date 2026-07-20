@@ -14,15 +14,44 @@ TIE_NEAR_TIE / STRUCTURALLY_UNREPRESENTABLE) and asserts the classification
 itself, which is honest about where this baseline does and does not close
 the real-hardware gap. See docs/vllm_chunked_prefill_faithful_root_cause_
 analysis.md for the full investigation this file's fixed-point numbers were
-derived from.
+originally derived from, and
+docs/decode_prefill_contention_execution_model.md for the follow-up fix to
+Finding 2/3 (the `decode_first` dead branch) revalidated here.
 
-All three policies are evaluated under the SAME ServiceModel
-(enable_prefill_modeling=True, matching sarathi_faithful's own evaluation
-config) -- NOT the pre-existing, asymmetric
-scripts/run_gpu_external_validity_audit.py convention of giving
-vllm_faithful a zero-prefill-cost ServiceModel() while sarathi_faithful
-gets a real one. See the root-cause doc's Finding 1 for why that asymmetry
-would make any comparison here meaningless.
+All three policies are evaluated under Phase-1.5 (`enable_prefill_modeling=
+True`, matching sarathi_faithful's own evaluation config) -- NOT the
+pre-existing, asymmetric scripts/run_gpu_external_validity_audit.py
+convention of giving vllm_faithful a zero-prefill-cost ServiceModel() while
+sarathi_faithful gets a real one. See the root-cause doc's Finding 1 for why
+that asymmetry would make any comparison here meaningless.
+
+Per-policy execution semantics (post decode_first fix)
+--------------------------------------------------------
+Each policy now opts into `enable_decode_prefill_contention=True` with the
+`decode_first` value matching its own pinned reference's real execution
+semantics (previously this flag was dead code -- see the doc above):
+  * `sarathi_faithful`: `decode_first=True` (Sarathi's own genuine
+    decode-protected stall-free guarantee).
+  * `vllm_chunked_prefill_faithful`: `decode_first=False` (vLLM v0.4.2's
+    genuine shared-FCFS-by-arrival contention, no decode-priority phase).
+  * `vllm_faithful`: `decode_first=True` -- it has no chunked/continuing-
+    prefill scheduling model of its own to exercise the contention path
+    meaningfully, so it is left on the decode-protected formula (numerically
+    identical to how it was evaluated before this fix).
+
+Result (revalidated live below, not just asserted): all five request-level
+scenarios still classify as TIE_NEAR_TIE, but for a materially different,
+now load-bearing reason. Before this fix, `decode_first` was dead code, so
+the tie was mechanical. After the fix, decode_first genuinely diverges
+execution (see tests/test_decode_prefill_contention_execution.py for a
+constructed scenario that DOES diverge) -- but in all five of these
+specific fixtures, every already-decoding request happens to have arrived
+no later than any competing still-prefilling request (verified against each
+scenario's own `arrival_time_s` fixture data), so FCFS-by-arrival gives
+decode priority "for free" regardless of `decode_first`. This is a genuine
+workload-construction fact about these six fixtures, not a simulator
+limitation -- see docs/decode_prefill_contention_execution_model.md's
+final-report addendum for the per-scenario arrival-order audit.
 """
 from __future__ import annotations
 
@@ -50,10 +79,13 @@ REQUEST_LEVEL_SCENARIOS = [
 POSITIVE_TARGETS = {"active_decode_plus_arriving_prefill", "kv_pressure"}
 NEGATIVE_CONTROLS = {"long_prompt_moderate_output", "prefill_heavy_burst", "mixed_prompt_lengths"}
 
-FAIR_SERVICE_MODEL = ServiceModel(
-    enable_prefill_modeling=True, decode_first=True,
-    step_token_budget=512, max_prefill_chunk_tokens=512,
-)
+_COMMON = dict(enable_prefill_modeling=True, enable_decode_prefill_contention=True,
+               step_token_budget=512, max_prefill_chunk_tokens=512)
+SERVICE_MODELS = {
+    "vllm_faithful": ServiceModel(decode_first=True, **_COMMON),
+    "sarathi_faithful": ServiceModel(decode_first=True, **_COMMON),
+    "vllm_chunked_prefill_faithful": ServiceModel(decode_first=False, **_COMMON),
+}
 GPU_CONFIGS = [GPUConfig(0, max_active_sequences=256, max_batch_tokens=2560, max_kv_tokens=131_072)]
 
 POLICY_NAMES = ["vllm_faithful", "sarathi_faithful", "vllm_chunked_prefill_faithful"]
@@ -107,7 +139,7 @@ def _run_all_policies(scenario_id: str) -> dict:
         policy = make_external_baseline(name)
         metrics = run_policy(
             policy=policy, requests=reqs, gpu_configs=GPU_CONFIGS,
-            service_model=FAIR_SERVICE_MODEL, workload_tag=scenario_id, seed=20260719,
+            service_model=SERVICE_MODELS[name], workload_tag=scenario_id, seed=20260719,
         )
         out[name] = metrics
     return out
@@ -140,10 +172,10 @@ def test_structural_deterministic_repeated_runs(scenario_id):
     reqs, _data = _load_requests(scenario_id)
     policy = make_external_baseline("vllm_chunked_prefill_faithful")
     m1 = run_policy(policy=policy, requests=reqs, gpu_configs=GPU_CONFIGS,
-                     service_model=FAIR_SERVICE_MODEL, seed=20260719)
+                     service_model=SERVICE_MODELS["vllm_chunked_prefill_faithful"], seed=20260719)
     policy2 = make_external_baseline("vllm_chunked_prefill_faithful")
     m2 = run_policy(policy=policy2, requests=reqs, gpu_configs=GPU_CONFIGS,
-                     service_model=FAIR_SERVICE_MODEL, seed=20260719)
+                     service_model=SERVICE_MODELS["vllm_chunked_prefill_faithful"], seed=20260719)
     assert m1.num_completed == m2.num_completed
     assert m1.mean_latency == m2.mean_latency
     assert m1.mean_ttft == m2.mean_ttft
@@ -239,7 +271,7 @@ def test_long_context_historical_vllm_faithful_completes_zero():
     gpu_configs = [GPUConfig(0, max_active_sequences=256, max_batch_tokens=2560, max_kv_tokens=300_000)]
     policy = make_external_baseline("vllm_faithful")
     metrics = run_policy(policy=policy, requests=reqs, gpu_configs=gpu_configs,
-                          service_model=FAIR_SERVICE_MODEL, seed=20260719, drain_steps=5000)
+                          service_model=SERVICE_MODELS["vllm_faithful"], seed=20260719, drain_steps=5000)
     assert metrics.completion_fraction == 0.0
     assert metrics.num_dropped == len(reqs)
 
@@ -263,7 +295,8 @@ def test_long_context_new_baseline_completes_all_16_via_chunked_admission():
     gpu_configs = [GPUConfig(0, max_active_sequences=256, max_batch_tokens=2560, max_kv_tokens=300_000)]
     policy = make_external_baseline("vllm_chunked_prefill_faithful")
     metrics = run_policy(policy=policy, requests=reqs, gpu_configs=gpu_configs,
-                          service_model=FAIR_SERVICE_MODEL, seed=20260719, drain_steps=5000)
+                          service_model=SERVICE_MODELS["vllm_chunked_prefill_faithful"],
+                          seed=20260719, drain_steps=5000)
     assert metrics.completion_fraction == 1.0
     assert metrics.num_completed == 16
     assert metrics.num_dropped == 0

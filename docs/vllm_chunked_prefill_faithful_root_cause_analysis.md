@@ -1,5 +1,16 @@
 # Root-cause analysis: `active_decode_plus_arriving_prefill` and `kv_pressure` positive-target mismatches
 
+> **Update:** Finding 2/3's dead `GPUState._step_phase15` `decode_first`
+> branch, described below as "deliberately not fixed here," has since been
+> fixed (opt-in, backward-compatible) -- see
+> `docs/decode_prefill_contention_execution_model.md`. That document's own
+> "Revalidation" section reruns the exact six-scenario benchmark pack
+> referenced here and finds the mismatches below unchanged, for a
+> different, now-verified reason (a workload-construction fact about these
+> fixtures, not a simulator-execution limitation). The investigation below
+> is left as-written -- a historical record of the pre-fix state -- rather
+> than edited in place.
+
 This document investigates the two positive-target mismatches recorded in
 `experiments/runtime_validation_benchmark_pack/simulator_baseline_results/
 active_decode_plus_arriving_prefill.json` and `kv_pressure.json`: real

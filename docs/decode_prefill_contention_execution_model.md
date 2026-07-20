@@ -113,6 +113,57 @@ that scenario. See `docs/decode_prefill_contention_execution_model.md`'s
 sibling revalidation notes in the branch's final report for which of the
 six runtime-validation benchmark-pack scenarios this applies to.
 
+## Revalidation: runtime-validation benchmark pack (six canonical scenarios)
+
+Re-running `tests/test_vllm_chunked_prefill_faithful_benchmark_pack.py`'s
+five request-level scenarios plus `xlong_context_burst16` with each policy
+now on its corrected, genuinely load-bearing `ServiceModel` (see "Which
+policies opt in" below) produces **no change** from the pre-fix numbers:
+all five request-level scenarios remain `TIE_NEAR_TIE`;
+`xlong_context_burst16` remains `MATCHES_REAL_WINNER` (completion fraction,
+unaffected by this fix). This is not because the fix has no effect --
+`tests/test_decode_prefill_contention_execution.py` proves it does, on a
+constructed scenario -- it is because of a specific, verified fact about
+these six fixtures' own request-arrival-time construction:
+
+| Scenario | Decode-eligible (short/medium prompt) requests' arrival times | Competing still-prefilling (long prompt) requests' arrival times | Interleaved adversarially? |
+|---|---|---|---|
+| `active_decode_plus_arriving_prefill` | reqs 0-3 @ t=0.0 | reqs 4-7 @ t=3.0-6.0 | No -- decode-eligible requests strictly precede |
+| `kv_pressure` | all 12 requests @ t=0.0 (long prompts only) | n/a (single burst) | No -- simultaneous arrival, request_id tie-break is consistent across both execution models |
+| `prefill_heavy_burst` | all 6 requests @ t=0.0 (long prompts only) | n/a | No |
+| `mixed_prompt_lengths` | all 6 requests @ t=0.0 (mixed short/medium/long) | n/a | No |
+| `long_prompt_moderate_output` | all 4 requests @ t=0.0 (long prompts only) | n/a | No |
+
+In every case, whichever request(s) end up decoding first also arrived no
+later than any request still competing for prefill budget, so
+FCFS-by-arrival-time (the new `decode_first=False` contention path) hands
+decode priority to them "for free" -- identically to the decode-protected
+path. The specific mechanism this fix makes representable (an
+EARLIER-arriving still-prefilling request starving a LATER-arriving
+decode-phase request of budget) requires a fixture where a request already
+decoding arrived, in wall-clock time, *after* a request that is still
+mid-prefill at the same GPU -- none of these six fixtures happen to be
+built that way. This is a fact about fixture construction, not a
+simulator-execution-layer limitation; per task instruction ("do not force
+all five runtime rankings to match... the fix should be mechanism-correct,
+not benchmark-overfit"), no fixture or constant was adjusted to manufacture
+a match.
+
+`REMAINING_MISMATCH_ROOT_CAUSE` classification for the two positive-target
+scenarios (`active_decode_plus_arriving_prefill`, `kv_pressure`), updated
+from `docs/vllm_chunked_prefill_faithful_root_cause_analysis.md`'s
+pre-fix Finding 2/3 (`GPUState._step_phase15`'s dead branch): now
+**`workload_abstraction`** -- the execution-contention mechanism is
+structurally representable (verified), but these two fixtures' own request
+arrival-time construction does not exercise it. A future fixture
+specifically engineered so a decode-phase request arrives strictly after a
+long, still-prefilling one on the same GPU (unlike either current positive
+target) would be the direct test of whether this mechanism, once
+exercised, actually reproduces the real-hardware Sarathi advantage --
+untested here, per the task's explicit "do not tune constants against the
+five hardware labels" instruction (constructing such a fixture from the
+labels backward would risk exactly that).
+
 ## Which policies opt in
 
 * `sarathi_faithful`: `enable_decode_prefill_contention=True`,
