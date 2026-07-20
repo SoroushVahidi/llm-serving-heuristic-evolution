@@ -1,114 +1,96 @@
 # llm-serving-heuristic-evolution
 
-**Verifier-Constrained, LLM-Assisted Generation of Scheduling Heuristics for Online LLM Inference Serving**
+**Learning to select LLM-inference-serving scheduling policies, evaluated against
+faithful external baselines in a GPU-calibrated discrete-event simulator.**
 
-This project studies verifier-constrained, LLM-assisted generation of scheduling
-heuristics for online LLM inference serving. It provides a GPU-calibrated discrete-event
-simulator, a suite of 20 baseline policies, real-trace replay against BurstGPT arrival
-data, a portfolio selector, and a restricted verifiable DSL for LLM-generated heuristics.
-
-> **NOTICE (added during repository audit, not yet dated-updated below):** the
-> "Current status" section immediately below, the branch name, and the test
-> count are **stale** — they describe a 2026-06-27 checkpoint and have not been
-> updated for the substantial, active, unnumbered development that has
-> continued since (external faithful-baseline reimplementations, Selector v2 /
-> Dataset v2, GPU hardware validation, a corrected arrival-normalized
-> objective). This section is being superseded by that program; a full
-> rewrite is planned but not yet done. Until then, a new reader should start
-> from these current, authoritative docs instead of trusting the paragraph
-> below:
-> - [docs/selector_v2_faithful_baseline_scope_audit.md](docs/selector_v2_faithful_baseline_scope_audit.md) — current Selector v2 status and action-space scope decision
-> - [docs/selector_objective_audit.md](docs/selector_objective_audit.md) — the corrected `arrival_normalized_weighted_goodput` (ANWG) objective
-> - [docs/external_baseline_integration.md](docs/external_baseline_integration.md) — the 6 faithful external baselines (vLLM, vLLM-chunked-prefill, Sarathi, DistServe, TetriInfer, Llumnix)
-> - [docs/wulver_sarathi_vllm_repeated_validation.md](docs/wulver_sarathi_vllm_repeated_validation.md) and [docs/runtime_validation_benchmark_pack.md](docs/runtime_validation_benchmark_pack.md) — real-GPU-hardware validation
-> - [docs/README.md](docs/README.md)'s §16A for the full current doc index
->
-> **Current status (2026-06-27):** Phase 2C paused after completing causal selector
-> retraining (2C.2) and external-aware analysis (2C.3). Branch:
-> `phase2c1-real-trace-ingestion-validation`. 1277 tests collected.
->
-> **Phase 2C summary:**
-> - Phase 2C.1: Azure 2023 + BurstGPT real-trace ingestion and validation complete.
-> - Phase 2C.2: Causal selector retraining complete. Best learned selector ANWG = 0.8021
->   (native non-oracle DT). Modest improvement over always-scorpio (0.7963).
->   External-style envelope = 0.8297 — learned selector does **not** beat external-style
->   envelope overall. azure_2023_conv remains the main unresolved failure.
-> - Phase 2C.3: External-aware pool analysis complete (**negative finding**). orca_style
->   had zero full-pool training labels; external-aware DT is numerically identical to
->   native DT. Best Phase 2C.3 selector ANWG = 0.8063 (no real improvement).
-> - Automatic labeled dataset builder exists: 611 labeled windows (train=245, val=41,
->   eval=325). Labels from simulator ANWG only — no live API used.
-> - Gemini calibration dry-run infrastructure exists; no live API call made.
->
-> Canonical current-status references:
-> [docs/audits/phase2c_project_pause_checkpoint.md](docs/audits/phase2c_project_pause_checkpoint.md),
-> [docs/result_claims.md](docs/result_claims.md), and
-> [docs/audits/phase2c3_labeled_dataset_and_api_calibration.md](docs/audits/phase2c3_labeled_dataset_and_api_calibration.md).
->
-> **Since the 2026-06-27 pause:** exploratory real-serving validation continued outside
-> the numbered phase sequence — real-LLM API latency calibration (Cohere, Gemini) and a
-> real, running-vLLM external-baseline + corrected-objective-selector comparison. See
-> [docs/vllm_real_serving_scaled_comparison.md](docs/vllm_real_serving_scaled_comparison.md)
-> (status: completed but caveated — the selector arm was confounded by an action-space
-> bug that is now fixed) and [docs/real_llm_latency_model_v2.md](docs/real_llm_latency_model_v2.md).
-> 1594 tests collected.
+> **New here? Start with [docs/current/README.md](docs/current/README.md).**
+> That's the canonical, current-state documentation set. Everything below is a
+> quick orientation; `docs/current/PROJECT_STATUS.md` is the authoritative
+> source for exactly where this project stands right now.
 
 ---
 
-## Motivation
+## A. What this project does
 
-LLM inference serving must make online scheduling decisions — which requests to batch,
-which GPU to assign them to — with incomplete information (output lengths are unknown at
-arrival) and tight latency/SLO constraints. Classical policies (FIFO, EDF, SRPT) provide
-interpretable but suboptimal baselines. Serving systems like vLLM, Sarathi-Serve, and
-DeepSpeed-FastGen each introduce specialized scheduling insights.
+This project studies **dynamic scheduling-policy selection** for online LLM
+inference serving: requests arrive with unknown output length under tight
+SLO constraints, and a policy must decide who to admit and in what order.
+Concretely, the project:
 
-This project asks: can an LLM automatically generate scheduling heuristics, expressed
-in a restricted verifiable DSL, that outperform all known baselines on the regimes where
-baseline performance diverges?
+1. Implements a GPU-calibrated discrete-event simulator and a 20-policy
+   internal scheduling portfolio (classical, packing, composite, and
+   literature-inspired "style" policies).
+2. Implements 6 **faithful** external-system reimplementations (vLLM,
+   vLLM-chunked-prefill, Sarathi-Serve, DistServe, TetriInfer, Llumnix), each
+   pinned to an exact upstream commit and validated against real GPU
+   hardware.
+3. Trains a **selector** -- currently a supervised model -- that picks the
+   best internal policy per workload window, and compares it against the
+   strongest fixed internal policy and against the faithful external
+   baselines (which are evaluation-only references, never selector
+   actions).
+4. Separately explores LLM-generated scheduling heuristics under a
+   restricted, verifiable DSL (a secondary, currently dormant research
+   track relative to the selector work).
 
----
+See [docs/current/PROJECT_STATUS.md](docs/current/PROJECT_STATUS.md) for
+what is scientifically complete today and what isn't yet.
 
-## Problem statement
+## B. Current scientific architecture
 
-- Requests arrive online; each has a prompt length, predicted output length, SLO deadline,
-  and priority class.
-- A pool of GPUs with KV-cache and sequence-count constraints processes them.
-- A policy decides: which waiting requests to admit, and to which GPU, at each time step.
-- Goal: minimize mean latency and SLO violation rate while maximizing throughput.
+- **Simulator**: deterministic, iteration-level, GPU-calibrated (RTX 5060 Ti
+  / Qwen2.5-0.5B). [docs/current/ARCHITECTURE.md](docs/current/ARCHITECTURE.md)
+- **Historical/internal policy portfolio**: 20 policies.
+- **Selector v2 trainable action space**: exactly **8** of those 20 policies
+  (`fifo`, `edf`, `scorpio_style_slo_guard`, `admission_control`,
+  `weighted_shortest_processing`, `estimated_service_time_first`,
+  `best_fit`, `multi_bin_batching`) -- an evidence-based scope decision
+  ("Option B"), not an arbitrary subset.
+- **Faithful external baselines are evaluation-only**: all 6 (3 monolithic,
+  2 disaggregated, 1 migratory) are confirmed genuinely dominated under the
+  current objective when tested as selector *actions*, but remain valuable,
+  topology-aware, real-hardware-validated *comparison points*.
+- Full inventory, exact names, and the "why 8" evidence:
+  [docs/current/BASELINES.md](docs/current/BASELINES.md)
 
-See [docs/problem_formulation.md](docs/problem_formulation.md) for the formal definition.
+## C. Current objective
 
----
+The primary objective is **`arrival_normalized_weighted_goodput`** (ANWG) --
+weighted SLO goodput normalized by *all arriving requests*, not just
+completed ones. An earlier metric (`weighted_goodput`, denominator =
+completed requests only) was found to be biased toward policies that reject
+or drop more work; that field is retained (renamed in interpretation, not
+deleted) as a distinct "conditional quality of completions" metric, and ANWG
+is the corrected primary objective for all current selector work. See
+[docs/selector_objective_audit.md](docs/selector_objective_audit.md).
 
-## Implemented components
+## D. Current status
 
-| Component | Status | Notes |
-|---|---|---|
-| Deterministic iteration-level simulator | Complete | `src/llmserveopt/simulator/` |
-| Synthetic workload generators | Complete | Poisson, bursty, heavy-tail, mixed-SLO |
-| 20 baseline policies | Complete | See [docs/baselines.md](docs/baselines.md) |
-| GPU-calibrated service model | Complete | RTX 5060 Ti, Qwen2.5-0.5B, MAPE <13% |
-| Real-trace replay (BurstGPT) | Complete | 7 experiments, Phase 1.7C |
-| Prediction-noise sensitivity | Complete | 0%, 35%, 70% noise variants |
-| Calibrated vs. synthetic comparison | Complete | Spearman ρ = 1.000 on moderate trace |
-| `weighted_goodput` / `priority_weighted_slo_goodput` metric | Complete | Priority-weighted SLO goodput; both names present in metric dicts |
-| TTFT reporting | Complete | `mean_ttft`, `p95_ttft` in all summary CSVs |
-| oracle_srtf wiring | Complete | Non-deployable hindsight upper bound; separated from online baselines |
-| Selector (Phase 2A.4) | Complete | RF/DT beat best fixed +3.0 pp WG on test split (18 policies, 52 windows) |
-| 2A.3B hardened baselines (LLF + ESTF) | Complete | 18 policies; `priority_weighted_slo_goodput` alias |
-| LLM heuristic DSL + verifier (Phase 2B.1) | Complete | Safe expression tree; 16 error codes; 4 examples |
-| LLM generation loop (Phase 2B.2) | Complete | Mock + CloudRift/Cohere/Mistral; verify → repair → evaluate pipeline |
-| Controlled LLM heuristic search (Phase 2B.3) | Complete | 7 design targets; multi-regime train/val eval; 22 verified candidates |
-| Final held-out evaluation (Phase 2B.4) | Complete | 7-heuristic frozen shortlist; 3 held-out test regimes; bootstrap CIs |
+- Internal policy portfolio and 6 faithful external baselines: **complete**,
+  pinned, real-GPU-hardware-validated (local RTX 5060 Ti + Wulver A100).
+- Selector Dataset v2 infrastructure (SLO calibration, leakage-safe splits,
+  automated quality gates): **complete and in active use**.
+- The most recent calibrated targeted pilot (250 windows, Option B scope)
+  passed all of the pipeline's own automated quality gates, but the trained
+  prototype selector shows **mixed, weak held-out performance** -- it loses
+  to the best fixed policy on the VALIDATION and OOD_TEST splits. **Do not
+  treat Selector v2 as a finished, working result.** A concern about
+  possible leakage in that pilot's non-OOD splits has been raised but **not
+  independently confirmed** -- the pipeline's own leakage gate reports
+  `passed: true`.
+- **Current blocker**: clean, confirmed held-out generalization for the
+  trained selector. Until that's resolved, comparing the selector against
+  the faithful external baselines (Protocol C) is premature.
 
----
+Full detail: [docs/current/SELECTOR_V2.md](docs/current/SELECTOR_V2.md).
 
-## Quick start
+## E. Quick start
 
 ```bash
-# Install (editable)
+# Install (editable) -- use python3 -m pip / python3 -m pytest throughout;
+# the bare `pytest` on PATH may resolve to an interpreter missing pandas.
 pip install -e ".[dev]"
+python3 -c "import pandas"   # sanity check before trusting bare `pytest`
 
 # Smoke test
 python scripts/smoke_test.py
@@ -123,133 +105,86 @@ python scripts/run_baseline_comparison.py --config configs/baseline_comparison.y
 python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt_scaled_moderate_calibrated.yaml
 ```
 
----
-
-## Running tests
+### Tests
 
 ```bash
-pytest                    # all tests (~1594 collected)
-pytest -m gpu             # GPU-only tests (requires RTX 5060 Ti or equivalent)
+python3 -m pytest                    # full non-GPU-safe suite
+python3 -m pytest -m gpu             # GPU-only (requires a CUDA-capable GPU)
+python3 -m pytest --collect-only -q  # count/list without running
 ```
 
-1594 tests collected on the current commit. Targeted Phase 2C stabilization tests and
-the `test_phase2c1_real_trace_runner.py` collection path both pass on this branch.
+Exact current test count and environment caveats:
+[docs/current/PROJECT_STATUS.md](docs/current/PROJECT_STATUS.md) and
+[docs/current/REPRODUCIBILITY.md](docs/current/REPRODUCIBILITY.md).
+
+## F. Canonical documentation
+
+Start with **[docs/current/README.md](docs/current/README.md)**, which
+indexes:
+
+- [PROJECT_STATUS.md](docs/current/PROJECT_STATUS.md) -- authoritative current state
+- [ARCHITECTURE.md](docs/current/ARCHITECTURE.md) -- code architecture
+- [BASELINES.md](docs/current/BASELINES.md) -- exact policy/baseline inventory
+- [SELECTOR_V2.md](docs/current/SELECTOR_V2.md) -- full selector research narrative
+- [EXPERIMENTS_AND_RESULTS.md](docs/current/EXPERIMENTS_AND_RESULTS.md) -- what's committed vs. local-only
+- [REPRODUCIBILITY.md](docs/current/REPRODUCIBILITY.md) -- environment, tests, GPU workflows
+- [NEXT_STEPS.md](docs/current/NEXT_STEPS.md) -- the exact next recommended action
+
+The full legacy documentation index (~75 detailed design/audit documents) is
+[docs/README.md](docs/README.md).
+
+## G. Repository layout
+
+```
+src/llmserveopt/   # library code -- see docs/current/ARCHITECTURE.md for the module map
+scripts/           # CLI entry points -- scripts/README.md covers Phase-1.7C-and-earlier
+                   # scripts only; see docs/README.md §16A for the current Selector v2 scripts
+configs/           # YAML experiment configs -- see configs/README.md
+docs/              # docs/current/ = canonical current docs; docs/README.md = full legacy index
+tests/             # pytest suite
+data/              # local datasets -- gitignored (raw/processed), see data/README.md
+results/           # experiment outputs -- gitignored except results/.gitkeep; local-only, large
+logs/              # run logs -- gitignored entirely; local-only
+experiments/       # small, curated experiment artifacts -- NOT gitignored, the only one of
+                   # results/logs/experiments that is actually version-controlled
+```
+
+**`results/` and `logs/` are local-only.** A fresh clone will not have them.
+`experiments/` is the committed, cloneable record of experiment outputs. See
+[docs/current/EXPERIMENTS_AND_RESULTS.md](docs/current/EXPERIMENTS_AND_RESULTS.md)
+for what's canonical, what's historical, and what's still local-only pending
+a decision (e.g. the most recent calibrated pilot).
+
+## H. Current next step
+
+Independently audit the most recent calibrated pilot for the open leakage
+question, then proceed through the sequence in
+[docs/current/NEXT_STEPS.md](docs/current/NEXT_STEPS.md) -- do not scale
+Dataset v2 generation or claim selector superiority before clean, confirmed
+held-out generalization exists.
 
 ---
 
-## Synthetic experiment configs
+## Historical: Phase 1-2B.4 headline result (kept for continuity, not current)
 
-| Config | Description |
-|---|---|
-| `configs/small_debug.yaml` | Tiny trace, fast; for smoke testing |
-| `configs/baseline_comparison.yaml` | Standard Poisson workload |
-| `configs/overloaded_comparison.yaml` | High-load regime |
-| `configs/prefill_heavy_comparison.yaml` | Long-prompt, prefill-dominated |
-| `configs/decode_heavy_comparison.yaml` | Long-output, decode-dominated |
-| `configs/mixed_slo_comparison.yaml` | Mixed tight/relaxed SLO tiers |
-| `configs/burst_heavy_tail_comparison.yaml` | Heavy-tail arrival bursts |
+Prior to the Selector v2 / external-baseline program described above, this
+project's furthest evaluated result (Phase 2A.4/2B.4, "Final held-out
+evaluation") was:
 
-See [configs/README.md](configs/README.md) for the full list.
+- **Selector (RF/DT)**: +3.0 pp over best fixed on the then-current
+  18-policy portfolio (52 windows).
+- **Best LLM-generated heuristic** (`slo_kv_balance_heuristic`): mean
+  WG=0.9595 on final held-out test regimes; 95% CI [0.00, 0.27] --
+  achieved via **selective request dropping** (completed only 58% of
+  requests on the hardest regime), not a full-admission throughput win.
+  Do not present this as a full-admission result.
 
----
+Safe claims for this historical result, and the exact per-regime breakdown:
+[docs/result_claims.md](docs/result_claims.md),
+[docs/gpu_validation_claims.md](docs/gpu_validation_claims.md).
 
-## Real-trace replay (Phase 1.7C)
-
-BurstGPT traces are replayed against the GPU-calibrated service model. Download
-data before running:
-
-```bash
-python scripts/download_burstgpt.py  # requires HF_TOKEN in environment
-python scripts/convert_burstgpt.py
-```
-
-| Config | Description |
-|---|---|
-| `configs/real_trace/burstgpt_natural_calibrated.yaml` | Natural BurstGPT timing (~318ks span) |
-| `configs/real_trace/burstgpt_scaled_moderate_calibrated.yaml` | Moderate-load scaled replay |
-| `configs/real_trace/burstgpt_scaled_high_calibrated.yaml` | High-load scaled replay |
-| `configs/real_trace/burstgpt_scaled_moderate_synthetic_service.yaml` | Moderate load, synthetic service model |
-| `configs/real_trace/burstgpt_moderate_exact_prediction.yaml` | Zero prediction noise |
-| `configs/real_trace/burstgpt_moderate_noise035.yaml` | Natural BurstGPT prediction noise |
-| `configs/real_trace/burstgpt_moderate_noise070.yaml` | 70% amplified prediction noise |
-
-See [docs/milestones/phase1_7c_calibrated_real_trace.md](docs/milestones/phase1_7c_calibrated_real_trace.md)
-for full results.
-
----
-
-## GPU calibration (Phase 1.7B)
-
-Service curves (prefill and decode timing) were measured on an RTX 5060 Ti running
-Qwen/Qwen2.5-0.5B:
-
-```bash
-python scripts/run_gpu_calibration.py --config configs/gpu_calibration/calibration_grid.yaml
-```
-
-Prefill MAPE: 9%. Decode MAPE: 12%. Curves stored in `results/gpu_calibration/service_curves.json`.
-See [docs/gpu_calibration.md](docs/gpu_calibration.md).
-
----
-
-## Baseline policies
-
-20 policies are registered for online use. See [docs/baselines.md](docs/baselines.md) for
-provenance, safe/unsafe labels, and the full table.
-
-| Label | Policy | Inspired by |
-|---|---|---|
-| `fifo` | FIFO | Classical |
-| `edf` | Earliest Deadline First | Classical real-time scheduling |
-| `shortest_output_first` | SRPT-style (predicted length) | Classical |
-| `shortest_prompt_first` | Shortest KV footprint first | Original |
-| `greedy_token_fill` | Best-fit KV packing | Original |
-| `least_loaded` | Least-busy GPU dispatch | Load balancing |
-| `multi_bin_batching` | Multi-Bin-style grouping | Independent adaptation |
-| `random_feasible` | Random feasible admission | Stochastic baseline |
-| `first_fit` | First-fit KV bin packing | Classical bin packing |
-| `best_fit` | Best-fit KV bin packing (tightest fit) | Classical bin packing |
-| `orca_style` | Orca-style iteration-level scheduler | Yu et al., OSDI 2022 |
-| `vllm_style_token_budget` | vLLM-inspired token-budget / paged-KV proxy | Kwon et al., SOSP 2023 |
-| `sarathi_style` | Sarathi-style chunked-prefill | Agrawal et al., arXiv 2023 / OSDI 2024 |
-| `splitfuse_style` | Dynamic-SplitFuse-style chunked-prefill | Holmes et al., arXiv 2024 |
-| `slo_slack_score` | SLO-slack composite scoring | Original |
-| `weighted_shortest_processing` | WSPT composite | Original |
-| `least_laxity_first` | LLF: deadline − now − est. service time | Classical real-time scheduling |
-| `estimated_service_time_first` | Prompt-and-prediction-aware SJF proxy | PARS-inspired (not a PARS reproduction) |
-| `admission_control` | Laxity-based admission control | Original simulator baseline |
-| `scorpio_style_slo_guard` | SCORPIO-inspired SLO guard | Internal simulator approximation |
-
-All serving-style baselines are **original implementations** capturing the key
-scheduling insight of each cited system. None reproduce the original system's code.
-
-**Note:** `oracle_srtf` (hindsight SRTF) is in `ORACLE_POLICY_NAMES` — a non-deployable
-upper-bound. It is NOT in `BASELINE_NAMES` or `SELECTOR_CANDIDATE_NAMES`. Use
-`make_oracle_policy("oracle_srtf", requests)` to access it explicitly. Label all
-oracle_srtf results as "hindsight upper bound" in reports.
-
----
-
-## Repository structure
-
-```
-src/llmserveopt/
-  core/             # Types, actions, metrics
-  simulator/        # Deterministic step simulator + service models
-  workloads/        # Synthetic generators, BurstGPT/ShareGPT loaders, trace I/O
-  policies/         # 18 registered baselines + oracle + helpers
-  evaluation/       # Run, compare, aggregate policies
-  heuristics/       # JSON DSL, verifier, compiler, HeuristicPolicy wrapper
-  llm_generation/   # Offline LLM generation loop (providers, repair, archive, ranking)
-  plotting/         # Tables and figures
-  utils/            # Seeding, JSONL helpers
-scripts/         # CLI entry points (see scripts/README.md)
-configs/         # YAML experiment configs (see configs/README.md)
-docs/            # Design docs, milestones, claims, roadmap (see docs/README.md)
-tests/           # pytest suite (1594 tests collected)
-data/            # Local datasets — not committed (see data/README.md)
-results/         # Experiment outputs — not committed (see results/.gitkeep)
-```
+For the full phase-by-phase roadmap (historical, superseded as the "current"
+narrative by the unnumbered Selector v2 track): [docs/roadmap.md](docs/roadmap.md).
 
 ---
 
@@ -257,74 +192,13 @@ results/         # Experiment outputs — not committed (see results/.gitkeep)
 
 - `data/raw/` and `data/processed/` are gitignored.
 - Results in `results/` are gitignored.
-- See `data/README.md` and `.env.example` for download and credential instructions.
-- **Never commit API keys, model weights, or raw dataset files.**
+- See `data/README.md` and `.env.example` for download and credential
+  instructions. **Never commit API keys, model weights, or raw dataset
+  files.**
 
----
-
-## Reproducibility
-
-All randomness is seeded via `numpy.random.default_rng`. Same config + same seed =
-identical results. The GPU calibration step requires a physical GPU; calibrated curves
-are stored in `results/gpu_calibration/service_curves.json` (local only).
-
----
-
-## Safe claims and limitations
-
-- "We replay real BurstGPT arrival timestamps and token counts."
-- "SLOs, priorities, and predicted output lengths are synthetically augmented."
-- "Service curves are calibrated on an RTX 5060 Ti running Qwen2.5-0.5B."
-- "Serving-style baselines are original implementations inspired by, not reproductions of, the cited systems."
-- "We evaluate LLM-generated deterministic heuristics under a calibrated simulator and held-out workload regimes."
-
-Do not claim: production vLLM reproduction, exact production latency, generalization
-beyond the RTX 5060 Ti + Qwen2.5-0.5B calibration point, or that LLM heuristics
-conclusively outperform all baselines (the CI is wide; only 1/7 heuristics clearly wins).
-
-**Selective-admission caveat (headline result):** The best LLM heuristic
-(`slo_kv_balance_heuristic`, mean WG=0.9595, 95% CI [0.00, 0.27]) achieved its score
-on the `test_very_overloaded` regime by completing only **1240 of 2119 requests (58%)**
-— i.e., via selective request dropping, not throughput improvement. All other heuristics
-and baselines completed all 2119 requests on that regime. Do not present this result as
-a full-admission win. See [docs/result_claims.md](docs/result_claims.md) §"What the final
-evaluation numbers mean" for the exact per-regime `num_completed` breakdown and safe
-claim language.
-
-See [docs/result_claims.md](docs/result_claims.md) and [docs/gpu_validation_claims.md](docs/gpu_validation_claims.md).
-
----
-
-## Roadmap
-
-| Phase | Description | Status |
-|---|---|---|
-| 1 | Simulator + classical baselines | Complete |
-| 1.5 | Serving-style baselines (Orca/vLLM/Sarathi/SplitFuse) | Complete |
-| 1.7A | BurstGPT + ShareGPT trace ingestion | Complete |
-| 1.7B | GPU calibration (RTX 5060 Ti, Qwen2.5-0.5B) | Complete |
-| 1.7C | Calibrated real-trace replay (7 experiments) | Complete |
-| 2A.1 | Metric finalization + oracle wiring | Complete |
-| 2A.2–2A.3 | Selector dataset + training + evaluation | Complete |
-| 2A.3B | Hardened baselines (LLF, ESTF) + priority_weighted alias | Complete |
-| 2B.1 | LLM heuristic DSL + verifier + policy wrapper | Complete |
-| 2B.2 | LLM offline heuristic generation loop | Complete |
-| 2B.3 | Controlled LLM heuristic search (multi-regime eval) | Complete |
-| 2A.4/2B.4 | Final evaluation hardening (shortlist freeze, held-out test, bootstrap CIs) | Complete |
-| 2B.5–2B.9 | External baselines, admission control, rule selector repair, robustness audit | Complete |
-| 2B.10–2B.13 | SCORPIO, selector training on diversified suite (256 windows) | Complete |
-| 2B.14–2B.16 | Metric audit (ANWG), corrected-objective retraining, fresh validation | Complete |
-| 2C.1 | Real-trace ingestion: Azure 2023 + BurstGPT validation | Complete |
-| 2C.2 | Causal selector retraining on real traces (ANWG labels) | Complete |
-| 2C.3 | External-aware pool analysis (negative finding: no orca recovery) | Complete |
-| 2C.4 | Pairwise/regret-weighted selector training from labeled dataset | Not started |
-| — | LLM evolution loop (full) | Not started |
-| — | Shifted-workload evaluation + paper write-up | Not started |
-
-See [docs/roadmap.md](docs/roadmap.md) for details.
-
----
+All randomness is seeded via `numpy.random.default_rng`; same config + same
+seed = identical results.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT -- see [LICENSE](LICENSE).
