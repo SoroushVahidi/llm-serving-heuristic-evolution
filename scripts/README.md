@@ -2,11 +2,47 @@
 
 All scripts are in `scripts/`. Run from the repository root.
 
-**Coverage note:** this file documents the Phase-1.7C-and-earlier data/GPU-calibration
-scripts below. Phase 2A/2B/2C selector, LLM-heuristic-generation, and real-LLM/vLLM
-scripts are not yet individually documented here — see
-[docs/research_status.md](../docs/research_status.md) and the per-phase docs under
-[docs/audits/](../docs/audits/) for which script produced which result.
+## Current entry points (Selector v2 / external-baseline program)
+
+The sections below this one document Phase-1.7C-and-earlier scripts only.
+For the project's actual current active work, use these instead:
+
+| Script | Purpose |
+|---|---|
+| `build_selector_dataset_v2_calibrated_targeted_pilot.py` | **Current** Dataset v2 generator (Option B scope, 8-policy action space). Superseded `build_selector_dataset_v2_pilot.py` / `build_selector_dataset_v2_redesigned_pilot.py` / `build_selector_dataset.py` -- each of those now carries an in-file HISTORICAL banner. |
+| `train_selector_v2_calibrated_prototype.py` | Trains/evaluates the prototype selector on a calibrated pilot's output. |
+| `audit_selector_v2_calibrated_pilot_leakage.py` | Independent leakage audit for a calibrated pilot's splits -- run this before trusting any pilot's VALIDATION/ID_TEST numbers; see `docs/current/SELECTOR_V2.md` §10. |
+| `selector_v2_slo_calibrated_frontier_search.py` | SLO-calibration / scenario-discriminativeness search. |
+| `selector_v2_contention_frontier_search.py`, `selector_v2_contention_frontier_slo_sensitivity.py` | Contention-model frontier search (historical step, superseded by the SLO-calibrated version above -- kept for reproducibility). |
+| `selector_v2_faithful_baseline_audit.py` | The faithful-baseline scope audit (Option B decision). |
+| `run_gpu_external_validity_audit.py` | Central Wulver/local-GPU external-validity harness (real vLLM server vs. simulator). |
+| `run_sarathi_gpu_smoke_and_validation.py`, `compare_sarathi_vllm_matched_runtime.py`, `analyze_repeated_trials.py` | Sarathi real-runtime validation (including the N=5 repeated-trial comparison). |
+| `build_runtime_validation_benchmark_pack.py` | Builds the committed, checksummed runtime-validation benchmark pack. |
+| `scripts/slurm/wulver_*.sbatch` | Wulver A100 cluster job scripts, one per experiment -- submit via `sbatch`, see `docs/wulver_gpu_validation_handoff.md`. |
+
+Manual, paid-API, one-off scripts -- **require an explicit opt-in
+environment variable, refuse to run otherwise** (see each script's own
+header comment):
+
+- `_run_cohere_v2_live_pilot.sh`, `_run_gemini_v2_live_pilot.sh` --
+  `LLMSERVEOPT_ALLOW_PAID_API_CALLS=1` required.
+
+Do-not-rerun (historical postprocessing, self-documented in-file):
+
+- `phase17c_postprocess.sh`.
+
+Full current-program context: **[docs/current/SELECTOR_V2.md](../docs/current/SELECTOR_V2.md)**
+and **[docs/current/ARCHITECTURE.md](../docs/current/ARCHITECTURE.md)**.
+
+---
+
+**Coverage note (below this point):** the rest of this file documents the
+Phase-1.7C-and-earlier data/GPU-calibration scripts. Phase 2A/2B/2C selector,
+LLM-heuristic-generation, and real-LLM/vLLM scripts beyond the current-entry-points
+table above are not yet individually documented here — see
+[docs/current/PROJECT_STATUS.md](../docs/current/PROJECT_STATUS.md) and the
+per-phase docs under [docs/audits/](../docs/audits/) for which script
+produced which historical result.
 
 All scripts support `--help` safely (prints usage, no file writes). Scripts that
 write tracked docs or reports (`inspect_gpu_environment.py`, `update_phase17c_docs.py`)
