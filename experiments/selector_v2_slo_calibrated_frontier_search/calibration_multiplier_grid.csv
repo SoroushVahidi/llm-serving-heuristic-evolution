@@ -1,0 +1,8 @@
+multiplier,n_scored,all_success_fraction,all_fail_fraction,anwg_discriminative_fraction,n_distinct_winners,best_fixed_policy,best_fixed_mean_anwg
+0.8,200,0.0,1.0,0.0,1,vllm_faithful,0.0
+0.9,200,0.0,1.0,0.0,1,vllm_faithful,0.0
+1.0,200,0.0,0.125,0.85,5,weighted_shortest_processing,0.2827
+1.1,200,0.0,0.105,0.875,5,weighted_shortest_processing,0.378
+1.25,200,0.0,0.065,0.925,5,weighted_shortest_processing,0.4979
+1.5,200,0.0,0.015,0.985,4,weighted_shortest_processing,0.6136
+2.0,200,0.0,0.0,0.995,4,edf,0.761

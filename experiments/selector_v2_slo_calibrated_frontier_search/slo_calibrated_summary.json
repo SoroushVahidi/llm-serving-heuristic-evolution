@@ -1,0 +1,42 @@
+{
+  "n_windows_attempted": 910,
+  "n_windows_scored": 910,
+  "n_synthetic": 750,
+  "n_real_trace": 160,
+  "multiplier_used_for_synthetic": 2.0,
+  "elapsed_s": 166.7,
+  "primary_objective_classification_counts": {
+    "NEAR_TIE": 735,
+    "STRONGLY_DISCRIMINATIVE": 135,
+    "ALL_COMPLETE_OR_EFFECTIVELY_TIED": 24,
+    "MODERATELY_DISCRIMINATIVE": 16
+  },
+  "all_equivalent_fraction": 0.0264,
+  "strongly_discriminative_fraction": 0.1484,
+  "moderately_discriminative_fraction": 0.0176,
+  "primary_objective_win_distribution": {
+    "vllm_faithful": 513,
+    "scorpio_style_slo_guard": 57,
+    "edf": 217,
+    "weighted_shortest_processing": 50,
+    "admission_control": 26,
+    "multi_bin_batching": 11,
+    "estimated_service_time_first": 5,
+    "fifo": 31
+  },
+  "strong_win_distribution": {
+    "scorpio_style_slo_guard": 54,
+    "edf": 46,
+    "admission_control": 18,
+    "weighted_shortest_processing": 9,
+    "estimated_service_time_first": 2,
+    "multi_bin_batching": 6
+  },
+  "top_policy_strong_win_share": 0.4,
+  "best_fixed_policy": "weighted_shortest_processing",
+  "best_fixed_policy_mean_anwg": 0.7826,
+  "oracle_headroom": 0.0381,
+  "discriminative_oracle_headroom": 0.2032,
+  "windows_csv": "experiments/selector_v2_slo_calibrated_frontier_search/slo_calibrated_windows.csv",
+  "discriminativeness_csv": "experiments/selector_v2_slo_calibrated_frontier_search/slo_calibrated_discriminativeness.csv"
+}
