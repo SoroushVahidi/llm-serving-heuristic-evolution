@@ -38,6 +38,7 @@ from ..core.types import (
     ObservableState,
     Request,
 )
+from .contention_diagnostics import summarize as _summarize_contention_diagnostics
 from .gpu import GPUState
 from .request import InternalRequest, RequestPhase
 from .service_model import ServiceModel
@@ -91,6 +92,10 @@ class Simulator:
         # Per-step history for metrics
         self._util_history: List[float] = []
         self._batch_history: List[float] = []
+        # Diagnostic-only: waiting-queue length at each step, recorded
+        # right after enqueueing arrivals and before admission -- never
+        # consulted by any policy or objective, see contention_diagnostics.py.
+        self._waiting_queue_history: List[int] = []
         self._policy_times: List[float] = []
         # Steps skipped during idle-period fast-forwarding
         self._idle_skipped: int = 0
@@ -103,6 +108,21 @@ class Simulator:
         """Load a sorted request trace.  Must be called before run()."""
         sorted_reqs = sorted(requests, key=lambda r: r.arrival_time)
         self._pending_arrivals = [InternalRequest(request=r) for r in sorted_reqs]
+
+    def contention_diagnostics_summary(self) -> Dict:
+        """Diagnostic-only (see contention_diagnostics.py): aggregates
+        every GPU's per-step contention signals plus waiting-queue-length
+        history from the most recently completed `run()`. Never consulted
+        by any policy, metric, or objective -- purely for scenario/window
+        classification in frontier-search tooling."""
+        combined_history = [d for g in self._gpus for d in g.step_contention_diagnostics]
+        summary = _summarize_contention_diagnostics(combined_history)
+        summary["max_waiting_queue"] = max(self._waiting_queue_history, default=0)
+        summary["mean_waiting_queue"] = (
+            sum(self._waiting_queue_history) / len(self._waiting_queue_history)
+            if self._waiting_queue_history else 0.0
+        )
+        return summary
 
     def run(self, policy, workload_tag: str = "unknown", seed: int = 0) -> RunMetrics:
         """Run simulation with `policy` and return metrics.
@@ -141,6 +161,8 @@ class Simulator:
                 self._waiting.append(ir)
                 self._waiting_map[ir.request_id] = ir
                 arrival_idx += 1
+
+            self._waiting_queue_history.append(len(self._waiting))
 
             # --- 2. Build observable state ---
             state = self._build_observable_state()
@@ -248,6 +270,7 @@ class Simulator:
             g._active.clear()
             g.step_active_counts.clear()
             g.step_kv_used.clear()
+            g.step_contention_diagnostics.clear()
             g._pending_handoff.clear()
         self._waiting.clear()
         self._waiting_map.clear()
@@ -259,6 +282,7 @@ class Simulator:
         self._time = 0.0
         self._util_history.clear()
         self._batch_history.clear()
+        self._waiting_queue_history.clear()
         self._policy_times.clear()
         self._idle_skipped = 0
         # Reset internal request states

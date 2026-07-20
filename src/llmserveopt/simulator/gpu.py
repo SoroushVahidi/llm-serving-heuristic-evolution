@@ -28,6 +28,7 @@ from typing import Dict, List, Optional
 
 from ..core.types import CompletedRequest, GPUConfig, ObservableGPUState, ObservableRequest
 from .constraints import check_admission, incremental_feasible
+from .contention_diagnostics import StepContentionDiagnostics
 from .request import InternalRequest, RequestPhase
 from .service_model import ServiceModel
 
@@ -38,6 +39,10 @@ class GPUState:
         self._active: Dict[int, InternalRequest] = {}
         self.step_active_counts: List[int] = []
         self.step_kv_used: List[int] = []
+        # Diagnostic-only per-step contention signals, populated only by
+        # `_step_phase15` (see contention_diagnostics.py) -- never
+        # consulted by execution or objective code.
+        self.step_contention_diagnostics: List[StepContentionDiagnostics] = []
         # Disaggregated prefill/decode: requests handed off this step,
         # awaiting collection by the Simulator (always empty otherwise).
         self._pending_handoff: List[InternalRequest] = []
@@ -282,6 +287,11 @@ class GPUState:
         """
         prefilling = [r for r in self._active.values() if r.is_prefilling]
         decoding = [r for r in self._active.values() if r.is_decoding]
+        # Diagnostic-only before-snapshot (see contention_diagnostics.py) --
+        # taken here, before dispatch, so it is identical regardless of
+        # which execution model runs.
+        decode_tokens_before = {r.request_id: r.tokens_decoded for r in decoding}
+        prefill_remaining_before = {r.request_id: r.prefill_remaining for r in prefilling}
 
         if service_model.enable_decode_prefill_contention and not service_model.decode_first:
             completed, to_remove, handoff_ids = self._advance_shared_contention(
@@ -292,6 +302,10 @@ class GPUState:
                 current_time, service_model, prefilling, decoding
             )
 
+        self._record_contention_diagnostics(
+            current_time, service_model, decode_tokens_before, prefill_remaining_before,
+        )
+
         for rid in handoff_ids:
             self._pending_handoff.append(self._active.pop(rid))
 
@@ -301,6 +315,50 @@ class GPUState:
         self.step_active_counts.append(self.num_active)
         self.step_kv_used.append(self.current_kv_tokens)
         return completed
+
+    def _record_contention_diagnostics(
+        self,
+        current_time: float,
+        service_model: ServiceModel,
+        decode_tokens_before: Dict[int, int],
+        prefill_remaining_before: Dict[int, int],
+    ) -> None:
+        """Diagnostic-only (see contention_diagnostics.py): compares each
+        previously-decoding/prefilling request's state right after this
+        step's execution (but before `to_remove`/`handoff_ids` are popped
+        from `_active`) against its before-snapshot. A request missing
+        from `_active` afterward completed or handed off this step, which
+        can only happen if it WAS served (decode) or finished its chunk
+        (prefill) -- so it counts as served, not deferred."""
+        decode_tokens_served = 0
+        for rid, before in decode_tokens_before.items():
+            ir = self._active.get(rid)
+            served = (ir.tokens_decoded - before) if ir is not None else 1
+            decode_tokens_served += max(0, served)
+        decode_tokens_deferred = max(0, len(decode_tokens_before) - decode_tokens_served)
+
+        prefill_tokens_served = 0
+        prefill_requests_stalled = 0
+        for rid, before in prefill_remaining_before.items():
+            ir = self._active.get(rid)
+            remaining_after = ir.prefill_remaining if ir is not None else 0
+            consumed = before - remaining_after
+            prefill_tokens_served += max(0, consumed)
+            if consumed <= 0:
+                prefill_requests_stalled += 1
+
+        self.step_contention_diagnostics.append(StepContentionDiagnostics(
+            step_index=len(self.step_contention_diagnostics),
+            time=current_time,
+            num_decoding=len(decode_tokens_before),
+            num_prefilling=len(prefill_remaining_before),
+            decode_tokens_served=decode_tokens_served,
+            decode_tokens_deferred=decode_tokens_deferred,
+            prefill_tokens_served=prefill_tokens_served,
+            prefill_requests_stalled=prefill_requests_stalled,
+            budget_used=decode_tokens_served + prefill_tokens_served,
+            budget_total=service_model.step_token_budget,
+        ))
 
     def _advance_decode_protected(
         self,
