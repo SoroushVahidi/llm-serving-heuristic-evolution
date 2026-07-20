@@ -32,11 +32,19 @@ multi_bin_batching
 This is a strict subset of the 20 in §A. **Faithful external baselines are
 evaluation-time references only -- they are never part of the trainable
 action space.** `orca_style`, `slo_slack_score`, and `shortest_output_first`
-are also excluded from this 8-policy set (they appear in an earlier, wider
-"general monolithic pool" of 14 defined in
-`src/llmserveopt/selector/dataset_v2/candidates.py`, which has not yet been
-reconciled with this Option B decision -- known issue, see
-[PROJECT_STATUS.md](PROJECT_STATUS.md) §7).
+are also excluded from this 8-policy set (they remain part of an earlier,
+wider "diagnostic pool" of 14 -- `MONOLITHIC_DIAGNOSTIC_POLICY_POOL` /
+`monolithic_candidate_policies()` in
+`src/llmserveopt/selector/dataset_v2/candidates.py` -- kept for historical
+reproducibility and broader diagnostic exploration, not the current
+trainable action space).
+
+The canonical Option B constant is
+`src/llmserveopt/selector/dataset_v2/candidates.py::SELECTOR_V2_OPTION_B_POLICIES`
+(exactly the 8 policies above, import-time-asserted against both the
+historical registry and the external baseline registry).
+`calibrated_targeted_pilot.py::CANDIDATE_POLICIES` imports this constant
+directly rather than duplicating the list.
 
 ## C-E. Faithful external baselines -- 6 total, all `selector_eligible=False`
 

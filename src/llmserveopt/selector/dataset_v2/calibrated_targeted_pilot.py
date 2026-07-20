@@ -46,6 +46,7 @@ from ...simulator.service_model import ServiceModel
 from ...workloads.trace_io_extended import load_extended_jsonl  # noqa: F401 (re-exported)
 from .builder import run_candidate_policy_on_window
 from .frontier_workload_families import FAMILY_GENERATORS
+from .candidates import SELECTOR_V2_OPTION_B_POLICIES
 from .schema import PolicyOutcomeVector
 from .scenario_redesign import (
     DISCRIMINATIVE_POOL,
@@ -57,20 +58,12 @@ from .scenario_redesign import (
 from .slo_calibration import calibrate_window_e2e
 
 #: SELECTOR_SCOPE_DECISION = OPTION B (docs/selector_v2_faithful_baseline_scope_audit.md).
-#: Exactly the 8 historical monolithic policies the 910-window SLO-calibrated
-#: search already showed real, robust, oracle-headroom-backed ANWG
-#: specialization for. Faithful baselines are deliberately excluded --
-#: never add them here without a new, separately-documented scope decision.
-CANDIDATE_POLICIES: Tuple[str, ...] = (
-    "fifo",
-    "edf",
-    "scorpio_style_slo_guard",
-    "admission_control",
-    "weighted_shortest_processing",
-    "estimated_service_time_first",
-    "best_fit",
-    "multi_bin_batching",
-)
+#: Imports the canonical Option B action space from `.candidates` rather
+#: than duplicating the policy list -- see that module's docstring for the
+#: full 20 / 14 / 8 policy-set disambiguation. Faithful baselines are
+#: deliberately excluded -- never add them here without a new,
+#: separately-documented scope decision.
+CANDIDATE_POLICIES: Tuple[str, ...] = SELECTOR_V2_OPTION_B_POLICIES
 
 #: Excluded by the Option B scope decision -- external evaluation-only,
 #: never a selector action in this pilot. Listed for documentation /

@@ -71,12 +71,14 @@ workload (synthetic generator or real-trace loader)
   20 entries, `selector_eligible` implicitly `True` for the Selector v1 pool;
   Selector v2's actual trainable pool is the narrower Option B 8-policy set
   (see [BASELINES.md](BASELINES.md), not `BASELINE_NAMES` directly).
-- **Selector v2 candidate resolvers** (`selector/dataset_v2/candidates.py`
-  vs. `calibrated_targeted_pilot.py`): two different candidate sets exist in
-  code today (14 vs. 8) -- **known, tracked discrepancy**, see
-  [PROJECT_STATUS.md](PROJECT_STATUS.md) §7 and [BASELINES.md](BASELINES.md).
-  `calibrated_targeted_pilot.py`'s 8-policy `CANDIDATE_POLICIES` is the one
-  the current pipeline actually uses.
+- **Selector v2 candidate resolvers** (`selector/dataset_v2/candidates.py`):
+  defines three distinct policy sets with disambiguating names --
+  `BASELINE_NAMES` (20, historical portfolio), `MONOLITHIC_DIAGNOSTIC_POLICY_POOL`
+  / `monolithic_candidate_policies()` (14, broader diagnostic pool, historical
+  pilots), and `SELECTOR_V2_OPTION_B_POLICIES` (8, the current canonical
+  trainable action space). `calibrated_targeted_pilot.py::CANDIDATE_POLICIES`
+  imports `SELECTOR_V2_OPTION_B_POLICIES` directly rather than duplicating
+  it. See [BASELINES.md](BASELINES.md) §B.
 - **SLO calibration** (`selector/dataset_v2/slo_calibration.py`):
   `calibrate_window_e2e()` derives a per-request deadline from a
   policy-independent reference-service-model estimate. This fix is what

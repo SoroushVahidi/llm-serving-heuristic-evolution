@@ -9,10 +9,37 @@ Neither `registry.py`'s `BASELINE_NAMES`/`SELECTOR_CANDIDATE_NAMES` nor
 `selector/candidates.py`'s `SELECTOR_CANDIDATES` (the historical, v1
 selector candidate list) are modified by anything here -- this module only
 READS from both registries to build a NEW, v2-specific candidate list.
+
+This module defines THREE different policy sets. Do not conflate them --
+each answers a different question:
+
+- ``BASELINE_NAMES`` (imported from ``policies.registry``, 20 policies):
+  the full historical/internal policy portfolio. Not v2-specific.
+- ``MONOLITHIC_EXTERNAL_BASELINES`` + ``STRONG_HISTORICAL_MONOLITHIC_POLICIES``
+  (via ``monolithic_candidate_policies()``, 3 + 11 = 14 policies): a
+  BROADER, general-purpose diagnostic/exploration pool used by earlier
+  (pre-Option-B) Selector Dataset v2 pilots and scripts
+  (``build_selector_dataset_v2_pilot.py``,
+  ``build_selector_dataset_v2_redesigned_pilot.py``). Still useful for
+  historical reproducibility and broader diagnostic exploration -- NOT
+  removed, NOT deprecated, just not the current trainable action space.
+  Also exposed under the clearer alias ``MONOLITHIC_DIAGNOSTIC_POLICY_POOL``.
+- ``SELECTOR_V2_OPTION_B_POLICIES`` (8 policies): the CURRENT, approved,
+  canonical Selector v2 trainable action space, per the Option B scope
+  decision in ``docs/selector_v2_faithful_baseline_scope_audit.md``. This
+  is a strict subset of ``STRONG_HISTORICAL_MONOLITHIC_POLICIES`` above
+  (it excludes ``shortest_output_first``, ``orca_style``, and
+  ``slo_slack_score``, and excludes all faithful external baselines
+  entirely). ``selector/dataset_v2/calibrated_targeted_pilot.py`` imports
+  THIS constant -- it does not duplicate the policy list.
+
+When in doubt about "what should the Selector v2 candidate set be today,"
+the answer is ``SELECTOR_V2_OPTION_B_POLICIES``, not
+``monolithic_candidate_policies()``.
 """
 from __future__ import annotations
 
-from typing import List
+from typing import List, Tuple
 
 from ...policies.base import BasePolicy
 from ...policies.external_baselines_registry import (
@@ -70,6 +97,16 @@ STRONG_HISTORICAL_MONOLITHIC_POLICIES: List[str] = [
     "multi_bin_batching",
 ]
 
+#: Clearer alias for the constant above: a BROADER diagnostic/exploration
+#: pool (11 historical policies here + 3 monolithic external baselines via
+#: `monolithic_candidate_policies()` = 14 total), NOT the current Option B
+#: trainable action space (8 policies, `SELECTOR_V2_OPTION_B_POLICIES`
+#: below). Retained for historical reproducibility of the pre-Option-B
+#: pilots and for future broader diagnostic exploration if needed -- not
+#: deprecated, just narrower in scope than its name might suggest at a
+#: glance.
+MONOLITHIC_DIAGNOSTIC_POLICY_POOL: List[str] = STRONG_HISTORICAL_MONOLITHIC_POLICIES
+
 # Verified at import time, not just at test time (mirrors
 # selector/candidates.py's own established convention).
 for _name in STRONG_HISTORICAL_MONOLITHIC_POLICIES:
@@ -80,10 +117,48 @@ for _name in STRONG_HISTORICAL_MONOLITHIC_POLICIES:
 
 
 def monolithic_candidate_policies() -> List[str]:
-    """The Selector Dataset v2 Phase-1 (monolithic) candidate pool:
-    every monolithic-compatible external baseline plus the curated strong
-    historical subset. See module docstring for the inclusion criterion."""
+    """The Selector Dataset v2 Phase-1 (monolithic) DIAGNOSTIC candidate
+    pool: every monolithic-compatible external baseline plus the curated
+    broader historical subset (14 total). See module docstring for the
+    inclusion criterion.
+
+    This is NOT the current Selector v2 trainable action space -- for that,
+    use `SELECTOR_V2_OPTION_B_POLICIES` (8 policies) instead."""
     return list(MONOLITHIC_EXTERNAL_BASELINES) + list(STRONG_HISTORICAL_MONOLITHIC_POLICIES)
+
+
+#: THE current, approved Selector v2 trainable action space (Option B, per
+#: docs/selector_v2_faithful_baseline_scope_audit.md). Exactly these 8
+#: historical-monolithic policies -- confirmed, across 1,511
+#: window-evaluations, to have real, robust, oracle-headroom-backed ANWG
+#: specialization. Faithful external baselines are deliberately excluded:
+#: never add one here without a new, separately-documented scope decision.
+#: `selector/dataset_v2/calibrated_targeted_pilot.py` imports this constant
+#: directly rather than duplicating the list.
+SELECTOR_V2_OPTION_B_POLICIES: Tuple[str, ...] = (
+    "fifo",
+    "edf",
+    "scorpio_style_slo_guard",
+    "admission_control",
+    "weighted_shortest_processing",
+    "estimated_service_time_first",
+    "best_fit",
+    "multi_bin_batching",
+)
+
+# Verified at import time: every Option B policy must be a real historical
+# policy, and none may be an external baseline (faithful baselines are
+# evaluation-only, never selector actions -- see module docstring).
+for _name in SELECTOR_V2_OPTION_B_POLICIES:
+    assert _name in BASELINE_NAMES, (
+        f"'{_name}' is not in registry.py's BASELINE_NAMES -- "
+        f"SELECTOR_V2_OPTION_B_POLICIES is stale."
+    )
+    assert _name not in EXTERNAL_BASELINE_NAMES, (
+        f"'{_name}' is an external baseline -- SELECTOR_V2_OPTION_B_POLICIES "
+        f"must contain only historical policies (faithful baselines are "
+        f"evaluation-only per the Option B scope decision)."
+    )
 
 
 def is_policy_compatible_with_topology(policy_name: str, topology_class: str) -> bool:
