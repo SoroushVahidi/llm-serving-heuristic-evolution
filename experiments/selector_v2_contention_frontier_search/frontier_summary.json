@@ -1,0 +1,18 @@
+{
+  "n_windows_attempted": 900,
+  "n_windows_scored": 900,
+  "elapsed_s": 57.6,
+  "classification_counts": {
+    "UNDERLOADED": 164,
+    "SATURATED": 431,
+    "CONTENTION_VISIBLE": 305
+  },
+  "primary_objective_classification_counts": {
+    "ALL_COMPLETE_OR_EFFECTIVELY_TIED": 900
+  },
+  "primary_objective_win_distribution": {
+    "vllm_faithful": 900
+  },
+  "windows_csv": "experiments/selector_v2_contention_frontier_search/frontier_windows.csv",
+  "discriminativeness_csv": "experiments/selector_v2_contention_frontier_search/frontier_discriminativeness.csv"
+}
