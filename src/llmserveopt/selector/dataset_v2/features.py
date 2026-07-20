@@ -122,13 +122,13 @@ def _arrival_load_features(
     prefix_rate = _rate(prefix_arrivals)
     inter_arrival_cv = _interarrival_cv(arrivals)
     queue_length = float(sum(1 for r in recent if r.arrival_time <= now))
+    queue_growth = 0.0
     if len(arrivals) >= 4:
         midpoint = len(arrivals) // 2
         older = _rate(arrivals[:midpoint])
         newer = _rate(arrivals[midpoint:])
-        queue_growth = newer - older
-    else:
-        queue_growth = 0.0
+        if older is not None and newer is not None:
+            queue_growth = newer - older
 
     total_seq_capacity = sum(g.max_active_sequences for g in gpu_configs)
     saturation = None
