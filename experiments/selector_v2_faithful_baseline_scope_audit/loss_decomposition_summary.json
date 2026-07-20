@@ -1,0 +1,28 @@
+{
+  "n_discriminative_windows_analyzed": 151,
+  "winner_rejecting_vs_non_rejecting": {
+    "rejecting": 73,
+    "non_rejecting": 78
+  },
+  "restricted_non_rejecting_win_distribution": {
+    "vllm_faithful": 48,
+    "edf": 61,
+    "weighted_shortest_processing": 23,
+    "multi_bin_batching": 13,
+    "estimated_service_time_first": 4,
+    "fifo": 2
+  },
+  "restricted_non_rejecting_classification_counts": {
+    "ALL_COMPLETE_OR_EFFECTIVELY_TIED": 48,
+    "STRONGLY_DISCRIMINATIVE": 73,
+    "NEAR_TIE": 12,
+    "MODERATELY_DISCRIMINATIVE": 18
+  },
+  "faithful_wins_in_restricted_comparison": {
+    "vllm_faithful": 48,
+    "sarathi_faithful": 0,
+    "vllm_chunked_prefill_faithful": 0
+  },
+  "decomposition_csv": "experiments/selector_v2_faithful_baseline_scope_audit/faithful_loss_decomposition.csv",
+  "restricted_csv": "experiments/selector_v2_faithful_baseline_scope_audit/restricted_non_rejecting_discriminativeness.csv"
+}
