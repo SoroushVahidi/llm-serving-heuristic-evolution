@@ -3,11 +3,13 @@
 All experiment configs are YAML files. Pass to a runner script with `--config`.
 
 **Coverage note:** this file documents the pre-Phase-2A synthetic/real-trace/GPU-calibration
-config families below. `configs/phase2b*.yaml`, `configs/phase2c*.yaml`, and the
-`selector/`, `heuristics/`, `api_calibration/`, `real_llm_latency/`, and `oracle/`
+config families below. `configs/phase2b*.yaml`, `configs/phase2c*.yaml`, and most of the
+`selector/`, `heuristics/`, `api_calibration/`, and `real_llm_latency/`
 subdirectories are not yet individually documented here — see
-[docs/research_status.md](../docs/research_status.md) for which config was used for
-which phase result.
+[docs/current/PROJECT_STATUS.md](../docs/current/PROJECT_STATUS.md) and the
+per-phase docs under [docs/audits/](../docs/audits/) for which config was
+used for which phase result. See "Orphaned but retained configs" below for
+one specific group that has no other documentation anywhere.
 
 ---
 
@@ -126,6 +128,30 @@ service_model:
 4. If using `type: calibrated`, ensure `results/gpu_calibration/service_curves.json` exists.
 5. Run with `--config configs/your_new_config.yaml`.
 6. Results land in `results/<experiment_name>/<timestamp>/`.
+
+---
+
+## Orphaned but retained configs
+
+These 7 configs are not referenced by any current script default, test, or
+doc (verified by repo-wide search) -- but each is small, self-documented via
+its own header comment, and represents genuine historical reproducibility
+value. Classified `HISTORICAL_REPRODUCIBILITY`, not deleted or moved (moving
+would create git-history churn for no navigational benefit given there are
+only 7):
+
+| Config | Classification | Notes |
+|---|---|---|
+| `llm_generation/phase2b3_cloudrift_search.yaml` | HISTORICAL_REPRODUCIBILITY | Phase 2B.3 LLM heuristic search via `scripts/generate_llm_heuristics.py --providers cloudrift`; requires a CloudRift API key. |
+| `llm_generation/phase2b3_multi_provider_search.yaml` | HISTORICAL_REPRODUCIBILITY | Same script, multi-provider (CloudRift+Cohere+Mistral); requires all three API keys. |
+| `oracle/tiny_oracle_srtf_smoke.yaml` | HISTORICAL_REPRODUCIBILITY | Smoke-test comparing online baselines against the non-deployable `oracle_srtf` hindsight upper bound. Still functionally relevant (oracle comparison is not phase-locked), just never wired into a doc/test path. |
+| `selector/selector_dataset_phase17c_moderate.yaml` | HISTORICAL_REPRODUCIBILITY | Phase 1.7C-era selector-dataset-builder input (`window_size: 200`, `feature_mode: online_prefix`). |
+| `selector/selector_dataset_sanity_natural_phase2a3.yaml` | HISTORICAL_REPRODUCIBILITY | Phase 2A.3 matched split set (sanity/test/validation, below) -- kept together. |
+| `selector/selector_dataset_test_phase2a3.yaml` | HISTORICAL_REPRODUCIBILITY | Same set; self-documents "DO NOT use for training or hyperparameter tuning." |
+| `selector/selector_dataset_validation_phase2a3.yaml` | HISTORICAL_REPRODUCIBILITY | Same set; self-documents "DO NOT use these regimes for training." |
+
+None are `SAFE_DELETE_CANDIDATE` -- none show signs of being generated junk
+or duplicates; each documents a distinct, real historical config.
 
 ---
 

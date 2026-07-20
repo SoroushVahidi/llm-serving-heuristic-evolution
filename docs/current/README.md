@@ -24,6 +24,14 @@ in this order:
 7. **[NEXT_STEPS.md](NEXT_STEPS.md)** -- the exact next recommended research
    step, with explicit stop conditions.
 
+## Additional reference (not part of the core seven)
+
+- **[LOCAL_ARTIFACT_CLEANUP.md](LOCAL_ARTIFACT_CLEANUP.md)** -- classification
+  of local-only, gitignored `results/` directories not cited by any doc
+  (research-still-useful vs. checkpoint history vs. safe-to-delete audit
+  logs). Consult only when you need to decide what to do with a specific
+  local `results/` directory; not needed for general onboarding.
+
 ## What this set is (and isn't)
 
 These seven documents synthesize and link to ~75 detailed design/audit
