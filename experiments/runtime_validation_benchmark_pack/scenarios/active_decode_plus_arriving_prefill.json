@@ -1,0 +1,100 @@
+{
+  "canonical_scenario_id": "active_decode_plus_arriving_prefill",
+  "category": "active_decode_plus_arriving_prefill",
+  "positive_target": true,
+  "negative_control": false,
+  "sarathi_harness_name": "sarathi_active_decode_plus_arriving_prefill",
+  "vllm_harness_name": "mistral_match_active_decode_plus_arriving_prefill",
+  "source_functions": [
+    "scripts/run_sarathi_gpu_smoke_and_validation.py:make_scenarios",
+    "scripts/run_gpu_external_validity_audit.py:build_mistral_match_scenarios"
+  ],
+  "prompt_seed": 20260719,
+  "request_count": 8,
+  "max_client_concurrency": 8,
+  "arrival_order_by_request_id": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "medium",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 580,
+      "prompt_char_length": 2900,
+      "prompt_sha256": "03973c77216a9c80b8569ff6aaced9a9a9f93c8031f97e97e2e537090a3ce3dd"
+    },
+    {
+      "request_id": 1,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "medium",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 580,
+      "prompt_char_length": 2900,
+      "prompt_sha256": "9f4ecc143160f4c44d33bb99a56118aa765f9fd4d24ec32f28d935280c14ea8f"
+    },
+    {
+      "request_id": 2,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "medium",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 580,
+      "prompt_char_length": 2900,
+      "prompt_sha256": "ad017c378f0045f06b065dd52fb9e383bec36dcc3272ce335f6df1b5f075cfc2"
+    },
+    {
+      "request_id": 3,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "medium",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 580,
+      "prompt_char_length": 2900,
+      "prompt_sha256": "d6dae0d31b8fe1df5328cca185cf47d84590a1af8eac9bee4193d3ff83e6317f"
+    },
+    {
+      "request_id": 4,
+      "arrival_time_s": 3.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 64,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10530,
+      "prompt_sha256": "d5542c88fce737615359a1f2064bb4262b0e95774bd7e88257ff7c8e646bb3cb"
+    },
+    {
+      "request_id": 5,
+      "arrival_time_s": 4.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 64,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10530,
+      "prompt_sha256": "c6e7702bbe61fea893d0d07c8c9ca660801c98bb6b28ddc41c348dbd6574404f"
+    },
+    {
+      "request_id": 6,
+      "arrival_time_s": 5.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 64,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10530,
+      "prompt_sha256": "3e78fab0d4337b6da7e9570eec98cda0d31f8dbe94ea0262864d984bac06f856"
+    },
+    {
+      "request_id": 7,
+      "arrival_time_s": 6.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 64,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10530,
+      "prompt_sha256": "237ccf4e83fcf231fbfa4c64daee55b42ddee083d1e17c19a8eeb9cd8f7b2f65"
+    }
+  ],
+  "note": "Full prompt text is deliberately omitted (compact fixture); prompt_sha256 lets a consumer verify regenerated prompt text matches exactly. Regenerate full prompts by calling llmserveopt.real_llm.calibration_common.build_length_targeted_prompt(prompt_bucket, target_output_tokens, seed=20260719, variant_index=...) -- variant_index is not itself stored here since it is an internal implementation detail of the two source functions above, not part of the observable scenario contract; the sha256 is the portable verification mechanism."
+}

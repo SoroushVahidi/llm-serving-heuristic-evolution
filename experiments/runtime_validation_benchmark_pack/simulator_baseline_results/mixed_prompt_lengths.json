@@ -1,0 +1,19 @@
+{
+  "canonical_scenario_id": "mixed_prompt_lengths",
+  "vllm_faithful": {
+    "mean_ttft_s": 0.002166666666666667,
+    "mean_e2e_s": 0.06516666666666666,
+    "completion_fraction": 1.0
+  },
+  "sarathi_faithful": {
+    "mean_ttft_s": 0.006833333333333334,
+    "mean_e2e_s": 0.06983333333333334,
+    "completion_fraction": 1.0
+  },
+  "simulator_e2e_winner": "vllm",
+  "hardware_e2e_winner_robust": "vllm",
+  "simulator_matches_hardware": true,
+  "known_mismatch_reason": null,
+  "source_job_for_simulator_numbers": 1111706,
+  "note": "Simulator numbers were computed inline by job 1111706 (run_simulator_scenario()); not rerun for this pack."
+}

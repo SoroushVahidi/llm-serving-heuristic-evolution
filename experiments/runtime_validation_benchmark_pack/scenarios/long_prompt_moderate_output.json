@@ -1,0 +1,60 @@
+{
+  "canonical_scenario_id": "long_prompt_moderate_output",
+  "category": "long_prompt_moderate_output",
+  "positive_target": false,
+  "negative_control": true,
+  "sarathi_harness_name": "sarathi_long_prompt_moderate_output",
+  "vllm_harness_name": "mistral_match_long_prompt_moderate_output",
+  "source_functions": [
+    "scripts/run_sarathi_gpu_smoke_and_validation.py:make_scenarios",
+    "scripts/run_gpu_external_validity_audit.py:build_mistral_match_scenarios"
+  ],
+  "prompt_seed": 20260719,
+  "request_count": 4,
+  "max_client_concurrency": 4,
+  "arrival_order_by_request_id": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "7d5d04f075b1a414a71896c498921bab0467697b99bb9bf94d44ad423759db49"
+    },
+    {
+      "request_id": 1,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "b03c375b5b5d9625613c07ffb12e2e01221338decc2206415c1632eedf9a0663"
+    },
+    {
+      "request_id": 2,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "49df315b502d27c41e1e1cc310fbc5f5881d7505b6be111c1fc194dc1d8f7986"
+    },
+    {
+      "request_id": 3,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 256,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "d2cec09c216720df2e184b54f75f1d144a503f67c7a82b3ad92bee31ec54f6ae"
+    }
+  ],
+  "note": "Full prompt text is deliberately omitted (compact fixture); prompt_sha256 lets a consumer verify regenerated prompt text matches exactly. Regenerate full prompts by calling llmserveopt.real_llm.calibration_common.build_length_targeted_prompt(prompt_bucket, target_output_tokens, seed=20260719, variant_index=...) -- variant_index is not itself stored here since it is an internal implementation detail of the two source functions above, not part of the observable scenario contract; the sha256 is the portable verification mechanism."
+}
