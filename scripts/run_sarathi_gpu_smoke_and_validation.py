@@ -353,6 +353,17 @@ def main() -> int:
     parser.add_argument("--block-size", type=int, default=16)
     parser.add_argument("--max-model-len", type=int, default=16384)
     parser.add_argument("--output-dir", required=True)
+    parser.add_argument(
+        "--scenario-names", default=None,
+        help="Comma-separated exact scenario names to keep (others dropped). Default: all.",
+    )
+    parser.add_argument(
+        "--trial-index", type=int, default=None,
+        help="Repeated-trial index, recorded in env metadata only -- does not affect "
+             "request generation (prompts/seeds stay fixed and matched across trials "
+             "so any observed variance is attributable to system/execution noise, not "
+             "workload content differences).",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
@@ -410,6 +421,8 @@ def main() -> int:
         "dtype_arg": args.dtype,
         "effective_dtype": args.dtype if args.dtype is not None else "float16 (fork ModelConfig default; --dtype not passed)",
     }
+    env["trial_index"] = args.trial_index
+    env["prompt_seed"] = 20260719  # fixed constant baked into make_scenarios(); recorded here for provenance
 
     engine_build_start = time.monotonic()
     try:
@@ -429,6 +442,12 @@ def main() -> int:
         return 1
 
     scenarios = make_scenarios()
+    if args.scenario_names:
+        keep = {n.strip() for n in args.scenario_names.split(",") if n.strip()}
+        scenarios = [s for s in scenarios if s["name"] in keep]
+        missing = keep - {s["name"] for s in scenarios}
+        if missing:
+            print(f"WARNING: requested scenario names not found: {sorted(missing)}", file=sys.stderr)
     all_records: list[RequestRecord] = []
     scenario_reports = []
     for scenario in scenarios:

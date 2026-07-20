@@ -918,6 +918,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mock", action="store_true")
     parser.add_argument("--timeout-seconds", type=float, default=90.0)
     parser.add_argument("--limit-scenarios", type=int, default=None)
+    parser.add_argument(
+        "--scenario-names", default=None,
+        help="Comma-separated exact scenario names to keep (others dropped). Default: all.",
+    )
+    parser.add_argument(
+        "--trial-index", type=int, default=None,
+        help="Repeated-trial index, recorded in env metadata only -- does not affect "
+             "request generation (prompts/seeds stay fixed and matched across trials).",
+    )
     parser.add_argument("--no-real-traces", action="store_true")
     return parser.parse_args()
 
@@ -942,6 +951,12 @@ def main() -> int:
         scenarios = build_scenarios(ROOT, include_real_traces=not args.no_real_traces)
     if args.limit_scenarios is not None:
         scenarios = scenarios[:args.limit_scenarios]
+    if args.scenario_names:
+        keep = {n.strip() for n in args.scenario_names.split(",") if n.strip()}
+        scenarios = [s for s in scenarios if s.name in keep]
+        missing = keep - {s.name for s in scenarios}
+        if missing:
+            print(f"WARNING: requested scenario names not found: {sorted(missing)}", file=sys.stderr)
 
     server_proc: subprocess.Popen | None = None
     server_log_handle = None
@@ -967,6 +982,8 @@ def main() -> int:
             "server_command": " ".join(server_cmd) if server_cmd else None,
             "server_started_by_audit": bool(args.start_vllm_server),
             "scenario_count_planned": len(scenarios),
+            "trial_index": args.trial_index,
+            "prompt_seed": 20260719,
         })
         if args.resume:
             reports, request_rows = load_checkpoint(out_dir)
