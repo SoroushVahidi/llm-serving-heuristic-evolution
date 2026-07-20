@@ -1,0 +1,164 @@
+# Project Status (Canonical)
+
+**This is the single authoritative current-status document for this repository.**
+`docs/research_status.md` is retained only as a historical redirect to this file.
+
+**Status as of:** 2026-07-20, repository-audit pass (Queries 1-3 of a 5-query
+cleanup). This document reflects the state at commit `3406bc0` on branch
+`selector-v2-calibrated-targeted-pilot`, plus documentation-only cleanup
+commits layered on top on branches `repo-polish-query2-safe-cleanup` and
+`repo-polish-query3-canonical-docs` (neither yet merged to `main`).
+
+> Prefer commit hash over branch name when precision matters: branch names
+> in this project have been renamed at least three times as work
+> progressed (`phase2a4-2b4-final-eval` -> `phase2c1-real-trace-ingestion-validation`
+> -> `selector-v2-calibrated-targeted-pilot`), so treat the commit hash above,
+> not a hardcoded branch name, as the source of truth for "where we are."
+
+---
+
+## 1. Project objective
+
+Learn a **selector** that dynamically chooses among LLM-inference-serving
+scheduling policies per workload window, evaluated in a GPU-calibrated
+discrete-event simulator, and compare it against (a) the strongest fixed
+internal policy and (b) faithful reimplementations of real external serving
+systems (vLLM, Sarathi-Serve, DistServe, TetriInfer, Llumnix). See
+[ARCHITECTURE.md](ARCHITECTURE.md) for the system design and
+[SELECTOR_V2.md](SELECTOR_V2.md) for the full selector research narrative.
+
+## 2. Completed milestones (verified)
+
+- Deterministic discrete-event simulator with a GPU-calibrated service model
+  (RTX 5060 Ti / Qwen2.5-0.5B, prefill MAPE 9%, decode MAPE 12%).
+- 20-policy historical/internal policy portfolio (Phase 1-2B.16).
+- 6 faithful external baseline reimplementations, each pinned to an exact
+  upstream commit, covering 3 topology classes (monolithic, disaggregated,
+  migratory) -- see [BASELINES.md](BASELINES.md).
+- A real bug in the legacy `weighted_goodput` objective (completed-request-only
+  denominator, biased toward policies that reject/drop more work) was found
+  and fixed via the arrival-normalized `arrival_normalized_weighted_goodput`
+  (ANWG) objective. `docs/selector_objective_audit.md`.
+- Real-hardware runtime validation on a local RTX 5060 Ti and on a Wulver
+  A100 cluster (single-job and N=5-repeated-trial Sarathi-vs-vLLM
+  comparisons; a committed, checksummed runtime-validation benchmark pack).
+  `docs/wulver_sarathi_vllm_repeated_validation.md`, `docs/runtime_validation_benchmark_pack.md`.
+- Selector Dataset v2 infrastructure: policy-independent per-request SLO
+  calibration, group-aware leakage-safe split machinery, and an explicit,
+  evidence-based scope decision (**Option B**) for the Selector v2 trainable
+  action space. `docs/selector_v2_faithful_baseline_scope_audit.md`.
+- Test suite: **2,493 tests collected**, 0 collection errors, under the
+  correct interpreter (`python3 -m pytest --collect-only -q`; the bare
+  `pytest` shim on `PATH` on this machine is missing `pandas` and
+  undercounts -- see [REPRODUCIBILITY.md](REPRODUCIBILITY.md)).
+
+## 3. Current Selector v2 status (verifiable claims only)
+
+The most recent pipeline run (`experiments/selector_v2_calibrated_pilot_20260720T163235Z/`,
+not yet committed to git) generated 250 retained windows under the Option B
+8-policy action space and trained a prototype RF regressor/classifier.
+
+**What the pipeline's own automated checks report:** all 10 quality gates
+passed, including `no_leakage: {"passed": true, "detail": "verified"}`
+(read directly from `quality_gates.json`).
+
+**What the held-out numbers actually show** (mean ANWG vs.
+`weighted_shortest_processing`, the best fixed policy on this pilot):
+
+| Split | n | Regressor vs. best-fixed | Classifier vs. best-fixed |
+|---|---|---|---|
+| TRAIN | 125 | +0.031 (expected; not held-out evidence) | +0.020 |
+| VALIDATION | 51 | **-0.012 (loses)** | **-0.037 (loses)** |
+| ID_TEST | 43 | +0.029 (wins) | -0.011 (loses) |
+| OOD_TEST | 31 | **-0.010 (loses)** | **-0.031 (loses)** |
+
+OOD_TEST is a markedly harder regime for every policy (mean ANWG ~0.14-0.26
+across the board, including oracle at 0.263), not just the learned selector.
+
+**Conclusion: this is not a clean, confirmed win.** The regressor beats
+best-fixed on TRAIN and ID_TEST but loses on VALIDATION and OOD_TEST; the
+classifier loses on 3 of 4 splits. Full detail: [SELECTOR_V2.md](SELECTOR_V2.md).
+
+**Open question, not yet resolved:** a leakage concern has been raised about
+this pilot's non-OOD splits. It has **not been independently verified** --
+the pipeline's own `no_leakage` gate reports `passed: true`, and no
+independent leakage audit artifact currently exists in this repository. Given
+the mixed VALIDATION/ID_TEST results, an independent leakage audit is a
+reasonable and recommended next step (see [NEXT_STEPS.md](NEXT_STEPS.md)),
+but until one is performed and produces a finding, **do not state that
+leakage was confirmed** -- state only that held-out generalization is
+currently weak/mixed and unresolved.
+
+## 4. Current dataset status
+
+- BurstGPT and Azure LLM 2023 (conv + code): raw + processed present, actively
+  used.
+- ShareGPT: loader code + tests exist; raw data not acquired.
+- Azure LLM 2024/2025, Mooncake/Kimi, ServeGen, TraceLab: acquisition
+  candidates only, no loader code beyond Azure 2024/2025's download script.
+- See [EXPERIMENTS_AND_RESULTS.md](EXPERIMENTS_AND_RESULTS.md) for the full
+  dataset/results inventory.
+
+## 5. Current baseline status
+
+20 historical/internal policies + 6 faithful external baselines (3
+monolithic, 2 disaggregated, 1 migratory). All 6 external baselines are
+pinned to an exact upstream commit and are **evaluation-only** -- none are
+part of the Selector v2 trainable action space (Option B, 8 policies). Full
+inventory: [BASELINES.md](BASELINES.md).
+
+## 6. Current external validation status
+
+Real-GPU-hardware validation is complete for the faithful baselines this
+project currently ships: RTX 5060 Ti (local) and Wulver A100 (single-job and
+N=5-repeated-trial) Sarathi-vs-vLLM comparisons, reconciled against a
+committed runtime-validation benchmark pack. See
+[REPRODUCIBILITY.md](REPRODUCIBILITY.md) for what is/isn't reproducible
+without that specific hardware access.
+
+## 7. Known issues / tracked follow-ups
+
+- `src/llmserveopt/selector/dataset_v2/candidates.py`'s `STRONG_HISTORICAL_MONOLITHIC_POLICIES`
+  constant (14 policies) has not been reconciled with the Option B 8-policy
+  scope decision -- the actual current pipeline's candidate set lives in
+  `calibrated_targeted_pilot.py`, not `candidates.py`. Deferred to a future
+  cleanup pass; source code intentionally not modified by this
+  documentation-only query.
+- One orphaned branch, `phase2b13-selector-training-after-diversity`, has
+  unique commits not merged into any current lineage (superseded by its
+  sibling `phase2b13-selector-training-and-suspicion-audit`, which is
+  merged). Not deleted; a human decision.
+- `experiments/selector_v2_calibrated_pilot_20260720T163235Z/` is a finished,
+  untracked, local-only experiment output. Not yet committed, not yet
+  canonical -- see [EXPERIMENTS_AND_RESULTS.md](EXPERIMENTS_AND_RESULTS.md).
+
+## 8. Active protected local artifacts / processes
+
+- A `vllm serve` process (Qwen2.5-0.5B-Instruct, port 8001) has been running
+  continuously in this repository's working directory since 2026-07-03,
+  writing to `experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log`.
+  Do not stop it or commit/truncate that log without an explicit decision to
+  do so.
+- Two finished (non-live) raw GPU-stress server logs and the calibrated
+  pilot's output directory are untracked local artifacts pending a decision
+  in a later cleanup query.
+
+## 9. Current scientific blockers
+
+1. **Selector v2 held-out generalization is not yet demonstrated cleanly.**
+   VALIDATION and OOD_TEST both lose to best-fixed for both trained model
+   variants (see §3). This blocks any claim that Selector v2 "works."
+2. Whether that weak generalization is a data/leakage artifact, a
+   too-small training set (125 windows), or a genuine regime-shift problem
+   (OOD_TEST's collapse affects every policy, not just the selector) is
+   **not yet diagnosed**.
+3. Until #1-2 are resolved, comparing the trained selector against the 6
+   faithful external baselines (Protocol C) is premature -- there is no
+   confirmed-working selector yet to compare.
+
+## 10. Next recommended action
+
+See [NEXT_STEPS.md](NEXT_STEPS.md) for the full sequence. Immediate next
+step: independently audit the calibrated pilot's splits for leakage
+(confirm or refute the open concern in §3) before deciding whether to scale
+Dataset v2 generation or retrain.
