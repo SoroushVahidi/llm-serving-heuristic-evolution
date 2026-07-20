@@ -1,15 +1,15 @@
 """
-Topology-aware registry for the five faithful/paper-reimplementation
+Topology-aware registry for the six faithful/paper-reimplementation
 "external baseline" policies (`vllm_faithful`, `sarathi_faithful`,
 `distserve_faithful`, `tetriinfer_paper_reimplementation`,
-`llumnix_faithful`).
+`llumnix_faithful`, `vllm_chunked_prefill_faithful`).
 
 Deliberately SEPARATE from `registry.py`'s `BASELINE_NAMES`/
 `SELECTOR_CANDIDATE_NAMES` (the historical, deployable-policy registry used
 by every existing experiment sweep and the trained selector) -- nothing
-here is ever imported by `registry.py`, and none of these five names ever
+here is ever imported by `registry.py`, and none of these six names ever
 appear in `BASELINE_NAMES`/`SELECTOR_CANDIDATE_NAMES`. This module exists
-so the five external baselines can be discovered, instantiated, and
+so the six external baselines can be discovered, instantiated, and
 evaluated as a group WITHOUT silently changing the historical
 20-deployable-policy/20-selector-candidate counts documented in
 docs/research_status.md and relied upon by every existing config/sweep.
@@ -46,6 +46,7 @@ from .llumnix_faithful import LlumnixFaithfulPolicy
 from .sarathi_faithful import SarathiFaithfulPolicy
 from .tetriinfer_paper_reimplementation import TetriInferPaperReimplementationPolicy
 from .vllm_faithful import VLLMFaithfulPolicy
+from .vllm_chunked_prefill_faithful import VLLMChunkedPrefillFaithfulPolicy
 
 
 class FidelityClass(str, Enum):
@@ -105,6 +106,10 @@ def _vllm_faithful_factory(**kwargs) -> VLLMFaithfulPolicy:
     return VLLMFaithfulPolicy(**kwargs)
 
 
+def _vllm_chunked_prefill_faithful_factory(**kwargs) -> VLLMChunkedPrefillFaithfulPolicy:
+    return VLLMChunkedPrefillFaithfulPolicy(**kwargs)
+
+
 def _sarathi_faithful_factory(**kwargs) -> SarathiFaithfulPolicy:
     return SarathiFaithfulPolicy(**kwargs)
 
@@ -146,6 +151,43 @@ EXTERNAL_BASELINE_REGISTRY: dict = {
             "the same resource-sharing model as llumnix_faithful's N "
             "INDEPENDENT instances at the same GPU count -- see "
             "docs/external_baseline_integration.md §1."
+        ),
+    ),
+    "vllm_chunked_prefill_faithful": ExternalBaselineSpec(
+        name="vllm_chunked_prefill_faithful",
+        fidelity_class=FidelityClass.FAITHFUL,
+        topology_class=TopologyClass.MONOLITHIC,
+        pinned_source="vLLM commit c7f2cf2b7f67bce5842fedfdba508440fe257375 (tag v0.4.2)",
+        reference_doc="docs/vllm_chunked_prefill_faithful_scheduler_reference.md",
+        factory=_vllm_chunked_prefill_faithful_factory,
+        min_gpu_count=1,
+        required_roles=(None,),
+        requires_kv_block_model=True,
+        requires_disaggregation=False,
+        requires_cross_instance_migration=False,
+        preemption_mode=PreemptionMode.RECOMPUTE,
+        requires_chunked_prefill_scheduling=True,
+        requires_length_prediction=False,
+        selector_eligible=False,
+        historical=False,
+        notes=(
+            "Separately pinned from vllm_faithful (v0.1.0, no chunked "
+            "prefill) -- this baseline models vLLM's later "
+            "_schedule_chunked_prefill path (v0.4.2), which admits prompts "
+            "incrementally via a shared per-step SchedulingBudget instead "
+            "of vllm_faithful's all-or-nothing admission. Runtime "
+            "validation relationship: benchmark-pack-backed (see "
+            "docs/runtime_validation_benchmark_pack.md and "
+            "docs/vllm_chunked_prefill_faithful_root_cause_analysis.md) -- "
+            "the long-context fixture (xlong_context_burst16) is this "
+            "baseline's direct acceptance target; the two positive-target "
+            "scenarios (active_decode_plus_arriving_prefill, kv_pressure) "
+            "remain mismatched against real hardware for a root-caused, "
+            "shared-simulator-infrastructure reason unrelated to this "
+            "baseline's own scheduling fidelity -- see the root-cause doc. "
+            "Same shared-queue multi-GPU model as vllm_faithful/"
+            "sarathi_faithful (reuses their KVBlockSpaceManager/preemption "
+            "pattern)."
         ),
     ),
     "sarathi_faithful": ExternalBaselineSpec(

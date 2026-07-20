@@ -62,10 +62,10 @@ def test_no_external_baseline_marked_selector_eligible_yet():
         assert spec.historical is False
 
 
-def test_all_five_external_baselines_registered():
+def test_all_six_external_baselines_registered():
     assert set(EXTERNAL_BASELINE_NAMES) == {
-        "vllm_faithful", "sarathi_faithful", "distserve_faithful",
-        "tetriinfer_paper_reimplementation", "llumnix_faithful",
+        "vllm_faithful", "vllm_chunked_prefill_faithful", "sarathi_faithful",
+        "distserve_faithful", "tetriinfer_paper_reimplementation", "llumnix_faithful",
     }
 
 
