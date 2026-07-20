@@ -3,13 +3,27 @@
 This directory contains design documents, milestone reports, and safe-claim
 guidance for the LLM Serving Heuristic Evolution project.
 
-> **Where current work actually is:** the numbered-phase sequence (§11, §14, §15
-> below) paused at Phase 2C on 2026-06-27. Development has continued since then on
-> an unnumbered Selector v2 / external-faithful-baseline / GPU-runtime-validation
-> program — see **§16A** for that doc set. `README.md` and `research_status.md`
-> have not yet been rewritten to reflect it (tracked for a future documentation
-> consolidation pass); until then, treat §16A as more current than their
-> "Phase 2C — Paused" status language.
+## 0. START HERE
+
+For the canonical, current-state documentation set, go to
+**[current/README.md](current/README.md)**, which indexes:
+
+- [current/PROJECT_STATUS.md](current/PROJECT_STATUS.md) — authoritative current state
+- [current/ARCHITECTURE.md](current/ARCHITECTURE.md) — code architecture
+- [current/BASELINES.md](current/BASELINES.md) — exact policy/baseline inventory
+- [current/SELECTOR_V2.md](current/SELECTOR_V2.md) — full Selector v2 research narrative
+- [current/EXPERIMENTS_AND_RESULTS.md](current/EXPERIMENTS_AND_RESULTS.md) — committed vs. local-only artifacts
+- [current/REPRODUCIBILITY.md](current/REPRODUCIBILITY.md) — environment, tests, GPU workflows
+- [current/NEXT_STEPS.md](current/NEXT_STEPS.md) — exact next recommended action
+
+Everything below this point is the **full legacy index** (~75 detailed
+design/milestone/audit documents, current and historical alike) — useful
+once you know which specific topic you need to go deeper on, but not the
+place to start cold. The numbered-phase sequence indexed in §11/§14/§15
+below paused at Phase 2C on 2026-06-27; §16A indexes the unnumbered
+Selector v2 / external-baseline / GPU-runtime-validation track that
+continued after that pause and is now the project's actual active work —
+`current/PROJECT_STATUS.md` supersedes both as the status authority.
 
 ---
 
