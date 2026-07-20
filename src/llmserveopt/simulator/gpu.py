@@ -260,24 +260,73 @@ class GPUState:
     def _step_phase15(
         self, current_time: float, service_model: ServiceModel
     ) -> List[CompletedRequest]:
-        """Phase 1.5 step: separate prefill / decode phases with token budget."""
+        """Phase 1.5 step: separate prefill / decode phases with token budget.
+
+        Dispatches to one of two execution models (see
+        docs/decode_prefill_contention_execution_model.md for the full
+        design rationale):
+
+        * `enable_decode_prefill_contention=False` (default): the
+          historical decode-protected model. `decode_first` has no
+          observable effect -- decode always receives its budget first,
+          exactly reproducing this method's pre-fix behavior bit-for-bit.
+          Kept as the default because a large body of existing experiment
+          configs rely on this (accidentally-consistent) behavior.
+        * `enable_decode_prefill_contention=True` (opt-in): `decode_first`
+          becomes genuinely load-bearing -- True still uses the
+          decode-protected formula above (Sarathi-style stall-free
+          execution); False switches to a single shared per-step budget
+          consumed by decode and prefill together in FCFS-by-arrival-time
+          order (vLLM v0.4.2 `_schedule_running`-style contention, no
+          decode-priority phase).
+        """
+        prefilling = [r for r in self._active.values() if r.is_prefilling]
+        decoding = [r for r in self._active.values() if r.is_decoding]
+
+        if service_model.enable_decode_prefill_contention and not service_model.decode_first:
+            completed, to_remove, handoff_ids = self._advance_shared_contention(
+                current_time, service_model, prefilling, decoding
+            )
+        else:
+            completed, to_remove, handoff_ids = self._advance_decode_protected(
+                current_time, service_model, prefilling, decoding
+            )
+
+        for rid in handoff_ids:
+            self._pending_handoff.append(self._active.pop(rid))
+
+        for rid in to_remove:
+            del self._active[rid]
+
+        self.step_active_counts.append(self.num_active)
+        self.step_kv_used.append(self.current_kv_tokens)
+        return completed
+
+    def _advance_decode_protected(
+        self,
+        current_time: float,
+        service_model: ServiceModel,
+        prefilling: List[InternalRequest],
+        decoding: List[InternalRequest],
+    ) -> tuple:
+        """Decode-protected execution (Sarathi-style stall-free principle):
+        decode always receives its full budget first, unconditionally;
+        prefill gets whatever is left. This is the historical Phase-1.5
+        formula, UNCHANGED -- it is both the default execution model
+        (`enable_decode_prefill_contention=False`, any `decode_first`
+        value) and the `decode_first=True` behavior once contention mode
+        is enabled. Iteration order over `prefilling` is deliberately left
+        as-is (insertion/admission order into `self._active`), not
+        re-sorted, to keep this path bit-identical to the pre-fix code for
+        every existing caller.
+        """
         completed: List[CompletedRequest] = []
         to_remove: List[int] = []
+        handoff_ids: List[int] = []
 
-        prefilling = [r for r in self._active.values() if r.is_prefilling]
-        decoding   = [r for r in self._active.values() if r.is_decoding]
+        budget = service_model.step_token_budget - len(decoding)
+        prefill_budget = max(0, budget)
 
-        # Budget accounting
-        budget = service_model.step_token_budget
-        if service_model.decode_first:
-            # Guarantee full decode budget before any prefill
-            budget -= len(decoding)   # each decode request uses 1 token
-            prefill_budget = max(0, budget)
-        else:
-            budget -= len(decoding)
-            prefill_budget = max(0, budget)
-
-        # --- Advance decode ---
         for req in decoding:
             done = req.advance_decode(current_time)
             if done:
@@ -294,8 +343,6 @@ class GPUState:
                 )
                 to_remove.append(req.request_id)
 
-        # --- Advance prefill with remaining budget ---
-        handoff_ids: List[int] = []
         for req in prefilling:
             if prefill_budget <= 0:
                 break  # no budget left for prefill this step
@@ -323,15 +370,84 @@ class GPUState:
             # Otherwise: prefill just completed → first decode token will be
             # next step (first_token_time is set in advance_decode then).
 
-        for rid in handoff_ids:
-            self._pending_handoff.append(self._active.pop(rid))
+        return completed, to_remove, handoff_ids
 
-        for rid in to_remove:
-            del self._active[rid]
+    def _advance_shared_contention(
+        self,
+        current_time: float,
+        service_model: ServiceModel,
+        prefilling: List[InternalRequest],
+        decoding: List[InternalRequest],
+    ) -> tuple:
+        """vLLM-v0.4.2-chunked-prefill-style shared execution: decode and
+        prefill requests compete for ONE combined per-step token budget,
+        consumed in a single FCFS-by-arrival-time pass -- no decode
+        priority phase (see docs/decode_prefill_contention_execution_model.md
+        and docs/vllm_chunked_prefill_faithful_scheduler_reference.md's
+        `_schedule_running` algorithm section). A request later in that
+        order can receive zero progress this step if the budget runs out
+        on an earlier one -- matching the pinned reference's own
+        `_get_num_new_tokens(...) == 0: break` behavior (stop scheduling
+        the rest of the running queue entirely this step, not
+        skip-and-continue).
 
-        self.step_active_counts.append(self.num_active)
-        self.step_kv_used.append(self.current_kv_tokens)
-        return completed
+        Only reached when `enable_decode_prefill_contention=True` and
+        `decode_first=False`.
+        """
+        completed: List[CompletedRequest] = []
+        to_remove: List[int] = []
+        handoff_ids: List[int] = []
+
+        combined = sorted(
+            list(decoding) + list(prefilling),
+            key=lambda r: (r.request.arrival_time, r.request_id),
+        )
+        budget = service_model.step_token_budget
+
+        for req in combined:
+            if budget <= 0:
+                break
+            if req.is_decoding:
+                num_new_tokens = 1
+            else:
+                num_new_tokens = min(
+                    service_model.max_prefill_chunk_tokens,
+                    req.prefill_remaining,
+                    budget,
+                )
+            if num_new_tokens <= 0:
+                break  # budget exhausted: stop scheduling the rest this step
+
+            if req.is_decoding:
+                budget -= num_new_tokens
+                done = req.advance_decode(current_time)
+                if done:
+                    req.phase = RequestPhase.COMPLETED
+                    req.completion_time = current_time
+                    completed.append(
+                        CompletedRequest(
+                            request=req.request,
+                            admission_time=req.admission_time,
+                            completion_time=current_time,
+                            first_token_time=req.first_token_time,
+                            gpu_id=self.gpu_id,
+                        )
+                    )
+                    to_remove.append(req.request_id)
+            else:
+                budget -= num_new_tokens
+                prefill_just_finished = req.advance_prefill(num_new_tokens)
+                if (
+                    prefill_just_finished
+                    and service_model.enable_disaggregation
+                    and self.config.role == "prefill"
+                ):
+                    req.phase = RequestPhase.MIGRATING
+                    req.transfer_ready_time = current_time + service_model.migration_transfer_delay
+                    req.gpu_id = -1
+                    handoff_ids.append(req.request_id)
+
+        return completed, to_remove, handoff_ids
 
     # ------------------------------------------------------------------ #
     # Observable state

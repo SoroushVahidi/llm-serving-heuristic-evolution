@@ -53,6 +53,11 @@ class CalibratedServiceModel:
     max_prefill_chunk_tokens: int = 512   # tokens processed per prefill chunk per step
     step_token_budget: int = 8192         # total token budget per GPU per step
     decode_first: bool = False            # guarantee decode budget before prefill
+    # Opt-in decode/prefill execution-contention model (see
+    # docs/decode_prefill_contention_execution_model.md and
+    # ServiceModel's own field of the same name). Default False preserves
+    # historical behavior exactly.
+    enable_decode_prefill_contention: bool = False
     # Disaggregated prefill/decode fields (opt-in; see
     # docs/distserve_faithful_scheduler_reference.md). Defaults match
     # ServiceModel's own defaults (disaggregation off).

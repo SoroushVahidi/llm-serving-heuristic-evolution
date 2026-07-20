@@ -17,6 +17,18 @@ Phase 1.5 (enable_prefill_modeling=True)
   If decode_first=True the decode budget is guaranteed first; prefill only
   gets the remainder (Sarathi-style stall-free principle).
 
+  Historical note (default `enable_decode_prefill_contention=False`):
+  `decode_first` has NO observable effect on execution in this mode --
+  `GPUState._step_phase15` always reserves the full decode budget first
+  regardless of the flag's value, for every Phase-1.5 policy. This was
+  identified as a dead branch (see
+  docs/decode_prefill_contention_execution_model.md); it is preserved
+  exactly as-is by default because a large body of existing experiment
+  configs (`configs/*.yaml`, selector-dataset generation) set
+  `decode_first=False` while relying on the simulator's actual (buggy but
+  consistent) decode-protected behavior. See `enable_decode_prefill_
+  contention` below for the corrected, opt-in behavior.
+
 Disaggregated prefill/decode (enable_disaggregation=True)
 -----------------------------------------------------------
 Opt-in; see docs/distserve_faithful_scheduler_reference.md. When a request
@@ -64,6 +76,26 @@ class ServiceModel:
     step_token_budget: int = 4096             # total token budget per GPU per step
     decode_first: bool = False                 # guarantee decode budget before prefill
     allow_chunked_prefill: bool = True         # allow multi-step chunked prefill
+
+    # --- Decode/prefill execution-contention model (opt-in; see
+    # docs/decode_prefill_contention_execution_model.md). Default False
+    # preserves the historical (dead-branch) behavior exactly:
+    # `decode_first` has no observable effect, decode is always given its
+    # budget first regardless of the flag. When True, `decode_first`
+    # becomes genuinely load-bearing:
+    #   decode_first=True  -> Sarathi-style decode-protected execution
+    #                         (identical formula to the historical
+    #                         default; decode is unconditionally
+    #                         guaranteed its budget before any prefill).
+    #   decode_first=False -> vLLM-chunked-prefill-style shared execution:
+    #                         decode and prefill requests compete for ONE
+    #                         combined per-step budget, consumed in a
+    #                         single FCFS-by-arrival-time pass (matching
+    #                         vLLM v0.4.2's `_schedule_running` with no
+    #                         decode-priority phase) -- a request later in
+    #                         that order can receive zero progress this
+    #                         step if the budget runs out first.
+    enable_decode_prefill_contention: bool = False
 
     # --- Disaggregated prefill/decode (opt-in; see docs/distserve_faithful_scheduler_reference.md) ---
     enable_disaggregation: bool = False        # hand off prefill-done requests instead of continuing in place
