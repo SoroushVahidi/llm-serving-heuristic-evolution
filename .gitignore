@@ -48,6 +48,14 @@ logs/
 #   experiments/real_llm/vllm_baseline_comparison_pilot_20260703T165438Z/server.log
 experiments/**/server.log
 
+# Selector v2 calibrated-pilot large raw CSVs -- regeneratable from
+# scripts/build_selector_dataset_v2_calibrated_targeted_pilot.py, local-only
+# by design (see docs/current/PROJECT_STATUS.md and
+# docs/current/WULVER_HANDOFF.md). The pilot's small provenance/summary/
+# manifest/audit files alongside them are committed normally.
+experiments/selector_v2_calibrated_pilot_*/full_policy_vectors.csv
+experiments/selector_v2_calibrated_pilot_*/window_features.csv
+
 # Large binary / model artifacts
 *.bin
 *.safetensors
