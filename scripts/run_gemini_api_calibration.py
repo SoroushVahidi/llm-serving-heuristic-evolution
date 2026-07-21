@@ -666,7 +666,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"  No API calls were made.")
         print(f"")
         print(f"  To run live pilot:")
-        print(f"  {live_command.replace(chr(10), ' ').replace('\\  ', ' ')}")
+        live_command_one_line = live_command.replace(chr(10), " ").replace("\\  ", " ")
+        print(f"  {live_command_one_line}")
 
         if not args.allow_live_api:
             return 0
