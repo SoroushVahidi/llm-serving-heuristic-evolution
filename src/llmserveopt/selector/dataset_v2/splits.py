@@ -102,3 +102,125 @@ def verify_ood_holdout(rows: List[Dict], group_key_field: str, ood_group_keys: S
             violations.append((gk, row[split_field]))
     if violations:
         raise ValueError(f"OOD-held-out group(s) leaked into a non-OOD split: {sorted(set(violations))}")
+
+
+def leakage_safe_split_group_key(row: Dict) -> str:
+    """Return the split group for a selector-window row.
+
+    Real-trace windows can be transformed multiple ways while preserving the
+    same underlying request row range. Splitting by transform-specific group
+    keys lets those sibling windows cross TRAIN/VALIDATION/ID_TEST. Grouping
+    by the raw-trace ancestor and temporal pool keeps transformed siblings
+    atomic while still forcing newer/OOD pools independently.
+
+    The real-trace key format (``f"{ancestor}__pool_{pool}"``) intentionally
+    matches the format originally introduced on
+    origin/wulver-final-integration-20260721 (commit c8aee129), not an
+    equivalent-but-differently-formatted alternative. Split assignment
+    (`assign_group_aware_split`) is a SHA256 hash of this exact string,
+    so changing the format changes which split any given group lands in --
+    it would silently reshuffle TRAIN/VALIDATION/ID_TEST/OOD_TEST for any
+    pilot already regenerated on that lineage since c8aee129.
+
+    For real-trace rows, `request_plan_ancestor_id` and `time_slice_pool`
+    are required and never silently substituted with the leaky
+    transform-specific `group_key` -- a missing value here is a data-quality
+    bug in the upstream window/checkpoint construction, not a case to paper
+    over by falling back to the exact grouping this function exists to fix.
+    """
+    dataset_family = str(row.get("dataset_family", ""))
+    if dataset_family == "real_trace":
+        ancestor = row.get("request_plan_ancestor_id")
+        pool = row.get("time_slice_pool")
+        if not ancestor or not pool:
+            raise KeyError(
+                "real_trace row is missing request_plan_ancestor_id and/or "
+                "time_slice_pool -- cannot derive a leakage-safe split group "
+                f"key. Refusing to fall back to the transform-specific "
+                f"group_key ({row.get('group_key')!r}), since that is the "
+                "exact leaky grouping this function exists to avoid. Row: "
+                f"{row}"
+            )
+        return f"{ancestor}__pool_{pool}"
+    if row.get("group_key"):
+        return str(row["group_key"])
+    if row.get("scenario_family_id"):
+        return str(row["scenario_family_id"])
+    raise KeyError("Cannot derive a leakage-safe split group key from row")
+
+
+def attach_leakage_safe_split_group_keys(
+    rows: List[Dict],
+    *,
+    output_field: str = "split_group_key",
+) -> List[str]:
+    """Attach and return leakage-safe split keys for every row."""
+    keys: List[str] = []
+    for row in rows:
+        key = leakage_safe_split_group_key(row)
+        row[output_field] = key
+        keys.append(key)
+    return keys
+
+
+def verify_no_cross_split_row_range_overlap(
+    rows: List[Dict],
+    *,
+    dataset_family_field: str = "dataset_family",
+    ancestor_field: str = "request_plan_ancestor_id",
+    pool_field: str = "time_slice_pool",
+    row_start_field: str = "time_slice_row_start",
+    row_end_field: str = "time_slice_row_end",
+    split_field: str = "split",
+) -> None:
+    """Raise if overlapping raw trace row ranges appear in different splits.
+
+    This catches the cross-transform real-trace leakage mode that ordinary
+    group atomicity misses when transform-specific groups reuse the same raw
+    request slice.
+    """
+    real_rows = [
+        row for row in rows
+        if str(row.get(dataset_family_field, "")) == "real_trace"
+        and _has_int(row.get(row_start_field))
+        and _has_int(row.get(row_end_field))
+    ]
+    by_source_pool: Dict[tuple[str, str], List[Dict]] = {}
+    for row in real_rows:
+        ancestor = str(row.get(ancestor_field, ""))
+        pool = str(row.get(pool_field, ""))
+        by_source_pool.setdefault((ancestor, pool), []).append(row)
+
+    violations = []
+    for (ancestor, pool), group in by_source_pool.items():
+        for i, a in enumerate(group):
+            a_start, a_end = int(a[row_start_field]), int(a[row_end_field])
+            for b in group[i + 1:]:
+                b_start, b_end = int(b[row_start_field]), int(b[row_end_field])
+                overlap = max(0, min(a_end, b_end) - max(a_start, b_start))
+                if overlap <= 0:
+                    continue
+                if a.get(split_field) != b.get(split_field):
+                    violations.append({
+                        "ancestor": ancestor,
+                        "pool": pool,
+                        "a_window": a.get("window_idx", a.get("window_id")),
+                        "a_split": a.get(split_field),
+                        "b_window": b.get("window_idx", b.get("window_id")),
+                        "b_split": b.get(split_field),
+                        "overlap_rows": overlap,
+                    })
+    if violations:
+        sample = violations[:5]
+        raise ValueError(
+            "Cross-split row-range overlap detected for real traces: "
+            f"{sample} (total_violations={len(violations)})"
+        )
+
+
+def _has_int(value: object) -> bool:
+    try:
+        int(value)
+        return True
+    except (TypeError, ValueError):
+        return False

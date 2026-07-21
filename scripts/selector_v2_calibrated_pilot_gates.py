@@ -16,7 +16,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from llmserveopt.selector.dataset_v2.splits import (  # noqa: E402
-    verify_group_atomicity, verify_ood_holdout,
+    verify_group_atomicity,
+    verify_no_cross_split_row_range_overlap,
+    verify_ood_holdout,
 )
 
 DISCRIMINATIVE_CLASSES = ("STRONGLY_DISCRIMINATIVE", "MODERATELY_DISCRIMINATIVE")
@@ -132,6 +134,7 @@ def evaluate_quality_gates(
         verify_group_atomicity(retained_rows, group_key_field=split_group_field, split_field="split")
         ood_groups = {r[split_group_field] for r in retained_rows if r["time_slice_pool"] == "ood_reserved"}
         verify_ood_holdout(retained_rows, group_key_field=split_group_field, ood_group_keys=ood_groups, split_field="split")
+        verify_no_cross_split_row_range_overlap(retained_rows)
     except ValueError as e:
         leakage_ok = False
         leakage_detail = str(e)

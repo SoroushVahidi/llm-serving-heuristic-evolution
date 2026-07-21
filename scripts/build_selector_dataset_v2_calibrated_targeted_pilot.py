@@ -43,7 +43,13 @@ from llmserveopt.selector.dataset_v2.discriminativeness import (  # noqa: E402
 )
 from llmserveopt.selector.dataset_v2.features import extract_selector_v2_features  # noqa: E402
 from llmserveopt.selector.dataset_v2.splits import (  # noqa: E402
-    assign_group_aware_split, split_for_group, verify_group_atomicity, verify_ood_holdout,
+    assign_group_aware_split,
+    attach_leakage_safe_split_group_keys,
+    leakage_safe_split_group_key,
+    split_for_group,
+    verify_group_atomicity,
+    verify_no_cross_split_row_range_overlap,
+    verify_ood_holdout,
 )
 from selector_v2_calibrated_pilot_gates import evaluate_quality_gates  # noqa: E402
 
@@ -119,10 +125,8 @@ def _checkpoint_row(idx: int, window: "p.CandidateWindow", calibrated_n: int,
                      multiplier: float, split: str, disc) -> Dict:
     row_range = window.time_slice_row_range or (None, None)
     arrival_range = window.time_slice_arrival_range or (None, None)
-    return {
-        "window_idx": idx, "group_key": window.group_key,
-        "split_group_key": _split_group_key(window),
-        "dataset_family": window.dataset_family,
+    row = {
+        "window_idx": idx, "group_key": window.group_key, "dataset_family": window.dataset_family,
         "source_trace": window.source_trace, "shape": window.shape,
         "time_slice_pool": window.time_slice_pool,
         "time_slice_row_start": row_range[0], "time_slice_row_end": row_range[1],
@@ -133,18 +137,23 @@ def _checkpoint_row(idx: int, window: "p.CandidateWindow", calibrated_n: int,
         "primary_objective_best_policy": disc.best_policy if disc else None,
         "primary_objective_max_min_spread": round(disc.max_min_spread, 6) if disc else None,
     }
+    attach_leakage_safe_split_group_keys([row])
+    return row
 
 
 def _split_group_key(window: "p.CandidateWindow") -> str:
-    """Leakage-safe split atom for retained windows.
+    """Leakage-safe split atom for a `CandidateWindow` (builder-time convenience).
 
-    Real-trace transforms can reuse the same underlying raw rows. Splitting by
-    transform-specific ``group_key`` would let overlapping source rows cross
-    TRAIN/VALIDATION/ID_TEST. Group the whole immutable source pool instead.
+    Thin wrapper -- the actual grouping semantics live in exactly one place,
+    `splits.py::leakage_safe_split_group_key`. Kept for tests/callers that
+    have a `CandidateWindow` object rather than a checkpoint-row dict.
     """
-    if window.dataset_family == "real_trace":
-        return f"{window.request_plan_ancestor_id}__pool_{window.time_slice_pool}"
-    return window.group_key
+    return leakage_safe_split_group_key({
+        "dataset_family": window.dataset_family,
+        "request_plan_ancestor_id": window.request_plan_ancestor_id,
+        "time_slice_pool": window.time_slice_pool,
+        "group_key": window.group_key,
+    })
 
 
 def _next_synthetic(rng: random.Random, idx: int) -> "p.CandidateWindow":
@@ -189,7 +198,6 @@ def main() -> int:
     retained_rows: List[Dict] = []
     retained_features: List[Dict] = []          # window_idx -> feat_* dict
     retained_outcomes: List[Dict] = []           # window_idx -> {policy: PolicyOutcomeVector}
-    retained_group_keys: List[str] = []
     retained_split_group_keys: List[str] = []
     per_window_anwg: List[Dict[str, float]] = []
 
@@ -270,7 +278,6 @@ def main() -> int:
             retained_rows.append(_checkpoint_row(idx, window, len(calibrated), args.multiplier, "PENDING", disc))
             retained_features.append(feats)
             retained_outcomes.append({o.policy_name: o for o in outcomes})
-            retained_group_keys.append(window.group_key)
             retained_split_group_keys.append(retained_rows[-1]["split_group_key"])
             per_window_anwg.append({
                 o.policy_name: o.arrival_normalized_weighted_goodput for o in outcomes
@@ -295,6 +302,8 @@ def main() -> int:
     # ------------------------------------------------------------------
     # Split assignment (group-aware, OOD-forced for the reserved pool)
     # ------------------------------------------------------------------
+    attach_leakage_safe_split_group_keys(retained_rows)
+    retained_split_group_keys = [row["split_group_key"] for row in retained_rows]
     ood_forced_groups = {
         row["split_group_key"] for row in retained_rows if row["time_slice_pool"] == p.OOD_RESERVED_POOL
     }
@@ -308,6 +317,7 @@ def main() -> int:
 
     verify_group_atomicity(retained_rows, group_key_field="split_group_key", split_field="split")
     verify_ood_holdout(retained_rows, group_key_field="split_group_key", ood_group_keys=ood_forced_groups, split_field="split")
+    verify_no_cross_split_row_range_overlap(retained_rows)
 
     split_counts = Counter(row["split"] for row in retained_rows)
     (out_dir / "split_manifest.json").write_text(json.dumps({

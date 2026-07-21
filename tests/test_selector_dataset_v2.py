@@ -46,8 +46,11 @@ from llmserveopt.selector.dataset_v2.schema import (
 )
 from llmserveopt.selector.dataset_v2.splits import (
     OOD_TEST,
+    attach_leakage_safe_split_group_keys,
     assign_group_aware_split,
+    leakage_safe_split_group_key,
     verify_group_atomicity,
+    verify_no_cross_split_row_range_overlap,
     verify_ood_holdout,
 )
 from llmserveopt.selector.dataset_v2.workload_sources import (
@@ -262,6 +265,72 @@ def test_real_trace_ood_split_group_is_distinct_and_forced():
 
     assert groups[0] != groups[1]
     assert split_for_group(groups[1], assignment) == OOD_TEST
+
+
+def test_real_trace_split_key_groups_transforms_by_raw_ancestor_and_pool():
+    row = {
+        "dataset_family": "real_trace",
+        "group_key": "real_trace__azure_2023_conv__compressed_tight__historical",
+        "request_plan_ancestor_id": "real_trace__azure_2023_conv",
+        "time_slice_pool": "historical",
+    }
+    # Format matches origin/wulver-final-integration-20260721 (c8aee129) exactly:
+    # split assignment is a SHA256 hash of this string, so the format itself
+    # is part of reproducibility, not an implementation detail.
+    assert leakage_safe_split_group_key(row) == "real_trace__azure_2023_conv__pool_historical"
+
+    synthetic = {
+        "dataset_family": "controlled_stress",
+        "group_key": "synthetic__decode_heavy__7",
+    }
+    assert leakage_safe_split_group_key(synthetic) == "synthetic__decode_heavy__7"
+
+
+def test_real_trace_missing_provenance_raises_instead_of_falling_back_to_leaky_group_key():
+    row = {
+        "dataset_family": "real_trace",
+        "group_key": "real_trace__azure_2023_conv__compressed_tight__historical",
+        "request_plan_ancestor_id": None,
+        "time_slice_pool": "historical",
+    }
+    with pytest.raises(KeyError, match="missing request_plan_ancestor_id"):
+        leakage_safe_split_group_key(row)
+
+    row["request_plan_ancestor_id"] = "real_trace__azure_2023_conv"
+    row["time_slice_pool"] = None
+    with pytest.raises(KeyError, match="missing request_plan_ancestor_id"):
+        leakage_safe_split_group_key(row)
+
+
+def test_cross_split_row_range_overlap_is_rejected_for_real_traces():
+    rows = [
+        {
+            "window_idx": 0,
+            "dataset_family": "real_trace",
+            "request_plan_ancestor_id": "real_trace__burstgpt_scaled_moderate",
+            "time_slice_pool": "historical",
+            "time_slice_row_start": 100,
+            "time_slice_row_end": 244,
+            "split": "TRAIN",
+        },
+        {
+            "window_idx": 1,
+            "dataset_family": "real_trace",
+            "request_plan_ancestor_id": "real_trace__burstgpt_scaled_moderate",
+            "time_slice_pool": "historical",
+            "time_slice_row_start": 100,
+            "time_slice_row_end": 244,
+            "split": "VALIDATION",
+        },
+    ]
+    with pytest.raises(ValueError, match="Cross-split row-range overlap"):
+        verify_no_cross_split_row_range_overlap(rows)
+
+    attach_leakage_safe_split_group_keys(rows)
+    for row in rows:
+        row["split"] = "TRAIN"
+    verify_group_atomicity(rows, "split_group_key")
+    verify_no_cross_split_row_range_overlap(rows)
 
 
 def test_source_provenance_manifest_distinguishes_real_and_synthetic_fields():
