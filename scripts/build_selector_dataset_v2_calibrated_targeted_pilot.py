@@ -35,6 +35,7 @@ from typing import Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 from llmserveopt.selector.dataset_v2 import calibrated_targeted_pilot as p  # noqa: E402
 from llmserveopt.selector.dataset_v2.discriminativeness import (  # noqa: E402
