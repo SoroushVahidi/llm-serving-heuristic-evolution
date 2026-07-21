@@ -1,54 +1,44 @@
 # Start Here
 
-This is the canonical current-state documentation set. If you are a new
-agent or contributor picking up this repository, read these seven documents
-in this order:
+This directory is the current source-of-truth navigation layer for the Wulver integration branch. Read these documents in order when picking up the project.
 
-1. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** -- the single authoritative
-   "where things stand today" document: completed milestones, current
-   Selector v2 status, known issues, active protected artifacts/processes,
-   scientific blockers, next action.
-2. **[ARCHITECTURE.md](ARCHITECTURE.md)** -- code architecture: module map,
-   key abstractions, execution flow.
-3. **[BASELINES.md](BASELINES.md)** -- the exact policy/baseline inventory:
-   20 historical policies, the 8-policy Selector v2 action space (Option B),
-   6 faithful external baselines and why they're evaluation-only.
-4. **[SELECTOR_V2.md](SELECTOR_V2.md)** -- the full Selector v2 research
-   narrative in chronological order, from the objective bug fix through the
-   most recent pilot's mixed held-out result.
-5. **[EXPERIMENTS_AND_RESULTS.md](EXPERIMENTS_AND_RESULTS.md)** -- what's
-   actually committed to git vs. local-only, and the status of every major
-   result family.
-6. **[REPRODUCIBILITY.md](REPRODUCIBILITY.md)** -- environment setup, test
-   running, local-GPU vs. Wulver-A100 workflows.
-7. **[NEXT_STEPS.md](NEXT_STEPS.md)** -- the exact next recommended research
-   step, with explicit stop conditions.
+## Core Current Docs
 
-## Additional reference (not part of the core seven)
+1. **[REPO_ARCHITECTURE_MAP.md](REPO_ARCHITECTURE_MAP.md)** - current code structure and where the new policy/composition/synthesis modules live.
+2. **[SELECTOR_STATUS.md](SELECTOR_STATUS.md)** - concise Selector v2/v3 status and stop/go interpretation.
+3. **[POLICY_LIBRARY.md](POLICY_LIBRARY.md)** - 27-policy library inventory, v2 additions, and unsupported policy families.
+4. **[POLICY_FRONTIER_STATUS.md](POLICY_FRONTIER_STATUS.md)** - status of active frontier and expanded-library workflows.
+5. **[COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md](COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md)** - implemented composition and structural synthesis architecture.
+6. **[EXPERIMENT_INDEX.md](EXPERIMENT_INDEX.md)** - durable index of major experiment roots, jobs, reports, and conclusions.
+7. **[RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)** - completed/running/pending work and decision gates.
+8. **[ROADMAP_GAP_ANALYSIS.md](ROADMAP_GAP_ANALYSIS.md)** - current bottleneck diagnosis.
+9. **[ACTIVE_EXPERIMENT_PROTECTED_PATHS.md](ACTIVE_EXPERIMENT_PROTECTED_PATHS.md)** - active SLURM roots that must not be modified.
 
-- **[AGENT_HANDOFF.md](AGENT_HANDOFF.md)** -- operational handoff for a new
-  agent: current source-of-truth constants, protected artifact/process
-  status, the exact next task, workflow rules, and a do-not-do list. Read
-  this if you want the condensed operational summary instead of the full
-  seven-document set.
-- **[LOCAL_ARTIFACT_CLEANUP.md](LOCAL_ARTIFACT_CLEANUP.md)** -- classification
-  of local-only, gitignored `results/` directories not cited by any doc
-  (research-still-useful vs. checkpoint history vs. safe-to-delete audit
-  logs). Consult only when you need to decide what to do with a specific
-  local `results/` directory; not needed for general onboarding.
+## Operational Audit Docs
 
-## What this set is (and isn't)
+- **[WULVER_UNPUSHED_WORK_AUDIT.md](WULVER_UNPUSHED_WORK_AUDIT.md)** - Query 1 audit of local-only work.
+- **[WULVER_BRANCH_LINEAGE_AUDIT.md](WULVER_BRANCH_LINEAGE_AUDIT.md)** - Query 1 branch/source-of-truth map.
+- **[AGENT_HANDOFF.md](AGENT_HANDOFF.md)** - older operational handoff retained for continuity.
+- **[LOCAL_ARTIFACT_CLEANUP.md](LOCAL_ARTIFACT_CLEANUP.md)** - older local artifact classification.
 
-These seven documents synthesize and link to ~75 detailed design/audit
-documents elsewhere in `docs/` -- they do not replace them. When a detailed
-doc and one of these disagree on a specific number or claim, treat the
-detailed doc as authoritative for that specific claim and consider this set
-out of date (and worth fixing).
+## Detailed Research Docs
 
-`docs/README.md` is the full legacy documentation index (historical +
-current, ~75 documents). This `docs/current/` set is the fast path; the
-legacy index is the exhaustive one.
+- **[POLICY_COMPOSITION_READINESS.md](POLICY_COMPOSITION_READINESS.md)**
+- **[COMPOSITION_EXPERIMENT_DESIGN.md](COMPOSITION_EXPERIMENT_DESIGN.md)**
+- **[COMPOSITION_IMPLEMENTATION_STATUS.md](COMPOSITION_IMPLEMENTATION_STATUS.md)**
+- **[STRUCTURAL_SYNTHESIS_READINESS.md](STRUCTURAL_SYNTHESIS_READINESS.md)**
+- **[structural_synthesis_experiment_design.md](structural_synthesis_experiment_design.md)**
 
-`docs/research_status.md` and `docs/roadmap.md` are retained for historical
-compatibility but are **not** the current-status authority --
-[PROJECT_STATUS.md](PROJECT_STATUS.md) is.
+## Machine-Readable Artifacts
+
+- [policy_component_matrix.json](policy_component_matrix.json)
+- [composable_primitives.json](composable_primitives.json)
+- [composition_operators.json](composition_operators.json)
+- [policy_complementarity.json](policy_complementarity.json)
+- [composition_experiment_schema.json](composition_experiment_schema.json)
+- [composition_hypotheses.json](composition_hypotheses.json)
+- [scheduler_genome_v1.schema.json](scheduler_genome_v1.schema.json)
+
+## Historical Docs
+
+`docs/README.md` remains the exhaustive historical documentation index. If older current docs such as `PROJECT_STATUS.md`, `ARCHITECTURE.md`, `BASELINES.md`, `SELECTOR_V2.md`, `EXPERIMENTS_AND_RESULTS.md`, `REPRODUCIBILITY.md`, or `NEXT_STEPS.md` disagree with the files listed above, treat the newer Query 2 current docs and the cited experiment final reports as authoritative.
