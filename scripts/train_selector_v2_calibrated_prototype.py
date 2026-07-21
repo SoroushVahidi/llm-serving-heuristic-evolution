@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
 """Selector v2 prototype training/evaluation -- calibrated targeted pilot.
 
+HISTORICAL ENTRY POINT. Superseded by
+scripts/evaluate_selector_v2_clean_pilot.py, which covers everything this
+script does (RF regressor + classifier, gated on quality_gates.json) plus:
+an independent leakage_audit.json gate (this script only checks
+quality_gates.json, whose own no_leakage check is known incomplete -- see
+docs/current/PROJECT_STATUS.md), Extra Trees and a decision-tree baseline,
+bootstrap confidence intervals, and a meaningful-margin subset breakdown.
+Retained only for reproducibility of any prior result computed with this
+exact script; use scripts/evaluate_selector_v2_clean_pilot.py for all new
+Selector v2 calibrated-pilot evaluation.
+
 Runs ONLY if the pilot's quality_gates.json says `all_gates_passed: true`
 (per task instructions: "If any major gate fails: do not train. Write the
 exact failure reason."). Fixed, small hyperparameters throughout -- no
