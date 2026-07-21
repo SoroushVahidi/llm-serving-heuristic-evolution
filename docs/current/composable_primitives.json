@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.0",
+  "primitive_count": 25,
+  "primitives": [
+    {
+      "name": "arrival_order",
+      "input_state_variables": ["arrival_time", "request_id", "waiting_queue order"],
+      "output_type": "rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["fifo", "first_fit", "best_fit", "sarathi_style", "splitfuse_style", "greedy_token_fill"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Useful tiebreak and fairness baseline."
+    },
+    {
+      "name": "shortest_remaining_work",
+      "input_state_variables": ["prompt_tokens", "predicted_output_tokens"],
+      "output_type": "priority_score_or_rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["weighted_shortest_processing", "estimated_service_time_first", "sola_style_state_aware", "aging_priority", "flow_control_stability"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Use predicted, not actual, output length."
+    },
+    {
+      "name": "shortest_decode_work",
+      "input_state_variables": ["predicted_output_tokens"],
+      "output_type": "rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["shortest_output_first", "vllm_style_token_budget", "multi_bin_batching"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "shortest_prefill_work",
+      "input_state_variables": ["prompt_tokens"],
+      "output_type": "rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["shortest_prompt_first", "estimated_service_time_first", "adaptive_chunked_prefill"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "earliest_deadline",
+      "input_state_variables": ["slo_deadline"],
+      "output_type": "rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["edf", "least_laxity_first", "admission_control"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "minimum_laxity",
+      "input_state_variables": ["now", "slo_deadline", "prompt_tokens", "predicted_output_tokens"],
+      "output_type": "rank_key_or_admission_signal",
+      "strictly_causal": true,
+      "currently_used_by": ["least_laxity_first", "admission_control", "flow_control_stability", "kv_constrained_online"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "urgency_score",
+      "input_state_variables": ["now", "arrival_time", "slo_deadline", "priority"],
+      "output_type": "bounded_priority_score",
+      "strictly_causal": true,
+      "currently_used_by": ["slo_slack_score", "scorpio_style_slo_guard", "sola_style_state_aware"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "priority_weight",
+      "input_state_variables": ["priority"],
+      "output_type": "score_multiplier_or_bonus",
+      "strictly_causal": true,
+      "currently_used_by": ["orca_style", "weighted_shortest_processing", "slo_slack_score", "sola_style_state_aware", "aging_priority", "weighted_fair_share"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "age_bonus",
+      "input_state_variables": ["now", "arrival_time"],
+      "output_type": "priority_bonus",
+      "strictly_causal": true,
+      "currently_used_by": ["slo_slack_score", "scorpio_style_slo_guard", "aging_priority"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Primary anti-starvation primitive."
+    },
+    {
+      "name": "slo_violation_risk",
+      "input_state_variables": ["now", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "active_sequences"],
+      "output_type": "admission_signal_or_score",
+      "strictly_causal": true,
+      "currently_used_by": ["admission_control", "scorpio_style_slo_guard", "flow_control_stability", "kv_constrained_online"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "admission_threshold",
+      "input_state_variables": ["laxity", "ttft_slack", "system_pressure", "kv_pressure"],
+      "output_type": "binary_admission_decision",
+      "strictly_causal": true,
+      "currently_used_by": ["admission_control", "scorpio_style_slo_guard", "flow_control_stability", "kv_constrained_online", "adaptive_chunked_prefill"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Should usually be composed conjunctively with resource feasibility."
+    },
+    {
+      "name": "load_shedding",
+      "input_state_variables": ["waiting_queue length", "active_sequences", "system_pressure", "arrival_rate_slope"],
+      "output_type": "admission_budget_or_skip_signal",
+      "strictly_causal": true,
+      "currently_used_by": ["scorpio_style_slo_guard", "flow_control_stability"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "queue_growth_control",
+      "input_state_variables": ["recent waiting_queue length", "stateful previous time", "stateful previous queue length"],
+      "output_type": "state_pressure_signal",
+      "strictly_causal": true,
+      "currently_used_by": ["flow_control_stability"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Requires deterministic policy-local state."
+    },
+    {
+      "name": "decode_deadline_guard",
+      "input_state_variables": ["predicted_output_tokens", "slo_deadline", "now", "kv_pressure"],
+      "output_type": "penalty_or_filter",
+      "strictly_causal": true,
+      "currently_used_by": ["scorpio_style_slo_guard", "slai_style_phase_aware"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "prefill_budget",
+      "input_state_variables": ["prompt_tokens", "active_sequences", "prefilling_count", "per_step_budget"],
+      "output_type": "admission_budget",
+      "strictly_causal": true,
+      "currently_used_by": ["sarathi_style", "splitfuse_style", "adaptive_chunked_prefill"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Current simulator supports admission-budget approximation, not literal chunk sizes."
+    },
+    {
+      "name": "phase_balance",
+      "input_state_variables": ["prefilling_count", "decoding_count", "prompt_tokens", "predicted_output_tokens"],
+      "output_type": "priority_penalty",
+      "strictly_causal": true,
+      "currently_used_by": ["splitfuse_style", "slai_style_phase_aware"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "kv_pressure_penalty",
+      "input_state_variables": ["current_kv_tokens", "kv_capacity", "prompt_tokens", "predicted_output_tokens"],
+      "output_type": "penalty_or_admission_signal",
+      "strictly_causal": true,
+      "currently_used_by": ["best_fit", "greedy_token_fill", "vllm_style_token_budget", "scorpio_style_slo_guard", "kv_constrained_online", "sola_style_state_aware"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "least_loaded_placement",
+      "input_state_variables": ["active_sequences", "current_kv_tokens", "gpu feasibility"],
+      "output_type": "gpu_choice",
+      "strictly_causal": true,
+      "currently_used_by": ["least_loaded", "multi_bin_batching"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "kv_best_fit_placement",
+      "input_state_variables": ["current_kv_tokens", "kv_capacity", "request kv demand"],
+      "output_type": "gpu_choice",
+      "strictly_causal": true,
+      "currently_used_by": ["best_fit", "kv_constrained_online"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "round_robin_feasible_placement",
+      "input_state_variables": ["gpu feasibility", "policy-local next index"],
+      "output_type": "gpu_choice",
+      "strictly_causal": true,
+      "currently_used_by": ["fifo", "edf", "shortest_output_first", "shortest_prompt_first", "orca_style", "slo_slack_score", "weighted_shortest_processing", "least_laxity_first", "estimated_service_time_first", "admission_control", "scorpio_style_slo_guard", "aging_priority", "weighted_fair_share"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "length_bin_batching",
+      "input_state_variables": ["predicted_output_tokens"],
+      "output_type": "batch_group_key",
+      "strictly_causal": true,
+      "currently_used_by": ["multi_bin_batching"],
+      "independently_executable": true,
+      "safe_to_combine": true
+    },
+    {
+      "name": "fair_share_deficit",
+      "input_state_variables": ["class_id", "priority", "active_requests_info"],
+      "output_type": "priority_bonus_or_rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["weighted_fair_share"],
+      "independently_executable": true,
+      "safe_to_combine": true,
+      "notes": "Currently limited to active-service snapshot; persistent per-tenant history would require an extension."
+    },
+    {
+      "name": "seeded_random_priority",
+      "input_state_variables": ["seeded RNG", "waiting_queue"],
+      "output_type": "rank_key",
+      "strictly_causal": true,
+      "currently_used_by": ["random_feasible"],
+      "independently_executable": true,
+      "safe_to_combine": false,
+      "notes": "Useful baseline; less suitable as a stable composition primitive unless randomness is explicitly part of the experiment."
+    },
+    {
+      "name": "gpu_role_affinity",
+      "input_state_variables": ["gpu.role"],
+      "output_type": "placement_constraint_or_preference",
+      "strictly_causal": true,
+      "currently_used_by": [],
+      "independently_executable": false,
+      "safe_to_combine": false,
+      "notes": "Observable but unused by the 27-policy library; meaningful disaggregated routing needs additional simulator semantics."
+    },
+    {
+      "name": "cache_reuse_affinity",
+      "input_state_variables": [],
+      "output_type": "unsupported",
+      "strictly_causal": "unknown",
+      "currently_used_by": [],
+      "independently_executable": false,
+      "safe_to_combine": false,
+      "notes": "Prefix/cache identifiers and reuse benefits are not exposed in current ObservableRequest/ObservableState."
+    }
+  ]
+}

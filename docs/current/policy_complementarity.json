@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "data_sources_used": [
+    {
+      "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/selector_v2_overnight_20260720T235405",
+      "status": "completed",
+      "use": "completed clean Selector v2 evidence for WSP/SCORPIO/selector bottleneck context"
+    },
+    {
+      "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/selector_v3_multidomain_causal_20260721T151341Z",
+      "status": "completed",
+      "use": "completed evidence that dynamic features improve WSP-vs-SCORPIO learnability but held-out selectors remain below WSP"
+    },
+    {
+      "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z",
+      "status": "running",
+      "use": "not used for final quantitative composition conclusions because final report is not complete"
+    },
+    {
+      "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z",
+      "status": "running",
+      "use": "not used for final quantitative v2-library complementarity conclusions because final report is not complete"
+    }
+  ],
+  "quantitative_limitations": [
+    "No new large sweep was launched for this audit.",
+    "The complete 27-policy reward-profile matrix was not yet available at audit time.",
+    "Pairwise reward-profile correlations for all 27 policies should be filled from the Policy Library v2 final artifacts when that workflow completes."
+  ],
+  "behavioral_families": [
+    {
+      "family": "arrival_order_and_simple_placement",
+      "policies": ["fifo", "first_fit"],
+      "primary_primitives": ["arrival_order", "round_robin_feasible_placement", "first_feasible_gpu"]
+    },
+    {
+      "family": "deadline_laxity_slo",
+      "policies": ["edf", "least_laxity_first", "slo_slack_score", "admission_control", "scorpio_style_slo_guard"],
+      "primary_primitives": ["earliest_deadline", "minimum_laxity", "urgency_score", "slo_violation_risk", "admission_threshold"]
+    },
+    {
+      "family": "short_work_and_service_time",
+      "policies": ["shortest_output_first", "shortest_prompt_first", "weighted_shortest_processing", "estimated_service_time_first"],
+      "primary_primitives": ["shortest_remaining_work", "shortest_decode_work", "shortest_prefill_work", "priority_weight"]
+    },
+    {
+      "family": "kv_resource_packing",
+      "policies": ["greedy_token_fill", "best_fit", "vllm_style_token_budget", "kv_constrained_online"],
+      "primary_primitives": ["kv_pressure_penalty", "kv_best_fit_placement", "least_loaded_placement"]
+    },
+    {
+      "family": "batch_shape_and_continuous_batching",
+      "policies": ["orca_style", "multi_bin_batching", "vllm_style_token_budget"],
+      "primary_primitives": ["length_bin_batching", "priority_weight", "shortest_decode_work"]
+    },
+    {
+      "family": "prefill_and_phase_interference",
+      "policies": ["sarathi_style", "splitfuse_style", "slai_style_phase_aware", "adaptive_chunked_prefill"],
+      "primary_primitives": ["prefill_budget", "phase_balance", "decode_deadline_guard"]
+    },
+    {
+      "family": "overload_stability_and_flow_control",
+      "policies": ["scorpio_style_slo_guard", "flow_control_stability", "adaptive_chunked_prefill"],
+      "primary_primitives": ["load_shedding", "queue_growth_control", "admission_threshold"]
+    },
+    {
+      "family": "fairness_and_aging",
+      "policies": ["aging_priority", "weighted_fair_share", "slo_slack_score"],
+      "primary_primitives": ["age_bonus", "fair_share_deficit", "arrival_order"]
+    },
+    {
+      "family": "state_aware_composite",
+      "policies": ["sola_style_state_aware", "scorpio_style_slo_guard", "flow_control_stability"],
+      "primary_primitives": ["urgency_score", "kv_pressure_penalty", "slo_violation_risk", "load_shedding"]
+    },
+    {
+      "family": "stochastic_baseline",
+      "policies": ["random_feasible"],
+      "primary_primitives": ["seeded_random_priority"]
+    }
+  ],
+  "likely_redundant_clusters": [
+    {
+      "cluster": ["fifo", "first_fit", "best_fit"],
+      "reason": "Same FIFO request order; differences are mostly placement policy."
+    },
+    {
+      "cluster": ["shortest_output_first", "estimated_service_time_first", "weighted_shortest_processing", "vllm_style_token_budget"],
+      "reason": "All encode short-work preference; they differ in prompt/output weighting, priority, and KV block handling."
+    },
+    {
+      "cluster": ["sarathi_style", "splitfuse_style", "adaptive_chunked_prefill"],
+      "reason": "All approximate prefill budget or long-prompt throttling without true chunk-size actions."
+    },
+    {
+      "cluster": ["greedy_token_fill", "best_fit", "kv_constrained_online"],
+      "reason": "All use KV feasibility/pressure for placement or admission, though kv_constrained_online adds urgency-aware admission."
+    }
+  ],
+  "candidate_parent_sets": [
+    {
+      "parents": ["weighted_shortest_processing", "scorpio_style_slo_guard", "adaptive_chunked_prefill"],
+      "why": "Combines short-work throughput, SLO/load admission, and prefill pressure control."
+    },
+    {
+      "parents": ["weighted_shortest_processing", "kv_constrained_online", "aging_priority"],
+      "why": "Combines WSP efficiency with KV reserve protection and starvation control."
+    },
+    {
+      "parents": ["estimated_service_time_first", "flow_control_stability", "weighted_fair_share"],
+      "why": "Combines service-time ranking, overload throttling, and class-level fairness."
+    },
+    {
+      "parents": ["scorpio_style_slo_guard", "slai_style_phase_aware", "best_fit"],
+      "why": "Combines SLO guard, phase-aware penalties, and KV-packing placement."
+    },
+    {
+      "parents": ["sola_style_state_aware", "weighted_shortest_processing", "adaptive_chunked_prefill"],
+      "why": "Tests whether a general state-aware score benefits from explicit WSP and prefill primitives."
+    }
+  ],
+  "coverage_interpretation": {
+    "current_library_shape": "Several distinct behavioral families are present, but many policies are monolithic and expose direct actions rather than reusable modules.",
+    "basis_assessment": "Approximate behavioral basis for admission plus ranking plus placement exists for the current monolithic simulator. It is not a full basis for cache-aware, disaggregated, splitting, or heterogeneous routing policies.",
+    "composition_value_hypothesis": "Most plausible near-term gain is not arbitrary policy mixing; it is component-wise recombination of WSP priority, SCORPIO admission, KV guard, prefill/phase guard, and aging/fairness safeguards."
+  }
+}

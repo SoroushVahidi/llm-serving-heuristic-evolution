@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "composition_decisive_evaluation",
+  "upstream_inputs": {
+    "policy_frontier_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z",
+    "policy_library_v2_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z",
+    "required_reports": [
+      "policy_frontier_root/reports/FINAL_REPORT.md",
+      "policy_library_v2_root/reports/FINAL_POLICY_LIBRARY_REPORT.md or policy_library_v2_root/reports/FINAL_REPORT.md"
+    ],
+    "readiness_rule": "Do not run full experiment until both upstream final reports exist."
+  },
+  "treatments": [
+    {
+      "id": "A_best_fixed_policy",
+      "description": "Single fixed policy selected by train/validation/robust-dev evidence only.",
+      "selection_data_allowed": ["TRAIN", "VALIDATION", "ROBUST_DEV"],
+      "selection_data_forbidden": ["ID_TEST", "OOD_TEST", "TEMPORAL_OOD", "CROSS_SOURCE_OOD", "FINAL_OOD"]
+    },
+    {
+      "id": "B_discrete_selector",
+      "description": "Existing best learned selector that chooses one complete policy per window.",
+      "selection_data_allowed": ["TRAIN", "VALIDATION", "ROBUST_DEV"],
+      "selection_data_forbidden": ["ID_TEST", "OOD_TEST", "TEMPORAL_OOD", "CROSS_SOURCE_OOD", "FINAL_OOD"]
+    },
+    {
+      "id": "C_static_rank_ensemble",
+      "description": "Weighted normalized-rank aggregation over compatible priority experts.",
+      "operator": "weighted_borda_rank_aggregation",
+      "normalization": "per-state normalized ranks or percentiles; no unscaled raw-score averaging"
+    },
+    {
+      "id": "D_contextual_rank_ensemble",
+      "description": "Normalized-rank aggregation with weights from causal state features.",
+      "operator": "contextual_weighted_rank_aggregation",
+      "feature_constraint": "ObservableState and ObservableRequest fields only"
+    },
+    {
+      "id": "E_component_wise_composition",
+      "description": "SCORPIO-style admission plus WSP-style priority plus KV/prefill/aging safeguards where supported.",
+      "operator": "conditional_component_wise_composition",
+      "unsupported_components": ["cache reuse", "request splitting", "heterogeneous routing", "true action-level chunked prefill"]
+    }
+  ],
+  "typed_modules": [
+    "AdmissionRule",
+    "PriorityRule",
+    "BatchingPrefillRule",
+    "PlacementRule",
+    "PreemptionRule",
+    "KVCacheRule",
+    "FairnessAgingRule"
+  ],
+  "metrics": [
+    "arrival_normalized_weighted_goodput",
+    "regret_vs_best_fixed",
+    "regret_vs_hindsight_oracle",
+    "completion_fraction",
+    "completed_request_quality",
+    "slo_violation_rate",
+    "throughput",
+    "utilization",
+    "fairness_or_starvation_proxy",
+    "feasibility_violations",
+    "switching_frequency",
+    "composition_weight_entropy"
+  ],
+  "splits": {
+    "development": ["TRAIN", "VALIDATION", "ROBUST_DEV"],
+    "evaluation": ["ID_TEST", "TEMPORAL_OOD", "CROSS_SOURCE_OOD", "FINAL_OOD"],
+    "leakage_invariants": [
+      "split_group_key is atomic across splits",
+      "raw row ranges do not overlap across held-out boundaries",
+      "expert selection does not use held-out labels",
+      "contextual weights use causal features only"
+    ]
+  },
+  "safety_guards": [
+    "feasibility projection",
+    "deterministic fallback policy",
+    "sparse top-k expert support",
+    "weight entropy logging",
+    "switching-frequency logging",
+    "optional minimum commitment/hysteresis",
+    "invalid composition detection",
+    "per-expert contribution logging"
+  ],
+  "expected_full_experiment_command": "sbatch tools/composition_experiment_when_ready.sbatch"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "claim": "Contextual rank composition beats the best fixed policy on held-out aggregate performance.",
+      "success_criteria": "Mean ANWG exceeds best fixed on ID_TEST and at least one OOD split with paired bootstrap confidence intervals not centered on zero.",
+      "falsification_criteria": "Best fixed WSP or another fixed policy remains superior on meaningful held-out or OOD windows, or gains appear only on train/validation."
+    },
+    {
+      "id": "H2",
+      "claim": "Contextual rank composition beats discrete policy selection.",
+      "success_criteria": "Composition improves ANWG and oracle-gap closure versus the frozen discrete selector without higher feasibility violations.",
+      "falsification_criteria": "Discrete selection matches or beats composition on ID and OOD, or composition gains come from held-out tuned weights."
+    },
+    {
+      "id": "H3",
+      "claim": "Component-wise composition improves at least one important frontier region without materially degrading global robustness.",
+      "success_criteria": "Component-wise composition reduces regret in a pre-registered frontier region and does not lose more than a small tolerance globally versus best fixed.",
+      "falsification_criteria": "Region gains are offset by broad held-out degradation or rely on unsupported simulator semantics."
+    },
+    {
+      "id": "H4",
+      "claim": "Sparse top-k composition is at least as robust as dense composition.",
+      "success_criteria": "Top-k composition matches or improves dense composition on OOD ANWG and has lower switching/entropy without higher regret.",
+      "falsification_criteria": "Dense composition consistently outperforms sparse top-k on held-out meaningful windows."
+    },
+    {
+      "id": "H5",
+      "claim": "Composition gains persist on OOD workloads and are not caused by leakage.",
+      "success_criteria": "Leakage audits pass and improvements persist on temporal, cross-source, and final untouched OOD splits.",
+      "falsification_criteria": "Any split-group/raw-range leakage is detected, or improvements vanish on untouched OOD."
+    }
+  ],
+  "global_failure_rule": "Composition is not successful if improvements are confined to training/validation or if a simple fixed WSP baseline remains superior on meaningful held-out/OOD evaluations."
+}
