@@ -1,6 +1,6 @@
 # Active Experiment Protected Paths
 
-Generated during Query 1 cleanup audit on 2026-07-21.
+Generated during Query 1 cleanup audit on 2026-07-21 and refreshed during Query 3 final validation.
 
 ## Rule
 
@@ -17,10 +17,10 @@ Do not delete, move, rename, compress, rewrite, or otherwise modify any path in 
 
 This snapshot was taken from `squeue` and `sacct`, not inferred from missing queue entries.
 
-- Policy Frontier broad sweep: 32 tasks completed, tasks `29`, `33`, `34`, and `35` running, tasks `36-63` pending under the array concurrency limit.
+- Policy Frontier broad sweep: 36 tasks completed, tasks `36-39` running, tasks `40-63` pending under the array concurrency limit.
 - Policy Frontier targeted sweep: tasks `0-31` pending on dependencies.
 - Policy Frontier downstream stages: combine, boundary, active mining, QD, coverage, augmentation, representation, evolutionary archive, and report jobs pending on dependencies.
-- Policy Library v2 array: 13 tasks completed, tasks `13-16` running, tasks `17-31` pending under the array concurrency limit.
+- Policy Library v2 array: 15 tasks completed, tasks `13`, `15`, `17`, and `18` running, tasks `19-31` pending under the array concurrency limit.
 - Policy Library v2 downstream stages: combine, complementarity, selector comparison, composition readiness, and report jobs pending on dependencies.
 - Native Composition Pilot job `1120123` completed successfully and is no longer active.
 - Structural Synthesis test job `1120181` completed successfully and is no longer active.

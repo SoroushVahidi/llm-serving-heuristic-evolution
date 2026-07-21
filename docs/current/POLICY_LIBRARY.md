@@ -54,7 +54,7 @@ These are not faithfully representable without simulator/action-space extensions
 
 ## Validation
 
-Focused Policy Library v2 validation exists in `tests/test_policy_library_v2.py` and previously passed under SLURM job `1118782`. Query 2 medium validation should rerun this test before final push.
+Focused Policy Library v2 validation exists in `tests/test_policy_library_v2.py` and passed under SLURM job `1118782`. Query 3 final validation also passed the focused policy-library, composition, and structural-synthesis tests plus the full pytest suite under SLURM job `1120358`.
 
 ## Current Scientific Status
 
