@@ -16,6 +16,15 @@ RUNNER_PATH = ROOT / "scripts" / "build_phase2c_labeled_selector_dataset.py"
 CONFIG_PATH = ROOT / "configs" / "phase2c_labeled_selector_dataset.yaml"
 
 
+def _require_config_inputs_exist() -> None:
+    cfg = _load_cfg()
+    phase2c2 = cfg.get("inputs", {}).get("phase2c2", {})
+    for key in ("training_rows", "validation_rows", "test_rows"):
+        rel = phase2c2.get(key)
+        if rel and not (ROOT / rel).exists():
+            pytest.skip(f"Generated Phase 2C.2 input artifact is not present: {rel}")
+
+
 def _load_runner():
     spec = importlib.util.spec_from_file_location("build_phase2c_labeled_selector_dataset", RUNNER_PATH)
     mod = importlib.util.module_from_spec(spec)
@@ -405,6 +414,7 @@ def test_api_enabled_true_returns_error(tmp_path):
 
 def test_mock_api_annotations_are_marked_mock(tmp_path):
     """Mock annotations must be clearly labeled as mock and not confused with labels."""
+    _require_config_inputs_exist()
     mod = _load_runner()
     result = mod.main([
         "--config", str(CONFIG_PATH),

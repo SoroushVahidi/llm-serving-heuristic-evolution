@@ -10,12 +10,20 @@ Run with:
 from __future__ import annotations
 
 import sys
+import os
+import importlib.util
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+
+pytestmark = pytest.mark.skipif(
+    os.environ.get("LLMSERVEOPT_RUN_GPU_TESTS") != "1"
+    or importlib.util.find_spec("torch") is None,
+    reason="GPU calibration tests require LLMSERVEOPT_RUN_GPU_TESTS=1 and torch",
+)
 
 
 @pytest.mark.gpu

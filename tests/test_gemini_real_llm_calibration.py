@@ -20,6 +20,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
+import pytest
+
 ROOT = Path(__file__).parent.parent
 
 
@@ -241,6 +243,7 @@ def test_build_client_raises_clearly_with_no_credentials(monkeypatch):
 
 def test_build_client_prefers_api_key_when_present(monkeypatch):
     mod = _load()
+    pytest.importorskip("google.genai")
     import google.genai as genai
 
     captured = {}
@@ -259,6 +262,7 @@ def test_build_client_prefers_api_key_when_present(monkeypatch):
 
 def test_build_client_falls_back_to_vertex(monkeypatch):
     mod = _load()
+    pytest.importorskip("google.genai")
     import google.genai as genai
 
     captured = {}

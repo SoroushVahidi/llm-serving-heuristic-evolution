@@ -1199,11 +1199,24 @@ def compute_loss_cases(
         ).append(row)
     max_concurrency = max((row.concurrency_level for row in plan), default=1)
 
+    def _json_safe(value: Any) -> Any:
+        if isinstance(value, float) and value != value:
+            return None
+        if hasattr(value, "item"):
+            return _json_safe(value.item())
+        if isinstance(value, dict):
+            return {k: _json_safe(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple)):
+            return [_json_safe(v) for v in value]
+        return value
+
     def _sanitize_nan(record: Dict[str, Any]) -> Dict[str, Any]:
         # pandas silently turns None into float('nan') in mixed-type object
         # columns on the DataFrame round-trip below; json.dumps would then
         # emit a literal `NaN` token, which is not valid JSON. Restore None.
-        return {k: (None if isinstance(v, float) and v != v else v) for k, v in record.items()}
+        # Pandas may also return NumPy scalar values, so normalize those to
+        # native Python types before callers serialize the returned rows.
+        return {k: _json_safe(v) for k, v in record.items()}
 
     import pandas as pd
     df = pd.DataFrame(all_rows)
@@ -1264,7 +1277,7 @@ def compute_loss_cases(
                 if ttft_loss:
                     notes.append("selector TTFT substantially worse (>30% or >0.2s)")
 
-                loss_rows.append({
+                loss_rows.append(_sanitize_nan({
                     "experiment_id": experiment_id, "backend": "vllm", "model": cfg.get("model"),
                     "regime": regime, "prompt_bucket": bucket, "target_output_tokens": target,
                     "concurrency_level": concurrency, "request_id": rid,
@@ -1300,7 +1313,7 @@ def compute_loss_cases(
                     "selector_status": sel_row["status"], "baseline_status": base_row["status"],
                     "selector_error_type": sel_row.get("error_type"), "baseline_error_type": base_row.get("error_type"),
                     "diagnostic_note": "; ".join(notes) if notes else "unclassified loss",
-                })
+                }))
     return loss_rows
 
 
