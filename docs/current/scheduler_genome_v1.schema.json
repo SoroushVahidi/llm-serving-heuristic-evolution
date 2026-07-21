@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llmserveopt.local/scheduler_genome_v1.schema.json",
+  "title": "SchedulerGenomeV1",
+  "type": "object",
+  "required": ["schema_version", "name", "tie_breaker", "priority_rule"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "SchedulerGenomeV1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tie_breaker": {
+      "enum": [
+        "earliest_deadline",
+        "highest_priority",
+        "shortest_output",
+        "shortest_prompt",
+        "arrival_order",
+        "lowest_request_id",
+        "lowest_kv_cost"
+      ]
+    },
+    "admission_rule": {
+      "anyOf": [
+        {"$ref": "#/$defs/module"},
+        {"type": "null"}
+      ]
+    },
+    "priority_rule": {
+      "$ref": "#/$defs/module"
+    },
+    "prefill_rule": {
+      "anyOf": [
+        {"$ref": "#/$defs/module"},
+        {"type": "null"}
+      ]
+    },
+    "kv_guard": {
+      "anyOf": [
+        {"$ref": "#/$defs/module"},
+        {"type": "null"}
+      ]
+    },
+    "fairness_rule": {
+      "anyOf": [
+        {"$ref": "#/$defs/module"},
+        {"type": "null"}
+      ]
+    },
+    "regime_conditions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/regime"}
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "module": {
+      "type": "object",
+      "required": ["module_type", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "module_type": {
+          "enum": [
+            "admission_rule",
+            "priority_rule",
+            "prefill_rule",
+            "kv_guard",
+            "fairness_rule",
+            "regime_conditions"
+          ]
+        },
+        "expression": {
+          "anyOf": [
+            {"$ref": "#/$defs/expression"},
+            {"type": "null"}
+          ]
+        },
+        "status": {
+          "enum": ["EXACT", "APPROXIMATE", "UNSUPPORTED"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "unsupported_reason": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ]
+        },
+        "parameters": {
+          "type": "object"
+        }
+      }
+    },
+    "regime": {
+      "type": "object",
+      "required": ["name", "condition", "priority_rule"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": "string"},
+        "condition": {"$ref": "#/$defs/expression"},
+        "priority_rule": {"$ref": "#/$defs/module"},
+        "admission_rule": {
+          "anyOf": [
+            {"$ref": "#/$defs/module"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "expression": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": ["const"],
+          "properties": {
+            "const": {"type": "number"}
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["var"],
+          "properties": {
+            "var": {
+              "enum": [
+                "req.prompt_tokens",
+                "req.predicted_output_tokens",
+                "req.waiting_time",
+                "req.deadline_slack",
+                "req.deadline_urgency",
+                "req.priority_weight",
+                "req.estimated_prefill_cost",
+                "req.estimated_decode_cost",
+                "req.estimated_kv_cost",
+                "sys.queue_length",
+                "sys.active_sequence_count",
+                "sys.kv_utilization",
+                "sys.free_sequence_ratio",
+                "sys.token_budget_utilization",
+                "sys.arrival_rate_est",
+                "sys.burstiness_cv",
+                "sys.recent_slo_violation_rate",
+                "sys.slo_pressure",
+                "batch.size",
+                "batch.sum_prompt_tokens",
+                "batch.sum_predicted_output_tokens",
+                "batch.mean_predicted_output_tokens",
+                "batch.max_predicted_output_tokens",
+                "batch.length_imbalance",
+                "batch.sum_priority_weight",
+                "batch.min_deadline_slack",
+                "batch.deadline_risk",
+                "batch.estimated_kv_cost",
+                "batch.sum_request_score"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["op"],
+          "properties": {
+            "op": {
+              "enum": [
+                "const",
+                "var",
+                "add",
+                "sub",
+                "mul",
+                "div_safe",
+                "min",
+                "max",
+                "clip",
+                "abs",
+                "sqrt_safe",
+                "log1p_safe",
+                "neg",
+                "weighted_sum",
+                "if_then_else"
+              ]
+            },
+            "args": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/expression"}
+            },
+            "terms": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "prefixItems": [
+                  {"$ref": "#/$defs/expression"},
+                  {"type": "number"}
+                ]
+              }
+            },
+            "cond": {"$ref": "#/$defs/expression"},
+            "then": {"$ref": "#/$defs/expression"},
+            "else": {"$ref": "#/$defs/expression"}
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
