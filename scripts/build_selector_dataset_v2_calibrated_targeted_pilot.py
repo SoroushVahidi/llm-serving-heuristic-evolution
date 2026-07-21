@@ -50,7 +50,7 @@ SYNTHETIC_SHAPES = list(p.FAMILY_GENERATORS.keys())
 PRIMARY_OBJECTIVE = next(o for o in STANDARD_OBJECTIVES if o.name == PRIMARY_SELECTOR_OBJECTIVE)
 
 CHECKPOINT_FIELDS: List[str] = [
-    "window_idx", "group_key", "dataset_family", "source_trace", "shape",
+    "window_idx", "group_key", "split_group_key", "dataset_family", "source_trace", "shape",
     "time_slice_pool", "time_slice_row_start", "time_slice_row_end",
     "time_slice_arrival_start", "time_slice_arrival_end",
     "request_plan_ancestor_id", "n_requests", "calibration_multiplier", "split",
@@ -119,7 +119,9 @@ def _checkpoint_row(idx: int, window: "p.CandidateWindow", calibrated_n: int,
     row_range = window.time_slice_row_range or (None, None)
     arrival_range = window.time_slice_arrival_range or (None, None)
     return {
-        "window_idx": idx, "group_key": window.group_key, "dataset_family": window.dataset_family,
+        "window_idx": idx, "group_key": window.group_key,
+        "split_group_key": _split_group_key(window),
+        "dataset_family": window.dataset_family,
         "source_trace": window.source_trace, "shape": window.shape,
         "time_slice_pool": window.time_slice_pool,
         "time_slice_row_start": row_range[0], "time_slice_row_end": row_range[1],
@@ -130,6 +132,18 @@ def _checkpoint_row(idx: int, window: "p.CandidateWindow", calibrated_n: int,
         "primary_objective_best_policy": disc.best_policy if disc else None,
         "primary_objective_max_min_spread": round(disc.max_min_spread, 6) if disc else None,
     }
+
+
+def _split_group_key(window: "p.CandidateWindow") -> str:
+    """Leakage-safe split atom for retained windows.
+
+    Real-trace transforms can reuse the same underlying raw rows. Splitting by
+    transform-specific ``group_key`` would let overlapping source rows cross
+    TRAIN/VALIDATION/ID_TEST. Group the whole immutable source pool instead.
+    """
+    if window.dataset_family == "real_trace":
+        return f"{window.request_plan_ancestor_id}__pool_{window.time_slice_pool}"
+    return window.group_key
 
 
 def _next_synthetic(rng: random.Random, idx: int) -> "p.CandidateWindow":
@@ -175,6 +189,7 @@ def main() -> int:
     retained_features: List[Dict] = []          # window_idx -> feat_* dict
     retained_outcomes: List[Dict] = []           # window_idx -> {policy: PolicyOutcomeVector}
     retained_group_keys: List[str] = []
+    retained_split_group_keys: List[str] = []
     per_window_anwg: List[Dict[str, float]] = []
 
     n_attempts = 0
@@ -255,6 +270,7 @@ def main() -> int:
             retained_features.append(feats)
             retained_outcomes.append({o.policy_name: o for o in outcomes})
             retained_group_keys.append(window.group_key)
+            retained_split_group_keys.append(retained_rows[-1]["split_group_key"])
             per_window_anwg.append({
                 o.policy_name: o.arrival_normalized_weighted_goodput for o in outcomes
                 if o.arrival_normalized_weighted_goodput is not None
@@ -279,18 +295,18 @@ def main() -> int:
     # Split assignment (group-aware, OOD-forced for the reserved pool)
     # ------------------------------------------------------------------
     ood_forced_groups = {
-        row["group_key"] for row in retained_rows if row["time_slice_pool"] == p.OOD_RESERVED_POOL
+        row["split_group_key"] for row in retained_rows if row["time_slice_pool"] == p.OOD_RESERVED_POOL
     }
-    all_group_keys = sorted(set(retained_group_keys))
+    all_group_keys = sorted(set(retained_split_group_keys))
     split_assignment = assign_group_aware_split(
         all_group_keys, ood_group_keys=ood_forced_groups,
         train_frac=args.train_frac, val_frac=args.val_frac,
     )
-    for row, gk in zip(retained_rows, retained_group_keys):
+    for row, gk in zip(retained_rows, retained_split_group_keys):
         row["split"] = split_for_group(gk, split_assignment)
 
-    verify_group_atomicity(retained_rows, group_key_field="group_key", split_field="split")
-    verify_ood_holdout(retained_rows, group_key_field="group_key", ood_group_keys=ood_forced_groups, split_field="split")
+    verify_group_atomicity(retained_rows, group_key_field="split_group_key", split_field="split")
+    verify_ood_holdout(retained_rows, group_key_field="split_group_key", ood_group_keys=ood_forced_groups, split_field="split")
 
     split_counts = Counter(row["split"] for row in retained_rows)
     (out_dir / "split_manifest.json").write_text(json.dumps({
@@ -298,6 +314,12 @@ def main() -> int:
         "n_groups": len(all_group_keys),
         "n_ood_forced_groups": len(ood_forced_groups),
         "ood_forced_groups": sorted(ood_forced_groups),
+        "split_group_key_definition": (
+            "synthetic: transform-specific synthetic group_key; real_trace: "
+            "request_plan_ancestor_id + time_slice_pool, so all transforms and "
+            "row slices from the same raw source pool are split atomically"
+        ),
+        "split_assignment": split_assignment,
         "train_frac": args.train_frac, "val_frac": args.val_frac,
     }, indent=2))
 
@@ -308,7 +330,8 @@ def main() -> int:
     for row, outcomes_by_policy in zip(retained_rows, retained_outcomes):
         for pname, outcome in outcomes_by_policy.items():
             frow = {
-                "window_idx": row["window_idx"], "group_key": row["group_key"], "split": row["split"],
+                "window_idx": row["window_idx"], "group_key": row["group_key"],
+                "split_group_key": row["split_group_key"], "split": row["split"],
                 "policy_name": pname,
             }
             frow.update(outcome.to_row_dict(prefix="metric"))

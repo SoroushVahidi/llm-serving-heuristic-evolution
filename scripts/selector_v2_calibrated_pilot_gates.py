@@ -127,14 +127,19 @@ def evaluate_quality_gates(
 
     leakage_ok = True
     leakage_detail = "verified"
+    split_group_field = "split_group_key" if "split_group_key" in retained_rows[0] else "group_key"
     try:
-        verify_group_atomicity(retained_rows, group_key_field="group_key", split_field="split")
-        ood_groups = {r["group_key"] for r in retained_rows if r["time_slice_pool"] == "ood_reserved"}
-        verify_ood_holdout(retained_rows, group_key_field="group_key", ood_group_keys=ood_groups, split_field="split")
+        verify_group_atomicity(retained_rows, group_key_field=split_group_field, split_field="split")
+        ood_groups = {r[split_group_field] for r in retained_rows if r["time_slice_pool"] == "ood_reserved"}
+        verify_ood_holdout(retained_rows, group_key_field=split_group_field, ood_group_keys=ood_groups, split_field="split")
     except ValueError as e:
         leakage_ok = False
         leakage_detail = str(e)
-    gates["no_leakage"] = {"passed": leakage_ok, "detail": leakage_detail}
+    gates["no_leakage"] = {
+        "passed": leakage_ok,
+        "detail": leakage_detail,
+        "split_group_field": split_group_field,
+    }
 
     all_passed = all(g["passed"] for g in gates.values())
     return {

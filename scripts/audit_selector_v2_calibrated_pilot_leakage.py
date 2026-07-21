@@ -71,6 +71,19 @@ def audit(pilot_dir: Path) -> dict:
     )
     n_historical_real_trace = sum(1 for r in real_rows if r["time_slice_pool"] == "historical")
 
+    if cross_split_pairs:
+        conclusion = (
+            "FAIL: cross-transform row-range reuse crosses split boundaries. "
+            "VALIDATION and ID_TEST results should not be treated as clean "
+            "held-out evaluation until split construction is fixed."
+        )
+    else:
+        conclusion = (
+            "PASS: no cross-split raw row-range overlap was found among "
+            "real-trace windows. OOD pool isolation also holds if "
+            "historical_ood_pool_violations is zero."
+        )
+
     result = {
         "pilot_dir": str(pilot_dir),
         "n_total_windows": len(rows),
@@ -82,17 +95,7 @@ def audit(pilot_dir: Path) -> dict:
         "split_pair_breakdown": {"-".join(k): v for k, v in split_pair_counts.items()},
         "ood_test_involved": any("OOD_TEST" in (p["a_split"], p["b_split"]) for p in cross_split_pairs),
         "historical_ood_pool_violations": len(pool_violations),
-        "conclusion": (
-            "CONFIRMED: cross-transform row-range reuse across non-OOD splits "
-            "(TRAIN/VALIDATION/ID_TEST). OOD_TEST is unaffected -- zero overlap "
-            "pairs involve OOD_TEST, and zero historical<->ood_reserved pool "
-            "violations were found, so the OOD reservation's row-disjointness "
-            "holds. The pipeline's own no_leakage gate does not catch this "
-            "because it checks group-level (not cross-group row-range) "
-            "assignment. VALIDATION and ID_TEST results should not be treated "
-            "as clean held-out evaluation until this is fixed; OOD_TEST's "
-            "separately weak result is not explained by this mechanism."
-        ),
+        "conclusion": conclusion,
         "detail_pairs": cross_split_pairs,
     }
     return result

@@ -54,6 +54,11 @@ from llmserveopt.selector.dataset_v2.workload_sources import (
     WORKLOAD_SOURCE_MANIFEST,
     acquired_sources,
 )
+from llmserveopt.selector.dataset_v2.calibrated_targeted_pilot import (
+    CandidateWindow,
+    HISTORICAL_POOL,
+    OOD_RESERVED_POOL,
+)
 
 
 def _req(
@@ -191,6 +196,72 @@ def test_grouped_split_integrity_and_ood_holdout():
     bad = rows + [{"scenario_family_id": "azure", "split": "TRAIN"}]
     with pytest.raises(ValueError):
         verify_group_atomicity(bad, "scenario_family_id")
+
+
+def test_real_trace_split_group_is_ancestor_pool_not_transform_specific():
+    from scripts.build_selector_dataset_v2_calibrated_targeted_pilot import _split_group_key
+
+    common = dict(
+        dataset_family="real_trace",
+        source_trace="burstgpt",
+        requests=[],
+        budget=512,
+        chunk=512,
+        max_kv_tokens=7000,
+        max_active_sequences=8,
+        time_slice_pool=HISTORICAL_POOL,
+        time_slice_row_range=(100, 244),
+        request_plan_ancestor_id="real_trace__burstgpt_scaled_moderate",
+    )
+    representative = CandidateWindow(
+        group_key="real_trace__burstgpt_scaled_moderate__representative__historical",
+        shape="real_trace_stress__burstgpt_scaled_moderate__representative",
+        **common,
+    )
+    compressed = CandidateWindow(
+        group_key="real_trace__burstgpt_scaled_moderate__compressed_tight__historical",
+        shape="real_trace_stress__burstgpt_scaled_moderate__compressed_tight",
+        **common,
+    )
+
+    assert _split_group_key(representative) == _split_group_key(compressed)
+
+
+def test_real_trace_ood_split_group_is_distinct_and_forced():
+    from llmserveopt.selector.dataset_v2.splits import split_for_group
+    from scripts.build_selector_dataset_v2_calibrated_targeted_pilot import _split_group_key
+
+    historical = CandidateWindow(
+        group_key="real_trace__azure_2023_code__representative__historical",
+        dataset_family="real_trace",
+        source_trace="azure_llm_2023",
+        shape="real_trace_stress__azure_2023_code__representative",
+        requests=[],
+        budget=512,
+        chunk=512,
+        max_kv_tokens=7000,
+        max_active_sequences=8,
+        time_slice_pool=HISTORICAL_POOL,
+        request_plan_ancestor_id="real_trace__azure_2023_code",
+    )
+    ood = CandidateWindow(
+        group_key="real_trace__azure_2023_code__representative__ood_reserved",
+        dataset_family="real_trace",
+        source_trace="azure_llm_2023",
+        shape="real_trace_stress__azure_2023_code__representative",
+        requests=[],
+        budget=512,
+        chunk=512,
+        max_kv_tokens=7000,
+        max_active_sequences=8,
+        time_slice_pool=OOD_RESERVED_POOL,
+        request_plan_ancestor_id="real_trace__azure_2023_code",
+    )
+    groups = [_split_group_key(historical), _split_group_key(ood)]
+    assignment = assign_group_aware_split(groups, ood_group_keys={groups[1]})
+
+    assert groups[0] != groups[1]
+    assert split_for_group(groups[1], assignment) == OOD_TEST
 
 
 def test_source_provenance_manifest_distinguishes_real_and_synthetic_fields():
