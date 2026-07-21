@@ -8,7 +8,14 @@ from .least_loaded import LeastLoadedPolicy
 from .multi_bin_batching import MultiBinBatchingPolicy
 from .random_feasible import RandomFeasiblePolicy
 from .oracle import OracleShortestJobFirstPolicy, build_oracle
-from .registry import make_policy, all_baseline_policies, BASELINE_NAMES
+from .registry import (
+    BASELINE_NAMES,
+    POLICY_LIBRARY_V2_NAMES,
+    POLICY_LIBRARY_V2_NEW_NAMES,
+    all_baseline_policies,
+    make_policy,
+    make_policy_library_v2,
+)
 
 __all__ = [
     "BasePolicy",
@@ -23,6 +30,9 @@ __all__ = [
     "OracleShortestJobFirstPolicy",
     "build_oracle",
     "make_policy",
+    "make_policy_library_v2",
     "all_baseline_policies",
     "BASELINE_NAMES",
+    "POLICY_LIBRARY_V2_NAMES",
+    "POLICY_LIBRARY_V2_NEW_NAMES",
 ]

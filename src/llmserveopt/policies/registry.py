@@ -10,13 +10,17 @@ from __future__ import annotations
 from typing import Dict, List, Sequence
 
 from .admission_control import AdmissionControlPolicy
+from .adaptive_chunked_prefill import AdaptiveChunkedPrefillPolicy
+from .aging_priority import AgingPriorityPolicy
 from .base import BasePolicy
 from .best_fit import BestFitPolicy
 from .edf import EDFPolicy
 from .estimated_service_time_first import EstimatedServiceTimeFirstPolicy
 from .fifo import FIFOPolicy
 from .first_fit import FirstFitPolicy
+from .flow_control_stability import FlowControlStabilityPolicy
 from .greedy_token_fill import GreedyTokenFillPolicy
+from .kv_constrained_online import KVConstrainedOnlinePolicy
 from .least_laxity_first import LeastLaxityFirstPolicy
 from .least_loaded import LeastLoadedPolicy
 from .multi_bin_batching import MultiBinBatchingPolicy
@@ -27,10 +31,13 @@ from .sarathi_style import SarathiStylePolicy
 from .scorpio_style_slo_guard import ScorpioStyleSloGuardPolicy
 from .shortest_output_first import ShortestOutputFirstPolicy
 from .shortest_prompt_first import ShortestPromptFirstPolicy
+from .slai_style_phase_aware import SlaiStylePhaseAwarePolicy
 from .slo_slack_score import SloSlackScorePolicy
+from .sola_style_state_aware import SolaStyleStateAwarePolicy
 from .splitfuse_style import SplitFuseStylePolicy
 from .vllm_style_token_budget import VLLMStyleTokenBudgetPolicy
 from .weighted_shortest_processing import WeightedShortestProcessingPolicy
+from .weighted_fair_share import WeightedFairSharePolicy
 
 
 _REGISTRY: Dict[str, type] = {
@@ -62,6 +69,23 @@ _REGISTRY: Dict[str, type] = {
 }
 
 BASELINE_NAMES: List[str] = list(_REGISTRY.keys())
+
+# Policy Library v2 extension. These policies are deployable in the same
+# monolithic simulator/action space as BASELINE_NAMES, but they are not added
+# to BASELINE_NAMES because multiple Selector v2 reproducibility tests and
+# docs intentionally pin that historical library at 20 policies.
+_POLICY_LIBRARY_V2_REGISTRY: Dict[str, type] = {
+    "sola_style_state_aware": SolaStyleStateAwarePolicy,
+    "slai_style_phase_aware": SlaiStylePhaseAwarePolicy,
+    "flow_control_stability": FlowControlStabilityPolicy,
+    "kv_constrained_online": KVConstrainedOnlinePolicy,
+    "adaptive_chunked_prefill": AdaptiveChunkedPrefillPolicy,
+    "aging_priority": AgingPriorityPolicy,
+    "weighted_fair_share": WeightedFairSharePolicy,
+}
+
+POLICY_LIBRARY_V2_NEW_NAMES: List[str] = list(_POLICY_LIBRARY_V2_REGISTRY.keys())
+POLICY_LIBRARY_V2_NAMES: List[str] = list(BASELINE_NAMES) + list(POLICY_LIBRARY_V2_NEW_NAMES)
 
 # Oracle policies — non-deployable, hindsight upper bounds only.
 # MUST NOT appear in BASELINE_NAMES or SELECTOR_CANDIDATE_NAMES.
@@ -109,6 +133,17 @@ def make_policy(name: str, seed: int = 0, **kwargs) -> BasePolicy:
     if name == "random_feasible":
         return cls(seed=seed, **kwargs)
     return cls(**kwargs)
+
+
+def make_policy_library_v2(name: str, seed: int = 0, **kwargs) -> BasePolicy:
+    """Instantiate a historical or Policy Library v2 deployable policy."""
+    if name in _REGISTRY:
+        return make_policy(name, seed=seed, **kwargs)
+    if name not in _POLICY_LIBRARY_V2_REGISTRY:
+        raise KeyError(
+            f"Unknown Policy Library v2 policy '{name}'. Available: {sorted(POLICY_LIBRARY_V2_NAMES)}"
+        )
+    return _POLICY_LIBRARY_V2_REGISTRY[name](**kwargs)
 
 
 def all_baseline_policies(seed: int = 0) -> List[BasePolicy]:
