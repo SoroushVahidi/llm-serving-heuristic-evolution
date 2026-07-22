@@ -401,3 +401,75 @@ def load_policy_families(component: str, matrix_path: Optional[Path] = None) -> 
         matrix_path = Path(__file__).resolve().parents[4] / "docs" / "current" / "policy_component_matrix.json"
     data = json.loads(matrix_path.read_text())
     return sorted(p["name"] for p in data["policies"] if component in p.get("components", []))
+
+
+# ---------------------------------------------------------------------------
+# Structural-distance diagnostics
+# ---------------------------------------------------------------------------
+
+def pairwise_structural_distances(policies: Sequence[str]) -> Dict[Tuple[str, str], float]:
+    """Z-score-normalized Euclidean distance between every pair of policies'
+    structural feature vectors. Normalization is fit only over `policies`
+    (typically the mapped, non-UNSUPPORTED subset) so the many constant-zero
+    columns shared with unmapped placeholders don't distort scale."""
+    from .dataset import genome_table
+    from .encoders import structural_features
+
+    genomes = genome_table(policies)
+    feats = {name: structural_features(genomes[name]) for name in policies}
+    cols = sorted(feats[policies[0]].keys())
+    matrix = np.stack([[feats[name][c] for c in cols] for name in policies])
+    std = matrix.std(axis=0)
+    std[std == 0] = 1.0
+    normalized = (matrix - matrix.mean(axis=0)) / std
+
+    distances: Dict[Tuple[str, str], float] = {}
+    for i, a in enumerate(policies):
+        for j in range(i + 1, len(policies)):
+            b = policies[j]
+            distances[(a, b)] = float(np.linalg.norm(normalized[i] - normalized[j]))
+    return distances
+
+
+def structural_distance_vs_performance_disagreement(
+    rows_by_state: Mapping[str, Sequence[Mapping[str, Any]]],
+    policies: Sequence[str],
+) -> Dict[str, Any]:
+    """Check whether structurally similar policies behave similarly and
+    structurally distant ones disagree more -- reports a Pearson correlation
+    between structural distance and mean-absolute-reward-disagreement across
+    every policy pair with overlapping states. This is a correlational
+    diagnostic only; it does not establish that structural similarity
+    *causes* behavioral similarity."""
+    distances = pairwise_structural_distances(list(policies))
+    rewards_by_policy: Dict[str, Dict[str, float]] = {p: {} for p in policies}
+    for state_id, rows in rows_by_state.items():
+        for row in rows:
+            if row["policy_name"] in rewards_by_policy and row.get("reward_anwg") is not None:
+                rewards_by_policy[row["policy_name"]][state_id] = float(row["reward_anwg"])
+
+    struct_dist: List[float] = []
+    perf_disagreement: List[float] = []
+    pair_records: List[Dict[str, Any]] = []
+    for (a, b), dist in distances.items():
+        common_states = set(rewards_by_policy[a]) & set(rewards_by_policy[b])
+        if not common_states:
+            continue
+        diffs = [abs(rewards_by_policy[a][s] - rewards_by_policy[b][s]) for s in common_states]
+        disagreement = float(np.mean(diffs))
+        struct_dist.append(dist)
+        perf_disagreement.append(disagreement)
+        pair_records.append({"policy_a": a, "policy_b": b, "structural_distance": dist, "mean_abs_reward_disagreement": disagreement, "n_common_states": len(common_states)})
+
+    if len(struct_dist) < 2:
+        return {"n_pairs": len(struct_dist), "pearson_correlation": None, "pairs": pair_records}
+
+    correlation = float(np.corrcoef(struct_dist, perf_disagreement)[0, 1])
+    ranked = sorted(pair_records, key=lambda r: r["structural_distance"])
+    return {
+        "n_pairs": len(struct_dist),
+        "pearson_correlation": correlation,
+        "note": "correlational only -- does not establish structural similarity causes behavioral similarity",
+        "closest_pairs": ranked[:5],
+        "farthest_pairs": ranked[-5:],
+    }

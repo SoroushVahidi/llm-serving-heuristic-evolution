@@ -41,6 +41,7 @@ from llmserveopt.selector.suitability.selector import (  # noqa: E402
     load_policy_families,
     margin_weighted_regret,
     oracle_best,
+    structural_distance_vs_performance_disagreement,
 )
 
 
@@ -186,21 +187,47 @@ def main() -> int:
     report["delta_scorpio_wsp"] = delta_report
 
     # ------------------------------------------------------------------
-    # Held-out-policy pilots
+    # Held-out-policy pilots -- one per representative family, only
+    # policies with a faithful (EXACT/APPROXIMATE, not UNSUPPORTED) genome
+    # mapping per docs/current/POLICY_GENOME_COVERAGE_AUDIT.md.
     # ------------------------------------------------------------------
-    held_out_candidates = ["weighted_shortest_processing", "scorpio_style_slo_guard", "fifo"]
+    held_out_candidates = [
+        "edf",                       # SLO/deadline-aware (EXACT)
+        "weighted_shortest_processing",  # shortest-work/service-time (EXACT)
+        "adaptive_chunked_prefill",  # prefill-aware (APPROXIMATE)
+        "kv_constrained_online",     # KV-aware (APPROXIMATE)
+        "aging_priority",            # fairness/aging (APPROXIMATE)
+        "fifo",                      # general baseline (EXACT)
+    ]
     report["held_out_policy_pilots"] = {
         policy: held_out_policy_pilot(rows, policy, all_policies=all_policies, encoding="hybrid")
         for policy in held_out_candidates
     }
 
     # ------------------------------------------------------------------
-    # Held-out-family pilot (documented component taxonomy, not invented)
+    # Held-out-family pilots (documented component taxonomy, not invented).
+    # slo_deadline_handling now has 9/10 members with a faithful (EXACT or
+    # APPROXIMATE) genome mapping, vs. kv_memory_pressure's more mixed
+    # coverage -- report both for comparison.
     # ------------------------------------------------------------------
-    family_policies = load_policy_families("kv_memory_pressure")
-    report["held_out_family_pilot"] = held_out_family_pilot(
-        rows, family_policies, all_policies=all_policies, family_name="kv_memory_pressure",
-    )
+    report["held_out_family_pilots"] = {}
+    for family_name in ("slo_deadline_handling", "kv_memory_pressure"):
+        family_policies = load_policy_families(family_name)
+        report["held_out_family_pilots"][family_name] = held_out_family_pilot(
+            rows, family_policies, all_policies=all_policies, family_name=family_name,
+        )
+
+    # ------------------------------------------------------------------
+    # Structural-distance diagnostics, over every faithfully-mapped
+    # (EXACT/APPROXIMATE) policy present in this dataset.
+    # ------------------------------------------------------------------
+    mapped_present = sorted({r["policy_name"] for r in rows} & set(
+        p for p in all_policies
+        if p not in ("greedy_token_fill", "least_loaded", "random_feasible", "best_fit",
+                     "vllm_style_token_budget", "sarathi_style", "splitfuse_style", "slai_style_phase_aware")
+    ))
+    all_rbs = group_by_state(rows)
+    report["structural_distance_diagnostics"] = structural_distance_vs_performance_disagreement(all_rbs, mapped_present)
 
     report["runtime_s"] = round(time.perf_counter() - t0, 3)
     (out_dir / "state_policy_suitability_results.json").write_text(json.dumps(report, indent=2, default=str))

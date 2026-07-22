@@ -24,13 +24,21 @@ from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
 import numpy as np
 
-from ...heuristics.dsl_schema import ALLOWED_OPS, ALLOWED_TIE_BREAKERS
+from ...heuristics.dsl_schema import ALLOWED_OPS, ALLOWED_TIE_BREAKERS, ALLOWED_VARS
 from ...policies.genome import GenomeModule, SchedulerGenomeV1
 
 _MODULE_SLOTS: Tuple[str, ...] = (
     "admission_rule", "priority_rule", "prefill_rule", "kv_guard", "fairness_rule",
 )
 _STATUS_ORDINAL = {"EXACT": 2.0, "APPROXIMATE": 1.0, "UNSUPPORTED": 0.0}
+# Grouped by the distinctions the task calls out explicitly (SLO-aware,
+# prefill/decode-weighted, KV-aware, fairness/aging-aware) -- each group is a
+# subset of heuristics.dsl_schema.ALLOWED_VARS, not an invented label.
+_SLO_VARS: Tuple[str, ...] = ("req.deadline_slack", "req.deadline_urgency", "batch.min_deadline_slack", "batch.deadline_risk", "sys.slo_pressure", "sys.recent_slo_violation_rate")
+_PREFILL_VARS: Tuple[str, ...] = ("req.prompt_tokens", "req.estimated_prefill_cost", "batch.sum_prompt_tokens", "sys.token_budget_utilization")
+_DECODE_VARS: Tuple[str, ...] = ("req.predicted_output_tokens", "req.estimated_decode_cost", "batch.sum_predicted_output_tokens", "batch.mean_predicted_output_tokens", "batch.max_predicted_output_tokens")
+_KV_VARS: Tuple[str, ...] = ("req.estimated_kv_cost", "sys.kv_utilization", "batch.estimated_kv_cost")
+_FAIRNESS_VARS: Tuple[str, ...] = ("req.waiting_time", "req.priority_weight", "sys.recent_slo_violation_rate")
 
 
 def _walk_ast(expr: Any):
@@ -136,22 +144,39 @@ def structural_features(genome: SchedulerGenomeV1) -> Dict[str, float]:
     for tb in ALLOWED_TIE_BREAKERS:
         feats[f"struct_tie_breaker_{tb}"] = 1.0 if genome.tie_breaker == tb else 0.0
 
-    # AST node count / depth / operator-vocabulary counts across every
-    # expression the genome actually contains.
+    # AST node count / depth / operator-vocabulary counts / referenced-variable
+    # counts across every expression the genome actually contains.
     node_count = 0
     max_depth = 0
     op_counts = {o: 0 for o in ALLOWED_OPS}
+    var_counts = {v: 0 for v in ALLOWED_VARS}
     for expr in all_expressions:
         for node in _walk_ast(expr):
             node_count += 1
             if "op" in node and node["op"] in op_counts:
                 op_counts[node["op"]] += 1
+            if "var" in node and node["var"] in var_counts:
+                var_counts[node["var"]] += 1
         max_depth = max(max_depth, _ast_depth(expr))
     feats["struct_ast_node_count"] = float(node_count)
     feats["struct_ast_max_depth"] = float(max_depth)
     feats["struct_n_expressions"] = float(len(all_expressions))
     for op_name, count in op_counts.items():
         feats[f"struct_op_count_{op_name}"] = float(count)
+    for var_name, count in var_counts.items():
+        feats[f"struct_uses_var_{var_name}"] = float(count)
+
+    # Grouped semantic-distinction summaries the task calls out explicitly --
+    # each is a mechanical count over a fixed ALLOWED_VARS subset (see the
+    # module-level _SLO_VARS/_PREFILL_VARS/... groups), not an invented label.
+    feats["struct_slo_aware_var_count"] = float(sum(var_counts[v] for v in _SLO_VARS))
+    feats["struct_prefill_weighted_var_count"] = float(sum(var_counts[v] for v in _PREFILL_VARS))
+    feats["struct_decode_weighted_var_count"] = float(sum(var_counts[v] for v in _DECODE_VARS))
+    feats["struct_kv_aware_var_count"] = float(sum(var_counts[v] for v in _KV_VARS))
+    feats["struct_fairness_aware_var_count"] = float(sum(var_counts[v] for v in _FAIRNESS_VARS))
+    feats["struct_is_regime_conditional"] = 1.0 if genome.regime_conditions else 0.0
+    feats["struct_is_admission_heavy"] = 1.0 if (genome.admission_rule is not None and (genome.kv_guard is not None or genome.prefill_rule is not None)) else 0.0
+    feats["struct_is_pure_ranking"] = 1.0 if (genome.admission_rule is None and genome.kv_guard is None and genome.prefill_rule is None and genome.fairness_rule is None and not genome.regime_conditions) else 0.0
 
     return feats
 
