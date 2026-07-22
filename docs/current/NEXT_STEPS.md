@@ -1,51 +1,51 @@
-# Next Steps (Canonical)
+# Next Steps
 
-Short and actionable. See [SELECTOR_V2.md](SELECTOR_V2.md) and
-[PROJECT_STATUS.md](PROJECT_STATUS.md) for the full context behind each step.
+Short and actionable. See `PROJECT_STATUS.md`, `ROADMAP_GAP_ANALYSIS.md`, and
+`RESEARCH_ROADMAP.md` for context.
 
-## Recommended sequence
+## Recommended Sequence
 
-1. ~~Independently audit the calibrated pilot for leakage.~~ **DONE.** The
-   pipeline's own `no_leakage` gate reports `passed: true`, but an
-   independent audit (`scripts/audit_selector_v2_calibrated_pilot_leakage.py`,
-   full writeup in
-   `experiments/selector_v2_calibrated_pilot_20260720T163235Z/LEAKAGE_AUDIT.md`)
-   confirmed real cross-transform row-range leakage affecting 27 of 48
-   real-trace historical-pool windows across TRAIN/VALIDATION/ID_TEST.
-   OOD_TEST is confirmed leakage-free.
-2. **Fix the split construction**: group by underlying source-trace row
-   range across transforms (not just by transform name), so that windows
-   sharing underlying request content always land in the same split.
-   Regenerate a clean 250-500-window calibrated pilot.
-3. Verify zero leakage on the new pilot using the same audit script -- don't
-   just trust the pipeline's own gate a second time; run the independent
-   check again.
-4. Retrain the **same** prototype selector (no hyperparameter tuning yet --
-   keep this an apples-to-apples check, not a fishing expedition).
-5. Evaluate cleanly on VALIDATION / ID_TEST / OOD_TEST.
-6. **Stop condition:** if held-out (VALIDATION and OOD_TEST) still loses to
-   best-fixed after steps 1-5, do not scale Dataset v2 generation and do not
-   claim selector superiority. Go back to diagnosing why (feature set,
-   model choice, training-set size, action-space scope) rather than
-   generating more data on the same recipe.
-7. If held-out cleanly beats best-fixed: scale Dataset v2 generation.
-8. Train a final Selector v2 model on the scaled dataset.
-9. Compare the final trained selector against:
-   - the best fixed historical policy (already tracked throughout),
-   - the 3 faithful monolithic external baselines (evaluation-only,
-     Protocol C),
-   - the disaggregated/migratory external baselines under their own
-     topology-aware comparison (Protocol C, `docs/external_baseline_integration.md`).
-10. Only after 9 produces a clean, held-out-confirmed result: prepare
-    manuscript claims, using `docs/result_claims.md`'s safe/unsafe-claim
-    conventions as the template.
+1. **Run bounded simulator calibration and discriminative-power validation.**
+   This is the next major task.
+2. Validate whether KV/cache reuse, prefix reuse, prefill/decode contention,
+   overload/capacity, and SLO feasibility now create measurable policy-reward
+   separation instead of near-ceiling ANWG ties.
+3. Rerun small controlled subsets from:
+   - V2 real-OOD;
+   - SwissAI;
+   - TraceLab;
+   - SLO/deadline augmentation;
+   - selected frontier/cartography windows.
+4. If controlled reruns show improved, scientifically defensible separation,
+   retrain the 27-policy suitability model with regret/listwise objectives,
+   near-tie handling, uncertainty, and grouped OOD evaluation.
+5. If selector/suitability quality improves, refresh targeted module-credit
+   intervention design using reliable suitability and uncertainty signals.
+6. If module-credit learning beats simple donor-policy baselines, launch only
+   restricted, evidence-guided composition/synthesis.
+7. Compare the final adaptive/synthesized method against fixed policies and
+   external baselines only after the simulator evaluation target is calibrated
+   enough to distinguish meaningful policy behavior.
 
-## Explicit stop conditions
+## Stop Conditions
 
-- Do not scale Dataset v2 generation while OOD/held-out generalization
-  remains negative.
-- Do not claim Selector v2 "beats best fixed" before a clean, leakage-
-  audited held-out result exists.
-- Do not compare the trained selector against the faithful external
-  baselines (Protocol C) before step 6's stop condition is cleared -- that
-  comparison is only meaningful once there is a selector worth comparing.
+- Do not collect more generic datasets as the main next action while
+  simulator/objective saturation is unresolved.
+- Do not retrain selectors on weakly discriminative labels and treat that as
+  progress.
+- Do not launch broad structural synthesis while `COMBINER_TRAINING_SIGNAL =
+  WEAK`.
+- Do not treat SwissAI/TraceLab zero-gain results as natural FIFO optimality.
+- Do not treat synthetic SLO augmentation as natural real-OOD evidence.
+
+## Immediate Development Prompt
+
+Design a bounded simulator calibration/discriminative-power task that:
+
+- identifies the simulator code paths connecting prompt/context/reuse to
+  service time and KV occupancy;
+- defines controlled windows where each intended resource pressure should
+  matter;
+- verifies policy ranking changes under those pressures;
+- preserves ANWG as the primary metric while auditing ceiling behavior;
+- does not change validated historical experiment artifacts.

@@ -1,10 +1,18 @@
 # Composition Implementation Status
 
+> Historical implementation snapshot. The harness remains implemented, but the
+> scientific gate has changed: completed composition/module/simulator evidence
+> now says broad composition should wait for simulator calibration and improved
+> reward separation. See `PROJECT_STATUS.md` and
+> `COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md`.
+
 ## Summary
 
 COMPOSITION_HARNESS_STATUS = READY
 
-The repository now has an experimental, non-production composition harness. Focused tests and the correctness smoke pass through SLURM. The full decisive experiment remains blocked by design until the running Policy Frontier Cartography and Policy Library v2 workflows finish and write final reports.
+The repository has an experimental, non-production composition harness. Focused
+tests and the correctness smoke pass through SLURM. The full decisive experiment
+is blocked by scientific signal quality, not by missing upstream final reports.
 
 ## Implemented
 
@@ -46,9 +54,9 @@ TESTS_RUN = `sbatch tools/composition_harness_tests.sbatch` -> job `1119434`
 
 TESTS_PASSED = 37/37 pytest tests plus composition smoke PASS
 
-UPSTREAM_FRONTIER_STATUS = RUNNING_OR_NOT_FINAL_REPORT_READY
+UPSTREAM_FRONTIER_STATUS = COMPLETE
 
-UPSTREAM_POLICY_LIBRARY_STATUS = RUNNING_OR_NOT_FINAL_REPORT_READY
+UPSTREAM_POLICY_LIBRARY_STATUS = COMPLETE
 
 FULL_COMPOSITION_EXPERIMENT_SUBMITTED = NO
 
@@ -56,16 +64,19 @@ EXPECTED_FULL_EXPERIMENT_COMMAND = `sbatch tools/composition_experiment_when_rea
 
 ## Known Limitations
 
-- The contextual weighting model is a deterministic placeholder until upstream frontier/library outputs are available for development-only training.
+- The contextual weighting model is a deterministic placeholder until
+  simulator-calibrated development evidence is available for training.
 - The component-wise prototype only composes semantics currently supported by `ObservableState` and `Action(admit=...)`.
-- Full 27-policy quantitative complementarity is deferred until Policy Library v2 finishes.
+- Full 27-policy quantitative complementarity should be refreshed after
+  simulator calibration if policy separation improves.
 - No large composition experiment has been launched.
 
 ## Readiness Gate
 
-Run the full experiment only after:
+Run a full experiment only after:
 
-1. `policy_frontier_cartography_20260721T154408Z/reports/FINAL_REPORT.md` exists.
-2. `policy_library_v2_expanded_20260721T171933Z/reports/FINAL_POLICY_LIBRARY_REPORT.md` or `reports/FINAL_REPORT.md` exists.
-3. Composition tests pass.
-4. Expert selection config is frozen from development-only data.
+1. simulator calibration and pressure validation pass;
+2. bounded re-evaluation shows improved, scientifically defensible policy separation;
+3. composition tests pass;
+4. expert selection config is frozen from development-only data;
+5. held-out/OOD labels remain untouched during treatment selection.

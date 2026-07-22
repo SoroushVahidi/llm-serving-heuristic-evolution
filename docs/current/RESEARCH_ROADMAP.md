@@ -1,65 +1,129 @@
 # Research Roadmap
 
-Current roadmap as of 2026-07-21.
+Current roadmap as of 2026-07-22.
 
-## Completed
+## Stage 1 - Repository Consolidation
 
-- Clean leakage-safe Selector Dataset v2 pipeline.
-- Selector v2 OOD diagnosis and fresh OOD evaluation.
-- Selector v3 multi-domain causal-feature workflow.
-- Policy Library v2 implementation with 7 new deployable approximation policies.
-- Composition readiness harness with normalized-rank aggregation and typed module scaffolding.
-- Native Wulver composition falsification pilot.
-- Structural synthesis readiness harness with typed genomes, parent selection, module swaps, conditional composition, crossover, mutation, and frontier scoring.
+Status: current polish pass.
 
-## Running
+Goals:
 
-- Policy Frontier Cartography:
-  `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z`
-- Policy Library v2 Expanded Frontier:
-  `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z`
+- keep validated source code and documentation coherent;
+- preserve negative scientific evidence;
+- make the current bottleneck obvious to the next researcher or agent;
+- avoid changing simulator semantics during documentation cleanup.
 
-Both are protected active experiment roots.
+## Stage 2 - Simulator Calibration and Discriminative-Power Validation
 
-## Pending
+Status: highest priority.
 
-- Final interpretation of frontier cartography.
-- Final interpretation of Policy Library v2 expanded frontier.
-- Full composition experiment only if upstream final reports and development-only gates justify it.
-- Scaled structural synthesis or evolutionary crossover after frontier/Policy Library v2 evidence identifies high-value parent policies and boundary regions.
+Scientific question: can the simulator and ANWG objective translate important
+workload differences into meaningful resource pressure and policy-reward
+separation?
 
-## Decision Gates
+Required subgoals:
 
-### Launch Full Composition Only If
+- strengthen and validate KV/cache coupling;
+- model prefix reuse effects on actual prefill/service cost where justified;
+- strengthen KV occupancy and resource-pressure semantics;
+- validate prefill/decode contention;
+- validate capacity and overload pressure;
+- calibrate SLO feasibility effects;
+- audit ANWG/objective ceiling behavior and decide whether auxiliary metrics are
+  needed in saturated regimes.
 
-- Policy Frontier Cartography and Policy Library v2 final reports both exist.
-- Expert selection can use training/development evidence only.
-- Candidate sparse/contextual or component-wise compositions show a clear reason to beat discrete top-1 selection.
-- Native pilot `NO_GO` is superseded by stronger evidence from completed frontier/library outputs.
+Go/no-go criterion: bounded diagnostic windows should show policy separation
+for scientifically defensible reasons when KV/cache, phase, overload, or SLO
+pressure is intentionally present.
 
-### Stop Naive Composition If
+Compute target: Wulver CPU/Slurm for bounded simulator sweeps; no GPU unless
+real-backend calibration is explicitly part of the task.
 
-- Top-1/discrete selection remains as strong as or stronger than top-k/dense mixtures on held-out meaningful windows.
-- Component-wise composition does not produce unique frontier wins.
-- Improvements are confined to training/validation or near-tie windows.
+## Stage 3 - Small Controlled Re-Evaluation
 
-### Move to Structural Synthesis If
+Status: pending Stage 2.
 
-- Frontier maps identify complementary parent policies and boundary niches.
-- Native or expanded-library evidence suggests rank averaging is too blunt.
-- High-value parent modules can be represented in `SchedulerGenomeV1` exactly or with clear, bounded approximations.
+After simulator fixes, rerun bounded subsets of:
 
-### Expand Simulator Capabilities If
+- V2 real-OOD;
+- SwissAI;
+- TraceLab;
+- SLO/deadline augmentation.
 
-- Important missing policy families require unsupported actions/state, such as cache reuse, cache loading, disaggregated routing, request splitting, exact chunked prefill, or heterogeneous GPU routing.
-- Policy/frontier reports show those missing capabilities plausibly dominate remaining regret.
+Go/no-go criterion: policy separation should improve in the regimes the
+simulator claims to model, without fabricating natural labels that are not
+observed.
 
-### Freeze Selector Work If
+## Stage 4 - Suitability Model Retraining
 
-- Additional domain coverage, expanded causal features, and expanded policy library do not improve robust held-out performance.
-- Local ambiguity or partial observability remains high across strong models.
-- Fixed WSP or another fixed policy remains superior on meaningful fresh OOD evaluations.
+Status: blocked until Stage 3 passes.
 
-## Recommended Next Action
+Use:
 
-Wait for the two active frontier workflows to complete. Then perform Query 3 validation/push if the integration branch is clean, and use the completed frontier reports to decide between full composition, structural symbolic synthesis, or simulator-capability expansion.
+- full 27-policy reward vectors;
+- regret-aware/listwise objectives;
+- near-tie handling;
+- grouped OOD robustness;
+- uncertainty and abstention;
+- synthetic SLO augmentation only as labeled training/regime-probing support.
+
+Go/no-go criterion: learned selectors should capture a meaningful fraction of
+the V2 oracle gain on held-out OOD and improve ranking/suitability quality, not
+only ID top-1 accuracy.
+
+## Stage 5 - Targeted Module-Credit Refresh
+
+Status: blocked until reliable suitability/uncertainty exists.
+
+Use reliable selector uncertainty and suitability vectors to choose:
+
+- states;
+- donor policies;
+- base policies;
+- module types;
+- frontier/pressure regimes.
+
+Go/no-go criterion: the module-credit model must beat simple donor-whole-policy
+and structural-nearest baselines on held-out decision quality.
+
+## Stage 6 - Restricted State-Conditioned Combination/Synthesis
+
+Status: long-term main contribution, not ready for broad launch.
+
+Allowed only when evidence supports:
+
+- donor selection;
+- module transfer;
+- typed module compatibility;
+- restricted structural combinations;
+- simulator pressure that can fairly evaluate the child policy.
+
+Do not use unrestricted structural synthesis while `COMBINER_TRAINING_SIGNAL =
+WEAK` and `COMBINER_EVALUATION_READINESS = NEEDS_SIMULATOR_FIX`.
+
+## Stage 7 - External-Baseline Comparison
+
+Status: pending a validated adaptive/synthesized method.
+
+Compare final methods fairly against external scheduling baselines only after
+the internal evaluation system is calibrated enough to distinguish meaningful
+policy behavior.
+
+## Stage 8 - Real Backend/API Validation
+
+Status: later validation.
+
+Use Azure/Gemini/Cohere or other available backends where scientifically useful
+to validate simulator assumptions and selected policy behaviors. Do not use
+paid APIs or real serving workloads as a substitute for fixing the simulator's
+internal discriminative-power issue.
+
+## Current Stop/Go Summary
+
+- Full composition experiment: **STOP** until simulator calibration and
+  suitability signals improve.
+- Broad structural synthesis: **STOP**.
+- Generic dataset ingestion: **STOP** as a primary next action.
+- Selector retraining: **WAIT** until controlled re-evaluation produces
+  trustworthy reward separation.
+- Simulator calibration/discriminative validation: **GO**.

@@ -2,17 +2,28 @@
 
 This directory is the current source-of-truth navigation layer for the Wulver integration branch. Read these documents in order when picking up the project.
 
+## Current Bottom Line
+
+As of 2026-07-22, the primary bottleneck is **simulator/objective
+discriminative power**, not generic dataset volume, selector model choice, or
+unrestricted structural synthesis. Recent SwissAI and TraceLab sweeps added
+raw workload novelty but collapsed to near-ceiling ANWG and weak policy
+separation. The next major development step is bounded simulator calibration
+and pressure validation before more selector, module-credit, or combiner
+training.
+
 ## Core Current Docs
 
-1. **[REPO_ARCHITECTURE_MAP.md](REPO_ARCHITECTURE_MAP.md)** - current code structure and where the new policy/composition/synthesis modules live.
-2. **[SELECTOR_STATUS.md](SELECTOR_STATUS.md)** - concise Selector v2/v3 status and stop/go interpretation.
-3. **[POLICY_LIBRARY.md](POLICY_LIBRARY.md)** - 27-policy library inventory, v2 additions, and unsupported policy families.
-4. **[POLICY_FRONTIER_STATUS.md](POLICY_FRONTIER_STATUS.md)** - status of active frontier and expanded-library workflows.
-5. **[COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md](COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md)** - implemented composition and structural synthesis architecture.
-6. **[EXPERIMENT_INDEX.md](EXPERIMENT_INDEX.md)** - durable index of major experiment roots, jobs, reports, and conclusions.
-7. **[RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)** - completed/running/pending work and decision gates.
-8. **[ROADMAP_GAP_ANALYSIS.md](ROADMAP_GAP_ANALYSIS.md)** - current bottleneck diagnosis.
-9. **[ACTIVE_EXPERIMENT_PROTECTED_PATHS.md](ACTIVE_EXPERIMENT_PROTECTED_PATHS.md)** - active SLURM roots that must not be modified.
+1. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - canonical current scientific state and bottleneck.
+2. **[RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)** - staged next plan, starting with simulator calibration.
+3. **[ROADMAP_GAP_ANALYSIS.md](ROADMAP_GAP_ANALYSIS.md)** - evidence-ranked bottlenecks.
+4. **[REPO_ARCHITECTURE_MAP.md](REPO_ARCHITECTURE_MAP.md)** - current code structure and where policy/composition/synthesis modules live.
+5. **[SELECTOR_STATUS.md](SELECTOR_STATUS.md)** - selector/suitability status and caveats.
+6. **[POLICY_LIBRARY.md](POLICY_LIBRARY.md)** - 27-policy library inventory, V2 results, and unsupported policy families.
+7. **[COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md](COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md)** - implemented composition and structural synthesis architecture.
+8. **[EXPERIMENT_INDEX.md](EXPERIMENT_INDEX.md)** - durable index of major experiment roots, jobs, reports, and conclusions.
+9. **[POLICY_FRONTIER_STATUS.md](POLICY_FRONTIER_STATUS.md)** - frontier/library workflow summaries.
+10. **[ACTIVE_EXPERIMENT_PROTECTED_PATHS.md](ACTIVE_EXPERIMENT_PROTECTED_PATHS.md)** - protected SLURM roots that must not be modified.
 
 ## Operational Audit Docs
 
@@ -41,4 +52,4 @@ This directory is the current source-of-truth navigation layer for the Wulver in
 
 ## Historical Docs
 
-`docs/README.md` remains the exhaustive historical documentation index. If older current docs such as `PROJECT_STATUS.md`, `ARCHITECTURE.md`, `BASELINES.md`, `SELECTOR_V2.md`, `EXPERIMENTS_AND_RESULTS.md`, `REPRODUCIBILITY.md`, or `NEXT_STEPS.md` disagree with the files listed above, treat the newer Query 2 current docs and the cited experiment final reports as authoritative.
+`docs/README.md` remains the exhaustive historical documentation index. If older current docs such as `ARCHITECTURE.md`, `BASELINES.md`, `SELECTOR_V2.md`, `EXPERIMENTS_AND_RESULTS.md`, `REPRODUCIBILITY.md`, or `NEXT_STEPS.md` disagree with the files listed above, treat this directory's current docs and the cited experiment final reports as authoritative.

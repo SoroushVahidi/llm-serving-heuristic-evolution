@@ -1,5 +1,25 @@
 # Experiments and Results (Canonical)
 
+## Current Wulver Addendum (2026-07-22)
+
+For current Wulver experiment roots and conclusions, prefer
+`EXPERIMENT_INDEX.md`. Since this document was first written, the project has
+completed:
+
+- V2 real-OOD 27-policy library audit: strong V2 oracle-envelope gain.
+- 27-policy selector/regret benchmark: useful suitability signals but OOD
+  oracle-gap capture remains limited.
+- Module intervention/structural credit: sparse positive single-module transfer
+  but weak module-credit generalization.
+- SwissAI staging and 27-policy sweep: novel KV/cache/reuse metadata, but
+  saturated ANWG and zero strict V2 marginal gain.
+- TraceLab staging and 27-policy sweep: novel long-context/agentic/prefix
+  metadata, but saturated ANWG and zero strict V2 marginal gain.
+- SLO/deadline augmentation: useful synthetic pressure and partial class-balance
+  improvement.
+- Simulator discriminative-power audit: current primary bottleneck is
+  simulator/objective reward separation, not generic dataset volume.
+
 ## The three directories, and why they're different
 
 ```
@@ -24,7 +44,7 @@ paths, by contrast, are (mostly) real, cloneable, committed artifacts.
 | Real Sarathi runtime validation | referenced from `docs/wulver_sarathi_vllm_repeated_validation.md` | Partial | Complete (N=5 repeated trials) | Yes, per that doc |
 | Runtime validation benchmark pack | `experiments/runtime_validation_benchmark_pack/` | **Yes** | Complete, checksummed | Yes -- this is the acceptance target for `vllm_chunked_prefill_faithful` |
 | Selector Dataset v2 pilots (v1/redesigned) | `experiments/selector_v2_contention_frontier_search/`, `experiments/selector_v2_slo_calibrated_frontier_search/`, `experiments/selector_v2_faithful_baseline_scope_audit/` | **Yes** | Historical intermediate steps, superseded by the calibrated targeted pilot | Historical only -- cite the superseding doc for current claims |
-| **Selector Dataset v2 calibrated targeted pilot (current)** | `experiments/selector_v2_calibrated_pilot_20260720T163235Z/` | **Partial** -- small provenance/summary/audit files committed, large raw CSVs local-only | Finished; pipeline quality gates passed but a real split-construction leakage bug was independently confirmed (see below) | **No.** Confirmed data-quality problem, not a citable result. See below. |
+| **Selector Dataset v2 calibrated targeted pilot (historical)** | `experiments/selector_v2_calibrated_pilot_20260720T163235Z/` | **Partial** -- small provenance/summary/audit files committed, large raw CSVs local-only | Finished; pipeline quality gates passed but a real split-construction leakage bug was independently confirmed (see below) | **No.** Confirmed data-quality problem, not a citable result. See below. |
 
 ## The calibrated targeted pilot, specifically
 

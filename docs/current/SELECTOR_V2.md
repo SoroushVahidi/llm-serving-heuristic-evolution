@@ -1,5 +1,10 @@
 # Selector v2 (Canonical Synthesis)
 
+> Historical Selector v2 narrative. This document remains useful for objective
+> and leakage history, but it is no longer the current next-action authority.
+> For the current 27-policy selector and simulator-bottleneck interpretation,
+> read `PROJECT_STATUS.md`, `SELECTOR_STATUS.md`, and `ROADMAP_GAP_ANALYSIS.md`.
+
 This is the missing single narrative for Selector v2. The detailed audits
 below are the authoritative source for specifics; this doc's job is to put
 them in order so a new reader doesn't have to reconstruct the sequence from

@@ -1,5 +1,42 @@
 # Result Claims — What We Can and Cannot Claim
 
+## Current Addendum (2026-07-22 Wulver evidence)
+
+These claims are supported by completed Wulver workflows after the 27-policy
+V2 expansion and simulator-discriminative audit:
+
+- "The deployable V2 policy library contains 27 policies: the historical
+  20-policy library plus 7 simulator-compatible V2 policies."
+- "On real-trace OOD policy-vector data, the V2 oracle envelope improves over
+  the V1 envelope by about 0.008904 ANWG, or about 3.54% relative, with 95% CI
+  [0.008191, 0.009646]."
+- "The 27-policy selector benchmark produced useful suitability/ranking
+  signals, but learned top-1 selection did not meaningfully capture the V1-to-V2
+  oracle-envelope gain on held-out OOD."
+- "Single-module interventions produced sparse positive transfer and occasional
+  envelope expansion, but pairwise module combinations did not expand the
+  27-policy envelope and module-credit learning remains weak."
+- "SwissAI and TraceLab add raw workload novelty, but their completed
+  512-window x 27-policy sweeps saturated ANWG and produced zero strict V2
+  marginal oracle gain under the current simulator/objective."
+- "Synthetic SLO/deadline augmentation exposes EDF, SCORPIO/admission, laxity,
+  and deadline competence regimes, but it is synthetic training/regime-probing
+  evidence rather than natural real-OOD evidence."
+- "The current primary bottleneck is simulator/objective discriminative power:
+  KV/cache reuse, long context, prefill/decode structure, and SLO feasibility
+  are not consistently translated into resource pressure and policy-reward
+  separation."
+
+Current unsafe claims:
+
+| Claim | Why unsafe |
+| --- | --- |
+| "The selector problem is solved." | The selector remains below the 27-policy oracle and does not meaningfully capture the V2 OOD oracle gain. |
+| "SwissAI/TraceLab prove FIFO is naturally optimal for long-context or cache-reuse workloads." | Missing/neutral SLOs and weak feature-to-simulator coupling make this underdetermined; the result is stronger evidence of saturation/coupling limits. |
+| "More generic datasets are the next main need." | Raw dataset novelty did not produce policy separation without modeled resource pressure. |
+| "Composition or structural synthesis is ready for broad deployment." | Native composition failed, module-credit learning is weak, and `COMBINER_EVALUATION_READINESS = NEEDS_SIMULATOR_FIX`. |
+| "Synthetic SLO augmentation is real-OOD evidence." | It is intentionally synthetic regime-probing/training support and must remain labeled as such. |
+
 ## Safe claims (Phase 1)
 
 These claims are directly supported by the Phase 1 simulator output:

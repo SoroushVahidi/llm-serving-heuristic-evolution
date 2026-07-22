@@ -1,6 +1,6 @@
 # Policy Library
 
-Current source-of-truth for deployable scheduler policies as of 2026-07-21.
+Current source-of-truth for deployable scheduler policies as of 2026-07-22.
 
 ## Registry Contract
 
@@ -58,8 +58,25 @@ Focused Policy Library v2 validation exists in `tests/test_policy_library_v2.py`
 
 ## Current Scientific Status
 
-Policy Library v2 implementation is present and test-covered. The expanded-library frontier workflow is still running at:
+Policy Library v2 implementation is present and test-covered.
 
-`/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z`
+Completed evidence:
 
-Do not claim whether the expanded library improves the oracle envelope until that workflow writes its final report.
+- Synthetic/frontier V2 expansion was real but modest.
+- The real-trace OOD V2 library audit showed strong oracle-envelope expansion:
+  V1 oracle ANWG `0.251666`, V2 oracle ANWG `0.260571`, absolute gain
+  `0.008904`, relative gain about `3.54%`, CI `[0.008191, 0.009646]`.
+- Several V2 policies contribute genuine competence regions on real-OOD
+  windows.
+- SwissAI and TraceLab did not show strict V2 marginal oracle gain, despite raw
+  KV/cache, long-context, prefix-reuse, and agentic novelty. This is now
+  interpreted as objective/simulator saturation evidence, not as proof that the
+  policy library is useless.
+- SLO/deadline augmentation produced useful incremental support for
+  EDF/SCORPIO/admission/laxity-style behavior, but remains synthetic
+  regime-probing data.
+
+Current implication: policy-library coverage is no longer the primary
+bottleneck. The next issue is whether the simulator/objective creates enough
+pressure and reward separation for these policies to be learned, combined, and
+evaluated fairly.

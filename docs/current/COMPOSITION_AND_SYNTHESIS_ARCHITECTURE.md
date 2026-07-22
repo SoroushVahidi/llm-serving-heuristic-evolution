@@ -6,7 +6,8 @@ This document is the concise source-of-truth overview for the path:
 Policy Library -> Discrete Selection -> Contextual Composition -> Structural Synthesis
 ```
 
-It summarizes what is implemented, what is prototype-only, and what still requires completed experiment outputs.
+It summarizes what is implemented, what is prototype-only, and what is
+currently blocked by simulator/objective discriminative power.
 
 ## Implemented Components
 
@@ -17,7 +18,10 @@ It summarizes what is implemented, what is prototype-only, and what still requir
 - `BASELINE_NAMES`: historical 20-policy library.
 - `POLICY_LIBRARY_V2_NAMES`: historical library plus 7 new deployable approximation policies.
 
-Policy Library v2 is implemented and unit-tested, but its expanded-frontier scientific value is still pending the running SLURM workflow.
+Policy Library v2 is implemented and unit-tested. Real-OOD evidence shows the
+V2 library materially improves the oracle envelope, but SwissAI and TraceLab
+also show that raw workload novelty can collapse to near-tie policy rewards
+under the current simulator/objective.
 
 ### Discrete Selection
 
@@ -97,14 +101,22 @@ This is a prototype, not proof that the component combination is scientifically 
 
 The native pilot found that static/contextual rank mixtures and component-wise composition did not clear the decisive held-out meaningful-window bar against the discrete selector. That argues against launching a full naive composition sweep immediately.
 
-## Dependencies on Running Workflows
+## Current Scientific Status
 
-The full composition experiment should not be launched until both final reports exist:
+The full composition experiment should not be launched from the current
+evidence.
 
-- Policy Frontier Cartography: `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z/reports/FINAL_REPORT.md`
-- Policy Library v2 Expanded Frontier: `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z/reports/FINAL_POLICY_LIBRARY_REPORT.md`
+Completed evidence now indicates:
 
-These outputs are needed to select expert policies, parent pairs, frontier regions, and top-k candidates using development evidence only.
+- naive/native rank composition did not beat discrete selection or expand the
+  frontier;
+- single-module interventions contain sparse positive transfer, but module
+  credit is weakly learnable;
+- pairwise module combinations did not expand the 27-policy envelope;
+- the selector suitability vector is useful but not yet reliable enough for
+  unrestricted donor/module selection;
+- `COMBINER_TRAINING_SIGNAL = WEAK`;
+- `COMBINER_EVALUATION_READINESS = NEEDS_SIMULATOR_FIX`.
 
 ## What Is Not Implemented
 
@@ -122,4 +134,10 @@ Those capabilities require simulator/action-space extensions before they can be 
 
 ## Current Recommendation
 
-Do not launch the full composition sweep solely from the native pilot. The stronger next path is structural symbolic synthesis or targeted evolutionary crossover from high-value parent policies, informed by the still-running frontier and Policy Library v2 results.
+Do not launch broad composition, unrestricted structural synthesis, or
+large-scale module-credit expansion as the next step. First run bounded
+simulator calibration and discriminative-power validation so KV/cache reuse,
+prefill/decode contention, overload, and SLO pressure produce scientifically
+meaningful policy-reward differences. After that, rerun controlled subsets,
+retrain suitability models, and only then resume restricted evidence-guided
+combination/synthesis.
