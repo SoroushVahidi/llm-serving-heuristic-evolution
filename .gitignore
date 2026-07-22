@@ -31,9 +31,17 @@ data/processed/*
 results/*
 !results/.gitkeep
 traces/
+llmserveopt-data/
+hf_cache/
+hf_datasets_cache/
+hf_home/
+dataset_staging/
 
 # Experiment logs (runtime output; not source code)
 logs/
+*.out
+*.err
+*.log
 
 # Raw GPU/server runtime logs under experiments/ -- these are verbose,
 # regeneratable raw stdout, not the canonical result. The small structured
@@ -55,6 +63,12 @@ experiments/**/server.log
 *.ckpt
 *.parquet
 *.cache
+*.duckdb
+*.sqlite
+*.sqlite3
+*.jsonl
+*.jsonl.gz
+*.csv.gz
 
 # Tool caches
 .pytest_cache/

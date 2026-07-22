@@ -152,3 +152,38 @@ unknown (F):                      0
 
 Category C's deletion is the only filesystem change this document produced;
 everything else is documentation of a plan, not an executed action.
+
+## 2026-07-22 Repository Layout Audit Addendum
+
+This polish pass inspected the final integration worktree and did not move or
+delete source scripts. The safest current organization is:
+
+- `src/`: source-of-truth simulator, policies, selector/suitability,
+  composition, genome, and structural-synthesis code.
+- `tests/`: source-of-truth unit and integration tests, including policy
+  library V2, composition, structural synthesis, leakage/splitting, and
+  simulator core tests.
+- `scripts/`: historical and reusable experiment/analysis entrypoints. Many
+  names are phase-specific (`phase2b*`, `phase2c*`, `selector_v2_*`) and should
+  be treated as provenance-preserving scripts rather than current
+  recommendations.
+- `tools/`: Wulver-focused policy-library/composition/native-pilot utilities
+  and sbatch wrappers.
+- `configs/`: reproducible simulator/selector/real-trace configs.
+- `docs/current/`: current source-of-truth status, roadmap, and architecture.
+- `docs/audits/`, `docs/`, and `experiments/`: historical scientific evidence;
+  do not delete simply because later results changed the interpretation.
+
+Cleanup candidates identified but intentionally not changed:
+
+| Area | Classification | Reason |
+| --- | --- | --- |
+| `scripts/run_phase2b*.py`, `scripts/selector_v2_*.py` | Historical/provenance scripts | Names are old but scripts document reproducible historical workflows. Moving them would break references. |
+| `scripts/__pycache__/`, `.pytest_cache/`, package `__pycache__/` | Generated cache | Safe to remove locally; ignored by Git. |
+| Wulver experiment roots under `/mmfs1/project/ikoutis/sv96/llmserveopt-data/` | Scientific evidence | Keep read-only; create derived roots instead of editing in place. |
+| Large local HF caches, dataset staging, Slurm logs | Generated/local artifact | Should remain ignored, not committed. |
+
+Ignore-policy addendum in this pass: `.gitignore` now covers common Wulver/HF
+cache roots, Slurm `*.out`/`*.err`/`*.log` files, local dataset staging
+directories, and large dataset/database formats such as `*.jsonl`,
+`*.jsonl.gz`, `*.csv.gz`, `*.duckdb`, and `*.sqlite*`.
