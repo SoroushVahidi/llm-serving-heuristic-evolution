@@ -13,6 +13,8 @@ from llmserveopt.selector.suitability.selector import (
     joint_select,
     load_policy_families,
     oracle_best,
+    pairwise_structural_distances,
+    structural_distance_vs_performance_disagreement,
     top2_margin,
 )
 
@@ -105,3 +107,28 @@ def test_load_policy_families_is_from_documented_matrix_not_invented():
     assert "edf" in family
     assert set(family).issubset(set(POLICY_LIBRARY_V2_NAMES))
     assert len(family) < len(POLICY_LIBRARY_V2_NAMES)
+
+
+def test_pairwise_structural_distances_symmetric_and_zero_for_identical_genomes():
+    dists = pairwise_structural_distances(["fifo", "first_fit", "edf"])
+    assert set(dists.keys()) == {("fifo", "first_fit"), ("fifo", "edf"), ("first_fit", "edf")}
+    assert all(d >= 0.0 for d in dists.values())
+    # fifo and first_fit are both const(0.0)+arrival_order EXACT genomes --
+    # identical structural feature vectors, zero distance.
+    assert dists[("fifo", "first_fit")] == pytest.approx(0.0, abs=1e-9)
+    assert dists[("fifo", "edf")] > 0.0
+
+
+def test_structural_distance_vs_performance_disagreement_is_correlational_only():
+    rows = _rows_all_27(n_states=10, seed=3)
+    rbs = group_by_state(rows)
+    policies = ["fifo", "first_fit", "edf", "shortest_output_first", "weighted_shortest_processing"]
+    result = structural_distance_vs_performance_disagreement(rbs, policies)
+    assert result["n_pairs"] == len(policies) * (len(policies) - 1) // 2
+    assert result["pearson_correlation"] is not None
+    assert -1.0 <= result["pearson_correlation"] <= 1.0
+    assert "correlational only" in result["note"]
+    assert len(result["closest_pairs"]) <= 5
+    # The identical-genome pair (fifo, first_fit) must be among the closest.
+    closest_pairs = {(p["policy_a"], p["policy_b"]) for p in result["closest_pairs"]}
+    assert ("fifo", "first_fit") in closest_pairs

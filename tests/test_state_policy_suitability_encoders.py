@@ -34,10 +34,10 @@ def test_structural_features_deterministic_across_calls():
 def test_structural_features_distinguish_exact_from_placeholder_policies():
     genomes = genome_table(POLICY_LIBRARY_V2_NAMES)
     wsp = structural_features(genomes["weighted_shortest_processing"])  # EXACT mapping
-    fifo = structural_features(genomes["fifo"])  # UNSUPPORTED placeholder
-    assert wsp != fifo
+    placeholder = structural_features(genomes["greedy_token_fill"])  # UNSUPPORTED placeholder (placement-defined, not representable)
+    assert wsp != placeholder
     assert wsp["struct_num_modules_exact"] >= 1.0
-    assert fifo["struct_num_modules_unsupported"] >= 1.0
+    assert placeholder["struct_num_modules_unsupported"] >= 1.0
 
 
 def test_structural_features_never_include_policy_hash():

@@ -98,3 +98,55 @@ The selection mechanism itself is not the weak point (identity/hybrid selectors 
 2. Re-run held-out-family evaluation with training states disjoint from held-out-family states, to remove the state-difficulty confound.
 3. Re-run at larger scale (more windows) with a *mixed* discriminative/near-tie fixture to test the meaningful-margin and uncertainty-lambda questions this run structurally could not answer.
 4. Re-examine the uncertainty formulation (per-tree variance) at larger training-set sizes before concluding it is or isn't useful for conservative suitability.
+
+---
+
+## Re-Evaluation After Genome Expansion (2026-07-22)
+
+Following recommendation 1 above, `map_policy_to_genome` coverage was expanded from 6/27 to 19/27 policies (10 EXACT + 9 APPROXIMATE), verified by validation, compilation, hash-uniqueness, and (for 4 EXACT mappings) exact behavioral reconstruction-matching against the native policy on real deterministic test states. Full per-policy audit: [POLICY_GENOME_COVERAGE_AUDIT.md](POLICY_GENOME_COVERAGE_AUDIT.md). The experiment was re-run on the same 32-window fixture (identical seed, identical rewards -- only `policy_representation` changed) with held-out policies chosen to cover 5 representative families plus a general baseline, all with faithful (non-placeholder) mappings: `edf` (SLO-aware), `weighted_shortest_processing` (shortest-work), `adaptive_chunked_prefill` (prefill-aware), `kv_constrained_online` (KV-aware), `aging_priority` (fairness/aging), `fifo` (general baseline).
+
+### Reward-prediction quality (unchanged in aggregate)
+
+| Encoding | MAE (before expansion) | MAE (after expansion) |
+|---|---:|---:|
+| Model 1 (identity) | 0.0956 | 0.0956 (unchanged, as expected -- identity doesn't use the genome) |
+| Model 2 (structural only) | 0.2749 | 0.2747 (essentially unchanged) |
+| Model 3 (hybrid) | 0.0902 | 0.0942 (slightly worse) |
+
+**This is an important, honest null result on its own:** expanding genome coverage did *not* improve raw prediction accuracy for the specific policies in this TEST split, because those policies were already well-represented via *identity* (they appear directly in training) -- genome coverage should be judged by held-out-*policy* generalization, not in-sample prediction quality, and the two questions must not be conflated.
+
+### Held-out-policy results (6 policies, all faithfully mapped)
+
+| Held-out policy | Family | Mapping | Hybrid MAE | Nearest-structural-policy MAE | Global-mean MAE |
+|---|---|---|---:|---:|---:|
+| `edf` | SLO-aware | EXACT | 0.155 | 0.120 | 0.373 |
+| `weighted_shortest_processing` | shortest-work | EXACT | 0.047 | 0.000 | 0.284 |
+| `adaptive_chunked_prefill` | prefill-aware | APPROXIMATE | 0.066 | 0.000 | 0.203 |
+| `kv_constrained_online` | KV-aware | APPROXIMATE | 0.097 | 0.002 | 0.284 |
+| `aging_priority` | fairness/aging | APPROXIMATE | 0.149 | 0.078 | 0.286 |
+| `fifo` | general baseline | EXACT | 0.025 | 0.000 | 0.218 |
+
+**Every one of the 6 beats global-mean substantially** (a clean, consistent win, unlike the pre-expansion run where this was only true for 1/3 policies tested). **But the nearest-structural-policy baseline now wins in all 6 cases**, several near-exactly (0.000-0.002) -- because expanding coverage gave the structural feature space many more genuinely similar neighbors to be "nearest" to. This is a real, positive finding about the *structural representation's* informativeness, and a real, honest finding about a *limitation of the specific RF-based hybrid model*: a smoothing ensemble regressor does not automatically exploit a near-perfect single nearest neighbor as sharply as direct nearest-neighbor lookup would. A distance-weighted or k-NN-based suitability model is a concrete candidate for closing this gap -- not attempted here.
+
+### Held-out-family results
+
+Two families evaluated: `slo_deadline_handling` (9/10 members now faithfully mapped, up from ~3/10 before) and `kv_memory_pressure` (mixed coverage, as before). Both show the same pattern as the single-held-out-policy pilots: hybrid clearly beats global mean (0.117 vs 0.260 for `slo_deadline_handling`; 0.111 vs 0.256 for `kv_memory_pressure`), and `scorpio_style_slo_guard` is consistently the worst-generalizing member in both families (hybrid MAE 0.467 and 0.443 respectively) -- a real cross-validation of the single-policy finding, not a coincidence.
+
+### Structural-distance diagnostic (new)
+
+Across all 171 pairs of the 19 faithfully-mapped policies, structural distance and mean-absolute-reward disagreement correlate at **r = 0.559** (Pearson, correlational only -- not a causal claim). The identical-genome pair (`fifo`, `first_fit`) sits at exactly zero distance and zero disagreement; the most structurally distant pairs all involve `scorpio_style_slo_guard` and show the largest disagreement. This is genuine, quantified evidence that the expanded structural feature space captures real behavioral information.
+
+### Answering the four required questions (task §10)
+
+1. **Did broader faithful genome coverage improve structural generalization?** Mixed. The *representation's* informativeness clearly improved (r=0.559 structural-distance correlation; every held-out policy's nearest-neighbor baseline became dramatically stronger). The *trained hybrid model's* own advantage over that baseline did not improve, and in most cases the model no longer beats the nearest-neighbor baseline where it used to (WSP: beat it before, loses to it now that a near-identical neighbor exists).
+2. **Did structural encoding become useful for unseen-policy reward prediction?** Yes, as a *distance metric* (nearest-neighbor baseline). Not yet, as a *feature space fed into an RF regressor* -- the model formulation itself is now a visible bottleneck, not just representation coverage.
+3. **Is the prior `STRUCTURAL_GENERALIZATION_WEAK` result mostly attributable to poor representation coverage?** Partially. Coverage was clearly *a* factor (the nearest-neighbor evidence is unambiguous), but not the whole story: `scorpio_style_slo_guard`'s APPROXIMATE mapping still fails to generalize regardless of how much coverage exists elsewhere, and the joint hybrid model's relative advantage over simple baselines did not improve with more coverage.
+4. **Does weak structural transfer persist despite better coverage?** Yes, specifically in the *modeling* sense: the RF-based joint hybrid regressor still does not reliably outperform a much simpler nearest-structural-neighbor copy baseline, even though the underlying structural representation is now demonstrably more informative (both by the nearest-neighbor evidence and the r=0.559 distance-disagreement correlation).
+
+### POLICY_GENOME_STATUS = PARTIAL_BUT_USEFUL
+
+19/27 (70.4%) faithful coverage, verified (not merely claimed) via validation, compilation, hash-uniqueness, and behavioral reconstruction-matching for the simplest EXACT cases. Not `STRONG_COVERAGE` (8/27 remain genuinely unmappable given documented DSL constraints -- fixed placement strategy, determinism, variable whitelist). Not weak either: the coverage increase produced a measurable, real improvement in structural-distance informativeness (r=0.559, dramatically stronger nearest-neighbor baselines), which is exactly the kind of evidence "useful" should require.
+
+### STRUCTURAL_GENERALIZATION_STATUS = IMPROVED_BUT_WEAK
+
+Not `STILL_WEAK` -- there is genuine, measurable improvement in the structural representation itself (§ diagnostics above), which was absent before. Not `IMPROVED_STRONG_SIGNAL` -- the specific joint suitability model (RF-based hybrid regression) implemented so far does not yet reliably capitalize on that improved representation; it now loses to a naive nearest-structural-neighbor baseline in cases where, before this expansion, it used to win. The bottleneck has shifted from "representation coverage" to "model formulation" -- a distance-aware or k-NN-augmented suitability model is the concrete next candidate, not attempted in this pass.
