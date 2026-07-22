@@ -31,9 +31,14 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from llmserveopt.core.types import GPUConfig  # noqa: E402
-from llmserveopt.policies.registry import BASELINE_NAMES  # noqa: E402
-from llmserveopt.selector.advanced import PolicyRewardRegressorSelector, anwg_column  # noqa: E402
-from llmserveopt.selector.dataset_v2.builder import run_candidate_policy_on_window  # noqa: E402
+from llmserveopt.evaluation.run_policy import run_policy  # noqa: E402
+from llmserveopt.policies.registry import POLICY_LIBRARY_V2_NAMES, make_policy_library_v2  # noqa: E402
+from llmserveopt.selector.advanced import (  # noqa: E402
+    PolicyRewardRegressorSelector,
+    anwg_column,
+    validate_feature_columns,
+)
+from llmserveopt.selector.dataset_v2.builder import metrics_to_outcome_vector  # noqa: E402
 from llmserveopt.selector.dataset_v2.features import extract_selector_v2_features  # noqa: E402
 from llmserveopt.selector.windows import make_windows  # noqa: E402
 from llmserveopt.simulator.service_model import ServiceModel  # noqa: E402
@@ -52,6 +57,46 @@ DEFAULT_POLICIES = (
     "scorpio_style_slo_guard",
     "weighted_shortest_processing",
 )
+
+# The full 27-policy deployable registry (20 historical + 7 Policy Library
+# v2), for the integrated smoke test -- see test_local_e2e_smoke.py.
+FULL_POLICY_LIBRARY_V2 = tuple(POLICY_LIBRARY_V2_NAMES)
+
+
+def run_policy_library_v2_candidate_on_window(
+    policy_name: str,
+    requests: Sequence,
+    gpu_configs: List[GPUConfig],
+    service_model: ServiceModel,
+    workload_tag: str,
+    seed: int,
+    drain_steps: int,
+):
+    """Same shape as builder.run_candidate_policy_on_window, but resolves
+    across the full 27-policy registry (historical + Policy Library v2) via
+    registry.make_policy_library_v2, instead of builder's
+    candidates.make_candidate_policy (historical + external baselines only,
+    no Policy Library v2 support). Kept local to this smoke script rather
+    than changing the shared Selector Dataset v2 builder/candidates path,
+    which active Wulver pilots depend on."""
+    policy = make_policy_library_v2(policy_name, seed=seed)
+    counts = {"admit": 0, "preempt": 0, "swap": 0, "migrate": 0}
+    orig_select_action = policy.select_action
+
+    def counting_select_action(state):
+        action = orig_select_action(state)
+        counts["admit"] += sum(len(v) for v in action.admit.values())
+        counts["preempt"] += sum(len(v) for v in action.preempt.values())
+        counts["swap"] += sum(len(v) for v in action.swap.values())
+        counts["migrate"] += sum(len(v) for v in action.migrate.values())
+        return action
+
+    policy.select_action = counting_select_action
+    metrics = run_policy(
+        policy=policy, requests=requests, gpu_configs=gpu_configs, service_model=service_model,
+        workload_tag=workload_tag, seed=seed, drain_steps=drain_steps,
+    )
+    return metrics_to_outcome_vector(policy_name, metrics, counts, gpu_count=len(gpu_configs))
 
 
 def chronological_split_labels(n_windows: int, train_frac: float, val_frac: float) -> List[str]:
@@ -216,7 +261,7 @@ def main() -> int:
     parser.add_argument("--n-estimators", type=int, default=50)
     args = parser.parse_args()
 
-    invalid = sorted(set(args.policies) - set(BASELINE_NAMES))
+    invalid = sorted(set(args.policies) - set(POLICY_LIBRARY_V2_NAMES))
     if invalid:
         raise SystemExit(f"Unknown or non-deployable policies: {invalid}")
 
@@ -278,7 +323,7 @@ def main() -> int:
         window_rows.append(window_row)
 
         for policy in args.policies:
-            outcome = run_candidate_policy_on_window(
+            outcome = run_policy_library_v2_candidate_on_window(
                 policy,
                 window.requests,
                 gpu_configs,
@@ -309,7 +354,7 @@ def main() -> int:
     label_rows = windows_df.copy()
     for policy in args.policies:
         label_rows[anwg_column(policy)] = label_rows["window_idx"].map(anwg_wide[policy])
-    feature_cols = sorted(col for col in label_rows.columns if col.startswith("feat_"))
+    feature_cols = validate_feature_columns(sorted(col for col in label_rows.columns if col.startswith("feat_")))
     label_rows[feature_cols] = label_rows[feature_cols].apply(pd.to_numeric, errors="coerce").fillna(0.0)
     train_rows = label_rows[label_rows["split"] == "TRAIN"]
 

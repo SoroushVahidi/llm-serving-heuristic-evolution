@@ -48,7 +48,7 @@ from ...policies.external_baselines_registry import (
     get_external_baseline_spec,
     make_external_baseline,
 )
-from ...policies.registry import BASELINE_NAMES, make_policy
+from ...policies.registry import BASELINE_NAMES, POLICY_LIBRARY_V2_NEW_NAMES, make_policy
 
 #: Monolithic-topology-compatible external baselines (see
 #: docs/external_baseline_integration.md §1 -- exactly `vllm_faithful`/
@@ -194,10 +194,13 @@ def candidate_policies_for_topology(topology_class: str) -> List[str]:
 
 def fidelity_class_of(policy_name: str) -> str:
     """'faithful' | 'paper_reimplementation' for an external baseline,
-    'historical' for anything in registry.py's BASELINE_NAMES."""
+    'historical' for anything in registry.py's BASELINE_NAMES or the
+    Policy Library v2 additions (POLICY_LIBRARY_V2_NEW_NAMES) -- both are
+    internal/historical-style implementations, not faithful external
+    reimplementations."""
     if policy_name in EXTERNAL_BASELINE_NAMES:
         return get_external_baseline_spec(policy_name).fidelity_class.value
-    if policy_name in BASELINE_NAMES:
+    if policy_name in BASELINE_NAMES or policy_name in POLICY_LIBRARY_V2_NEW_NAMES:
         return "historical"
     raise KeyError(f"'{policy_name}' is neither an external baseline nor a historical BASELINE_NAMES entry.")
 
