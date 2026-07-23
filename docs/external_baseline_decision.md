@@ -5,6 +5,24 @@
 **Branch:** `phase2b9-selector-robustness-and-suite-freeze`  
 **Purpose:** Decisive, publication-oriented specification of which external baselines to implement, cite, or skip for the first paper submission.
 
+> **Addendum (post-2026-07-22): SLAI/RAD identity finding.** This document
+> predates a live-research finding made while implementing `slai_faithful`
+> (see `docs/slai_faithful_scheduler_reference.md`): **SLAI and RAD are the
+> two schedulers introduced by the same paper** — Bari, Hegde, de Veciana,
+> "Optimal Scheduling Algorithms for LLM Inference: Theory and Practice"
+> (ACM SIGMETRICS 2026 / arXiv:2508.01002) — with official Apache-2.0 code
+> at `github.com/agrimUT/SLAI`. This document does not mention SLAI/RAD at
+> all (they postdate 2026-06-25); nothing here is contradicted, but a
+> future "must-add" pass should note that `slai_faithful` is now
+> **implemented** (§ new row not added to the table below to avoid
+> rewriting a dated decision record — see `docs/current/BASELINES.md`
+> instead for the current, live external-baseline inventory). Separately:
+> while researching this, the "PROSERVE (2024)" and "Jaillet et al. (2024)"
+> citations in §B.3/B.5 below were found to have the wrong year — the real
+> papers are arXiv:2512.12928 (Dec 2025) and arXiv:2502.07115 (Feb 2025)
+> respectively. Not corrected here (out of scope for the SLAI work), but
+> flagged so a future citation-accuracy pass catches it.
+
 ---
 
 ## A. Already Implemented Deployable Baselines

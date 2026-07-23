@@ -42,8 +42,11 @@ def test_historical_registry_has_20_policies():
     assert len(BASELINE_NAMES) == 20
 
 
-def test_external_baseline_registry_has_6_baselines():
-    assert len(EXTERNAL_BASELINE_NAMES) == 6
+def test_external_baseline_registry_has_7_baselines():
+    # Was 6 prior to slai_faithful's addition (see
+    # docs/slai_faithful_scheduler_reference.md) -- a deliberate,
+    # documented increment, not a silent drift.
+    assert len(EXTERNAL_BASELINE_NAMES) == 7
 
 
 def test_option_b_is_exactly_the_approved_8_policies():
@@ -70,9 +73,22 @@ def test_option_b_is_a_strict_subset_of_the_diagnostic_pool():
     )
 
 
-def test_diagnostic_pool_unchanged_at_11_historical_plus_3_external():
+def test_diagnostic_pool_at_11_historical_plus_4_external():
+    # MONOLITHIC_DIAGNOSTIC_POLICY_POOL (alias of
+    # STRONG_HISTORICAL_MONOLITHIC_POLICIES) is purely historical and
+    # untouched by external-baseline registrations -- stays at 11.
+    # monolithic_candidate_policies() is the FUNCTION that additionally
+    # merges in MONOLITHIC_EXTERNAL_BASELINES, which auto-derives from
+    # EXTERNAL_BASELINE_NAMES filtered by topology_class == MONOLITHIC (see
+    # candidates.py); adding slai_faithful (also MONOLITHIC) grew that from
+    # 3 to 4 external baselines automatically -- a deliberate, expected
+    # consequence of registering a new monolithic-topology external
+    # baseline, not a regression. This is an evaluation-time diagnostic
+    # pool, NOT the trainable selector action space (see test_option_b_*
+    # below, which remain unaffected: Option B is a fixed 8-name
+    # historical-only list).
     assert len(MONOLITHIC_DIAGNOSTIC_POLICY_POOL) == 11
-    assert len(monolithic_candidate_policies()) == 14
+    assert len(monolithic_candidate_policies()) == 11 + 4
 
 
 def test_calibrated_pilot_imports_the_canonical_option_b_constant():

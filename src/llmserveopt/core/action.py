@@ -42,6 +42,31 @@ GPU is rejected. Defaults to empty; every pre-existing policy (including
 vllm_faithful/sarathi_faithful/distserve_faithful/
 tetriinfer_paper_reimplementation) leaves it empty, so behavior is
 completely unchanged for them.
+
+`hold_decode` (added for the slai_faithful baseline; see
+docs/slai_faithful_scheduler_reference.md) is a fifth, narrowly-scoped verb:
+it maps each GPU ID to a list of currently-ACTIVE, currently-DECODING
+request IDs whose decode-iteration should be SKIPPED this step only. Unlike
+`preempt`/`swap`/`migrate`, a held request is not evicted at all: it stays
+active on the same GPU, keeps its KV/slot reservation, keeps its queue
+position, and its `tokens_decoded`/`first_token_time` are left completely
+untouched for this step -- it simply produces no output token this
+iteration, and the token-budget slot it would have consumed becomes
+available for prefill instead (see GPUState._advance_decode_protected /
+_advance_shared_contention). This is the "decode deferral" primitive the
+pinned SLAI reference's last-schedulable-time mechanism requires: SLAI
+decides, per decode-phase request, whether it is "critical" (must run now)
+or "non-critical" (safe to defer to a later batch) based on that request's
+own TBT deadline -- something neither of the simulator's two existing
+GLOBAL execution models (decode-protected / shared-contention, see
+ServiceModel.enable_decode_prefill_contention) can express, since both
+apply one uniform rule to the whole decoding population rather than a
+per-request policy decision. Defaults to empty; every pre-existing policy
+leaves it empty, so behavior is completely unchanged for them. A request
+named here that is not currently active+decoding on that GPU by the time
+`Simulator._advance_decode` runs (e.g. because it was also preempted/
+swapped/migrated by the same Action, or already completed) is silently
+ignored -- there is nothing to hold.
 """
 from __future__ import annotations
 
@@ -55,6 +80,7 @@ class Action:
     preempt: Dict[int, List[int]] = field(default_factory=dict)
     swap: Dict[int, List[int]] = field(default_factory=dict)
     migrate: Dict[int, List[Tuple[int, int]]] = field(default_factory=dict)
+    hold_decode: Dict[int, List[int]] = field(default_factory=dict)
 
     def all_admitted_ids(self) -> Set[int]:
         ids: Set[int] = set()
@@ -80,12 +106,19 @@ class Action:
             ids.update(rid for rid, _dest_gpu_id in pairs)
         return ids
 
+    def all_held_decode_ids(self) -> Set[int]:
+        ids: Set[int] = set()
+        for req_list in self.hold_decode.values():
+            ids.update(req_list)
+        return ids
+
     def is_empty(self) -> bool:
         return (
             all(len(v) == 0 for v in self.admit.values())
             and all(len(v) == 0 for v in self.preempt.values())
             and all(len(v) == 0 for v in self.swap.values())
             and all(len(v) == 0 for v in self.migrate.values())
+            and all(len(v) == 0 for v in self.hold_decode.values())
         )
 
     def __repr__(self) -> str:
@@ -93,6 +126,7 @@ class Action:
         total_preempted = sum(len(v) for v in self.preempt.values())
         total_swapped = sum(len(v) for v in self.swap.values())
         total_migrated = sum(len(v) for v in self.migrate.values())
+        total_held = sum(len(v) for v in self.hold_decode.values())
         extra = ""
         if total_preempted:
             extra += f", total_preempted={total_preempted}, preempt={self.preempt}"
@@ -100,6 +134,8 @@ class Action:
             extra += f", total_swapped={total_swapped}, swap={self.swap}"
         if total_migrated:
             extra += f", total_migrated={total_migrated}, migrate={self.migrate}"
+        if total_held:
+            extra += f", total_held={total_held}, hold_decode={self.hold_decode}"
         if extra:
             return f"Action(total_admitted={total}, by_gpu={self.admit}{extra})"
         return f"Action(total_admitted={total}, by_gpu={self.admit})"

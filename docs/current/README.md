@@ -2,6 +2,14 @@
 
 This directory is the current source-of-truth navigation layer for the Wulver integration branch. Read these documents in order when picking up the project.
 
+## Project Paused 2026-07-23 — Read This First
+
+The project is paused for potentially several months as of 2026-07-23.
+**[PROJECT_HANDOFF_2026-07-23.md](PROJECT_HANDOFF_2026-07-23.md)** is the
+durable resume-from-scratch handoff document — read it before anything else
+below, including before `PROJECT_STATUS.md`. Machine-readable companion:
+**[project_handoff_state.json](project_handoff_state.json)**.
+
 ## Current Bottom Line
 
 As of 2026-07-22, the primary bottleneck is **simulator/objective

@@ -27,7 +27,7 @@ every commit; re-run `--collect-only` for the current count.
 | Pattern | Covers |
 |---|---|
 | `test_phase2a*`, `test_phase2b*`, `test_phase2c*` | Historical, phase-numbered regression tests. Still run, still pass, document a specific completed research phase -- see `docs/audits/` for the corresponding write-up. |
-| `test_*_faithful_scheduler.py`, `test_external_baseline_integration.py`, `test_run_vllm_external_baseline_comparison.py` | The 6 faithful external baselines: scheduler correctness, integration harness, real-serving comparison. Largest category by test count. |
+| `test_*_faithful_scheduler.py`, `test_external_baseline_integration.py`, `test_run_vllm_external_baseline_comparison.py` | The 7 faithful external baselines: scheduler correctness, integration harness, real-serving comparison. Largest category by test count. |
 | `test_selector_*.py`, `test_rule_based_selector.py` | Selector v1: features, labels, models, no-leakage checks. |
 | `test_selector_dataset_v2.py`, `test_phase2c_labeled_selector_dataset.py`, `test_selector_v2_candidate_source_of_truth.py` | Selector v2: Dataset v2 builder/schema/candidates, and the source-of-truth invariant tests for the Option B action space. |
 | `test_calibration_gpu.py`, `test_gpu_external_validity_audit.py` | GPU-marked (`@pytest.mark.gpu`), skip cleanly without CUDA. |

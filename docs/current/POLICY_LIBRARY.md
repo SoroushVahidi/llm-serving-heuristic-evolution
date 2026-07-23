@@ -17,6 +17,8 @@ Current counts:
 
 The 7 Policy Library v2 policies are registered through `make_policy_library_v2()` but are intentionally not appended to `BASELINE_NAMES`, because historical Selector v2 tests and documentation pin that library at 20 policies.
 
+**Scope note:** this document covers only `BASELINE_NAMES`/`POLICY_LIBRARY_V2_NAMES` (deployable, selector-eligible-or-was-considered policies). The 7 *faithful external baselines* (`vllm_faithful`, `sarathi_faithful`, `distserve_faithful`, `tetriinfer_paper_reimplementation`, `llumnix_faithful`, `vllm_chunked_prefill_faithful`, `slai_faithful`) are a deliberately separate registry (`external_baselines_registry.py`) and are documented in `docs/current/BASELINES.md` §C-E, not here. Combined total across both registries: 20 + 7 + 7 = 34 (see `docs/current/BASELINES.md`'s exact-count summary).
+
 ## Policy Library v2 Additions
 
 | Policy | Behavioral family | Main causal inputs | Literature status | Composition compatibility | Deployability |

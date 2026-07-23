@@ -1,0 +1,133 @@
+{
+  "generated_at": "2026-07-23T00:00:00Z",
+  "repo_path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration",
+  "branch": "wulver-final-integration-20260721",
+  "head_sha": "d1d5f12a0752a061e563f87dcf3e3289bee2e4bb",
+  "upstream": "origin/wulver-final-integration-20260721",
+  "ahead": 2,
+  "behind": 0,
+  "working_tree_clean": false,
+  "modified_files": [
+    "docs/current/ARCHITECTURE.md",
+    "docs/current/BASELINES.md",
+    "docs/current/POLICY_LIBRARY.md",
+    "docs/external_baseline_decision.md",
+    "src/llmserveopt/core/action.py",
+    "src/llmserveopt/evaluation/external_baseline_configs.py",
+    "src/llmserveopt/policies/external_baselines_registry.py",
+    "src/llmserveopt/simulator/gpu.py",
+    "src/llmserveopt/simulator/simulator.py",
+    "tests/README.md",
+    "tests/test_external_baseline_integration.py",
+    "tests/test_faithful_baseline_scope_audit.py",
+    "tests/test_selector_v2_candidate_source_of_truth.py"
+  ],
+  "untracked_files": [
+    "docs/slai_faithful_scheduler_reference.md",
+    "src/llmserveopt/policies/slai_faithful.py",
+    "tests/test_simulator_decode_hold.py",
+    "tests/test_slai_faithful_scheduler.py"
+  ],
+  "other_worktree": {
+    "path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution",
+    "branch": "wulver-policy-composition-readiness",
+    "note": "Linked worktree sharing the same .git; NOT authoritative for this handoff; has its own unrelated uncommitted changes."
+  },
+  "total_policy_count": 34,
+  "policy_count_breakdown": {
+    "historical_internal": 20,
+    "policy_library_v2_additions": 7,
+    "faithful_external_baselines": 7,
+    "oracle_reference_only": 1
+  },
+  "selector_candidate_count": 20,
+  "faithful_external_baseline_count": 7,
+  "faithful_external_baseline_names": [
+    "vllm_faithful",
+    "vllm_chunked_prefill_faithful",
+    "sarathi_faithful",
+    "distserve_faithful",
+    "tetriinfer_paper_reimplementation",
+    "llumnix_faithful",
+    "slai_faithful"
+  ],
+  "latest_selector_status": "USEFUL_NOT_SOLVED; frozen for retraining pending simulator calibration (see docs/current/SELECTOR_STATUS.md)",
+  "latest_selector_artifact_path": null,
+  "primary_datasets": {
+    "azure": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/selector_v2_overnight_20260720T235405/processed/azure",
+      "in_repo_loader": true,
+      "known_saturation_risk": true
+    },
+    "burstgpt": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/selector_v2_overnight_20260720T235405/processed/burstgpt",
+      "in_repo_loader": true,
+      "known_saturation_risk": true
+    },
+    "swissai": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_trace_staging_20260722T172215Z",
+      "in_repo_loader": false,
+      "known_saturation_risk": true,
+      "token_field_availability": "prompt_tokens/output_tokens 0% populated; bucket-proxy only"
+    },
+    "tracelab": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/tracelab_staging_20260722T192050Z",
+      "in_repo_loader": false,
+      "known_saturation_risk": "saturated in full 512-window sweep; showed differentiation in this session's small pilot",
+      "max_window_size": 128
+    }
+  },
+  "latest_slai_status": {
+    "upstream_repo": "github.com/agrimUT/SLAI",
+    "pinned_commit": "5098a7aba05e3edbcfa3a509d6cc9cd248fc4380",
+    "license": "Apache-2.0",
+    "implemented": true,
+    "tests_passing": true,
+    "bounded_pilot_oracle_envelope_gain": 0.0,
+    "full_sweep_recommendation": "NO_GO",
+    "rad_status": "theoretical_reference_only_not_implemented"
+  },
+  "latest_slai_pilot_path": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/slai_faithful_bounded_pilot_20260723T033609Z",
+  "latest_slai_pilot_job_id": "1129769",
+  "latest_full_test_result": {
+    "passed": 2501,
+    "skipped": 88,
+    "deselected": 26,
+    "failed": 0,
+    "exit_code": 0,
+    "scope": "full non-hardware suite, tested the new Action.hold_decode primitive prior to slai_faithful's own addition",
+    "durable_provenance_doc": "docs/current/PAUSE_PROVENANCE_2026-07-23.md",
+    "reproduction_command": "PYTHONPATH=src python -m pytest tests/ -q --deselect tests/test_compare_simulator_to_real_llm_latency.py --deselect tests/test_calibration_gpu.py --deselect tests/test_gpu_external_validity_audit.py",
+    "original_ephemeral_log_path_may_not_exist": "/tmp/claude-511190/-mmfs1-home-sv96/a2c3b791-b7e9-4e13-b4bb-8007e812fe25/scratchpad/full_test_run_final.log",
+    "log_path_is_durable": false
+  },
+  "major_open_problems": [
+    "Simulator/objective discriminative power (standing #1 project bottleneck, independently reconfirmed by the SLAI bounded pilot)",
+    "No frozen selector artifact exists on disk anywhere",
+    "SLAI shows zero oracle-envelope gain and loses on the one loaded dataset tested (NO_GO for full sweep)",
+    "Composition/synthesis is infrastructure-ready but scientifically unvalidated (NO_GO from native pilot)",
+    "No real-hardware cross-check for slai_faithful against upstream",
+    "10 stale, permanently-blocked (DependencyNeverSatisfied) Slurm jobs remain queued from already-completed experiments -- safe to cancel, not yet done"
+  ],
+  "recommended_next_step": "Realistic load calibration (Stage 2 of docs/current/RESEARCH_ROADMAP.md) before any further selector, baseline, or composition work -- including before re-attempting the SLAI full sweep.",
+  "worktree_status": {
+    "verified_2026-07-23": true,
+    "unique_work_at_risk": false,
+    "note": "Full audit of the other linked worktree (wulver-policy-composition-readiness) found every uncommitted difference is either byte-identical to what's already committed on the authoritative branch, or a strictly older/superseded draft (confirmed via mtime + line-count + diff for all 7 differing files). No reconciliation is required. See PROJECT_HANDOFF_2026-07-23.md's WORKTREE_WARNING section for full detail."
+  },
+  "authoritative_docs": [
+    "docs/current/README.md",
+    "docs/current/PROJECT_HANDOFF_2026-07-23.md",
+    "docs/current/PAUSE_PROVENANCE_2026-07-23.md",
+    "docs/current/project_handoff_state.json",
+    "docs/current/PROJECT_STATUS.md",
+    "docs/current/SELECTOR_STATUS.md",
+    "docs/current/POLICY_LIBRARY.md",
+    "docs/current/BASELINES.md",
+    "docs/current/EXPERIMENT_INDEX.md",
+    "docs/current/RESEARCH_ROADMAP.md",
+    "docs/current/ROADMAP_GAP_ANALYSIS.md",
+    "docs/current/COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md",
+    "docs/slai_faithful_scheduler_reference.md"
+  ]
+}

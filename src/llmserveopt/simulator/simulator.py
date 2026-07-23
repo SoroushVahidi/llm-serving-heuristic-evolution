@@ -176,7 +176,7 @@ class Simulator:
             self._apply_action(action)
 
             # --- 5. Advance decode ---
-            step_completed = self._advance_decode()
+            step_completed = self._advance_decode(action)
             self._completed.extend(step_completed)
 
             # --- 5b. Collect any disaggregated prefill->decode handoffs
@@ -627,14 +627,22 @@ class Simulator:
 
         return migrated_ids
 
-    def _advance_decode(self) -> List[CompletedRequest]:
+    def _advance_decode(self, action: Action) -> List[CompletedRequest]:
+        """Advance every GPU by one step, respecting `action.hold_decode`
+        (see Action's docstring and docs/slai_faithful_scheduler_reference.md).
+        A no-op lookup whenever action.hold_decode is empty -- true for
+        every policy except slai_faithful, so behavior is completely
+        unchanged for them (GPUState.step's held_decode_ids defaults to an
+        empty frozenset, identical to calling it with no argument at all)."""
         completed: List[CompletedRequest] = []
         step_end_time = (self._step + 1) * self.config.service_model.step_size
         for g in self._gpus:
+            held_ids = action.hold_decode.get(g.gpu_id)
             completed.extend(
                 g.step(
                     current_time=step_end_time,
                     service_model=self.config.service_model,
+                    held_decode_ids=frozenset(held_ids) if held_ids else frozenset(),
                 )
             )
         return completed

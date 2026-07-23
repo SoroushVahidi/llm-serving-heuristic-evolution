@@ -24,7 +24,7 @@ docs/distserve_faithful_scheduler_reference.md)
 from __future__ import annotations
 
 import warnings
-from typing import Dict, List, Optional
+from typing import Dict, FrozenSet, List, Optional
 
 from ..core.types import CompletedRequest, GPUConfig, ObservableGPUState, ObservableRequest
 from .constraints import check_admission, incremental_feasible
@@ -216,6 +216,7 @@ class GPUState:
         self,
         current_time: float,
         service_model: Optional[ServiceModel] = None,
+        held_decode_ids: FrozenSet[int] = frozenset(),
     ) -> List[CompletedRequest]:
         """Advance one simulation step.  Returns newly completed requests.
 
@@ -225,21 +226,35 @@ class GPUState:
         When enable_prefill_modeling=True:
             prefilling requests consume token budget;
             decoding requests each produce one output token.
+
+        `held_decode_ids` (added for the slai_faithful baseline; see
+        Action's docstring and docs/slai_faithful_scheduler_reference.md):
+        request IDs to skip this step -- they remain ACTIVE and DECODING,
+        unchanged, simply producing no token this iteration. Defaults to an
+        empty frozenset, identical to omitting the argument entirely, so
+        every pre-existing caller (which never passes this) is completely
+        unaffected.
         """
         if service_model is None or not service_model.enable_prefill_modeling:
-            return self._step_phase1(current_time)
-        return self._step_phase15(current_time, service_model)
+            return self._step_phase1(current_time, held_decode_ids)
+        return self._step_phase15(current_time, service_model, held_decode_ids)
 
     # ------------------------------------------------------------------ #
     # Internal step implementations
     # ------------------------------------------------------------------ #
 
-    def _step_phase1(self, current_time: float) -> List[CompletedRequest]:
-        """Original Phase 1 step: every active request advances by 1 decode token."""
+    def _step_phase1(
+        self, current_time: float, held_decode_ids: FrozenSet[int] = frozenset(),
+    ) -> List[CompletedRequest]:
+        """Original Phase 1 step: every active request advances by 1 decode
+        token, except any in `held_decode_ids` (empty for every policy other
+        than slai_faithful -- see `step`'s docstring)."""
         completed: List[CompletedRequest] = []
         to_remove: List[int] = []
 
         for rid, req in self._active.items():
+            if rid in held_decode_ids:
+                continue
             done = req.advance_decode(current_time)
             if done:
                 req.phase = RequestPhase.COMPLETED
@@ -263,7 +278,10 @@ class GPUState:
         return completed
 
     def _step_phase15(
-        self, current_time: float, service_model: ServiceModel
+        self,
+        current_time: float,
+        service_model: ServiceModel,
+        held_decode_ids: FrozenSet[int] = frozenset(),
     ) -> List[CompletedRequest]:
         """Phase 1.5 step: separate prefill / decode phases with token budget.
 
@@ -284,22 +302,32 @@ class GPUState:
           consumed by decode and prefill together in FCFS-by-arrival-time
           order (vLLM v0.4.2 `_schedule_running`-style contention, no
           decode-priority phase).
+
+        `held_decode_ids` (see `step`'s docstring): decoding requests named
+        here are excluded from BOTH execution models' token-consuming
+        advance loop entirely -- they stay active, KV/slot reservation
+        untouched, and free their 1-token budget slot for prefill's
+        benefit. Empty for every policy other than slai_faithful.
         """
         prefilling = [r for r in self._active.values() if r.is_prefilling]
         decoding = [r for r in self._active.values() if r.is_decoding]
         # Diagnostic-only before-snapshot (see contention_diagnostics.py) --
         # taken here, before dispatch, so it is identical regardless of
-        # which execution model runs.
+        # which execution model runs. Deliberately uses the FULL `decoding`
+        # list (including held requests): a held request naturally shows up
+        # as "served=0" below, i.e. correctly counted as deferred.
         decode_tokens_before = {r.request_id: r.tokens_decoded for r in decoding}
         prefill_remaining_before = {r.request_id: r.prefill_remaining for r in prefilling}
 
+        decoding_active = [r for r in decoding if r.request_id not in held_decode_ids]
+
         if service_model.enable_decode_prefill_contention and not service_model.decode_first:
             completed, to_remove, handoff_ids = self._advance_shared_contention(
-                current_time, service_model, prefilling, decoding
+                current_time, service_model, prefilling, decoding_active
             )
         else:
             completed, to_remove, handoff_ids = self._advance_decode_protected(
-                current_time, service_model, prefilling, decoding
+                current_time, service_model, prefilling, decoding_active
             )
 
         self._record_contention_diagnostics(

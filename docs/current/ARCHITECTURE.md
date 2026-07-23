@@ -60,7 +60,7 @@ workload (synthetic generator or real-trace loader)
   `gpu.py` needs no branching.
 - **`KVBlockSpaceManager`** (`simulator/kv_block_manager.py`): from-scratch
   reimplementation of vLLM v0.1.0's paged-KV block manager. Opt-in --
-  consumed only by the 6 faithful baseline policies. Every other policy uses
+  consumed only by the 7 faithful baseline policies. Every other policy uses
   a simpler legacy scalar KV model (`GPUConfig.max_kv_tokens`). **Two
   parallel, non-interoperating KV accounting systems coexist by design.**
 - **External baseline registry** (`policies/external_baselines_registry.py`):

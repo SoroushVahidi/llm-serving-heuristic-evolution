@@ -1,7 +1,17 @@
 # Project Status
 
-**Canonical current-state document.** Historical reports remain valuable, but
-this file is the source of truth for deciding what to do next.
+> **Project paused 2026-07-23.** This file remains accurate for everything
+> it covers (nothing below is contradicted), but
+> **[PROJECT_HANDOFF_2026-07-23.md](PROJECT_HANDOFF_2026-07-23.md)** is now
+> the entry-point document for resuming work — it supersedes this file as
+> the first thing to read, adds the `slai_faithful` external baseline
+> (bringing the total registered policy count from 33 to 34) and its
+> bounded-pilot findings, and records the pause-state provenance. Read it
+> first.
+
+**Canonical current-state document (as of 2026-07-22).** Historical reports
+remain valuable, but this file is the source of truth for deciding what to
+do next, for everything up to but not including the 2026-07-23 SLAI work.
 
 **Status date:** 2026-07-22
 **Current integration branch:** `wulver-final-integration-20260721`

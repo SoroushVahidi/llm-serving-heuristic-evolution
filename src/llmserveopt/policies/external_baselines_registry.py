@@ -1,15 +1,15 @@
 """
-Topology-aware registry for the six faithful/paper-reimplementation
+Topology-aware registry for the faithful/paper-reimplementation
 "external baseline" policies (`vllm_faithful`, `sarathi_faithful`,
 `distserve_faithful`, `tetriinfer_paper_reimplementation`,
-`llumnix_faithful`, `vllm_chunked_prefill_faithful`).
+`llumnix_faithful`, `vllm_chunked_prefill_faithful`, `slai_faithful`).
 
 Deliberately SEPARATE from `registry.py`'s `BASELINE_NAMES`/
 `SELECTOR_CANDIDATE_NAMES` (the historical, deployable-policy registry used
 by every existing experiment sweep and the trained selector) -- nothing
-here is ever imported by `registry.py`, and none of these six names ever
+here is ever imported by `registry.py`, and none of these seven names ever
 appear in `BASELINE_NAMES`/`SELECTOR_CANDIDATE_NAMES`. This module exists
-so the six external baselines can be discovered, instantiated, and
+so the external baselines can be discovered, instantiated, and
 evaluated as a group WITHOUT silently changing the historical
 20-deployable-policy/20-selector-candidate counts documented in
 docs/research_status.md and relied upon by every existing config/sweep.
@@ -21,7 +21,7 @@ metadata supports.
 Why a topology_class field is unavoidable
 ------------------------------------------
 Unlike the historical registry (every entry assumes one homogeneous,
-role=None GPU pool), these five baselines assume THREE structurally
+role=None GPU pool), these baselines assume THREE structurally
 different deployments:
   - MONOLITHIC: any number of role=None GPUs, sharing one global admission
     queue (vllm_faithful, sarathi_faithful).
@@ -30,6 +30,9 @@ different deployments:
   - MULTI_INSTANCE_MIGRATORY: N independent role=None GPUs with no shared
     admission queue, connected only by an explicit live-migration
     primitive (llumnix_faithful).
+`slai_faithful` (see docs/slai_faithful_scheduler_reference.md) is
+MONOLITHIC, same as vllm_faithful/sarathi_faithful/
+vllm_chunked_prefill_faithful.
 A baseline cannot be meaningfully run, let alone fairly compared to
 another, without knowing which of these three topologies it assumes --
 hence this metadata is required infrastructure, not decoration.
@@ -44,6 +47,7 @@ from .base import BasePolicy
 from .distserve_faithful import DistServeFaithfulPolicy
 from .llumnix_faithful import LlumnixFaithfulPolicy
 from .sarathi_faithful import SarathiFaithfulPolicy
+from .slai_faithful import SlaiFaithfulPolicy
 from .tetriinfer_paper_reimplementation import TetriInferPaperReimplementationPolicy
 from .vllm_faithful import VLLMFaithfulPolicy
 from .vllm_chunked_prefill_faithful import VLLMChunkedPrefillFaithfulPolicy
@@ -52,7 +56,7 @@ from .vllm_chunked_prefill_faithful import VLLMChunkedPrefillFaithfulPolicy
 class FidelityClass(str, Enum):
     #: Verified against a specific, pinned, author-maintained source-code
     #: commit (vllm_faithful, sarathi_faithful, distserve_faithful,
-    #: llumnix_faithful).
+    #: llumnix_faithful, slai_faithful).
     FAITHFUL = "faithful"
     #: Verified only against a paper's prose description -- no official
     #: code/artifact exists to pin (tetriinfer_paper_reimplementation).
@@ -124,6 +128,10 @@ def _tetriinfer_factory(**kwargs) -> TetriInferPaperReimplementationPolicy:
 
 def _llumnix_faithful_factory(**kwargs) -> LlumnixFaithfulPolicy:
     return LlumnixFaithfulPolicy(**kwargs)
+
+
+def _slai_faithful_factory(**kwargs) -> SlaiFaithfulPolicy:
+    return SlaiFaithfulPolicy(**kwargs)
 
 
 EXTERNAL_BASELINE_REGISTRY: dict = {
@@ -286,6 +294,41 @@ EXTERNAL_BASELINE_REGISTRY: dict = {
             "(no shared visibility) -- structurally different from "
             "vllm_faithful/sarathi_faithful's shared-queue multi-GPU "
             "model even at the same total GPU count."
+        ),
+    ),
+    "slai_faithful": ExternalBaselineSpec(
+        name="slai_faithful",
+        fidelity_class=FidelityClass.FAITHFUL,
+        topology_class=TopologyClass.MONOLITHIC,
+        pinned_source="github.com/agrimUT/SLAI commit 5098a7aba05e3edbcfa3a509d6cc9cd248fc4380",
+        reference_doc="docs/slai_faithful_scheduler_reference.md",
+        factory=_slai_faithful_factory,
+        min_gpu_count=1,
+        required_roles=(None,),
+        requires_kv_block_model=True,
+        requires_disaggregation=False,
+        requires_cross_instance_migration=False,
+        preemption_mode=PreemptionMode.ADMISSION_AVOIDANCE,
+        requires_chunked_prefill_scheduling=True,
+        requires_length_prediction=False,
+        selector_eligible=False,
+        historical=False,
+        notes=(
+            "Reuses the same shared-queue multi-GPU model and KV block "
+            "manager as vllm_faithful/sarathi_faithful (SLAI's own memory "
+            "model IS Sarathi-Serve's, unchanged -- SLAIBlockSpaceManager "
+            "is a no-op subclass in the pinned source). Its distinctive "
+            "mechanism -- deferring specific decode-phase requests past "
+            "their last-schedulable-time threshold -- required a new, "
+            "narrowly-scoped simulator primitive (Action.hold_decode; see "
+            "core/action.py) since neither pre-existing global execution "
+            "model (decode-protected / shared-contention) can express a "
+            "per-request deferral decision. PreemptionMode is "
+            "ADMISSION_AVOIDANCE, not RECOMPUTE/SWAP: the pinned "
+            "reference's scheduler never evicts an already-admitted "
+            "request -- it only reorders continuing-vs-new-admission "
+            "priority and defers decode-iterations, never forces one back "
+            "into the waiting queue."
         ),
     ),
 }
