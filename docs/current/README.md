@@ -5,10 +5,14 @@ This directory is the current source-of-truth navigation layer for the Wulver in
 ## Project Paused 2026-07-23 — Read This First
 
 The project is paused for potentially several months as of 2026-07-23.
-**[PROJECT_HANDOFF_2026-07-23.md](PROJECT_HANDOFF_2026-07-23.md)** is the
-durable resume-from-scratch handoff document — read it before anything else
-below, including before `PROJECT_STATUS.md`. Machine-readable companion:
-**[project_handoff_state.json](project_handoff_state.json)**.
+**[RESUME_HERE.md](RESUME_HERE.md)** is the single, concise (5–10 min)
+resume entry point — read it first. For full detail, see
+**[PROJECT_HANDOFF_2026-07-23.md](PROJECT_HANDOFF_2026-07-23.md)**,
+its machine-readable companion
+**[project_handoff_state.json](project_handoff_state.json)**, and durable
+test/experiment evidence in
+**[PAUSE_PROVENANCE_2026-07-23.md](PAUSE_PROVENANCE_2026-07-23.md)**. Read
+all four before `PROJECT_STATUS.md` below.
 
 ## Current Bottom Line
 

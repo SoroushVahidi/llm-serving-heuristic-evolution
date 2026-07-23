@@ -3,6 +3,14 @@
 **Learning to select LLM-inference-serving scheduling policies, evaluated against
 faithful external baselines in a GPU-calibrated discrete-event simulator.**
 
+> ## ⏸ Project paused as of 2026-07-23 — resume here first
+> **[docs/current/RESUME_HERE.md](docs/current/RESUME_HERE.md)** is the
+> single entry point for resuming this project after the pause. It
+> supersedes everything below this notice, including the policy/baseline
+> counts and "current blocker" description in this file, which describe an
+> **older, superseded** project phase (pre-Policy-Library-v2,
+> pre-`slai_faithful`). Read `RESUME_HERE.md` before anything else.
+
 > **New here? Start with [docs/current/README.md](docs/current/README.md).**
 > That's the canonical, current-state documentation set. Everything below is a
 > quick orientation; `docs/current/PROJECT_STATUS.md` is the authoritative

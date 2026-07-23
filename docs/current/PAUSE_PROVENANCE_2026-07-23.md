@@ -10,20 +10,24 @@ can re-verify without needing the original ephemeral file.
 
 ---
 
-## Repository identity at pause time
+## Repository identity — FINAL pause checkpoint (2026-07-23)
 
 - **Authoritative repo path:** `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration`
 - **Branch:** `wulver-final-integration-20260721`
-- **Pre-pause HEAD:** `d1d5f12a0752a061e563f87dcf3e3289bee2e4bb`
-- **Upstream:** `origin/wulver-final-integration-20260721` — local HEAD is **2 commits ahead**, 0 behind, at pause time:
-  - `d1d5f12` "chore: ignore generated Wulver artifacts"
-  - `bacea0a` "docs: consolidate current research state and roadmap"
-  (Neither of these two commits is related to the SLAI work below — both predate it.)
-- **Uncommitted SLAI-related work at pause time:** 13 modified + 6 new files
-  (see `docs/current/PROJECT_HANDOFF_2026-07-23.md` for the exact list; it
-  grew from 4 to 6 new files between Query 1 and Query 2 of the pause
-  sequence — this file and `project_handoff_state.json` are the two
-  additions).
+- **Checkpoint commit (final HEAD at pause):** `8c9cedbca171d44030a16cf630f81f99d15d729f`
+  ("feat: add faithful SLAI baseline and preserve paused research state")
+- **Parent commit (pre-checkpoint HEAD):** `d1d5f12a0752a061e563f87dcf3e3289bee2e4bb`
+- **Upstream:** `origin/wulver-final-integration-20260721` — **pushed and synchronized: 0 ahead, 0 behind** at final pause time.
+- **All SLAI-related work is committed** as of the checkpoint commit above —
+  no uncommitted work remains. (Below this point, "at pause time" in
+  earlier subsections of this document refers to the intermediate state
+  captured during the pause sequence's own audit steps, before the
+  checkpoint commit was created — kept for provenance, not because
+  anything is still uncommitted.)
+- History leading to the checkpoint: `8c9cedb` ← `d1d5f12` ("chore: ignore
+  generated Wulver artifacts") ← `bacea0a` ("docs: consolidate current
+  research state and roadmap") ← `e8bd759` (last commit that was already on
+  `origin` before this pause sequence began).
 
 ---
 

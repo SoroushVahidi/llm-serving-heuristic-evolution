@@ -376,11 +376,13 @@ every row given this pass's time budget.
 
 ## K. Recommended Future Roadmap (when resumed)
 
-1. **Finalize the current SLAI changes** — review the 4 new + 13 modified
-   files (§ "Current Uncommitted Work" in the final report below), decide
-   whether to commit as-is, and push (`origin/wulver-final-integration-20260721`
-   is 2 commits behind local `HEAD` already, independent of the uncommitted
-   SLAI work).
+1. ~~Finalize the current SLAI changes~~ **DONE as of 2026-07-23**: committed
+   as `8c9cedbca171d44030a16cf630f81f99d15d729f` (parent
+   `d1d5f12a0752a061e563f87dcf3e3289bee2e4bb`) and pushed to
+   `origin/wulver-final-integration-20260721` — 0 ahead / 0 behind at pause
+   time. A future agent should re-run `git status`/`git log` to confirm
+   this is still true (nothing should have changed while the project was
+   paused, but verify rather than assume).
 2. **Realistic load calibration** — recalibrate window/arrival-rate
    construction so Azure/BurstGPT/SwissAI windows are not trivially
    underloaded (matches Stage 2 of `docs/current/RESEARCH_ROADMAP.md`,
@@ -472,13 +474,23 @@ Before doing ANY new work, a future agent/researcher should:
 Full audit performed 2026-07-23 (read-only — the other worktree was
 inspected but never modified).
 
+> **Update (still 2026-07-23, after this audit was written):** the "13
+> modified + 6 new" SLAI files described below for the authoritative
+> checkout were subsequently committed as
+> `8c9cedbca171d44030a16cf630f81f99d15d729f` and pushed to
+> `origin/wulver-final-integration-20260721` (0 ahead / 0 behind). The
+> authoritative checkout's working tree is clean as of the final pause
+> state — the table below is a snapshot from earlier in the same pause
+> sequence, not the final state. The other worktree's state (right column)
+> is unaffected by this and remains as described.
+
 | | Authoritative (this checkout) | Other worktree |
 |---|---|---|
 | Path | `.../llm-serving-heuristic-evolution-final-integration` | `.../llm-serving-heuristic-evolution` |
 | Branch | `wulver-final-integration-20260721` | `wulver-policy-composition-readiness` |
-| HEAD | `d1d5f12a0752a061e563f87dcf3e3289bee2e4bb` | `c8aee129f553f8dc3ede99eac60d5b14484beb41` |
+| HEAD at time of this audit | `d1d5f12a0752a061e563f87dcf3e3289bee2e4bb` (now the parent of checkpoint commit `8c9cedb...`, see update note above) | `c8aee129f553f8dc3ede99eac60d5b14484beb41` |
 | HEAD relationship | — | `c8aee12` **is an ancestor of** `d1d5f12` (`git merge-base --is-ancestor` confirmed) — no unique committed history |
-| Dirty/uncommitted files | 13 modified + 6 new (SLAI work, this pause sequence) | 3 modified, 34 untracked (31 files + 3 `.pyc` cache files after expanding the one untracked directory) |
+| Dirty/uncommitted files at time of this audit | 13 modified + 6 new (SLAI work, this pause sequence) — **since committed, see update note above** | 3 modified, 34 untracked (31 files + 3 `.pyc` cache files after expanding the one untracked directory) |
 
 **Per-file verification of the other worktree's uncommitted state (all 37
 non-cache entries checked, not sampled):**
