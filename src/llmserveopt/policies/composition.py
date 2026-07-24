@@ -317,8 +317,70 @@ def rank_with_named_expert(
     return _normalized_ranks_from_sorted(name, ranked, requests)
 
 
+RANK_AGGREGATION_METHODS = ("borda", "reciprocal_rank")
+
+
+def weighted_borda_aggregate(
+    expert_outputs: Mapping[str, RankExpertOutput],
+    weights: Mapping[str, float],
+) -> tuple[Dict[int, float], Dict[int, int], Dict[int, Dict[str, float]]]:
+    """Weighted sum of normalized ranks (0=worst..1=best) across experts.
+
+    Returns (aggregate_score, support_count, per-expert contribution) keyed
+    by request_id. A request missing from an expert's output contributes
+    nothing to that expert and does not increment its support count.
+    """
+    aggregate: Dict[int, float] = {}
+    support: Dict[int, int] = {}
+    contributions: Dict[int, Dict[str, float]] = {}
+    for expert_name, weight in weights.items():
+        expert_output = expert_outputs[expert_name]
+        for request_id, normalized_rank in expert_output.normalized_ranks.items():
+            value = weight * normalized_rank
+            aggregate[request_id] = aggregate.get(request_id, 0.0) + value
+            support[request_id] = support.get(request_id, 0) + 1
+            contributions.setdefault(request_id, {})[expert_name] = value
+    return aggregate, support, contributions
+
+
+def weighted_reciprocal_rank_aggregate(
+    expert_outputs: Mapping[str, RankExpertOutput],
+    weights: Mapping[str, float],
+    *,
+    c: float = 60.0,
+) -> tuple[Dict[int, float], Dict[int, int], Dict[int, Dict[str, float]]]:
+    """Weighted reciprocal-rank fusion: score(r) = sum_k w_k / (c + rank_k(r)).
+
+    rank_k(r) is the expert's 1-based rank position (1 = most preferred).
+    A request missing from an expert's ranked list contributes nothing to
+    that expert and does not increment its support count, matching
+    weighted_borda_aggregate's missing-value semantics. `c` is the standard
+    RRF damping constant that de-emphasizes small rank differences far from
+    the top of the list; it must be positive.
+    """
+    if not math.isfinite(c) or c <= 0.0:
+        raise CompositionError(f"reciprocal-rank constant c must be positive and finite, got {c!r}")
+    aggregate: Dict[int, float] = {}
+    support: Dict[int, int] = {}
+    contributions: Dict[int, Dict[str, float]] = {}
+    for expert_name, weight in weights.items():
+        expert_output = expert_outputs[expert_name]
+        for position, request_id in enumerate(expert_output.ranked_request_ids, start=1):
+            value = weight / (c + position)
+            aggregate[request_id] = aggregate.get(request_id, 0.0) + value
+            support[request_id] = support.get(request_id, 0) + 1
+            contributions.setdefault(request_id, {})[expert_name] = value
+    return aggregate, support, contributions
+
+
 class StaticRankEnsemblePolicy(BasePolicy):
-    """Weighted normalized-rank ensemble over compatible causal priority experts."""
+    """Weighted rank-aggregation ensemble over compatible causal priority experts.
+
+    `method="borda"` (default, unchanged from prior releases) aggregates
+    normalized ranks. `method="reciprocal_rank"` aggregates 1/(c+rank)
+    terms, which weights agreement near the top of each expert's ranking
+    more heavily than uniform normalized-rank spacing does.
+    """
 
     name = "composition_static_rank_ensemble"
 
@@ -330,12 +392,18 @@ class StaticRankEnsemblePolicy(BasePolicy):
         top_k: int | None = None,
         min_expert_support: int = 1,
         max_admits: int | None = None,
+        method: str = "borda",
+        reciprocal_rank_c: float = 60.0,
     ) -> None:
+        if method not in RANK_AGGREGATION_METHODS:
+            raise CompositionError(f"Unknown rank aggregation method {method!r}; expected one of {RANK_AGGREGATION_METHODS}")
         self.experts = list(experts)
         self.fallback_policy = fallback_policy or WeightedShortestProcessingPolicy()
         self.top_k = top_k
         self.min_expert_support = min_expert_support
         self.max_admits = max_admits
+        self.method = method
+        self.reciprocal_rank_c = reciprocal_rank_c
         self.decision_logs: list[CompositionDecisionLog] = []
         self._last_dominant_expert: str | None = None
         self.switching_count = 0
@@ -355,17 +423,17 @@ class StaticRankEnsemblePolicy(BasePolicy):
             return [], self._make_log(state, {}, {}, True, "all expert weights are zero")
 
         by_id = _request_by_id(state)
-        aggregate: Dict[int, float] = {req.request_id: 0.0 for req in state.waiting_queue}
-        support: Dict[int, int] = {req.request_id: 0 for req in state.waiting_queue}
-        contributions: Dict[int, Dict[str, float]] = {req.request_id: {} for req in state.waiting_queue}
-
-        for expert_name, weight in weights.items():
-            expert_output = rank_with_named_expert(expert_name, state)
-            for request_id, normalized_rank in expert_output.normalized_ranks.items():
-                value = weight * normalized_rank
-                aggregate[request_id] = aggregate.get(request_id, 0.0) + value
-                support[request_id] = support.get(request_id, 0) + 1
-                contributions.setdefault(request_id, {})[expert_name] = value
+        expert_outputs = {name: rank_with_named_expert(name, state) for name in weights}
+        if self.method == "reciprocal_rank":
+            aggregate, support, contributions = weighted_reciprocal_rank_aggregate(
+                expert_outputs, weights, c=self.reciprocal_rank_c
+            )
+        else:
+            aggregate, support, contributions = weighted_borda_aggregate(expert_outputs, weights)
+        for req in state.waiting_queue:
+            aggregate.setdefault(req.request_id, 0.0)
+            support.setdefault(req.request_id, 0)
+            contributions.setdefault(req.request_id, {})
 
         ranked_ids = [
             request_id
