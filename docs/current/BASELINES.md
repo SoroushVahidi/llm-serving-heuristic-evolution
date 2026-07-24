@@ -46,19 +46,20 @@ historical registry and the external baseline registry).
 `calibrated_targeted_pilot.py::CANDIDATE_POLICIES` imports this constant
 directly rather than duplicating the list.
 
-## C-E. Faithful external baselines -- 6 total, all `selector_eligible=False`
+## C-E. Faithful external baselines -- 7 total, all `selector_eligible=False`
 
-3 monolithic + 2 disaggregated + 1 migratory. All pinned to an exact
+4 monolithic + 2 disaggregated + 1 migratory. All pinned to an exact
 upstream commit; none reproduce full production behavior (see each row's
 "Important limitation").
 
-### C. Faithful monolithic (3)
+### C. Faithful monolithic (4)
 
 | Policy | Topology | Pin | Validation status | Safe claim | Important limitation |
 |---|---|---|---|---|---|
 | `vllm_faithful` | monolithic, 1 GPU | vLLM v0.1.0, commit `67d96c29fb` | Confirmed genuinely dominated under ANWG (Option B analysis); execution-health clean (0 errors / 910 windows) | "Faithful reimplementation of vLLM v0.1.0's FCFS admission + KV-block scheduler" | All-or-nothing admission (2,560-token cap) -- cannot admit longer prompts at all |
 | `vllm_chunked_prefill_faithful` | monolithic, 1 GPU | vLLM v0.4.2, commit `c7f2cf2b7f` | Benchmark-pack-validated for `xlong_context_burst16`; 2 other benchmark-pack scenarios noted as mismatched for a shared-simulator-infrastructure reason, not this baseline's own fidelity | "Faithful reimplementation of vLLM v0.4.2's chunked-prefill `SchedulingBudget` scheduler" | Real default `max_num_batched_tokens=512` (chunked, can eventually admit any prompt length) |
 | `sarathi_faithful` | monolithic, 1 GPU | `microsoft/sarathi-serve`, branch `osdi-sarathi-serve`, commit `ceaa0660ea` | Real-hardware-validated (Wulver A100, N=5 repeated trials vs. real vLLM) | "Faithful reimplementation of Sarathi-Serve's stall-free chunked-prefill scheduler" | Real default `max_num_seqs=128` (vs. 256 for the two vLLM variants) -- confirmed inert in all windows generated so far, since `GPUConfig.max_active_sequences` (4-64) is always the tighter binding constraint |
+| `slai_faithful` | monolithic, 1 GPU | `agrimUT/SLAI`, commit `5098a7aba0` (Apache-2.0) | Execution-health clean: dedicated 21-test focused suite passes, full non-hardware test suite passes with zero regressions after the required simulator extension (see `docs/slai_faithful_scheduler_reference.md`); no real-hardware cross-check yet | "Faithful reimplementation of SLAI's last-schedulable-time-gated decode-deferral scheduler (Bari, Hegde, de Veciana, ACM SIGMETRICS 2026 / arXiv:2508.01002)" | Per-request TBT derived from `class_id`, not an explicit field (pinned reference's benchmark harness sets it explicitly); offset safety margin uses this simulator's fixed `step_size` in place of the reference's variable batch-execution-time average -- see `docs/slai_faithful_scheduler_reference.md` §C. Required a new simulator primitive, `Action.hold_decode` (see that doc's §D) |
 
 ### D. Disaggregated (2)
 
@@ -92,12 +93,16 @@ assertion. Never claim it as a deployable policy.
 
 ```
 Historical/internal portfolio         = 20
+Policy Library v2 additions           = 7
 Selector v2 trainable action space    = 8   (Option B, strict subset of the 20)
-Faithful external baselines, total    = 6
-  monolithic                          = 3
+Faithful external baselines, total    = 7
+  monolithic                          = 4   (vllm_faithful, vllm_chunked_prefill_faithful,
+                                              sarathi_faithful, slai_faithful)
   disaggregated                       = 2
   migratory                           = 1
 Reference-only (non-deployable)       = 1   (oracle_srtf)
+---------------------------------------------------------------------
+TOTAL REGISTERED SCHEDULING POLICIES  = 20 + 7 + 7 = 34
 ```
 
 ## Why Option B (short version)

@@ -1,6 +1,6 @@
 # Policy Library
 
-Current source-of-truth for deployable scheduler policies as of 2026-07-21.
+Current source-of-truth for deployable scheduler policies as of 2026-07-22.
 
 ## Registry Contract
 
@@ -16,6 +16,8 @@ Current counts:
 - `POLICY_LIBRARY_V2_COUNT = 27`
 
 The 7 Policy Library v2 policies are registered through `make_policy_library_v2()` but are intentionally not appended to `BASELINE_NAMES`, because historical Selector v2 tests and documentation pin that library at 20 policies.
+
+**Scope note:** this document covers only `BASELINE_NAMES`/`POLICY_LIBRARY_V2_NAMES` (deployable, selector-eligible-or-was-considered policies). The 7 *faithful external baselines* (`vllm_faithful`, `sarathi_faithful`, `distserve_faithful`, `tetriinfer_paper_reimplementation`, `llumnix_faithful`, `vllm_chunked_prefill_faithful`, `slai_faithful`) are a deliberately separate registry (`external_baselines_registry.py`) and are documented in `docs/current/BASELINES.md` §C-E, not here. Combined total across both registries: 20 + 7 + 7 = 34 (see `docs/current/BASELINES.md`'s exact-count summary).
 
 ## Policy Library v2 Additions
 
@@ -58,8 +60,25 @@ Focused Policy Library v2 validation exists in `tests/test_policy_library_v2.py`
 
 ## Current Scientific Status
 
-Policy Library v2 implementation is present and test-covered. The expanded-library frontier workflow is still running at:
+Policy Library v2 implementation is present and test-covered.
 
-`/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z`
+Completed evidence:
 
-Do not claim whether the expanded library improves the oracle envelope until that workflow writes its final report.
+- Synthetic/frontier V2 expansion was real but modest.
+- The real-trace OOD V2 library audit showed strong oracle-envelope expansion:
+  V1 oracle ANWG `0.251666`, V2 oracle ANWG `0.260571`, absolute gain
+  `0.008904`, relative gain about `3.54%`, CI `[0.008191, 0.009646]`.
+- Several V2 policies contribute genuine competence regions on real-OOD
+  windows.
+- SwissAI and TraceLab did not show strict V2 marginal oracle gain, despite raw
+  KV/cache, long-context, prefix-reuse, and agentic novelty. This is now
+  interpreted as objective/simulator saturation evidence, not as proof that the
+  policy library is useless.
+- SLO/deadline augmentation produced useful incremental support for
+  EDF/SCORPIO/admission/laxity-style behavior, but remains synthetic
+  regime-probing data.
+
+Current implication: policy-library coverage is no longer the primary
+bottleneck. The next issue is whether the simulator/objective creates enough
+pressure and reward separation for these policies to be learned, combined, and
+evaluated fairly.

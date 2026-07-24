@@ -4,6 +4,22 @@ This readiness layer prepares the next direction after naive rank/weight composi
 
 It does not call an LLM and does not launch a large simulation sweep.
 
+## Current Caveat
+
+The implementation scaffold remains useful, but broad structural synthesis is
+not scientifically ready as the next action. Completed module-credit and
+simulator-discriminative audits show:
+
+- module-credit learning is weak/generalization-limited;
+- pairwise module combinations did not expand the 27-policy envelope;
+- SwissAI and TraceLab saturated ANWG and produced weak policy separation;
+- `COMBINER_TRAINING_SIGNAL = WEAK`;
+- `COMBINER_EVALUATION_READINESS = NEEDS_SIMULATOR_FIX`.
+
+Therefore, treat `READY_WITH_SMALL_EXTENSIONS` below as **engineering
+readiness of the harness**, not permission to launch unrestricted structural
+synthesis before simulator calibration and controlled re-evaluation.
+
 ## Existing DSL Audit
 
 The existing heuristic DSL can already encode:
@@ -139,4 +155,4 @@ MAIN_REPRESENTATION_LIMITATION = current DSL compiles to score/admission heurist
 
 MAIN_SCIENTIFIC_RISK = structurally valid children may only reproduce approximations of high-value parent behavior and may not improve held-out/frontier performance once verified against real policy vectors
 
-RECOMMENDED_NEXT_ACTION = after the native composition pilot, Policy Frontier, and Policy Library v2 finish, use development-only frontier gaps to select parent pairs and generate a small verified child set before any large evolutionary run
+RECOMMENDED_NEXT_ACTION = first perform simulator calibration and discriminative-power validation; after bounded reruns produce reliable policy separation, use development-only frontier gaps and suitability uncertainty to generate a small restricted verified child set before any large evolutionary run

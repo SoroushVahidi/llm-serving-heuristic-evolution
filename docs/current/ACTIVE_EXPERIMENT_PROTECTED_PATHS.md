@@ -1,47 +1,44 @@
 # Active Experiment Protected Paths
 
-Generated during Query 1 cleanup audit on 2026-07-21 and refreshed during Query 3 final validation.
+Refreshed during the 2026-07-22 repository polish pass.
 
 ## Rule
 
-Do not delete, move, rename, compress, rewrite, or otherwise modify any path in this document while the associated SLURM workflow is active or has dependent jobs pending.
+Do not delete, move, rename, compress, rewrite, or otherwise modify an
+experiment root while a SLURM workflow is active or has dependent jobs that may
+still write there. Completed roots are no longer active writer paths, but they
+remain scientific evidence and should still be treated as read-only provenance
+unless a task explicitly creates a derived copy elsewhere.
 
-## Active Project Jobs
+## Current Active Writers
 
-| Workflow | Job IDs | Current state | Protected experiment root |
-| --- | --- | --- | --- |
-| Policy Frontier Cartography and Adversarial Discriminative Workload Mining | 1118187, 1118188, 1118189, 1118190, 1118191, 1118192, 1118193, 1118194, 1118195, 1118196, 1118197 | `1118187` broad array running/pending; targeted array and downstream jobs pending on dependencies | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z` |
-| Policy Library v2 Expanded Frontier | 1118784, 1118785, 1118786, 1118787, 1118788, 1118789 | `1118784` array running/pending; downstream jobs pending on dependencies | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z` |
+No currently running project jobs were observed during this polish audit.
 
-## Status Snapshot
+`squeue -u sv96` did show superseded dependency-blocked jobs from earlier
+SLO/SwissAI startup attempts, including old `slo_aug_*` chains and
+`1127600 swissai_v2_report`. These are not expected to produce additional
+scientific outputs because their dependencies are unsatisfied/superseded. They
+must still not be cancelled or modified by repository-cleanup tasks.
 
-This snapshot was taken from `squeue` and `sacct`, not inferred from missing queue entries.
+## Completed Evidence Roots To Treat As Read-Only
 
-- Policy Frontier broad sweep: 36 tasks completed, tasks `36-39` running, tasks `40-63` pending under the array concurrency limit.
-- Policy Frontier targeted sweep: tasks `0-31` pending on dependencies.
-- Policy Frontier downstream stages: combine, boundary, active mining, QD, coverage, augmentation, representation, evolutionary archive, and report jobs pending on dependencies.
-- Policy Library v2 array: 15 tasks completed, tasks `13`, `15`, `17`, and `18` running, tasks `19-31` pending under the array concurrency limit.
-- Policy Library v2 downstream stages: combine, complementarity, selector comparison, composition readiness, and report jobs pending on dependencies.
-- Native Composition Pilot job `1120123` completed successfully and is no longer active.
-- Structural Synthesis test job `1120181` completed successfully and is no longer active.
-
-## Protected Subpaths
-
-Treat these subtrees as protected because active jobs may still write logs, shards, manifests, or final reports there:
-
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z/broad_sweep/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z/targeted_sweep/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z/logs/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z/reports/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z/shards/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z/logs/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z/reports/`
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z/manifests/`
+| Workflow | Root | Status note |
+| --- | --- | --- |
+| Policy Frontier Cartography | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z` | Complete; final report exists. |
+| Policy Library V2 Expanded Frontier | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z` | Complete; final report exists. |
+| V2 Real-OOD 27-Policy Library Audit | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/v2_real_ood_library_20260721T222521Z` | Complete; strong V2 oracle-envelope expansion. |
+| V2 Selector/Regret Benchmark | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/v2_selector_regret_benchmark_20260722T134925Z` | Complete; useful suitability signal but OOD oracle-gap caveat. |
+| Module Intervention / Structural Credit | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/module_intervention_credit_20260721T224322Z` | Complete; sparse positive single-module transfer. |
+| SwissAI Staging | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_trace_staging_20260722T172215Z` | Complete; novel KV/cache/reuse features. |
+| SwissAI V2 Policy Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_v2_policy_sweep_20260722T184451Z` | Policy matrix complete; final reporting failed on `kv_proxy_p95`. |
+| TraceLab Staging | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/tracelab_staging_20260722T192050Z` | Complete; long-context/agentic novelty. |
+| TraceLab V2 Policy Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/tracelab_v2_policy_sweep_20260722T214129Z` | Complete; reward saturation and zero V2 gain. |
+| SLO/Deadline Augmented V2 Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slo_deadline_augmented_v2_sweep_20260722T194529Z` | Complete corrected chain; superseded failures retained for provenance. |
+| Simulator Discriminative-Power Audit | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/simulator_discriminative_audit_20260722T223236Z` | Complete; current bottleneck evidence. |
 
 ## Inspection Commands
 
 ```bash
 squeue -u "$USER" -o '%i|%j|%T|%M|%D|%R'
-sacct -j 1118186,1118187,1118188,1118189,1118190,1118191,1118192,1118193,1118194,1118195,1118196,1118197 --format=JobID,JobName%40,State,ExitCode,Elapsed,MaxRSS -P
-sacct -j 1118781,1118782,1118783,1118784,1118785,1118786,1118787,1118788,1118789 --format=JobID,JobName%40,State,ExitCode,Elapsed,MaxRSS -P
+sacct -u "$USER" --starttime 2026-07-22 --format=JobID,JobName%40,State,ExitCode,Elapsed,MaxRSS -P
 ```

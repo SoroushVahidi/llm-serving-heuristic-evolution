@@ -1,5 +1,12 @@
 # Policy Composition Readiness Audit
 
+> Historical readiness snapshot. This document records the static composition
+> audit performed before later Wulver workflows completed. For the current
+> scientific decision, read `PROJECT_STATUS.md` and
+> `COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md`: naive/native composition did not
+> clear the decision bar, module-credit learning remains weak, and broad
+> composition/synthesis is gated on simulator calibration.
+
 This audit inspects the current 27-policy scheduling library and the simulator interfaces to determine whether new schedulers can be constructed safely from reusable behavioral primitives. It does not launch a new simulation sweep and does not modify existing policy behavior.
 
 ## Scope
@@ -116,7 +123,11 @@ The safest common representation is normalized deterministic rank, with admissio
 
 ## Similarity And Complementarity
 
-Because the full 27-policy Policy Library v2 sweep is still running, this audit does not claim final quantitative pairwise reward correlations. The current code-level and completed-result evidence still supports several complementarity hypotheses:
+At the time of this snapshot, the full 27-policy Policy Library v2 sweep was
+still running, so this audit did not claim final quantitative pairwise reward
+correlations. Later completed evidence should be read from
+`PROJECT_STATUS.md` and `EXPERIMENT_INDEX.md`. The code-level evidence from
+this snapshot still supports several complementarity hypotheses:
 
 - WSP and SCORPIO remain the most important parent pair because previous OOD failures concentrated around WSP-vs-SCORPIO routing.
 - KV-aware and prefill/phase-aware v2 policies add behaviors that historical WSP/SCORPIO did not isolate cleanly.
@@ -206,4 +217,4 @@ FIRST_COMPOSITION_EXPERIMENT = compare best fixed WSP, discrete RF selector, sta
 
 MAJOR_UNSUPPORTED_CAPABILITIES = cache_prefix_reuse, cache_loading, disaggregated_prefill_decode_routing, request_splitting, heterogeneous_gpu_routing, true_action_level_chunked_prefill
 
-RECOMMENDED_NEXT_ACTION = wait for Policy Frontier Cartography and Policy Library v2 final reports, then fill quantitative 27-policy complementarity matrices and run the first rank/component composition experiment as a small new SLURM workflow
+RECOMMENDED_NEXT_ACTION = historical snapshot recommendation superseded; current next action is simulator calibration and discriminative-power validation before further composition work

@@ -117,3 +117,48 @@ class TestFaithfulPoliciesNeverRaise:
                 policy.reset()
                 m = sim.run(policy=policy, workload_tag="test", seed=0)
                 assert m.num_total == 5
+
+    def test_slai_faithful_runs_without_exception(self):
+        """slai_faithful added after this audit (see
+        docs/slai_faithful_scheduler_reference.md); same execution-health
+        regression lock, both real default and an overridden token budget."""
+        from llmserveopt.policies.slai_faithful import SlaiFaithfulPolicy
+
+        gpu = GPUConfig(0, max_active_sequences=64, max_batch_tokens=1_000_000, max_kv_tokens=200_000)
+        for kwargs in [{}, dict(token_budget=100_000)]:
+            sm = ServiceModel(enable_prefill_modeling=True, decode_first=True,
+                               enable_decode_prefill_contention=True,
+                               step_token_budget=512, max_prefill_chunk_tokens=512)
+            sim = Simulator(SimulatorConfig(gpu_configs=[gpu], service_model=sm, drain_steps=2000))
+            sim.load_trace(self._window())
+            policy = SlaiFaithfulPolicy(**kwargs)
+            policy.reset()
+            m = sim.run(policy=policy, workload_tag="test", seed=0)
+            assert m.num_total == 5
+
+
+class TestSlaiFaithfulScopeInvariants:
+    """slai_faithful must follow the same faithful-external-baseline
+    conventions as the other six: never selector-eligible, never in the
+    historical registry, registered with a pinned commit."""
+
+    def test_slai_faithful_not_selector_eligible(self):
+        from llmserveopt.policies.external_baselines_registry import get_external_baseline_spec
+        spec = get_external_baseline_spec("slai_faithful")
+        assert spec.selector_eligible is False
+        assert spec.historical is False
+
+    def test_slai_faithful_not_in_historical_registry(self):
+        from llmserveopt.policies.registry import BASELINE_NAMES, SELECTOR_CANDIDATE_NAMES
+        assert "slai_faithful" not in BASELINE_NAMES
+        assert "slai_faithful" not in SELECTOR_CANDIDATE_NAMES
+
+    def test_slai_faithful_not_in_policy_library_v2(self):
+        from llmserveopt.policies.registry import POLICY_LIBRARY_V2_NAMES
+        assert "slai_faithful" not in POLICY_LIBRARY_V2_NAMES
+
+    def test_slai_faithful_pinned_source_recorded(self):
+        from llmserveopt.policies.external_baselines_registry import get_external_baseline_spec
+        spec = get_external_baseline_spec("slai_faithful")
+        assert "5098a7aba05e3edbcfa3a509d6cc9cd248fc4380" in spec.pinned_source
+        assert spec.reference_doc == "docs/slai_faithful_scheduler_reference.md"
