@@ -54,6 +54,54 @@ FULL_COMPOSITION_EXPERIMENT_SUBMITTED = NO
 
 EXPECTED_FULL_EXPERIMENT_COMMAND = `sbatch tools/composition_experiment_when_ready.sbatch`
 
+## Session Addendum (2026-07-24): score aggregation, reciprocal rank, instrumentation
+
+Added without changing any of the status above (which describes the
+`ff29222`/`24559f2`/`4604207` implementation as of 2026-07-21):
+
+- `src/llmserveopt/policies/capabilities.py` — typed `PolicyCapabilities`
+  audit (`RANK_CAPABLE_EXPERTS`, `SCORE_CAPABLE_EXPERTS`,
+  `ADMISSION_CAPABLE_EXPERTS`, DSL mapping status) so composition code can
+  validate "does this expert support scores/ranks/admission?" with a clear
+  `CapabilityError` instead of degrading silently.
+- `weighted_reciprocal_rank_aggregate()` in `composition.py`, plus a
+  `method="borda"|"reciprocal_rank"` parameter on `StaticRankEnsemblePolicy`
+  (default unchanged: `"borda"`). `weighted_borda_aggregate()` was also
+  factored out of `StaticRankEnsemblePolicy` into a standalone pure function
+  with identical behavior (verified against the pre-existing 16/16
+  `test_policy_composition.py` tests, which still pass unmodified).
+- `src/llmserveopt/policies/score_aggregation.py` — `NormalizationMode`
+  (`none`, `min_max`, `zscore`, `robust_mad`), `normalize_scores()`,
+  `score_with_named_expert()` for the 8 score-capable policies,
+  `weighted_score_aggregate()`, and `StaticScoreEnsemblePolicy` (sparse
+  top-k, deterministic fallback, same `CompositionDecisionLog` logging as
+  the rank ensemble).
+- `src/llmserveopt/policies/instrumentation.py` — `DecisionTraceRecordV1`
+  (schema-versioned `DecisionTraceV1`), `DecisionTraceSink` (disabled by
+  default; `record()` is a single boolean check when disabled), and
+  `InstrumentedPolicy` (wraps any `BasePolicy`, forwards its `Action`
+  unmodified, optionally captures a decision trace). Proven not to alter
+  outcomes and to add zero records when disabled in
+  `tests/test_score_and_reciprocal_rank_composition.py`.
+- `tools/composition_score_rank_smoke.py` — small fixed-seed correctness
+  smoke (not a performance claim) exercising both new operator families
+  against native parents on a tiny contended scenario.
+- `docs/current/wolverine_oracle_mixture_spec.json` and
+  `WOLVERINE_ORACLE_MIXTURE_HANDOFF.md` — handoff spec for the future
+  oracle-mixture sweep (not submitted).
+
+`STATIC_ENSEMBLE_METHODS = borda, reciprocal_rank`
+
+`SCORE_AGGREGATION = IMPLEMENTED (none, min_max, zscore, robust_mad)`
+
+`DECISION_INSTRUMENTATION = IMPLEMENTED (disabled by default, DecisionTraceV1)`
+
+`TESTS_RUN (this addendum) = tests/test_score_and_reciprocal_rank_composition.py`
+
+`TESTS_PASSED (this addendum) = 38/38`
+
+`FULL_TEST_SUITE (this addendum) = 2801 passed, 2 skipped, 3 deselected (gpu marker)`
+
 ## Known Limitations
 
 - The contextual weighting model is a deterministic placeholder until upstream frontier/library outputs are available for development-only training.

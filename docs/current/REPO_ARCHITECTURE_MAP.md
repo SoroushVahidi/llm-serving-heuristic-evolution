@@ -28,7 +28,22 @@ lineages were combined and what was reconciled.
   helpers for the new monolithic policies.
 - `src/llmserveopt/policies/*` -- deployable policy implementations.
 - `src/llmserveopt/policies/composition.py` -- rank/contextual/component-wise
-  composition harness (native Wulver implementation).
+  composition harness (native Wulver implementation): weighted Borda
+  (`weighted_borda_aggregate`) and weighted reciprocal-rank
+  (`weighted_reciprocal_rank_aggregate`) aggregation, both selectable via
+  `StaticRankEnsemblePolicy(method=...)`.
+- `src/llmserveopt/policies/capabilities.py` -- typed
+  `PolicyCapabilities`/`capabilities_for` audit of which experts support
+  ranks, scores, or admission, used by both `composition.py` and
+  `score_aggregation.py` to fail loudly (`CapabilityError`) instead of
+  degrading silently.
+- `src/llmserveopt/policies/score_aggregation.py` -- weighted normalized
+  score aggregation (`none`/`min_max`/`zscore`/`robust_mad`) over the
+  `capabilities.SCORE_CAPABLE_EXPERTS` subset that expose a genuine
+  comparable scalar; sibling of the rank ensemble in `composition.py`.
+- `src/llmserveopt/policies/instrumentation.py` -- optional
+  `DecisionTraceSink`/`InstrumentedPolicy` decision-trace recording
+  (`DecisionTraceV1` schema), zero-overhead when disabled (the default).
 - `src/llmserveopt/policies/genome.py` -- typed `SchedulerGenomeV1`
   representation: canonical JSON serialization, deterministic SHA256 hash,
   semantic validation, causal feature-whitelist enforcement, conversion into
@@ -100,6 +115,10 @@ lineages were combined and what was reconciled.
 - `tools/composition_smoke_experiment.py` -- correctness-only composition smoke.
 - `tools/native_composition_pilot.py` -- small Wulver-native composition
   falsification pilot.
+- `tools/composition_score_rank_smoke.py` -- correctness-only smoke for
+  `weighted_reciprocal_rank`/`weighted_score` aggregation and
+  `instrumentation.py`'s decision-trace recording; explicitly not a
+  performance claim (see `smoke_result.json`'s `scientific_claim` field).
 - `tools/*.sbatch` -- SLURM launchers for focused tests and deferred
   composition/synthesis work.
 
@@ -111,6 +130,9 @@ lineages were combined and what was reconciled.
 | `scripts/run_phase2c_final_selector_improvement.py` | Phase 2C selector diagnostics | Result: `SELECTOR_STATUS = IMPROVABLE`, strict best selector remains the prior Phase 2C.3 `native_non_oracle_dt`. See `docs/audits/phase2c_final_selector_improvement_audit.md`. Not yet re-run against the 27-policy library -- see [ROADMAP_GAP_ANALYSIS.md](ROADMAP_GAP_ANALYSIS.md). |
 | `scripts/run_local_e2e_smoke.py` | Small end-to-end pipeline smoke test | Real trace -> causal features -> policy reward vector -> selector -> ANWG. Extended for the integrated branch to exercise the full 27-policy registry -- see the integrated smoke test in `tests/`. |
 | `scripts/run_composition_smart_pilot.py` | Local composition diagnostic pilot | A precomputed-vector proxy, explicitly distinct from the native `policies/composition.py` harness above; does not duplicate it. |
+| `scripts/run_module_credit_report.py` | Focused module-credit report | Falls back to a synthetic fixture (`--use-synthetic-fixture`) if the hard-coded default Wulver artifact path is absent; writes `results/module_credit_report/latest/`. |
+| `scripts/run_real_module_credit_evaluation.py` | Real (non-synthetic) module-credit evaluation | Adapts `results/wulver_imports/module_intervention_credit_20260721T224322Z` (read-only) into the canonical row schema and evaluates identity/structural/contextual/suitability credit models. Writes `results/module_credit_report/real_wulver_20260721T224322Z/`. Imported by `run_module_credit_overnight.py` (dynamic module load). |
+| `scripts/run_module_credit_overnight.py` | Overnight module-credit model search | Resumable (`--resume-dir`, `checkpoints/`, `heartbeat.json`) local-only driver; never launches Wulver jobs or uses synthetic fixtures for model selection. Result: `MODULE_CREDIT_MODEL_STATUS = WEAK_GENERALIZATION`/`OVERNIGHT_MODULE_CREDIT_STATUS = IMPROVED_BUT_NOT_READY`. Writes `results/module_credit_overnight/`. |
 
 ## Tests
 

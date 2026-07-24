@@ -44,6 +44,7 @@ documents in order when picking up the project.
 - **[POLICY_COMPOSITION_READINESS.md](POLICY_COMPOSITION_READINESS.md)**
 - **[COMPOSITION_EXPERIMENT_DESIGN.md](COMPOSITION_EXPERIMENT_DESIGN.md)**
 - **[COMPOSITION_IMPLEMENTATION_STATUS.md](COMPOSITION_IMPLEMENTATION_STATUS.md)**
+- **[WOLVERINE_ORACLE_MIXTURE_HANDOFF.md](WOLVERINE_ORACLE_MIXTURE_HANDOFF.md)** -- handoff spec for the not-yet-submitted large-scale composition sweep; currently BLOCKED pending read-only artifact recovery on Wulver, not launched.
 - **[STRUCTURAL_SYNTHESIS_READINESS.md](STRUCTURAL_SYNTHESIS_READINESS.md)**
 - **[structural_synthesis_experiment_design.md](structural_synthesis_experiment_design.md)**
 
@@ -56,6 +57,7 @@ documents in order when picking up the project.
 - [composition_experiment_schema.json](composition_experiment_schema.json)
 - [composition_hypotheses.json](composition_hypotheses.json)
 - [scheduler_genome_v1.schema.json](scheduler_genome_v1.schema.json)
+- [wolverine_oracle_mixture_spec.json](wolverine_oracle_mixture_spec.json) -- machine-readable spec for the handoff doc above.
 
 ## Historical Docs
 

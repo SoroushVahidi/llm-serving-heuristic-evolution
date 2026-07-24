@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "wolverine_oracle_mixture_sweep",
+  "status": "NOT_SUBMITTED",
+  "purpose": "Search for oracle (development-selected and hindsight-upper-bound) mixture weights over the existing rank- and score-aggregation composition operators, and compare them against selecting a single best individual heuristic.",
+  "decision_status_as_of_2026_07_24_audit": "BLOCKED -- not because infrastructure is missing, but because (a) upstream readiness cannot be verified from a non-Wulver checkout (check_upstream_readiness returns False here only because /mmfs1 is not mounted, not because the cluster jobs are confirmed incomplete), and (b) job 1120123's raw numeric artifacts are not present locally, so its NO_GO conclusion is confirmed only as a qualitative status string, not as an independently re-derivable result. See WOLVERINE_ORACLE_MIXTURE_HANDOFF.md for the recovery plan.",
+  "readiness_gate": {
+    "rule": "Do not submit until both upstream final reports exist, exactly as gated in docs/current/COMPOSITION_EXPERIMENT_DESIGN.md.",
+    "required_reports": [
+      "/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z/reports/FINAL_REPORT.md",
+      "/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z/reports/FINAL_POLICY_LIBRARY_REPORT.md (or reports/FINAL_REPORT.md)"
+    ],
+    "check_function": "llmserveopt.selector.composition_experiment.check_upstream_readiness",
+    "additional_local_prerequisite": "native_composition_pilot.py (job 1120123) already found NO_GO for rank-only and component-wise composition on the historical 5-treatment design; this sweep must not repeat that pilot's exact design. It adds two operator families the pilot never tested: weighted_reciprocal_rank aggregation and normalized weighted_score aggregation (composition.py / score_aggregation.py, added in this session). Re-running the identical rank-only pilot design is out of scope. Job 1120123's raw artifacts are cluster-only and not present in this checkout; the NO_GO string is trusted but not independently re-derived locally."
+  },
+  "policy_set": {
+    "parent_experts": [
+      "weighted_shortest_processing",
+      "scorpio_style_slo_guard",
+      "estimated_service_time_first",
+      "kv_constrained_online",
+      "aging_priority",
+      "edf",
+      "least_laxity_first",
+      "slo_slack_score"
+    ],
+    "score_capable_subset": [
+      "weighted_shortest_processing",
+      "estimated_service_time_first",
+      "least_laxity_first",
+      "slo_slack_score",
+      "edf",
+      "fifo",
+      "shortest_output_first",
+      "shortest_prompt_first"
+    ],
+    "note": "score_capable_subset must equal llmserveopt.policies.capabilities.SCORE_CAPABLE_EXPERTS at run time -- do not hand-copy it into a config; import and assert equality so the sweep fails loudly if the capability table changes.",
+    "comparison_baselines": [
+      "best_individual_policy",
+      "discrete_selector_regression_anwg"
+    ]
+  },
+  "treatments": [
+    {
+      "id": "T0_best_individual_policy",
+      "description": "Single fixed policy selected by development-split evidence only.",
+      "operator": "none",
+      "selection_data_allowed": ["TRAIN", "VALIDATION", "ROBUST_DEV"]
+    },
+    {
+      "id": "T1_discrete_selector",
+      "description": "Existing regression_anwg selector (see memory: Phase 2B.16 / vLLM Our-Method Comparison Pilot) as the discrete-selection reference point.",
+      "operator": "existing_selector_artifact"
+    },
+    {
+      "id": "T2_uniform_composition",
+      "description": "Equal weight (1/k) over a fixed expert set, no tuning at all.",
+      "operator": ["weighted_borda", "weighted_reciprocal_rank", "weighted_score"],
+      "weight_search": "none -- weights fixed at 1/k by construction"
+    },
+    {
+      "id": "T3_random_sparse_composition",
+      "description": "Random weights over a random sparse top-k subset of experts, redrawn per seed. This is a null/control treatment establishing what composition looks like with NO oracle or learned information -- any oracle/learned treatment must beat this by more than noise to be worth reporting.",
+      "operator": ["weighted_borda", "weighted_reciprocal_rank", "weighted_score"],
+      "weight_search": {
+        "method": "dirichlet_random_draw",
+        "concentration": 1.0,
+        "top_k_values": [2, 3, 5],
+        "draws_per_scenario_seed": 8
+      }
+    },
+    {
+      "id": "T4_oracle_sparse_composition",
+      "description": "Hindsight upper bound only: weight/top-k grid searched directly against the SAME evaluation window's reward. Mirrors the existing oracle_srtf convention in registry.py (ORACLE_POLICY_NAMES) -- non-deployable, reported strictly as an upper bound, never compared as if it were a deployable candidate, and never used to pick a production weight vector.",
+      "operator": ["weighted_borda", "weighted_reciprocal_rank", "weighted_score"],
+      "weight_search": {
+        "method": "grid_search_on_evaluation_window_reward_hindsight_only",
+        "top_k_values": [2, 3, 5, "all"],
+        "grid_points_per_expert_weight": 5,
+        "forbidden_use": "must never be selected via TRAIN/VALIDATION/ROBUST_DEV and must never be reported as a deployable treatment"
+      }
+    },
+    {
+      "id": "T5_learned_weight_composition",
+      "description": "Weights predicted by a development-trained regressor (e.g. per-expert reward regressor analogous to _train_reward_models in tools/native_composition_pilot.py) mapped to softmax or advantage weights, frozen before evaluation.",
+      "operator": ["weighted_borda", "weighted_reciprocal_rank", "weighted_score"],
+      "weight_search": {
+        "method": "development_trained_regressor_softmax_or_advantage_weights",
+        "trained_on": ["TRAIN", "VALIDATION", "ROBUST_DEV"],
+        "frozen_before": ["ID_TEST", "TEMPORAL_OOD", "CROSS_SOURCE_OOD", "FINAL_OOD"]
+      }
+    }
+  ],
+  "composition_methods": {
+    "weighted_borda": {
+      "implementation": "llmserveopt.policies.composition.StaticRankEnsemblePolicy(method='borda')",
+      "normalization": "normalized rank in [0,1] per expert, deterministic (arrival_time, request_id) tie-break"
+    },
+    "weighted_reciprocal_rank": {
+      "implementation": "llmserveopt.policies.composition.StaticRankEnsemblePolicy(method='reciprocal_rank')",
+      "parameters": {"reciprocal_rank_c": [1.0, 10.0, 60.0]},
+      "normalization": "1/(c+rank_position), rank_position is 1-based"
+    },
+    "weighted_score": {
+      "implementation": "llmserveopt.policies.score_aggregation.StaticScoreEnsemblePolicy",
+      "normalization_modes": ["min_max", "zscore", "robust_mad"],
+      "excluded_normalization": "none -- raw unnormalized score addition is not swept; docs/current/composition_operators.json documents this as unsafe by default"
+    }
+  },
+  "sparse_top_k": [2, 3, 5, "all"],
+  "scenario_set": {
+    "source": "reuse the same design.csv driving tools/native_composition_pilot.py (policy_library_v2_expanded_20260721T171933Z/design/policy_library_v2_design.csv) so scenario coverage is identical to the already-completed rank/component pilot and results are directly comparable",
+    "split_groups_used": ["train", "validation", "id_test", "synthetic_ood"],
+    "leakage_guard": "llmserveopt.selector.composition_experiment.assert_no_split_group_leakage must pass before any treatment selection"
+  },
+  "seeds": {
+    "scenario_sampling_seed": 20260721,
+    "random_sparse_composition_seeds": [20260721, 20260722, 20260723, 20260724, 20260725],
+    "note": "Fixed seed per draw so random_sparse_composition rows are individually reproducible; report mean and spread across all 5 seeds, not a single draw."
+  },
+  "metrics": [
+    "arrival_normalized_weighted_goodput",
+    "regret_vs_best_individual_policy",
+    "regret_vs_hindsight_oracle",
+    "completion_fraction",
+    "completed_request_quality",
+    "slo_violation_rate",
+    "switching_frequency",
+    "composition_weight_entropy",
+    "fallback_frequency",
+    "feasibility_violations",
+    "meaningful_window_anwg",
+    "bootstrap_ci95"
+  ],
+  "output_directory": {
+    "convention": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/composition_oracle_mixture_<UTC-timestamp>Z/",
+    "subdirectories": ["logs", "checkpoints", "manifests", "reports"],
+    "expected_files": [
+      "policy_vectors.csv",
+      "composition_weights.csv",
+      "method_comparison.csv",
+      "subset_analysis.csv",
+      "decision_traces/<treatment_id>/<scenario_id>_<seed>.jsonl",
+      "pilot_manifest.json",
+      "reports/FINAL_REPORT.md"
+    ]
+  },
+  "resume_behavior": {
+    "convention": "matches scripts/run_module_credit_overnight.py: --resume-dir flag, checkpoints/ subdirectory, heartbeat.json written periodically, per-(scenario,seed,treatment) row skipped if already present in policy_vectors.csv",
+    "checkpoint_granularity": "one row per (scenario_id, seed, treatment_id, composition_method, normalization_mode, top_k)"
+  },
+  "expected_result_schema": {
+    "policy_vectors.csv": [
+      "scenario_id", "split", "split_group_key", "seed", "treatment_id",
+      "composition_method", "normalization_mode", "top_k", "expert_weights_json",
+      "metric_arrival_normalized_weighted_goodput", "metric_completion_fraction",
+      "metric_slo_violation_rate", "metric_switching_frequency",
+      "metric_composition_weight_entropy", "metric_fallback_frequency"
+    ],
+    "method_comparison.csv": [
+      "treatment_id", "n", "anwg_mean", "anwg_ci95_low", "anwg_ci95_high",
+      "mean_oracle_regret", "p95_regret", "beats_best_individual_policy"
+    ]
+  },
+  "parallelization": {
+    "embarrassingly_parallel_over": ["scenario_id", "seed", "treatment_id"],
+    "not_parallelizable": ["development-only weight/regressor fitting for T5_learned_weight_composition, which must complete before T5 evaluation rows are generated"]
+  },
+  "decisive_question": "Does any oracle-informed or learned-weight mixture (T4, T5) beat T0 (best individual policy) by more than the T3 (random sparse) null margin, on held-out splits, using the new weighted_reciprocal_rank and weighted_score operators in addition to the already-tested weighted_borda operator?"
+}
