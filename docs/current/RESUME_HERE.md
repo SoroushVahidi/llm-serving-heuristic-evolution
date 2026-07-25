@@ -12,8 +12,10 @@ this project after an intentional pause. Readable in 5–10 minutes.
 - **Durable source of truth:** GitHub (`origin`), not Wolverine `/mmfs1` storage.
   External Wolverine paths below **may have disappeared**; reconstruct via
   `docs/current/pause_2026_07_25/REPRODUCTION_COMMANDS.md`.
-- **Checkout first:** `reality-grounded-dataset-expansion-20260724`
-  (dataset-expansion worktree / branch). Then read the pause snapshot.
+- **Checkout first (after Part 3 sync):** `wulver-final-integration-20260721`
+  (or tag `pause-2026-07-25`). Dataset branch
+  `reality-grounded-dataset-expansion-20260724` remains available and is an
+  ancestor of the integration tip at pause.
 - **Pause snapshot (authoritative for this pause):**
   `docs/current/pause_2026_07_25/` — start with `PAUSE_HANDOFF.md` and
   `pause_handoff_state.json`.
@@ -24,15 +26,31 @@ this project after an intentional pause. Readable in 5–10 minutes.
 - **Historical 2026-07-23 pause checkpoint** remains relevant for SLAI/composition
   lineage context: commit `8c9cedb…` on the integration branch (see below).
 
+### Canonical tag after Part 3
+
+After GitHub sync, the annotated tag `pause-2026-07-25` points at
+`wulver-final-integration-20260721` tip. Prefer:
+
+```bash
+git fetch origin --tags
+git checkout wulver-final-integration-20260721
+git pull --ff-only
+git checkout pause-2026-07-25  # detached OK for read-only resume
+```
+
+Dataset branch `reality-grounded-dataset-expansion-20260724` is pushed and is an
+ancestor of (or equal to) the integration tip at pause.
+
 ### Exact resume commands
 
 ```bash
 git fetch origin --prune --tags
-git checkout reality-grounded-dataset-expansion-20260724
-# After Part 3 push: git pull --ff-only
+git checkout wulver-final-integration-20260721
+git pull --ff-only
 source "$(conda info --base)/etc/profile.d/conda.sh" && conda activate repo-env
 less docs/current/RESUME_HERE.md
 less docs/current/pause_2026_07_25/PAUSE_HANDOFF.md
+less docs/current/pause_2026_07_25/PART3_COMPLETION.md
 ```
 
 ### Current scientific decision

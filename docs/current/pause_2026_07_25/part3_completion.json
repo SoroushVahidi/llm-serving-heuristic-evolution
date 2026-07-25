@@ -1,0 +1,77 @@
+{
+  "schema_version": "part3_completion_v1",
+  "completion_timestamp_utc": "2026-07-25T14:05:43Z",
+  "pause_tag": "pause-2026-07-25",
+  "backup_branches": {
+    "dataset": "backup/pre-final-push-dataset-20260725T140324Z",
+    "integration": "backup/pre-final-integration-20260725T140324Z"
+  },
+  "dataset_branch": {
+    "name": "reality-grounded-dataset-expansion-20260724",
+    "starting_sha_part3": "6aea97dc4466ea9681af9ec49ac470993d7664f8",
+    "final_sha": "775147beec997b14039bbaa088d17630a32156cf",
+    "remote_sha": "775147beec997b14039bbaa088d17630a32156cf",
+    "ahead": 0,
+    "behind": 0,
+    "commits_pushed_from_pre_push_origin": 18
+  },
+  "integration_branch": {
+    "name": "wulver-final-integration-20260721",
+    "starting_sha": "b0768f28016442527d2ebe9dcbc9efdf24f26da0",
+    "post_ff_sha": "775147beec997b14039bbaa088d17630a32156cf",
+    "note": "final_sha is HEAD after Part 3 completion commit; verify with git rev-parse HEAD"
+  },
+  "legacy_branch": {
+    "name": "wulver-policy-composition-readiness",
+    "head": "c8aee129f553f8dc3ede99eac60d5b14484beb41",
+    "unique_newer_reusable_work": false,
+    "pushed": false,
+    "worktree_left_in_place": true,
+    "resolution": "docs/current/pause_2026_07_25/legacy/RESOLUTION.md"
+  },
+  "tests": {
+    "part2_full": "2809 passed, 90 skipped, 26 deselected in 1267.69s",
+    "part3_smoke": "33 passed (repaired_pilot + converters + canonical_schema)"
+  },
+  "pilot": {
+    "REPAIRED_PILOT": "PARTIALLY_READY",
+    "FULL_FINGERPRINT_SWEEP": "NOT_AUTHORIZED",
+    "job_id": "1143392",
+    "diagnostic_limitation": "outcome_signatures_not_action_traces"
+  },
+  "security_review": {
+    "blobs_over_1mb_in_unpublished_range": 0,
+    "blobs_over_10mb": 0,
+    "largest_new_blob_bytes": 38947,
+    "credential_findings": "false_positives_only",
+    "mooncake_row_level_committed": false
+  },
+  "preservation_coverage": [
+    "source",
+    "tests",
+    "docs",
+    "runners",
+    "slurm_templates",
+    "compact_manifests",
+    "reconstruction_commands",
+    "pause_audit",
+    "handoff_state",
+    "legacy_resolution"
+  ],
+  "excluded_artifacts": [
+    "raw_processed_datasets",
+    "generated_windows",
+    "full_pilot_matrices",
+    "logs",
+    "caches",
+    "mooncake_data"
+  ],
+  "reconstruction_entry_points": [
+    "docs/current/pause_2026_07_25/REPRODUCTION_COMMANDS.md",
+    "scripts/data/reconstruct_tier1_datasets.sh",
+    "scripts/workloads/reconstruct_real_windows.py",
+    "scripts/data/run_repaired_load_discrimination_pilot.py"
+  ],
+  "next_scientific_action": "targeted_simulator_or_load_discrimination_repair_and_or_true_action_tracing_before_full_fingerprint_sweep",
+  "remote_url_sanitized": "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution.git"
+}
