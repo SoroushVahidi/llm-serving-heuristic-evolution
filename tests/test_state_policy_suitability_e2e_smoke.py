@@ -35,7 +35,8 @@ def _tiny_long_format_dataset(seed: int):
     burstgpt = smoke.resolve_burstgpt_trace_path()
     if burstgpt is None:
         pytest.skip(
-            "BurstGPT CSV not present in-repo or at known durable Wulver path; "
+            "BurstGPT CSV unavailable: stage data/raw/burstgpt/BurstGPT_1.csv "
+            "or set LLMSERVEOPT_BURSTGPT_CSV / LLMSERVEOPT_DATA_ROOT; "
             "optional external-resource smoke skipped"
         )
     args = argparse.Namespace(

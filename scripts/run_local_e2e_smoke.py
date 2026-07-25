@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
 import time
@@ -30,33 +31,63 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-# Preferred in-repo path, then durable Wulver overnight-scale raw copy.
-# Tests that need this file should skip when none of these exist.
-BURSTGPT_TRACE_CANDIDATES: tuple[Path, ...] = (
-    ROOT / "data" / "raw" / "burstgpt" / "BurstGPT_1.csv",
-    Path(
-        "/mmfs1/project/ikoutis/sv96/llmserveopt-data/"
-        "selector_v2_overnight_20260720T235405/raw/burstgpt/BurstGPT_1.csv"
-    ),
+# Portable default (relative to repo root). Cluster paths are NEVER hardcoded:
+# set LLMSERVEOPT_BURSTGPT_CSV to an absolute CSV, or LLMSERVEOPT_DATA_ROOT to a
+# shared data root containing the overnight-scale BurstGPT layout below.
+DEFAULT_BURSTGPT_TRACE_REL = "data/raw/burstgpt/BurstGPT_1.csv"
+ENV_BURSTGPT_CSV = "LLMSERVEOPT_BURSTGPT_CSV"
+ENV_DATA_ROOT = "LLMSERVEOPT_DATA_ROOT"
+CLUSTER_BURSTGPT_REL = (
+    "selector_v2_overnight_20260720T235405/raw/burstgpt/BurstGPT_1.csv"
 )
 
 
-def resolve_burstgpt_trace_path(explicit: str | Path | None = None) -> Path | None:
-    """Return an existing BurstGPT CSV path, or None if unavailable.
+def _as_repo_path(path: str | Path) -> Path:
+    p = Path(path)
+    return p if p.is_absolute() else ROOT / p
 
-    If ``explicit`` is provided but missing, known durable fallbacks are
-    still tried so Wulver checkouts without a vendored ``data/raw/`` copy
-    can run the smoke path against the shared overnight-scale raw file.
+
+def resolve_burstgpt_trace_path(explicit: str | Path | None = None) -> Path | None:
+    """Resolve a BurstGPT CSV without baking in machine-specific paths.
+
+    Precedence:
+    1. ``explicit`` path when it exists (CLI ``--trace-path``).
+    2. If ``explicit`` is a *non-default* path and missing → ``None``
+       (do not silently substitute another file).
+    3. ``LLMSERVEOPT_BURSTGPT_CSV`` when set (must exist; fail closed if missing).
+    4. Portable in-repo ``data/raw/burstgpt/BurstGPT_1.csv``.
+    5. ``$LLMSERVEOPT_DATA_ROOT/`` + overnight-scale relative layout (optional).
+
+    Returns ``None`` when nothing usable is found (callers skip or raise).
     """
+    default_portable = ROOT / DEFAULT_BURSTGPT_TRACE_REL
+
     if explicit is not None:
-        path = Path(explicit)
-        if not path.is_absolute():
-            path = ROOT / path
+        path = _as_repo_path(explicit)
         if path.exists():
             return path
-    for candidate in BURSTGPT_TRACE_CANDIDATES:
-        if candidate.exists():
-            return candidate
+        explicit_key = str(Path(explicit))
+        is_default = explicit_key in {
+            DEFAULT_BURSTGPT_TRACE_REL,
+            str(default_portable),
+        }
+        if not is_default:
+            return None
+
+    env_csv = os.environ.get(ENV_BURSTGPT_CSV)
+    if env_csv:
+        env_path = Path(env_csv).expanduser()
+        return env_path if env_path.exists() else None
+
+    if default_portable.exists():
+        return default_portable
+
+    data_root = os.environ.get(ENV_DATA_ROOT)
+    if data_root:
+        cluster = Path(data_root).expanduser() / CLUSTER_BURSTGPT_REL
+        if cluster.exists():
+            return cluster
+
     return None
 
 
@@ -152,10 +183,9 @@ def load_requests(args: argparse.Namespace):
         path = resolve_burstgpt_trace_path(args.trace_path)
         if path is None:
             raise FileNotFoundError(
-                "BurstGPT CSV not found. Tried --trace-path "
-                f"{args.trace_path!r} and known durable fallbacks under "
-                "/mmfs1/project/ikoutis/sv96/llmserveopt-data/. "
-                "Pass an existing --trace-path or stage BurstGPT locally."
+                "BurstGPT CSV not found. Provide an existing --trace-path, "
+                f"stage {DEFAULT_BURSTGPT_TRACE_REL} under the repo, or set "
+                f"{ENV_BURSTGPT_CSV} / {ENV_DATA_ROOT} (see resolve_burstgpt_trace_path)."
             )
         # Record the resolved absolute/relative path for provenance reports.
         args.trace_path = str(path)

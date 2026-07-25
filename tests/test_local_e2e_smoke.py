@@ -63,7 +63,8 @@ def test_full_27_policy_library_smoke_end_to_end(tmp_path, monkeypatch):
     burstgpt = mod.resolve_burstgpt_trace_path()
     if burstgpt is None:
         pytest.skip(
-            "BurstGPT CSV not present in-repo or at known durable Wulver path; "
+            "BurstGPT CSV unavailable: stage data/raw/burstgpt/BurstGPT_1.csv "
+            "or set LLMSERVEOPT_BURSTGPT_CSV / LLMSERVEOPT_DATA_ROOT; "
             "optional external-resource smoke skipped"
         )
 
