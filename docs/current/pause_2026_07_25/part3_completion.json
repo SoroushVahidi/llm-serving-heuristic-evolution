@@ -19,7 +19,9 @@
     "name": "wulver-final-integration-20260721",
     "starting_sha": "b0768f28016442527d2ebe9dcbc9efdf24f26da0",
     "post_ff_sha": "775147beec997b14039bbaa088d17630a32156cf",
-    "note": "final_sha is HEAD after Part 3 completion commit; verify with git rev-parse HEAD"
+    "note": "final_sha is HEAD after Part 3 completion commit; verify with git rev-parse HEAD",
+    "completion_commit_sha": "abd2f75418f12b5721e8542993b2f4228758fa78",
+    "verify_tip_with": "git rev-parse HEAD"
   },
   "legacy_branch": {
     "name": "wulver-policy-composition-readiness",
