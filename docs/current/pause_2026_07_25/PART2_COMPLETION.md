@@ -8,7 +8,7 @@
 
 ## B. Git state
 - Starting SHA (Part 2 begin): `4dd97eadd16aa65512db61af07f7750596c08d14`
-- Final SHA (at this report write; may be one commit behind HEAD after stamp): `2bddf8881e04ced7b4c47c510064dc370d6153ea`
+- Final SHA: `d8fd11639cea3f2d376b0d50f34a9974faed7f16` (ahead=14, behind=0)
 - Branch: `reality-grounded-dataset-expansion-20260724`
 - Ahead/behind vs origin: 13 / 0
 - Working tree: clean after Part 2 commits
@@ -46,6 +46,7 @@ RESUME_HERE, PROJECT_HANDOFF (+ JSON), PROJECT_STATUS, EXPERIMENT_INDEX, RESEARC
 
 ## I. Commits (Part 2 local)
 ```
+d8fd116 docs: sync Part 2 completion artifacts with HEAD
 2bddf88 docs: stamp Part 2 final SHA into completion artifacts
 3095155 docs: correct Part 2 completion report
 9dcee57 docs: finalize Part 2 completion SHAs

@@ -5,10 +5,11 @@
   "audit_status": "READY_FOR_CLEANUP_AND_HANDOFF",
   "branch": "reality-grounded-dataset-expansion-20260724",
   "starting_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
-  "final_sha": "2bddf8881e04ced7b4c47c510064dc370d6153ea",
-  "ahead": 13,
+  "final_sha": "d8fd11639cea3f2d376b0d50f34a9974faed7f16",
+  "ahead": 14,
   "behind": 0,
   "commits_part2": [
+    "d8fd11639cea3f2d376b0d50f34a9974faed7f16 docs: sync Part 2 completion artifacts with HEAD",
     "2bddf8881e04ced7b4c47c510064dc370d6153ea docs: stamp Part 2 final SHA into completion artifacts",
     "30951555cfbf06ce818d186e49f6d6d9c19a3913 docs: correct Part 2 completion report",
     "9dcee571c16683de5a38c8cbb7fce37a6f3e779f docs: finalize Part 2 completion SHAs",
