@@ -11,12 +11,19 @@ Observed fields (from dataset):
 
 Synthetic augmented fields (disclosed):
   predicted_output_tokens, class_id, priority, slo_deadline
+
+Full-file loading
+-----------------
+``load_burstgpt_raw`` still uses in-memory ``pandas.read_csv`` for small
+fixtures and backward compatibility. Prefer ``load_burstgpt_raw_chunked`` /
+``load_burstgpt_trace(..., use_chunked=True)`` for release-v2.0 multi-million
+row CSVs so conversion never materializes the full object-dtyped CSV at once.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -51,29 +58,116 @@ _MODEL_VARIANTS = ["Model", "model", "model_id"]
 _LOGTYPE_VARIANTS = ["Log Type", "LogType", "log_type", "log type"]
 _ELAPSED_VARIANTS = ["Elapsed time", "Elapsed Time", "elapsed_time", "elapsed"]
 
+DEFAULT_BURSTGPT_CHUNKSIZE = 100_000
 
-def _detect_column(df: pd.DataFrame, variants: List[str], label: str) -> str:
-    cols_lower = {c.lower(): c for c in df.columns}
+
+def _detect_column_name(columns: Sequence[str], variants: List[str], label: str) -> str:
+    cols_lower = {c.lower(): c for c in columns}
     for v in variants:
-        if v in df.columns:
+        if v in columns:
             return v
         if v.lower() in cols_lower:
             return cols_lower[v.lower()]
     raise ValueError(
-        f"Cannot find {label} column in DataFrame. "
-        f"Available columns: {list(df.columns)}. "
+        f"Cannot find {label} column in columns. "
+        f"Available columns: {list(columns)}. "
         f"Tried: {variants}"
     )
 
 
-def _detect_optional_column(df: pd.DataFrame, variants: List[str]) -> Optional[str]:
-    cols_lower = {c.lower(): c for c in df.columns}
+def _detect_optional_column_name(columns: Sequence[str], variants: List[str]) -> Optional[str]:
+    cols_lower = {c.lower(): c for c in columns}
     for v in variants:
-        if v in df.columns:
+        if v in columns:
             return v
         if v.lower() in cols_lower:
             return cols_lower[v.lower()]
     return None
+
+
+def _detect_column(df: pd.DataFrame, variants: List[str], label: str) -> str:
+    return _detect_column_name(list(df.columns), variants, label)
+
+
+def _detect_optional_column(df: pd.DataFrame, variants: List[str]) -> Optional[str]:
+    return _detect_optional_column_name(list(df.columns), variants)
+
+
+def detect_burstgpt_schema(columns: Sequence[str]) -> Dict[str, Optional[str]]:
+    """Map logical BurstGPT fields to concrete CSV header names."""
+    return {
+        "timestamp": _detect_column_name(columns, _TIMESTAMP_VARIANTS, "timestamp"),
+        "request_tokens": _detect_column_name(columns, _REQUEST_TOKEN_VARIANTS, "request tokens"),
+        "response_tokens": _detect_column_name(columns, _RESPONSE_TOKEN_VARIANTS, "response tokens"),
+        "session_id": _detect_optional_column_name(columns, _SESSION_VARIANTS),
+        "model": _detect_optional_column_name(columns, _MODEL_VARIANTS),
+        "log_type": _detect_optional_column_name(columns, _LOGTYPE_VARIANTS),
+        "elapsed_time": _detect_optional_column_name(columns, _ELAPSED_VARIANTS),
+    }
+
+
+def _is_duplicate_header_row(row: pd.Series, schema: Dict[str, Optional[str]]) -> bool:
+    """True when a data row repeats the CSV header (common in concatenated shards)."""
+    ts_col = schema["timestamp"]
+    assert ts_col is not None
+    ts_val = row.get(ts_col)
+    if pd.isna(ts_val):
+        return False
+    ts_str = str(ts_val).strip().lower()
+    if ts_str in {c.lower() for c in _TIMESTAMP_VARIANTS}:
+        return True
+    req_col = schema["request_tokens"]
+    assert req_col is not None
+    req_val = row.get(req_col)
+    if pd.notna(req_val) and str(req_val).strip().lower() in {
+        c.lower() for c in _REQUEST_TOKEN_VARIANTS
+    }:
+        return True
+    return False
+
+
+def _normalize_burstgpt_chunk(
+    chunk: pd.DataFrame,
+    schema: Dict[str, Optional[str]],
+) -> pd.DataFrame:
+    """Drop duplicate headers / empty rows and keep only schema columns."""
+    if chunk.empty:
+        return chunk
+    dup_mask = chunk.apply(lambda r: _is_duplicate_header_row(r, schema), axis=1)
+    if dup_mask.any():
+        chunk = chunk.loc[~dup_mask].copy()
+    keep_cols = [c for c in schema.values() if c is not None]
+    # Ignore unexpected trailing columns; require schema columns present.
+    missing = [c for c in keep_cols if c not in chunk.columns]
+    if missing:
+        raise ValueError(f"Chunk missing expected columns: {missing}")
+    return chunk.loc[:, keep_cols].copy()
+
+
+def iter_burstgpt_csv_chunks(
+    path: Union[str, Path],
+    chunksize: int = DEFAULT_BURSTGPT_CHUNKSIZE,
+) -> Iterator[pd.DataFrame]:
+    """Yield normalized BurstGPT CSV chunks without loading the full file."""
+    if chunksize <= 0:
+        raise ValueError(f"chunksize must be positive, got {chunksize}")
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"BurstGPT file not found: {path}")
+
+    reader = pd.read_csv(
+        path,
+        chunksize=chunksize,
+        dtype=str,
+        keep_default_na=True,
+        on_bad_lines="warn",
+        engine="python",
+    )
+    schema: Optional[Dict[str, Optional[str]]] = None
+    for chunk in reader:
+        if schema is None:
+            schema = detect_burstgpt_schema(list(chunk.columns))
+        yield _normalize_burstgpt_chunk(chunk, schema)
 
 
 @dataclass
@@ -124,18 +218,33 @@ def conversion_report_to_dict(report: ConversionReport) -> dict:
 
 
 def load_burstgpt_raw(path: Union[str, Path]) -> pd.DataFrame:
-    """Load a BurstGPT CSV into memory.
+    """Load a BurstGPT CSV into memory (small fixtures / backward compatibility).
 
     Memory note: this uses ``pandas.read_csv`` and loads the full file. Full
-    BurstGPT v2.0 cleaned assets are ~50–220 MB each (~1.4M–5M rows). For
-    Wolverine full-trace conversion prefer chunked/out-of-core preprocessing or
-    set ``BurstGPTConversionConfig.max_requests`` after an intentional full
-    load; do not silently stream-truncate without recording the limit.
+    BurstGPT v2.0 cleaned assets are ~50–220 MB each (~1.4M–5M rows). Prefer
+    ``load_burstgpt_raw_chunked`` for full-trace Wolverine conversion.
     """
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"BurstGPT file not found: {path}")
     return pd.read_csv(path)
+
+
+def load_burstgpt_raw_chunked(
+    path: Union[str, Path],
+    chunksize: int = DEFAULT_BURSTGPT_CHUNKSIZE,
+) -> pd.DataFrame:
+    """Load BurstGPT CSV via bounded chunks into a slim DataFrame.
+
+    Rows are read as strings in ``chunksize`` batches, duplicate header rows are
+    dropped, and only schema columns are retained before concatenation. This
+    avoids a single full-file object-dtyped ``read_csv`` while preserving the
+    same logical row set for ``convert_burstgpt_to_*``.
+    """
+    frames = [chunk for chunk in iter_burstgpt_csv_chunks(path, chunksize=chunksize)]
+    if not frames:
+        return pd.DataFrame()
+    return pd.concat(frames, ignore_index=True)
 
 
 def convert_burstgpt_to_canonical(
@@ -358,6 +467,34 @@ def load_burstgpt_trace(
     config: Optional[BurstGPTConversionConfig] = None,
     seed: int = 0,
     aug_config: Optional[AugmentationConfig] = None,
+    *,
+    use_chunked: bool = True,
+    chunksize: int = DEFAULT_BURSTGPT_CHUNKSIZE,
 ) -> Tuple[List[Request], ConversionReport]:
-    df = load_burstgpt_raw(path)
+    """Load and convert a BurstGPT CSV.
+
+    ``use_chunked=True`` (default) streams the CSV in ``chunksize`` batches
+    before conversion. Set ``use_chunked=False`` to preserve the historical
+    single-shot ``pandas.read_csv`` path used by older callers/tests.
+    """
+    if use_chunked:
+        df = load_burstgpt_raw_chunked(path, chunksize=chunksize)
+    else:
+        df = load_burstgpt_raw(path)
     return convert_burstgpt_to_requests(df, config, seed, aug_config)
+
+
+def load_burstgpt_trace_with_metadata(
+    path: Union[str, Path],
+    config: Optional[BurstGPTConversionConfig] = None,
+    seed: int = 0,
+    aug_config: Optional[AugmentationConfig] = None,
+    *,
+    use_chunked: bool = True,
+    chunksize: int = DEFAULT_BURSTGPT_CHUNKSIZE,
+) -> Tuple[List[Request], List[Dict[str, Any]], ConversionReport]:
+    if use_chunked:
+        df = load_burstgpt_raw_chunked(path, chunksize=chunksize)
+    else:
+        df = load_burstgpt_raw(path)
+    return convert_burstgpt_to_requests_with_metadata(df, config, seed, aug_config)

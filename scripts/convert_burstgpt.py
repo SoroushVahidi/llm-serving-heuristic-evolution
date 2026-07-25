@@ -38,6 +38,18 @@ def main():
     parser.add_argument("--time-scale", type=float, default=1.0, help="Multiply interarrivals by this factor")
     parser.add_argument("--start-time", type=float, default=None, help="Filter: start timestamp")
     parser.add_argument("--end-time", type=float, default=None, help="Filter: end timestamp")
+    parser.add_argument(
+        "--chunked",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Stream CSV in chunks (default: true). Use --no-chunked for legacy full read_csv.",
+    )
+    parser.add_argument(
+        "--chunksize",
+        type=int,
+        default=100_000,
+        help="Rows per chunk when --chunked is enabled",
+    )
     args = parser.parse_args()
 
     cfg_dict = {}
@@ -72,7 +84,14 @@ def main():
     print(f"  Output: {args.output}")
     print(f"  Seed  : {args.seed}")
 
-    requests, report = load_burstgpt_trace(input_path, conversion_config, args.seed, aug_config)
+    requests, report = load_burstgpt_trace(
+        input_path,
+        conversion_config,
+        args.seed,
+        aug_config,
+        use_chunked=args.chunked,
+        chunksize=args.chunksize,
+    )
 
     print(f"\nConversion report:")
     print(f"  Rows read         : {report.rows_read}")
