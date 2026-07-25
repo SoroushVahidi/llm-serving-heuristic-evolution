@@ -1,0 +1,499 @@
+{
+  "document": "real_dataset_expansion_status",
+  "access_date": "2026-07-24",
+  "branch": "reality-grounded-dataset-expansion-20260724",
+  "hf_authentication": "AVAILABLE",
+  "hf_username": "SoroushVahidi",
+  "overall_status": "PARTIALLY_READY_WITH_ACCESS_GAPS",
+  "canonical_schema_module": "src/llmserveopt/workloads/canonical_schema.py",
+  "staging_root_local": "/home/soroush/llmserveopt-dataset-staging",
+  "wolverine_root_proposed": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/",
+  "datasets": [
+    {
+      "canonical_name": "BurstGPT",
+      "dataset_id": "HPMLL/BurstGPT",
+      "official_source_verified": true,
+      "source_url": "https://github.com/HPMLL/BurstGPT",
+      "version": "v2.0",
+      "access": "PUBLIC",
+      "license": "CC-BY-4.0",
+      "dataset_type": "true_serving_trace",
+      "gated": false,
+      "approximate_size": {
+        "BurstGPT_1.csv": "52MB",
+        "BurstGPT_2.csv": "145MB",
+        "BurstGPT_3.csv": "232MB",
+        "without_fails_total": "~411MB raw CSV",
+        "lines_approx": "1.4M + 3.9M + 5.3M (with fails)"
+      },
+      "available_splits": [
+        "BurstGPT_1",
+        "BurstGPT_2",
+        "BurstGPT_3",
+        "without_fails_1/2/3"
+      ],
+      "schema": [
+        "Timestamp",
+        "Request tokens",
+        "Response tokens",
+        "Total tokens",
+        "Model",
+        "Log Type",
+        "Session ID (v3)",
+        "Elapsed time (v3)"
+      ],
+      "timestamp_semantics": "seconds from 0:00:00 on first day (local TZ calibrated)",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": true
+      },
+      "session_support": "partial (Session ID in BurstGPT_3)",
+      "cache_prefix_information": false,
+      "sample_inspected": true,
+      "sample_note": "header-only partial download of without_fails_1 and without_fails_3; no full download",
+      "integration_status": "loader_extended_full_trace_compatible",
+      "local_sample_status": "fixture_only",
+      "full_download_recommendation": "download without_fails_1/2/3 on Wolverine; prefer chronological train/val/test by day ranges",
+      "redistribution_restriction": "CC-BY-4.0 attribution required; do not commit full CSVs",
+      "checksum_strategy": "sha256 of release assets after download",
+      "known_limitations": [
+        "existing 10k subsets likely from BurstGPT_1-era schema without Session ID",
+        "SLO/priority synthesized",
+        "zero-response failures present in non-cleaned files"
+      ]
+    },
+    {
+      "canonical_name": "Azure_LLM_Inference_2023",
+      "dataset_id": "Azure/AzurePublicDataset#AzureLLMInferenceDataset2023",
+      "official_source_verified": true,
+      "source_url": "https://github.com/Azure/AzurePublicDataset/blob/master/AzureLLMInferenceDataset2023.md",
+      "version": "2023-11-11_sample",
+      "access": "PUBLIC",
+      "license": "CC-BY",
+      "dataset_type": "true_serving_trace",
+      "gated": false,
+      "approximate_size": {
+        "code_csv": "small_MB",
+        "conv_csv": "small_MB"
+      },
+      "available_splits": [
+        "code",
+        "conversation"
+      ],
+      "missing_splits_note": "No public function-calling subset exists in the official release (404 for function* filenames)",
+      "schema": [
+        "TIMESTAMP",
+        "ContextTokens",
+        "GeneratedTokens"
+      ],
+      "timestamp_semantics": "ISO datetime wall-clock invocation time; converter parses to unix seconds then relative",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": true
+      },
+      "session_support": false,
+      "cache_prefix_information": false,
+      "sample_inspected": true,
+      "integration_status": "converter_present_code_and_conv",
+      "local_sample_status": "staged_500_rows_outside_repo",
+      "full_download_recommendation": "download both code and conv CSVs; already partially processed historically",
+      "redistribution_restriction": "CC-BY attribution; do not redistribute beyond license",
+      "checksum_strategy": "sha256 of downloaded CSVs",
+      "known_limitations": [
+        "no function-calling subset",
+        "SLO/priority synthesized",
+        "no model_id"
+      ]
+    },
+    {
+      "canonical_name": "Azure_LLM_Inference_2024",
+      "dataset_id": "Azure/AzurePublicDataset#AzureLLMInferenceDataset2024",
+      "official_source_verified": true,
+      "source_url": "https://github.com/Azure/AzurePublicDataset/blob/master/AzureLLMInferenceDataset2024.md",
+      "version": "2024-05_1week",
+      "access": "PUBLIC",
+      "license": "CC-BY",
+      "dataset_type": "true_serving_trace",
+      "gated": false,
+      "approximate_size": {
+        "code": "~692MB",
+        "conv": "~1.08GB"
+      },
+      "available_splits": [
+        "code",
+        "conversation"
+      ],
+      "schema": [
+        "TIMESTAMP",
+        "ContextTokens",
+        "GeneratedTokens"
+      ],
+      "timestamp_semantics": "ISO datetime invocation time",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": true
+      },
+      "session_support": false,
+      "cache_prefix_information": false,
+      "sample_inspected": false,
+      "integration_status": "download_script_and_converter_compatible",
+      "local_sample_status": "not_downloaded_this_task",
+      "full_download_recommendation": "Wolverine only; use scripts/data/download_azure_llm_2024.py",
+      "redistribution_restriction": "CC-BY; do not commit raw CSVs",
+      "checksum_strategy": "size check in download script + sha256",
+      "known_limitations": [
+        "large files",
+        "same schema as 2023",
+        "no function-calling subset"
+      ]
+    },
+    {
+      "canonical_name": "Qwen_Bailian_Anonymous_Traces",
+      "dataset_id": "alibaba-edu/qwen-bailian-usagetraces-anon",
+      "official_source_verified": true,
+      "source_url": "https://github.com/alibaba-edu/qwen-bailian-usagetraces-anon",
+      "version": "main_lfs_2025",
+      "access": "PUBLIC",
+      "license": "Apache-2.0",
+      "dataset_type": "true_serving_trace",
+      "gated": false,
+      "approximate_size": {
+        "qwen_traceA_blksz_16.jsonl": "56MB",
+        "qwen_traceB_blksz_16.jsonl": "96MB",
+        "qwen_thinking_blksz_16.jsonl": "28MB",
+        "qwen_coder_blksz_16.jsonl": "132MB",
+        "total_raw": "~312MB"
+      },
+      "available_splits": [
+        "to_c_traceA",
+        "to_b_traceB",
+        "thinking",
+        "coder"
+      ],
+      "schema": [
+        "chat_id",
+        "parent_chat_id",
+        "timestamp",
+        "input_length",
+        "output_length",
+        "type",
+        "turn",
+        "hash_ids"
+      ],
+      "timestamp_semantics": "seconds relative to trace start (absolute times removed)",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": true
+      },
+      "session_support": true,
+      "cache_prefix_information": true,
+      "sample_inspected": true,
+      "integration_status": "converter_implemented",
+      "local_sample_status": "staged_outside_repo",
+      "full_download_recommendation": "git lfs or media.githubusercontent.com on Wolverine",
+      "redistribution_restriction": "Apache-2.0; prefer not committing large JSONL",
+      "checksum_strategy": "sha256 of LFS objects",
+      "known_limitations": [
+        "two-hour samples not multi-week",
+        "no model_id field",
+        "SLO synthesized"
+      ],
+      "classification_note": "accessible (was previously listed as uncertain in older docs)"
+    },
+    {
+      "canonical_name": "Mooncake_Kimi_Traces",
+      "dataset_id": "kvcache-ai/Mooncake#FAST25-release/traces",
+      "official_source_verified": true,
+      "source_url": "https://github.com/kvcache-ai/Mooncake",
+      "version": "FAST25-release",
+      "access": "PUBLIC",
+      "license": "Apache-2.0",
+      "dataset_type": "true_serving_trace",
+      "gated": false,
+      "approximate_size": {
+        "conversation_toolagent_arxiv": "inspect_on_download"
+      },
+      "available_splits": [
+        "conversation_trace",
+        "toolagent_trace",
+        "arxiv-trace/mooncake_trace",
+        "synthetic_trace"
+      ],
+      "schema": [
+        "timestamp",
+        "input_length",
+        "output_length",
+        "hash_ids"
+      ],
+      "timestamp_semantics": "numeric source timestamps normalized to relative; unit disclosed in metadata",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": true
+      },
+      "session_support": false,
+      "cache_prefix_information": true,
+      "sample_inspected": true,
+      "integration_status": "converter_implemented",
+      "local_sample_status": "staged_outside_repo",
+      "full_download_recommendation": "download conversation_trace and toolagent_trace; label synthetic_trace separately",
+      "redistribution_restriction": "Apache-2.0",
+      "checksum_strategy": "sha256",
+      "known_limitations": [
+        "synthetic_trace is not production",
+        "timestamp unit ambiguity requires manifest note",
+        "no session_id"
+      ]
+    },
+    {
+      "canonical_name": "LMSYS_Chat_1M",
+      "dataset_id": "lmsys/lmsys-chat-1m",
+      "official_source_verified": true,
+      "source_url": "https://huggingface.co/datasets/lmsys/lmsys-chat-1m",
+      "version": "hub_current",
+      "access": "GATED_ACCESS_NOT_GRANTED",
+      "license": "LMSYS-Chat-1M Dataset License Agreement (extra-gated; prohibits redistribution to third parties)",
+      "dataset_type": "prompt_conversation_corpus",
+      "gated": true,
+      "approximate_size": {
+        "parquet_shards": "6 shards"
+      },
+      "available_splits": [
+        "train"
+      ],
+      "schema": [
+        "conversation_id",
+        "model",
+        "conversation",
+        "turn",
+        "language",
+        "openai_moderation",
+        "redacted"
+      ],
+      "timestamp_semantics": "not system arrival timestamps; conversation metadata only",
+      "prompt_output_availability": {
+        "prompt": "text_requires_tokenization",
+        "output": "text_requires_tokenization"
+      },
+      "session_support": true,
+      "cache_prefix_information": false,
+      "sample_inspected": false,
+      "integration_status": "metadata_adapter_ready_access_blocked",
+      "local_sample_status": "none",
+      "full_download_recommendation": "request gated access first; do not redistribute rows",
+      "redistribution_restriction": "explicitly prohibits transfer/redistribution to third parties",
+      "checksum_strategy": "HF revision pin",
+      "known_limitations": [
+        "NOT a serving trace",
+        "gated",
+        "no native token counts",
+        "unsafe content retained by design"
+      ]
+    },
+    {
+      "canonical_name": "WildChat_1M",
+      "dataset_id": "allenai/WildChat-1M",
+      "official_source_verified": true,
+      "source_url": "https://huggingface.co/datasets/allenai/WildChat-1M",
+      "version": "hub_current",
+      "access": "PUBLIC",
+      "license": "ODC-BY",
+      "dataset_type": "prompt_conversation_corpus",
+      "gated": false,
+      "approximate_size": {
+        "parquet_shards": "14 shards"
+      },
+      "available_splits": [
+        "train"
+      ],
+      "schema": [
+        "conversation_hash",
+        "model",
+        "timestamp",
+        "conversation",
+        "turn",
+        "language",
+        "toxic",
+        "redacted",
+        "state",
+        "country",
+        "hashed_ip",
+        "header",
+        "openai_moderation",
+        "detoxify_moderation"
+      ],
+      "timestamp_semantics": "conversation timestamps, NOT system request arrivals",
+      "prompt_output_availability": {
+        "prompt": "text_requires_tokenization",
+        "output": "text_requires_tokenization"
+      },
+      "session_support": true,
+      "cache_prefix_information": false,
+      "sample_inspected": true,
+      "integration_status": "length_adapter_implemented",
+      "local_sample_status": "streaming_sample_not_persisted",
+      "full_download_recommendation": "prefer over LMSYS when gated access missing; still not a serving trace",
+      "redistribution_restriction": "ODC-BY; do not commit conversation text",
+      "checksum_strategy": "HF revision pin",
+      "known_limitations": [
+        "NOT a serving trace",
+        "may contain toxic content",
+        "no native token counts",
+        "IP/geo metadata present \u2014 avoid logging"
+      ]
+    },
+    {
+      "canonical_name": "LongBench",
+      "dataset_id": "THUDM/LongBench",
+      "official_source_verified": true,
+      "source_url": "https://huggingface.co/datasets/THUDM/LongBench",
+      "version": "hub_current",
+      "access": "PUBLIC",
+      "license": "not_declared_on_card_check_github_THUDM_LongBench",
+      "dataset_type": "benchmark_prompt_corpus",
+      "gated": false,
+      "approximate_size": {
+        "data.zip": "113932529 bytes (~109MB)"
+      },
+      "available_splits": [
+        "21 tasks + LongBench-E variants"
+      ],
+      "schema": [
+        "input",
+        "context",
+        "answers",
+        "length",
+        "dataset",
+        "language",
+        "all_classes",
+        "_id"
+      ],
+      "timestamp_semantics": "none",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": "reference_answers"
+      },
+      "session_support": false,
+      "cache_prefix_information": false,
+      "sample_inspected": false,
+      "integration_status": "prompt_length_adapter_implemented",
+      "local_sample_status": "metadata_only_no_data_zip_download",
+      "full_download_recommendation": "download data.zip on Wolverine for long-context stress workloads",
+      "redistribution_restriction": "verify GitHub license before redistributing extracted tasks",
+      "checksum_strategy": "sha256 of data.zip",
+      "known_limitations": [
+        "NOT a serving trace",
+        "requires synthetic/trace-calibrated arrivals",
+        "trust_remote_code for datasets loader"
+      ]
+    },
+    {
+      "canonical_name": "SwissAI",
+      "dataset_id": "external_cluster_staging",
+      "official_source_verified": false,
+      "source_url": "cluster:/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_trace_staging_20260722T172215Z",
+      "version": "staging_20260722",
+      "access": "UNAVAILABLE",
+      "license": "unknown_in_repo",
+      "dataset_type": "true_serving_trace",
+      "gated": null,
+      "approximate_size": {},
+      "available_splits": [
+        "staged_windows"
+      ],
+      "schema": [
+        "total_buckets proxy; prompt/output tokens largely missing"
+      ],
+      "timestamp_semantics": "cluster-staged",
+      "prompt_output_availability": {
+        "prompt": false,
+        "output": false
+      },
+      "session_support": "unknown",
+      "cache_prefix_information": true,
+      "sample_inspected": false,
+      "integration_status": "external_only_no_in_repo_loader",
+      "local_sample_status": "none",
+      "full_download_recommendation": "reuse cluster staging; do not invent token counts",
+      "redistribution_restriction": "unknown",
+      "checksum_strategy": "cluster manifests",
+      "known_limitations": [
+        "no in-repo loader",
+        "token fields are proxies",
+        "saturated ANWG historically"
+      ]
+    },
+    {
+      "canonical_name": "TraceLab",
+      "dataset_id": "uw-syfi/TraceLab",
+      "official_source_verified": true,
+      "source_url": "https://github.com/uw-syfi/TraceLab",
+      "version": "public_release_referenced_in_docs",
+      "access": "PUBLIC",
+      "license": "code Apache-2.0; traces CC-BY-4.0 per prior docs",
+      "dataset_type": "true_serving_trace",
+      "gated": false,
+      "approximate_size": {},
+      "available_splits": [
+        "agent_session_windows"
+      ],
+      "schema": [
+        "input_context_tokens",
+        "output_tokens",
+        "session structure"
+      ],
+      "timestamp_semantics": "session-scoped agent traces",
+      "prompt_output_availability": {
+        "prompt": true,
+        "output": true
+      },
+      "session_support": true,
+      "cache_prefix_information": true,
+      "sample_inspected": false,
+      "integration_status": "external_cluster_staging_no_new_loader_this_task",
+      "local_sample_status": "none",
+      "full_download_recommendation": "reuse /mmfs1/.../tracelab_staging_20260722T192050Z",
+      "redistribution_restriction": "CC-BY-4.0 for public traces",
+      "checksum_strategy": "cluster manifests",
+      "known_limitations": [
+        "no new in-repo loader in this task",
+        "small natural windows",
+        "ANWG saturation"
+      ]
+    },
+    {
+      "canonical_name": "ShareGPT",
+      "dataset_id": "ShareGPT_V3_unfiltered_cleaned_split",
+      "official_source_verified": true,
+      "source_url": "external/datasets/sharegpt.md",
+      "version": "V3",
+      "access": "PUBLIC",
+      "license": "CC-BY-4.0_verify_before_use",
+      "dataset_type": "prompt_conversation_corpus",
+      "gated": false,
+      "approximate_size": {},
+      "available_splits": [
+        "conversations"
+      ],
+      "schema": [
+        "conversations[].from/value"
+      ],
+      "timestamp_semantics": "none_native_synthetic_arrivals",
+      "prompt_output_availability": {
+        "prompt": "tokenize",
+        "output": "tokenize"
+      },
+      "session_support": true,
+      "cache_prefix_information": false,
+      "sample_inspected": false,
+      "integration_status": "loader_exists",
+      "local_sample_status": "fixture_sharegpt_tiny.json",
+      "full_download_recommendation": "optional; prefer WildChat for broader diversity",
+      "redistribution_restriction": "verify license",
+      "checksum_strategy": "sha256 of JSON",
+      "known_limitations": [
+        "NOT a serving trace",
+        "synthetic arrivals"
+      ]
+    }
+  ]
+}
