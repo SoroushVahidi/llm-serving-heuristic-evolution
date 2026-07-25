@@ -248,8 +248,15 @@ def test_safe_hf_stream_sample_unavailable_path(monkeypatch):
         safe_hf_stream_sample("lmsys/lmsys-chat-1m", limit=1)
 
 
-def test_path_independence_from_mmfs1():
-    path = FIXTURES / "bailian_tiny.jsonl"
+def test_path_independence_from_mmfs1(tmp_path):
+    """Converters must work from ordinary local paths (not cluster-only mounts).
+
+    Copy the fixture into a temporary directory so the assertion is meaningful
+    even when the repository itself lives under ``/mmfs1``.
+    """
+    src = FIXTURES / "bailian_tiny.jsonl"
+    path = tmp_path / "bailian_tiny.jsonl"
+    path.write_bytes(src.read_bytes())
     assert "mmfs1" not in str(path)
     requests, _, _ = load_bailian_trace(path, seed=0)
     assert len(requests) > 0
