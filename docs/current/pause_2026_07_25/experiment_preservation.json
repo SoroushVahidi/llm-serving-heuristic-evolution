@@ -1,0 +1,75 @@
+{
+  "schema_version": "pause_experiment_preservation_v1",
+  "experiments": [
+    {
+      "name": "Tier 1 dataset staging",
+      "purpose": "Acquire/convert/validate BurstGPT, Azure 2023/2024, Bailian, Mooncake",
+      "run_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets",
+      "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "jobs": "1142946-1142955,1143027-1143028",
+      "completion": "COMPLETE",
+      "final_report": "per-dataset FINAL_REPORT.md under datasets/",
+      "summary": "staging_manifest.json",
+      "main_result": "~26GB staged; Azure sort + BurstGPT meta repairs; Mooncake real-only",
+      "reproducibility": "scripts/data/download_*.py + convert_*.py",
+      "external_required": true,
+      "deletion_consequence": "must re-download; Mooncake license still unclear"
+    },
+    {
+      "name": "real-window construction",
+      "purpose": "Build natural/busy/scaled/synthetic windows",
+      "run_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z",
+      "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "jobs": "1143271-1143275,1143277",
+      "completion": "ALL_COMPLETE_VALID",
+      "final_report": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/reports/OVERNIGHT_STATUS.md",
+      "summary": "window catalogs + validation_report.json",
+      "main_result": "Validated windows across 5 datasets",
+      "reproducibility": "scripts/data/run_real_window_dataset_pipeline.py",
+      "external_required": true,
+      "deletion_consequence": "reconstruct from staged datasets (~hours)"
+    },
+    {
+      "name": "first capped load pilot",
+      "purpose": "Bounded discrimination pilot (flawed sampling)",
+      "run_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot",
+      "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "jobs": "1143276",
+      "completion": "COMPLETED scientifically flawed",
+      "final_report": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot",
+      "summary": "PARTIALLY_READY; Mooncake omitted by global[:200]",
+      "main_result": "NEGATIVE sampling design evidence",
+      "reproducibility": "scripts/data/run_load_discrimination_pilot.py",
+      "external_required": true,
+      "deletion_consequence": "lose flawed-pilot negative evidence"
+    },
+    {
+      "name": "repaired balanced load pilot",
+      "purpose": "Stratified 250-window discrimination pilot",
+      "run_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot_repaired_20260725T124957Z",
+      "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "jobs": "1143392",
+      "completion": "COMPLETED",
+      "final_report": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot_repaired_20260725T124957Z/reports/REPAIRED_PILOT_REPORT.md",
+      "summary": "docs/current/pause_2026_07_25/repaired_pilot_summary.json",
+      "main_result": "PARTIALLY_READY; no full sweep; outcome-signature diagnostics only",
+      "reproducibility": "scripts/data/run_repaired_load_discrimination_pilot.py",
+      "external_required": true,
+      "deletion_consequence": "compact metrics preserved in Git; full per-window matrix lost"
+    },
+    {
+      "name": "project pause audit Part 1",
+      "purpose": "Inventory before cleanup/handoff",
+      "run_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/project_pause_audit_20260725T130126Z",
+      "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "jobs": "n/a",
+      "completion": "READY_FOR_CLEANUP_AND_HANDOFF",
+      "final_report": "docs/current/pause_2026_07_25/audit/PAUSE_AUDIT.md",
+      "summary": "pause_audit.json",
+      "main_result": "Safe to proceed with Part 2 preservation",
+      "reproducibility": "n/a",
+      "external_required": false,
+      "deletion_consequence": "Git copy under pause snapshot"
+    }
+  ]
+}

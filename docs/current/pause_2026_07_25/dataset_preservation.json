@@ -1,0 +1,40 @@
+{
+  "approximate_total_bytes": 27138470561,
+  "datasets": [
+    {
+      "dataset": "azure_llm_2023",
+      "path_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/azure_llm_2023",
+      "size_bytes": 7978607
+    },
+    {
+      "dataset": "azure_llm_2024",
+      "path_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/azure_llm_2024",
+      "size_bytes": 12750208295
+    },
+    {
+      "dataset": "bailian_qwen",
+      "path_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/bailian_qwen",
+      "size_bytes": 663180143
+    },
+    {
+      "dataset": "burstgpt_v2",
+      "path_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2",
+      "size_bytes": 13658786541
+    },
+    {
+      "DATA_LICENSE": "NOT_EXPLICITLY_SPECIFIED",
+      "EVALUATION_ROLE": "INTERNAL_OOD_ONLY",
+      "REDISTRIBUTION": "PROHIBITED_UNTIL_CLARIFIED",
+      "dataset": "mooncake",
+      "path_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/mooncake",
+      "size_bytes": 58245525
+    }
+  ],
+  "datasets_root_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets",
+  "mooncake": {
+    "DATA_LICENSE": "NOT_EXPLICITLY_SPECIFIED",
+    "EVALUATION_ROLE": "INTERNAL_OOD_ONLY",
+    "REDISTRIBUTION": "PROHIBITED_UNTIL_CLARIFIED"
+  },
+  "schema_version": "pause_dataset_preservation_v1"
+}

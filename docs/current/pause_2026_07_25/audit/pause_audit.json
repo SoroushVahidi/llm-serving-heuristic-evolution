@@ -1,0 +1,483 @@
+{
+  "timestamp": "2026-07-25T13:01:26Z",
+  "audit_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/project_pause_audit_20260725T130126Z",
+  "scope": "Part 1 read-only audit and preservation planning",
+  "recommended_status": "READY_FOR_CLEANUP_AND_HANDOFF",
+  "repositories": {
+    "common_git_dir": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution/.git",
+    "remote": "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution.git",
+    "fetch_completed": true,
+    "repository_identity": {
+      "name": "Soroush Vahidi",
+      "email": "sv96@njit.edu",
+      "source": "shared repository .git/config",
+      "valid": true
+    },
+    "global_identity": {
+      "name": "Your Name",
+      "email": "you@example.com",
+      "placeholder": true,
+      "risk": "future commits outside this repository could receive placeholder identity"
+    }
+  },
+  "worktrees": [
+    {
+      "path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration",
+      "branch": "wulver-final-integration-20260721",
+      "head": "b0768f28016442527d2ebe9dcbc9efdf24f26da0",
+      "upstream": "origin/wulver-final-integration-20260721",
+      "ahead": 0,
+      "behind": 0,
+      "clean": true,
+      "authoritative": true,
+      "unique_uncommitted_work": false
+    },
+    {
+      "path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-dataset-expansion",
+      "branch": "reality-grounded-dataset-expansion-20260724",
+      "head": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "upstream": "origin/reality-grounded-dataset-expansion-20260724",
+      "ahead": 6,
+      "behind": 0,
+      "clean": false,
+      "untracked": [
+        "scripts/data/run_repaired_load_discrimination_pilot.py"
+      ],
+      "unique_uncommitted_work": true,
+      "backup_copy": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot_repaired_20260725T124957Z/code_snapshot/scripts/data/run_repaired_load_discrimination_pilot.py"
+    },
+    {
+      "path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution",
+      "branch": "wulver-policy-composition-readiness",
+      "head": "c8aee129f553f8dc3ede99eac60d5b14484beb41",
+      "upstream": null,
+      "clean": false,
+      "modified_count": 3,
+      "untracked_count": 39,
+      "unique_newer_functional_work_found": false,
+      "finding": "Most files are byte-identical to dataset HEAD; differing composition.py, structural_synthesis.py and status docs are substantially older/smaller than the integrated versions. Preserve until a final human review or patch archive."
+    }
+  ],
+  "branches": [
+    {
+      "name": "wulver-final-integration-20260721",
+      "remote": "origin/wulver-final-integration-20260721",
+      "ahead": 0,
+      "behind": 0,
+      "published": true,
+      "recommendation": "retain; authoritative"
+    },
+    {
+      "name": "reality-grounded-dataset-expansion-20260724",
+      "remote": "origin/reality-grounded-dataset-expansion-20260724",
+      "ahead": 6,
+      "behind": 0,
+      "unique_commits": 6,
+      "published": true,
+      "recommendation": "commit reviewed runner/docs in Part 2; normal-push in Part 3; retain as provenance and fast-forward integration after validation"
+    },
+    {
+      "name": "wulver-policy-composition-readiness",
+      "remote": null,
+      "unique_commits_vs_final": 0,
+      "final_commits_missing": 37,
+      "published": false,
+      "recommendation": "do not push; archive/delete only after dirty-worktree review"
+    },
+    {
+      "name": "wulver-policy-library-v2-frontier",
+      "remote": null,
+      "unique_commits_vs_final": 0,
+      "final_commits_missing": 37,
+      "recommendation": "retain until review; eventual local deletion"
+    },
+    {
+      "name": "wulver-selector-v2-overnight-scale",
+      "configured_upstream": "origin/repo-polish-query5-final-verification",
+      "upstream_track": "ahead 1",
+      "unique_commits_vs_final": 0,
+      "final_commits_missing": 37,
+      "recommendation": "do not push under current misleading upstream; eventual archival/deletion after review"
+    },
+    {
+      "name": "backup/pre-identity-fix-20260724-212016",
+      "remote": null,
+      "relationship_to_final": "diverged 4/4; patches already equivalent in final",
+      "recommendation": "preserve until Part 3 verification; optional deletion later"
+    },
+    {
+      "name": "backup/pre-reconciliation-20260724-194113",
+      "remote": null,
+      "unique_commits_vs_final": 0,
+      "final_commits_missing": 24,
+      "recommendation": "preserve until Part 3 verification; optional deletion later"
+    }
+  ],
+  "local_commits": {
+    "branch": "reality-grounded-dataset-expansion-20260724",
+    "count": 6,
+    "all_unique_vs_upstream": true,
+    "commits": [
+      "3fdeac524f15eaf04d9e6eff1e3e7f846a6a0099",
+      "73f025e9d33511281db79a7b035c978fda1e40b1",
+      "6d1238b76e198e31e54b0634c651f75ea5ad1244",
+      "3b5e9fe4261f2260dbe4420033d810ab67de2ae0",
+      "1cb27b9f70069f3cefb5be6677a1771e721f6066",
+      "4dd97eadd16aa65512db61af07f7750596c08d14"
+    ],
+    "secret_scan": {
+      "added_credential_values_found": false,
+      "note": "No secret-pattern matches occurred on added lines. Credential values were not reproduced."
+    }
+  },
+  "uncommitted_changes": {
+    "dataset_expansion": [
+      {
+        "path": "scripts/data/run_repaired_load_discrimination_pilot.py",
+        "class": "source code",
+        "important": true,
+        "belongs_in_git": true,
+        "part2": "review, test, commit"
+      }
+    ],
+    "composition_worktree": {
+      "modified": [
+        "docs/current/README.md",
+        "src/llmserveopt/policies/__init__.py",
+        "src/llmserveopt/policies/registry.py"
+      ],
+      "untracked_count": 39,
+      "classes": [
+        "source code",
+        "tests",
+        "documentation",
+        "compact manifests",
+        "Slurm templates"
+      ],
+      "finding": "No newer unique functional implementation found; 32 paths are byte-identical to dataset HEAD and the remaining drafts are older/superseded by the integrated lineage.",
+      "part2": "preserve and optionally archive patch; do not remove until human review"
+    }
+  },
+  "jobs": {
+    "pilot_job": {
+      "job_id": "1143392",
+      "state": "COMPLETED",
+      "exit_code": "0:0",
+      "elapsed": "00:12:57",
+      "batch_max_rss": "1906372K",
+      "node": "n0110"
+    },
+    "active_running_jobs": [],
+    "active_relevant_jobs": [
+      "1127600",
+      "1127943",
+      "1127944",
+      "1127945",
+      "1127946",
+      "1127947",
+      "1127948",
+      "1127949",
+      "1127950",
+      "1127958",
+      "1127959",
+      "1127960",
+      "1127961",
+      "1127962",
+      "1127963",
+      "1127964"
+    ],
+    "pending_obsolete_jobs": [
+      "1127600",
+      "1127943",
+      "1127944",
+      "1127945",
+      "1127946",
+      "1127947",
+      "1127948",
+      "1127949",
+      "1127950",
+      "1127958",
+      "1127959",
+      "1127960",
+      "1127961",
+      "1127962",
+      "1127963",
+      "1127964"
+    ],
+    "pending_finding": "All are Dependency or DependencyNeverSatisfied remnants of superseded workflows; none is a healthy current experiment.",
+    "cancelled_during_audit": [],
+    "submitted_during_audit": []
+  },
+  "pilot": {
+    "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot_repaired_20260725T124957Z",
+    "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+    "decision": "PARTIALLY_READY",
+    "selected_windows": 250,
+    "evaluated_windows": 250,
+    "selection_deficits": [],
+    "counts_by_dataset": {
+      "burstgpt_v2": 50,
+      "azure_llm_2023": 50,
+      "azure_llm_2024": 50,
+      "bailian_qwen": 50,
+      "mooncake": 50
+    },
+    "counts_by_origin": {
+      "natural_replay": 40,
+      "natural_busy_period": 50,
+      "trace_derived_time_scaled": 120,
+      "trace_calibrated_synthetic": 40
+    },
+    "counts_by_scale": {
+      "1x_or_na": 130,
+      "2x": 40,
+      "4x": 40,
+      "8x": 40
+    },
+    "counts_by_split": {
+      "train": 157,
+      "validation": 4,
+      "heldout": 49,
+      "train_fit_only": 40
+    },
+    "policies": [
+      "fifo",
+      "edf",
+      "estimated_service_time_first",
+      "weighted_shortest_processing",
+      "scorpio_style_slo_guard",
+      "vllm_style_token_budget",
+      "aging_priority",
+      "adaptive_chunked_prefill"
+    ],
+    "overall": {
+      "saturation_rate": 0.072,
+      "exact_tie_rate": 0.604,
+      "near_tie_rate": 0.804,
+      "margin_mean": 0.012523386555756456,
+      "margin_median": 0.0,
+      "margin_p75": 0.006685330347144443,
+      "margin_p90": 0.02013059404363751,
+      "effective_winner_classes": 7,
+      "behavioral_disagreement_rate": 0.932,
+      "oracle_gain_over_best_fixed": 0.0029479282124631467,
+      "fraction_margin_gt": {
+        "0.005": 0.284,
+        "0.01": 0.196,
+        "0.02": 0.104,
+        "0.05": 0.048
+      }
+    },
+    "winner_counts": {
+      "adaptive_chunked_prefill": 143,
+      "vllm_style_token_budget": 49,
+      "scorpio_style_slo_guard": 22,
+      "aging_priority": 12,
+      "edf": 11,
+      "estimated_service_time_first": 7,
+      "weighted_shortest_processing": 6
+    },
+    "tie_causes": {
+      "short_window_possible": 55,
+      "admission_drop_diff_but_anwg_tied": 70,
+      "discriminating_no_tie": 49,
+      "near_tie_small_margin": 50,
+      "different_actions_anwg_insensitive": 9,
+      "identical_actions_incomplete_or_slo_miss": 13,
+      "all_complete_on_time_identical_actions": 4
+    },
+    "readiness_gates": {
+      "mandatory_passed": 7,
+      "mandatory_failed": [],
+      "signal_passed": 5,
+      "signal_failed": [
+        "near_tie_below_0_80",
+        "pct_margin_gt_0_02_above_0_20"
+      ]
+    },
+    "natural_primary_evidence": {
+      "windows": 90,
+      "saturation_rate": 0.17777777777777778,
+      "exact_tie_rate": 0.6555555555555556,
+      "near_tie_rate": 0.9111111111111111,
+      "mean_margin": 0.005781916670212935,
+      "fraction_margin_gt_0_02": 0.05555555555555555,
+      "oracle_gain": 0.0018239184970709754
+    },
+    "scaled_stress_evidence": {
+      "windows": 120,
+      "saturation_rate": 0.0,
+      "exact_tie_rate": 0.49166666666666664,
+      "near_tie_rate": 0.6833333333333333,
+      "mean_margin": 0.02116474763151462,
+      "fraction_margin_gt_0_02": 0.16666666666666666
+    },
+    "synthetic_supporting_evidence": {
+      "windows": 40,
+      "exact_tie_rate": 0.825,
+      "near_tie_rate": 0.925,
+      "mean_margin": 0.0017676105709548875
+    },
+    "mooncake": {
+      "count": 50,
+      "evaluation_role": "internal_ood_only",
+      "redistribution": "prohibited_until_license_clarified",
+      "exact_tie_rate": 0.1,
+      "near_tie_rate": 0.54,
+      "mean_margin": 0.010753879348995483,
+      "oracle_gain": 0.006508342813757395
+    },
+    "diagnostic_limitations": [
+      "Behavioral disagreement is derived from outcome/metric signatures, not recorded policy action traces.",
+      "Tie-cause classifications are heuristic inferences; final queue state, action sequences, explicit simulator-horizon termination, queue growth and KV-pressure traces are not present in per-window results.",
+      "Winner counts in exact ties use deterministic policy-name tie breaking; BurstGPT's 50 adaptive_chunked_prefill winners are all exact ties and are not evidence of superiority.",
+      "Only four selected windows carry the validation split label."
+    ],
+    "scientific_interpretation": "Balanced coverage repaired the Mooncake omission and found clear stress/OOD discrimination, but natural primary evidence remains mostly near-tied and two signal gates failed. Do not launch the full 27-policy fingerprint sweep yet."
+  },
+  "datasets": {
+    "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets",
+    "size": "26G",
+    "staged": [
+      "BurstGPT v2 without_fails_1/2/3",
+      "Azure 2023 code/conversation",
+      "Azure 2024 code/conversation",
+      "Bailian/Qwen To-C, To-B, Thinking, Coder",
+      "Mooncake real conversation/toolagent only"
+    ],
+    "canonical_schema": "implemented with observed/derived/synthesized/unavailable provenance",
+    "limitations": [
+      "SLO, priority, and predicted output are synthesized where absent and retain provenance.",
+      "Azure 2024 conversation had 164 file-order wall-clock inversions and was chronologically sorted with disclosure.",
+      "Mooncake data license is not explicit; redistribution prohibited pending clarification.",
+      "Mooncake synthetic source was quarantined from real-only staging."
+    ]
+  },
+  "experiments": {
+    "real_window_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z",
+    "real_window_status": "ALL_COMPLETE_VALID",
+    "native_composition": "NO_GO; numeric artifacts verified readable",
+    "selector": "USEFUL_NOT_SOLVED; frozen pending trustworthy reward separation",
+    "simulator": "Known discriminative and heuristic-wiring gaps remain unresolved",
+    "external_baselines": {
+      "count": 7,
+      "selector_eligible": 0,
+      "slai": "bounded pilot complete; zero envelope gain; full sweep NO_GO"
+    }
+  },
+  "documentation": [
+    {
+      "path": "docs/current/RESUME_HERE.md",
+      "classification": "current through 2026-07-24 but missing latest experiment",
+      "required_update": "new dataset/window/pilot addendum and revised next step"
+    },
+    {
+      "path": "docs/current/PROJECT_HANDOFF_2026-07-23.md",
+      "classification": "historical pause handoff needing new addendum",
+      "required_update": "do not rewrite historical evidence; add 2026-07-25 addendum"
+    },
+    {
+      "path": "docs/current/project_handoff_state.json",
+      "classification": "stale",
+      "required_update": "current heads, dataset branch, jobs, artifacts, pilot decision, next step"
+    },
+    {
+      "path": "docs/current/PROJECT_STATUS.md",
+      "classification": "historical/current for prior scope but missing latest experiment and contains stale artifact-recovery caveat",
+      "required_update": "add reality-grounded evidence; correct native-composition artifact availability"
+    },
+    {
+      "path": "docs/current/EXPERIMENT_INDEX.md",
+      "classification": "stale after SLAI",
+      "required_update": "Tier 1 staging, real windows, flawed first pilot, repaired pilot"
+    },
+    {
+      "path": "docs/current/RESEARCH_ROADMAP.md",
+      "classification": "directionally current but missing latest experiment",
+      "required_update": "record partial Stage 2 evidence and no full-sweep go"
+    },
+    {
+      "path": "docs/current/ROADMAP_GAP_ANALYSIS.md",
+      "classification": "stale/contradictory",
+      "required_update": "remove missing-native-artifact blocker; add natural versus scaled pilot evidence"
+    },
+    {
+      "path": "docs/current/SELECTOR_STATUS.md",
+      "classification": "current conclusion but missing latest evidence",
+      "required_update": "retain freeze; cite repaired pilot weak natural labels"
+    },
+    {
+      "path": "docs/current/REAL_DATASET_EXPANSION_STATUS.md",
+      "classification": "dataset branch only; partially stale",
+      "required_update": "replace 'windows not materialized' and planned paths with verified completion"
+    },
+    {
+      "path": "docs/current/real_dataset_expansion_status.json",
+      "classification": "dataset branch only; stale pre-staging inventory",
+      "required_update": "machine-readable staging/window/pilot state"
+    },
+    {
+      "path": "docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md",
+      "classification": "technically current but provenance SHA stale",
+      "required_update": "current lineage and repaired-pilot corroboration; no claim gaps fixed"
+    },
+    {
+      "path": "docs/current/COMPOSITION_IMPLEMENTATION_STATUS.md",
+      "classification": "engineering status current; missing latest discrimination evidence",
+      "required_update": "retain blocked status and cite repaired pilot/no full-sweep decision"
+    },
+    {
+      "path": "docs/current/COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md",
+      "classification": "contradictory/stale artifact caveat",
+      "required_update": "numeric native-pilot artifacts are already readable; keep NO_GO"
+    },
+    {
+      "path": "docs/current/POLICY_COMPOSITION_READINESS.md",
+      "classification": "historical and should remain labeled historical",
+      "required_update": "optional cross-reference only; do not rewrite historical readiness result"
+    },
+    {
+      "path": "docs/current/STRUCTURAL_SYNTHESIS_READINESS.md",
+      "classification": "current engineering caveat",
+      "required_update": "optional latest evidence cross-reference; readiness remains engineering-only"
+    }
+  ],
+  "part2_actions": [
+    "Review/test/commit repaired pilot runner.",
+    "Update dataset, experiment index, pause handoff, status, roadmap, and machine-readable state.",
+    "Correct stale native-composition artifact-recovery claims.",
+    "Record diagnostic limitations and natural/scaled/synthetic conclusions separately.",
+    "Run focused and full non-hardware tests.",
+    "Create local reviewable commits only.",
+    "After verifying superseding artifacts, cancel the 16 obsolete pending jobs.",
+    "Preserve all data/artifacts and legacy dirty worktree until reviewed."
+  ],
+  "part3_actions": [
+    "Fetch and re-audit.",
+    "Verify repo identity; reject global placeholders.",
+    "Review commits, secrets, and large files.",
+    "Run final validation.",
+    "Normal-push dataset branch.",
+    "Fast-forward final integration to reviewed dataset/pause tip and normal-push.",
+    "Do not push stale composition/backup branches.",
+    "Verify both published branches are 0 ahead/0 behind.",
+    "Record final SHAs and resume commands.",
+    "Avoid all force pushes."
+  ],
+  "risks": [
+    "Six unique dataset commits are unpublished.",
+    "The repaired-pilot runner is untracked, although duplicated in the immutable run snapshot.",
+    "The legacy composition worktree is dirty and must not be removed without final review.",
+    "Sixteen obsolete dependency-blocked jobs remain queued.",
+    "Global Git identity is a placeholder, though repository-local identity is valid.",
+    "Mooncake redistribution remains prohibited until its data license is clarified.",
+    "Natural windows remain weakly discriminative; aggregate pilot metrics overstate readiness if transformed evidence is not separated.",
+    "Pilot behavioral/tie diagnostics do not contain true action traces and should not be treated as definitive causal classifications.",
+    "Several current documents falsely say native-composition numeric artifacts still need recovery."
+  ],
+  "recommended_pause_decision": {
+    "safe_to_proceed_to_part2": true,
+    "reason": "All primary datasets/windows/pilot artifacts are durable and the pilot completed successfully. Cleanup is needed for unpublished code/docs and stale pending jobs, but no missing artifact or branch divergence blocks a non-destructive handoff.",
+    "next_scientific_step": "Pause for review, then repair/calibrate natural-workload discrimination and simulator diagnostics before any full 27-policy fingerprint sweep."
+  }
+}

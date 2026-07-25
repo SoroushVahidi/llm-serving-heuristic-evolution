@@ -1,0 +1,66 @@
+{
+  "audit_root_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/project_pause_audit_20260725T130126Z",
+  "audit_status": "READY_FOR_CLEANUP_AND_HANDOFF",
+  "branches": {
+    "dataset_expansion": {
+      "ahead": 6,
+      "behind": 0,
+      "name": "reality-grounded-dataset-expansion-20260724",
+      "sha_at_part2_start": "4dd97eadd16aa65512db61af07f7750596c08d14",
+      "worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-dataset-expansion"
+    },
+    "final_integration": {
+      "name": "wulver-final-integration-20260721",
+      "sha": "b0768f28016442527d2ebe9dcbc9efdf24f26da0",
+      "worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration"
+    }
+  },
+  "datasets_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets",
+  "datasets_size_bytes": 27138470561,
+  "known_risks": [
+    "external_storage_deletion",
+    "mooncake_licensing",
+    "outcome_signature_diagnostics",
+    "legacy_dirty_worktree",
+    "unpublished_local_commits_until_part3"
+  ],
+  "mooncake": {
+    "DATA_LICENSE": "NOT_EXPLICITLY_SPECIFIED",
+    "EVALUATION_ROLE": "INTERNAL_OOD_ONLY",
+    "REDISTRIBUTION": "PROHIBITED_UNTIL_CLARIFIED"
+  },
+  "next_actions_part3": [
+    "final_secret_large_file_review",
+    "push_dataset_branch_normal",
+    "ff_or_merge_into_final_integration",
+    "push_final_integration",
+    "verify_remote_0_0",
+    "resolve_legacy_worktree"
+  ],
+  "part": 2,
+  "pause_date": "2026-07-25",
+  "pilot": {
+    "decision": "PARTIALLY_READY",
+    "full_sweep_authorized": false,
+    "job_id": "1143392",
+    "metrics": {
+      "exact_tie_rate": 0.604,
+      "mean_margin": 0.012523386555756456,
+      "mooncake_count": 50,
+      "n": 250,
+      "near_tie_rate": 0.804,
+      "saturated_rate": 0.072
+    },
+    "root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z/pilot_repaired_20260725T124957Z"
+  },
+  "schema_version": "pause_handoff_state_v1",
+  "scientific_status": {
+    "composition": "NO_GO retained",
+    "next_decision": "targeted_simulator_load_discrimination_repair",
+    "selector": "USEFUL_NOT_SOLVED; no full sweep",
+    "simulator_gaps": "open",
+    "synthesis": "NOT_READY empirically"
+  },
+  "window_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z",
+  "window_size_bytes": 237468995
+}
