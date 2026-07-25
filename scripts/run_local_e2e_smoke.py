@@ -30,6 +30,36 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
+# Preferred in-repo path, then durable Wulver overnight-scale raw copy.
+# Tests that need this file should skip when none of these exist.
+BURSTGPT_TRACE_CANDIDATES: tuple[Path, ...] = (
+    ROOT / "data" / "raw" / "burstgpt" / "BurstGPT_1.csv",
+    Path(
+        "/mmfs1/project/ikoutis/sv96/llmserveopt-data/"
+        "selector_v2_overnight_20260720T235405/raw/burstgpt/BurstGPT_1.csv"
+    ),
+)
+
+
+def resolve_burstgpt_trace_path(explicit: str | Path | None = None) -> Path | None:
+    """Return an existing BurstGPT CSV path, or None if unavailable.
+
+    If ``explicit`` is provided but missing, known durable fallbacks are
+    still tried so Wulver checkouts without a vendored ``data/raw/`` copy
+    can run the smoke path against the shared overnight-scale raw file.
+    """
+    if explicit is not None:
+        path = Path(explicit)
+        if not path.is_absolute():
+            path = ROOT / path
+        if path.exists():
+            return path
+    for candidate in BURSTGPT_TRACE_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    return None
+
+
 from llmserveopt.core.types import GPUConfig  # noqa: E402
 from llmserveopt.evaluation.run_policy import run_policy  # noqa: E402
 from llmserveopt.policies.registry import POLICY_LIBRARY_V2_NAMES, make_policy_library_v2  # noqa: E402
@@ -118,15 +148,26 @@ def chronological_split_labels(n_windows: int, train_frac: float, val_frac: floa
 
 
 def load_requests(args: argparse.Namespace):
-    path = ROOT / args.trace_path
     if args.input_format == "burstgpt_csv":
+        path = resolve_burstgpt_trace_path(args.trace_path)
+        if path is None:
+            raise FileNotFoundError(
+                "BurstGPT CSV not found. Tried --trace-path "
+                f"{args.trace_path!r} and known durable fallbacks under "
+                "/mmfs1/project/ikoutis/sv96/llmserveopt-data/. "
+                "Pass an existing --trace-path or stage BurstGPT locally."
+            )
+        # Record the resolved absolute/relative path for provenance reports.
+        args.trace_path = str(path)
         df = load_burstgpt_raw(path)
         cfg = BurstGPTConversionConfig(max_requests=args.max_requests, time_scale=args.time_scale)
         requests, report = convert_burstgpt_to_requests(df, cfg, seed=args.seed)
         return requests, {
             "input_format": args.input_format,
+            "resolved_trace_path": str(path),
             "conversion_report": conversion_report_to_dict(report),
         }
+    path = ROOT / args.trace_path
     if args.input_format == "extended_jsonl":
         requests, metadata = load_extended_jsonl(path)
         if args.max_requests is not None:

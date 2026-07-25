@@ -32,8 +32,14 @@ def _tiny_long_format_dataset(seed: int):
     import argparse
 
     smoke = _load_smoke_module()
+    burstgpt = smoke.resolve_burstgpt_trace_path()
+    if burstgpt is None:
+        pytest.skip(
+            "BurstGPT CSV not present in-repo or at known durable Wulver path; "
+            "optional external-resource smoke skipped"
+        )
     args = argparse.Namespace(
-        trace_path="data/raw/burstgpt/BurstGPT_1.csv", input_format="burstgpt_csv",
+        trace_path=str(burstgpt), input_format="burstgpt_csv",
         max_requests=90, window_size=15, min_partial_window=15, seed=seed, time_scale=1.0,
     )
     requests, _ = smoke.load_requests(args)

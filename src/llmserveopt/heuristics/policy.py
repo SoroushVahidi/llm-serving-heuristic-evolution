@@ -5,7 +5,10 @@ Variable binding
 ----------------
 req.* variables are bound per-request from ObservableRequest fields.
 sys.* variables are bound from aggregate queue/GPU state.
-batch.* variables are updated incrementally as requests are added to the batch.
+batch.* variables are rebound after each greedy admission for
+*admission_condition* checks. request_score currently sees empty-batch
+batch.* values (scores are not recomputed as the batch grows). See
+docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md.
 
 Tie-breaking (when scores are equal within floating-point tolerance)
 -------------------
@@ -167,9 +170,10 @@ class HeuristicPolicy(BasePolicy):
 
     For each scheduling step:
     1. Build sys_vars from queue + GPU state.
-    2. Score each feasible candidate request using the active regime's request_score.
+    2. Score each feasible candidate request using the active regime's request_score
+       (batch_vars are empty at score time — not rescored as the batch grows).
     3. Sort by (−score, tie_breaker_key) and greedily admit feasible requests.
-    4. Update batch_vars after each admission (for incremental scoring if needed).
+    4. Rebuild batch_vars after each admission for admission_condition checks only.
     """
 
     def __init__(

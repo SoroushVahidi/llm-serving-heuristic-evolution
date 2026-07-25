@@ -60,9 +60,17 @@ def test_full_27_policy_library_smoke_end_to_end(tmp_path, monkeypatch):
     assert tuple(mod.FULL_POLICY_LIBRARY_V2) == tuple(POLICY_LIBRARY_V2_NAMES)
     assert len(mod.FULL_POLICY_LIBRARY_V2) == 27
 
+    burstgpt = mod.resolve_burstgpt_trace_path()
+    if burstgpt is None:
+        pytest.skip(
+            "BurstGPT CSV not present in-repo or at known durable Wulver path; "
+            "optional external-resource smoke skipped"
+        )
+
     out_dir = tmp_path / "integrated_27policy_smoke"
     argv = [
         "run_local_e2e_smoke.py",
+        "--trace-path", str(burstgpt),
         "--output-dir", str(out_dir),
         "--max-requests", "50",
         "--window-size", "15",
