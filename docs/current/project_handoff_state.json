@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-07-23T00:00:00Z",
-  "updated_at": "2026-07-24T23:45:00Z",
+  "updated_at": "2026-07-25T17:30:00Z",
   "update_note": "2026-07-23 fields below preserve the FINAL pause checkpoint. reconciliation_20260724 records the later non-destructive fast-forward to the post-pause remote tip; scientific pause conclusions are unchanged.",
   "repo_path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration",
   "branch": "wulver-final-integration-20260721",
@@ -49,7 +49,7 @@
     "llumnix_faithful",
     "slai_faithful"
   ],
-  "latest_selector_status": "USEFUL_NOT_SOLVED; frozen for retraining pending simulator calibration (see docs/current/SELECTOR_STATUS.md)",
+  "latest_selector_status": "USEFUL_NOT_SOLVED; repaired pilot PARTIALLY_READY does not authorize full sweep; freeze broad retraining pending simulator/load discrimination repair",
   "latest_selector_artifact_path": null,
   "primary_datasets": {
     "azure": {
@@ -106,7 +106,7 @@
     "Composition/synthesis is infrastructure-ready but scientifically unvalidated (NO_GO from native pilot)",
     "No real-hardware cross-check for slai_faithful against upstream",
     "Stale Dependency/DependencyNeverSatisfied Slurm jobs remain queued from already-completed experiments -- safe to cancel, not yet done",
-    "DSL HeuristicPolicy batch deadline / record_completion / calibrated decode-time wiring gaps (documented, intentionally unfixed for reproducibility — see KNOWN_SIMULATOR_HEURISTIC_GAPS.md)"
+    "DSL HeuristicPolicy batch deadline / record_completion / calibrated decode-time wiring gaps (documented, intentionally unfixed for reproducibility \u2014 see KNOWN_SIMULATOR_HEURISTIC_GAPS.md)"
   ],
   "recommended_next_step": "Realistic load calibration (Stage 2 of docs/current/RESEARCH_ROADMAP.md) before any further selector, baseline, or composition work -- including before re-attempting the SLAI full sweep.",
   "worktree_status": {
@@ -131,5 +131,21 @@
     "docs/current/COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md",
     "docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md",
     "docs/slai_faithful_scheduler_reference.md"
-  ]
+  ],
+  "pause_20260725": {
+    "intentional_pause": true,
+    "durable_source_of_truth": "GitHub",
+    "pause_snapshot": "docs/current/pause_2026_07_25/",
+    "dataset_branch": "reality-grounded-dataset-expansion-20260724",
+    "dataset_worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-dataset-expansion",
+    "final_integration_sha_at_pause": "b0768f28016442527d2ebe9dcbc9efdf24f26da0",
+    "repaired_pilot_job": "1143392",
+    "repaired_pilot_decision": "PARTIALLY_READY",
+    "full_fingerprint_sweep_authorized": false,
+    "real_window_status": "ALL_COMPLETE_VALID",
+    "tier1_datasets_staged": true,
+    "mooncake_redistribution": "PROHIBITED_UNTIL_CLARIFIED",
+    "next_scientific_decision": "targeted_simulator_load_discrimination_repair",
+    "part3_required_before_remote_sync": true
+  }
 }

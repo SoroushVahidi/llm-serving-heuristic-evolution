@@ -1,5 +1,8 @@
 # Policy Composition Readiness Audit
 
+> **Pause addendum 2026-07-25.** The repaired load-discrimination pilot (`PARTIALLY_READY`) does **not** justify reopening composition or synthesis work. Native composition pilot remains `NO_GO` with verified-readable artifacts; structural synthesis remains empirically `NOT_READY`. Prioritize simulator/load discrimination on natural evidence first.
+
+
 > Historical readiness snapshot. This document records the static composition
 > audit performed before later Wulver workflows completed. For the current
 > scientific decision, read `PROJECT_STATUS.md` and

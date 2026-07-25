@@ -1,5 +1,16 @@
 # Research Roadmap
 
+> **Pause addendum 2026-07-25.** Completed since prior roadmap freeze:
+> Tier 1 real-dataset staging; validated real-window construction; first
+> (flawed) and repaired (stratified) load-discrimination pilots. Remaining
+> highest priority is still Stage 2 simulator calibration / discriminative
+> power, now informed by weak natural near-tie rates and stronger scaled
+> stress margins. **Do not mark full fingerprint sweep complete.** Composition
+> Stage remains blocked (`NO_GO`); synthesis remains empirically `NOT_READY`.
+
+---
+
+
 Current roadmap as of 2026-07-22.
 
 ## Stage 1 - Repository Consolidation

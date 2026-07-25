@@ -1,5 +1,8 @@
 # Composition and Synthesis Architecture
 
+> **Pause addendum 2026-07-25.** The repaired load-discrimination pilot (`PARTIALLY_READY`) does **not** justify reopening composition or synthesis work. Native composition pilot remains `NO_GO` with verified-readable artifacts; structural synthesis remains empirically `NOT_READY`. Prioritize simulator/load discrimination on natural evidence first.
+
+
 This document is the concise source-of-truth overview for the path:
 
 ```text

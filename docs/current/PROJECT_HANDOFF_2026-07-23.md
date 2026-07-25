@@ -1,3 +1,18 @@
+# Project Handoff
+
+> **Pause addendum 2026-07-25.** Prefer
+> [`RESUME_HERE.md`](RESUME_HERE.md) and
+> [`pause_2026_07_25/PAUSE_HANDOFF.md`](pause_2026_07_25/PAUSE_HANDOFF.md)
+> for current branch SHAs, repaired-pilot metrics, real-window completion,
+> dataset staging, and preservation status. Dataset branch
+> `reality-grounded-dataset-expansion-20260724` holds the new work (local commits
+> pending Part 3 push). Integration branch tip at pause:
+> `wulver-final-integration-20260721` @ `b0768f2…`. Next scientific decision:
+> targeted simulator/load discrimination repair — **not** a full fingerprint sweep.
+> Mooncake redistribution remains prohibited until license clarified.
+
+---
+
 # Project Handoff — 2026-07-23
 
 **Purpose of this document:** a durable, self-contained handoff for a future

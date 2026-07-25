@@ -1,5 +1,17 @@
 # Selector Status
 
+> **Pause addendum 2026-07-25.** The repaired balanced real-trace pilot
+> (`PARTIALLY_READY`) improves evidence about *load discrimination* under
+> stratified real windows, but it does **not** make the selector “solved”
+> and does **not** authorize a full fingerprint sweep or unrestricted
+> retraining. Natural/busy near-ties remain high; treat scaled windows as
+> stress evidence. Primary bottleneck remains simulator/objective
+> discrimination plus natural-load signal. Outcome-signature diagnostics
+> are not action traces.
+
+---
+
+
 Current selector evidence as of 2026-07-22.
 
 ## Completed Selector Milestones

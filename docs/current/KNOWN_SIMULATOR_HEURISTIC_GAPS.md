@@ -1,10 +1,16 @@
 # Known Simulator / Heuristic Integration Gaps
 
 Verified during the 2026-07-24 repository reconciliation against
-`origin/wulver-final-integration-20260721` @ `37849b0`. These are
-code-path findings, not new scientific experiment results. **No simulator
-semantics were changed in that reconciliation pass** — changing them would
-risk invalidating historical DSL-heuristic and selector-feature evidence.
+`origin/wulver-final-integration-20260721` @ `37849b0`, and **reconfirmed
+still open** during the 2026-07-25 dataset-expansion pause (dataset/window/pilot
+commits did **not** change simulator semantics). Integration tip at pause:
+`b0768f28016442527d2ebe9dcbc9efdf24f26da0`. These are code-path findings, not
+new scientific experiment results.
+
+**Additional diagnostic caveat (repaired pilot):** current pilot
+“behavioral disagreement” / tie-cause logic is based on **outcome signatures**,
+not full true scheduler action traces. A future true decision/action-tracing
+implementation remains desirable and is separate from the gaps below.
 
 Focused regression tests live in
 `tests/test_heuristic_simulator_integration_gaps.py`.

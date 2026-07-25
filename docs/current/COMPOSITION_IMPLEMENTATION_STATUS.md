@@ -1,5 +1,8 @@
 # Composition Implementation Status
 
+> **Pause addendum 2026-07-25.** The repaired load-discrimination pilot (`PARTIALLY_READY`) does **not** justify reopening composition or synthesis work. Native composition pilot remains `NO_GO` with verified-readable artifacts; structural synthesis remains empirically `NOT_READY`. Prioritize simulator/load discrimination on natural evidence first.
+
+
 > Historical implementation snapshot. The harness remains implemented, but the
 > scientific gate has changed: completed composition/module/simulator evidence
 > now says broad composition should wait for simulator calibration and improved

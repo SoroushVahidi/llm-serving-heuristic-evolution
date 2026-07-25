@@ -1,61 +1,68 @@
 # Resume Here
 
 **Read this document first.** It is the single entry point for resuming
-this project after a multi-month pause. Readable in 5–10 minutes.
+this project after an intentional pause. Readable in 5–10 minutes.
 
 ---
 
-## Project state
+## Project state (intentional pause — 2026-07-25)
 
-- **Paused:** 2026-07-23
-- **Authoritative repo path:** `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration`
-- **Branch:** `wulver-final-integration-20260721`
-- **Pause checkpoint commit (historical):** `8c9cedbca171d44030a16cf630f81f99d15d729f`
-  ("feat: add faithful SLAI baseline and preserve paused research state")
-- **GitHub remote:** `origin/wulver-final-integration-20260721`
-  (`github.com/SoroushVahidi/llm-serving-heuristic-evolution.git`) —
-  pushed and synchronized (0 ahead, 0 behind) at pause time.
+- **Paused intentionally** after Tier 1 real-dataset staging, validated real-window
+  construction, and the repaired balanced load-discrimination pilot.
+- **Durable source of truth:** GitHub (`origin`), not Wolverine `/mmfs1` storage.
+  External Wolverine paths below **may have disappeared**; reconstruct via
+  `docs/current/pause_2026_07_25/REPRODUCTION_COMMANDS.md`.
+- **Checkout first:** `reality-grounded-dataset-expansion-20260724`
+  (dataset-expansion worktree / branch). Then read the pause snapshot.
+- **Pause snapshot (authoritative for this pause):**
+  `docs/current/pause_2026_07_25/` — start with `PAUSE_HANDOFF.md` and
+  `pause_handoff_state.json`.
+- **Authoritative integration branch (merge target for Part 3):**
+  `wulver-final-integration-20260721` in
+  `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration`
+  (may also need clone from GitHub after storage deletion).
+- **Historical 2026-07-23 pause checkpoint** remains relevant for SLAI/composition
+  lineage context: commit `8c9cedb…` on the integration branch (see below).
 
-### Post-pause composition reconciliation (2026-07-24)
+### Exact resume commands
 
-After the pause checkpoint, the composition/selector-integrated lineage also
-added typed reciprocal-rank and score-aggregation operators plus decision
-tracing. Those operators are unit-tested only; they are **not**
-performance-validated at scale, and **no Wolverine oracle-mixture sweep was
-launched**. Structural synthesis remains empirically `NOT_READY`. See
-`COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md`,
-`COMPOSITION_IMPLEMENTATION_STATUS.md`, and
-`WOLVERINE_ORACLE_MIXTURE_HANDOFF.md`. The standing simulator-calibration
-bottleneck above is unchanged.
+```bash
+git fetch origin --prune --tags
+git checkout reality-grounded-dataset-expansion-20260724
+# After Part 3 push: git pull --ff-only
+source "$(conda info --base)/etc/profile.d/conda.sh" && conda activate repo-env
+less docs/current/RESUME_HERE.md
+less docs/current/pause_2026_07_25/PAUSE_HANDOFF.md
+```
 
-Native composition pilot job `1120123` artifacts were **verified readable**
-on 2026-07-24 at the durable cluster root
-`/mmfs1/project/ikoutis/sv96/llmserveopt-data/native_composition_pilot_20260721T194929Z/`
-(`pilot_report.md`, `method_comparison.csv`, `pilot_manifest.json`, …).
-The scientific decision remains `NATIVE_COMPOSITION_PILOT_DECISION = NO_GO`;
-composition launch stays blocked on simulator calibration, not on missing
-pilot files.
+### Current scientific decision
 
-### Repository reconciliation note (2026-07-24, later same day)
+`LOAD_DISCRIMINATION_PILOT = PARTIALLY_READY` (job `1143392`, stratified 250 windows,
+Mooncake included). **No full 27-policy fingerprint sweep has been authorized.**
+Next work is **targeted simulator / load-regime discrimination repair** using
+natural+busy primary evidence (scaled windows are stress evidence only).
 
-A non-destructive audit fast-forwarded this worktree from local `3aee585`
-(docs-only handoff commit after the pause checkpoint) to remote tip
-`37849b0` ("Merge remote integration updates into composition branch"),
-which already contained the post-pause composition/selector commits above.
-Verified live policy counts remain 20 + 7 + 7 (+ 1 oracle). Known DSL /
-calibrated-model wiring gaps are recorded in
-`KNOWN_SIMULATOR_HEURISTIC_GAPS.md` without changing simulator semantics.
-Always re-check `git rev-parse HEAD` / `git status` rather than trusting a
-cached SHA in this file.
+Diagnostic caveat: pilot “behavioral disagreement” / tie causes use **outcome
+signatures**, not true scheduler action traces.
 
-## Read these first (in order)
+Mooncake: `DATA_LICENSE = NOT_EXPLICITLY_SPECIFIED`;
+`REDISTRIBUTION = PROHIBITED_UNTIL_CLARIFIED`; `EVALUATION_ROLE = INTERNAL_OOD_ONLY`.
+
+### Read these first (in order)
 
 1. This document.
-2. `docs/current/PROJECT_HANDOFF_2026-07-23.md` — full resume-from-scratch handoff, all detail.
-3. `docs/current/project_handoff_state.json` — same information, machine-readable.
-4. `docs/current/PROJECT_STATUS.md` — the pre-SLAI canonical scientific-state document (still accurate for everything it covers).
-5. `docs/current/BASELINES.md` and `docs/current/POLICY_LIBRARY.md` — exact current policy/baseline inventory.
-6. `docs/slai_faithful_scheduler_reference.md` — the newest baseline's full fidelity record.
+2. `docs/current/pause_2026_07_25/PAUSE_HANDOFF.md`
+3. `docs/current/pause_2026_07_25/REPAIRED_PILOT_SUMMARY.md`
+4. `docs/current/pause_2026_07_25/KNOWN_LIMITATIONS.md`
+5. `docs/current/PROJECT_HANDOFF_2026-07-23.md` (historical + updated addenda)
+6. `docs/current/project_handoff_state.json`
+7. `docs/current/PROJECT_STATUS.md`
+8. `docs/current/EXPERIMENT_INDEX.md`
+
+---
+
+## Historical project state (2026-07-23 pause checkpoint)
+
 
 ## What the project does
 

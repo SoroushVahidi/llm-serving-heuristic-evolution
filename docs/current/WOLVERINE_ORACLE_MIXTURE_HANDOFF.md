@@ -1,5 +1,8 @@
 # Wolverine Oracle-Mixture Sweep — Handoff
 
+> **Pause addendum 2026-07-25.** The repaired load-discrimination pilot (`PARTIALLY_READY`) does **not** justify reopening composition or synthesis work. Native composition pilot remains `NO_GO` with verified-readable artifacts; structural synthesis remains empirically `NOT_READY`. Prioritize simulator/load discrimination on natural evidence first.
+
+
 "Wolverine" here is this sweep's codename, not the cluster name -- the
 actual SLURM cluster used throughout this repo is **Wulver** (see
 `WULVER_HANDOFF.md`, branch names such as

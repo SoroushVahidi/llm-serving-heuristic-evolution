@@ -1,4 +1,8 @@
-# Start Here
+# Current documentation
+
+> **2026-07-25 intentional pause.** Start at [`RESUME_HERE.md`](RESUME_HERE.md) and [`pause_2026_07_25/`](pause_2026_07_25/).
+
+Start Here
 
 This directory is the current source-of-truth navigation layer for the
 authoritative branch **`wulver-final-integration-20260721`** (remote:

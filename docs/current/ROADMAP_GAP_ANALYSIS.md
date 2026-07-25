@@ -1,5 +1,13 @@
 # Roadmap Gap Analysis
 
+> **Pause addendum 2026-07-25.** Gaps closed: Tier 1 staging + window materialization +
+> repaired pilot evidence. Gaps open: natural-load discrimination still weak;
+> full fingerprint sweep not run/authorized; simulator heuristic wiring gaps
+> unchanged; native composition artifacts are **readable** and decision remains
+> `NO_GO` (not a missing-artifact blocker). Mooncake redistribution still prohibited.
+
+---
+
 This document records the current gap diagnosis after Selector v2/v3, Policy
 Library V2, real-OOD library validation, native composition, module
 intervention, SwissAI, TraceLab, SLO/deadline augmentation, and the simulator

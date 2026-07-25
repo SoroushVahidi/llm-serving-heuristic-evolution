@@ -1,0 +1,57 @@
+{
+  "schema_version": "part2_completion_v1",
+  "pause_cleanup_status": "READY_WITH_DOCUMENTED_LEGACY_WORKTREE",
+  "audit_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/project_pause_audit_20260725T130126Z",
+  "audit_status": "READY_FOR_CLEANUP_AND_HANDOFF",
+  "branch": "reality-grounded-dataset-expansion-20260724",
+  "starting_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+  "commits_part2_so_far": [
+    "891622bb9bd30cf016592c6931aab4ea15e17654 chore: ignore generated cluster and experiment artifacts",
+    "92fe44e37c6b1c83b13a8fa07ce169934479caca docs: preserve July 2026 project pause state",
+    "2e2d9b8cc3a3c85a8183d6424e1e082b13cfb352 feat: preserve balanced real-trace pilot workflow"
+  ],
+  "repaired_pilot": {
+    "job_id": "1143392",
+    "decision": "PARTIALLY_READY",
+    "runner": "scripts/data/run_repaired_load_discrimination_pilot.py",
+    "selection_module": "src/llmserveopt/workloads/repaired_discrimination_selection.py",
+    "tests": "tests/test_repaired_discrimination_pilot.py",
+    "metrics": {
+      "saturated_rate": 0.072,
+      "exact_tie_rate": 0.604,
+      "near_tie_rate": 0.804,
+      "mean_margin": 0.012523386555756456,
+      "n": 250,
+      "mooncake": 50,
+      "winner_classes": 7
+    },
+    "full_sweep_authorized": false,
+    "diagnostic_limitation": "outcome_signatures_not_action_traces"
+  },
+  "tests": {
+    "focused": "59 passed",
+    "full": "2809 passed, 90 skipped, 26 deselected",
+    "full_runtime_s": 1267.69
+  },
+  "jobs_cancelled": [
+    "1127600",
+    "1127943",
+    "1127944",
+    "1127945",
+    "1127946",
+    "1127947",
+    "1127948",
+    "1127949",
+    "1127950",
+    "1127958",
+    "1127959",
+    "1127960",
+    "1127961",
+    "1127962",
+    "1127963",
+    "1127964"
+  ],
+  "jobs_active_remaining": [],
+  "legacy_worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution",
+  "pushed": false
+}

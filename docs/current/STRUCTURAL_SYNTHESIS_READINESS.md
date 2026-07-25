@@ -1,5 +1,8 @@
 # Structural Synthesis Readiness
 
+> **Pause addendum 2026-07-25.** The repaired load-discrimination pilot (`PARTIALLY_READY`) does **not** justify reopening composition or synthesis work. Native composition pilot remains `NO_GO` with verified-readable artifacts; structural synthesis remains empirically `NOT_READY`. Prioritize simulator/load discrimination on natural evidence first.
+
+
 This readiness layer prepares the next direction after naive rank/weight composition: state-dependent parent/module selection, structural symbolic child synthesis, verification, and frontier-gain evaluation.
 
 It does not call an LLM and does not launch a large simulation sweep.

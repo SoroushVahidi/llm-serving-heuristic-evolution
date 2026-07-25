@@ -1,7 +1,9 @@
 # Experiment Index
 
-Generated during Query 1 cleanup audit on 2026-07-21 and refreshed after the
-2026-07-22 Wulver data/simulator-discriminative workflows.
+Generated during Query 1 cleanup audit on 2026-07-21, refreshed after the
+2026-07-22 Wulver data/simulator-discriminative workflows, and extended on
+2026-07-25 for Tier 1 staging, real-window construction, and repaired pilots.
+Compact Git-safe summaries: `docs/current/pause_2026_07_25/`.
 
 This index points to durable experiment artifacts. Large data, logs, shards, and model outputs remain outside Git.
 
@@ -26,6 +28,12 @@ This index points to durable experiment artifacts. Large data, logs, shards, and
 | SLO/Deadline Augmented V2 Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slo_deadline_augmented_v2_sweep_20260722T194529Z` | 1127940, 1127956, 1127968, 1127969, 1127970 array, 1127971, 1127972, 1127973, 1127974, 1127975, 1127976; superseded failures 1127941, 1127957 | COMPLETE | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slo_deadline_augmented_v2_sweep_20260722T194529Z/reports/FINAL_SLO_DEADLINE_AUGMENTATION_REPORT.md` | No | `SLO_DEADLINE_AUGMENTATION_STATUS = USEFUL_INCREMENTAL`; EDF/SCORPIO/admission signals improved under tight/heterogeneous synthetic SLOs. Use as synthetic training/regime-probing evidence only. |
 | Simulator Discriminative-Power Audit | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/simulator_discriminative_audit_20260722T223236Z` | 1129057 initial pass, 1129069 corrected final pass | COMPLETE | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/simulator_discriminative_audit_20260722T223236Z/reports/SIMULATOR_DISCRIMINATIVE_POWER_AUDIT.md` | No | `COMBINER_TRAINING_SIGNAL = WEAK`; `COMBINER_EVALUATION_READINESS = NEEDS_SIMULATOR_FIX`. Primary bottleneck is simulator/objective discriminative power. |
 | SLAI Faithful Bounded Pilot | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slai_faithful_bounded_pilot_20260723T033609Z` | 1129769 | COMPLETE | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slai_faithful_bounded_pilot_20260723T033609Z/results/pilot_summary.json` (also `pilot_results.json`) | No | Mean oracle-envelope gain from adding `slai_faithful` is `0.0` on all 12 windows; Azure/BurstGPT/SwissAI pilot windows tied at ANWG=1.0; TraceLab showed clear losses vs WSP/SCORPIO. Decode-hold activated (mean hold rate ≈ `0.082`). Hand-recorded recommendation in the 2026-07-23 handoff: `FULL_SWEEP_RECOMMENDATION = NO_GO` pending load-calibrated re-test. |
+
+| Tier 1 Real Dataset Staging (2026-07-24/25) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets` | 1142946–1142955, 1143027–1143028 | COMPLETE | per-dataset `FINAL_REPORT.md` / staging manifests (external); Git summary `docs/current/pause_2026_07_25/DATASET_PRESERVATION.md` | No | BurstGPT, Azure 2023/2024, Bailian staged; Azure chronological repair + BurstGPT metadata repair; Mooncake real-only internal OOD (`REDISTRIBUTION=PROHIBITED_UNTIL_CLARIFIED`). ~26 GB external. SHA lineage on `reality-grounded-dataset-expansion-20260724`. |
+| Real-Window Construction (2026-07-25) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z` | 1143271–1143275, 1143277 | ALL_COMPLETE_VALID | `reports/OVERNIGHT_STATUS.md` (external); Git `docs/current/pause_2026_07_25/REAL_WINDOW_SUMMARY.md` | No | Natural/busy/scaled/synthetic windows validated for five datasets. Git SHA `4dd97ead…`. Do not commit window JSONL into Git. |
+| First Capped Load-Discrimination Pilot | `.../real_window_construction_20260725T035054Z/pilot` | 1143276 | COMPLETED (scientifically flawed sampling) | pilot root (external) | No | Global `[:200]` cap **omitted Mooncake** → invalid balanced design; treat as negative sampling evidence. Decision class `PARTIALLY_READY` but superseded. |
+| Repaired Balanced Load-Discrimination Pilot | `.../pilot_repaired_20260725T124957Z` | 1143392 | COMPLETED; `LOAD_DISCRIMINATION_PILOT=PARTIALLY_READY` | `reports/REPAIRED_PILOT_REPORT.md` (external); Git `docs/current/pause_2026_07_25/REPAIRED_PILOT_SUMMARY.md` | No | Stratified 50×5=250 windows; Mooncake included; sat 0.072; exact-tie 0.604; near-tie 0.804; mean margin ~0.0125; 7 winners. Signal gates failed. **No full fingerprint sweep authorized.** Diagnostics use outcome signatures, not action traces. Runner: `scripts/data/run_repaired_load_discrimination_pilot.py`. SHA at run `4dd97ead…`. |
+| Project Pause Audit Part 1 (2026-07-25) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/project_pause_audit_20260725T130126Z` | n/a | `READY_FOR_CLEANUP_AND_HANDOFF` | Git copy `docs/current/pause_2026_07_25/audit/PAUSE_AUDIT.md` | No | Inventory of repos, jobs, artifacts; recommended Part 2/3 actions. |
 
 ## Active Workflow Check Commands
 

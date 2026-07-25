@@ -1,5 +1,26 @@
 # Project Status
 
+> **Pause addendum 2026-07-25.** The project is **intentionally paused** again
+> after Tier 1 real-dataset staging, validated real-window construction, and the
+> repaired balanced load-discrimination pilot. Primary entry:
+> [`RESUME_HERE.md`](RESUME_HERE.md) and
+> [`pause_2026_07_25/PAUSE_HANDOFF.md`](pause_2026_07_25/PAUSE_HANDOFF.md).
+> GitHub is the durable source of truth; Wolverine paths may vanish.
+
+### 2026-07-25 scientific deltas (additive; do not erase below)
+
+- **Tier 1 datasets staged** (~26 GB external): BurstGPT, Azure 2023/2024, Bailian, Mooncake (internal OOD only).
+- **Real-window construction `ALL_COMPLETE_VALID`** (natural / busy / scaled / synthetic).
+- **Repaired pilot job `1143392`:** `LOAD_DISCRIMINATION_PILOT = PARTIALLY_READY`
+  (sat 0.072; exact-tie 0.604; near-tie 0.804; mean margin ~0.0125; 7 winners;
+  Mooncake included). Signal gates failed. **No full fingerprint sweep authorized.**
+- **Diagnostic limitation:** behavioral disagreement / tie labels use **outcome signatures**, not true action traces.
+- **Composition/synthesis:** native composition remains `NO_GO`; synthesis empirically `NOT_READY` — repaired pilot does not reopen them.
+- Exact paused next decision: targeted simulator/load discrimination repair on natural+busy primary evidence.
+
+---
+
+
 > **Project paused 2026-07-23.** This file remains accurate for everything
 > it covers (nothing below is contradicted), but
 > **[PROJECT_HANDOFF_2026-07-23.md](PROJECT_HANDOFF_2026-07-23.md)** is now
