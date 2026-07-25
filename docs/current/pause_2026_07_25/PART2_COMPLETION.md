@@ -46,6 +46,7 @@ RESUME_HERE, PROJECT_HANDOFF (+ JSON), PROJECT_STATUS, EXPERIMENT_INDEX, RESEARC
 
 ## I. Commits (Part 2 local)
 ```
+9310381 docs: record authoritative Part 2 HEAD in completion files
 d8fd116 docs: sync Part 2 completion artifacts with HEAD
 2bddf88 docs: stamp Part 2 final SHA into completion artifacts
 3095155 docs: correct Part 2 completion report

@@ -5,10 +5,12 @@
   "audit_status": "READY_FOR_CLEANUP_AND_HANDOFF",
   "branch": "reality-grounded-dataset-expansion-20260724",
   "starting_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
-  "final_sha": "d8fd11639cea3f2d376b0d50f34a9974faed7f16",
-  "ahead": 14,
-  "behind": 0,
+  "tip_at_report_generation": "93103814abc158d37cbd0794f7522805768a29bf",
+  "verify_tip_with": "git rev-parse HEAD",
+  "ahead_at_report_generation": 15,
+  "behind_at_report_generation": 0,
   "commits_part2": [
+    "93103814abc158d37cbd0794f7522805768a29bf docs: record authoritative Part 2 HEAD in completion files",
     "d8fd11639cea3f2d376b0d50f34a9974faed7f16 docs: sync Part 2 completion artifacts with HEAD",
     "2bddf8881e04ced7b4c47c510064dc370d6153ea docs: stamp Part 2 final SHA into completion artifacts",
     "30951555cfbf06ce818d186e49f6d6d9c19a3913 docs: correct Part 2 completion report",
@@ -61,6 +63,5 @@
   ],
   "jobs_active_remaining": [],
   "legacy_worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution",
-  "pushed": false,
-  "working_tree_clean": true
+  "pushed": false
 }
