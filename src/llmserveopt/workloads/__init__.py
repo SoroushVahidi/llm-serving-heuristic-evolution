@@ -10,7 +10,12 @@ from .synthetic import (
 )
 from .trace_io import save_jsonl, load_jsonl, save_csv, load_csv
 from . import augmentation
+from . import azure
+from . import bailian
 from . import burstgpt
+from . import canonical_schema
+from . import mooncake
+from . import prompt_corpora
 from . import sharegpt
 from . import trace_io_extended
 
@@ -28,7 +33,12 @@ __all__ = [
     "save_csv",
     "load_csv",
     "augmentation",
+    "azure",
+    "bailian",
     "burstgpt",
+    "canonical_schema",
+    "mooncake",
+    "prompt_corpora",
     "sharegpt",
     "trace_io_extended",
 ]

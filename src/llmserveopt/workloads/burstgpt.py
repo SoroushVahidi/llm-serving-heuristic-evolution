@@ -2,22 +2,37 @@
 BurstGPT real-workload trace loader.
 
 BurstGPT is a real LLM serving workload dataset from production systems.
+Official source: https://github.com/HPMLL/BurstGPT (CC-BY-4.0).
 Reference: arXiv 2401.17644, SIGMETRICS 2025.
 
-Real fields (from dataset):      arrival_time, prompt_tokens, actual_output_tokens
-Synthetic augmented fields:      predicted_output_tokens, class_id, priority, slo_deadline
+Observed fields (from dataset):
+  Timestamp, Request tokens, Response tokens
+  Optional (v2 / BurstGPT_3): Session ID, Elapsed time, Model, Log Type
+
+Synthetic augmented fields (disclosed):
+  predicted_output_tokens, class_id, priority, slo_deadline
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
 
 from ..core.types import Request
 from .augmentation import AugmentationConfig, augment_trace
+from .canonical_schema import (
+    CanonicalIngestRecord,
+    DatasetType,
+    FieldProvenance,
+    default_provenance,
+    records_to_requests_and_metadata,
+    replay_label_for_time_scale,
+    scale_interarrivals,
+    validate_canonical_records,
+)
 
 
 _REQUEST_TOKEN_VARIANTS = [
@@ -31,6 +46,10 @@ _RESPONSE_TOKEN_VARIANTS = [
 _TIMESTAMP_VARIANTS = [
     "Timestamp", "timestamp", "Time", "time",
 ]
+_SESSION_VARIANTS = ["Session ID", "SessionID", "session_id", "session id"]
+_MODEL_VARIANTS = ["Model", "model", "model_id"]
+_LOGTYPE_VARIANTS = ["Log Type", "LogType", "log_type", "log type"]
+_ELAPSED_VARIANTS = ["Elapsed time", "Elapsed Time", "elapsed_time", "elapsed"]
 
 
 def _detect_column(df: pd.DataFrame, variants: List[str], label: str) -> str:
@@ -45,6 +64,16 @@ def _detect_column(df: pd.DataFrame, variants: List[str], label: str) -> str:
         f"Available columns: {list(df.columns)}. "
         f"Tried: {variants}"
     )
+
+
+def _detect_optional_column(df: pd.DataFrame, variants: List[str]) -> Optional[str]:
+    cols_lower = {c.lower(): c for c in df.columns}
+    for v in variants:
+        if v in df.columns:
+            return v
+        if v.lower() in cols_lower:
+            return cols_lower[v.lower()]
+    return None
 
 
 @dataclass
@@ -101,12 +130,12 @@ def load_burstgpt_raw(path: Union[str, Path]) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-def convert_burstgpt_to_requests(
+def convert_burstgpt_to_canonical(
     df: pd.DataFrame,
     config: Optional[BurstGPTConversionConfig] = None,
     seed: int = 0,
     augmentation_config: Optional[AugmentationConfig] = None,
-) -> Tuple[List[Request], ConversionReport]:
+) -> Tuple[List[CanonicalIngestRecord], ConversionReport]:
     if config is None:
         config = BurstGPTConversionConfig()
     if augmentation_config is None:
@@ -119,22 +148,44 @@ def convert_burstgpt_to_requests(
     ts_col = _detect_column(df, _TIMESTAMP_VARIANTS, "timestamp")
     req_col = _detect_column(df, _REQUEST_TOKEN_VARIANTS, "request tokens")
     resp_col = _detect_column(df, _RESPONSE_TOKEN_VARIANTS, "response tokens")
+    session_col = _detect_optional_column(df, _SESSION_VARIANTS)
+    model_col = _detect_optional_column(df, _MODEL_VARIANTS)
+    logtype_col = _detect_optional_column(df, _LOGTYPE_VARIANTS)
+    elapsed_col = _detect_optional_column(df, _ELAPSED_VARIANTS)
 
     schema_detected = {
         "timestamp": ts_col,
         "request_tokens": req_col,
         "response_tokens": resp_col,
+        "session_id": session_col,
+        "model": model_col,
+        "log_type": logtype_col,
+        "elapsed_time": elapsed_col,
     }
 
-    df = df[[ts_col, req_col, resp_col]].copy()
-    df.columns = ["timestamp", "prompt_tokens", "output_tokens"]
+    keep_cols = [ts_col, req_col, resp_col]
+    rename = {ts_col: "timestamp", req_col: "prompt_tokens", resp_col: "output_tokens"}
+    if session_col:
+        keep_cols.append(session_col)
+        rename[session_col] = "session_id"
+    if model_col:
+        keep_cols.append(model_col)
+        rename[model_col] = "model_id"
+    if logtype_col:
+        keep_cols.append(logtype_col)
+        rename[logtype_col] = "log_type"
+    if elapsed_col:
+        keep_cols.append(elapsed_col)
+        rename[elapsed_col] = "elapsed_time"
+
+    df = df[keep_cols].copy().rename(columns=rename)
 
     df["timestamp"] = pd.to_numeric(df["timestamp"], errors="coerce")
     df["prompt_tokens"] = pd.to_numeric(df["prompt_tokens"], errors="coerce")
     df["output_tokens"] = pd.to_numeric(df["output_tokens"], errors="coerce")
 
     initial_len = len(df)
-    df = df.dropna()
+    df = df.dropna(subset=["timestamp", "prompt_tokens", "output_tokens"])
     rows_dropped_invalid += initial_len - len(df)
 
     df = df.sort_values("timestamp").reset_index(drop=True)
@@ -151,37 +202,30 @@ def convert_burstgpt_to_requests(
     rows_dropped_zero = int(zero_mask.sum())
     df = df[~zero_mask].reset_index(drop=True)
 
+    empty_report = ConversionReport(
+        rows_read=rows_read,
+        rows_retained=0,
+        rows_dropped_zero_tokens=rows_dropped_zero,
+        rows_dropped_invalid=rows_dropped_invalid,
+        time_range_seconds=0.0,
+        mean_arrival_rate=0.0,
+        prompt_tokens_mean=0.0,
+        prompt_tokens_p95=0.0,
+        output_tokens_mean=0.0,
+        output_tokens_p95=0.0,
+        schema_detected=schema_detected,
+        seed=seed,
+        augmentation_config_summary={
+            "noise_mode": augmentation_config.prediction_noise.mode,
+            "slo_classes": [c.class_id for c in augmentation_config.slo.classes],
+        },
+    )
     if len(df) == 0:
-        report = ConversionReport(
-            rows_read=rows_read,
-            rows_retained=0,
-            rows_dropped_zero_tokens=rows_dropped_zero,
-            rows_dropped_invalid=rows_dropped_invalid,
-            time_range_seconds=0.0,
-            mean_arrival_rate=0.0,
-            prompt_tokens_mean=0.0,
-            prompt_tokens_p95=0.0,
-            output_tokens_mean=0.0,
-            output_tokens_p95=0.0,
-            schema_detected=schema_detected,
-            seed=seed,
-            augmentation_config_summary={
-                "noise_mode": augmentation_config.prediction_noise.mode,
-                "slo_classes": [c.class_id for c in augmentation_config.slo.classes],
-            },
-        )
-        return [], report
+        return [], empty_report
 
     timestamps = df["timestamp"].values.astype(float)
-
-    if config.time_scale != 1.0 and len(timestamps) > 1:
-        interarrivals = np.diff(timestamps)
-        scaled_gaps = interarrivals * config.time_scale
-        scaled_timestamps = np.concatenate([[0.0], np.cumsum(scaled_gaps)])
-    else:
-        scaled_timestamps = timestamps - timestamps[0]
-
-    arrival_times = scaled_timestamps
+    arrival_times = np.asarray(scale_interarrivals(timestamps, config.time_scale), dtype=float)
+    replay_label = replay_label_for_time_scale(config.time_scale)
 
     prompt_tokens = np.clip(
         df["prompt_tokens"].values.astype(int),
@@ -197,21 +241,62 @@ def convert_burstgpt_to_requests(
     rng = np.random.default_rng(seed)
     augmented = augment_trace(output_tokens, arrival_times, augmentation_config, rng)
 
-    requests: List[Request] = []
+    records: List[CanonicalIngestRecord] = []
     for i in range(len(df)):
-        req = Request(
-            request_id=i,
-            arrival_time=float(arrival_times[i]),
-            prompt_tokens=int(prompt_tokens[i]),
-            predicted_output_tokens=int(augmented["predicted_output_tokens"][i]),
-            actual_output_tokens=int(output_tokens[i]),
-            slo_deadline=float(augmented["slo_deadlines"][i]),
-            priority=float(augmented["priorities"][i]),
-            class_id=augmented["class_ids"][i],
-        )
-        requests.append(req)
+        session_id = None
+        model_id = None
+        extra: Dict[str, Any] = {"replay_label": replay_label}
+        if "session_id" in df.columns:
+            val = df.at[i, "session_id"]
+            if pd.notna(val):
+                session_id = str(val)
+        if "model_id" in df.columns:
+            val = df.at[i, "model_id"]
+            if pd.notna(val):
+                model_id = str(val)
+        if "log_type" in df.columns and pd.notna(df.at[i, "log_type"]):
+            extra["log_type"] = str(df.at[i, "log_type"])
+        if "elapsed_time" in df.columns and pd.notna(df.at[i, "elapsed_time"]):
+            extra["elapsed_time"] = float(df.at[i, "elapsed_time"])
+        extra["original_timestamp"] = float(timestamps[i])
 
-    rows_retained = len(requests)
+        prov = default_provenance(
+            session_id=(
+                FieldProvenance.OBSERVED.value
+                if session_id is not None
+                else FieldProvenance.UNAVAILABLE.value
+            ),
+            model_id=(
+                FieldProvenance.OBSERVED.value
+                if model_id is not None
+                else FieldProvenance.UNAVAILABLE.value
+            ),
+        )
+        records.append(
+            CanonicalIngestRecord(
+                request_id=i,
+                arrival_time=float(arrival_times[i]),
+                prompt_tokens=int(prompt_tokens[i]),
+                actual_output_tokens=int(output_tokens[i]),
+                predicted_output_tokens=int(augmented["predicted_output_tokens"][i]),
+                slo_deadline=float(augmented["slo_deadlines"][i]),
+                priority=float(augmented["priorities"][i]),
+                class_id=str(augmented["class_ids"][i]),
+                session_id=session_id,
+                model_id=model_id,
+                source_dataset="burstgpt",
+                source_split="",
+                source_record_id=str(i),
+                field_provenance=prov,
+                time_scale=config.time_scale,
+                replay_label=replay_label,
+                dataset_type=DatasetType.TRUE_SERVING_TRACE.value,
+                extra=extra,
+            )
+        )
+
+    validate_canonical_records(records)
+    rows_retained = len(records)
     time_range = float(arrival_times[-1] - arrival_times[0]) if len(arrival_times) > 1 else 0.0
     mean_rate = rows_retained / time_range if time_range > 0 else 0.0
 
@@ -231,9 +316,33 @@ def convert_burstgpt_to_requests(
         augmentation_config_summary={
             "noise_mode": augmentation_config.prediction_noise.mode,
             "slo_classes": [c.class_id for c in augmentation_config.slo.classes],
+            "time_scale": config.time_scale,
+            "replay_label": replay_label,
         },
     )
+    return records, report
+
+
+def convert_burstgpt_to_requests(
+    df: pd.DataFrame,
+    config: Optional[BurstGPTConversionConfig] = None,
+    seed: int = 0,
+    augmentation_config: Optional[AugmentationConfig] = None,
+) -> Tuple[List[Request], ConversionReport]:
+    records, report = convert_burstgpt_to_canonical(df, config, seed, augmentation_config)
+    requests, _metadata = records_to_requests_and_metadata(records)
     return requests, report
+
+
+def convert_burstgpt_to_requests_with_metadata(
+    df: pd.DataFrame,
+    config: Optional[BurstGPTConversionConfig] = None,
+    seed: int = 0,
+    augmentation_config: Optional[AugmentationConfig] = None,
+) -> Tuple[List[Request], List[Dict[str, Any]], ConversionReport]:
+    records, report = convert_burstgpt_to_canonical(df, config, seed, augmentation_config)
+    requests, metadata = records_to_requests_and_metadata(records)
+    return requests, metadata, report
 
 
 def load_burstgpt_trace(
