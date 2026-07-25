@@ -9,20 +9,20 @@ future Wulver (SLURM) session. It does not launch anything. The
 machine-readable spec is `docs/current/wolverine_oracle_mixture_spec.json`;
 read that for exact fields.
 
-**Evidence precision caveat (added during 2026-07-24 repository audit):**
-the `NATIVE_COMPOSITION_PILOT_DECISION = NO_GO` finding attributed to job
-`1120123` below is a real result from the real composition harness (not a
-proxy), but its raw numeric artifacts
-(`native_composition_pilot_20260721T194929Z/{pilot_report.md,
-method_comparison.csv,subset_analysis.csv,pilot_manifest.json}`) live only
-under `/mmfs1/...` on the Wulver cluster and are **not present in this
-local checkout**, so only the qualitative decision string could be
-verified here, not the underlying effect size, n, or confidence interval.
-Treat this as evidence supporting "no full sweep justified yet" (Level B
-composition evidence), not as a fully independently-audited Level C/D
-falsification, until those artifacts are recovered read-only from Wulver
-into `results/wulver_imports/` the way
-`module_intervention_credit_20260721T224322Z` already was.
+**Evidence location note (updated during 2026-07-24 repository
+reconciliation):** the `NATIVE_COMPOSITION_PILOT_DECISION = NO_GO` finding
+attributed to job `1120123` is a real result from the real composition
+harness (not a proxy). Its numeric artifacts live outside Git under the
+durable Wulver data root
+`/mmfs1/project/ikoutis/sv96/llmserveopt-data/native_composition_pilot_20260721T194929Z/`
+(`pilot_report.md`, `method_comparison.csv`, `subset_analysis.csv`,
+`pilot_manifest.json`, …). Those files were **verified readable** on
+2026-07-24 from the authoritative checkout; they are still not vendored
+into this git worktree (by design — large experiment roots stay on the
+shared data filesystem). Optional future convenience import into
+`results/wulver_imports/` remains available the way
+`module_intervention_credit_20260721T224322Z` already was, but is no
+longer required merely to *find* the artifacts.
 
 ## What changed since the last composition pilot
 

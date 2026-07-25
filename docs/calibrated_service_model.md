@@ -78,10 +78,18 @@ and the prediction is a reasonable approximation.
 ## Limitations
 
 1. **Model-specific**: Curves are for Qwen2.5-0.5B on RTX 5060 Ti only.
-2. **Static batch assumption**: Fitted from HF Transformers generate(), not vLLM continuous batching.
-3. **Linear fit**: May not capture non-linear effects at extreme batch sizes or sequence lengths.
-4. **Single GPU**: No multi-GPU or tensor-parallel effects modeled.
-5. **No quantization effects**: All measurements use bfloat16.
+2. **Decode wall-clock helper is offline-only today:**
+   `compute_decode_step_time()` / `decode_time()` are used by calibration
+   comparison scripts and tests. The discrete-event GPU step path in
+   `simulator/gpu.py` does **not** call them; decode progress remains
+   token-budget based. See
+   `docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md`.
+3. Prefill step counts from calibration *can* affect Phase-1.5
+   `prefill_remaining` when `service_model.type: calibrated` is configured.
+4. **Static batch assumption**: Fitted from HF Transformers generate(), not vLLM continuous batching.
+5. **Linear fit**: May not capture non-linear effects at extreme batch sizes or sequence lengths.
+6. **Single GPU**: No multi-GPU or tensor-parallel effects modeled.
+7. **No quantization effects**: All measurements use bfloat16.
 
 ---
 

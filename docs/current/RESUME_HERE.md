@@ -10,7 +10,7 @@ this project after a multi-month pause. Readable in 5–10 minutes.
 - **Paused:** 2026-07-23
 - **Authoritative repo path:** `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration`
 - **Branch:** `wulver-final-integration-20260721`
-- **Checkpoint commit:** `8c9cedbca171d44030a16cf630f81f99d15d729f`
+- **Pause checkpoint commit (historical):** `8c9cedbca171d44030a16cf630f81f99d15d729f`
   ("feat: add faithful SLAI baseline and preserve paused research state")
 - **GitHub remote:** `origin/wulver-final-integration-20260721`
   (`github.com/SoroushVahidi/llm-serving-heuristic-evolution.git`) —
@@ -22,14 +22,31 @@ After the pause checkpoint, the composition/selector-integrated lineage also
 added typed reciprocal-rank and score-aggregation operators plus decision
 tracing. Those operators are unit-tested only; they are **not**
 performance-validated at scale, and **no Wolverine oracle-mixture sweep was
-launched**. Composition launch remains **BLOCKED** pending read-only recovery
-of native pilot job `1120123` numeric artifacts (locally only a qualitative
-`NO_GO` / approximately Level B summary is available). Structural synthesis
-remains empirically `NOT_READY`. See
+launched**. Structural synthesis remains empirically `NOT_READY`. See
 `COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md`,
 `COMPOSITION_IMPLEMENTATION_STATUS.md`, and
 `WOLVERINE_ORACLE_MIXTURE_HANDOFF.md`. The standing simulator-calibration
 bottleneck above is unchanged.
+
+Native composition pilot job `1120123` artifacts were **verified readable**
+on 2026-07-24 at the durable cluster root
+`/mmfs1/project/ikoutis/sv96/llmserveopt-data/native_composition_pilot_20260721T194929Z/`
+(`pilot_report.md`, `method_comparison.csv`, `pilot_manifest.json`, …).
+The scientific decision remains `NATIVE_COMPOSITION_PILOT_DECISION = NO_GO`;
+composition launch stays blocked on simulator calibration, not on missing
+pilot files.
+
+### Repository reconciliation note (2026-07-24, later same day)
+
+A non-destructive audit fast-forwarded this worktree from local `3aee585`
+(docs-only handoff commit after the pause checkpoint) to remote tip
+`37849b0` ("Merge remote integration updates into composition branch"),
+which already contained the post-pause composition/selector commits above.
+Verified live policy counts remain 20 + 7 + 7 (+ 1 oracle). Known DSL /
+calibrated-model wiring gaps are recorded in
+`KNOWN_SIMULATOR_HEURISTIC_GAPS.md` without changing simulator semantics.
+Always re-check `git rev-parse HEAD` / `git status` rather than trusting a
+cached SHA in this file.
 
 ## Read these first (in order)
 

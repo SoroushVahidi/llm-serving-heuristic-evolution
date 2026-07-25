@@ -1,11 +1,12 @@
 # Start Here
 
-This directory is the current source-of-truth navigation layer for
-`wulver-selector-v2-and-composition-integrated`, which combines
-`origin/wulver-final-integration-20260721`'s Policy Library v2/composition/
-structural-synthesis work with the Phase 2C selector-improvement and
-leakage-fix work from `phase2c-final-selector-improvement`. Read these
-documents in order when picking up the project.
+This directory is the current source-of-truth navigation layer for the
+authoritative branch **`wulver-final-integration-20260721`** (remote:
+`origin/wulver-final-integration-20260721`). That branch combines Policy
+Library v2 / composition / structural-synthesis work with the Phase 2C
+selector-improvement and leakage-fix lineage formerly developed on
+`phase2c-final-selector-improvement` (merged tip includes commit
+`37849b0`). Read these documents in order when picking up the project.
 
 ## Project Paused 2026-07-23 — Read This First
 
@@ -41,6 +42,7 @@ training.
 8. **[EXPERIMENT_INDEX.md](EXPERIMENT_INDEX.md)** - durable index of major experiment roots, jobs, reports, and conclusions.
 9. **[POLICY_FRONTIER_STATUS.md](POLICY_FRONTIER_STATUS.md)** - frontier/library workflow summaries.
 10. **[ACTIVE_EXPERIMENT_PROTECTED_PATHS.md](ACTIVE_EXPERIMENT_PROTECTED_PATHS.md)** - protected SLURM roots that must not be modified.
+11. **[KNOWN_SIMULATOR_HEURISTIC_GAPS.md](KNOWN_SIMULATOR_HEURISTIC_GAPS.md)** - verified DSL / calibrated-model wiring gaps retained for reproducibility.
 
 ## Selector-v2 / Local-Lineage Integration Docs
 

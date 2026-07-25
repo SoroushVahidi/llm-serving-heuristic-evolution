@@ -1,5 +1,15 @@
 # Local Branch Status (Canonical)
 
+> **Reconciliation update (2026-07-24):** the selector-improvement /
+> leakage-fix lineage described below was merged into
+> `origin/wulver-final-integration-20260721` (merge tip `37849b0`). This
+> document remains the historical handoff for that local lineage. Where §4
+> previously said the two split-leakage fixes were unreconciled, treat the
+> integration-branch implementations under
+> `src/llmserveopt/selector/dataset_v2/splits.py` (plus the older script-level
+> fix from `c8aee12`) as the live code on the authoritative branch — do not
+> treat this document's "never been pushed" snapshot as current git state.
+
 **This is the canonical handoff document for the local branch
 `phase2c-final-selector-improvement`.** It is scoped to this branch only.
 For the full project narrative see [PROJECT_STATUS.md](PROJECT_STATUS.md);
