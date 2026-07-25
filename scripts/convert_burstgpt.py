@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from llmserveopt.workloads.burstgpt import (
     BurstGPTConversionConfig,
     conversion_report_to_dict,
-    load_burstgpt_trace,
+    load_burstgpt_trace_with_metadata,
 )
 from llmserveopt.workloads.augmentation import load_augmentation_config
 from llmserveopt.workloads.trace_io_extended import save_extended_jsonl
@@ -84,7 +84,7 @@ def main():
     print(f"  Output: {args.output}")
     print(f"  Seed  : {args.seed}")
 
-    requests, report = load_burstgpt_trace(
+    requests, metadata, report = load_burstgpt_trace_with_metadata(
         input_path,
         conversion_config,
         args.seed,
@@ -103,7 +103,9 @@ def main():
     print(f"  Output tokens p95 : {report.output_tokens_p95:.0f}")
 
     output_path = Path(args.output)
-    save_extended_jsonl(requests, output_path, source="burstgpt")
+    save_extended_jsonl(
+        requests, output_path, source="burstgpt", metadata_list=metadata
+    )
     print(f"\nSaved {len(requests)} requests to {output_path}")
 
     report_path = output_path.with_suffix(".report.json")

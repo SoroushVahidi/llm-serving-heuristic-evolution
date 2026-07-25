@@ -87,12 +87,19 @@ def characterize(requests, metadata_list: Optional[List[dict]] = None) -> Dict[s
     prefix_hashes = Counter()
     types = Counter()
     if metadata_list:
-        for md in metadata_list:
-            if md.get("session_id"):
+        for wrapper in metadata_list:
+            # load_extended_jsonl nests CanonicalIngestRecord.to_metadata() under
+            # {"source": ..., "metadata": {...}}.
+            md = wrapper.get("metadata") if isinstance(wrapper, dict) else None
+            if not isinstance(md, dict):
+                md = wrapper if isinstance(wrapper, dict) else {}
+            if md.get("session_id") is not None and str(md["session_id"]) != "":
                 sessions[str(md["session_id"])] += 1
-            if md.get("model_id"):
+            if md.get("model_id") is not None and str(md["model_id"]) != "":
                 models[str(md["model_id"])] += 1
             extra = md.get("extra") or {}
+            if not isinstance(extra, dict):
+                extra = {}
             if "log_type" in extra:
                 types[str(extra["log_type"])] += 1
             if "request_type" in extra:
@@ -102,7 +109,8 @@ def characterize(requests, metadata_list: Optional[List[dict]] = None) -> Dict[s
             hashes = extra.get("hash_ids") or extra.get("prefix_hash_ids")
             if isinstance(hashes, list) and hashes:
                 prefix_hashes[str(hashes[0])] += 1
-            elif md.get("prefix_id"):
+            elif md.get("prefix_id") is not None and str(md["prefix_id"]) != "":
+                # Bailian/Mooncake store a derived first-block / length signature.
                 prefix_hashes[str(md["prefix_id"])] += 1
         for r in requests:
             classes[str(r.class_id)] += 1
