@@ -1,0 +1,52 @@
+#!/bin/bash
+#SBATCH --job-name=rwc_repaired_pilot
+#SBATCH --output=rwc_repaired_pilot_%j.out
+#SBATCH --error=rwc_repaired_pilot_%j.err
+#SBATCH --time=04:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=16G
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#
+# Template for the repaired balanced load-discrimination pilot.
+# Fill placeholders before submitting. Does NOT launch a full policy sweep.
+#
+# Required environment / placeholders:
+#   REPO_ROOT   - checkout of reality-grounded-dataset-expansion-20260724 (or successor)
+#   RUN_ROOT    - validated real-window construction root
+#   PILOT_ROOT  - fresh output directory for this pilot
+#   CONDA_ENV   - conda env name (default: repo-env)
+#   PARTITION / ACCOUNT - cluster-specific; set via sbatch -p / -A or uncomment below
+#
+# #SBATCH --partition=<PARTITION>
+# #SBATCH --account=<ACCOUNT>
+
+set -euo pipefail
+
+REPO_ROOT="${REPO_ROOT:?set REPO_ROOT}"
+RUN_ROOT="${RUN_ROOT:?set RUN_ROOT to validated window construction root}"
+PILOT_ROOT="${PILOT_ROOT:?set PILOT_ROOT to a new empty output directory}"
+CONDA_ENV="${CONDA_ENV:-repo-env}"
+SEED="${SEED:-20260725}"
+WORKERS="${WORKERS:-8}"
+
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate "${CONDA_ENV}"
+cd "${REPO_ROOT}"
+
+mkdir -p "${PILOT_ROOT}"
+echo "SLURM_JOB_ID=${SLURM_JOB_ID:-none}"
+echo "git=$(git rev-parse HEAD)"
+echo "RUN_ROOT=${RUN_ROOT}"
+echo "PILOT_ROOT=${PILOT_ROOT}"
+
+GIT_SHA="$(git rev-parse HEAD)"
+python3 scripts/data/run_repaired_load_discrimination_pilot.py \
+  --run-root "${RUN_ROOT}" \
+  --pilot-root "${PILOT_ROOT}" \
+  --git-sha "${GIT_SHA}" \
+  --seed "${SEED}" \
+  --workers "${WORKERS}"
+
+echo "DONE"
+ls -la "${PILOT_ROOT}/reports" || true
