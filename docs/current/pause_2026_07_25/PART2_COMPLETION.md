@@ -50,7 +50,7 @@ Preserved: repaired pilot 1143392 and all completed scientific jobs.
 Active remaining at Part 2 end: none in project queue.
 
 ## I. Commits
-Listed in `git log 4dd97ead..HEAD` after final handoff commit.
+
 
 ## J. Remaining Part 3 work
 - Final secret/large-file review on to-be-pushed range

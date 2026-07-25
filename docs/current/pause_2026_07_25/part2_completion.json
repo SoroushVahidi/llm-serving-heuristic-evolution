@@ -53,5 +53,15 @@
   ],
   "jobs_active_remaining": [],
   "legacy_worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution",
-  "pushed": false
+  "pushed": false,
+  "final_sha": "4724e786c2ff1860d8a3ea2dfa878a2e526f9220",
+  "behind": 0,
+  "ahead": 10,
+  "commits_part2": [
+    "4724e786c2ff1860d8a3ea2dfa878a2e526f9220 docs: update project handoff after real-trace pilots",
+    "891622bb9bd30cf016592c6931aab4ea15e17654 chore: ignore generated cluster and experiment artifacts",
+    "92fe44e37c6b1c83b13a8fa07ce169934479caca docs: preserve July 2026 project pause state",
+    "2e2d9b8cc3a3c85a8183d6424e1e082b13cfb352 feat: preserve balanced real-trace pilot workflow"
+  ],
+  "working_tree_clean_expected": true
 }
