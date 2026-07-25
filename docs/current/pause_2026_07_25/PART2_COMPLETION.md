@@ -8,9 +8,9 @@
 
 ## B. Git state
 - Starting SHA (Part 2 begin): `4dd97eadd16aa65512db61af07f7750596c08d14`
+- Final SHA (at this report write; may be one commit behind HEAD after stamp): `2bddf8881e04ced7b4c47c510064dc370d6153ea`
 - Branch: `reality-grounded-dataset-expansion-20260724`
-- Worktree: `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-dataset-expansion`
-- Ahead/behind vs `origin/reality-grounded-dataset-expansion-20260724` after Part 2 commits: **ahead only** (see `git rev-list --left-right --count`; expect behind=0)
+- Ahead/behind vs origin: 13 / 0
 - Working tree: clean after Part 2 commits
 - No push performed
 
@@ -19,17 +19,16 @@
 - Selection module: `src/llmserveopt/workloads/repaired_discrimination_selection.py`
 - Tests: `tests/test_repaired_discrimination_pilot.py`
 - Slurm template: `scripts/cluster/submit_repaired_pilot.sbatch.template`
-- Summary helper: `scripts/experiments/summarize_repaired_pilot.py`
 - Decision: `LOAD_DISCRIMINATION_PILOT = PARTIALLY_READY` (job `1143392`)
 - Key metrics: sat 0.072; exact-tie 0.604; near-tie 0.804; mean margin ~0.0125; 7 winners; Mooncake 50/250
 - Limitation retained: outcome-signature diagnostics, **not** true action traces
 - Full fingerprint sweep: **not authorized**
 
 ## D. Pause snapshot
-`docs/current/pause_2026_07_25/` including README, PAUSE_HANDOFF, summaries, EXTERNAL_ARTIFACT_MANIFEST.tsv, JOB_HISTORY.tsv, audit/, VALIDATION.md, this report.
+`docs/current/pause_2026_07_25/`
 
 ## E. External artifacts
-Outside Git: datasets (~26 GB), windows (~237 MB+), pilot matrices/logs. Manifested in `EXTERNAL_ARTIFACT_MANIFEST.tsv`. Wolverine deletion loses raw/processed traces unless reconstructed (`REPRODUCTION_COMMANDS.md`).
+Outside Git: datasets (~26 GB), windows (~237 MB+), pilot matrices/logs. See `EXTERNAL_ARTIFACT_MANIFEST.tsv`.
 
 ## F. Documentation changes
 RESUME_HERE, PROJECT_HANDOFF (+ JSON), PROJECT_STATUS, EXPERIMENT_INDEX, RESEARCH_ROADMAP, ROADMAP_GAP_ANALYSIS, SELECTOR_STATUS, REAL_DATASET_EXPANSION_STATUS (+ JSON), KNOWN_SIMULATOR_HEURISTIC_GAPS, composition/synthesis status docs, docs/current/README.
@@ -47,14 +46,14 @@ RESUME_HERE, PROJECT_HANDOFF (+ JSON), PROJECT_STATUS, EXPERIMENT_INDEX, RESEARC
 
 ## I. Commits (Part 2 local)
 ```
-docs: correct Part 2 completion report   (this commit, if present)
+2bddf88 docs: stamp Part 2 final SHA into completion artifacts
+3095155 docs: correct Part 2 completion report
 9dcee57 docs: finalize Part 2 completion SHAs
 4724e78 docs: update project handoff after real-trace pilots
 891622b chore: ignore generated cluster and experiment artifacts
 92fe44e docs: preserve July 2026 project pause state
 2e2d9b8 feat: preserve balanced real-trace pilot workflow
 ```
-Authoritative list: `git log --oneline 4dd97ead..HEAD`
 
 ## J. Remaining Part 3 work
 - Final secret/large-file review on push range
