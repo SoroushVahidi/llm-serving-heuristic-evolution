@@ -124,6 +124,14 @@ def conversion_report_to_dict(report: ConversionReport) -> dict:
 
 
 def load_burstgpt_raw(path: Union[str, Path]) -> pd.DataFrame:
+    """Load a BurstGPT CSV into memory.
+
+    Memory note: this uses ``pandas.read_csv`` and loads the full file. Full
+    BurstGPT v2.0 cleaned assets are ~50–220 MB each (~1.4M–5M rows). For
+    Wolverine full-trace conversion prefer chunked/out-of-core preprocessing or
+    set ``BurstGPTConversionConfig.max_requests`` after an intentional full
+    load; do not silently stream-truncate without recording the limit.
+    """
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"BurstGPT file not found: {path}")

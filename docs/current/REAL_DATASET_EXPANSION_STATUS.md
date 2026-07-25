@@ -1,9 +1,9 @@
 # Reality-Grounded Dataset Expansion Status
 
-**Date:** 2026-07-24  
-**Branch:** `reality-grounded-dataset-expansion-20260724`  
-**Machine-readable companion:** `docs/current/real_dataset_expansion_status.json`  
-**Local staging root (outside git):** `~/llmserveopt-dataset-staging`  
+**Date:** 2026-07-24
+**Branch:** `reality-grounded-dataset-expansion-20260724`
+**Machine-readable companion:** `docs/current/real_dataset_expansion_status.json`
+**Local staging root (outside git):** `~/llmserveopt-dataset-staging`
 **Proposed Wolverine root:** `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/`
 
 This document records dataset discovery, access/licensing verification, schema
@@ -20,7 +20,7 @@ It does **not** claim that conversation corpora are production serving traces.
 
 Hugging Face authentication is available for user `SoroushVahidi`. LMSYS-Chat-1M
 data access is still gated (terms not granted for this account). All other Tier
-1/2 candidates audited below are publicly reachable.
+1 candidates audited below are publicly reachable.
 
 ---
 
@@ -59,36 +59,54 @@ Time scaling uses explicit `--time-scale`. Labels:
 
 ---
 
-## Code-level inventory (pre-existing + this branch)
+## License matrix (code repo vs data)
+
+| Dataset | Code-repo license | Data / trace license | Explicit data license? | Redistribution of raw/processed | Attribution required | Official pin |
+|---|---|---|---|---|---|---|
+| BurstGPT | CC-BY-4.0 (`LICENSE`) | CC-BY-4.0 | yes | allowed with attribution | yes | release **v2.0** |
+| Azure 2023 | CC-BY-4.0 | CC-BY Attribution (dataset page + LICENSE) | yes | allowed with attribution | yes | AzurePublicDataset `AzureLLMInferenceDataset2023.md` |
+| Azure 2024 | CC-BY-4.0 | CC-BY Attribution | yes | allowed with attribution | yes | release `dataset-llm-2024` |
+| Azure 2025 LMM | CC-BY-4.0 | CC-BY Attribution | yes | allowed with attribution | yes | `AzureLMMInferenceDataset2025.md` |
+| Bailian/Qwen | Apache-2.0 | Apache-2.0 (README §License + LICENSE) | yes | allowed under Apache-2.0 | preserve notices + cite paper | commit `5f7439c51ec2…` (main tip 2026-07-24) |
+| Mooncake | Apache-2.0 (`LICENSE-APACHE`) | **NOT_EXPLICITLY_SPECIFIED** (no dedicated dataset-license notice beyond project Apache file) | no (separate) | treat cautiously; cite FAST'25 / arXiv | cite papers | FAST25-release traces README |
+| WildChat-1M | n/a (HF) | ODC-BY | yes | per ODC-BY; do not commit conversations | yes | HF revision pin |
+| LMSYS-Chat-1M | n/a (HF) | LMSYS gated agreement | yes (gated) | **prohibited** to third parties | per agreement | gated; access not granted |
+| LongBench | check GitHub | not declared on HF card | unclear on card | verify before redistribute | cite paper | HF `data.zip` |
+| TraceLab | Apache-2.0 (code) | CC-BY-4.0 (public traces; prior docs) | yes (per prior docs) | with attribution | yes | uw-syfi/TraceLab |
+| SwissAI | unknown in-repo | unknown in-repo | no | unknown | unknown | cluster staging only |
+
+---
+
+## Code-level inventory
 
 | Dataset | Loader | Converter | Schema | Raw location | Processed location | Tests | Limitations |
 |---|---|---|---|---|---|---|---|
-| BurstGPT | `workloads/burstgpt.py` | `scripts/convert_burstgpt.py` | Timestamp + token cols; optional Session/Model/Log Type | `data/raw/burstgpt/` or cluster overnight raw | `data/processed/burstgpt/` or cluster processed | `tests/test_burstgpt_loader.py`, session fixture tests | Historical 10k subsets; SLO synthesized |
-| Azure 2023/2024 | `workloads/azure.py` (new) + `scripts/data/convert_azure_llm_trace.py` | same | TIMESTAMP, ContextTokens, GeneratedTokens | `data/raw/azure/` | `data/processed/azure/` | azure tiny fixture | **No function-calling subset**; SLO synthesized |
-| Bailian/Qwen | `workloads/bailian.py` | `scripts/data/convert_bailian_trace.py` | JSONL + hash_ids | external / LFS | processed on cluster | `bailian_tiny.jsonl` | Two-hour samples; Git LFS |
-| Mooncake | `workloads/mooncake.py` | `scripts/data/convert_mooncake_trace.py` | timestamp, input/output, hash_ids | Mooncake repo traces | processed on cluster | `mooncake_tiny.jsonl` | Label `synthetic_trace` separately |
-| ShareGPT | `workloads/sharegpt.py` | `scripts/convert_sharegpt.py` | conversations | manual JSON | processed | `test_sharegpt_loader.py` | Not a serving trace |
-| WildChat / LMSYS / LongBench | `workloads/prompt_corpora.py` | length adapter only | corpus-specific | HF hub | numeric lengths only | prompt-corpus tests | Not serving traces; LMSYS gated |
-| SwissAI | external cluster scripts only | external | `total_buckets` proxy | cluster staging | cluster | none in-repo | Tokens mostly missing |
-| TraceLab | external cluster scripts only | external | agent session tokens | cluster staging | cluster | none in-repo | No new loader this task |
-| Synthetic | `workloads/synthetic.py` + `augmentation.py` | generators | Request schema | n/a | configs | workload tests | Not real traffic |
+| BurstGPT | `workloads/burstgpt.py` | `scripts/convert_burstgpt.py` | Timestamp + tokens; optional Session/Model/Log Type/Elapsed | external / cluster | processed on cluster | burstgpt + session fixtures | full CSV loaded via pandas; document memory |
+| Azure 2023/2024 | `workloads/azure.py` + `scripts/data/convert_azure_llm_trace.py` | same | TIMESTAMP, ContextTokens, GeneratedTokens | `data/raw/azure/` | `data/processed/azure/` | azure tiny fixture | no function-calling subset |
+| Bailian/Qwen | `workloads/bailian.py` | `scripts/data/convert_bailian_trace.py` | JSONL + hash_ids (16-token blocks) | Git LFS | processed on cluster | bailian fixture | two-hour samples |
+| Mooncake | `workloads/mooncake.py` | `scripts/data/convert_mooncake_trace.py` | timestamp(**ms**), lengths, hash_ids (512-token blocks) | FAST25-release | processed on cluster | mooncake fixture | DATA_LICENSE not separately specified; synthetic split separate |
+| ShareGPT | `workloads/sharegpt.py` | `scripts/convert_sharegpt.py` | conversations | manual JSON | processed | sharegpt tests | not a serving trace |
+| WildChat / LMSYS / LongBench | `workloads/prompt_corpora.py` | length adapter | corpus-specific | HF hub | numeric lengths only | prompt-corpus tests | not serving traces; LMSYS gated |
+| SwissAI | external only | external | total_buckets proxy | cluster | cluster | none in-repo | tokens mostly missing |
+| TraceLab | external only | external | agent session tokens | cluster | cluster | none in-repo | no new loader this task |
 
 ---
 
 ## Access matrix (2026-07-24)
 
-| Dataset | Type | Official source verified | Access | License | Sample inspected | Integration status |
+| Dataset | Type | Official source verified | Access | License summary | Sample inspected | Integration status |
 |---|---|---|---|---|---|---|
-| BurstGPT | true serving trace | yes (HPMLL/BurstGPT v2.0) | PUBLIC | CC-BY-4.0 | header/partial | extended loader |
-| Azure 2023 | true serving trace | yes | PUBLIC | CC-BY | 500-row samples | converter ready |
-| Azure 2024 | true serving trace | yes | PUBLIC | CC-BY | metadata | download+convert ready |
-| Bailian/Qwen | true serving trace | yes | PUBLIC | Apache-2.0 | ~89 rows | converter ready |
-| Mooncake | true serving trace (+ synthetic split) | yes | PUBLIC | Apache-2.0 | ~181 rows | converter ready |
-| TraceLab | true serving / agent | yes (prior docs + GitHub) | PUBLIC | CC-BY-4.0 traces | no (reuse cluster) | external staging |
-| SwissAI | true serving (limited tokens) | cluster only | UNAVAILABLE locally | unknown in-repo | no | external only |
-| LMSYS-Chat-1M | prompt/conversation | yes | GATED_ACCESS_NOT_GRANTED | LMSYS agreement (no redistribution) | no | adapter ready |
+| BurstGPT | true serving trace | yes (HPMLL/BurstGPT **v2.0**) | PUBLIC | CC-BY-4.0 | header/partial | extended loader |
+| Azure 2023 | true serving trace | yes | PUBLIC | CC-BY-4.0 | 500-row samples | converter ready |
+| Azure 2024 | true serving trace | yes (DynamoLLM / HPCA 2025) | PUBLIC | CC-BY-4.0 | metadata | download+convert ready |
+| Azure 2025 LMM | multimodal serving trace | yes (ModServe / SoCC 2025) | PUBLIC | CC-BY-4.0 | metadata | future candidate only |
+| Bailian/Qwen | true serving trace | yes | PUBLIC | Apache-2.0 (data+repo) | ~89 rows | converter ready |
+| Mooncake | true serving (+ synthetic split) | yes | PUBLIC | repo Apache-2.0; data NOT_EXPLICITLY_SPECIFIED | ~181 rows | converter ready (ms→s) |
+| TraceLab | agent/serving | yes | PUBLIC | CC-BY-4.0 traces | no (reuse cluster) | external staging |
+| SwissAI | serving (token-limited) | cluster only | UNAVAILABLE locally | unknown in-repo | no | external only |
+| LMSYS-Chat-1M | prompt/conversation | yes | GATED_ACCESS_NOT_GRANTED | gated; no redistribute | no | adapter ready |
 | WildChat-1M | prompt/conversation | yes | PUBLIC | ODC-BY | 20 streamed rows | length adapter |
-| LongBench | benchmark prompt | yes | PUBLIC | check GitHub | metadata (`data.zip` ~109MB) | length adapter |
+| LongBench | benchmark prompt | yes | PUBLIC | verify GitHub | metadata (`data.zip` ~109MB) | length adapter |
 | ShareGPT | prompt/conversation | yes | PUBLIC | verify CC-BY | fixture | existing loader |
 
 ---
@@ -96,56 +114,56 @@ Time scaling uses explicit `--time-scale`. Labels:
 ## Key audit findings
 
 ### BurstGPT
-- Official repo is **HPMLL/BurstGPT** (not the older HKUDS mirror references).
-- Release `v2.0` assets: ~52MB + ~145MB + ~232MB (raw with fails); cleaned
-  counterparts similar.
-- `BurstGPT_1/2` headers: Timestamp, Model, Request tokens, Response tokens,
-  Total tokens, Log Type.
-- `BurstGPT_3` adds Session ID and Elapsed time.
-- Existing processed 10k subsets are compatible with the core three-column
-  converter; full-trace work should prefer `without_fails_*` and chronological
-  day/night splits. Natural diurnal structure exists across multi-month spans.
+- Official repo: **HPMLL/BurstGPT**, release **v2.0**.
+- Assets (bytes): `BurstGPT_1.csv` 52283111; `_2` 144819209; `_3` 231682327;
+  cleaned counterparts similar (~50–217 MB).
+- Schema: Timestamp (seconds from local midnight day-0), Model, Request/Response/Total
+  tokens, Log Type; BurstGPT_3 adds Session ID and Elapsed time.
+- Prefer `without_fails_*` for full-trace work; chronological day/night splits.
 
-### Azure
-- Official 2023 subsets: **code** and **conversation** only.
-- Historical plan mentions of a function-calling subset are **not** supported by
-  the published AzurePublicDataset files (function* filenames 404).
-- 2024 one-week code (~692MB) and conv (~1.08GB) share the same schema.
-- Existing `convert_azure_llm_trace.py` remains valid; `workloads/azure.py`
-  adds canonical provenance metadata.
+### Azure 2023 / 2024
+- 2023 subsets: **code** and **conversation** only (collected 2023-11-11 per docs).
+- Schema: TIMESTAMP (ISO wall-clock), ContextTokens, GeneratedTokens.
+- **No public function-calling subset** (function* filenames 404).
+- 2024: one-week code (~692 MB) + conv (~1.08 GB), same schema; DynamoLLM (HPCA 2025).
+- Download script `scripts/data/download_azure_llm_2024.py` covers both splits;
+  converter is schema-compatible with 2023.
+
+### Azure 2025 multimodal (future)
+- `AzureLMMInferenceDataset2025.md`: Oct 15–22 2024 multimodal cluster sample.
+- Schema adds `NumImages`; ContextTokens includes text+image.
+- File: `data/AzureLMMInferenceTrace_multimodal.csv.gz`.
+- CC-BY. Recorded as Tier 2 future work; **no converter in this branch**.
 
 ### Bailian / Qwen
-- Verifiably public: `alibaba-edu/qwen-bailian-usagetraces-anon`.
-- Classification: **accessible** (corrects older “maybe request-only” docs).
-- Git LFS; raw JSONL sizes ~28–132MB per split.
-- Genuine relative serving timestamps, input/output lengths, sessions, request
-  types, and prefix-hash blocks.
+- `alibaba-edu/qwen-bailian-usagetraces-anon` (tip `5f7439c5…`).
+- DATA_LICENSE = Apache-2.0 (explicit README §License + LICENSE file).
+- Relative **seconds** timestamps; sessions; types; 16-token hash blocks.
+- Splits: To-C (A), To-B (B), Thinking, Coder (Git LFS, ~28–132 MB each).
 
 ### Mooncake
-- Independent production-derived traces with prefix hashes.
-- `synthetic_trace.jsonl` must be labeled synthetic, not natural replay.
+- FAST'25 traces under `FAST25-release/traces/`; arxiv single-file is historical.
+- Real: conversation (12031 req), toolagent (23608); Synthetic (3993, Poisson).
+- Official timestamp unit: **milliseconds** (converter derives seconds).
+- Prefix blocks: 512 tokens per hash id.
+- DATA_LICENSE = NOT_EXPLICITLY_SPECIFIED (separate from repo Apache-2.0).
+- `require_real_only=True` refuses synthetic paths/splits.
 
-### LMSYS vs WildChat
-- LMSYS: gated; this account cannot load data shards yet. License forbids
-  redistribution.
-- WildChat: public ODC-BY; preferable while LMSYS access is blocked. Both are
-  **conversation corpora**, not serving traces. Conversation timestamps ≠
-  system arrivals.
-
-### LongBench
-- Long-context **benchmark** corpus (`data.zip` ~109MB). Use with
-  trace-calibrated or synthetic arrivals only.
+### Prompt / benchmark corpora
+- WildChat, LongBench, ShareGPT, LMSYS are **not** serving-arrival traces.
+- LMSYS remains gated and excluded until access is granted.
 
 ---
 
 ## Integrity rules for real traces
 
-1. Retain original request order and inter-arrival timing unless
-   `--time-scale` is set and recorded.
+1. Retain original request order and inter-arrival timing unless `--time-scale`
+   is set and recorded.
 2. Chronological train/validation/test splits only.
 3. Never expose `actual_output_tokens` to policies.
 4. Do not silently synthesize SLOs/priorities without provenance.
 5. Do not commit downloaded conversation text or multi-GB shards.
+6. Never mix Mooncake real and synthetic rows without an explicit source-type.
 
 ---
 
@@ -159,8 +177,9 @@ Root: `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/`
 | Azure 2023 | <50MB | same | <200MB | n/a | no need |
 | Azure 2024 | ~1.8GB | same | ~2–4GB | n/a | yes (per split) |
 | Bailian all splits | ~312MB LFS | same | ~0.5–1GB | n/a | yes (per split) |
-| Mooncake traces | hundreds of MB (inspect) | same | similar | n/a | yes |
-| WildChat-1M | multi-GB parquet | same | lengths-only much smaller | optional tokenizer | yes streaming |
+| Mooncake FAST25 | inspect on download | same | similar | n/a | yes |
+| Azure 2025 LMM | gz multimodal | larger | future | n/a | later |
+| WildChat-1M | multi-GB parquet | same | lengths-only smaller | optional | streaming |
 | LongBench | ~109MB zip | larger | lengths JSON small | optional | low |
 
 ---
@@ -169,23 +188,27 @@ Root: `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/`
 
 **Tier 1 — primary real serving traces**
 
-1. BurstGPT full (`without_fails_1/2/3`)
-2. Azure 2023 code + conversation (already core)
-3. Bailian/Qwen anonymous traces
-4. Mooncake conversation + toolagent (not synthetic)
+1. BurstGPT full (`without_fails_1/2/3`, release v2.0)
+2. Azure 2023 code + conversation
+3. Azure 2024 one-week code + conversation
+4. Bailian/Qwen anonymous traces (Apache-2.0 data license documented)
+5. Mooncake real production-derived traces (`conversation_trace`, `toolagent_trace`)
 
-**Tier 2 — specialized real / application-derived**
+**Tier 2 — specialized evidence**
 
-1. Azure 2024 one-week (temporal OOD)
-2. TraceLab (cluster staging; agentic/prefix)
-3. SwissAI (cluster staging; KV proxy only — disclose limits)
+1. TraceLab (cluster staging; agentic/prefix)
+2. SwissAI (cluster staging; KV proxy only — disclose limits)
+3. Azure 2025 multimodal LMM trace (future; schema differs via NumImages)
+4. Mooncake `synthetic_trace.jsonl` (labeled synthetic; keep separate)
 
-**Tier 3 — prompt/benchmark corpora for trace-calibrated workloads**
+**Tier 3 — empirical content and length corpora**
 
 1. WildChat-1M length pools
 2. LongBench long-context stress
 3. ShareGPT (legacy compatibility)
-4. LMSYS-Chat-1M — after gated access + license review
+4. LMSYS-Chat-1M — only after gated access + license review
+
+Tier 3 does **not** supply genuine serving arrival processes.
 
 **Inaccessible / rejected for this phase**
 
@@ -204,18 +227,13 @@ mkdir -p /mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/{raw,processed,ma
 # HF auth: use existing login or HF_TOKEN env — never echo the token
 hf auth whoami
 
-# BurstGPT (example)
-cd /mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/raw/burstgpt
-# download release assets via gh or browser_download_url, then:
-sha256sum BurstGPT_without_fails_*.csv | tee ../../checksums/burstgpt/sha256.txt
-
-# Bailian via LFS media URLs or git lfs pull
-# Mooncake from FAST25-release/traces
+# BurstGPT v2.0 release assets → raw/burstgpt, then sha256sum
+# Bailian via git lfs / media.githubusercontent.com
+# Mooncake FAST25-release/traces (exclude synthetic unless explicitly labeled)
 # Azure 2024:
 python scripts/data/download_azure_llm_2024.py \
   --output-dir /mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/raw/azure
 
-# Preprocess examples (Slurm wrappers recommended)
 python scripts/convert_burstgpt.py \
   --input .../BurstGPT_without_fails_1.csv \
   --output .../processed/burstgpt/burstgpt_without_fails_1.jsonl \
@@ -230,8 +248,6 @@ python scripts/data/convert_mooncake_trace.py \
   --input .../conversation_trace.jsonl \
   --output .../processed/mooncake/conversation.jsonl \
   --source-split conversation_trace
-
-# Copy/update manifests from docs/current/real_dataset_expansion_status.json
 ```
 
 ---
@@ -241,11 +257,10 @@ python scripts/data/convert_mooncake_trace.py \
 - LMSYS gated access and redistribution ban.
 - LongBench license not declared on the HF card — confirm on GitHub before
   redistribution.
-- Mooncake timestamp numeric units need confirmation in manifests.
+- Mooncake DATA_LICENSE = NOT_EXPLICITLY_SPECIFIED (repo is Apache-2.0).
 - SwissAI token reconstruction remains proxy-only.
-- Output-length leakage risk if any future loader bypasses `ObservableRequest`.
-- Historical docs mentioning Bailian as unavailable are superseded by the
-  public Alibaba Edu repository verified here.
+- BurstGPT full CSV loads into memory via pandas — plan chunked preprocessing
+  on Wolverine for multi-million-row files.
 - Azure function-calling subset does not exist publicly.
 
-Do not push this branch until the user explicitly requests it.
+Do not push this branch until the final review checks in this task pass.

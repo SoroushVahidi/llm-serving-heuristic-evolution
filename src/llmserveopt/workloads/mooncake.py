@@ -5,13 +5,30 @@ Official source
 ---------------
 https://github.com/kvcache-ai/Mooncake (FAST25-release/traces)
 
+Prefer FAST'25 files under ``FAST25-release/traces/``:
+  conversation_trace.jsonl, toolagent_trace.jsonl, synthetic_trace.jsonl.
+
 Dataset type: true serving trace (production-derived, anonymized) for the
 conversation / tool-agent releases; the synthetic_trace.jsonl file is
-simulator-generated and must be labeled as such.
+constructed from public datasets with Poisson arrivals and must be labeled
+synthetic.
 
-License: Apache-2.0 (repository).
+Licensing
+---------
+CODE_REPO_LICENSE = Apache-2.0 (``LICENSE-APACHE`` in kvcache-ai/Mooncake).
+DATA_LICENSE = NOT_EXPLICITLY_SPECIFIED
+  Traces are released in-repo without a dedicated dataset-license notice
+  separate from the project Apache-2.0 file. Record attribution/citation
+  requirements from the FAST'25 / arXiv papers; do not assert a dedicated
+  CC or dataset SPDX id for the JSONL files alone.
 
-Observed fields: timestamp, input_length, output_length, hash_ids.
+Timestamp semantics (official FAST'25 README)
+---------------------------------------------
+``timestamp`` is relative request arrival time in **milliseconds**.
+This converter converts to seconds before writing ``arrival_time``.
+
+Observed fields: timestamp, input_length, output_length, hash_ids
+(prefix blocks of 512 tokens).
 """
 from __future__ import annotations
 
@@ -27,6 +44,7 @@ from .canonical_schema import (
     CanonicalIngestRecord,
     DatasetType,
     FieldProvenance,
+    TIMESTAMP_UNIT_SECONDS_RELATIVE,
     default_provenance,
     records_to_requests_and_metadata,
     replay_label_for_time_scale,
@@ -37,6 +55,7 @@ from .canonical_schema import (
 from ..core.types import Request
 
 _REQUIRED = ("timestamp", "input_length", "output_length")
+_SOURCE_TIMESTAMP_UNIT = "milliseconds_relative"
 
 
 @dataclass
@@ -51,6 +70,10 @@ class MooncakeConversionConfig:
     source_split: str = "conversation_trace"
     # synthetic_trace.jsonl is not a production serving trace.
     treat_as_synthetic: bool = False
+    # Official FAST'25 traces use millisecond timestamps.
+    source_timestamp_unit: str = _SOURCE_TIMESTAMP_UNIT
+    # When True, refuse paths/splits that look synthetic.
+    require_real_only: bool = False
 
 
 @dataclass
@@ -156,12 +179,16 @@ def convert_mooncake_rows(
         return [], report
 
     cleaned = sorted(cleaned, key=lambda r: float(r["timestamp"]))
-    timestamps = [float(r["timestamp"]) for r in cleaned]
-    # Mooncake timestamps in released traces are already relative-like integers/
-    # floats (ms or arbitrary units in some files). We treat them as ordered
-    # absolute-ish values and normalize to relative seconds by differencing the
-    # raw numeric scale as-is (unit disclosed in metadata).
-    arrival_times = scale_interarrivals(timestamps, config.time_scale)
+    raw_timestamps = [float(r["timestamp"]) for r in cleaned]
+    if config.source_timestamp_unit == _SOURCE_TIMESTAMP_UNIT:
+        timestamps_seconds = [t / 1000.0 for t in raw_timestamps]
+    elif config.source_timestamp_unit in {"seconds", "seconds_relative"}:
+        timestamps_seconds = list(raw_timestamps)
+    else:
+        raise ValueError(
+            f"Unsupported Mooncake source_timestamp_unit={config.source_timestamp_unit!r}"
+        )
+    arrival_times = scale_interarrivals(timestamps_seconds, config.time_scale)
     prompt_tokens = np.array([int(r["input_length"]) for r in cleaned], dtype=int)
     output_tokens = np.array([int(r["output_length"]) for r in cleaned], dtype=int)
 
@@ -176,12 +203,16 @@ def convert_mooncake_rows(
         extra: Dict[str, Any] = {
             "n_hash_ids": len(hash_ids) if isinstance(hash_ids, list) else None,
             "raw_timestamp": float(row["timestamp"]),
-            "timestamp_semantics": "source_numeric_normalized_to_relative",
+            "source_timestamp_unit": config.source_timestamp_unit,
+            "prefix_block_tokens": 512,
+            "data_license": "NOT_EXPLICITLY_SPECIFIED",
+            "code_repo_license": "Apache-2.0",
         }
         if isinstance(hash_ids, list) and hash_ids:
             prefix_id = f"mooncake_h0:{hash_ids[0]}:n{len(hash_ids)}"
 
         prov = default_provenance(
+            arrival_time=FieldProvenance.DERIVED.value,  # ms → relative seconds
             prefix_id=(
                 FieldProvenance.DERIVED.value
                 if prefix_id is not None
@@ -206,6 +237,7 @@ def convert_mooncake_rows(
                 source_split=config.source_split,
                 source_record_id=str(i),
                 field_provenance=prov,
+                timestamp_unit=TIMESTAMP_UNIT_SECONDS_RELATIVE,
                 time_scale=config.time_scale,
                 replay_label=replay_label,
                 dataset_type=dataset_type,
@@ -243,6 +275,12 @@ def convert_mooncake_to_requests(
     return requests, metadata, report
 
 
+def _looks_synthetic(path: Path, source_split: str, treat_as_synthetic: bool) -> bool:
+    name = path.name.lower()
+    split = (source_split or "").lower()
+    return treat_as_synthetic or ("synthetic" in name) or ("synthetic" in split)
+
+
 def load_mooncake_trace(
     path: Union[str, Path],
     config: Optional[MooncakeConversionConfig] = None,
@@ -250,7 +288,14 @@ def load_mooncake_trace(
     augmentation_config: Optional[AugmentationConfig] = None,
 ) -> Tuple[List[Request], List[Dict[str, Any]], MooncakeConversionReport]:
     cfg = config or MooncakeConversionConfig()
-    if "synthetic" in Path(path).name.lower():
+    path = Path(path)
+    is_synthetic = _looks_synthetic(path, cfg.source_split, cfg.treat_as_synthetic)
+    if cfg.require_real_only and is_synthetic:
+        raise ValueError(
+            f"Mooncake real-only load refused for synthetic source: path={path.name!r} "
+            f"source_split={cfg.source_split!r}"
+        )
+    if is_synthetic:
         cfg = MooncakeConversionConfig(
             max_requests=cfg.max_requests,
             time_scale=cfg.time_scale,
@@ -261,6 +306,8 @@ def load_mooncake_trace(
             source_dataset=cfg.source_dataset,
             source_split=cfg.source_split or "synthetic_trace",
             treat_as_synthetic=True,
+            source_timestamp_unit=cfg.source_timestamp_unit,
+            require_real_only=False,
         )
     rows = load_mooncake_jsonl(path, max_requests=cfg.max_requests)
     return convert_mooncake_to_requests(rows, cfg, seed, augmentation_config)

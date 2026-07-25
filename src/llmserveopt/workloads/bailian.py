@@ -4,15 +4,26 @@ Bailian / Qwen anonymized serving-trace converter.
 Official source
 ---------------
 https://github.com/alibaba-edu/qwen-bailian-usagetraces-anon
+Pinned tip inspected 2026-07-24: commit 5f7439c51ec248a0c585f7d90a41a6f57773b912
 
 Dataset type: true serving trace (production-derived, anonymized).
-License: Apache-2.0.
 
-Observed fields: timestamp (seconds, relative), input_length, output_length,
-chat_id / parent_chat_id (session), type, turn, hash_ids (prefix/KV blocks).
+Licensing
+---------
+CODE_REPO_LICENSE = Apache-2.0 (repository ``LICENSE`` file).
+DATA_LICENSE = Apache-2.0
+  This repository's primary content is the anonymized traces; README §License
+  explicitly states Apache License 2.0 for the dataset release.
+
+Observed fields: timestamp (seconds, relative to trace start), input_length,
+output_length, chat_id / parent_chat_id (session), type, turn, hash_ids
+(16-token KV/prefix blocks).
 
 Synthesized fields (disclosed): predicted_output_tokens, class_id, priority,
 slo_deadline.
+
+Memory note: ``load_bailian_jsonl`` streams line-by-line and may stop early via
+``max_requests``; it does not require loading multi-GB shards when limited.
 """
 from __future__ import annotations
 

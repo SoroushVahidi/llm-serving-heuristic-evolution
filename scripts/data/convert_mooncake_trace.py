@@ -46,6 +46,11 @@ def main() -> None:
         action="store_true",
         help="Label as synthetic/trace-calibrated (required for synthetic_trace.jsonl)",
     )
+    parser.add_argument(
+        "--require-real-only",
+        action="store_true",
+        help="Refuse synthetic paths/splits (conversation/toolagent only)",
+    )
     args = parser.parse_args()
 
     cfg = MooncakeConversionConfig(
@@ -53,6 +58,7 @@ def main() -> None:
         time_scale=args.time_scale,
         source_split=args.source_split,
         treat_as_synthetic=args.treat_as_synthetic,
+        require_real_only=args.require_real_only,
     )
     requests, metadata, report = load_mooncake_trace(
         args.input, config=cfg, seed=args.seed, augmentation_config=AugmentationConfig()

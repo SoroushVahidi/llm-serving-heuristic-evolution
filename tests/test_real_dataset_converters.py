@@ -1,4 +1,14 @@
-"""Tests for Bailian, Mooncake, Azure, BurstGPT session, and prompt-corpus adapters."""
+"""
+Tests for Bailian, Mooncake, Azure, BurstGPT session, and prompt-corpus adapters.
+
+Fixture provenance
+------------------
+All files under ``tests/fixtures/{azure_tiny,bailian_tiny,mooncake_tiny,
+burstgpt_session_tiny}.*`` are hand-authored synthetic rows for schema and
+converter tests. They are not copied from downloaded Azure, Bailian, Mooncake,
+or BurstGPT release records. They contain no prompt/response text and no
+production identifiers.
+"""
 from pathlib import Path
 
 import pytest
@@ -7,6 +17,7 @@ from llmserveopt.core.types import ObservableRequest
 from llmserveopt.workloads.azure import AzureConversionConfig, convert_azure_to_requests
 from llmserveopt.workloads.bailian import (
     BailianConversionConfig,
+    convert_bailian_rows,
     load_bailian_jsonl,
     load_bailian_trace,
 )
@@ -39,6 +50,7 @@ def _assert_no_leakage(requests):
     assert_no_actual_output_leakage()
     for r in requests:
         obs = ObservableRequest.from_request(r)
+        assert "actual_output_tokens" not in ObservableRequest.__dataclass_fields__
         assert not hasattr(obs, "actual_output_tokens")
 
 
@@ -56,8 +68,11 @@ def test_bailian_conversion_preserves_order_and_provenance():
     )
     assert metadata[0]["dataset_type"] == DatasetType.TRUE_SERVING_TRACE.value
     assert metadata[0]["field_provenance"]["slo_deadline"] == "synthesized"
-    assert metadata[0]["session_id"] == "1"
+    assert metadata[0]["field_provenance"]["arrival_time"] == "observed"
+    assert metadata[0]["session_id"] == "101"
+    assert metadata[0]["extra"]["request_type"] == "text"
     assert "prefix_id" in metadata[0]
+    assert [r.request_id for r in requests] == list(range(len(requests)))
     _assert_no_leakage(requests)
 
 
@@ -83,7 +98,21 @@ def test_bailian_rejects_lfs_pointer(tmp_path):
         load_bailian_jsonl(pointer)
 
 
-def test_mooncake_conversion_and_synthetic_flag():
+def test_bailian_malformed_and_duplicate_timestamps():
+    rows = [
+        {"timestamp": 1.0, "input_length": 10, "output_length": 5, "chat_id": 1},
+        {"timestamp": 1.0, "input_length": 11, "output_length": 6, "chat_id": 2},  # dup ts OK
+        {"timestamp": "bad", "input_length": 10, "output_length": 5},  # malformed
+        {"input_length": 10, "output_length": 5},  # missing timestamp
+        {"timestamp": 2.0, "input_length": -1, "output_length": 5},  # negative → drop
+    ]
+    records, report = convert_bailian_rows(rows, seed=0)
+    assert report.rows_dropped_invalid >= 2
+    assert report.rows_retained >= 2
+    assert records[0].arrival_time <= records[1].arrival_time
+
+
+def test_mooncake_ms_to_seconds_and_synthetic_flag():
     requests, metadata, report = load_mooncake_trace(
         FIXTURES / "mooncake_tiny.jsonl",
         config=MooncakeConversionConfig(source_split="conversation_trace"),
@@ -91,6 +120,13 @@ def test_mooncake_conversion_and_synthetic_flag():
     )
     assert report.rows_retained == 4
     assert metadata[0]["dataset_type"] == DatasetType.TRUE_SERVING_TRACE.value
+    assert metadata[0]["extra"]["source_timestamp_unit"] == "milliseconds_relative"
+    assert metadata[0]["timestamp_unit"] == "seconds_relative_to_first_request"
+    assert metadata[0]["field_provenance"]["arrival_time"] == "derived"
+    # 1000ms → 0.0s, 2500ms → 1.5s after relative normalization
+    assert abs(requests[1].arrival_time - 1.5) < 1e-9
+    assert metadata[0]["extra"]["prefix_block_tokens"] == 512
+    assert metadata[0]["prefix_id"].startswith("mooncake_h0:")
     _assert_no_leakage(requests)
 
     _, metadata_s, report_s = load_mooncake_trace(
@@ -104,6 +140,19 @@ def test_mooncake_conversion_and_synthetic_flag():
     assert metadata_s[0]["dataset_type"] == DatasetType.SYNTHETIC_OR_TRACE_CALIBRATED.value
 
 
+def test_mooncake_require_real_only_excludes_synthetic(tmp_path):
+    syn = tmp_path / "synthetic_trace.jsonl"
+    syn.write_text(
+        '{"timestamp": 0, "input_length": 8, "output_length": 4, "hash_ids": [1]}\n'
+    )
+    with pytest.raises(ValueError, match="real-only"):
+        load_mooncake_trace(
+            syn,
+            config=MooncakeConversionConfig(require_real_only=True),
+            seed=0,
+        )
+
+
 def test_azure_conversion_deterministic():
     path = FIXTURES / "azure_tiny.csv"
     cfg = AzureConversionConfig(source_split="code_2023", time_scale=1.0)
@@ -114,6 +163,11 @@ def test_azure_conversion_deterministic():
     assert [x.predicted_output_tokens for x in r1] == [x.predicted_output_tokens for x in r2]
     assert m1[0]["field_provenance"]["priority"] == "synthesized"
     assert m1[0]["replay_label"] == "natural_trace_replay"
+    assert m1[0]["timestamp_unit"] == "datetime_iso_parsed_to_unix_seconds"
+    # Azure 2023 and 2024 share the same three-column schema.
+    assert set(open(path).readline().strip().split(",")) == {
+        "TIMESTAMP", "ContextTokens", "GeneratedTokens"
+    }
     _assert_no_leakage(r1)
 
 
@@ -125,9 +179,11 @@ def test_burstgpt_session_model_optional_columns():
     assert report.rows_retained == 4
     assert report.schema_detected["session_id"] is not None
     assert report.schema_detected["model"] is not None
+    assert report.schema_detected["elapsed_time"] is not None
     assert metadata[0]["session_id"] == "sess-1"
     assert metadata[0]["model_id"] == "ChatGPT"
     assert metadata[2]["extra"]["log_type"] == "API log"
+    assert metadata[0]["field_provenance"]["model_id"] == "observed"
     _assert_no_leakage(requests)
 
 
@@ -140,12 +196,12 @@ def test_prompt_corpus_not_a_serving_trace():
     requests, metadata, report = convert_prompt_lengths_to_requests(
         lengths,
         config=PromptCorpusConversionConfig(
-            source_dataset="wildchat_fixture", arrival_rate=5.0
+            source_dataset="wildchat_fixture", arrival_rate=5.0, max_requests=2
         ),
         seed=0,
         dataset_type=DatasetType.PROMPT_CONVERSATION_CORPUS.value,
     )
-    assert report.rows_retained == 3
+    assert report.rows_retained == 2  # bounded sample limit
     assert metadata[0]["extra"]["not_a_serving_trace"] is True
     assert metadata[0]["field_provenance"]["arrival_time"] == "synthesized"
     assert report.replay_label == "trace-calibrated, synthetic_arrivals"
@@ -166,7 +222,6 @@ def test_extract_chat_and_longbench_lengths_without_returning_text():
     assert rec.prompt_tokens == 2
     assert rec.actual_output_tokens == 3
     assert rec.model_id == "gpt-x"
-    # Ensure we did not stash text on the record
     assert not hasattr(rec, "prompt_text")
 
     lb = extract_longbench_length_record(
@@ -194,8 +249,14 @@ def test_safe_hf_stream_sample_unavailable_path(monkeypatch):
 
 
 def test_path_independence_from_mmfs1():
-    # Converters must accept arbitrary local paths (portable fixtures).
     path = FIXTURES / "bailian_tiny.jsonl"
     assert "mmfs1" not in str(path)
     requests, _, _ = load_bailian_trace(path, seed=0)
     assert len(requests) > 0
+
+
+def test_public_converters_need_no_credentials():
+    # Public fixtures convert without HF tokens or env credentials.
+    load_bailian_trace(FIXTURES / "bailian_tiny.jsonl", seed=0)
+    load_mooncake_trace(FIXTURES / "mooncake_tiny.jsonl", seed=0)
+    convert_azure_to_requests(FIXTURES / "azure_tiny.csv", seed=0)

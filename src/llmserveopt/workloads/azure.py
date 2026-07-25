@@ -1,11 +1,16 @@
 """
 Azure LLM Inference trace helpers with canonical provenance.
 
-Wraps the CSV schema used by Azure 2023 (Splitwise) and Azure 2024 (DynamoLLM):
+Wraps the CSV schema used by Azure 2023 (Splitwise / ISCA 2024) and Azure 2024
+(DynamoLLM / HPCA 2025). Both use the identical three-column schema:
 TIMESTAMP, ContextTokens, GeneratedTokens.
 
 Official subsets: code and conversation only. No public function-calling
 subset exists in AzurePublicDataset releases audited on 2026-07-24.
+
+Licensing: CC-BY-4.0 (AzurePublicDataset LICENSE + dataset pages).
+Azure 2025 multimodal (NumImages) is a future specialized candidate and is
+not handled by this converter.
 """
 from __future__ import annotations
 
