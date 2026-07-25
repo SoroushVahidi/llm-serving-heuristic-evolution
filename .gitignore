@@ -98,3 +98,23 @@ Thumbs.db
 
 # Claude Code project memory (local only)
 .claude/
+
+# --- Part 2 pause hygiene (2026-07-25) ---
+# Slurm job streams (also covered by *.out/*.err above)
+rwc_*.out
+rwc_*.err
+*_repaired_pilot_*.out
+*_repaired_pilot_*.err
+
+# Local dataset / window / pilot run roots accidentally created inside the repo
+llmserveopt-data/
+**/real_window_construction_*/windows/
+**/pilot_repaired_*/results/
+**/pilot_repaired_*/per_window/
+**/*.partial
+**/*.tmp.jsonl
+
+# Local env
+.env
+.env.*
+!.env.example
