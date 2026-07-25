@@ -1,0 +1,6 @@
+{"timestamp": 0.0, "input_length": 128, "output_length": 32, "chat_id": 1, "parent_chat_id": -1, "type": "text", "turn": 1, "hash_ids": [10, 11, 12]}
+{"timestamp": 1.5, "input_length": 256, "output_length": 64, "chat_id": 1, "parent_chat_id": 1, "type": "text", "turn": 2, "hash_ids": [10, 11, 12, 13]}
+{"timestamp": 3.0, "input_length": 512, "output_length": 16, "chat_id": 2, "parent_chat_id": -1, "type": "search", "turn": 1, "hash_ids": [20, 21]}
+{"timestamp": 4.0, "input_length": 0, "output_length": 10, "chat_id": 3, "parent_chat_id": -1, "type": "text", "turn": 1, "hash_ids": [30]}
+{"timestamp": 5.0, "input_length": 64, "output_length": 0, "chat_id": 4, "parent_chat_id": -1, "type": "text", "turn": 1, "hash_ids": [40]}
+{"timestamp": 6.2, "input_length": 1024, "output_length": 128, "chat_id": 5, "parent_chat_id": -1, "type": "file", "turn": 1, "hash_ids": [50, 51, 52, 53]}
