@@ -59,6 +59,8 @@ class AzureConversionReport:
     context_tokens_mean: float
     generated_tokens_mean: float
     source_split: str
+    file_order_inversions: int = 0
+    sorted_by_wall_clock_timestamp: bool = False
 
 
 def parse_azure_timestamp(ts: str) -> float:
@@ -137,17 +139,42 @@ def convert_azure_rows(
             source_split=config.source_split,
         )
 
-    raw_ts = np.array([parse_azure_timestamp(r["ts_str"]) for r in raw_rows], dtype=float)
+    # Annotate original file index, then chronologically sort wall-clock times.
+    # Azure 2024 conversation exports can be out of wall-clock order in the CSV;
+    # sorting is disclosed and preserves true serving chronology.
+    annotated: List[Dict[str, Any]] = []
+    for file_idx, row in enumerate(raw_rows):
+        annotated.append(
+            {
+                **row,
+                "file_index": file_idx,
+                "ts_unix": parse_azure_timestamp(row["ts_str"]),
+            }
+        )
+    inversions = 0
+    for i in range(1, len(annotated)):
+        if annotated[i]["ts_unix"] < annotated[i - 1]["ts_unix"]:
+            inversions += 1
+    sorted_by_ts = inversions > 0
+    if sorted_by_ts:
+        annotated.sort(key=lambda r: (r["ts_unix"], r["file_index"]))
+
+    raw_ts = np.array([r["ts_unix"] for r in annotated], dtype=float)
     arrival_times = np.asarray(scale_interarrivals(raw_ts, config.time_scale), dtype=float)
-    context_tokens = np.array([r["context"] for r in raw_rows], dtype=int)
-    generated_tokens = np.array([r["generated"] for r in raw_rows], dtype=int)
+    if np.any(arrival_times < 0):
+        raise ValueError(
+            "Azure conversion produced negative relative arrival times after "
+            f"chronological sorting (min={float(np.min(arrival_times))})"
+        )
+    context_tokens = np.array([r["context"] for r in annotated], dtype=int)
+    generated_tokens = np.array([r["generated"] for r in annotated], dtype=int)
 
     rng = np.random.default_rng(seed)
     augmented = augment_trace(generated_tokens, arrival_times, augmentation_config, rng)
     replay_label = replay_label_for_time_scale(config.time_scale)
 
     records: List[CanonicalIngestRecord] = []
-    for i, row in enumerate(raw_rows):
+    for i, row in enumerate(annotated):
         prov = default_provenance(
             session_id=FieldProvenance.UNAVAILABLE.value,
             model_id=FieldProvenance.UNAVAILABLE.value,
@@ -166,13 +193,17 @@ def convert_azure_rows(
                 class_id=str(augmented["class_ids"][i]),
                 source_dataset=config.source_dataset,
                 source_split=config.source_split,
-                source_record_id=str(i),
+                source_record_id=str(row["file_index"]),
                 field_provenance=prov,
                 timestamp_unit=TIMESTAMP_UNIT_DATETIME_ISO,
                 time_scale=config.time_scale,
                 replay_label=replay_label,
                 dataset_type=DatasetType.TRUE_SERVING_TRACE.value,
-                extra={"original_timestamp": row["ts_str"]},
+                extra={
+                    "original_timestamp": row["ts_str"],
+                    "source_file_index": int(row["file_index"]),
+                    "sorted_by_wall_clock_timestamp": sorted_by_ts,
+                },
             )
         )
 
@@ -189,6 +220,8 @@ def convert_azure_rows(
         context_tokens_mean=float(np.mean(context_tokens)),
         generated_tokens_mean=float(np.mean(generated_tokens)),
         source_split=config.source_split,
+        file_order_inversions=inversions,
+        sorted_by_wall_clock_timestamp=sorted_by_ts,
     )
     return records, report
 

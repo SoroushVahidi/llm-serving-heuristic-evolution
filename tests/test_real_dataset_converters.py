@@ -171,6 +171,25 @@ def test_azure_conversion_deterministic():
     _assert_no_leakage(r1)
 
 
+def test_azure_unsorted_file_is_sorted_with_disclosed_provenance():
+    """Wall-clock chronology wins over CSV file order when inversions exist."""
+    path = FIXTURES / "azure_tiny_unsorted.csv"
+    cfg = AzureConversionConfig(source_split="conv_unsorted", time_scale=1.0)
+    requests, metadata, report = convert_azure_to_requests(path, config=cfg, seed=0)
+    assert report.file_order_inversions >= 1
+    assert report.sorted_by_wall_clock_timestamp is True
+    assert all(r.arrival_time >= 0 for r in requests)
+    assert all(
+        requests[i].arrival_time <= requests[i + 1].arrival_time
+        for i in range(len(requests) - 1)
+    )
+    # After sort: 512@0, 256@1.5, 1024@3, 2048@6
+    assert [r.prompt_tokens for r in requests] == [512, 256, 1024, 2048]
+    assert [m["source_record_id"] for m in metadata] == ["1", "2", "0", "3"]
+    assert metadata[0]["extra"]["sorted_by_wall_clock_timestamp"] is True
+    _assert_no_leakage(requests)
+
+
 def test_burstgpt_session_model_optional_columns():
     df = load_burstgpt_raw(FIXTURES / "burstgpt_session_tiny.csv")
     requests, metadata, report = convert_burstgpt_to_requests_with_metadata(

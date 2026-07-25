@@ -87,16 +87,35 @@ def load_azure_csv(
     if max_requests is not None:
         raw_rows = raw_rows[:max_requests]
 
-    # Parse and scale timestamps
-    t0 = _parse_azure_timestamp(raw_rows[0]["ts_str"])
-    raw_ts = np.array([_parse_azure_timestamp(r["ts_str"]) for r in raw_rows])
-    raw_ts -= t0  # relative seconds
+    # Parse timestamps; if file order is not chronological, sort by wall-clock
+    # (disclosed) so relative arrivals are nonnegative and monotonic.
+    for i, r in enumerate(raw_rows):
+        r["file_index"] = i
+        r["ts_unix"] = _parse_azure_timestamp(r["ts_str"])
+    inversions = sum(
+        1
+        for i in range(1, len(raw_rows))
+        if raw_rows[i]["ts_unix"] < raw_rows[i - 1]["ts_unix"]
+    )
+    sorted_by_ts = inversions > 0
+    if sorted_by_ts:
+        raw_rows.sort(key=lambda r: (r["ts_unix"], r["file_index"]))
+
+    raw_ts = np.array([r["ts_unix"] for r in raw_rows], dtype=float)
+    t0 = raw_ts[0]
+    raw_ts = raw_ts - t0
 
     if time_scale != 1.0 and len(raw_ts) > 1:
         interarrivals = np.diff(raw_ts)
         arrival_times = np.concatenate([[0.0], np.cumsum(interarrivals * time_scale)])
     else:
         arrival_times = raw_ts
+
+    if np.any(arrival_times < 0):
+        raise ValueError(
+            "Azure conversion produced negative relative arrival times "
+            f"(min={float(np.min(arrival_times))})"
+        )
 
     context_tokens = np.array([r["context"] for r in raw_rows], dtype=int)
     generated_tokens = np.array([r["generated"] for r in raw_rows], dtype=int)
@@ -122,6 +141,8 @@ def load_azure_csv(
         "generated_tokens_p50": float(np.median(generated_tokens)),
         "generated_tokens_p95": float(np.percentile(generated_tokens, 95)),
         "generated_tokens_max": int(np.max(generated_tokens)),
+        "file_order_inversions": inversions,
+        "sorted_by_wall_clock_timestamp": sorted_by_ts,
     }
     # Return raw data as placeholder requests (augment after)
     return arrival_times, context_tokens, generated_tokens, report
