@@ -22,6 +22,25 @@ Hugging Face authentication is available for user `SoroushVahidi`. LMSYS-Chat-1M
 data access is still gated (terms not granted for this account). All other Tier
 1 candidates audited below are publicly reachable.
 
+### Wolverine Tier 1 staging (2026-07-25)
+
+Durable root: `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/`
+
+| Dataset | Download | Convert/validate | Characterization | Notes |
+|---|---|---|---|---|
+| BurstGPT v2.0 `without_fails_1/2/3` | done | done (chunked + metadata) | done | Chunked CSV path + model/session metadata |
+| Azure 2023 code+conv | done | done | done | Schema OK |
+| Azure 2024 code+conv | done | done | done | Conv had 164 file-order inversions; sorted with disclosure |
+| Bailian/Qwen families | done | done | done | Apache-2.0 data license; prefix/session characterized |
+| Mooncake real only | done | done; synthetic refused | done | Synthetic quarantined; DATA_LICENSE not explicit |
+
+Machine-readable staging artifacts (outside git): `global_manifests/`
+(`global_checksums.json`, `cross_dataset_coverage.json`,
+`window_construction_specifications.json`, `tier1_slurm_jobs.json`).
+
+`DATASET_STAGING_STATUS = READY_FOR_WINDOW_CONSTRUCTION` (window specs only;
+windows not materialized in this task).
+
 ---
 
 ## Taxonomy (do not collapse)
@@ -259,8 +278,11 @@ python scripts/data/convert_mooncake_trace.py \
   redistribution.
 - Mooncake DATA_LICENSE = NOT_EXPLICITLY_SPECIFIED (repo is Apache-2.0).
 - SwissAI token reconstruction remains proxy-only.
-- BurstGPT full CSV loads into memory via pandas — plan chunked preprocessing
-  on Wolverine for multi-million-row files.
+- BurstGPT full CSV loads into memory via pandas — **mitigated**: chunked
+  streaming conversion (`--chunked`, default) with tests in
+  `tests/test_burstgpt_streaming.py`.
+- Azure 2024 conversation CSV can be out of wall-clock file order; converter
+  now sorts by TIMESTAMP with disclosed provenance when inversions are detected.
 - Azure function-calling subset does not exist publicly.
 
 Do not push this branch until the final review checks in this task pass.
