@@ -23,18 +23,22 @@ safety checks and robust fallback.
 
 Start from the synchronization-aware audit:
 
+- [Start Here: Contextual Composition](START_HERE_CONTEXTUAL_COMPOSITION.md)
+- [Contextual Compositional Heuristics Roadmap](contextual_composition_roadmap.md)
+- [Contextual Composition Decision Log](contextual_composition_decisions.md)
 - [Local Branch Compositional Path Audit](audits/local_branch_compositional_path_audit_20260731.md)
 
-Current high-level status: repository synchronization and branch establishment
-are in progress. Selector, DSL, generation, and native composition prototypes
-exist, but the verified contextual-composition method has not been implemented.
+Current high-level status: Query 2 establishes the persistent roadmap,
+navigation path, decision log, GitHub issue structure, and consistency checker.
+Selector, DSL, generation, and native composition prototypes exist, but the
+verified contextual-composition method has not been implemented.
 
 ## Six-Query Sequence
 
 1. Query 1: synchronize, preserve the audit, establish this branch, validate,
-   commit, and push.
+   commit, and push. COMPLETE.
 2. Query 2: establish the persistent roadmap, repository navigation path,
-   milestones, and decision gates.
+   milestones, and decision gates. CURRENT.
 3. Query 3: organize and polish repository documentation and artifact references.
 4. Query 4: define implementation invariants and interfaces for the
    contextual-compositional path.

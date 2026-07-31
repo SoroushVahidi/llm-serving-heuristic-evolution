@@ -5,6 +5,16 @@ guidance for the LLM Serving Heuristic Evolution project.
 
 ## 0. START HERE
 
+For the contextual-compositional heuristic research branch, start with
+**[START_HERE_CONTEXTUAL_COMPOSITION.md](START_HERE_CONTEXTUAL_COMPOSITION.md)**.
+The authoritative branch-scoped roadmap is
+**[contextual_composition_roadmap.md](contextual_composition_roadmap.md)** and
+the decision log is
+**[contextual_composition_decisions.md](contextual_composition_decisions.md)**.
+These files are canonical for the
+`contextual-compositional-heuristics-20260731` branch only; they do not rewrite
+the historical phase record below.
+
 For the canonical, current-state documentation set, go to
 **[current/README.md](current/README.md)**, which indexes:
 

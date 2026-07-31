@@ -3,6 +3,15 @@
 **Learning to select LLM-inference-serving scheduling policies, evaluated against
 faithful external baselines in a GPU-calibrated discrete-event simulator.**
 
+> ## Contextual composition branch
+> For the new contextual-compositional heuristic research path, use branch
+> **`contextual-compositional-heuristics-20260731`** and start with
+> **[docs/START_HERE_CONTEXTUAL_COMPOSITION.md](docs/START_HERE_CONTEXTUAL_COMPOSITION.md)**.
+> Its authoritative technical roadmap is
+> **[docs/contextual_composition_roadmap.md](docs/contextual_composition_roadmap.md)**.
+> This scoped roadmap does not replace the historical project-status documents
+> for unrelated branches or earlier phases.
+
 > ## ⏸ Project paused as of 2026-07-23 — resume here first
 > **[docs/current/RESUME_HERE.md](docs/current/RESUME_HERE.md)** is the
 > single entry point for resuming this project after the pause. It

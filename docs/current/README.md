@@ -2,6 +2,14 @@
 
 > **2026-07-25 intentional pause.** Start at [`RESUME_HERE.md`](RESUME_HERE.md) and [`pause_2026_07_25/`](pause_2026_07_25/).
 
+> **Contextual-composition branch note (2026-07-31).** For the scoped
+> contextual-compositional heuristic path on
+> `contextual-compositional-heuristics-20260731`, start at
+> [`../START_HERE_CONTEXTUAL_COMPOSITION.md`](../START_HERE_CONTEXTUAL_COMPOSITION.md).
+> That branch-specific roadmap supersedes this directory only for the new
+> contextual-composition sequence; the documents below remain historical and
+> project-wide provenance.
+
 Start Here
 
 This directory is the current source-of-truth navigation layer for the
