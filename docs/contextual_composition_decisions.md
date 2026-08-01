@@ -41,8 +41,9 @@ selector performance but cannot prove weighted-mixture behavior because mixed
 actions can interact. The audit found native composition prototypes but no
 decisive local true-execution opportunity measurement.
 
-Consequences: CC1 is the only `NEXT` phase. CC2-CC8 remain blocked or planned
-until the CC1 decision gate passes or is explicitly revised.
+Consequences: At roadmap establishment time, CC1 was the only `NEXT` phase and
+CC2-CC8 remained blocked or planned until the CC1 decision gate passed or was
+explicitly revised. CCD-010 and CCD-011 record the current post-CC1b state.
 
 Related files or evidence:
 
@@ -248,3 +249,31 @@ Related files or evidence:
 - `configs/cc1b_composition_discriminative.yaml`
 - `results/cc1b_composition_discriminative/query5_cc1b_full_20260731/manifest.json`
 - GitHub issue #1
+
+## CCD-011: Pause After CC1b Before CC2 Implementation
+
+Date: 2026-07-31
+
+Status: accepted
+
+Decision: Intentionally pause the contextual-composition branch after the CC1b
+`PROCEED` decision and before implementing CC2. Keep CC2 as the single `NEXT`
+phase, but make the next repository action a final resume-readiness pass rather
+than primitive-interface implementation.
+
+Rationale: CC1b established enough evidence to enter CC2, but the branch needs
+a stable checkpoint so future work can resume without re-auditing Query 1-5
+documents, local-only result paths, issue state, and validation commands.
+
+Consequences: Query 7 should perform final repository polish, consistency
+cleanup, and resume-readiness verification without implementing CC2. After the
+pause is lifted, the exact CC2 task is to define the canonical primitive
+interface for ranking, admission, placement, batching, and resource guards, then
+add representative-policy equivalence tests. Do not extend the DSL yet.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_pause_checkpoint_20260731.md`
+- `docs/RESUME_CONTEXTUAL_COMPOSITION.md`
+- `docs/audits/contextual_composition_query6_pause_report_20260731.md`
+- GitHub issue #2

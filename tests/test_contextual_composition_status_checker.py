@@ -43,9 +43,61 @@ def test_roadmap_links_cc1b_report_and_has_cc2_next():
     assert "experiments/cc1_composition_opportunity_spec.md" in text
     assert "audits/contextual_composition_query4_cc1_results_20260731.md" in text
     assert "audits/contextual_composition_query5_discriminativeness_review_20260731.md" in text
+    assert "audits/contextual_composition_pause_checkpoint_20260731.md" in text
+    assert "RESUME_CONTEXTUAL_COMPOSITION.md" in text
     assert "CC1b `PROCEED`" in text
     rows = [line for line in text.splitlines() if line.startswith("| CC")]
     phases = {row.strip("|").split("|")[0].strip(): row.strip("|").split("|")[2].strip() for row in rows}
     assert phases["CC1"] == "COMPLETE"
     assert phases["CC2"] == "NEXT"
     assert list(phases.values()).count("NEXT") == 1
+
+
+def test_pause_checkpoint_records_cc1b_evidence_and_cc2_scope():
+    text = (ROOT / "docs/audits/contextual_composition_pause_checkpoint_20260731.md").read_text()
+    required = [
+        "Current phase: `CC2`",
+        "Status: `NEXT`",
+        "best fixed ANWG: `0.198977`",
+        "oracle fixed ANWG: `0.203773`",
+        "best global mixture ANWG: `0.198977`",
+        "oracle mixture ANWG: `0.220547`",
+        "non-near-tie opportunity gap: `0.0167735`",
+        "completion impact: `0.0`",
+        "verdict: `PROCEED`",
+        "Do not extend the DSL yet.",
+    ]
+    for needle in required:
+        assert needle in text
+
+
+def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
+    text = (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
+    assert "Authoritative branch: `contextual-compositional-heuristics-20260731`" in text
+    assert "Expected checkpoint SHA:" in text
+    assert "Current phase: `CC2 - Canonical primitive interface`" in text
+    assert (
+        "Define the canonical primitive interface for ranking, admission, placement, "
+        "batching, and resource guards, then add representative-policy equivalence tests."
+    ) in text
+    assert "Do not extend the DSL yet." in text
+
+
+def test_canonical_docs_do_not_make_cc1_current():
+    canonical_paths = [
+        ROOT / "docs/contextual_composition_roadmap.md",
+        ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
+        ROOT / "docs/CONTEXTUAL_COMPOSITION_BRANCH.md",
+        ROOT / "docs/contextual_composition_decisions.md",
+        ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
+    ]
+    forbidden = [
+        "Current phase: `CC1",
+        "current_phase: CC1",
+        "CC1 is the only `NEXT` phase",
+        "CC1 remains the single `NEXT` phase",
+    ]
+    for path in canonical_paths:
+        text = path.read_text()
+        for needle in forbidden:
+            assert needle not in text, f"{path.relative_to(ROOT)} contains {needle!r}"

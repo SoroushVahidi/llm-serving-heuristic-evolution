@@ -11,6 +11,10 @@ The authoritative branch-scoped roadmap is
 **[contextual_composition_roadmap.md](contextual_composition_roadmap.md)** and
 the decision log is
 **[contextual_composition_decisions.md](contextual_composition_decisions.md)**.
+The branch is intentionally paused after CC1b and before CC2 implementation;
+resume from **[RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md)**
+and the pause checkpoint
+**[audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)**.
 These files are canonical for the
 `contextual-compositional-heuristics-20260731` branch only; they do not rewrite
 the historical phase record below.

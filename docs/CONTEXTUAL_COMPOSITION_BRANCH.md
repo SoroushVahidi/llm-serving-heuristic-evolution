@@ -27,11 +27,14 @@ Start from the synchronization-aware audit:
 - [Contextual Compositional Heuristics Roadmap](contextual_composition_roadmap.md)
 - [Contextual Composition Decision Log](contextual_composition_decisions.md)
 - [Local Branch Compositional Path Audit](audits/local_branch_compositional_path_audit_20260731.md)
+- [Pause Checkpoint](audits/contextual_composition_pause_checkpoint_20260731.md)
+- [Resume Guide](RESUME_CONTEXTUAL_COMPOSITION.md)
 
-Current high-level status: Query 5 completed the CC1b discriminativeness
+Current high-level status: Query 6 intentionally paused the branch after CC1b
+and before CC2 implementation. Query 5 completed the CC1b discriminativeness
 review. The original CC1 suite was nondiscriminative, but the strengthened
 CC1b suite found a true simulator-executed weighted Borda composition
-opportunity and cleared the `PROCEED` gate. CC2 is now the next phase.
+opportunity and cleared the `PROCEED` gate. CC2 is the single `NEXT` phase.
 The approved CC1 experiment remains documented in
 [CC1 composition opportunity specification](experiments/cc1_composition_opportunity_spec.md).
 
@@ -47,17 +50,23 @@ The approved CC1 experiment remains documented in
    COMPLETE.
 5. Query 5: diagnose CC1 discriminativeness and run the bounded CC1b follow-up.
    COMPLETE.
-6. Query 6: begin CC2 by defining the canonical primitive interface. NEXT.
+6. Query 6: create the pause checkpoint and operational resume guide. COMPLETE.
+7. Query 7: perform final polish and resume-readiness verification without
+   implementing CC2. NEXT.
 
 ## Guardrail
 
-Do not implement CC3 DSL extensions, selector redesigns, real-vLLM jobs, hosted
-API experiments, or large ungated sweeps before the roadmap allows them. CC2 is
-limited to the canonical primitive interface and representative-policy
-equivalence evidence.
+Do not implement CC2 primitives during the pause. Do not implement CC3 DSL
+extensions, selector redesigns, real-vLLM jobs, hosted API experiments, or large
+ungated sweeps before the roadmap allows them. CC2 is limited to the canonical
+primitive interface and representative-policy equivalence evidence once work
+resumes.
 
 ## Next Action
 
-Query 6 should define the CC2 canonical primitive interface and equivalence
-tests needed to reproduce representative policies from reusable components. Do
-not begin CC3 DSL work in Query 6.
+Query 7 should perform final repository polish, consistency cleanup, and a last
+resume-readiness verification without implementing CC2.
+
+After the pause is lifted, define the canonical primitive interface for
+ranking, admission, placement, batching, and resource guards, then add
+representative-policy equivalence tests. Do not extend the DSL yet.

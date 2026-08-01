@@ -9,6 +9,10 @@ faithful external baselines in a GPU-calibrated discrete-event simulator.**
 > **[docs/START_HERE_CONTEXTUAL_COMPOSITION.md](docs/START_HERE_CONTEXTUAL_COMPOSITION.md)**.
 > Its authoritative technical roadmap is
 > **[docs/contextual_composition_roadmap.md](docs/contextual_composition_roadmap.md)**.
+> The branch is intentionally paused after CC1b and before CC2 implementation;
+> resume from **[docs/RESUME_CONTEXTUAL_COMPOSITION.md](docs/RESUME_CONTEXTUAL_COMPOSITION.md)**
+> and the pause checkpoint
+> **[docs/audits/contextual_composition_pause_checkpoint_20260731.md](docs/audits/contextual_composition_pause_checkpoint_20260731.md)**.
 > This scoped roadmap does not replace the historical project-status documents
 > for unrelated branches or earlier phases.
 
