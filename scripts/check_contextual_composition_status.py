@@ -333,7 +333,7 @@ def check_resume_readiness_extra() -> None:
             "Checkpoint prepared from HEAD: `db4dcaa40abe1312ea71c40c440445172cd1c509`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
-            "Issue #2",
+            "GitHub issue #2",
         ],
     )
     check_required_strings(
