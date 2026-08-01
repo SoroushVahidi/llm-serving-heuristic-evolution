@@ -17,7 +17,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--full-run", action="store_true", help="Required when config mode is full.")
+    parser.add_argument("--full-run", action="store_true", help="Required when config mode is full or cc1b.")
     parser.add_argument("--max-runs", type=int, default=None)
     parser.add_argument("--allow-dirty", action="store_true")
     parser.add_argument("--timestamp", default=None)
@@ -49,4 +49,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -10,8 +10,10 @@ import pytest
 from llmserveopt.core.metrics import RunMetrics
 from llmserveopt.experiments.cc1_composition_opportunity import (
     CC1Error,
+    assert_cc1b_discriminative,
     build_workload_windows,
     determine_verdict,
+    fixed_policy_spread_rows,
     load_config,
     normalize_weights,
     planned_runs,
@@ -264,6 +266,72 @@ def test_missing_trace_behavior_skips_when_optional(tmp_path):
     assert skipped[0]["reason"] == "missing local trace data"
 
 
+def test_custom_slo_classes_and_request_transform_make_tight_workload(tmp_path):
+    config = tiny_config(tmp_path)
+    workload = config["workloads"][0]
+    workload["slo_classes"] = [
+        {"class_id": "tight", "slo_slack": 0.05, "priority": 3.0, "weight": 1.0},
+    ]
+    workload["request_transform"] = {"arrival_time_scale": 0.5, "slo_slack_scale": 0.5}
+    windows, _skipped = build_workload_windows(config)
+    requests = windows[0].requests
+    assert requests
+    assert all(req.class_id == "tight" for req in requests)
+    assert all((req.slo_deadline - req.arrival_time) == pytest.approx(0.025) for req in requests)
+
+
+def test_cc1b_fixed_spread_gate_passes_and_fails():
+    config = tiny_config(Path("/tmp"))
+    config["mode"] = "cc1b"
+    config["discriminativeness"] = {
+        "min_fixed_policy_spread": 0.03,
+        "min_fixed_top2_margin": 0.005,
+        "min_evaluation_windows_with_spread": 1,
+    }
+    informative = fixed_policy_spread_rows(
+        [
+            row("w1", "ID_TEST", "r", "fixed__a", "fixed_policy", 0.5, 1.0),
+            row("w1", "ID_TEST", "r", "fixed__b", "fixed_policy", 0.4, 1.0),
+            row("w1", "ID_TEST", "r", "fixed__c", "fixed_policy", 0.2, 1.0),
+        ],
+        config,
+    )
+    assert informative[0]["fixed_policy_spread"] == pytest.approx(0.3)
+    assert_cc1b_discriminative(informative, config)
+
+    nondiscriminative = fixed_policy_spread_rows(
+        [
+            row("w1", "ID_TEST", "r", "fixed__a", "fixed_policy", 0.5, 1.0),
+            row("w1", "ID_TEST", "r", "fixed__b", "fixed_policy", 0.499, 1.0),
+            row("w1", "ID_TEST", "r", "fixed__c", "fixed_policy", 0.498, 1.0),
+        ],
+        config,
+    )
+    with pytest.raises(CC1Error, match="fixed-policy spread gate failed"):
+        assert_cc1b_discriminative(nondiscriminative, config)
+
+
+def test_cc1b_cli_dry_run():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_cc1_composition_opportunity.py",
+            "--config",
+            "configs/cc1b_composition_discriminative.yaml",
+            "--dry-run",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["manifest"]["dry_run"] is True
+    assert payload["manifest"]["planned_run_count"] == 440
+    assert payload["manifest"]["mixture_count"] == 35
+
+
 def test_reproducibility_with_fixed_seed_and_timestamp(tmp_path):
     c1 = tiny_config(tmp_path / "a")
     c2 = tiny_config(tmp_path / "b")
@@ -286,4 +354,3 @@ def row(window_id: str, split: str, regime: str, treatment_id: str, kind: str, a
         "metric_weighted_goodput": anwg,
         "metric_num_total": 4,
     }
-

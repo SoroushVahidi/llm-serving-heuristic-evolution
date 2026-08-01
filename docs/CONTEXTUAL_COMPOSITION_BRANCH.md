@@ -28,11 +28,12 @@ Start from the synchronization-aware audit:
 - [Contextual Composition Decision Log](contextual_composition_decisions.md)
 - [Local Branch Compositional Path Audit](audits/local_branch_compositional_path_audit_20260731.md)
 
-Current high-level status: Query 3 makes CC1 implementation-ready by adding the
-approved [CC1 composition opportunity specification](experiments/cc1_composition_opportunity_spec.md)
-and auditing existing composition prototypes. Selector, DSL, generation, and
-native composition prototypes exist, but the verified contextual-composition
-method and CC1 experiment have not been implemented.
+Current high-level status: Query 5 completed the CC1b discriminativeness
+review. The original CC1 suite was nondiscriminative, but the strengthened
+CC1b suite found a true simulator-executed weighted Borda composition
+opportunity and cleared the `PROCEED` gate. CC2 is now the next phase.
+The approved CC1 experiment remains documented in
+[CC1 composition opportunity specification](experiments/cc1_composition_opportunity_spec.md).
 
 ## Six-Query Sequence
 
@@ -43,19 +44,20 @@ method and CC1 experiment have not been implemented.
 3. Query 3: specify the CC1 composition opportunity experiment and polish
    continuity. COMPLETE.
 4. Query 4: implement the approved CC1 specification without broad refactors.
-   NEXT.
-5. Query 5: prepare the first implementation slice without launching large
-   experiments.
-6. Query 6: finalize readiness for implementation and experimental execution.
+   COMPLETE.
+5. Query 5: diagnose CC1 discriminativeness and run the bounded CC1b follow-up.
+   COMPLETE.
+6. Query 6: begin CC2 by defining the canonical primitive interface. NEXT.
 
 ## Guardrail
 
-Do not implement major architectural changes, primitive rewrites, DSL
-extensions, selector redesigns, simulator changes, or new large experiments
-before the roadmap and invariant documents are established.
+Do not implement CC3 DSL extensions, selector redesigns, real-vLLM jobs, hosted
+API experiments, or large ungated sweeps before the roadmap allows them. CC2 is
+limited to the canonical primitive interface and representative-policy
+equivalence evidence.
 
 ## Next Action
 
-Query 4 should implement the approved CC1 true simulator-executed
-composition-opportunity specification and keep CC1 as `NEXT` until full
-simulator-executed results are documented.
+Query 6 should define the CC2 canonical primitive interface and equivalence
+tests needed to reproduce representative policies from reusable components. Do
+not begin CC3 DSL work in Query 6.

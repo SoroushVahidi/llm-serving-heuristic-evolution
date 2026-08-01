@@ -29,7 +29,7 @@ from llmserveopt.policies.composition import RankExpertSpec, StaticRankEnsembleP
 from llmserveopt.policies.instrumentation import DecisionTraceSink, InstrumentedPolicy
 from llmserveopt.policies.registry import make_policy
 from llmserveopt.simulator.service_model import ServiceModel
-from llmserveopt.workloads.synthetic import WorkloadConfig, generate_workload
+from llmserveopt.workloads.synthetic import SLOClass, WorkloadConfig, generate_workload
 from llmserveopt.workloads.trace_io_extended import load_extended_jsonl
 
 
@@ -144,8 +144,8 @@ def validate_config(config: Mapping[str, Any], *, require_full_flag: bool = Fals
     if config.get("schema_version") != 1:
         raise CC1Error("schema_version must be 1")
     mode = config.get("mode")
-    if mode not in {"smoke", "full"}:
-        raise CC1Error("mode must be 'smoke' or 'full'")
+    if mode not in {"smoke", "full", "cc1b"}:
+        raise CC1Error("mode must be 'smoke', 'full', or 'cc1b'")
     policy_subset = list(config.get("policy_subset", []))
     if not policy_subset:
         raise CC1Error("policy_subset must not be empty")
@@ -167,8 +167,8 @@ def validate_config(config: Mapping[str, Any], *, require_full_flag: bool = Fals
     )
     if config["metrics"].get("primary") != PRIMARY:
         raise CC1Error(f"primary metric must be {PRIMARY!r}")
-    if mode == "full" and require_full_flag:
-        raise CC1Error("full mode requires explicit --full-run")
+    if mode in {"full", "cc1b"} and require_full_flag:
+        raise CC1Error(f"{mode} mode requires explicit --full-run")
 
 
 def planned_runs(config: Mapping[str, Any]) -> list[PlannedRun]:
@@ -206,7 +206,10 @@ def build_workload_windows(config: Mapping[str, Any]) -> tuple[list[WorkloadWind
                 skipped.append({"tag": tag, "path": str(path.relative_to(ROOT)), "reason": "missing local trace data"})
                 continue
             requests, _metadata = load_extended_jsonl(path)
-            requests = _slice_and_rebase_requests(requests, max_requests=max_requests)
+            requests = _apply_request_transform(
+                _slice_and_rebase_requests(requests, max_requests=max_requests),
+                raw.get("request_transform", {}),
+            )
             windows.append(WorkloadWindow(tag, split, regime, "real_trace", seed, tuple(requests)))
         else:
             raise CC1Error(f"unknown workload kind {kind!r}")
@@ -224,9 +227,41 @@ def build_workload_windows(config: Mapping[str, Any]) -> tuple[list[WorkloadWind
 def _build_synthetic_requests(raw: Mapping[str, Any], *, seed: int, max_requests: Any) -> list[Request]:
     allowed = set(WorkloadConfig.__dataclass_fields__)
     payload = {key: value for key, value in raw.items() if key in allowed}
+    if "slo_classes" in payload:
+        payload["slo_classes"] = parse_slo_classes(payload["slo_classes"])
     payload.setdefault("tag", str(raw["tag"]))
     cfg = WorkloadConfig(**payload)
-    return _slice_and_rebase_requests(generate_workload(cfg, seed=seed), max_requests=max_requests)
+    return _apply_request_transform(
+        _slice_and_rebase_requests(generate_workload(cfg, seed=seed), max_requests=max_requests),
+        raw.get("request_transform", {}),
+    )
+
+
+def parse_slo_classes(raw_classes: Any) -> list[SLOClass]:
+    if raw_classes is None:
+        raise CC1Error("slo_classes must not be null")
+    out: list[SLOClass] = []
+    for idx, raw in enumerate(raw_classes):
+        if isinstance(raw, SLOClass):
+            out.append(raw)
+            continue
+        if not isinstance(raw, Mapping):
+            raise CC1Error(f"slo_classes[{idx}] must be a mapping")
+        out.append(SLOClass(
+            class_id=str(raw["class_id"]),
+            slo_slack=float(raw["slo_slack"]),
+            priority=float(raw["priority"]),
+            weight=float(raw["weight"]),
+        ))
+    if not out:
+        raise CC1Error("slo_classes must not be empty")
+    if any(cls.slo_slack <= 0.0 for cls in out):
+        raise CC1Error("all slo_classes must have positive slo_slack")
+    if any(cls.priority <= 0.0 for cls in out):
+        raise CC1Error("all slo_classes must have positive priority")
+    if sum(cls.weight for cls in out) <= 0.0:
+        raise CC1Error("slo_classes weights must sum to a positive value")
+    return out
 
 
 def _slice_and_rebase_requests(requests: Sequence[Request], *, max_requests: Any) -> list[Request]:
@@ -251,6 +286,54 @@ def _slice_and_rebase_requests(requests: Sequence[Request], *, max_requests: Any
     return out
 
 
+def _apply_request_transform(requests: Sequence[Request], raw_transform: Any) -> list[Request]:
+    if raw_transform in (None, {}):
+        return list(requests)
+    if not isinstance(raw_transform, Mapping):
+        raise CC1Error("request_transform must be a mapping")
+
+    arrival_time_scale = float(raw_transform.get("arrival_time_scale", 1.0))
+    slo_slack_scale = float(raw_transform.get("slo_slack_scale", 1.0))
+    slo_slack_cap = raw_transform.get("slo_slack_cap")
+    slo_slack_floor = float(raw_transform.get("slo_slack_floor", 0.001))
+    if arrival_time_scale <= 0.0:
+        raise CC1Error("request_transform.arrival_time_scale must be positive")
+    if slo_slack_scale <= 0.0:
+        raise CC1Error("request_transform.slo_slack_scale must be positive")
+    if slo_slack_floor <= 0.0:
+        raise CC1Error("request_transform.slo_slack_floor must be positive")
+    cap = float(slo_slack_cap) if slo_slack_cap is not None else None
+    if cap is not None and cap <= 0.0:
+        raise CC1Error("request_transform.slo_slack_cap must be positive when provided")
+
+    out: list[Request] = []
+    first_arrival = requests[0].arrival_time
+    previous_raw = first_arrival
+    previous_scaled = 0.0
+    for idx, req in enumerate(requests):
+        if idx == 0:
+            arrival = 0.0
+        else:
+            arrival = previous_scaled + max(0.0, req.arrival_time - previous_raw) * arrival_time_scale
+        slack = max(req.slo_deadline - req.arrival_time, slo_slack_floor) * slo_slack_scale
+        if cap is not None:
+            slack = min(slack, cap)
+        slack = max(slack, slo_slack_floor)
+        out.append(Request(
+            request_id=idx,
+            arrival_time=arrival,
+            prompt_tokens=req.prompt_tokens,
+            predicted_output_tokens=req.predicted_output_tokens,
+            actual_output_tokens=req.actual_output_tokens,
+            slo_deadline=arrival + slack,
+            priority=req.priority,
+            class_id=req.class_id,
+        ))
+        previous_raw = req.arrival_time
+        previous_scaled = arrival
+    return out
+
+
 def build_gpu_configs(config: Mapping[str, Any]) -> list[GPUConfig]:
     return [GPUConfig(**raw) for raw in config["gpus"]]
 
@@ -271,7 +354,8 @@ def run_experiment(
     timestamp: str | None = None,
     runner: Callable[..., RunMetrics] = run_policy,
 ) -> ExperimentResult:
-    validate_config(config, require_full_flag=(config.get("mode") == "full" and not full_run and not dry_run))
+    needs_full_flag = config.get("mode") in {"full", "cc1b"} and not full_run and not dry_run
+    validate_config(config, require_full_flag=needs_full_flag)
     git = git_state()
     windows, skipped_traces = build_workload_windows(config)
     mixtures = simplex_weight_grid(
@@ -294,6 +378,7 @@ def run_experiment(
                 "window_count": len(windows),
                 "mixture_count": len(mixtures),
                 "skipped_real_traces": skipped_traces,
+                "fixed_policy_spread_requirement": config.get("discriminativeness"),
             },
             verdict="INCONCLUSIVE",
         )
@@ -328,6 +413,11 @@ def run_experiment(
                 drain_steps=int(config.get("simulator", {}).get("drain_steps", 5000)),
             )
             execution_rows.append(row)
+
+    fixed_spread_rows = fixed_policy_spread_rows(execution_rows, config)
+    assert_cc1b_discriminative(fixed_spread_rows, config)
+
+    for window in windows:
         for mixture in mixtures:
             experts = [RankExpertSpec(name, weight) for name, weight in mixture.weights.items()]
             base_policy = StaticRankEnsemblePolicy(
@@ -360,6 +450,7 @@ def run_experiment(
     verdict_payload = determine_verdict(per_window, method_rows, subset_rows, config)
 
     write_csv(output_dir / "policy_execution_rows.csv", execution_rows)
+    write_csv(output_dir / "fixed_policy_spread.csv", fixed_spread_rows)
     write_csv(output_dir / "per_window_summary.csv", per_window)
     write_csv(output_dir / "method_comparison.csv", method_rows)
     write_csv(output_dir / "composition_weights.csv", weights_rows)
@@ -427,6 +518,64 @@ def execute_policy_row(
     return row
 
 
+def fixed_policy_spread_rows(
+    rows: Sequence[Mapping[str, Any]],
+    config: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    eval_splits = set(config.get("evaluation_splits", sorted(EVAL_SPLITS)))
+    by_window: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        if row["treatment_kind"] == "fixed_policy":
+            by_window.setdefault(str(row["window_id"]), []).append(row)
+
+    out: list[dict[str, Any]] = []
+    for window_id, window_rows in sorted(by_window.items()):
+        values = sorted((metric_value(r, PRIMARY_COL) for r in window_rows), reverse=True)
+        if not values:
+            continue
+        base = window_rows[0]
+        out.append({
+            "window_id": window_id,
+            "split": base["split"],
+            "regime": base["regime"],
+            "source": base["source"],
+            "is_evaluation": base["split"] in eval_splits,
+            "fixed_policy_spread": values[0] - values[-1],
+            "fixed_top2_margin": values[0] - values[1] if len(values) >= 2 else 0.0,
+            "best_fixed_treatment_id": max(window_rows, key=lambda r: metric_value(r, PRIMARY_COL))["treatment_id"],
+            "worst_fixed_treatment_id": min(window_rows, key=lambda r: metric_value(r, PRIMARY_COL))["treatment_id"],
+            "best_fixed_anwg": values[0],
+            "worst_fixed_anwg": values[-1],
+        })
+    return out
+
+
+def assert_cc1b_discriminative(
+    fixed_spread: Sequence[Mapping[str, Any]],
+    config: Mapping[str, Any],
+) -> None:
+    if config.get("mode") != "cc1b":
+        return
+    raw = config.get("discriminativeness", {})
+    if not raw:
+        raise CC1Error("cc1b mode requires a discriminativeness section")
+    min_spread = float(raw.get("min_fixed_policy_spread", 0.0))
+    min_eval_windows = int(raw.get("min_evaluation_windows_with_spread", 1))
+    min_top2_margin = float(raw.get("min_fixed_top2_margin", 0.0))
+    eval_rows = [r for r in fixed_spread if bool(r["is_evaluation"])]
+    informative = [
+        r for r in eval_rows
+        if float(r["fixed_policy_spread"]) >= min_spread
+        and float(r["fixed_top2_margin"]) >= min_top2_margin
+    ]
+    if len(informative) < min_eval_windows:
+        raise CC1Error(
+            "cc1b fixed-policy spread gate failed before mixture evaluation: "
+            f"required {min_eval_windows} evaluation windows with spread >= {min_spread} "
+            f"and top2 margin >= {min_top2_margin}, found {len(informative)}"
+        )
+
+
 def summarize_per_window(rows: Sequence[Mapping[str, Any]], config: Mapping[str, Any]) -> list[dict[str, Any]]:
     by_window: dict[str, list[Mapping[str, Any]]] = {}
     for row in rows:
@@ -440,6 +589,7 @@ def summarize_per_window(rows: Sequence[Mapping[str, Any]], config: Mapping[str,
         oracle_mixture = max(mixtures, key=lambda r: metric_value(r, PRIMARY_COL))
         fixed_values = sorted((metric_value(r, PRIMARY_COL) for r in fixed), reverse=True)
         margin = fixed_values[0] - fixed_values[1] if len(fixed_values) >= 2 else 0.0
+        spread = fixed_values[0] - fixed_values[-1] if fixed_values else 0.0
         base = fixed[0]
         out.append({
             "window_id": window_id,
@@ -453,6 +603,7 @@ def summarize_per_window(rows: Sequence[Mapping[str, Any]], config: Mapping[str,
             "oracle_mixture_anwg": metric_value(oracle_mixture, PRIMARY_COL),
             "oracle_mixture_completion_fraction": metric_value(oracle_mixture, COMPLETION_COL),
             "composition_opportunity_gap": metric_value(oracle_mixture, PRIMARY_COL) - metric_value(oracle_fixed, PRIMARY_COL),
+            "fixed_policy_spread": spread,
             "fixed_top2_margin": margin,
             "near_tie": margin < near_tie_threshold,
             "meaningful_window": margin >= near_tie_threshold,
@@ -766,6 +917,7 @@ def build_manifest(
         "seed": config.get("seed"),
         "policy_subset": list(config["policy_subset"]),
         "composition": dict(config["composition"]),
+        "discriminativeness": dict(config.get("discriminativeness", {})),
         "planned_run_count": planned_count,
         "window_count": len(windows),
         "mixture_count": len(mixtures),
@@ -810,6 +962,7 @@ def render_report(
         f"- Best global mixture: `{best_global.get('selected_treatment_id')}`",
         f"- Composition opportunity gap: `{verdict['composition_opportunity_gap']}`",
         f"- Non-near-tie gap: `{verdict['non_near_tie_gap']}`",
+        f"- Non-near-tie count: `{verdict['non_near_tie_count']}`",
         f"- Completion impact vs best fixed: `{verdict['completion_impact_vs_best_fixed']}`",
         f"- Best regime gain: `{verdict['best_regime_gain']}`",
         "",

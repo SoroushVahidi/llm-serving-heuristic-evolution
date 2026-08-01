@@ -192,7 +192,7 @@ Related files or evidence:
 
 Date: 2026-07-31
 
-Status: accepted
+Status: superseded
 
 Decision: The Query 4 CC1 full local run does not justify starting CC2
 primitive-interface refactoring. Treat the result as `STOP_OR_REDESIGN` and
@@ -213,4 +213,38 @@ Related files or evidence:
 
 - `docs/audits/contextual_composition_query4_cc1_results_20260731.md`
 - `results/cc1_composition_opportunity/query4_full_20260731/manifest.json`
+- GitHub issue #1
+
+## CCD-010: Continue To CC2 After CC1b Discriminative Evidence
+
+Date: 2026-07-31
+
+Status: accepted
+
+Decision: Continue the contextual-composition path to CC2. Query 6 should
+define the canonical primitive interface and representative-policy equivalence
+tests. Do not begin CC3 DSL work until CC2 passes its gate.
+
+Rationale: Query 5 found that the Query 4 `STOP_OR_REDESIGN` result was caused
+by nondiscriminative workloads, not reward-vector interpolation or oracle
+accounting bugs. The original CC1 windows had high simulated capacity, short
+windows, permissive drain behavior, and SLO slack much looser than observed
+latencies, so several fixed policies completed all requests within SLO and
+tied at ANWG `1.0`. The CC1b suite retained true simulator execution but
+tightened the scientific setting: fixed-policy spread was required before
+mixture evaluation; service prefill/contention was enabled; SLO slack was set
+near the observed latency scale; and held-out windows covered overload,
+long-prompt mixed tight SLOs, burst transitions, and Azure-conversation-like
+OOD traffic. CC1b measured a non-near-tie composition-opportunity gap of
+`0.0167735`, best regime gain of `0.05`, and completion impact of `0.0`.
+
+Consequences: CC2 is now `NEXT`. CC2 may define typed primitive interfaces for
+ranking, admission, placement, batching, and resource guards, but Query 6 must
+not implement CC3 DSL extensions or contextual predictor training.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md`
+- `configs/cc1b_composition_discriminative.yaml`
+- `results/cc1b_composition_discriminative/query5_cc1b_full_20260731/manifest.json`
 - GitHub issue #1

@@ -18,6 +18,7 @@ BRANCH_MARKER = ROOT / "docs" / "CONTEXTUAL_COMPOSITION_BRANCH.md"
 AUDIT = ROOT / "docs" / "audits" / "local_branch_compositional_path_audit_20260731.md"
 QUERY2_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query2_roadmap_report_20260731.md"
 CC1_SPEC = ROOT / "docs" / "experiments" / "cc1_composition_opportunity_spec.md"
+QUERY5_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query5_discriminativeness_review_20260731.md"
 
 ALLOWED_STATUS = {
     "COMPLETE",
@@ -31,9 +32,9 @@ ALLOWED_STATUS = {
 
 REQUIRED_MARKER = {
     "canonical_branch": "contextual-compositional-heuristics-20260731",
-    "current_phase": "CC1",
-    "current_status": "COMPLETE",
-    "next_action": "do not start CC2; Query 5 should redesign or strengthen CC1 workload discriminativeness before any primitive refactor",
+    "current_phase": "CC2",
+    "current_status": "NEXT",
+    "next_action": "Query 6 should begin CC2 by defining the canonical primitive interface; do not start CC3",
     "roadmap_version": 1,
 }
 
@@ -81,7 +82,7 @@ def check_status_table(text: str) -> None:
     expected = {
         "CC0": "COMPLETE",
         "CC1": "COMPLETE",
-        "CC2": "BLOCKED",
+        "CC2": "NEXT",
         "CC3": "BLOCKED",
         "CC4": "BLOCKED",
         "CC5": "BLOCKED",
@@ -94,8 +95,8 @@ def check_status_table(text: str) -> None:
             fail(f"phase {phase} expected {status}, found {phases.get(phase)!r}")
 
     next_count = sum(1 for status in phases.values() if status == "NEXT")
-    if next_count != 0:
-        fail(f"expected no NEXT phase after STOP_OR_REDESIGN, found {next_count}")
+    if next_count != 1:
+        fail(f"expected exactly one NEXT phase, found {next_count}")
 
 
 def check_required_strings(text: str, path: Path, required: list[str]) -> None:
@@ -146,6 +147,7 @@ def main() -> int:
     audit = read(AUDIT)
     query2_report = read(QUERY2_REPORT)
     cc1_spec = read(CC1_SPEC)
+    query5_report = read(QUERY5_REPORT)
 
     check_marker(extract_marker(roadmap))
     check_status_table(roadmap)
@@ -160,6 +162,7 @@ def main() -> int:
             "arrival-normalized weighted goodput",
             "experiments/cc1_composition_opportunity_spec.md",
             "audits/contextual_composition_query4_cc1_results_20260731.md",
+            "audits/contextual_composition_query5_discriminativeness_review_20260731.md",
             "audits/contextual_composition_query2_roadmap_report_20260731.md",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1",
         ],
@@ -167,16 +170,17 @@ def main() -> int:
     check_required_strings(
         decisions,
         DECISIONS,
-        [f"CCD-{idx:03d}" for idx in range(1, 10)],
+        [f"CCD-{idx:03d}" for idx in range(1, 11)],
     )
     check_required_strings(
         start_here,
         START_HERE,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Current phase: `CC1 - Composition opportunity experiment complete: STOP_OR_REDESIGN`",
+            "Current phase: `CC2 - Canonical primitive interface`",
             "docs/experiments/cc1_composition_opportunity_spec.md",
             "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
+            "docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",
         ],
@@ -188,6 +192,7 @@ def main() -> int:
             "contextual-compositional-heuristics-20260731",
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
+            "Query 6 should define the CC2 canonical primitive interface",
         ],
     )
     check_required_strings(
@@ -201,6 +206,16 @@ def main() -> int:
         ["# Contextual Composition Query 2 Roadmap Report - 2026-07-31"],
     )
     check_cc1_spec(cc1_spec)
+    check_required_strings(
+        query5_report,
+        QUERY5_REPORT,
+        [
+            "# Contextual Composition Query 5 Discriminativeness Review - 2026-07-31",
+            "CC1b verdict: `PROCEED`",
+            "non-near-tie composition-opportunity gap: `0.0167735`",
+            "Query 6 should begin CC2",
+        ],
+    )
 
     print("contextual composition status check passed")
     return 0

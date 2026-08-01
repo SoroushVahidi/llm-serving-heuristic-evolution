@@ -2,12 +2,13 @@
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
 
-Current phase: `CC1 - Composition opportunity experiment complete: STOP_OR_REDESIGN`
+Current phase: `CC2 - Canonical primitive interface`
 
-Exact next action: do not start CC2 primitive refactoring. Query 5 should
-redesign or strengthen CC1 workload discriminativeness before any primitive
-interface or DSL work, using the evidence in the
-[Query 4 CC1 results](audits/contextual_composition_query4_cc1_results_20260731.md).
+Exact next action: Query 6 should define the canonical primitive interface
+needed to reproduce representative policies from verified components. Do not
+start CC3 DSL work before CC2's interface/equivalence gate is documented. Use
+the CC1b evidence in the
+[Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md).
 
 ## Read In This Order
 
@@ -20,6 +21,7 @@ interface or DSL work, using the evidence in the
 7. `docs/audits/contextual_composition_query2_roadmap_report_20260731.md`
 8. `docs/audits/contextual_composition_query3_cc1_spec_report_20260731.md`
 9. `docs/audits/contextual_composition_query4_cc1_results_20260731.md`
+10. `docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md`
    or the latest later contextual-composition audit report
 
 ## What Not To Do Yet

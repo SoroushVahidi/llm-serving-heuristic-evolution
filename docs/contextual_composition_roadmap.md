@@ -2,9 +2,9 @@
 
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
-current_phase: CC1
-current_status: COMPLETE
-next_action: do not start CC2; Query 5 should redesign or strengthen CC1 workload discriminativeness before any primitive refactor
+current_phase: CC2
+current_status: NEXT
+next_action: Query 6 should begin CC2 by defining the canonical primitive interface; do not start CC3
 roadmap_version: 1
 ```
 
@@ -21,8 +21,8 @@ Current date: 2026-07-31
 | Phase | Purpose | Status | Entry condition | Exit condition | Canonical evidence | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
 | CC0 | Repository and evidence stabilization | COMPLETE | Query 1 branch established | Roadmap, decisions, navigation, issues, and checker exist | This roadmap; [branch marker](CONTEXTUAL_COMPOSITION_BRANCH.md); [Query 1 report](audits/contextual_composition_query1_sync_report_20260731.md); [Query 2 report](audits/contextual_composition_query2_roadmap_report_20260731.md) | Maintain links only |
-| CC1 | Composition opportunity experiment | COMPLETE | CC0 complete | Composition opportunity gap measured with true simulator execution | Issue [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1); [CC1 specification](experiments/cc1_composition_opportunity_spec.md); [Query 4 results](audits/contextual_composition_query4_cc1_results_20260731.md) | Negative gate: do not start CC2; redesign workload discriminativeness |
-| CC2 | Canonical primitive interface | BLOCKED | CC1 decision gate passes or is explicitly revised | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2) | Wait for CC1 |
+| CC1 | Composition opportunity experiment | COMPLETE | CC0 complete | Composition opportunity gap measured with true simulator execution | Issue [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1); [CC1 specification](experiments/cc1_composition_opportunity_spec.md); [Query 4 results](audits/contextual_composition_query4_cc1_results_20260731.md); [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md) | Complete; CC1b gate passed |
+| CC2 | Canonical primitive interface | NEXT | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md) | Define canonical primitive interface without starting CC3 |
 | CC3 | Compositional DSL and verifier | BLOCKED | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3) | Wait for CC2 |
 | CC4 | Offline oracle composition dataset | BLOCKED | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4) | Wait for CC3 |
 | CC5 | Contextual composition predictor | BLOCKED | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) | Wait for CC4 |
@@ -196,6 +196,25 @@ did not pass, and CC2 remains blocked.
 Canonical result report:
 
 - [Query 4 CC1 results](audits/contextual_composition_query4_cc1_results_20260731.md)
+
+Status after Query 5: COMPLETE with CC1b `PROCEED`.
+
+Query 5 diagnosed the Query 4 result as nondiscriminative rather than a
+mixture-accounting bug: CC1 windows were under capacity or had SLO slack much
+looser than observed latencies, so oracle fixed and oracle mixture both
+reached ANWG `1.0` on every evaluation window. Query 5 added and ran a compact
+CC1b discriminative suite using true simulator-executed weighted Borda
+composition with tighter SLOs, prefill contention enabled, a step-`0.25`
+top-2 weight grid, and a fixed-policy-spread gate before mixture evaluation.
+The CC1b full local run executed 440 simulator runs over 11 windows. On the
+four held-out evaluation windows, all were non-near-ties; the non-near-tie
+composition-opportunity gap was `0.0167735`, best regime gain was `0.05`, and
+completion impact was `0.0`. The CC1b decision gate passed, so CC2 is now
+`NEXT`.
+
+Canonical discriminativeness report:
+
+- [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md)
 
 Required work:
 
