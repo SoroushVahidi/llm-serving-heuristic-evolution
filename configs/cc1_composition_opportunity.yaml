@@ -1,0 +1,188 @@
+schema_version: 1
+mode: full
+seed: 20260731
+policy_subset:
+  - weighted_shortest_processing
+  - scorpio_style_slo_guard
+  - edf
+  - estimated_service_time_first
+  - fifo
+composition:
+  operator: weighted_borda_rank_aggregation
+  implementation: StaticRankEnsemblePolicy
+  method: borda
+  normalization: per_state_normalized_rank
+  top_k: 2
+  weight_grid_step: 0.5
+metrics:
+  primary: arrival_normalized_weighted_goodput
+  completion_fraction_tolerance: 0.005
+thresholds:
+  aggregate_anwg_gain: 0.005
+  regime_specific_gain: 0.01
+  stop_non_near_tie_gap: 0.002
+near_tie_primary_threshold: 0.005
+near_tie_thresholds: [0.001, 0.005, 0.01]
+development_splits: [TRAIN, VALIDATION, ROBUST_DEV]
+evaluation_splits: [ID_TEST, OOD_TEST]
+safeguards:
+  max_runs: 200
+  require_clean_git_for_full: true
+  forbid_live_api: true
+  forbid_gpu: true
+  forbid_real_vllm: true
+outputs:
+  root: results/cc1_composition_opportunity
+  decision_traces: false
+service_model:
+  step_size: 0.001
+simulator:
+  drain_steps: 5000
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 8
+    max_batch_tokens: 128
+    max_kv_tokens: 4096
+  - gpu_id: 1
+    max_active_sequences: 8
+    max_batch_tokens: 128
+    max_kv_tokens: 4096
+workloads:
+  - tag: full_underloaded_train
+    kind: synthetic
+    split: TRAIN
+    regime: underloaded
+    seed: 1101
+    max_requests: 24
+    arrival_process: poisson
+    arrival_rate: 3.0
+    duration: 5.0
+    prompt_mean: 48.0
+    prompt_sigma: 0.3
+    output_mean: 18.0
+    output_sigma: 0.3
+    prediction_noise_rel: 0.05
+  - tag: full_saturated_train
+    kind: synthetic
+    split: TRAIN
+    regime: saturated
+    seed: 1102
+    max_requests: 36
+    arrival_process: poisson
+    arrival_rate: 18.0
+    duration: 4.0
+    prompt_mean: 96.0
+    prompt_sigma: 0.6
+    output_mean: 80.0
+    output_sigma: 0.6
+    prediction_noise_rel: 0.15
+  - tag: full_mixed_slo_train
+    kind: synthetic
+    split: TRAIN
+    regime: mixed_slo
+    seed: 1103
+    max_requests: 36
+    arrival_process: poisson
+    arrival_rate: 16.0
+    duration: 4.0
+    prompt_mean: 128.0
+    prompt_sigma: 0.6
+    output_mean: 96.0
+    output_sigma: 0.6
+    prediction_noise_rel: 0.15
+  - tag: full_prefill_validation
+    kind: synthetic
+    split: VALIDATION
+    regime: prefill_heavy
+    seed: 1201
+    max_requests: 34
+    arrival_process: poisson
+    arrival_rate: 14.0
+    duration: 4.0
+    prompt_mean: 512.0
+    prompt_sigma: 0.5
+    prompt_low: 128
+    prompt_high: 1024
+    output_mean: 32.0
+    output_sigma: 0.4
+    prediction_noise_rel: 0.1
+  - tag: full_decode_validation
+    kind: synthetic
+    split: VALIDATION
+    regime: decode_heavy
+    seed: 1202
+    max_requests: 30
+    arrival_process: poisson
+    arrival_rate: 10.0
+    duration: 4.0
+    prompt_mean: 32.0
+    prompt_sigma: 0.4
+    prompt_low: 8
+    prompt_high: 128
+    output_mean: 384.0
+    output_sigma: 0.5
+    output_low: 64
+    output_high: 768
+    prediction_noise_rel: 0.2
+  - tag: full_kv_robust_dev
+    kind: synthetic
+    split: ROBUST_DEV
+    regime: kv_pressure
+    seed: 1301
+    max_requests: 28
+    arrival_process: bursty
+    arrival_rate: 12.0
+    duration: 4.0
+    burst_factor: 6.0
+    burst_fraction: 0.3
+    prompt_mean: 768.0
+    prompt_sigma: 0.4
+    prompt_low: 256
+    prompt_high: 1200
+    output_mean: 96.0
+    output_sigma: 0.5
+    prediction_noise_rel: 0.15
+  - tag: full_mixed_slo_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: mixed_slo
+    seed: 2101
+    max_requests: 36
+    arrival_process: poisson
+    arrival_rate: 16.0
+    duration: 4.0
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    output_mean: 96.0
+    output_sigma: 0.7
+    prediction_noise_rel: 0.15
+  - tag: full_prefill_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: prefill_heavy
+    seed: 2102
+    max_requests: 34
+    arrival_process: poisson
+    arrival_rate: 14.0
+    duration: 4.0
+    prompt_mean: 512.0
+    prompt_sigma: 0.5
+    prompt_low: 128
+    prompt_high: 1024
+    output_mean: 32.0
+    output_sigma: 0.4
+    prediction_noise_rel: 0.1
+  - tag: burstgpt_real_ood_test
+    kind: real_trace
+    split: OOD_TEST
+    regime: real_trace_burstgpt
+    seed: 3101
+    max_requests: 30
+    path: data/processed/burstgpt/burstgpt_moderate_exact_prediction.jsonl
+  - tag: azure_conv_real_ood_test
+    kind: real_trace
+    split: OOD_TEST
+    regime: real_trace_azure_conv
+    seed: 3102
+    max_requests: 30
+    path: data/processed/azure/azure_llm_2023_conv.jsonl

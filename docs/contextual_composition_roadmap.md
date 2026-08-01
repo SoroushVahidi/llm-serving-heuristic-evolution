@@ -3,8 +3,8 @@
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
 current_phase: CC1
-current_status: NEXT
-next_action: implement the approved CC1 true simulator-executed composition-opportunity specification
+current_status: COMPLETE
+next_action: do not start CC2; Query 5 should redesign or strengthen CC1 workload discriminativeness before any primitive refactor
 roadmap_version: 1
 ```
 
@@ -21,7 +21,7 @@ Current date: 2026-07-31
 | Phase | Purpose | Status | Entry condition | Exit condition | Canonical evidence | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
 | CC0 | Repository and evidence stabilization | COMPLETE | Query 1 branch established | Roadmap, decisions, navigation, issues, and checker exist | This roadmap; [branch marker](CONTEXTUAL_COMPOSITION_BRANCH.md); [Query 1 report](audits/contextual_composition_query1_sync_report_20260731.md); [Query 2 report](audits/contextual_composition_query2_roadmap_report_20260731.md) | Maintain links only |
-| CC1 | Composition opportunity experiment | NEXT | CC0 complete | Composition opportunity gap measured with true simulator execution | Issue [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1); [CC1 specification](experiments/cc1_composition_opportunity_spec.md); future CC1 audit | Implement the approved CC1 specification |
+| CC1 | Composition opportunity experiment | COMPLETE | CC0 complete | Composition opportunity gap measured with true simulator execution | Issue [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1); [CC1 specification](experiments/cc1_composition_opportunity_spec.md); [Query 4 results](audits/contextual_composition_query4_cc1_results_20260731.md) | Negative gate: do not start CC2; redesign workload discriminativeness |
 | CC2 | Canonical primitive interface | BLOCKED | CC1 decision gate passes or is explicitly revised | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2) | Wait for CC1 |
 | CC3 | Compositional DSL and verifier | BLOCKED | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3) | Wait for CC2 |
 | CC4 | Offline oracle composition dataset | BLOCKED | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4) | Wait for CC3 |
@@ -182,6 +182,20 @@ per-window hard selection.
 Approved specification:
 
 - [CC1 composition opportunity specification](experiments/cc1_composition_opportunity_spec.md)
+
+Status after Query 4: COMPLETE with `STOP_OR_REDESIGN`.
+
+Query 4 implemented and ran the approved true simulator-executed weighted Borda
+rank-aggregation experiment. The full local run executed 200 simulator runs
+over 10 windows, including two real-trace-derived OOD windows. The measured
+composition-opportunity gap was `0.0`; all four evaluation windows were
+near-ties under the fixed-policy margin threshold; best global mixture was the
+one-hot WSP mixture; oracle mixture matched oracle fixed. The CC1 decision gate
+did not pass, and CC2 remains blocked.
+
+Canonical result report:
+
+- [Query 4 CC1 results](audits/contextual_composition_query4_cc1_results_20260731.md)
 
 Required work:
 

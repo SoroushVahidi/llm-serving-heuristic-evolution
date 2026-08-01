@@ -32,8 +32,8 @@ ALLOWED_STATUS = {
 REQUIRED_MARKER = {
     "canonical_branch": "contextual-compositional-heuristics-20260731",
     "current_phase": "CC1",
-    "current_status": "NEXT",
-    "next_action": "implement the approved CC1 true simulator-executed composition-opportunity specification",
+    "current_status": "COMPLETE",
+    "next_action": "do not start CC2; Query 5 should redesign or strengthen CC1 workload discriminativeness before any primitive refactor",
     "roadmap_version": 1,
 }
 
@@ -80,7 +80,7 @@ def check_status_table(text: str) -> None:
 
     expected = {
         "CC0": "COMPLETE",
-        "CC1": "NEXT",
+        "CC1": "COMPLETE",
         "CC2": "BLOCKED",
         "CC3": "BLOCKED",
         "CC4": "BLOCKED",
@@ -94,8 +94,8 @@ def check_status_table(text: str) -> None:
             fail(f"phase {phase} expected {status}, found {phases.get(phase)!r}")
 
     next_count = sum(1 for status in phases.values() if status == "NEXT")
-    if next_count != 1:
-        fail(f"expected exactly one NEXT phase, found {next_count}")
+    if next_count != 0:
+        fail(f"expected no NEXT phase after STOP_OR_REDESIGN, found {next_count}")
 
 
 def check_required_strings(text: str, path: Path, required: list[str]) -> None:
@@ -159,6 +159,7 @@ def main() -> int:
             "## Roadmap Update Protocol",
             "arrival-normalized weighted goodput",
             "experiments/cc1_composition_opportunity_spec.md",
+            "audits/contextual_composition_query4_cc1_results_20260731.md",
             "audits/contextual_composition_query2_roadmap_report_20260731.md",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1",
         ],
@@ -166,15 +167,16 @@ def main() -> int:
     check_required_strings(
         decisions,
         DECISIONS,
-        [f"CCD-{idx:03d}" for idx in range(1, 9)],
+        [f"CCD-{idx:03d}" for idx in range(1, 10)],
     )
     check_required_strings(
         start_here,
         START_HERE,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Current phase: `CC1 - Composition opportunity experiment`",
+            "Current phase: `CC1 - Composition opportunity experiment complete: STOP_OR_REDESIGN`",
             "docs/experiments/cc1_composition_opportunity_spec.md",
+            "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",
         ],

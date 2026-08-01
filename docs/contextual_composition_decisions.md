@@ -187,3 +187,30 @@ Related files or evidence:
 - `docs/audits/local_branch_compositional_path_audit_20260731.md`
 - `docs/current/EXPERIMENT_INDEX.md`
 - `docs/contextual_composition_roadmap.md`
+
+## CCD-009: Stop CC2 Until CC1 Has Discriminative Composition Evidence
+
+Date: 2026-07-31
+
+Status: accepted
+
+Decision: The Query 4 CC1 full local run does not justify starting CC2
+primitive-interface refactoring. Treat the result as `STOP_OR_REDESIGN` and
+keep CC2 blocked.
+
+Rationale: The approved true simulator-executed weighted Borda experiment ran
+200 simulator executions over the required five-policy subset and representative
+local workloads, including two real-trace-derived OOD windows. The oracle
+mixture matched oracle fixed with composition-opportunity gap `0.0`; every
+evaluation window was a near tie under the fixed-policy margin threshold; best
+global mixture collapsed to the one-hot WSP mixture.
+
+Consequences: Query 5 should not begin CC2 or CC3. It should either redesign a
+bounded CC1 workload/discriminativeness check or document a pause/stop decision
+for the contextual-composition path.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_query4_cc1_results_20260731.md`
+- `results/cc1_composition_opportunity/query4_full_20260731/manifest.json`
+- GitHub issue #1

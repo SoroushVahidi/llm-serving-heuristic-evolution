@@ -2,14 +2,12 @@
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
 
-Current phase: `CC1 - Composition opportunity experiment`
+Current phase: `CC1 - Composition opportunity experiment complete: STOP_OR_REDESIGN`
 
-Exact next action: implement the minimal true simulator-executed
-composition-opportunity experiment described in the approved
-[CC1 specification](experiments/cc1_composition_opportunity_spec.md),
-[contextual_composition_roadmap.md](contextual_composition_roadmap.md), and
-GitHub issue
-[#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1).
+Exact next action: do not start CC2 primitive refactoring. Query 5 should
+redesign or strengthen CC1 workload discriminativeness before any primitive
+interface or DSL work, using the evidence in the
+[Query 4 CC1 results](audits/contextual_composition_query4_cc1_results_20260731.md).
 
 ## Read In This Order
 
@@ -21,6 +19,7 @@ GitHub issue
 6. `docs/audits/local_branch_compositional_path_audit_20260731.md`
 7. `docs/audits/contextual_composition_query2_roadmap_report_20260731.md`
 8. `docs/audits/contextual_composition_query3_cc1_spec_report_20260731.md`
+9. `docs/audits/contextual_composition_query4_cc1_results_20260731.md`
    or the latest later contextual-composition audit report
 
 ## What Not To Do Yet
