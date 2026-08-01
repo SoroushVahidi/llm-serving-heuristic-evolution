@@ -17,6 +17,7 @@ START_HERE = ROOT / "docs" / "START_HERE_CONTEXTUAL_COMPOSITION.md"
 BRANCH_MARKER = ROOT / "docs" / "CONTEXTUAL_COMPOSITION_BRANCH.md"
 AUDIT = ROOT / "docs" / "audits" / "local_branch_compositional_path_audit_20260731.md"
 QUERY2_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query2_roadmap_report_20260731.md"
+CC1_SPEC = ROOT / "docs" / "experiments" / "cc1_composition_opportunity_spec.md"
 
 ALLOWED_STATUS = {
     "COMPLETE",
@@ -32,7 +33,7 @@ REQUIRED_MARKER = {
     "canonical_branch": "contextual-compositional-heuristics-20260731",
     "current_phase": "CC1",
     "current_status": "NEXT",
-    "next_action": "implement the minimal true simulator-executed composition-opportunity experiment",
+    "next_action": "implement the approved CC1 true simulator-executed composition-opportunity specification",
     "roadmap_version": 1,
 }
 
@@ -103,6 +104,40 @@ def check_required_strings(text: str, path: Path, required: list[str]) -> None:
             fail(f"{path.relative_to(ROOT)} missing required text: {needle}")
 
 
+def check_cc1_spec(text: str) -> None:
+    required_sections = [
+        "## Scientific Question",
+        "## Hypotheses",
+        "## Minimal Representative Policy Subset",
+        "## Exact Composition Semantics",
+        "## Normalization Method",
+        "## Simulator Execution Path",
+        "## Workloads And Splits",
+        "## Primary Metric: Arrival-Normalized Weighted Goodput",
+        "## Completion-Fraction Constraints",
+        "## Near-Tie Handling",
+        "## Baselines",
+        "## Composition-Opportunity-Gap Formula",
+        "## Success And Stop Thresholds",
+        "## Required Output Files",
+        "## Reproducibility Requirements",
+        "## Expected Runtime And Resource Limits",
+        "## Query 4 File-By-File Implementation Plan",
+        "## Rejected Approaches",
+    ]
+    check_required_strings(text, CC1_SPEC, required_sections)
+    check_required_strings(
+        text,
+        CC1_SPEC,
+        [
+            "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1",
+            "StaticRankEnsemblePolicy(method=\"borda\")",
+            "arrival_normalized_weighted_goodput",
+            "Reward vectors may be used only to report fixed-policy and hard-selector baselines",
+        ],
+    )
+
+
 def main() -> int:
     roadmap = read(ROADMAP)
     decisions = read(DECISIONS)
@@ -110,6 +145,7 @@ def main() -> int:
     branch_marker = read(BRANCH_MARKER)
     audit = read(AUDIT)
     query2_report = read(QUERY2_REPORT)
+    cc1_spec = read(CC1_SPEC)
 
     check_marker(extract_marker(roadmap))
     check_status_table(roadmap)
@@ -122,6 +158,7 @@ def main() -> int:
             "## Research Invariants",
             "## Roadmap Update Protocol",
             "arrival-normalized weighted goodput",
+            "experiments/cc1_composition_opportunity_spec.md",
             "audits/contextual_composition_query2_roadmap_report_20260731.md",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1",
         ],
@@ -137,6 +174,7 @@ def main() -> int:
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Current phase: `CC1 - Composition opportunity experiment`",
+            "docs/experiments/cc1_composition_opportunity_spec.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",
         ],
@@ -147,6 +185,7 @@ def main() -> int:
         [
             "contextual-compositional-heuristics-20260731",
             "contextual_composition_roadmap.md",
+            "experiments/cc1_composition_opportunity_spec.md",
         ],
     )
     check_required_strings(
@@ -159,6 +198,7 @@ def main() -> int:
         QUERY2_REPORT,
         ["# Contextual Composition Query 2 Roadmap Report - 2026-07-31"],
     )
+    check_cc1_spec(cc1_spec)
 
     print("contextual composition status check passed")
     return 0

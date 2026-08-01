@@ -5,8 +5,9 @@ Authoritative branch: `contextual-compositional-heuristics-20260731`
 Current phase: `CC1 - Composition opportunity experiment`
 
 Exact next action: implement the minimal true simulator-executed
-composition-opportunity experiment described in
-[contextual_composition_roadmap.md](contextual_composition_roadmap.md) and
+composition-opportunity experiment described in the approved
+[CC1 specification](experiments/cc1_composition_opportunity_spec.md),
+[contextual_composition_roadmap.md](contextual_composition_roadmap.md), and
 GitHub issue
 [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1).
 
@@ -16,8 +17,10 @@ GitHub issue
 2. `docs/contextual_composition_roadmap.md`
 3. `docs/contextual_composition_decisions.md`
 4. `docs/CONTEXTUAL_COMPOSITION_BRANCH.md`
-5. `docs/audits/local_branch_compositional_path_audit_20260731.md`
-6. `docs/audits/contextual_composition_query2_roadmap_report_20260731.md`
+5. `docs/experiments/cc1_composition_opportunity_spec.md`
+6. `docs/audits/local_branch_compositional_path_audit_20260731.md`
+7. `docs/audits/contextual_composition_query2_roadmap_report_20260731.md`
+8. `docs/audits/contextual_composition_query3_cc1_spec_report_20260731.md`
    or the latest later contextual-composition audit report
 
 ## What Not To Do Yet

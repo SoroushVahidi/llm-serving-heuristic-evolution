@@ -28,20 +28,22 @@ Start from the synchronization-aware audit:
 - [Contextual Composition Decision Log](contextual_composition_decisions.md)
 - [Local Branch Compositional Path Audit](audits/local_branch_compositional_path_audit_20260731.md)
 
-Current high-level status: Query 2 establishes the persistent roadmap,
-navigation path, decision log, GitHub issue structure, and consistency checker.
-Selector, DSL, generation, and native composition prototypes exist, but the
-verified contextual-composition method has not been implemented.
+Current high-level status: Query 3 makes CC1 implementation-ready by adding the
+approved [CC1 composition opportunity specification](experiments/cc1_composition_opportunity_spec.md)
+and auditing existing composition prototypes. Selector, DSL, generation, and
+native composition prototypes exist, but the verified contextual-composition
+method and CC1 experiment have not been implemented.
 
 ## Six-Query Sequence
 
 1. Query 1: synchronize, preserve the audit, establish this branch, validate,
    commit, and push. COMPLETE.
 2. Query 2: establish the persistent roadmap, repository navigation path,
-   milestones, and decision gates. CURRENT.
-3. Query 3: organize and polish repository documentation and artifact references.
-4. Query 4: define implementation invariants and interfaces for the
-   contextual-compositional path.
+   milestones, and decision gates. COMPLETE.
+3. Query 3: specify the CC1 composition opportunity experiment and polish
+   continuity. COMPLETE.
+4. Query 4: implement the approved CC1 specification without broad refactors.
+   NEXT.
 5. Query 5: prepare the first implementation slice without launching large
    experiments.
 6. Query 6: finalize readiness for implementation and experimental execution.
@@ -54,5 +56,6 @@ before the roadmap and invariant documents are established.
 
 ## Next Action
 
-Query 2 should establish the persistent roadmap, repository navigation path,
-milestones, and decision gates for the contextual-compositional heuristic path.
+Query 4 should implement the approved CC1 true simulator-executed
+composition-opportunity specification and keep CC1 as `NEXT` until full
+simulator-executed results are documented.
