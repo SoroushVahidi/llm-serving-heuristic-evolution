@@ -13,6 +13,8 @@ faithful external baselines in a GPU-calibrated discrete-event simulator.**
 > resume from **[docs/RESUME_CONTEXTUAL_COMPOSITION.md](docs/RESUME_CONTEXTUAL_COMPOSITION.md)**
 > and the pause checkpoint
 > **[docs/audits/contextual_composition_pause_checkpoint_20260731.md](docs/audits/contextual_composition_pause_checkpoint_20260731.md)**.
+> Final pause-readiness is recorded in
+> **[docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md](docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md)**.
 > This scoped roadmap does not replace the historical project-status documents
 > for unrelated branches or earlier phases.
 

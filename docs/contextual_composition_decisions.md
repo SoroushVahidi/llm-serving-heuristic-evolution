@@ -265,11 +265,11 @@ Rationale: CC1b established enough evidence to enter CC2, but the branch needs
 a stable checkpoint so future work can resume without re-auditing Query 1-5
 documents, local-only result paths, issue state, and validation commands.
 
-Consequences: Query 7 should perform final repository polish, consistency
-cleanup, and resume-readiness verification without implementing CC2. After the
-pause is lifted, the exact CC2 task is to define the canonical primitive
-interface for ranking, admission, placement, batching, and resource guards, then
-add representative-policy equivalence tests. Do not extend the DSL yet.
+Consequences: Query 7 performed final repository polish, consistency cleanup,
+and resume-readiness verification without implementing CC2. After the pause is
+lifted, the exact CC2 task is to define the canonical primitive interface for
+ranking, admission, placement, batching, and resource guards, then add
+representative-policy equivalence tests. Do not extend the DSL yet.
 
 Related files or evidence:
 

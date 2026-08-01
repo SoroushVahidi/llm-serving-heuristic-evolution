@@ -15,6 +15,8 @@ The branch is intentionally paused after CC1b and before CC2 implementation;
 resume from **[RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md)**
 and the pause checkpoint
 **[audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)**.
+The final pause-readiness report is
+**[audits/contextual_composition_query7_final_pause_readiness_20260731.md](audits/contextual_composition_query7_final_pause_readiness_20260731.md)**.
 These files are canonical for the
 `contextual-compositional-heuristics-20260731` branch only; they do not rewrite
 the historical phase record below.

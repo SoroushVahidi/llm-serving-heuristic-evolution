@@ -6,10 +6,6 @@ Current phase: `CC2 - Canonical primitive interface`
 
 Pause state: intentionally paused after CC1b and before CC2 implementation.
 
-Immediate next action: Query 7 should perform final repository polish,
-consistency cleanup, and resume-readiness verification without implementing
-CC2.
-
 Exact resume task after the pause: define the canonical primitive interface for
 ranking, admission, placement, batching, and resource guards, then add
 representative-policy equivalence tests. Do not extend the DSL yet. Use the
@@ -31,6 +27,7 @@ CC1b evidence in the
 11. `docs/audits/contextual_composition_pause_checkpoint_20260731.md`
 12. `docs/RESUME_CONTEXTUAL_COMPOSITION.md`
 13. `docs/audits/contextual_composition_query6_pause_report_20260731.md`
+14. `docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md`
     or the latest later contextual-composition audit report
 
 ## What Not To Do Yet
@@ -57,6 +54,7 @@ Run the consistency checker before committing:
 
 ```bash
 python scripts/check_contextual_composition_status.py
+python scripts/check_contextual_composition_status.py --resume-readiness
 ```
 
 ## Historical Status And Safe Claims

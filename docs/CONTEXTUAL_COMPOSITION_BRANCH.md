@@ -29,6 +29,7 @@ Start from the synchronization-aware audit:
 - [Local Branch Compositional Path Audit](audits/local_branch_compositional_path_audit_20260731.md)
 - [Pause Checkpoint](audits/contextual_composition_pause_checkpoint_20260731.md)
 - [Resume Guide](RESUME_CONTEXTUAL_COMPOSITION.md)
+- [Final Pause-Readiness Report](audits/contextual_composition_query7_final_pause_readiness_20260731.md)
 
 Current high-level status: Query 6 intentionally paused the branch after CC1b
 and before CC2 implementation. Query 5 completed the CC1b discriminativeness
@@ -52,7 +53,7 @@ The approved CC1 experiment remains documented in
    COMPLETE.
 6. Query 6: create the pause checkpoint and operational resume guide. COMPLETE.
 7. Query 7: perform final polish and resume-readiness verification without
-   implementing CC2. NEXT.
+   implementing CC2. COMPLETE.
 
 ## Guardrail
 
@@ -64,9 +65,6 @@ resumes.
 
 ## Next Action
 
-Query 7 should perform final repository polish, consistency cleanup, and a last
-resume-readiness verification without implementing CC2.
-
-After the pause is lifted, define the canonical primitive interface for
+Resume at CC2 by defining the canonical primitive interface for
 ranking, admission, placement, batching, and resource guards, then add
 representative-policy equivalence tests. Do not extend the DSL yet.

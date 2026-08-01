@@ -9,8 +9,9 @@ re-auditing the repository.
 
 - Authoritative branch: `contextual-compositional-heuristics-20260731`
 - Checkpoint prepared from HEAD: `db4dcaa40abe1312ea71c40c440445172cd1c509`
-- Checkpoint commit SHA: use the Query 6 final result's `New SHA` and verify
-  it with `git rev-parse HEAD` after checkout.
+- Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`
+- Final checkpoint SHA: use the Query 7 final result's `Final checkpoint SHA`
+  and verify it with `git rev-parse HEAD` after checkout.
 - Upstream: `origin/contextual-compositional-heuristics-20260731`
 - Current phase: `CC2`
 - Current status: `NEXT`
@@ -168,6 +169,7 @@ git rev-parse HEAD
 git rev-parse --abbrev-ref --symbolic-full-name @{u}
 git rev-list --left-right --count @{u}...HEAD
 python scripts/check_contextual_composition_status.py
+python scripts/check_contextual_composition_status.py --resume-readiness
 ```
 
 CC1b evidence:
@@ -242,5 +244,6 @@ Likely files to inspect and modify when CC2 begins:
 Resume from [RESUME_CONTEXTUAL_COMPOSITION.md](../RESUME_CONTEXTUAL_COMPOSITION.md).
 The next implementation phase is GitHub issue #2
 ([link](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2)),
-but Query 7 should first perform final repository polish, consistency cleanup,
-and a last resume-readiness verification without implementing CC2.
+and the exact task is to define the canonical primitive interface for ranking,
+admission, placement, batching, and resource guards, then add
+representative-policy equivalence tests. Do not extend the DSL yet.

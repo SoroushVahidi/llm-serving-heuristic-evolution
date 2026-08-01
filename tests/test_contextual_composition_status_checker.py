@@ -20,6 +20,18 @@ def test_contextual_composition_status_checker_passes():
     assert "contextual composition status check passed" in result.stdout
 
 
+def test_contextual_composition_resume_readiness_checker_passes():
+    result = subprocess.run(
+        [sys.executable, "scripts/check_contextual_composition_status.py", "--resume-readiness"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "contextual composition resume-readiness check passed" in result.stdout
+
+
 def test_cc1_spec_required_sections_are_present():
     text = (ROOT / "docs/experiments/cc1_composition_opportunity_spec.md").read_text()
     required = [
@@ -74,8 +86,10 @@ def test_pause_checkpoint_records_cc1b_evidence_and_cc2_scope():
 def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
     text = (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
     assert "Authoritative branch: `contextual-compositional-heuristics-20260731`" in text
-    assert "Expected checkpoint SHA:" in text
+    assert "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`" in text
     assert "Current phase: `CC2 - Canonical primitive interface`" in text
+    assert "python scripts/check_contextual_composition_status.py --resume-readiness" in text
+    assert "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py -q" in text
     assert (
         "Define the canonical primitive interface for ranking, admission, placement, "
         "batching, and resource guards, then add representative-policy equivalence tests."
@@ -96,6 +110,26 @@ def test_canonical_docs_do_not_make_cc1_current():
         "current_phase: CC1",
         "CC1 is the only `NEXT` phase",
         "CC1 remains the single `NEXT` phase",
+    ]
+    for path in canonical_paths:
+        text = path.read_text()
+        for needle in forbidden:
+            assert needle not in text, f"{path.relative_to(ROOT)} contains {needle!r}"
+
+
+def test_canonical_docs_do_not_make_cc2_in_progress():
+    canonical_paths = [
+        ROOT / "docs/contextual_composition_roadmap.md",
+        ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
+        ROOT / "docs/CONTEXTUAL_COMPOSITION_BRANCH.md",
+        ROOT / "docs/contextual_composition_decisions.md",
+        ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
+    ]
+    forbidden = [
+        "Current status: `IN PROGRESS`",
+        "current_status: IN PROGRESS",
+        "CC2 has started",
+        "CC2 is `IN PROGRESS`",
     ]
     for path in canonical_paths:
         text = path.read_text()

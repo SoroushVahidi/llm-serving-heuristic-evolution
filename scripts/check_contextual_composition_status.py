@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,6 +23,10 @@ QUERY5_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query5_discri
 PAUSE_CHECKPOINT = ROOT / "docs" / "audits" / "contextual_composition_pause_checkpoint_20260731.md"
 RESUME_DOC = ROOT / "docs" / "RESUME_CONTEXTUAL_COMPOSITION.md"
 QUERY6_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query6_pause_report_20260731.md"
+QUERY7_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query7_final_pause_readiness_20260731.md"
+
+EXPECTED_BRANCH = "contextual-compositional-heuristics-20260731"
+EXPECTED_UPSTREAM = f"origin/{EXPECTED_BRANCH}"
 
 ALLOWED_STATUS = {
     "COMPLETE",
@@ -34,10 +39,10 @@ ALLOWED_STATUS = {
 }
 
 REQUIRED_MARKER = {
-    "canonical_branch": "contextual-compositional-heuristics-20260731",
+    "canonical_branch": EXPECTED_BRANCH,
     "current_phase": "CC2",
     "current_status": "NEXT",
-    "next_action": "Project paused after CC1b; Query 7 should verify resume readiness without implementing CC2",
+    "next_action": "Resume at CC2 by defining the canonical primitive interface; do not extend the DSL",
     "roadmap_version": 1,
 }
 
@@ -53,6 +58,22 @@ CANONICAL_FILES = [
 def fail(message: str) -> None:
     print(f"ERROR: {message}")
     raise SystemExit(1)
+
+
+def run_git(args: list[str]) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        stderr = result.stderr.strip()
+        stdout = result.stdout.strip()
+        detail = stderr or stdout or "unknown git error"
+        fail(f"git {' '.join(args)} failed: {detail}")
+    return result.stdout.strip()
 
 
 def read(path: Path) -> str:
@@ -157,6 +178,7 @@ def check_pause_contract(
     resume_doc: str,
     pause_checkpoint: str,
     query6_report: str,
+    query7_report: str,
 ) -> None:
     check_required_strings(
         start_here,
@@ -164,7 +186,7 @@ def check_pause_contract(
         [
             "docs/audits/contextual_composition_pause_checkpoint_20260731.md",
             "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
-            "Query 7 should perform final repository polish",
+            "Exact resume task after the pause",
         ],
     )
     check_required_strings(
@@ -175,7 +197,8 @@ def check_pause_contract(
             "current_status: NEXT",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
-            "Project paused after CC1b",
+            "audits/contextual_composition_query7_final_pause_readiness_20260731.md",
+            "Resume at CC2",
         ],
     )
     check_required_strings(
@@ -184,7 +207,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "Query 7 should perform final repository polish",
+            "Resume at CC2 by defining the canonical primitive interface",
         ],
     )
     check_required_strings(
@@ -192,10 +215,11 @@ def check_pause_contract(
         RESUME_DOC,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Expected checkpoint SHA:",
+            "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "Current phase: `CC2 - Canonical primitive interface`",
             "Define the canonical primitive interface for ranking, admission, placement, batching, and resource guards",
             "GitHub issue #2",
+            "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
     )
     check_required_strings(
@@ -224,6 +248,17 @@ def check_pause_contract(
             "Query 7 should perform final repository polish",
         ],
     )
+    check_required_strings(
+        query7_report,
+        QUERY7_REPORT,
+        [
+            "# Contextual Composition Query 7 Final Pause Readiness - 2026-07-31",
+            "No CC2 primitives",
+            "python scripts/check_contextual_composition_status.py --resume-readiness",
+            "Define the canonical primitive interface for ranking, admission, placement, batching, and resource guards",
+            "ready to resume at CC2 without another audit",
+        ],
+    )
 
 
 def check_no_cc1_current() -> None:
@@ -240,7 +275,101 @@ def check_no_cc1_current() -> None:
                 fail(f"{path.relative_to(ROOT)} still describes CC1 as current")
 
 
-def main() -> int:
+def check_no_cc2_in_progress() -> None:
+    forbidden_patterns = [
+        r"Current status:\s*`IN PROGRESS`",
+        r"current_status:\s*IN PROGRESS\b",
+        r"CC2\s+\|\s+Canonical primitive interface\s+\|\s+IN PROGRESS",
+        r"CC2\s+is\s+`?IN PROGRESS`?",
+        r"CC2\s+has\s+started",
+    ]
+    for path in CANONICAL_FILES:
+        text = read(path)
+        for pattern in forbidden_patterns:
+            if re.search(pattern, text):
+                fail(f"{path.relative_to(ROOT)} says CC2 is already in progress")
+
+
+def check_resume_readiness_extra() -> None:
+    branch = run_git(["branch", "--show-current"])
+    if branch != EXPECTED_BRANCH:
+        fail(f"expected branch {EXPECTED_BRANCH}, found {branch!r}")
+
+    upstream = run_git(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"])
+    if upstream != EXPECTED_UPSTREAM:
+        fail(f"expected upstream {EXPECTED_UPSTREAM}, found {upstream!r}")
+
+    status = run_git(["status", "--porcelain"])
+    if status:
+        fail("working tree is not clean")
+
+    ahead_behind = run_git(["rev-list", "--left-right", "--count", "@{u}...HEAD"])
+    if ahead_behind != "0\t0":
+        fail(f"expected 0 ahead / 0 behind, found {ahead_behind!r}")
+
+    roadmap = read(ROADMAP)
+    resume_doc = read(RESUME_DOC)
+    pause_checkpoint = read(PAUSE_CHECKPOINT)
+    start_here = read(START_HERE)
+    decisions = read(DECISIONS)
+    branch_marker = read(BRANCH_MARKER)
+
+    check_required_strings(
+        resume_doc,
+        RESUME_DOC,
+        [
+            EXPECTED_BRANCH,
+            "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
+            "python scripts/check_contextual_composition_status.py --resume-readiness",
+            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py -q",
+            "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
+            "GitHub issue #2",
+        ],
+    )
+    check_required_strings(
+        pause_checkpoint,
+        PAUSE_CHECKPOINT,
+        [
+            "Checkpoint prepared from HEAD: `db4dcaa40abe1312ea71c40c440445172cd1c509`",
+            "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
+            "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
+            "Issue #2",
+        ],
+    )
+    check_required_strings(
+        roadmap,
+        ROADMAP,
+        [
+            "current_phase: CC2",
+            "current_status: NEXT",
+            "Resume at CC2 by defining the canonical primitive interface",
+            "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
+        ],
+    )
+    for path, text in [
+        (START_HERE, start_here),
+        (DECISIONS, decisions),
+        (BRANCH_MARKER, branch_marker),
+    ]:
+        check_required_strings(
+            text,
+            path,
+            [
+                "CC2",
+                "Do not extend the DSL yet",
+            ],
+        )
+    check_no_cc2_in_progress()
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    resume_readiness = False
+    if argv == ["--resume-readiness"]:
+        resume_readiness = True
+    elif argv:
+        fail("usage: check_contextual_composition_status.py [--resume-readiness]")
+
     roadmap = read(ROADMAP)
     decisions = read(DECISIONS)
     start_here = read(START_HERE)
@@ -252,6 +381,7 @@ def main() -> int:
     pause_checkpoint = read(PAUSE_CHECKPOINT)
     resume_doc = read(RESUME_DOC)
     query6_report = read(QUERY6_REPORT)
+    query7_report = read(QUERY7_REPORT)
 
     check_marker(extract_marker(roadmap))
     check_status_table(roadmap)
@@ -268,6 +398,7 @@ def main() -> int:
             "audits/contextual_composition_query4_cc1_results_20260731.md",
             "audits/contextual_composition_query5_discriminativeness_review_20260731.md",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
+            "audits/contextual_composition_query7_final_pause_readiness_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
             "audits/contextual_composition_query2_roadmap_report_20260731.md",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1",
@@ -289,6 +420,7 @@ def main() -> int:
             "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
             "docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md",
             "docs/audits/contextual_composition_pause_checkpoint_20260731.md",
+            "docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md",
             "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",
@@ -301,7 +433,7 @@ def main() -> int:
             "contextual-compositional-heuristics-20260731",
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
-            "Query 7 should perform final repository polish",
+            "Resume at CC2 by defining the canonical primitive interface",
         ],
     )
     check_required_strings(
@@ -332,10 +464,16 @@ def main() -> int:
         resume_doc=resume_doc,
         pause_checkpoint=pause_checkpoint,
         query6_report=query6_report,
+        query7_report=query7_report,
     )
     check_no_cc1_current()
+    check_no_cc2_in_progress()
 
-    print("contextual composition status check passed")
+    if resume_readiness:
+        check_resume_readiness_extra()
+        print("contextual composition resume-readiness check passed")
+    else:
+        print("contextual composition status check passed")
     return 0
 
 

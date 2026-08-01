@@ -3,6 +3,8 @@
 > **Contextual-composition branch note (2026-07-31):** The active roadmap for
 > branch `contextual-compositional-heuristics-20260731` is
 > [contextual_composition_roadmap.md](contextual_composition_roadmap.md).
+> Resume that branch from
+> [RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md).
 > The document below remains a historical numbered-phase roadmap and Selector
 > v2/external-baseline status bridge; do not treat it as the current roadmap for
 > the contextual-compositional heuristic path.

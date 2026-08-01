@@ -9,8 +9,9 @@ git checkout contextual-compositional-heuristics-20260731
 ```
 
 - Authoritative branch: `contextual-compositional-heuristics-20260731`
-- Expected checkpoint SHA: verify against the Query 6 final result's `New SHA`
-  with `git rev-parse HEAD`
+- Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`
+- Final checkpoint SHA: verify against the Query 7 final result's
+  `Final checkpoint SHA` with `git rev-parse HEAD`
 - Starting SHA before the checkpoint commit:
   `db4dcaa40abe1312ea71c40c440445172cd1c509`
 
@@ -21,7 +22,8 @@ git checkout contextual-compositional-heuristics-20260731
 3. [contextual_composition_decisions.md](contextual_composition_decisions.md)
 4. [audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)
 5. [audits/contextual_composition_query5_discriminativeness_review_20260731.md](audits/contextual_composition_query5_discriminativeness_review_20260731.md)
-6. GitHub issue #2
+6. [audits/contextual_composition_query7_final_pause_readiness_20260731.md](audits/contextual_composition_query7_final_pause_readiness_20260731.md)
+7. GitHub issue #2
 
 ## Verify State
 
@@ -31,6 +33,8 @@ git rev-parse HEAD
 git rev-parse --abbrev-ref --symbolic-full-name @{u}
 git rev-list --left-right --count @{u}...HEAD
 python scripts/check_contextual_composition_status.py
+python scripts/check_contextual_composition_status.py --resume-readiness
+python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py -q
 ```
 
 The expected state is a clean working tree, upstream
@@ -88,6 +92,6 @@ Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
 ## GitHub
 
-Continue with GitHub issue
+Continue with GitHub issue #2:
 [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2).
 Issue #1 is the completed CC1/CC1b evidence gate.
