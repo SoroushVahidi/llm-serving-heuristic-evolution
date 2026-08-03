@@ -29,6 +29,7 @@ CC2_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc2_primitive_in
 CC3_ARCHITECTURE_DOC = ROOT / "docs" / "architecture" / "contextual_composition_dsl.md"
 CC3_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc3_dsl_verifier_report_20260803.md"
 CC4_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc4_oracle_dataset_report_20260803.md"
+CC5_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc5_predictor_report_20260803.md"
 
 EXPECTED_BRANCH = "contextual-compositional-heuristics-20260731"
 EXPECTED_UPSTREAM = f"origin/{EXPECTED_BRANCH}"
@@ -47,8 +48,8 @@ REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
     "current_phase": "CC5",
     "current_status": "NEXT",
-    "next_action": "CC5 (contextual composition predictor) is queued but not started; a future, explicitly authorized query must first read the CC4 oracle dataset report and train only against its evaluation_splits-held-out labels",
-    "roadmap_version": 4,
+    "next_action": "CC5 was attempted and returned verdict INCONCLUSIVE (n=6 evaluation windows insufficient to certify generalization); CC6 is not queued; a future query must first expand the CC4 dataset with more windows, then read the CC5 predictor report's section 10 before retraining",
+    "roadmap_version": 5,
 }
 
 CANONICAL_FILES = [
@@ -217,7 +218,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "is queued as `NEXT`",
+            "remains `NEXT`",
         ],
     )
     check_required_strings(
@@ -227,7 +228,7 @@ def check_pause_contract(
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "Current phase: `CC5 - Contextual composition predictor`",
-            "CC5 has **not** been started",
+            "must be **retried**, not begun fresh",
             "GitHub issue #5",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
@@ -352,7 +353,7 @@ def check_resume_readiness_extra() -> None:
         [
             "current_phase: CC5",
             "current_status: NEXT",
-            "CC5 (contextual composition predictor) is queued but not started",
+            "CC5 was attempted and returned verdict INCONCLUSIVE",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
@@ -452,7 +453,7 @@ def main(argv: list[str] | None = None) -> int:
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
             "architecture/contextual_composition_primitives.md",
-            "is queued as `NEXT`",
+            "remains `NEXT`",
         ],
     )
     check_required_strings(

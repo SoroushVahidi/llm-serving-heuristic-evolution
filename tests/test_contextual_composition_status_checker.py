@@ -98,9 +98,9 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
         "tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py "
         "tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py "
         "tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py "
-        "tests/test_cc4_oracle_composition_dataset.py -q"
+        "tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q"
     ) in text
-    assert "CC5 has **not** been started" in text
+    assert "must be **retried**, not begun fresh" in text
     assert "oracle_labels.parquet" in text
     assert "GitHub issue #5" in text
 

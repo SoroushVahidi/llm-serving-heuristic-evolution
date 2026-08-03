@@ -22,6 +22,12 @@ git checkout contextual-compositional-heuristics-20260731
   report's `New SHA` with `git rev-parse HEAD`
 - Starting SHA before the CC4 checkpoint commit:
   `19708f741d0bfb944b4a11ff34572a811df94d66`
+- CC5 (Query 11) checkpoint SHA: verify against the CC5 predictor
+  report's `New SHA` with `git rev-parse HEAD` (CC5's exit gate did NOT
+  pass -- this checkpoint is an attempted-and-INCONCLUSIVE checkpoint, not
+  a completion checkpoint)
+- Starting SHA before the CC5 checkpoint commit:
+  `db143fc7aef5cb604ed56b778b948b5d4f271891`
 
 ## Read In Order
 
@@ -36,7 +42,8 @@ git checkout contextual-compositional-heuristics-20260731
 9. [architecture/contextual_composition_dsl.md](architecture/contextual_composition_dsl.md)
 10. [audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 11. [audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
-12. GitHub issue #5
+12. [audits/contextual_composition_cc5_predictor_report_20260803.md](audits/contextual_composition_cc5_predictor_report_20260803.md)
+13. GitHub issue #5
 
 ## Verify State
 
@@ -47,7 +54,7 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}
 git rev-list --left-right --count @{u}...HEAD
 python scripts/check_contextual_composition_status.py
 python scripts/check_contextual_composition_status.py --resume-readiness
-python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py -q
+python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q
 ```
 
 The expected state is a clean working tree, upstream
@@ -57,30 +64,32 @@ behind, and a passing contextual-composition status checker.
 ## Current Phase
 
 - Current phase: `CC5 - Contextual composition predictor`
-- Current status: `NEXT` (queued, not started)
-- Decision gate: CC4's exit gate passed (12 windows/34 candidates/408
-  simulator executions, 0 rejected, reproducible+resumable, 66.7%
-  evaluation-window composition-oracle gain, completion constraints hold on
-  all windows); CC5 may start, but only in a separate, explicitly
-  authorized query.
+- Current status: `NEXT` (attempted, exit gate NOT passed -- verdict `INCONCLUSIVE`)
+- Decision gate: CC4's exit gate passed and CC5 was attempted against it;
+  the trained predictor ties the best fixed policy on CC4's 6 evaluation
+  windows (mean ANWG 0.2306 vs 0.2310) and is beaten by
+  `best_global_composition` (0.2633). Judged a data-scarcity finding (n=6
+  held-out windows cannot statistically distinguish these methods), not a
+  methodology failure -- see the CC5 predictor report.
 
 ## Exact Next Implementation Task
 
-CC5 has **not** been started. A future, explicitly authorized query should
-begin it by reading
-[audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
-(its "Exact CC5 Entry Condition" section) first, then train against
-`oracle_labels.parquet`/`regret_matrix.parquet`/`causal_features.parquet`
-(joined on `window_id`), fitting only on `development_splits` windows and
-reserving `evaluation_splits` windows exclusively for the reported
-validation claim.
+CC5's exit gate did not pass, so it must be **retried**, not begun fresh. A
+future, explicitly authorized query should first expand the CC4 dataset
+(more windows, more per regime -- read
+[audits/contextual_composition_cc5_predictor_report_20260803.md](audits/contextual_composition_cc5_predictor_report_20260803.md)
+section 10 for the exact rationale), then retrain against the larger
+dataset using the existing, tested CC5 pipeline
+(`src/llmserveopt/experiments/cc5_contextual_predictor.py`,
+`scripts/run_cc5_contextual_predictor.py --dataset-dir <new CC4 dir>
+--full-run`) -- no code changes are anticipated to be required.
 
 ## Do Not Start Prematurely
 
-Do not begin CC5 predictor training in this same query even though CC4's
-gate passed. Do not begin CC6 adaptation, CC7 hardening, CC8 real-serving
-validation, hosted API jobs, GPU jobs, real-vLLM jobs, or new experiments
-before the roadmap gates allow them.
+Do not retry CC5 predictor training in this same query. Do not begin CC6
+adaptation until CC5 actually passes its exit gate. Do not begin CC7
+hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
+real-vLLM jobs, or new experiments before the roadmap gates allow them.
 
 ## CC1b Evidence
 
@@ -139,10 +148,38 @@ python scripts/run_cc4_oracle_composition_dataset.py \
 
 Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
+## CC5 Evidence
+
+Primary local result directory (untracked, per repository convention --
+regenerate via `replay_commands.sh` inside it):
+
+```text
+results/cc5_contextual_composition_predictor/20260803T175456Z/
+```
+
+Key files: `manifest.json`, `verdict.json`, `model_card.md`,
+`cv_model_selection.csv`, `per_window_predictions.csv`,
+`uncertainty_ood_diagnostics.csv`, `fallback_analysis.csv`.
+
+Regenerate only if needed (against the same CC4 dataset -- a real retry
+needs a larger CC4 dataset first, per the exact next task above):
+
+```bash
+python scripts/run_cc5_contextual_predictor.py \
+  --dataset-dir results/cc4_oracle_composition_dataset/20260803T170735Z \
+  --dry-run
+
+python scripts/run_cc5_contextual_predictor.py \
+  --dataset-dir results/cc4_oracle_composition_dataset/20260803T170735Z \
+  --full-run --timestamp <new_timestamp>
+```
+
+Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
+
 ## GitHub
 
 Continue with GitHub issue #5 (only in a separate, explicitly authorized
-query):
+query -- it remains OPEN, not closed, since CC5's exit gate did not pass):
 [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
 CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier

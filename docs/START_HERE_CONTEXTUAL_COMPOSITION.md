@@ -4,7 +4,20 @@ Authoritative branch: `contextual-compositional-heuristics-20260731`
 
 Current phase: `CC5 - Contextual composition predictor`
 
-Pause state: none. CC4 is COMPLETE; CC5 is `NEXT` (queued, not started).
+Pause state: none. CC4 is COMPLETE. CC5 was attempted and returned verdict
+`INCONCLUSIVE` (exit gate NOT passed) -- it remains the roadmap's `NEXT`
+phase to return to; CC6 is not queued. See the
+[CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md).
+
+CC5 trained a KNN regret-regression predictor over CC4's already-verified,
+already-executed candidate pool (`src/llmserveopt/experiments/cc5_contextual_predictor.py`),
+with leave-one-window-out model selection, OOD-gated abstention/fallback,
+and a full evaluation against CC4's 6 held-out windows. Result: the
+predictor ties the best fixed policy (mean ANWG 0.2306 vs 0.2310) and is
+beaten by the single best global composition (0.2633) -- judged a
+data-scarcity finding (n=6 held-out windows cannot statistically
+distinguish these methods), not a methodology failure. 22 new focused tests
+pass. Completion-fraction constraints hold (0 violations).
 
 CC4 built the first reproducible, resumable, simulator-derived oracle
 composition dataset (`src/llmserveopt/experiments/cc4_oracle_composition_dataset.py`,
@@ -37,14 +50,12 @@ equivalence/registry tests. Six of seven reconstructions are EXACT; one
 [architecture doc](architecture/contextual_composition_primitives.md) and the
 [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md).
 
-Exact next task: CC5 (contextual composition predictor training) has
-**not** been started. A future, explicitly authorized query should begin it
-by reading the CC4 oracle dataset report (its "Exact CC5 Entry Condition"
-section) first, then training against `oracle_labels.parquet`/
-`regret_matrix.parquet`/`causal_features.parquet`, fitting only on
-`development_splits` windows and reserving `evaluation_splits` windows
-exclusively for the reported validation claim. Do not begin CC6 dynamic
-adaptation.
+Exact next task: CC5's exit gate did not pass, so it must be retried, not
+begun fresh. A future, explicitly authorized query should first expand the
+CC4 dataset (more windows, more per regime -- read the CC5 predictor
+report's section 10 for the exact rationale), then retrain against the
+larger dataset using the existing, tested CC5 pipeline (no anticipated code
+changes). Do not begin CC6 dynamic adaptation until CC5 passes.
 
 ## Read In This Order
 
@@ -67,15 +78,17 @@ adaptation.
 17. `docs/architecture/contextual_composition_dsl.md`
 18. `docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
 19. `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
+20. `docs/audits/contextual_composition_cc5_predictor_report_20260803.md`
     or the latest later contextual-composition audit report
 
 ## What Not To Do Yet
 
 CC2's primitive interface, representative-policy reconstructions, CC3's
 compositional DSL/verifier extension, and CC4's oracle composition dataset
-are all complete. Do not begin CC5 contextual predictor training without a
-separate, explicitly authorized query, and do not begin dynamic adaptation
-(CC6), counterexample hardening (CC7), real-vLLM jobs, hosted API
+are all complete. CC5 was attempted but did not pass its exit gate
+(`INCONCLUSIVE`); do not retry it without a separate, explicitly authorized
+query, and do not begin dynamic adaptation (CC6) until CC5 actually passes.
+Do not begin counterexample hardening (CC7), real-vLLM jobs, hosted API
 experiments, or large simulator sweeps before the roadmap phase gate allows
 them.
 

@@ -4,8 +4,8 @@
 canonical_branch: contextual-compositional-heuristics-20260731
 current_phase: CC5
 current_status: NEXT
-next_action: CC5 (contextual composition predictor) is queued but not started; a future, explicitly authorized query must first read the CC4 oracle dataset report and train only against its evaluation_splits-held-out labels
-roadmap_version: 4
+next_action: CC5 was attempted and returned verdict INCONCLUSIVE (n=6 evaluation windows insufficient to certify generalization); CC6 is not queued; a future query must first expand the CC4 dataset with more windows, then read the CC5 predictor report's section 10 before retraining
+roadmap_version: 5
 ```
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
@@ -25,7 +25,7 @@ Current date: 2026-07-31
 | CC2 | Canonical primitive interface | COMPLETE | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [architecture doc](architecture/contextual_composition_primitives.md); [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md) | Complete; CC2 equivalence gate passed (6/7 EXACT, 1/7 documented APPROXIMATE) |
 | CC3 | Compositional DSL and verifier | COMPLETE | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3); [architecture doc](architecture/contextual_composition_dsl.md); [CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md) | Complete; CC3 exit gate passed (8/8 required constructs, 447 focused+regression tests, legacy compatibility preserved). CC4 remains BLOCKED pending explicit authorization. |
 | CC4 | Offline oracle composition dataset | COMPLETE | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4); [CC4 oracle dataset report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md) | Complete; CC4 exit gate passed (12 windows/34 candidates/408 executions, 0 rejected, reproducible+resumable, 66.7% evaluation-window composition-oracle gain, completion constraints hold on all windows). CC5 remains queued pending explicit authorization. |
-| CC5 | Contextual composition predictor | NEXT | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) | Queued, not started; wait for an explicitly authorized query, and read the CC4 oracle dataset report's section 14 "Exact CC5 Entry Condition" first |
+| CC5 | Contextual composition predictor | NEXT | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md) | Attempted; verdict `INCONCLUSIVE` (predictor ties best fixed policy on n=6 held-out windows; best_global_composition actually wins). Exit gate NOT passed. CC6 not queued. Exact remaining task: expand the CC4 dataset (more windows/regimes) before retrying -- see report section 10. |
 | CC6 | Dynamic adaptation and stability | PLANNED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC5 |
 | CC7 | Counterexample-guided hardening | PLANNED | CC6 stable adaptation or explicit static-only scope | No critical supported-envelope failures remain | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC6 |
 | CC8 | Real-trace and real-serving validation | PLANNED | CC7 hardening gate passes | Clean staged validation through real-serving evidence | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC7 |
@@ -439,6 +439,19 @@ The deployable contextual composition model must outperform:
 - best global composition;
 
 on held-out data, with uncertainty-aware safety behavior.
+
+**Gate result (2026-08-03): NOT PASSED. Verdict: `INCONCLUSIVE`.** See the
+[CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md)
+for full evidence. The trained predictor (KNN regret regressor + OOD-gated
+fallback) ties the best fixed policy on the 6 CC4 evaluation windows (mean
+ANWG 0.2306 vs 0.2310; bootstrap 95% CIs ~[0.10, 0.37] on both) and is
+beaten by `best_global_composition` (0.2633). This is judged a data-scarcity
+finding, not a methodology failure: n=6 held-out windows cannot
+statistically distinguish these methods at any interesting effect size, and
+the top 4 cross-validated model candidates were separated by less than the
+CV noise floor. CC6 is **not** queued as a result. Exact remaining task:
+expand the CC4 dataset (more windows, more per regime) before retraining;
+no CC5 pipeline code changes are anticipated to be required.
 
 Canonical issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 

@@ -451,3 +451,62 @@ Related files or evidence:
 - `tests/test_cc4_oracle_composition_dataset.py`
 - `results/cc4_oracle_composition_dataset/20260803T170735Z/` (local, untracked)
 - GitHub issue #4 (closing), issue #5 (queued, not started)
+
+## CCD-015: CC5 Attempted, Exit Gate Not Passed (INCONCLUSIVE) -- Data Scarcity, Not Methodology
+
+Date: 2026-08-03
+
+Status: accepted
+
+Decision: Implement and attempt CC5 (contextual composition predictor)
+against the CC4 oracle dataset. Do **not** mark CC5 COMPLETE and do **not**
+queue CC6, because the required decision gate did not pass. CC5 remains the
+roadmap's `NEXT` phase, to be retried (not begun fresh) once the CC4
+dataset is expanded.
+
+Rationale: `src/llmserveopt/experiments/cc5_contextual_predictor.py` (new)
+trains a per-candidate regret regressor (the primary deployable mechanism:
+predict regret for each of CC4's 34 pre-verified candidates given a
+window's causal features, argmin -> recommended composition) plus a
+hard composition-class classifier (reported as underpowered -- only 6 dev
+examples, both baselines trivially memorize them). Direct parameter
+regression was explicitly not trained (3 positive examples for a 6-dimensional
+weight target -- non-identifiable, matching the task's own stated
+exception). Leave-one-window-out cross-validation across 5 regressor
+families selected KNN, but the top 4 models were separated by less than the
+CV noise floor. Held-out evaluation (CC4's 6 evaluation windows, touched
+exactly once) shows the predictor (with OOD-gated fallback, 67% abstention
+rate) achieving mean ANWG 0.2306, statistically indistinguishable from best
+fixed policy's 0.2310 (bootstrap 95% CIs both roughly [0.10, 0.40] at n=6),
+and both are beaten by the single best global composition (0.2633).
+Completion-fraction constraints hold (0 violations). 22 new focused tests
+pass, including dataset-validation/leakage-rejection tests, a deterministic-
+training test, a resume-short-circuit test, and a runtime-wrapper
+determinism test. One real bug was found and fixed during development: the
+OOD z-score gate double-scored an already-z-scored feature vector, and a
+degenerate zero-variance dev-set dimension (`num_slo_classes` identical
+across all 6 dev windows) produced an uninterpretable near-infinite
+diagnostic value for two eval windows -- fixed by clipping per-dimension
+z-scores to a legible ceiling (no `is_ood()` decision changed, verified via
+a byte-identical verdict re-run).
+
+Consequences: CC5 stays `NEXT` (not `COMPLETE`); CC6 stays `BLOCKED` (not
+queued). The blocker is judged to be data volume, not code or methodology:
+n=6 held-out windows cannot statistically distinguish any of the compared
+methods at an interesting effect size, and the OOD gate's necessarily tiny
+"in-distribution" region (only 6 dev windows) drives most of the abstention
+rate. A future query must first expand the CC4 dataset (more windows, more
+per regime, so leave-one-window-out folds are not each a single point)
+before retraining; the CC5 pipeline itself (validation, targets, models,
+uncertainty/OOD/fallback, evaluation, verdict) is complete and tested, and
+no code changes are anticipated to be required for a retry beyond pointing
+`--dataset-dir` at a larger CC4 run.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_cc5_predictor_report_20260803.md`
+- `src/llmserveopt/experiments/cc5_contextual_predictor.py`
+- `scripts/run_cc5_contextual_predictor.py`
+- `tests/test_cc5_contextual_predictor.py`
+- `results/cc5_contextual_composition_predictor/20260803T175456Z/` (local, untracked)
+- GitHub issue #5 (remains open -- exit gate not passed)

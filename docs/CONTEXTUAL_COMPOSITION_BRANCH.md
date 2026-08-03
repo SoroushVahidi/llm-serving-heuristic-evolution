@@ -35,8 +35,20 @@ Start from the synchronization-aware audit:
 - [Architecture: CC3 Compositional DSL](architecture/contextual_composition_dsl.md)
 - [CC3 DSL/Verifier Report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 - [CC4 Oracle Dataset Report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
+- [CC5 Predictor Report](audits/contextual_composition_cc5_predictor_report_20260803.md)
 
-Current high-level status: Query 10 implemented CC4 (the true
+Current high-level status: Query 11 implemented and attempted CC5 (the
+deployable contextual composition predictor) against CC4's oracle dataset.
+The pipeline itself is complete and tested (22 new tests), but the exit
+gate did **not** pass: verdict `INCONCLUSIVE`. The trained predictor (KNN
+regret regression + OOD-gated fallback) ties the best fixed policy on CC4's
+6 held-out evaluation windows (mean ANWG 0.2306 vs 0.2310) and is beaten by
+the single best global composition (0.2633) -- judged a data-scarcity
+finding (n=6 evaluation windows cannot statistically distinguish these
+methods at any interesting effect size), not a methodology failure. CC6 is
+**not** queued as a result; CC5 remains the roadmap's `NEXT` phase, with an
+exact remaining task (expand the CC4 dataset, then retry) recorded in the
+CC5 report. Query 10 implemented CC4 (the true
 simulator-executed oracle composition dataset over the CC2/CC3
 primitive-composition surface) and its exit gate passed: 12 workload
 windows across all required regime categories, 34 verified candidates (0
@@ -45,9 +57,7 @@ across an independent from-scratch re-run) and resumable (verified via an
 interrupt-and-resume cycle plus an automated integration test). A
 composition-family candidate is the oracle winner on 66.7% of held-out
 evaluation windows; completion-fraction constraints hold on every window.
-CC4 is COMPLETE; CC5 (contextual composition predictor) is the single
-`NEXT` phase but has **not** been started -- a future, explicitly
-authorized query must begin it after reading the CC4 report. Query 9
+Query 9
 implemented CC3 (the compositional DSL and verifier extension over the CC2
 primitive registry) and its exit gate passed: all 8 required constructs
 implemented, 447 focused+regression tests pass, and every pre-CC3 example
@@ -83,22 +93,24 @@ simulator-executed weighted Borda composition opportunity and cleared the
    CC2 primitive registry. COMPLETE.
 10. Query 10: build the CC4 true simulator-executed oracle composition
     dataset. COMPLETE.
+11. Query 11: implement and attempt CC5 (contextual composition predictor).
+    Pipeline COMPLETE; decision gate NOT PASSED (verdict `INCONCLUSIVE`).
 
 ## Guardrail
 
-Do not implement CC5 predictor training, CC6 adaptation, selector
+Do not retry CC5 predictor training, implement CC6 adaptation, selector
 redesigns, real-vLLM jobs, hosted API experiments, or large ungated sweeps
-before the roadmap allows them. CC4's own exit gate passed (see the CC4
-oracle dataset report), but CC5 must not begin without a separate,
-explicitly authorized query.
+before the roadmap allows them. CC5's exit gate did not pass (see the CC5
+predictor report); it must not be retried without a separate, explicitly
+authorized query, and CC6 must not begin until CC5 actually passes.
 
 ## Next Action
 
-CC5 (contextual composition predictor) is queued as `NEXT` but has not
-been started. A future, explicitly authorized query should begin it by
-reading `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
-(its "Exact CC5 Entry Condition" section) first, then training against the
-CC4 dataset's `oracle_labels.parquet`/`regret_matrix.parquet`/
-`causal_features.parquet`, fitting only on `development_splits` windows and
-reserving `evaluation_splits` windows exclusively for the reported
-validation claim.
+CC5 (contextual composition predictor) remains `NEXT` -- attempted, not
+passed. A future, explicitly authorized query should first expand the CC4
+dataset (more windows, more per regime -- see
+`docs/audits/contextual_composition_cc5_predictor_report_20260803.md`
+section 10 for the exact rationale), then retrain against the larger
+dataset using the existing, tested CC5 pipeline
+(`src/llmserveopt/experiments/cc5_contextual_predictor.py`) -- no code
+changes are anticipated to be required.
