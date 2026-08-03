@@ -3,18 +3,19 @@
 **Learning to select LLM-inference-serving scheduling policies, evaluated against
 faithful external baselines in a GPU-calibrated discrete-event simulator.**
 
-> ## Contextual composition branch
+> ## Contextual composition branch (active, not paused)
 > For the new contextual-compositional heuristic research path, use branch
 > **`contextual-compositional-heuristics-20260731`** and start with
 > **[docs/START_HERE_CONTEXTUAL_COMPOSITION.md](docs/START_HERE_CONTEXTUAL_COMPOSITION.md)**.
 > Its authoritative technical roadmap is
 > **[docs/contextual_composition_roadmap.md](docs/contextual_composition_roadmap.md)**.
-> The branch is intentionally paused after CC1b and before CC2 implementation;
-> resume from **[docs/RESUME_CONTEXTUAL_COMPOSITION.md](docs/RESUME_CONTEXTUAL_COMPOSITION.md)**
-> and the pause checkpoint
-> **[docs/audits/contextual_composition_pause_checkpoint_20260731.md](docs/audits/contextual_composition_pause_checkpoint_20260731.md)**.
-> Final pause-readiness is recorded in
-> **[docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md](docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md)**.
+> CC1-CC4 are complete; CC5 (contextual composition predictor) is
+> `IN PROGRESS` -- see the
+> **[latest CC5 report](docs/audits/contextual_composition_cc5_predictor_report_20260803.md)**
+> and, for current status, the
+> **[CC4b/CC5 retry report](docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)**.
+> Resume from **[docs/RESUME_CONTEXTUAL_COMPOSITION.md](docs/RESUME_CONTEXTUAL_COMPOSITION.md)**;
+> active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 > This scoped roadmap does not replace the historical project-status documents
 > for unrelated branches or earlier phases.
 

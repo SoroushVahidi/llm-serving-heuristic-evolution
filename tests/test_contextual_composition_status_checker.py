@@ -50,7 +50,7 @@ def test_cc1_spec_required_sections_are_present():
         assert section in text
 
 
-def test_roadmap_links_cc1b_report_and_has_cc5_next():
+def test_roadmap_links_cc1b_report_and_has_cc5_active():
     text = (ROOT / "docs/contextual_composition_roadmap.md").read_text()
     assert "experiments/cc1_composition_opportunity_spec.md" in text
     assert "audits/contextual_composition_query4_cc1_results_20260731.md" in text
@@ -65,8 +65,11 @@ def test_roadmap_links_cc1b_report_and_has_cc5_next():
     assert phases["CC2"] == "COMPLETE"
     assert phases["CC3"] == "COMPLETE"
     assert phases["CC4"] == "COMPLETE"
-    assert phases["CC5"] == "NEXT"
-    assert list(phases.values()).count("NEXT") == 1
+    assert phases["CC5"] == "IN PROGRESS"
+    assert phases["CC6"] == "BLOCKED"
+    # Exactly one phase is "active" (queued NEXT or actively IN PROGRESS).
+    active = [s for s in phases.values() if s in ("NEXT", "IN PROGRESS")]
+    assert len(active) == 1
 
 
 def test_pause_checkpoint_records_cc1b_evidence_and_cc2_scope():
@@ -100,7 +103,7 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
         "tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py "
         "tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q"
     ) in text
-    assert "must be **retried**, not begun fresh" in text
+    assert "Check the latest status in" in text
     assert "oracle_labels.parquet" in text
     assert "GitHub issue #5" in text
 
@@ -126,6 +129,8 @@ def test_canonical_docs_do_not_make_cc1_current():
 
 
 def test_canonical_docs_do_not_make_cc2_in_progress():
+    # CC2-anchored patterns only -- a bare "IN PROGRESS" is no longer an
+    # error signal on its own now that CC5 legitimately carries that status.
     canonical_paths = [
         ROOT / "docs/contextual_composition_roadmap.md",
         ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
@@ -134,8 +139,6 @@ def test_canonical_docs_do_not_make_cc2_in_progress():
         ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
     ]
     forbidden = [
-        "Current status: `IN PROGRESS`",
-        "current_status: IN PROGRESS",
         "CC2 has started",
         "CC2 is `IN PROGRESS`",
     ]
@@ -143,3 +146,66 @@ def test_canonical_docs_do_not_make_cc2_in_progress():
         text = path.read_text()
         for needle in forbidden:
             assert needle not in text, f"{path.relative_to(ROOT)} contains {needle!r}"
+
+
+def test_canonical_docs_do_not_make_cc6_active():
+    canonical_paths = [
+        ROOT / "docs/contextual_composition_roadmap.md",
+        ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
+        ROOT / "docs/CONTEXTUAL_COMPOSITION_BRANCH.md",
+        ROOT / "docs/contextual_composition_decisions.md",
+        ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
+    ]
+    forbidden = [
+        "Current phase: `CC6",
+        "current_phase: CC6",
+        "CC6 is `NEXT`",
+        "CC6 is `IN PROGRESS`",
+        "CC6 has started",
+    ]
+    for path in canonical_paths:
+        text = path.read_text()
+        for needle in forbidden:
+            assert needle not in text, f"{path.relative_to(ROOT)} contains {needle!r}"
+
+
+def test_start_here_and_resume_name_same_current_task():
+    needle = "CC5 - Contextual composition predictor"
+    assert needle in (ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md").read_text()
+    assert needle in (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
+
+
+def test_future_work_is_labeled_not_implemented():
+    text = (ROOT / "docs/contextual_composition_roadmap.md").read_text()
+    assert "## Future Research Directions -- Not Yet Implemented" in text
+    assert "None of them exist in this repository today" in text
+
+
+def test_no_canonical_doc_claims_first_cc5_result_is_final():
+    canonical_paths = [
+        ROOT / "docs/contextual_composition_roadmap.md",
+        ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
+        ROOT / "docs/CONTEXTUAL_COMPOSITION_BRANCH.md",
+        ROOT / "docs/contextual_composition_decisions.md",
+        ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
+    ]
+    stale = "CC5 remains the roadmap's `NEXT` phase to return to"
+    for path in canonical_paths:
+        text = path.read_text()
+        assert stale not in text, f"{path.relative_to(ROOT)} still describes the first CC5 result as final"
+
+
+def test_canonical_docs_reference_active_issue_and_cc4b_retry():
+    canonical_paths = [
+        ROOT / "docs/contextual_composition_roadmap.md",
+        ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
+        ROOT / "docs/CONTEXTUAL_COMPOSITION_BRANCH.md",
+        ROOT / "docs/contextual_composition_decisions.md",
+        ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
+    ]
+    for path in canonical_paths:
+        text = path.read_text()
+        assert "#5" in text or "issues/5" in text, f"{path.relative_to(ROOT)} missing active issue reference"
+        assert "cc4b_cc5_retry" in text or "cc4b_oracle_composition_expansion" in text, (
+            f"{path.relative_to(ROOT)} missing CC4b/CC5 retry link"
+        )

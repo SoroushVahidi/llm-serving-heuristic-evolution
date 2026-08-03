@@ -28,6 +28,10 @@ git checkout contextual-compositional-heuristics-20260731
   a completion checkpoint)
 - Starting SHA before the CC5 checkpoint commit:
   `db143fc7aef5cb604ed56b778b948b5d4f271891`
+- CC4b/CC5-retry (Query 12) checkpoint SHA: verify against the CC4b/CC5
+  retry report's `New SHA` with `git rev-parse HEAD`
+- Starting SHA before the CC4b/CC5-retry checkpoint commit:
+  `c17208079ef50368103f1feca992ac91f52ff4cb`
 
 ## Read In Order
 
@@ -43,7 +47,8 @@ git checkout contextual-compositional-heuristics-20260731
 10. [audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 11. [audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 12. [audits/contextual_composition_cc5_predictor_report_20260803.md](audits/contextual_composition_cc5_predictor_report_20260803.md)
-13. GitHub issue #5
+13. [audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) -- **read this one for current status**
+14. GitHub issue #5
 
 ## Verify State
 
@@ -64,32 +69,40 @@ behind, and a passing contextual-composition status checker.
 ## Current Phase
 
 - Current phase: `CC5 - Contextual composition predictor`
-- Current status: `NEXT` (attempted, exit gate NOT passed -- verdict `INCONCLUSIVE`)
+- Current status: `IN PROGRESS` (first attempt: exit gate NOT passed --
+  verdict `INCONCLUSIVE`, not negative; retry underway)
 - Decision gate: CC4's exit gate passed and CC5 was attempted against it;
-  the trained predictor ties the best fixed policy on CC4's 6 evaluation
-  windows (mean ANWG 0.2306 vs 0.2310) and is beaten by
+  the trained predictor tied the best fixed policy on CC4's 6 evaluation
+  windows (mean ANWG 0.2306 vs 0.2310) and was beaten by
   `best_global_composition` (0.2633). Judged a data-scarcity finding (n=6
   held-out windows cannot statistically distinguish these methods), not a
-  methodology failure -- see the CC5 predictor report.
+  methodology failure -- see the CC5 predictor report. **A targeted CC4b
+  dataset expansion + unchanged CC5 rerun is the approved response, tracked
+  in the CC4b/CC5 retry report.**
 
 ## Exact Next Implementation Task
 
-CC5's exit gate did not pass, so it must be **retried**, not begun fresh. A
-future, explicitly authorized query should first expand the CC4 dataset
-(more windows, more per regime -- read
-[audits/contextual_composition_cc5_predictor_report_20260803.md](audits/contextual_composition_cc5_predictor_report_20260803.md)
-section 10 for the exact rationale), then retrain against the larger
-dataset using the existing, tested CC5 pipeline
-(`src/llmserveopt/experiments/cc5_contextual_predictor.py`,
-`scripts/run_cc5_contextual_predictor.py --dataset-dir <new CC4 dir>
---full-run`) -- no code changes are anticipated to be required.
+Check the latest status in
+[audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+first. If the CC4b build and CC5 rerun have already completed, that report
+holds the actual retry verdict and the real exact-next-task. If not yet
+complete: do not start a second build/rerun -- check
+`results/cc4b_oracle_composition_expansion/*/checkpoints/heartbeat.json`
+for progress, run `scripts/check_cc4b_quality_gates.py <dataset_dir>` once
+the build finishes, and only then rerun
+`scripts/run_cc5_contextual_predictor.py --dataset-dir <cc4b_dir>
+--full-run` (the existing, unchanged CC5 pipeline -- no code changes are
+anticipated to be required).
 
 ## Do Not Start Prematurely
 
-Do not retry CC5 predictor training in this same query. Do not begin CC6
-adaptation until CC5 actually passes its exit gate. Do not begin CC7
-hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
-real-vLLM jobs, or new experiments before the roadmap gates allow them.
+Do not start a second CC4b build or CC5 retry in parallel with an
+in-progress one. Do not begin CC6 adaptation until CC5 actually passes its
+exit gate. Do not begin CC7 hardening, CC8 real-serving validation, hosted
+API jobs, GPU jobs, real-vLLM jobs, evolutionary/QD library-expansion work,
+LLM-guided synthesis work, or other new experiments before the roadmap
+gates allow them -- see the roadmap's "Future Research Directions" section
+for what remains unimplemented future work, not current capability.
 
 ## CC1b Evidence
 
@@ -176,11 +189,31 @@ python scripts/run_cc5_contextual_predictor.py \
 
 Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
+## CC4b/CC5 Retry Evidence
+
+Primary local result directories (untracked, per repository convention):
+
+```text
+results/cc4b_oracle_composition_expansion/<timestamp>/
+results/cc5_contextual_composition_predictor_retry/<timestamp>/
+```
+
+Config: `configs/cc4b_oracle_composition_expansion.yaml` (generated by
+`scripts/generate_cc4b_expansion_config.py`, targets 50-100+ held-out
+windows across 10 synthetic regime templates + real-trace variants, reusing
+CC4's exact candidate-search config for direct comparability). Quality
+gates: `scripts/check_cc4b_quality_gates.py <dataset_dir>`. See
+[audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+for the full status and verdict once available.
+
+Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
+
 ## GitHub
 
-Continue with GitHub issue #5 (only in a separate, explicitly authorized
-query -- it remains OPEN, not closed, since CC5's exit gate did not pass):
+Continue with GitHub issue #5 (it remains OPEN -- do not close until the
+CC4b/CC5 retry verdict is complete):
 [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
 CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier
-gate; issue #4 is the completed CC4 oracle dataset gate.
+gate; issue #4 is the completed CC4 oracle dataset gate; issue #6 (CC6-CC8)
+remains correctly blocked on issue #5.

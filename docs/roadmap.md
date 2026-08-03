@@ -1,8 +1,13 @@
 # Roadmap
 
-> **Contextual-composition branch note (2026-07-31):** The active roadmap for
-> branch `contextual-compositional-heuristics-20260731` is
-> [contextual_composition_roadmap.md](contextual_composition_roadmap.md).
+> **Contextual-composition branch note (2026-08-03, active -- not paused):**
+> The active roadmap for branch `contextual-compositional-heuristics-20260731`
+> is [contextual_composition_roadmap.md](contextual_composition_roadmap.md).
+> CC1-CC4 are complete; CC5 is `IN PROGRESS` (targeted dataset expansion +
+> rerun underway) -- current status:
+> [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md);
+> active issue:
+> [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 > Resume that branch from
 > [RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md).
 > The document below remains a historical numbered-phase roadmap and Selector

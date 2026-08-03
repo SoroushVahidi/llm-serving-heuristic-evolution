@@ -510,3 +510,60 @@ Related files or evidence:
 - `tests/test_cc5_contextual_predictor.py`
 - `results/cc5_contextual_composition_predictor/20260803T175456Z/` (local, untracked)
 - GitHub issue #5 (remains open -- exit gate not passed)
+
+## CCD-016: CC4b Targeted Dataset Expansion Approved As The CC5 Retry Response
+
+Date: 2026-08-03
+
+Status: accepted
+
+Decision: Treat the CCD-015 finding as confirmed and act on it: build a
+targeted CC4b oracle-dataset expansion, then rerun CC5's existing pipeline
+completely unchanged against it, before considering any model redesign,
+new prediction targets, or evolutionary/QD synthesis work. CC6 remains
+blocked until the retry verdict resolves the CC5 decision gate one way or
+another.
+
+Rationale: the first CC5 result (CCD-015) was `INCONCLUSIVE`, not negative
+-- the pipeline is technically correct (22 passing tests, deterministic,
+fully evaluated), but n=6 held-out windows cannot statistically
+distinguish the trained predictor from best-fixed-policy or
+best-global-composition at any interesting effect size (bootstrap 95% CIs
+spanning roughly [0.10, 0.40] on every method). The cause is diagnosed as
+insufficient and insufficiently diverse held-out data (every CC4 window was
+its own unique regime template with zero within-template replication), not
+a methodology or code defect. `configs/cc4b_oracle_composition_expansion.yaml`
+(built by `scripts/generate_cc4b_expansion_config.py`) replicates each of
+CC4's 10 synthetic regime templates across many seeded, lightly-jittered
+variants plus additional real-trace request-transform variants, targeting
+50-100+ held-out windows and >=20 non-near-tie held-out windows, while
+reusing CC4's exact 34-candidate search config unchanged for direct
+comparability to the first CC5 run. `scripts/check_cc4b_quality_gates.py`
+enforces these targets (plus split integrity, family-dominance, and
+completion-accounting consistency) as hard gates before any retraining is
+allowed -- if they fail, the correct response is an exact diagnosis, not a
+forced rerun.
+
+Consequences: CC5 stays `IN PROGRESS` (not `COMPLETE`, not reverted to
+`NEXT`-not-started) while the CC4b build and CC5 rerun are underway; CC6
+stays `BLOCKED`. The decisive comparison for the retry is **contextual
+composition predictor vs. best global verified composition** (not vs. best
+fixed policy, which the first attempt already showed the predictor
+matching) -- see the roadmap's "Current Scientific Interpretation" section
+for the three possible outcomes and what each implies for CC6 and beyond.
+No CC5 pipeline code changes are made as part of this decision; only the
+input dataset changes. Longer-term research directions (envelope-aware
+usefulness, regret-profile complementarity, behavioral embeddings, typed
+module-level crossover, QD/MAP-Elites library expansion, LLM-guided
+symbolic synthesis, symbolic distillation from a dynamic teacher) are
+recorded in the roadmap as explicitly future, unimplemented work, not
+authorized by this decision.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`
+- `configs/cc4b_oracle_composition_expansion.yaml`
+- `scripts/generate_cc4b_expansion_config.py`
+- `scripts/check_cc4b_quality_gates.py`
+- `results/cc4b_oracle_composition_expansion/` (local, untracked)
+- GitHub issue #5 (remains open)

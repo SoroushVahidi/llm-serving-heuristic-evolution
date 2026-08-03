@@ -11,11 +11,19 @@ The authoritative branch-scoped roadmap is
 **[contextual_composition_roadmap.md](contextual_composition_roadmap.md)** and
 the decision log is
 **[contextual_composition_decisions.md](contextual_composition_decisions.md)**.
-The branch is intentionally paused after CC1b and before CC2 implementation;
-resume from **[RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md)**
-and the pause checkpoint
-**[audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)**.
-The final pause-readiness report is
+The branch is **active, not paused**: CC1-CC4 are complete, and CC5
+(contextual composition predictor) is `IN PROGRESS` via a targeted dataset
+expansion and rerun -- see the
+**[latest CC5 report](audits/contextual_composition_cc5_predictor_report_20260803.md)**
+and the
+**[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)**
+for current status. Resume from
+**[RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md)**;
+active issue:
+[#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
+The (now historical) pause-era checkpoint remains provenance at
+**[audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)**
+and
 **[audits/contextual_composition_query7_final_pause_readiness_20260731.md](audits/contextual_composition_query7_final_pause_readiness_20260731.md)**.
 These files are canonical for the
 `contextual-compositional-heuristics-20260731` branch only; they do not rewrite

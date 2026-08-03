@@ -2,11 +2,16 @@
 
 > **2026-07-25 intentional pause.** Start at [`RESUME_HERE.md`](RESUME_HERE.md) and [`pause_2026_07_25/`](pause_2026_07_25/).
 
-> **Contextual-composition branch note (2026-07-31).** For the scoped
-> contextual-compositional heuristic path on
+> **Contextual-composition branch note (2026-08-03, active -- not paused).**
+> For the scoped contextual-compositional heuristic path on
 > `contextual-compositional-heuristics-20260731`, start at
 > [`../START_HERE_CONTEXTUAL_COMPOSITION.md`](../START_HERE_CONTEXTUAL_COMPOSITION.md)
 > and then [`../RESUME_CONTEXTUAL_COMPOSITION.md`](../RESUME_CONTEXTUAL_COMPOSITION.md).
+> CC1-CC4 are complete; CC5 is `IN PROGRESS` (targeted dataset expansion +
+> rerun underway) -- see
+> [`../audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`](../audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+> for current status and active issue
+> [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 > That branch-specific roadmap supersedes this directory only for the new
 > contextual-composition sequence; the documents below remain historical and
 > project-wide provenance.

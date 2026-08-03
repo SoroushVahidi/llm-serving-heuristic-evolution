@@ -47,9 +47,9 @@ ALLOWED_STATUS = {
 REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
     "current_phase": "CC5",
-    "current_status": "NEXT",
-    "next_action": "CC5 was attempted and returned verdict INCONCLUSIVE (n=6 evaluation windows insufficient to certify generalization); CC6 is not queued; a future query must first expand the CC4 dataset with more windows, then read the CC5 predictor report's section 10 before retraining",
-    "roadmap_version": 5,
+    "current_status": "IN PROGRESS",
+    "next_action": "a targeted CC4b oracle-dataset expansion (configs/cc4b_oracle_composition_expansion.yaml, results/cc4b_oracle_composition_expansion/) is actively running to grow the evaluation set from 6 to 50-100+ held-out windows; once quality gates pass, the existing unchanged CC5 pipeline reruns against it and the retry verdict is interpreted before any model redesign or CC6 work begins",
+    "roadmap_version": 6,
 }
 
 CANONICAL_FILES = [
@@ -123,18 +123,26 @@ def check_status_table(text: str) -> None:
         "CC2": "COMPLETE",
         "CC3": "COMPLETE",
         "CC4": "COMPLETE",
-        "CC5": "NEXT",
-        "CC6": "PLANNED",
-        "CC7": "PLANNED",
-        "CC8": "PLANNED",
+        "CC5": "IN PROGRESS",
+        "CC6": "BLOCKED",
+        "CC7": "BLOCKED",
+        "CC8": "BLOCKED",
     }
     for phase, status in expected.items():
         if phases.get(phase) != status:
             fail(f"phase {phase} expected {status}, found {phases.get(phase)!r}")
 
-    next_count = sum(1 for status in phases.values() if status == "NEXT")
-    if next_count != 1:
-        fail(f"expected exactly one NEXT phase, found {next_count}")
+    # "Active" phase = the single phase currently queued (NEXT) or actively
+    # being worked (IN PROGRESS) -- exactly one of either value must be
+    # present, matching the real state of whatever query/job is running.
+    active_count = sum(1 for status in phases.values() if status in ("NEXT", "IN PROGRESS"))
+    if active_count != 1:
+        fail(f"expected exactly one active (NEXT or IN PROGRESS) phase, found {active_count}")
+
+    # CC6 must never be marked active while CC5 (its dependency) is
+    # unresolved -- CC5 not yet COMPLETE implies CC6 must stay BLOCKED.
+    if phases.get("CC5") != "COMPLETE" and phases.get("CC6") in ("NEXT", "IN PROGRESS", "COMPLETE"):
+        fail(f"CC6 is marked {phases.get('CC6')!r} while CC5 is unresolved ({phases.get('CC5')!r})")
 
 
 def check_required_strings(text: str, path: Path, required: list[str]) -> None:
@@ -205,7 +213,7 @@ def check_pause_contract(
         ROADMAP,
         [
             "current_phase: CC5",
-            "current_status: NEXT",
+            "current_status: IN PROGRESS",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
             "audits/contextual_composition_query7_final_pause_readiness_20260731.md",
@@ -218,7 +226,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "remains `NEXT`",
+            "Do not start a second, parallel CC4b build or CC5 retry",
         ],
     )
     check_required_strings(
@@ -228,7 +236,7 @@ def check_pause_contract(
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "Current phase: `CC5 - Contextual composition predictor`",
-            "must be **retried**, not begun fresh",
+            "Check the latest status in",
             "GitHub issue #5",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
@@ -287,9 +295,11 @@ def check_no_cc1_current() -> None:
 
 
 def check_no_cc2_in_progress() -> None:
+    # CC2-anchored patterns only -- a bare "IN PROGRESS" is no longer an
+    # error signal on its own now that CC5 legitimately carries that status
+    # (see check_status_table's active_count invariant for the current
+    # generic "exactly one active phase" guarantee instead).
     forbidden_patterns = [
-        r"Current status:\s*`IN PROGRESS`",
-        r"current_status:\s*IN PROGRESS\b",
         r"CC2\s+\|\s+Canonical primitive interface\s+\|\s+IN PROGRESS",
         r"CC2\s+is\s+`?IN PROGRESS`?",
         r"CC2\s+has\s+started",
@@ -299,6 +309,68 @@ def check_no_cc2_in_progress() -> None:
         for pattern in forbidden_patterns:
             if re.search(pattern, text):
                 fail(f"{path.relative_to(ROOT)} says CC2 is already in progress")
+
+
+def check_no_cc6_active() -> None:
+    """CC6 must never be marked active (NEXT/IN PROGRESS/COMPLETE) while
+    CC5's own decision gate is unresolved -- complements check_status_table's
+    table-row check by also catching stray prose claims outside the table."""
+    forbidden_patterns = [
+        r"Current phase:\s*`CC6\b",
+        r"current_phase:\s*CC6\b",
+        r"CC6\s+is\s+`?NEXT`?",
+        r"CC6\s+is\s+`?IN PROGRESS`?",
+        r"CC6\s+is\s+`?COMPLETE`?",
+        r"CC6\s+has\s+started",
+    ]
+    for path in CANONICAL_FILES:
+        text = read(path)
+        for pattern in forbidden_patterns:
+            if re.search(pattern, text):
+                fail(f"{path.relative_to(ROOT)} marks CC6 active while CC5 is unresolved")
+
+
+def check_start_here_and_resume_name_same_current_task(start_here: str, resume_doc: str) -> None:
+    needle = "CC5 - Contextual composition predictor"
+    if needle not in start_here:
+        fail(f"{START_HERE.relative_to(ROOT)} does not name the current task ({needle!r})")
+    if needle not in resume_doc:
+        fail(f"{RESUME_DOC.relative_to(ROOT)} does not name the current task ({needle!r})")
+
+
+def check_future_work_labeled(roadmap: str) -> None:
+    check_required_strings(
+        roadmap,
+        ROADMAP,
+        [
+            "## Future Research Directions -- Not Yet Implemented",
+            "None of them exist in this repository today",
+        ],
+    )
+
+
+def check_active_issue_referenced() -> None:
+    for path in CANONICAL_FILES:
+        text = read(path)
+        if "issues/5" not in text and "#5" not in text:
+            fail(f"{path.relative_to(ROOT)} does not reference the active issue (#5)")
+
+
+def check_cc4b_retry_linked() -> None:
+    for path in CANONICAL_FILES:
+        text = read(path)
+        if "cc4b_cc5_retry" not in text and "cc4b_oracle_composition_expansion" not in text:
+            fail(f"{path.relative_to(ROOT)} does not link the current CC4b/CC5 retry work")
+
+
+def check_no_stale_final_cc5_verdict_claim() -> None:
+    """Guards against a canonical doc reverting to describing the first,
+    INCONCLUSIVE CC5 attempt as if it were the final verdict."""
+    forbidden = "CC5 remains the roadmap's `NEXT` phase to return to"
+    for path in CANONICAL_FILES:
+        text = read(path)
+        if forbidden in text:
+            fail(f"{path.relative_to(ROOT)} still describes the first CC5 result as final (stale phrase found)")
 
 
 def check_resume_readiness_extra() -> None:
@@ -352,8 +424,8 @@ def check_resume_readiness_extra() -> None:
         ROADMAP,
         [
             "current_phase: CC5",
-            "current_status: NEXT",
-            "CC5 was attempted and returned verdict INCONCLUSIVE",
+            "current_status: IN PROGRESS",
+            "Retry in progress (started 2026-08-03)",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
@@ -374,6 +446,7 @@ def check_resume_readiness_extra() -> None:
             ],
         )
     check_no_cc2_in_progress()
+    check_no_cc6_active()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -453,7 +526,7 @@ def main(argv: list[str] | None = None) -> int:
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
             "architecture/contextual_composition_primitives.md",
-            "remains `NEXT`",
+            "Do not start a second, parallel CC4b build or CC5 retry",
         ],
     )
     check_required_strings(
@@ -488,6 +561,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     check_no_cc1_current()
     check_no_cc2_in_progress()
+    check_no_cc6_active()
+    check_start_here_and_resume_name_same_current_task(start_here, resume_doc)
+    check_future_work_labeled(roadmap)
+    check_active_issue_referenced()
+    check_cc4b_retry_linked()
+    check_no_stale_final_cc5_verdict_claim()
 
     if resume_readiness:
         check_resume_readiness_extra()

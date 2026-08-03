@@ -4,10 +4,41 @@ Authoritative branch: `contextual-compositional-heuristics-20260731`
 
 Current phase: `CC5 - Contextual composition predictor`
 
-Pause state: none. CC4 is COMPLETE. CC5 was attempted and returned verdict
-`INCONCLUSIVE` (exit gate NOT passed) -- it remains the roadmap's `NEXT`
-phase to return to; CC6 is not queued. See the
-[CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md).
+Pause state: none. CC4 is COMPLETE. CC5's first attempt returned verdict
+`INCONCLUSIVE` (exit gate NOT passed, not a negative result -- see below);
+CC5 is `IN PROGRESS` via an active retry. CC6 is **BLOCKED** until the retry
+verdict lands. See the
+[CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md)
+(first attempt) and the
+[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+(current status -- read this one first if it exists).
+
+## Active Task Right Now (read this section first)
+
+A targeted oracle-dataset expansion (CC4b) is growing CC4's held-out set
+from 6 to 50-100+ windows, after which CC5's existing, unchanged pipeline
+reruns against it -- because the first CC5 attempt was statistically
+inconclusive at n=6 held-out windows (`best_global_composition` beat the
+trained predictor, but the gap was well within noise). Exact commands used:
+
+```bash
+tmux attach -t cc4b_cc5_retry
+# build config:      configs/cc4b_oracle_composition_expansion.yaml
+# build script:       scripts/run_cc4_oracle_composition_dataset.py --config configs/cc4b_oracle_composition_expansion.yaml --full-run --allow-dirty --timestamp <TS>
+# checkpoints/log:     results/cc4b_oracle_composition_expansion/<TS>/checkpoints/{heartbeat.json,trial_results.jsonl}
+# session log:         logs/cc4b_cc5_retry_YYYYMMDD_HHMMSS.log
+# quality gates:       scripts/check_cc4b_quality_gates.py results/cc4b_oracle_composition_expansion/<TS>
+# CC5 rerun:            scripts/run_cc5_contextual_predictor.py --dataset-dir results/cc4b_oracle_composition_expansion/<TS> --full-run --timestamp <TS>
+```
+
+**Do not start a second CC4b build, a second CC5 training run, or any CC6
+work in parallel with this.** Check `results/cc4b_oracle_composition_expansion/*/checkpoints/heartbeat.json`
+for the latest progress before starting anything else. Exact next decision
+once the run completes: check the quality gates, then interpret the CC5
+retry verdict (`PROCEED` / `REGIME_SPECIFIC_ONLY` / `STOP_OR_REDESIGN` /
+`INCONCLUSIVE`) before any model redesign or CC6 work -- see the
+[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+for the actual outcome. Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 
 CC5 trained a KNN regret-regression predictor over CC4's already-verified,
 already-executed candidate pool (`src/llmserveopt/experiments/cc5_contextual_predictor.py`),
@@ -50,12 +81,9 @@ equivalence/registry tests. Six of seven reconstructions are EXACT; one
 [architecture doc](architecture/contextual_composition_primitives.md) and the
 [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md).
 
-Exact next task: CC5's exit gate did not pass, so it must be retried, not
-begun fresh. A future, explicitly authorized query should first expand the
-CC4 dataset (more windows, more per regime -- read the CC5 predictor
-report's section 10 for the exact rationale), then retrain against the
-larger dataset using the existing, tested CC5 pipeline (no anticipated code
-changes). Do not begin CC6 dynamic adaptation until CC5 passes.
+Exact next task: see "Active Task Right Now" above. In summary: interpret
+the CC4b/CC5 retry verdict once the current run completes, before any model
+redesign or CC6 work. Do not begin CC6 dynamic adaptation until CC5 passes.
 
 ## Read In This Order
 
@@ -79,18 +107,21 @@ changes). Do not begin CC6 dynamic adaptation until CC5 passes.
 18. `docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
 19. `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
 20. `docs/audits/contextual_composition_cc5_predictor_report_20260803.md`
+21. `docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`
     or the latest later contextual-composition audit report
 
 ## What Not To Do Yet
 
 CC2's primitive interface, representative-policy reconstructions, CC3's
 compositional DSL/verifier extension, and CC4's oracle composition dataset
-are all complete. CC5 was attempted but did not pass its exit gate
-(`INCONCLUSIVE`); do not retry it without a separate, explicitly authorized
-query, and do not begin dynamic adaptation (CC6) until CC5 actually passes.
-Do not begin counterexample hardening (CC7), real-vLLM jobs, hosted API
-experiments, or large simulator sweeps before the roadmap phase gate allows
-them.
+are all complete. CC5's first attempt did not pass its exit gate
+(`INCONCLUSIVE`) and a retry (CC4b expansion + unchanged CC5 rerun) is
+underway; do not start a second, parallel retry, and do not begin dynamic
+adaptation (CC6) until CC5 actually passes. Do not begin counterexample
+hardening (CC7), real-vLLM jobs, hosted API experiments, evolutionary/QD
+library-expansion work, or LLM-guided synthesis work (all future
+directions, none implemented -- see the roadmap's "Future Research
+Directions" section) before the roadmap phase gate allows them.
 
 ## How To Update Status
 

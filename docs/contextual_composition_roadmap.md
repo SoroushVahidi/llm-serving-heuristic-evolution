@@ -3,9 +3,9 @@
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
 current_phase: CC5
-current_status: NEXT
-next_action: CC5 was attempted and returned verdict INCONCLUSIVE (n=6 evaluation windows insufficient to certify generalization); CC6 is not queued; a future query must first expand the CC4 dataset with more windows, then read the CC5 predictor report's section 10 before retraining
-roadmap_version: 5
+current_status: IN PROGRESS
+next_action: a targeted CC4b oracle-dataset expansion (configs/cc4b_oracle_composition_expansion.yaml, results/cc4b_oracle_composition_expansion/) is actively running to grow the evaluation set from 6 to 50-100+ held-out windows; once quality gates pass, the existing unchanged CC5 pipeline reruns against it and the retry verdict is interpreted before any model redesign or CC6 work begins
+roadmap_version: 6
 ```
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
@@ -25,10 +25,10 @@ Current date: 2026-07-31
 | CC2 | Canonical primitive interface | COMPLETE | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [architecture doc](architecture/contextual_composition_primitives.md); [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md) | Complete; CC2 equivalence gate passed (6/7 EXACT, 1/7 documented APPROXIMATE) |
 | CC3 | Compositional DSL and verifier | COMPLETE | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3); [architecture doc](architecture/contextual_composition_dsl.md); [CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md) | Complete; CC3 exit gate passed (8/8 required constructs, 447 focused+regression tests, legacy compatibility preserved). CC4 remains BLOCKED pending explicit authorization. |
 | CC4 | Offline oracle composition dataset | COMPLETE | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4); [CC4 oracle dataset report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md) | Complete; CC4 exit gate passed (12 windows/34 candidates/408 executions, 0 rejected, reproducible+resumable, 66.7% evaluation-window composition-oracle gain, completion constraints hold on all windows). CC5 remains queued pending explicit authorization. |
-| CC5 | Contextual composition predictor | NEXT | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md) | Attempted; verdict `INCONCLUSIVE` (predictor ties best fixed policy on n=6 held-out windows; best_global_composition actually wins). Exit gate NOT passed. CC6 not queued. Exact remaining task: expand the CC4 dataset (more windows/regimes) before retrying -- see report section 10. |
-| CC6 | Dynamic adaptation and stability | PLANNED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC5 |
-| CC7 | Counterexample-guided hardening | PLANNED | CC6 stable adaptation or explicit static-only scope | No critical supported-envelope failures remain | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC6 |
-| CC8 | Real-trace and real-serving validation | PLANNED | CC7 hardening gate passes | Clean staged validation through real-serving evidence | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC7 |
+| CC5 | Contextual composition predictor | IN PROGRESS | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md) (first attempt); [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) (in progress -- see for latest status) | First attempt: verdict `INCONCLUSIVE`, not negative (predictor ties best fixed policy on n=6 held-out windows; best_global_composition wins; cause diagnosed as insufficient held-out data and high OOD abstention, not a methodology failure). **Currently running:** a targeted CC4b dataset expansion (`cc4b_cc5_retry` tmux session) is growing the held-out set to 50-100+ windows, after which the unchanged CC5 pipeline reruns and the retry verdict is interpreted. CC6 remains blocked until that verdict lands. |
+| CC6 | Dynamic adaptation and stability | BLOCKED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on the CC5 retry decision gate (not yet resolved) |
+| CC7 | Counterexample-guided hardening | BLOCKED | CC6 stable adaptation or explicit static-only scope | No critical supported-envelope failures remain | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on CC6 |
+| CC8 | Real-trace and real-serving validation | BLOCKED | CC7 hardening gate passes | Clean staged validation through real-serving evidence | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on CC7 |
 
 Allowed status values: `COMPLETE`, `IN PROGRESS`, `NEXT`, `BLOCKED`,
 `PLANNED`, `PAUSED`, `INVALIDATED`.
@@ -453,6 +453,19 @@ CV noise floor. CC6 is **not** queued as a result. Exact remaining task:
 expand the CC4 dataset (more windows, more per regime) before retraining;
 no CC5 pipeline code changes are anticipated to be required.
 
+**Retry in progress (started 2026-08-03).** The exact remaining task above
+is now underway: a targeted CC4b oracle-dataset expansion
+(`configs/cc4b_oracle_composition_expansion.yaml`) is growing the held-out
+set from 6 to 50-100+ windows (tmux session `cc4b_cc5_retry`), reusing
+CC4's engine and DSL/compiler/verifier infrastructure unchanged. Once
+quality gates pass (held-out count, non-near-tie count, family-dominance,
+split integrity, completion-accounting consistency -- see
+`scripts/check_cc4b_quality_gates.py`), the existing, unchanged CC5
+pipeline reruns against the expanded dataset. See the
+[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+for live status and the eventual retry verdict -- **this first-attempt
+INCONCLUSIVE result above is not the final CC5 verdict.**
+
 Canonical issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 
 ## Phase CC6 - Dynamic Adaptation And Stability
@@ -524,6 +537,98 @@ Do not make production or general superiority claims without clean,
 unconfounded real-serving evidence.
 
 Canonical issue: [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6).
+
+## Current Scientific Interpretation
+
+This section summarizes what the evidence gathered so far actually means,
+kept separate from the phase-gate mechanics above.
+
+* **CC1b proved composition opportunity exists in discriminative
+  workloads.** The original CC1 suite was nondiscriminative; the
+  strengthened CC1b suite found a true simulator-executed weighted-Borda
+  composition opportunity and cleared the `PROCEED` gate (non-near-tie
+  opportunity gap 0.0167735). See
+  [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md).
+* **CC4 produced simulator-grounded oracle composition labels.** 12
+  windows, 34 verified candidates, 408 true simulator executions, 0 reward-
+  vector interpolation anywhere. A composition-family candidate was the
+  oracle winner on 66.7% of CC4's own held-out windows. See the
+  [CC4 oracle dataset report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md).
+* **The first CC5 run was technically correct but statistically
+  inconclusive.** The pipeline (targets, models, uncertainty/OOD/fallback,
+  evaluation, verdict logic) ran deterministically and passed all 22 of
+  its focused tests. With only 6 held-out windows, `best_global_composition`
+  (mean ANWG 0.2633) beat the trained predictor (0.2306), which in turn
+  tied `best_fixed_policy` (0.2310) -- differences the bootstrap 95% CIs
+  (roughly [0.10, 0.40] on every method) cannot statistically support as
+  real. See the
+  [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md).
+* **The CC4b expansion (in progress) tests whether that outcome was caused
+  by insufficient and insufficiently diverse data**, not by a genuine
+  absence of adaptive value. It reuses CC4's exact candidate search (same
+  34 candidates) so the comparison is apples-to-apples, and reruns CC5's
+  exact, unchanged pipeline against the larger dataset.
+* **The decisive comparison** the retry is designed to resolve is:
+
+  > **contextual composition predictor** vs. **best global verified
+  > composition**
+
+  with three possible outcomes:
+
+  1. **Predictor wins** -> contextual adaptation is justified; proceed
+     toward CC6 (controlled per-window adaptation).
+  2. **Global composition wins** -> composition itself is useful (a single
+     well-chosen verified composition beats every fixed policy and the
+     hard selector), but machine-learned contextual adaptation may not be
+     worth its complexity given current data; the roadmap would need a
+     documented decision before any further predictor investment.
+  3. **Hard selector wins** -> even primitive-level composition may not
+     justify its added complexity over a much simpler per-regime lookup;
+     this would be the strongest signal to reconsider the CC5+ research
+     direction entirely, not just retune it.
+
+  None of these three outcomes is presupposed; the retry report records
+  whichever one the expanded held-out evidence actually supports.
+
+## Future Research Directions -- Not Yet Implemented
+
+**These are ideas under consideration for phases beyond the current
+roadmap. None of them exist in this repository today -- no code, no
+experiments, no partial implementation.** They are recorded here so that
+future roadmap decisions have a place to point to, not because any of them
+are scheduled or authorized.
+
+* **Envelope-aware policy usefulness** -- characterizing a policy's value
+  as a function of the operating envelope (load, SLO tightness, mix) it is
+  actually useful within, rather than a single scalar score.
+* **Regret-profile complementarity** -- identifying which primitives/
+  compositions have *complementary* regret profiles (each wins where the
+  others lose) as a principled basis for a richer composition search,
+  beyond CC4's current independent-candidate grid.
+* **Behavioral embeddings** -- learned vector representations of a
+  policy's scheduling behavior (e.g. from its decision traces), as a
+  similarity/complementarity signal for composition or selection.
+* **Typed module-level crossover** -- genome-style recombination of
+  scheduling modules (admission/ranking/placement/batching) with type
+  compatibility constraints, extending `policies/genome.py` beyond its
+  current conservative scope.
+* **QD/MAP-Elites-style library expansion** -- quality-diversity search
+  over the composition space to build a diverse library of behaviorally
+  distinct, individually strong compositions, rather than a single
+  best-of search.
+* **LLM-guided symbolic scheduler synthesis** -- using an LLM to propose
+  candidate DSL structures for CC3's verifier to check and CC4's simulator
+  to evaluate (CC4's report already sketches a clean, cost-capped,
+  cache-deduplicated integration point for this that was never exercised
+  live in any run to date).
+* **Symbolic distillation from a dynamic teacher** -- once CC6 (dynamic
+  adaptation) exists, distilling its learned per-window behavior back into
+  a simpler, auditable symbolic (DSL) form.
+
+None of the above should be read as implemented, scheduled, or endorsed by
+this roadmap's phase gates -- they require their own future decision gate
+and roadmap entry before any implementation work begins, exactly like every
+CC-numbered phase above.
 
 ## Research Invariants
 

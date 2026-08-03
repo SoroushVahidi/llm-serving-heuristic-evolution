@@ -36,8 +36,22 @@ Start from the synchronization-aware audit:
 - [CC3 DSL/Verifier Report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 - [CC4 Oracle Dataset Report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 - [CC5 Predictor Report](audits/contextual_composition_cc5_predictor_report_20260803.md)
+- [CC4b/CC5 Retry Report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) -- **current status**
 
-Current high-level status: Query 11 implemented and attempted CC5 (the
+Current high-level status: Query 12 is running a targeted CC4b oracle-
+dataset expansion (`configs/cc4b_oracle_composition_expansion.yaml`,
+`scripts/generate_cc4b_expansion_config.py`, tmux session
+`cc4b_cc5_retry`), growing CC4's held-out set from 6 to 50-100+ windows
+across 10 synthetic regime templates (multiple seeds/jitter each) plus
+real-trace variants, reusing CC4's exact 34-candidate search config for
+direct comparability. Once quality gates pass
+(`scripts/check_cc4b_quality_gates.py`), CC5's existing, unchanged pipeline
+reruns against the expanded dataset. This is the approved response to
+Query 11's finding, not a redesign: the first CC5 attempt was technically
+correct but statistically inconclusive at n=6 held-out windows, not
+negative. See the CC4b/CC5 retry report for the current build/rerun status
+and, once available, the actual retry verdict. CC6 remains **BLOCKED**
+until that verdict is interpreted. Query 11 implemented and attempted CC5 (the
 deployable contextual composition predictor) against CC4's oracle dataset.
 The pipeline itself is complete and tested (22 new tests), but the exit
 gate did **not** pass: verdict `INCONCLUSIVE`. The trained predictor (KNN
@@ -95,22 +109,29 @@ simulator-executed weighted Borda composition opportunity and cleared the
     dataset. COMPLETE.
 11. Query 11: implement and attempt CC5 (contextual composition predictor).
     Pipeline COMPLETE; decision gate NOT PASSED (verdict `INCONCLUSIVE`).
+12. Query 12: targeted CC4b oracle-dataset expansion and unchanged CC5
+    rerun. IN PROGRESS -- see the CC4b/CC5 retry report for current status.
 
 ## Guardrail
 
-Do not retry CC5 predictor training, implement CC6 adaptation, selector
-redesigns, real-vLLM jobs, hosted API experiments, or large ungated sweeps
-before the roadmap allows them. CC5's exit gate did not pass (see the CC5
-predictor report); it must not be retried without a separate, explicitly
-authorized query, and CC6 must not begin until CC5 actually passes.
+Do not start a second, parallel CC4b build or CC5 retry. Do not implement
+CC6 adaptation, selector redesigns, real-vLLM jobs, hosted API experiments,
+evolutionary/QD library-expansion work, LLM-guided synthesis work, or large
+ungated sweeps before the roadmap allows them -- see the roadmap's "Future
+Research Directions -- Not Yet Implemented" section for what remains future
+work, not current capability. CC5's first exit gate attempt did not pass
+(see the CC5 predictor report); CC6 must not begin until the CC4b/CC5 retry
+verdict resolves it one way or another.
 
 ## Next Action
 
-CC5 (contextual composition predictor) remains `NEXT` -- attempted, not
-passed. A future, explicitly authorized query should first expand the CC4
-dataset (more windows, more per regime -- see
-`docs/audits/contextual_composition_cc5_predictor_report_20260803.md`
-section 10 for the exact rationale), then retrain against the larger
-dataset using the existing, tested CC5 pipeline
-(`src/llmserveopt/experiments/cc5_contextual_predictor.py`) -- no code
-changes are anticipated to be required.
+Check `docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`
+for the current build/rerun status and, once available, the actual retry
+verdict. If the run is still in progress, check
+`results/cc4b_oracle_composition_expansion/*/checkpoints/heartbeat.json`
+for live progress before starting anything else -- do not start a second
+run in parallel. Once the retry verdict lands: if `PROCEED`, queue CC6 but
+do not start it in the same query; otherwise keep CC5 `IN PROGRESS` with
+the exact remaining task the retry report records.
+
+Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
