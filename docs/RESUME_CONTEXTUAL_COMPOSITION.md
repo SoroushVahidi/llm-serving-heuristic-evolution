@@ -32,6 +32,10 @@ git checkout contextual-compositional-heuristics-20260731
   retry report's `New SHA` with `git rev-parse HEAD`
 - Starting SHA before the CC4b/CC5-retry checkpoint commit:
   `c17208079ef50368103f1feca992ac91f52ff4cb`
+- CC5 uncertainty/regime (Query 13) checkpoint SHA: verify against the
+  uncertainty/regime report's `New SHA` with `git rev-parse HEAD`
+- Starting SHA before the uncertainty/regime checkpoint commit:
+  `7718214119e7eff8f242ff974aad00d37063906a`
 
 ## Read In Order
 
@@ -47,8 +51,9 @@ git checkout contextual-compositional-heuristics-20260731
 10. [audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 11. [audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 12. [audits/contextual_composition_cc5_predictor_report_20260803.md](audits/contextual_composition_cc5_predictor_report_20260803.md)
-13. [audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) -- **read this one for current status**
-14. GitHub issue #5
+13. [audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+14. [audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md) -- **read this one for current status**
+15. GitHub issue #5
 
 ## Verify State
 
@@ -70,6 +75,7 @@ behind, and a passing contextual-composition status checker.
 
 - Current phase: `CC5 - Contextual composition predictor`
 - Current status: `IN PROGRESS` (first attempt: `INCONCLUSIVE`; retry:
+  `REGIME_SPECIFIC_ONLY`; uncertainty/regime refinement:
   `REGIME_SPECIFIC_ONLY` -- exit gate still not fully passed)
 - Decision gate: CC4's exit gate passed and CC5 was attempted twice. First
   attempt (n=6 held-out): the predictor tied best fixed policy (0.2306 vs
@@ -83,22 +89,11 @@ behind, and a passing contextual-composition status checker.
 
 ## Exact Next Implementation Task
 
-Per the CC4b/CC5 retry report's exact next research step: (1) address the
-uncertainty-method gap -- across two independent retries, leave-one-window-out
-model selection has never chosen `RandomForestRegressor`, the only model
-type `cc5_contextual_predictor.py`'s `_predict_with_uncertainty` computes
-real ensemble uncertainty for (either extend it to support gradient-boosting/
-KNN uncertainty, or factor ensemble-uncertainty-availability into model
-selection itself); (2) then compute a per-regime regret breakdown
-(predictor vs. global-composition regret, already derivable from
-`per_window_predictions.csv`/`regret_tables.csv` in the retry run
-directory) to determine whether the predictor's value is regime-concentrated.
-Do not start a third CC4b/CC5 retry cycle before doing this analysis.
+Per the CC5 uncertainty/regime report: uncertainty gap closed (`normalized_split_conformal`); best completion-safe hybrid ANWG 0.4019 still 0.0006 short of best_global 0.4025. Exact next step: freeze the restricted envelope (trust predictor on kv_pressure/saturated; hybrid fallback elsewhere) or run a narrow regime-specialist follow-up on the six global-win regimes. Do not begin CC6.
 
 ## Do Not Start Prematurely
 
-Do not start another CC4b build or CC5 retry before completing the analysis
-above. Do not begin CC6 adaptation until CC5 actually passes its exit gate.
+Do not begin CC6 adaptation until CC5 actually passes its exit gate.
 Do not begin CC7 hardening, CC8 real-serving validation, hosted API jobs,
 GPU jobs, real-vLLM jobs, evolutionary/QD library-expansion work,
 LLM-guided synthesis work, or other new experiments before the roadmap
@@ -227,3 +222,15 @@ Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
 CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier
 gate; issue #4 is the completed CC4 oracle dataset gate; issue #6 (CC6-CC8)
 remains correctly blocked on issue #5.
+
+
+## CC5 Uncertainty / Regime Refinement Evidence
+
+```bash
+results/cc5_uncertainty_regime_refinement/20260803T202108Z/
+docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md
+logs/cc5_uncertainty_regime_20260803_195020.log
+```
+
+Continue with GitHub issue #5 (remains OPEN -- exit gate still not fully
+passed after uncertainty/regime refinement). Issue #6 stays blocked.

@@ -4,55 +4,47 @@ Authoritative branch: `contextual-compositional-heuristics-20260731`
 
 Current phase: `CC5 - Contextual composition predictor`
 
-Pause state: none. CC4 is COMPLETE. CC5's first attempt returned verdict
-`INCONCLUSIVE` at n=6 held-out windows; a retry against a 76-window
-expanded dataset (CC4b) is **complete** with verdict `REGIME_SPECIFIC_ONLY`.
-CC5 is `IN PROGRESS`. CC6 is **BLOCKED** until CC5's exit gate fully
-passes. See the
-[CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md)
-(first attempt) and the
-[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-(retry -- read this one for current status).
+Pause state: none. CC4 is COMPLETE. CC5 remains `IN PROGRESS` after three
+evidence stages: first attempt `INCONCLUSIVE` (n=6); CC4b retry
+`REGIME_SPECIFIC_ONLY` (n=76); uncertainty/regime refinement also
+`REGIME_SPECIFIC_ONLY` (hybrid ANWG 0.4019 vs global 0.4025). CC6 is
+**BLOCKED**. Read the
+[CC5 uncertainty/regime report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md)
+for current status (also: [retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md),
+[first CC5 report](audits/contextual_composition_cc5_predictor_report_20260803.md)).
 
 ## Active Task Right Now (read this section first)
 
-The CC4b/CC5 retry is **complete**: CC4b expanded CC4's held-out set from 6
-to 76 windows (all quality gates passed), and CC5's existing, unchanged
-pipeline reran against it. Result: the predictor now **clearly beats best
-fixed policy** (0.4006 vs 0.3895 ANWG) and is **competitive with the hard
-selector** (0.3938), but does **not clearly beat `best_global_composition`**
-(0.4025 -- within the bootstrap CI overlap). Verdict: `REGIME_SPECIFIC_ONLY`
--- not a full pass, but a materially more informative result than the
-first attempt (the fixed-policy question is now resolved). Reference
-artifacts:
+The CC5 uncertainty/regime refinement is **complete** with verdict
+`REGIME_SPECIFIC_ONLY`. Model-agnostic `normalized_split_conformal`
+uncertainty now works for gradient boosting; best completion-safe hybrid
+system reaches ANWG **0.4019** (beats fixed 0.3895 and hard selector 0.3938;
+0 completion violations) but remains **0.0006 short** of
+`best_global_composition` (0.4025). Pure best-global fallback fails
+completion (7 violations) and is rejected. Restricted envelope: trust the
+predictor on `kv_pressure` / `saturated`; use validation-tuned hybrid
+fallback elsewhere. Reference artifacts:
 
 ```bash
-tmux attach -t cc4b_cc5_retry     # session still holds shell history
-# CC4b dataset:  results/cc4b_oracle_composition_expansion/20260803T182426Z/
-# CC5 retry run: results/cc5_contextual_composition_predictor_retry/20260803T192246Z/
-# quality gates: scripts/check_cc4b_quality_gates.py results/cc4b_oracle_composition_expansion/20260803T182426Z
-# session logs:  logs/cc4b_cc5_retry_20260803_182107.log, logs/cc5_retry_finalize_20260803_192106.log
+tmux attach -t cc5_uncertainty_regime
+# refinement: results/cc5_uncertainty_regime_refinement/20260803T202108Z/
+# CC4b dataset: results/cc4b_oracle_composition_expansion/20260803T182426Z/
+# CC5 retry:    results/cc5_contextual_composition_predictor_retry/20260803T192246Z/
+# session log:  logs/cc5_uncertainty_regime_20260803_195020.log
 ```
 
-**Do not start another CC4b build or CC5 retry, and do not begin CC6 work,
-until the exact next research step below is addressed.** Exact next
-decision (per the retry report section 10): (1) address the
-uncertainty-method gap -- across two independent retries, leave-one-window-out
-model selection has never chosen `RandomForestRegressor`, the only model
-type this pipeline computes real ensemble uncertainty for; (2) then a
-per-regime regret breakdown to determine whether the predictor's value
-(clearly established vs. fixed policy, not yet vs. global composition) is
-regime-concentrated. Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5)
-(remains open).
+**Do not begin CC6.** Exact next decision: either freeze the restricted
+operating envelope above as accepted CC5 scope, or run a narrow
+regime-specialist follow-up on the six global-win regimes only. Active
+issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5)
+(remains open). Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6)
+stays blocked/not ready.
 
-CC5 trains a regret-regression predictor over CC4's already-verified,
-already-executed candidate pool (`src/llmserveopt/experiments/cc5_contextual_predictor.py`),
-with leave-one-window-out model selection, OOD-gated abstention/fallback.
-First attempt (n=6 held-out): tied best fixed policy, beaten by best global
-composition -- data-scarcity finding, not a methodology failure. Retry
-(n=76 held-out, same unchanged pipeline): beats best fixed policy, ties
-best global composition. 22 + 8 new focused tests pass across both stages.
-Completion-fraction constraints hold (0 violations) in both runs.
+CC5 trains a regret-regression predictor over CC4/CC4b's already-verified
+candidate pool with leave-one-window-out model selection and calibrated
+uncertainty-aware abstention/fallback
+(`src/llmserveopt/experiments/cc5_contextual_predictor.py`,
+`cc5_uncertainty_regime_refinement.py`).
 
 CC4 built the first reproducible, resumable, simulator-derived oracle
 composition dataset (`src/llmserveopt/experiments/cc4_oracle_composition_dataset.py`,
@@ -85,10 +77,9 @@ equivalence/registry tests. Six of seven reconstructions are EXACT; one
 [architecture doc](architecture/contextual_composition_primitives.md) and the
 [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md).
 
-Exact next task: see "Active Task Right Now" above. In summary: address the
-uncertainty-method gap, then run a per-regime regret breakdown, before any
-further dataset expansion, model redesign, or CC6 work. Do not begin CC6
-dynamic adaptation until CC5's exit gate fully passes.
+Exact next task: see "Active Task Right Now" above. In summary: freeze the
+restricted envelope or run a narrow global-win-regime follow-up. Do not
+begin CC6 until CC5's exit gate fully passes.
 
 ## Read In This Order
 

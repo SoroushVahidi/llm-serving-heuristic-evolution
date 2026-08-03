@@ -639,3 +639,44 @@ Related files or evidence:
 - `src/llmserveopt/experiments/cc5_contextual_predictor.py` (unchanged)
 - `tests/test_cc4b_expansion_config.py` (new)
 - GitHub issue #5 (remains open -- exit gate not fully passed)
+
+
+## CCD-018: CC5 Uncertainty / Regime Refinement -- Still REGIME_SPECIFIC_ONLY
+
+Date: 2026-08-03
+
+Status: accepted
+
+Decision: Treat the CC5 uncertainty/regime refinement as complete for this
+cycle with verdict `REGIME_SPECIFIC_ONLY`. Do **not** mark CC5 COMPLETE and
+do **not** queue CC6. Close the uncertainty-method gap identified in
+CCD-017 by attaching model-agnostic calibrated uncertainty
+(`normalized_split_conformal`, compared against bootstrap ensembles) that
+works for every supported predictor class including gradient boosting.
+Evaluate OOD-only, uncertainty-only, combined, regime-aware, pure global,
+and completion-safe hybrid fallbacks using validation-only thresholds/rules.
+
+Rationale: On the CC4b 76-window held-out set, the best completion-safe
+deployable system (OOD + conformal uncertainty + hybrid fallback) reaches
+mean ANWG 0.4019 (CI [0.336, 0.467]), beating best fixed 0.3895 and hard
+selector 0.3938 with 0 completion violations, but remaining 0.0006 short of
+best global composition 0.4025. Pure best-global fallback fails completion
+(7 violations) and is rejected by the existing decision gate. Per-regime
+analysis shows predictor value concentrated in `kv_pressure`/`saturated`
+(active model trust) plus hard real-trace/long-output regimes via fixed
+fallback; six regimes still favor global composition. Calibration coverage
+0.8029 (target 0.80, error 0.0029). Inference overhead ~0.19 ms/window.
+
+Consequences: CC5 stays `IN PROGRESS`; CC6 stays `BLOCKED`. Exact next
+action: freeze the restricted operating envelope or run a narrow
+regime-specialist follow-up on the six global-win regimes. Issue #5 remains
+open; issue #6 remains not ready.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md`
+- `results/cc5_uncertainty_regime_refinement/20260803T202108Z/`
+- `src/llmserveopt/experiments/cc5_contextual_predictor.py`
+- `src/llmserveopt/experiments/cc5_uncertainty_regime_refinement.py`
+- `tests/test_cc5_uncertainty_regime.py`
+- GitHub issue #5 (remains open)

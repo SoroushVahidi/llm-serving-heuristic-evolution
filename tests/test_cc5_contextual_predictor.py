@@ -240,6 +240,7 @@ def test_full_run_produces_required_outputs_and_valid_verdict(tmp_path):
         "per_window_predictions.csv", "per_regime_summaries.csv", "fallback_analysis.csv",
         "composition_class_predictions.csv", "uncertainty_ood_diagnostics.csv", "regret_tables.csv",
         "resolved_config.json", "replay_commands.sh",
+        "calibration_manifest.json", "uncertainty_method_comparison.csv", "uncertainty_threshold_grid.csv",
     ):
         assert (result.output_dir / name).exists(), name
     assert result.verdict["status"] in ("PROCEED", "REGIME_SPECIFIC_ONLY", "STOP_OR_REDESIGN", "INCONCLUSIVE")
@@ -247,9 +248,10 @@ def test_full_run_produces_required_outputs_and_valid_verdict(tmp_path):
     for key in (
         "git_sha", "dataset_config_hash", "feature_schema", "target_definition", "split_definition",
         "model_type", "hyperparameters", "uncertainty_method", "ood_method", "fallback_policy",
-        "objective_definition", "training_timestamp", "dependency_versions",
+        "objective_definition", "training_timestamp", "dependency_versions", "uncertainty_schema_version",
     ):
         assert key in manifest, key
+    assert manifest["uncertainty_method"] in cc5.SUPPORTED_UNCERTAINTY_METHODS
 
 
 def test_runtime_wrapper_returns_required_keys_and_is_deterministic(ds):
@@ -261,7 +263,7 @@ def test_runtime_wrapper_returns_required_keys_and_is_deterministic(ds):
         decision2 = cc5.select_composition_with_fallback(artifact, ds, causal_row)
         for key in ("selected_candidate_id", "model_recommended_candidate_id", "predicted_regret", "uncertainty", "ood_score", "abstained", "fallback_reason"):
             assert key in decision1
-        assert decision1 == decision2  # inference determinism
+            assert decision1[key] == decision2[key]  # inference determinism (ignore timing)
         assert decision1["selected_candidate_id"] in set(ds.candidate_compositions["candidate_id"])
     finally:
         import shutil

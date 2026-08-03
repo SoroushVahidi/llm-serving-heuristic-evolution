@@ -48,8 +48,8 @@ REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
     "current_phase": "CC5",
     "current_status": "IN PROGRESS",
-    "next_action": "the CC4b/CC5 retry completed with verdict REGIME_SPECIFIC_ONLY (predictor beats best fixed policy and is competitive with the hard selector on 76 held-out windows, but does not clearly beat best_global_composition); CC6 remains not queued; next step is addressing the uncertainty-method gap (no LOWO-CV-selected model has supported ensemble uncertainty across two retries) then a per-regime regret breakdown, per the CC4b/CC5 retry report section 10",
-    "roadmap_version": 7,
+    "next_action": 'CC5 uncertainty/regime refinement complete with verdict REGIME_SPECIFIC_ONLY (normalized split-conformal uncertainty attached; best completion-safe hybrid system ANWG 0.4019 beats fixed 0.3895 and hard selector 0.3938 but remains 0.0006 short of best_global 0.4025; pure global fallback fails completion); CC6 remains blocked; next step is either freeze the restricted operating envelope (trust predictor on kv_pressure/saturated; hybrid fallback elsewhere) or a narrow regime-specialist follow-up on the six global-win regimes, per docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md',
+    "roadmap_version": 8,
 }
 
 CANONICAL_FILES = [
@@ -226,7 +226,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "Do not start a third CC4b build or CC5 retry",
+            "Do not begin CC6",
         ],
     )
     check_required_strings(
@@ -425,7 +425,7 @@ def check_resume_readiness_extra() -> None:
         [
             "current_phase: CC5",
             "current_status: IN PROGRESS",
-            "Retry complete (2026-08-03). Verdict: `REGIME_SPECIFIC_ONLY`.",
+            "Retry complete (2026-08-03). Verdict: `REGIME_SPECIFIC_ONLY`. Uncertainty/regime refinement (2026-08-03) also `REGIME_SPECIFIC_ONLY`",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
@@ -526,7 +526,7 @@ def main(argv: list[str] | None = None) -> int:
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
             "architecture/contextual_composition_primitives.md",
-            "Do not start a third CC4b build or CC5 retry",
+            "Do not begin CC6",
         ],
     )
     check_required_strings(

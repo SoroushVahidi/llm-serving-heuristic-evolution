@@ -36,28 +36,18 @@ Start from the synchronization-aware audit:
 - [CC3 DSL/Verifier Report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 - [CC4 Oracle Dataset Report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 - [CC5 Predictor Report](audits/contextual_composition_cc5_predictor_report_20260803.md)
-- [CC4b/CC5 Retry Report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) -- **current status**
+- [CC4b/CC5 Retry Report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
+- [CC5 Uncertainty/Regime Report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md) -- **current status**
 
-Current high-level status: Query 12 completed a targeted CC4b oracle-
-dataset expansion (`configs/cc4b_oracle_composition_expansion.yaml`,
-`scripts/generate_cc4b_expansion_config.py`), growing CC4's held-out set
-from 6 to 76 windows across 10 synthetic regime templates (multiple
-seeds/jitter each) plus real-trace variants, reusing CC4's exact
-34-candidate search config for direct comparability. All quality gates
-passed (`scripts/check_cc4b_quality_gates.py`: 76 held-out windows >=50,
-35 non-near-tie >=20, no dominant oracle family at 39% max share <=70%,
-completion accounting consistent), and CC5's existing, unchanged pipeline
-reran against the expanded dataset. Result: verdict `REGIME_SPECIFIC_ONLY`
--- the predictor now clearly beats best fixed policy (0.4006 vs 0.3895
-ANWG) and is competitive with the hard selector (0.3938), but does not
-clearly beat best global composition (0.4025, within bootstrap CI overlap).
-This is the approved response to Query 11's finding, not a redesign: the
-first CC5 attempt was technically correct but statistically inconclusive
-at n=6 held-out windows, not negative; the retry resolved the fixed-policy
-question but not the global-composition question. See the CC4b/CC5 retry
-report for full evidence and the exact next research step (address the
-uncertainty-method gap, then a per-regime regret breakdown). CC6 remains
-**BLOCKED** until CC5's exit gate actually passes. Query 11 implemented and attempted CC5 (the
+Current high-level status: Query 13 completed the CC5 uncertainty/regime
+refinement (`normalized_split_conformal` + completion-safe hybrid fallback).
+Verdict remains `REGIME_SPECIFIC_ONLY`: hybrid ANWG 0.4019 beats fixed
+0.3895 and hard selector 0.3938 with 0 completion violations, but stays
+0.0006 short of best global composition 0.4025. Pure global fallback fails
+completion (7 violations). Restricted envelope: trust predictor on
+`kv_pressure`/`saturated`; hybrid fallback elsewhere. CC6 remains
+**BLOCKED**. Query 12 completed the CC4b expansion + unchanged CC5 retry
+(`REGIME_SPECIFIC_ONLY` at n=76). Do not begin CC6. Query 11 implemented and attempted CC5 (the
 deployable contextual composition predictor) against CC4's oracle dataset.
 The pipeline itself is complete and tested (22 new tests), but the exit
 gate did **not** pass: verdict `INCONCLUSIVE`. The trained predictor (KNN
@@ -121,28 +111,28 @@ simulator-executed weighted Borda composition opportunity and cleared the
 
 ## Guardrail
 
-Do not start a third CC4b build or CC5 retry before completing the exact
+13. Query 13: CC5 uncertainty/regime refinement. COMPLETE -- verdict
+    `REGIME_SPECIFIC_ONLY`; exit gate still not fully passed. See the
+    uncertainty/regime report.
+
+Do not begin CC6 before completing the exact
 next research step below. Do not implement CC6 adaptation, selector
 redesigns, real-vLLM jobs, hosted API experiments, evolutionary/QD
 library-expansion work, LLM-guided synthesis work, or large ungated sweeps
 before the roadmap allows them -- see the roadmap's "Future Research
 Directions -- Not Yet Implemented" section for what remains future work,
-not current capability. CC5's first exit gate attempt did not pass (see
-the CC5 predictor report) and the retry did not fully pass either (see the
-CC4b/CC5 retry report); CC6 must not begin until CC5's exit gate actually
-passes.
+not current capability. CC5's exit gate has not fully passed after the
+first attempt, the CC4b retry, or the uncertainty/regime refinement; CC6
+must not begin until it does.
 
 ## Next Action
 
-Per `docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`
-(section 10, "Exact Next Research Step"): (1) address the uncertainty-
-method gap -- across two independent retries, leave-one-window-out model
-selection has never chosen `RandomForestRegressor`, the only model type
-`cc5_contextual_predictor.py`'s `_predict_with_uncertainty` computes real
-ensemble uncertainty for; (2) then compute a per-regime regret breakdown
-(predictor vs. global-composition regret, derivable from the retry run's
-`per_window_predictions.csv`/`regret_tables.csv`) to determine whether the
-predictor's value is regime-concentrated. Do not start a third CC4b/CC5
-retry cycle or begin CC6 before this analysis is complete.
+Per `docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md`:
+uncertainty gap closed (`normalized_split_conformal`); best completion-safe
+hybrid system ANWG 0.4019 still 0.0006 short of best global 0.4025. Exact
+next step: freeze the restricted operating envelope (trust predictor on
+`kv_pressure`/`saturated`; hybrid fallback elsewhere) or run a narrow
+regime-specialist follow-up on the six global-win regimes. Do not begin
+CC6.
 
 Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) (remains open).
