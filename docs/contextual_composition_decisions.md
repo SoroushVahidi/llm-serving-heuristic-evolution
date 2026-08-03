@@ -277,3 +277,56 @@ Related files or evidence:
 - `docs/RESUME_CONTEXTUAL_COMPOSITION.md`
 - `docs/audits/contextual_composition_query6_pause_report_20260731.md`
 - GitHub issue #2
+
+## CCD-012: CC2 Primitive Interface Complete, Proceed To CC3
+
+Date: 2026-08-02
+
+Status: accepted
+
+Decision: Mark CC2 (canonical scheduling primitive interface) COMPLETE and
+proceed to CC3 (compositional DSL and verifier). Do not begin CC4 offline
+oracle dataset generation, CC5 predictor training, or any later phase.
+
+Rationale: `src/llmserveopt/policies/primitives.py` implements a 28-entry
+canonical registry across the five required families (RANKING, ADMISSION,
+PLACEMENT, BATCHING, RESOURCE_GUARD), covering every primitive named in the
+roadmap (deadline urgency, laxity, prompt length, predicted output length,
+estimated service time, priority, queue age, KV pressure, projected GPU
+load, admission risk, prefill pressure, fairness/starvation prevention) plus
+supporting primitives needed for exact reconstruction (request-id
+tie-break, system overload guard, admission credit budget, and others).
+`src/llmserveopt/policies/primitive_reconstructions.py` reconstructs seven
+representative policies (fifo, edf, weighted_shortest_processing,
+estimated_service_time_first, best_fit, admission_control,
+scorpio_style_slo_guard) using only these primitives. Six of seven are
+EXACT (verified via 65 equivalence tests spanning synthetic single/multi-GPU
+states, a 60-trial-per-policy randomized fuzz suite restricted to
+physically valid states, 3-seed full simulator-trace runs compared on
+completion fraction/ANWG/weighted goodput, and deterministic-replay
+checks); `scorpio_style_slo_guard` is documented APPROXIMATE (0 observed
+mismatches across all fixtures, but composed via primitive calls rather
+than the original's single inline computation, so no formal
+floating-point-identity proof is claimed). The DSL
+(`src/llmserveopt/heuristics/`) was not modified, per the CC2 scope
+boundary. 42 additional registry/typed-behavior tests confirm unique
+names, all five families represented, causal-only inputs, deterministic
+enforcement, and explicit unsupported-parameter/non-positive-capacity
+errors.
+
+Consequences: CC3 is now `NEXT`. CC3 may extend the DSL/verifier to expose
+named references to the CC2 primitive registry, using
+`PrimitiveSpec.param_bounds`/`compatible_families` as the source of truth
+for verifier bounds and family-mixing rules (see the architecture doc's
+"How CC3 Will Later Expose These Primitives" section). CC4-CC8 remain
+blocked until CC3's gate passes.
+
+Related files or evidence:
+
+- `docs/architecture/contextual_composition_primitives.md`
+- `docs/audits/contextual_composition_cc2_primitive_interface_report_20260802.md`
+- `src/llmserveopt/policies/primitives.py`
+- `src/llmserveopt/policies/primitive_reconstructions.py`
+- `tests/test_primitive_interface.py`
+- `tests/test_primitive_reconstructed_policies.py`
+- GitHub issue #2 (closing), issue #3 (active)

@@ -24,6 +24,8 @@ PAUSE_CHECKPOINT = ROOT / "docs" / "audits" / "contextual_composition_pause_chec
 RESUME_DOC = ROOT / "docs" / "RESUME_CONTEXTUAL_COMPOSITION.md"
 QUERY6_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query6_pause_report_20260731.md"
 QUERY7_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query7_final_pause_readiness_20260731.md"
+CC2_ARCHITECTURE_DOC = ROOT / "docs" / "architecture" / "contextual_composition_primitives.md"
+CC2_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc2_primitive_interface_report_20260802.md"
 
 EXPECTED_BRANCH = "contextual-compositional-heuristics-20260731"
 EXPECTED_UPSTREAM = f"origin/{EXPECTED_BRANCH}"
@@ -40,10 +42,10 @@ ALLOWED_STATUS = {
 
 REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
-    "current_phase": "CC2",
+    "current_phase": "CC3",
     "current_status": "NEXT",
-    "next_action": "Resume at CC2 by defining the canonical primitive interface; do not extend the DSL",
-    "roadmap_version": 1,
+    "next_action": "Begin CC3 by extending the JSON DSL and verifier to expose named primitive references, per the CC2 primitive interface and architecture doc",
+    "roadmap_version": 2,
 }
 
 CANONICAL_FILES = [
@@ -114,8 +116,8 @@ def check_status_table(text: str) -> None:
     expected = {
         "CC0": "COMPLETE",
         "CC1": "COMPLETE",
-        "CC2": "NEXT",
-        "CC3": "BLOCKED",
+        "CC2": "COMPLETE",
+        "CC3": "NEXT",
         "CC4": "BLOCKED",
         "CC5": "BLOCKED",
         "CC6": "PLANNED",
@@ -180,25 +182,30 @@ def check_pause_contract(
     query6_report: str,
     query7_report: str,
 ) -> None:
+    """Checks named for the CC1b-to-CC2 pause era; retained (with updated
+    expectations) for the CC2-to-CC3 transition because they verify the same
+    invariant -- current navigation docs describe the current NEXT phase --
+    plus, unchanged, that the frozen historical pause-era reports still
+    record what they always recorded."""
     check_required_strings(
         start_here,
         START_HERE,
         [
             "docs/audits/contextual_composition_pause_checkpoint_20260731.md",
             "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
-            "Exact resume task after the pause",
+            "Exact next task",
         ],
     )
     check_required_strings(
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC2",
+            "current_phase: CC3",
             "current_status: NEXT",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
             "audits/contextual_composition_query7_final_pause_readiness_20260731.md",
-            "Resume at CC2",
+            "architecture/contextual_composition_primitives.md",
         ],
     )
     check_required_strings(
@@ -207,7 +214,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "Resume at CC2 by defining the canonical primitive interface",
+            "Begin CC3 by extending the JSON DSL/verifier",
         ],
     )
     check_required_strings(
@@ -216,9 +223,9 @@ def check_pause_contract(
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
-            "Current phase: `CC2 - Canonical primitive interface`",
-            "Define the canonical primitive interface for ranking, admission, placement, batching, and resource guards",
-            "GitHub issue #2",
+            "Current phase: `CC3 - Compositional DSL and verifier`",
+            "Extend the JSON DSL/verifier",
+            "GitHub issue #3",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
     )
@@ -321,9 +328,9 @@ def check_resume_readiness_extra() -> None:
             EXPECTED_BRANCH,
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
-            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py -q",
+            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py -q",
             "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
-            "GitHub issue #2",
+            "GitHub issue #3",
         ],
     )
     check_required_strings(
@@ -340,10 +347,11 @@ def check_resume_readiness_extra() -> None:
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC2",
+            "current_phase: CC3",
             "current_status: NEXT",
-            "Resume at CC2 by defining the canonical primitive interface",
+            "Begin CC3 by extending the JSON DSL and verifier",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
+            "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
     )
     for path, text in [
@@ -356,7 +364,7 @@ def check_resume_readiness_extra() -> None:
             path,
             [
                 "CC2",
-                "Do not extend the DSL yet",
+                "CC3",
             ],
         )
     check_no_cc2_in_progress()
@@ -415,12 +423,14 @@ def main(argv: list[str] | None = None) -> int:
         START_HERE,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Current phase: `CC2 - Canonical primitive interface`",
+            "Current phase: `CC3 - Compositional DSL and verifier`",
             "docs/experiments/cc1_composition_opportunity_spec.md",
             "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
             "docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md",
             "docs/audits/contextual_composition_pause_checkpoint_20260731.md",
             "docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md",
+            "docs/architecture/contextual_composition_primitives.md",
+            "docs/audits/contextual_composition_cc2_primitive_interface_report_20260802.md",
             "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",
@@ -433,7 +443,8 @@ def main(argv: list[str] | None = None) -> int:
             "contextual-compositional-heuristics-20260731",
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
-            "Resume at CC2 by defining the canonical primitive interface",
+            "architecture/contextual_composition_primitives.md",
+            "Begin CC3 by extending the JSON DSL/verifier",
         ],
     )
     check_required_strings(

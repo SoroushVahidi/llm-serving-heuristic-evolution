@@ -10,10 +10,10 @@ git checkout contextual-compositional-heuristics-20260731
 
 - Authoritative branch: `contextual-compositional-heuristics-20260731`
 - Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`
-- Final checkpoint SHA: verify against the Query 7 final result's
-  `Final checkpoint SHA` with `git rev-parse HEAD`
-- Starting SHA before the checkpoint commit:
-  `db4dcaa40abe1312ea71c40c440445172cd1c509`
+- CC2 (Query 8) checkpoint SHA: verify against the CC2 primitive interface
+  report's `New SHA` with `git rev-parse HEAD`
+- Starting SHA before the CC2 checkpoint commit:
+  `4d806c8b1be0c4c9e202bbc7a20b3455c9c510b8`
 
 ## Read In Order
 
@@ -23,7 +23,9 @@ git checkout contextual-compositional-heuristics-20260731
 4. [audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)
 5. [audits/contextual_composition_query5_discriminativeness_review_20260731.md](audits/contextual_composition_query5_discriminativeness_review_20260731.md)
 6. [audits/contextual_composition_query7_final_pause_readiness_20260731.md](audits/contextual_composition_query7_final_pause_readiness_20260731.md)
-7. GitHub issue #2
+7. [architecture/contextual_composition_primitives.md](architecture/contextual_composition_primitives.md)
+8. [audits/contextual_composition_cc2_primitive_interface_report_20260802.md](audits/contextual_composition_cc2_primitive_interface_report_20260802.md)
+9. GitHub issue #3
 
 ## Verify State
 
@@ -34,7 +36,7 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}
 git rev-list --left-right --count @{u}...HEAD
 python scripts/check_contextual_composition_status.py
 python scripts/check_contextual_composition_status.py --resume-readiness
-python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py -q
+python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py -q
 ```
 
 The expected state is a clean working tree, upstream
@@ -43,21 +45,25 @@ behind, and a passing contextual-composition status checker.
 
 ## Current Phase
 
-- Current phase: `CC2 - Canonical primitive interface`
+- Current phase: `CC3 - Compositional DSL and verifier`
 - Current status: `NEXT`
-- Decision gate: CC1b passed with verdict `PROCEED`; CC2 may start after the
-  pause is lifted.
+- Decision gate: CC2's equivalence gate passed (6/7 representative policies
+  EXACT, 1/7 documented APPROXIMATE); CC3 may start.
 
 ## Exact Next Implementation Task
 
-Define the canonical primitive interface for ranking, admission, placement, batching, and resource guards, then add representative-policy equivalence tests. Do not extend the DSL yet.
+Extend the JSON DSL/verifier (`src/llmserveopt/heuristics/`) to expose named
+references to the CC2 primitive registry (`src/llmserveopt/policies/primitives.py`),
+weighted sums, sparse top-k mixtures, conditional branches, admission gates,
+placement scores, externally supplied bounded parameters, deterministic
+tie-breaking, and explicit safe fallback, per the roadmap's CC3 required
+constructs and verifier requirements.
 
 ## Do Not Start Prematurely
 
-Do not begin CC3 DSL changes, CC4 dataset generation, CC5 predictor training,
-CC6 adaptation, CC7 hardening, CC8 real-serving validation, hosted API jobs,
-GPU jobs, real-vLLM jobs, or new experiments before the roadmap gates allow
-them.
+Do not begin CC4 dataset generation, CC5 predictor training, CC6 adaptation,
+CC7 hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
+real-vLLM jobs, or new experiments before the roadmap gates allow them.
 
 ## CC1b Evidence
 
@@ -92,6 +98,7 @@ Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
 ## GitHub
 
-Continue with GitHub issue #2:
-[#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2).
-Issue #1 is the completed CC1/CC1b evidence gate.
+Continue with GitHub issue #3:
+[#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3).
+Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
+CC2 primitive interface gate.

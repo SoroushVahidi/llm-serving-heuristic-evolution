@@ -2,10 +2,10 @@
 
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
-current_phase: CC2
+current_phase: CC3
 current_status: NEXT
-next_action: Resume at CC2 by defining the canonical primitive interface; do not extend the DSL
-roadmap_version: 1
+next_action: Begin CC3 by extending the JSON DSL and verifier to expose named primitive references, per the CC2 primitive interface and architecture doc
+roadmap_version: 2
 ```
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
@@ -22,8 +22,8 @@ Current date: 2026-07-31
 | --- | --- | --- | --- | --- | --- | --- |
 | CC0 | Repository and evidence stabilization | COMPLETE | Query 1 branch established | Roadmap, decisions, navigation, issues, and checker exist | This roadmap; [branch marker](CONTEXTUAL_COMPOSITION_BRANCH.md); [Query 1 report](audits/contextual_composition_query1_sync_report_20260731.md); [Query 2 report](audits/contextual_composition_query2_roadmap_report_20260731.md) | Maintain links only |
 | CC1 | Composition opportunity experiment | COMPLETE | CC0 complete | Composition opportunity gap measured with true simulator execution | Issue [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1); [CC1 specification](experiments/cc1_composition_opportunity_spec.md); [Query 4 results](audits/contextual_composition_query4_cc1_results_20260731.md); [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md) | Complete; CC1b gate passed |
-| CC2 | Canonical primitive interface | NEXT | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md); [pause checkpoint](audits/contextual_composition_pause_checkpoint_20260731.md); [resume guide](RESUME_CONTEXTUAL_COMPOSITION.md) | Resume by defining the canonical primitive interface; do not extend the DSL |
-| CC3 | Compositional DSL and verifier | BLOCKED | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3) | Wait for CC2 |
+| CC2 | Canonical primitive interface | COMPLETE | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [architecture doc](architecture/contextual_composition_primitives.md); [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md) | Complete; CC2 equivalence gate passed (6/7 EXACT, 1/7 documented APPROXIMATE) |
+| CC3 | Compositional DSL and verifier | NEXT | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3) | Begin CC3 DSL extension using the CC2 primitive registry as the causal-input/parameter-bound source of truth |
 | CC4 | Offline oracle composition dataset | BLOCKED | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4) | Wait for CC3 |
 | CC5 | Contextual composition predictor | BLOCKED | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) | Wait for CC4 |
 | CC6 | Dynamic adaptation and stability | PLANNED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC5 |
@@ -258,9 +258,31 @@ Canonical issue: [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evo
 
 ## Phase CC2 - Canonical Primitive Interface
 
-Status after Query 7: `NEXT` and intentionally paused before implementation.
+Status after Query 8 (this implementation): `COMPLETE`.
 
-The first CC2 implementation task after the pause is:
+Query 8 implemented `src/llmserveopt/policies/primitives.py` (a 28-entry
+canonical registry across the five required families: RANKING, ADMISSION,
+PLACEMENT, BATCHING, RESOURCE_GUARD) and
+`src/llmserveopt/policies/primitive_reconstructions.py` (seven
+representative-policy reconstructions built only from those primitives).
+The equivalence gate passed: `fifo`, `edf`,
+`weighted_shortest_processing`, `estimated_service_time_first`,
+`best_fit` (placement-oriented), and `admission_control`
+(admission-oriented) reproduce their originals EXACTLY across synthetic
+states, randomized fuzz, and full simulator-trace runs;
+`scorpio_style_slo_guard` reproduces APPROXIMATELY (0 observed
+mismatches across all tested fixtures, documented as approximate per the
+CC2 exit-gate instruction rather than claimed as a formal guarantee).
+107 new tests were added (42 registry/typed-behavior tests, 65
+equivalence tests); the full existing test suite continues to pass. The
+DSL (`src/llmserveopt/heuristics/`) was not modified.
+
+Canonical evidence:
+
+- [Architecture: CC2 canonical scheduling primitive interface](architecture/contextual_composition_primitives.md)
+- [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md)
+
+The first CC2 implementation task after the pause was:
 
 Define the canonical primitive interface for ranking, admission, placement,
 batching, and resource guards, then add representative-policy equivalence tests.

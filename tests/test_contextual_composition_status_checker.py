@@ -50,18 +50,20 @@ def test_cc1_spec_required_sections_are_present():
         assert section in text
 
 
-def test_roadmap_links_cc1b_report_and_has_cc2_next():
+def test_roadmap_links_cc1b_report_and_has_cc3_next():
     text = (ROOT / "docs/contextual_composition_roadmap.md").read_text()
     assert "experiments/cc1_composition_opportunity_spec.md" in text
     assert "audits/contextual_composition_query4_cc1_results_20260731.md" in text
     assert "audits/contextual_composition_query5_discriminativeness_review_20260731.md" in text
     assert "audits/contextual_composition_pause_checkpoint_20260731.md" in text
     assert "RESUME_CONTEXTUAL_COMPOSITION.md" in text
+    assert "architecture/contextual_composition_primitives.md" in text
     assert "CC1b `PROCEED`" in text
     rows = [line for line in text.splitlines() if line.startswith("| CC")]
     phases = {row.strip("|").split("|")[0].strip(): row.strip("|").split("|")[2].strip() for row in rows}
     assert phases["CC1"] == "COMPLETE"
-    assert phases["CC2"] == "NEXT"
+    assert phases["CC2"] == "COMPLETE"
+    assert phases["CC3"] == "NEXT"
     assert list(phases.values()).count("NEXT") == 1
 
 
@@ -87,14 +89,17 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
     text = (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
     assert "Authoritative branch: `contextual-compositional-heuristics-20260731`" in text
     assert "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`" in text
-    assert "Current phase: `CC2 - Canonical primitive interface`" in text
+    assert "Current phase: `CC3 - Compositional DSL and verifier`" in text
     assert "python scripts/check_contextual_composition_status.py --resume-readiness" in text
-    assert "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py -q" in text
     assert (
-        "Define the canonical primitive interface for ranking, admission, placement, "
-        "batching, and resource guards, then add representative-policy equivalence tests."
+        "python -m pytest tests/test_contextual_composition_status_checker.py "
+        "tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py "
+        "tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py "
+        "tests/test_primitive_reconstructed_policies.py -q"
     ) in text
-    assert "Do not extend the DSL yet." in text
+    assert "Extend the JSON DSL/verifier (`src/llmserveopt/heuristics/`)" in text
+    assert "CC2 primitive registry" in text
+    assert "GitHub issue #3" in text
 
 
 def test_canonical_docs_do_not_make_cc1_current():
