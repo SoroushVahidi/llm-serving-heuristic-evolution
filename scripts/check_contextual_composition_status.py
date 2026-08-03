@@ -26,6 +26,8 @@ QUERY6_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query6_pause_
 QUERY7_REPORT = ROOT / "docs" / "audits" / "contextual_composition_query7_final_pause_readiness_20260731.md"
 CC2_ARCHITECTURE_DOC = ROOT / "docs" / "architecture" / "contextual_composition_primitives.md"
 CC2_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc2_primitive_interface_report_20260802.md"
+CC3_ARCHITECTURE_DOC = ROOT / "docs" / "architecture" / "contextual_composition_dsl.md"
+CC3_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc3_dsl_verifier_report_20260803.md"
 
 EXPECTED_BRANCH = "contextual-compositional-heuristics-20260731"
 EXPECTED_UPSTREAM = f"origin/{EXPECTED_BRANCH}"
@@ -42,10 +44,10 @@ ALLOWED_STATUS = {
 
 REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
-    "current_phase": "CC3",
+    "current_phase": "CC4",
     "current_status": "NEXT",
-    "next_action": "Begin CC3 by extending the JSON DSL and verifier to expose named primitive references, per the CC2 primitive interface and architecture doc",
-    "roadmap_version": 2,
+    "next_action": "CC4 (offline oracle composition dataset) remains BLOCKED; do not begin without a separate, explicitly authorized query that first reads the CC3 DSL report and architecture doc",
+    "roadmap_version": 3,
 }
 
 CANONICAL_FILES = [
@@ -117,8 +119,8 @@ def check_status_table(text: str) -> None:
         "CC0": "COMPLETE",
         "CC1": "COMPLETE",
         "CC2": "COMPLETE",
-        "CC3": "NEXT",
-        "CC4": "BLOCKED",
+        "CC3": "COMPLETE",
+        "CC4": "NEXT",
         "CC5": "BLOCKED",
         "CC6": "PLANNED",
         "CC7": "PLANNED",
@@ -200,7 +202,7 @@ def check_pause_contract(
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC3",
+            "current_phase: CC4",
             "current_status: NEXT",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
@@ -214,7 +216,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "Begin CC3 by extending the JSON DSL/verifier",
+            "is queued as `NEXT`",
         ],
     )
     check_required_strings(
@@ -223,9 +225,9 @@ def check_pause_contract(
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
-            "Current phase: `CC3 - Compositional DSL and verifier`",
-            "Extend the JSON DSL/verifier",
-            "GitHub issue #3",
+            "Current phase: `CC4 - Offline oracle composition dataset`",
+            "CC4 has **not** been started",
+            "GitHub issue #4",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
     )
@@ -347,9 +349,9 @@ def check_resume_readiness_extra() -> None:
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC3",
+            "current_phase: CC4",
             "current_status: NEXT",
-            "Begin CC3 by extending the JSON DSL and verifier",
+            "CC4 (offline oracle composition dataset) remains BLOCKED",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
@@ -365,6 +367,7 @@ def check_resume_readiness_extra() -> None:
             [
                 "CC2",
                 "CC3",
+                "CC4",
             ],
         )
     check_no_cc2_in_progress()
@@ -423,7 +426,7 @@ def main(argv: list[str] | None = None) -> int:
         START_HERE,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Current phase: `CC3 - Compositional DSL and verifier`",
+            "Current phase: `CC4 - Offline oracle composition dataset`",
             "docs/experiments/cc1_composition_opportunity_spec.md",
             "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
             "docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md",
@@ -431,6 +434,8 @@ def main(argv: list[str] | None = None) -> int:
             "docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md",
             "docs/architecture/contextual_composition_primitives.md",
             "docs/audits/contextual_composition_cc2_primitive_interface_report_20260802.md",
+            "docs/architecture/contextual_composition_dsl.md",
+            "docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md",
             "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",
@@ -444,7 +449,7 @@ def main(argv: list[str] | None = None) -> int:
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
             "architecture/contextual_composition_primitives.md",
-            "Begin CC3 by extending the JSON DSL/verifier",
+            "is queued as `NEXT`",
         ],
     )
     check_required_strings(

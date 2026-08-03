@@ -16,6 +16,7 @@ from .expressions import Expression, evaluate_expression
 from .verifier import VerificationResult, verify_heuristic
 from .compiler import CompiledHeuristic, compile_heuristic
 from .policy import HeuristicPolicy, build_heuristic_policy
+from . import primitive_bridge
 
 __all__ = [
     "Expression",
@@ -26,4 +27,5 @@ __all__ = [
     "compile_heuristic",
     "HeuristicPolicy",
     "build_heuristic_policy",
+    "primitive_bridge",
 ]

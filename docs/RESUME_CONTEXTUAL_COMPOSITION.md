@@ -14,6 +14,10 @@ git checkout contextual-compositional-heuristics-20260731
   report's `New SHA` with `git rev-parse HEAD`
 - Starting SHA before the CC2 checkpoint commit:
   `4d806c8b1be0c4c9e202bbc7a20b3455c9c510b8`
+- CC3 (Query 9) checkpoint SHA: verify against the CC3 DSL/verifier
+  report's `New SHA` with `git rev-parse HEAD`
+- Starting SHA before the CC3 checkpoint commit:
+  `ed85e585bb42a37f47530939b1d2d11bb1ea0b3e`
 
 ## Read In Order
 
@@ -25,7 +29,9 @@ git checkout contextual-compositional-heuristics-20260731
 6. [audits/contextual_composition_query7_final_pause_readiness_20260731.md](audits/contextual_composition_query7_final_pause_readiness_20260731.md)
 7. [architecture/contextual_composition_primitives.md](architecture/contextual_composition_primitives.md)
 8. [audits/contextual_composition_cc2_primitive_interface_report_20260802.md](audits/contextual_composition_cc2_primitive_interface_report_20260802.md)
-9. GitHub issue #3
+9. [architecture/contextual_composition_dsl.md](architecture/contextual_composition_dsl.md)
+10. [audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
+11. GitHub issue #4
 
 ## Verify State
 
@@ -45,24 +51,31 @@ behind, and a passing contextual-composition status checker.
 
 ## Current Phase
 
-- Current phase: `CC3 - Compositional DSL and verifier`
-- Current status: `NEXT`
-- Decision gate: CC2's equivalence gate passed (6/7 representative policies
-  EXACT, 1/7 documented APPROXIMATE); CC3 may start.
+- Current phase: `CC4 - Offline oracle composition dataset`
+- Current status: `NEXT` (queued, not started)
+- Decision gate: CC3's exit gate passed (8/8 required constructs
+  implemented, 447 focused+regression tests, legacy compatibility
+  preserved); CC4 may start, but only in a separate, explicitly authorized
+  query.
 
 ## Exact Next Implementation Task
 
-Extend the JSON DSL/verifier (`src/llmserveopt/heuristics/`) to expose named
-references to the CC2 primitive registry (`src/llmserveopt/policies/primitives.py`),
-weighted sums, sparse top-k mixtures, conditional branches, admission gates,
-placement scores, externally supplied bounded parameters, deterministic
-tie-breaking, and explicit safe fallback, per the roadmap's CC3 required
-constructs and verifier requirements.
+CC4 has **not** been started. A future, explicitly authorized query should
+begin it by reading
+[architecture/contextual_composition_dsl.md](architecture/contextual_composition_dsl.md)
+and
+[audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
+first, then search for high-quality composition parameters through true
+simulator execution for each training window, sampling/mutating over
+`CompiledHeuristic.primitive_refs`/`placement_keys`/`admission_budget_spec`/
+`param_declarations` (the causal-input surface CC3 exposes) per the
+roadmap's CC4 required comparisons.
 
 ## Do Not Start Prematurely
 
-Do not begin CC4 dataset generation, CC5 predictor training, CC6 adaptation,
-CC7 hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
+Do not begin CC4 dataset generation in this same query even though CC3's
+gate passed. Do not begin CC5 predictor training, CC6 adaptation, CC7
+hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
 real-vLLM jobs, or new experiments before the roadmap gates allow them.
 
 ## CC1b Evidence
@@ -98,7 +111,8 @@ Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
 ## GitHub
 
-Continue with GitHub issue #3:
-[#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3).
+Continue with GitHub issue #4 (only in a separate, explicitly authorized
+query):
+[#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4).
 Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
-CC2 primitive interface gate.
+CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier gate.

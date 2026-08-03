@@ -330,3 +330,58 @@ Related files or evidence:
 - `tests/test_primitive_interface.py`
 - `tests/test_primitive_reconstructed_policies.py`
 - GitHub issue #2 (closing), issue #3 (active)
+
+## CCD-013: CC3 Compositional DSL Complete, CC4 Queued But Not Started
+
+Date: 2026-08-03
+
+Status: accepted
+
+Decision: Mark CC3 (compositional DSL and verifier) COMPLETE. Do not begin
+CC4 (offline oracle composition dataset) in this same query even though
+CC3's exit gate passed; CC4 becomes the single `NEXT` phase, queued for a
+future, explicitly authorized query.
+
+Rationale: `src/llmserveopt/heuristics/primitive_bridge.py` (new) is a
+read-only adapter over `policies/primitives.py`, exactly the "separate
+compiler-facing adapter module" the CC2 architecture doc anticipated. All 8
+roadmap-required constructs (named primitive references, weighted sums,
+sparse top-k mixtures, conditional branches, admission gates, placement
+scores, externally supplied bounded parameters, deterministic
+tie-breaking) plus explicit safe fallback are implemented, each with a
+runnable example (`heuristics/primitive_composition_examples.py` +
+`configs/heuristics/examples/*.json`) and focused tests
+(`tests/test_contextual_composition_cc3_dsl.py`, 45 tests). Primitive/param
+references are verified against the as-authored document, then lowered by
+the compiler into ordinary `var` nodes, so `heuristics/expressions.py`
+needed zero new coupling to `primitives.py`. One real backward-compatibility
+regression was found and fixed during implementation (an overly broad
+`on_no_admits`-required rule that broke all 6 genome-derived deployable
+policies using pre-CC3 admission conditions; fixed by scoping the
+requirement to only the new `primitive_gate` construct) -- confirmed fixed
+by a full `test_policy_genome_coverage.py` re-run (122 passed). 447
+focused+regression tests and the full non-live suite (3047 passed, 5
+skipped, 1 pre-existing unrelated failure confirmed via `git stash` to
+predate this branch's CC3 work) pass. Every pre-CC3 canonical example and
+genome-derived heuristic verifies, compiles, and scores identically to
+before.
+
+Consequences: CC4 is now `NEXT` (queued, not started). A future query must
+read `docs/architecture/contextual_composition_dsl.md` and the CC3
+DSL/verifier report before sampling/mutating over the CC3-exposed
+primitive-reference surface (`CompiledHeuristic.primitive_refs`/
+`placement_keys`/`admission_budget_spec`/`param_declarations`) to generate
+candidate compositions for CC4. CC5-CC8 remain blocked until CC4's gate
+passes. Two non-blocking scope boundaries are documented for CC4 to be
+aware of: `admission_budget`'s per-step cap does not apply when
+`on_no_admits: safe_fallback` delegates a whole step, and `placement.keys`
+composes lexicographically rather than via a weighted/normalized blend.
+
+Related files or evidence:
+
+- `docs/architecture/contextual_composition_dsl.md`
+- `docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
+- `src/llmserveopt/heuristics/primitive_bridge.py`
+- `src/llmserveopt/heuristics/primitive_composition_examples.py`
+- `tests/test_contextual_composition_cc3_dsl.py`
+- GitHub issue #3 (closing), issue #4 (queued, not started)

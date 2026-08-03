@@ -1,0 +1,33 @@
+{
+  "name": "conditional_kv_pressure_branch",
+  "description": "Under high system KV pressure, rank by shortest prompt (protect KV budget); otherwise rank by laxity urgency.",
+  "tie_breaker": "earliest_deadline",
+  "regimes": [
+    {
+      "condition": {
+        "op": "sub",
+        "args": [
+          {
+            "primitive": "system_kv_pressure"
+          },
+          {
+            "const": 0.8
+          }
+        ]
+      },
+      "request_score": {
+        "op": "neg",
+        "args": [
+          {
+            "primitive": "prompt_length"
+          }
+        ]
+      }
+    }
+  ],
+  "default": {
+    "request_score": {
+      "primitive": "laxity_urgency"
+    }
+  }
+}

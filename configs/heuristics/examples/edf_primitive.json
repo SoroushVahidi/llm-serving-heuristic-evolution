@@ -1,0 +1,15 @@
+{
+  "name": "edf_primitive",
+  "description": "Earliest-deadline-first via a single named primitive reference.",
+  "tie_breaker": "earliest_deadline",
+  "default": {
+    "request_score": {
+      "op": "neg",
+      "args": [
+        {
+          "primitive": "deadline_urgency"
+        }
+      ]
+    }
+  }
+}

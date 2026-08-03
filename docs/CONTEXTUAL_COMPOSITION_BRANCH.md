@@ -32,12 +32,20 @@ Start from the synchronization-aware audit:
 - [Final Pause-Readiness Report](audits/contextual_composition_query7_final_pause_readiness_20260731.md)
 - [Architecture: CC2 Canonical Scheduling Primitive Interface](architecture/contextual_composition_primitives.md)
 - [CC2 Primitive Interface Report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md)
+- [Architecture: CC3 Compositional DSL](architecture/contextual_composition_dsl.md)
+- [CC3 DSL/Verifier Report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
 
-Current high-level status: Query 8 implemented CC2 (the canonical scheduling
-primitive interface) and its equivalence gate passed: six of seven
+Current high-level status: Query 9 implemented CC3 (the compositional DSL
+and verifier extension over the CC2 primitive registry) and its exit gate
+passed: all 8 required constructs implemented, 447 focused+regression tests
+pass, and every pre-CC3 example and genome-derived heuristic remains
+backward compatible. CC3 is COMPLETE; CC4 (offline oracle composition
+dataset) is the single `NEXT` phase but has **not** been started -- a
+future, explicitly authorized query must begin it after reading the CC3
+report. Query 8 implemented CC2 (the canonical scheduling primitive
+interface) and its equivalence gate passed: six of seven
 representative-policy reconstructions are EXACT and one
-(`scorpio_style_slo_guard`) is documented APPROXIMATE. CC2 is COMPLETE; CC3
-(compositional DSL and verifier) is the single `NEXT` phase. Query 5
+(`scorpio_style_slo_guard`) is documented APPROXIMATE. Query 5
 completed the CC1b discriminativeness review. The original CC1 suite was
 nondiscriminative, but the strengthened CC1b suite found a true
 simulator-executed weighted Borda composition opportunity and cleared the
@@ -61,17 +69,22 @@ simulator-executed weighted Borda composition opportunity and cleared the
    implementing CC2. COMPLETE.
 8. Query 8: implement the CC2 canonical scheduling primitive interface and
    representative-policy equivalence tests. COMPLETE.
+9. Query 9: implement the CC3 compositional DSL/verifier extension over the
+   CC2 primitive registry. COMPLETE.
 
 ## Guardrail
 
-Do not implement CC3 DSL extensions, CC4 dataset generation, CC5 predictor
-training, selector redesigns, real-vLLM jobs, hosted API experiments, or
-large ungated sweeps before the roadmap allows them. CC3 is limited to
-extending the JSON DSL/verifier over the CC2 primitive registry.
+Do not implement CC4 dataset generation, CC5 predictor training, selector
+redesigns, real-vLLM jobs, hosted API experiments, or large ungated sweeps
+before the roadmap allows them. CC3's own exit gate passed (see the CC3
+DSL/verifier report), but CC4 must not begin without a separate, explicitly
+authorized query.
 
 ## Next Action
 
-Begin CC3 by extending the JSON DSL/verifier to expose named references to
-the CC2 primitive registry (`src/llmserveopt/policies/primitives.py`),
-weighted sums, sparse top-k mixtures, conditional branches, admission gates,
-and placement scores, per the roadmap's CC3 required constructs.
+CC4 (offline oracle composition dataset) is queued as `NEXT` but has not
+been started. A future, explicitly authorized query should begin it by
+reading `docs/architecture/contextual_composition_dsl.md` and
+`docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
+first, then sampling/mutating over the CC3-exposed primitive-reference
+surface per the roadmap's CC4 required comparisons.

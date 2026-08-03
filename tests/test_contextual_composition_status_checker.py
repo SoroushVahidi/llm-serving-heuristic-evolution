@@ -50,7 +50,7 @@ def test_cc1_spec_required_sections_are_present():
         assert section in text
 
 
-def test_roadmap_links_cc1b_report_and_has_cc3_next():
+def test_roadmap_links_cc1b_report_and_has_cc4_next():
     text = (ROOT / "docs/contextual_composition_roadmap.md").read_text()
     assert "experiments/cc1_composition_opportunity_spec.md" in text
     assert "audits/contextual_composition_query4_cc1_results_20260731.md" in text
@@ -63,7 +63,8 @@ def test_roadmap_links_cc1b_report_and_has_cc3_next():
     phases = {row.strip("|").split("|")[0].strip(): row.strip("|").split("|")[2].strip() for row in rows}
     assert phases["CC1"] == "COMPLETE"
     assert phases["CC2"] == "COMPLETE"
-    assert phases["CC3"] == "NEXT"
+    assert phases["CC3"] == "COMPLETE"
+    assert phases["CC4"] == "NEXT"
     assert list(phases.values()).count("NEXT") == 1
 
 
@@ -89,7 +90,7 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
     text = (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
     assert "Authoritative branch: `contextual-compositional-heuristics-20260731`" in text
     assert "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`" in text
-    assert "Current phase: `CC3 - Compositional DSL and verifier`" in text
+    assert "Current phase: `CC4 - Offline oracle composition dataset`" in text
     assert "python scripts/check_contextual_composition_status.py --resume-readiness" in text
     assert (
         "python -m pytest tests/test_contextual_composition_status_checker.py "
@@ -97,9 +98,9 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
         "tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py "
         "tests/test_primitive_reconstructed_policies.py -q"
     ) in text
-    assert "Extend the JSON DSL/verifier (`src/llmserveopt/heuristics/`)" in text
-    assert "CC2 primitive registry" in text
-    assert "GitHub issue #3" in text
+    assert "CC4 has **not** been started" in text
+    assert "primitive_refs" in text
+    assert "GitHub issue #4" in text
 
 
 def test_canonical_docs_do_not_make_cc1_current():

@@ -2,10 +2,10 @@
 
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
-current_phase: CC3
+current_phase: CC4
 current_status: NEXT
-next_action: Begin CC3 by extending the JSON DSL and verifier to expose named primitive references, per the CC2 primitive interface and architecture doc
-roadmap_version: 2
+next_action: CC4 (offline oracle composition dataset) remains BLOCKED; do not begin without a separate, explicitly authorized query that first reads the CC3 DSL report and architecture doc
+roadmap_version: 3
 ```
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
@@ -23,8 +23,8 @@ Current date: 2026-07-31
 | CC0 | Repository and evidence stabilization | COMPLETE | Query 1 branch established | Roadmap, decisions, navigation, issues, and checker exist | This roadmap; [branch marker](CONTEXTUAL_COMPOSITION_BRANCH.md); [Query 1 report](audits/contextual_composition_query1_sync_report_20260731.md); [Query 2 report](audits/contextual_composition_query2_roadmap_report_20260731.md) | Maintain links only |
 | CC1 | Composition opportunity experiment | COMPLETE | CC0 complete | Composition opportunity gap measured with true simulator execution | Issue [#1](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/1); [CC1 specification](experiments/cc1_composition_opportunity_spec.md); [Query 4 results](audits/contextual_composition_query4_cc1_results_20260731.md); [Query 5 discriminativeness review](audits/contextual_composition_query5_discriminativeness_review_20260731.md) | Complete; CC1b gate passed |
 | CC2 | Canonical primitive interface | COMPLETE | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [architecture doc](architecture/contextual_composition_primitives.md); [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md) | Complete; CC2 equivalence gate passed (6/7 EXACT, 1/7 documented APPROXIMATE) |
-| CC3 | Compositional DSL and verifier | NEXT | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3) | Begin CC3 DSL extension using the CC2 primitive registry as the causal-input/parameter-bound source of truth |
-| CC4 | Offline oracle composition dataset | BLOCKED | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4) | Wait for CC3 |
+| CC3 | Compositional DSL and verifier | COMPLETE | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3); [architecture doc](architecture/contextual_composition_dsl.md); [CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md) | Complete; CC3 exit gate passed (8/8 required constructs, 447 focused+regression tests, legacy compatibility preserved). CC4 remains BLOCKED pending explicit authorization. |
+| CC4 | Offline oracle composition dataset | NEXT | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4) | Queued, not started; wait for an explicitly authorized query, and read the CC3 DSL report's section 11 "Next Phase" first |
 | CC5 | Contextual composition predictor | BLOCKED | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) | Wait for CC4 |
 | CC6 | Dynamic adaptation and stability | PLANNED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC5 |
 | CC7 | Counterexample-guided hardening | PLANNED | CC6 stable adaptation or explicit static-only scope | No critical supported-envelope failures remain | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Wait for CC6 |
@@ -356,6 +356,13 @@ Required decision gate:
 
 All compositions must compile deterministically and pass verifier,
 equivalence, property, and adversarial tests.
+
+**Gate result (2026-08-03): PASSED.** See the
+[CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
+for the full construct-by-construct evidence, backward-compatibility
+findings, and the two documented (non-blocking) unresolved risks. CC4 is not
+begun by this same query even though the gate passed; a separate query must
+explicitly authorize it after reading that report.
 
 Canonical issue: [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3).
 

@@ -5,6 +5,25 @@ This is the single source of truth for what is / is not permitted in a heuristic
 """
 from __future__ import annotations
 
+import hashlib
+import json
+
+# ---------------------------------------------------------------------------
+# Schema version (CC3: bumped for documentation only -- no existing document
+# shape or meaning changed; all CC3 additions are optional top-level fields
+# and additive allow-list entries.)
+# ---------------------------------------------------------------------------
+
+DSL_SCHEMA_VERSION: int = 2
+COMPILER_VERSION: str = "cc3.1"
+
+# Reserved variable-name prefixes the compiler lowers {"primitive": ...} /
+# {"primitive_gate": ...} / {"param": ...} leaf nodes into. Never usable as
+# an author-supplied "var" name (the verifier rejects any literal var whose
+# name starts with either prefix).
+PRIMITIVE_VAR_PREFIX: str = "__prim__::"
+PARAM_VAR_PREFIX: str = "__param__::"
+
 # ---------------------------------------------------------------------------
 # Allowed variables
 # ---------------------------------------------------------------------------
@@ -95,6 +114,11 @@ ALLOWED_OPS: frozenset[str] = frozenset({
     "neg",
     "weighted_sum",
     "if_then_else",
+    # CC3 additions
+    "topk_mixture",
+    "bool_and",
+    "bool_or",
+    "bool_not",
 })
 
 # Forbidden operation names (would introduce side effects, randomness, or code exec)
@@ -145,6 +169,10 @@ DEFAULT_LIMITS: dict = {
     "max_nodes": 64,
     "max_constant": 1000.0,
     "min_constant": -1000.0,
+    # CC3 additions
+    "max_active_primitives": 12,
+    "max_placement_keys": 4,
+    "max_parameters": 8,
 }
 
 # Required top-level fields
@@ -152,3 +180,36 @@ REQUIRED_FIELDS: tuple[str, ...] = ("name", "default", "tie_breaker")
 
 # Required fields inside a rule block (default or regime)
 REQUIRED_RULE_FIELDS: tuple[str, ...] = ("request_score",)
+
+# ---------------------------------------------------------------------------
+# CC3: compositional DSL additions
+# ---------------------------------------------------------------------------
+
+# Fallback policies are references to fixed, already-verified canonical safe
+# heuristics (see heuristics/examples.py) -- never arbitrary recursively
+# verified DSL, so fallback resolution stays simple, non-circular, and safe
+# by construction.
+ALLOWED_FALLBACK_POLICIES: frozenset[str] = frozenset({"fifo_like", "edf_like"})
+DEFAULT_FALLBACK_POLICY: str = "fifo_like"
+
+# Declared behavior when an admission_condition rejects every candidate this
+# step. "safe_fallback" delegates the whole step to the declared/inherited
+# fallback policy; "admit_best_effort" retries ranking-only admission
+# (ignoring admission_condition, still respecting GPU capacity) so at least
+# one request can make progress.
+ALLOWED_ON_NO_ADMITS_MODES: frozenset[str] = frozenset({"safe_fallback", "admit_best_effort"})
+
+# Declared external-parameter types (CC3 scope: numeric only).
+ALLOWED_PARAMETER_TYPES: frozenset[str] = frozenset({"float"})
+
+REQUIRED_PARAMETER_FIELDS: tuple[str, ...] = ("name", "type", "min", "max", "default")
+
+
+def canonical_json(payload) -> str:
+    """Deterministic JSON serialization used for hashing heuristic documents."""
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+def heuristic_hash(heuristic: dict) -> str:
+    """Stable SHA-256 hex digest of a heuristic document's canonical form."""
+    return hashlib.sha256(canonical_json(heuristic).encode("utf-8")).hexdigest()

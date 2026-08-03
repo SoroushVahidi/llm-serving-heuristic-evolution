@@ -1,0 +1,29 @@
+{
+  "name": "weighted_deadline_length_ranking",
+  "description": "Weighted combination of laxity urgency and shortest predicted output; both terms are named primitive references, not raw vars.",
+  "tie_breaker": "earliest_deadline",
+  "default": {
+    "request_score": {
+      "op": "weighted_sum",
+      "terms": [
+        [
+          {
+            "primitive": "laxity_urgency"
+          },
+          0.7
+        ],
+        [
+          {
+            "op": "neg",
+            "args": [
+              {
+                "primitive": "predicted_output_length"
+              }
+            ]
+          },
+          0.3
+        ]
+      ]
+    }
+  }
+}

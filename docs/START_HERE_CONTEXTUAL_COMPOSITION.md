@@ -2,9 +2,19 @@
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
 
-Current phase: `CC3 - Compositional DSL and verifier`
+Current phase: `CC4 - Offline oracle composition dataset`
 
-Pause state: none. CC2 is COMPLETE; CC3 is `NEXT`.
+Pause state: none. CC3 is COMPLETE; CC4 is `NEXT` (queued, not started).
+
+CC3 extended the JSON DSL/verifier (`src/llmserveopt/heuristics/`) to expose
+named references to the CC2 primitive registry: weighted sums, sparse top-k
+mixtures, conditional branches, admission gates with declared fallback,
+placement-score composition, and externally supplied bounded parameters,
+via a new read-only adapter module (`heuristics/primitive_bridge.py`). All
+447 focused+regression tests pass and every pre-CC3 example and
+genome-derived heuristic remains backward compatible. See the
+[architecture doc](architecture/contextual_composition_dsl.md) and the
+[CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md).
 
 CC2 implemented the canonical primitive interface
 (`src/llmserveopt/policies/primitives.py`, 28 registered primitives across
@@ -16,11 +26,12 @@ equivalence/registry tests. Six of seven reconstructions are EXACT; one
 [architecture doc](architecture/contextual_composition_primitives.md) and the
 [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md).
 
-Exact next task: begin CC3 by extending the JSON DSL/verifier
-(`src/llmserveopt/heuristics/`) to expose named primitive references,
-weighted sums, sparse top-k mixtures, conditional branches, admission
-gates, and placement scores over the CC2 primitive registry, per the
-roadmap's CC3 required-constructs list. Do not begin CC4 dataset work.
+Exact next task: CC4 (offline oracle composition dataset generation) has
+**not** been started. A future, explicitly authorized query should begin it
+by reading the CC3 architecture doc and DSL/verifier report first, then
+searching for high-quality composition parameters through true simulator
+execution per the roadmap's CC4 required comparisons. Do not begin CC5
+predictor training.
 
 ## Read In This Order
 
@@ -40,16 +51,19 @@ roadmap's CC3 required-constructs list. Do not begin CC4 dataset work.
 14. `docs/audits/contextual_composition_query7_final_pause_readiness_20260731.md`
 15. `docs/architecture/contextual_composition_primitives.md`
 16. `docs/audits/contextual_composition_cc2_primitive_interface_report_20260802.md`
+17. `docs/architecture/contextual_composition_dsl.md`
+18. `docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
     or the latest later contextual-composition audit report
 
 ## What Not To Do Yet
 
-CC2's primitive interface and representative-policy reconstructions are
-complete; CC3 (JSON DSL/verifier extension over that primitive registry) is
-now in scope. Do not begin CC4 offline oracle dataset generation,
-contextual predictor training (CC5), dynamic adaptation (CC6),
-counterexample hardening (CC7), real-vLLM jobs, hosted API experiments, or
-large simulator sweeps before the roadmap phase gate allows them.
+CC2's primitive interface, representative-policy reconstructions, and CC3's
+compositional DSL/verifier extension are all complete. Do not begin CC4
+offline oracle dataset generation without a separate, explicitly authorized
+query, and do not begin contextual predictor training (CC5), dynamic
+adaptation (CC6), counterexample hardening (CC7), real-vLLM jobs, hosted API
+experiments, or large simulator sweeps before the roadmap phase gate allows
+them.
 
 ## How To Update Status
 
