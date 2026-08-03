@@ -103,7 +103,7 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
         "tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py "
         "tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q"
     ) in text
-    assert "Check the latest status in" in text
+    assert "read this one for current status" in text
     assert "oracle_labels.parquet" in text
     assert "GitHub issue #5" in text
 

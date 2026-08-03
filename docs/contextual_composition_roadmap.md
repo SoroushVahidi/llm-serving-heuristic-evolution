@@ -4,8 +4,8 @@
 canonical_branch: contextual-compositional-heuristics-20260731
 current_phase: CC5
 current_status: IN PROGRESS
-next_action: a targeted CC4b oracle-dataset expansion (configs/cc4b_oracle_composition_expansion.yaml, results/cc4b_oracle_composition_expansion/) is actively running to grow the evaluation set from 6 to 50-100+ held-out windows; once quality gates pass, the existing unchanged CC5 pipeline reruns against it and the retry verdict is interpreted before any model redesign or CC6 work begins
-roadmap_version: 6
+next_action: the CC4b/CC5 retry completed with verdict REGIME_SPECIFIC_ONLY (predictor beats best fixed policy and is competitive with the hard selector on 76 held-out windows, but does not clearly beat best_global_composition); CC6 remains not queued; next step is addressing the uncertainty-method gap (no LOWO-CV-selected model has supported ensemble uncertainty across two retries) then a per-regime regret breakdown, per the CC4b/CC5 retry report section 10
+roadmap_version: 7
 ```
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
@@ -25,7 +25,7 @@ Current date: 2026-07-31
 | CC2 | Canonical primitive interface | COMPLETE | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [architecture doc](architecture/contextual_composition_primitives.md); [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md) | Complete; CC2 equivalence gate passed (6/7 EXACT, 1/7 documented APPROXIMATE) |
 | CC3 | Compositional DSL and verifier | COMPLETE | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3); [architecture doc](architecture/contextual_composition_dsl.md); [CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md) | Complete; CC3 exit gate passed (8/8 required constructs, 447 focused+regression tests, legacy compatibility preserved). CC4 remains BLOCKED pending explicit authorization. |
 | CC4 | Offline oracle composition dataset | COMPLETE | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4); [CC4 oracle dataset report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md) | Complete; CC4 exit gate passed (12 windows/34 candidates/408 executions, 0 rejected, reproducible+resumable, 66.7% evaluation-window composition-oracle gain, completion constraints hold on all windows). CC5 remains queued pending explicit authorization. |
-| CC5 | Contextual composition predictor | IN PROGRESS | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md) (first attempt); [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) (in progress -- see for latest status) | First attempt: verdict `INCONCLUSIVE`, not negative (predictor ties best fixed policy on n=6 held-out windows; best_global_composition wins; cause diagnosed as insufficient held-out data and high OOD abstention, not a methodology failure). **Currently running:** a targeted CC4b dataset expansion (`cc4b_cc5_retry` tmux session) is growing the held-out set to 50-100+ windows, after which the unchanged CC5 pipeline reruns and the retry verdict is interpreted. CC6 remains blocked until that verdict lands. |
+| CC5 | Contextual composition predictor | IN PROGRESS | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md) (first attempt); [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md) (completed) | First attempt: verdict `INCONCLUSIVE` at n=6 held-out windows. **Retry complete** (76 held-out windows, quality gates passed): verdict `REGIME_SPECIFIC_ONLY` -- predictor clearly beats best fixed policy (0.4006 vs 0.3895 ANWG) and is competitive with the hard selector (0.3938), but does not clearly beat `best_global_composition` (0.4025, within the bootstrap CI overlap). Exit gate NOT fully passed; CC6 not queued. Exact remaining task: address the uncertainty-method gap (no LOWO-CV-selected model across two retries has supported real ensemble uncertainty), then a per-regime regret breakdown -- see the retry report section 10. |
 | CC6 | Dynamic adaptation and stability | BLOCKED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on the CC5 retry decision gate (not yet resolved) |
 | CC7 | Counterexample-guided hardening | BLOCKED | CC6 stable adaptation or explicit static-only scope | No critical supported-envelope failures remain | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on CC6 |
 | CC8 | Real-trace and real-serving validation | BLOCKED | CC7 hardening gate passes | Clean staged validation through real-serving evidence | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on CC7 |
@@ -453,18 +453,26 @@ CV noise floor. CC6 is **not** queued as a result. Exact remaining task:
 expand the CC4 dataset (more windows, more per regime) before retraining;
 no CC5 pipeline code changes are anticipated to be required.
 
-**Retry in progress (started 2026-08-03).** The exact remaining task above
-is now underway: a targeted CC4b oracle-dataset expansion
-(`configs/cc4b_oracle_composition_expansion.yaml`) is growing the held-out
-set from 6 to 50-100+ windows (tmux session `cc4b_cc5_retry`), reusing
-CC4's engine and DSL/compiler/verifier infrastructure unchanged. Once
-quality gates pass (held-out count, non-near-tie count, family-dominance,
-split integrity, completion-accounting consistency -- see
-`scripts/check_cc4b_quality_gates.py`), the existing, unchanged CC5
-pipeline reruns against the expanded dataset. See the
+**Retry complete (2026-08-03). Verdict: `REGIME_SPECIFIC_ONLY`.** The
+exact remaining task above was carried out: a targeted CC4b oracle-dataset
+expansion (`configs/cc4b_oracle_composition_expansion.yaml`) grew the
+held-out set from 6 to 76 windows (30 development windows; quality gates
+all passed -- see `scripts/check_cc4b_quality_gates.py`), reusing CC4's
+engine and DSL/compiler/verifier infrastructure and CC5's own pipeline
+completely unchanged. Result: the predictor (gradient_boosting regret
+regression) now **clearly beats best fixed policy** (0.4006 vs 0.3895 ANWG)
+and is **competitive with the existing hard selector** (0.3938), but does
+**not clearly beat `best_global_composition`** (0.4025 -- within the
+bootstrap CI overlap on both sides). This is a materially more informative
+result than the first attempt's `INCONCLUSIVE` (the fixed-policy question
+is now resolved), not a repeat of it. CC6 remains **not** queued. Exact
+remaining task: address the uncertainty-method gap (across two independent
+retries, leave-one-window-out model selection has never chosen the one
+model family this pipeline's ensemble-disagreement uncertainty estimator
+supports), then a per-regime regret breakdown to determine whether the
+predictor's value is regime-concentrated. See the
 [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-for live status and the eventual retry verdict -- **this first-attempt
-INCONCLUSIVE result above is not the final CC5 verdict.**
+for full evidence.
 
 Canonical issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 
@@ -589,6 +597,21 @@ kept separate from the phase-gate mechanics above.
 
   None of these three outcomes is presupposed; the retry report records
   whichever one the expanded held-out evidence actually supports.
+
+  **Actual result (2026-08-03, n=76 held-out windows):** none of the three
+  outcomes above obtained cleanly -- the evidence is genuinely mixed.
+  Outcome 3 (hard selector wins) is ruled out: the predictor beats the
+  hard selector. Between outcomes 1 and 2, the data leans toward outcome 2
+  (global composition is very strong, 0.4025 vs the predictor's 0.4006 ANWG)
+  but the gap is within the bootstrap CI overlap, so outcome 1 is not ruled
+  out either -- what the retry *did* resolve is that the predictor clearly
+  beats naive fixed-policy selection (0.3895), which the first attempt at
+  n=6 could not distinguish from a tie. The roadmap's working interpretation
+  is: composition (of some form -- fixed, global, or contextually-selected)
+  is clearly valuable; whether *contextual* adaptation specifically adds
+  value over a single well-chosen global composition remains open and is
+  the CC4b/CC5 retry report's exact next research step (address the
+  uncertainty-method gap, then a per-regime regret breakdown).
 
 ## Future Research Directions -- Not Yet Implemented
 

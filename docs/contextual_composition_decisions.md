@@ -567,3 +567,75 @@ Related files or evidence:
 - `scripts/check_cc4b_quality_gates.py`
 - `results/cc4b_oracle_composition_expansion/` (local, untracked)
 - GitHub issue #5 (remains open)
+
+## CCD-017: CC4b/CC5 Retry Complete -- REGIME_SPECIFIC_ONLY, Exit Gate Still Not Fully Passed
+
+Date: 2026-08-03
+
+Status: accepted
+
+Decision: Treat the CC4b/CC5 retry as complete and its verdict as final for
+this cycle: `REGIME_SPECIFIC_ONLY`. Do **not** mark CC5 COMPLETE and do
+**not** queue CC6. CC5 remains the roadmap's `NEXT`/`IN PROGRESS` phase,
+with one precise next research step recorded below, not a third dataset
+expansion or a predictor redesign.
+
+Rationale: `scripts/check_cc4b_quality_gates.py` passed all hard gates
+against the CC4b dataset (`results/cc4b_oracle_composition_expansion/20260803T182426Z/`,
+106 total windows, 76 held-out [>=50 required], 35 non-near-tie held-out
+[>=20 required], no oracle family exceeding 39% share of held-out windows
+[<=70% required], completion accounting consistent, split integrity
+verified via the reused `validate_cc4_dataset`). CC5's existing pipeline
+was then rerun completely unchanged (same model classes, features,
+uncertainty method, thresholds, decision-gate function) against this
+dataset via `run_training()` targeting
+`results/cc5_contextual_composition_predictor_retry/20260803T192246Z/`.
+Leave-one-window-out cross-validation on dev windows selected
+`gradient_boosting` (CV score 0.4307, narrowly ahead of ridge 0.4226, knn
+0.4204, random_forest 0.4135, decision_tree 0.3593). On the 76 held-out
+windows: oracle composition mean ANWG 0.4273; the trained predictor 0.4006
+(bootstrap 95% CI [0.335, 0.466]); `best_global_composition` 0.4025 (CI
+[0.337, 0.470]); hard selector 0.3938 (CI [0.328, 0.460]); best fixed
+policy 0.3895 (CI [0.323, 0.456]). Applying the unmodified CC5 decision
+gate mechanically: `beats_fixed=True`, `beats_global=False` (CIs overlap,
+gap only 0.0019 ANWG), `competitive_with_selector=True` -> the gate's
+else-branch yields `REGIME_SPECIFIC_ONLY`, not `PROCEED`. Mean regret vs.
+oracle composition 0.0267; mean regret vs. oracle fixed 0.0071; mean
+completion fraction 0.912; 0 completion-fraction violations. Abstention
+rate fell from 67% (first attempt, n=6) to 36.8% (28/76, all OOD-triggered)
+-- the larger dev set materially shrank the OOD region, consistent with
+CCD-016's data-scarcity diagnosis, but did not eliminate it. The worst
+window (`cc4b_long_output_id_test_01`, ANWG 0.0) and the worst regimes
+(long_output, burstgpt_derived, azure_conversation_like) are documented in
+the retry report as candidates for the per-regime breakdown below, not as
+disqualifying failures (0 completion violations, and these regimes are
+hard for every compared method, not uniquely hard for the predictor).
+
+Consequences: CC5 stays `IN PROGRESS` (not `COMPLETE`); CC6 stays
+`BLOCKED`. The retry report identifies the uncertainty-method gap as now
+load-bearing: across **two independent retries** (first attempt and this
+one), leave-one-window-out model selection has never chosen
+`RandomForestRegressor`, the only model type
+`cc5_contextual_predictor.py`'s `_predict_with_uncertainty` computes real
+ensemble uncertainty for -- so the deployed uncertainty/OOD-gate signal is
+degraded (a fallback proxy, not true ensemble variance) for whichever
+model LOWO-CV actually selects. The exact next research step, in order:
+(1) address the uncertainty-method gap (either extend `_predict_with_uncertainty`
+to support gradient-boosting/KNN uncertainty, or factor ensemble-uncertainty
+availability into model selection itself); (2) then compute a per-regime
+regret breakdown (predictor vs. global-composition regret, already
+derivable from the retry run's `per_window_predictions.csv`/
+`regret_tables.csv`) to determine whether the predictor's value is
+regime-concentrated. Do not start a third CC4b/CC5 retry cycle or begin
+CC6 before this analysis is complete. No CC5 pipeline code was changed as
+part of producing this verdict; only the input dataset changed, per
+CCD-016's constraint.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`
+- `results/cc4b_oracle_composition_expansion/20260803T182426Z/` (local, untracked)
+- `results/cc5_contextual_composition_predictor_retry/20260803T192246Z/` (local, untracked)
+- `src/llmserveopt/experiments/cc5_contextual_predictor.py` (unchanged)
+- `tests/test_cc4b_expansion_config.py` (new)
+- GitHub issue #5 (remains open -- exit gate not fully passed)

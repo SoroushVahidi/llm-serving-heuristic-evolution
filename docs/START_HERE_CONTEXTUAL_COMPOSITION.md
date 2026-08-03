@@ -5,50 +5,54 @@ Authoritative branch: `contextual-compositional-heuristics-20260731`
 Current phase: `CC5 - Contextual composition predictor`
 
 Pause state: none. CC4 is COMPLETE. CC5's first attempt returned verdict
-`INCONCLUSIVE` (exit gate NOT passed, not a negative result -- see below);
-CC5 is `IN PROGRESS` via an active retry. CC6 is **BLOCKED** until the retry
-verdict lands. See the
+`INCONCLUSIVE` at n=6 held-out windows; a retry against a 76-window
+expanded dataset (CC4b) is **complete** with verdict `REGIME_SPECIFIC_ONLY`.
+CC5 is `IN PROGRESS`. CC6 is **BLOCKED** until CC5's exit gate fully
+passes. See the
 [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md)
 (first attempt) and the
 [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-(current status -- read this one first if it exists).
+(retry -- read this one for current status).
 
 ## Active Task Right Now (read this section first)
 
-A targeted oracle-dataset expansion (CC4b) is growing CC4's held-out set
-from 6 to 50-100+ windows, after which CC5's existing, unchanged pipeline
-reruns against it -- because the first CC5 attempt was statistically
-inconclusive at n=6 held-out windows (`best_global_composition` beat the
-trained predictor, but the gap was well within noise). Exact commands used:
+The CC4b/CC5 retry is **complete**: CC4b expanded CC4's held-out set from 6
+to 76 windows (all quality gates passed), and CC5's existing, unchanged
+pipeline reran against it. Result: the predictor now **clearly beats best
+fixed policy** (0.4006 vs 0.3895 ANWG) and is **competitive with the hard
+selector** (0.3938), but does **not clearly beat `best_global_composition`**
+(0.4025 -- within the bootstrap CI overlap). Verdict: `REGIME_SPECIFIC_ONLY`
+-- not a full pass, but a materially more informative result than the
+first attempt (the fixed-policy question is now resolved). Reference
+artifacts:
 
 ```bash
-tmux attach -t cc4b_cc5_retry
-# build config:      configs/cc4b_oracle_composition_expansion.yaml
-# build script:       scripts/run_cc4_oracle_composition_dataset.py --config configs/cc4b_oracle_composition_expansion.yaml --full-run --allow-dirty --timestamp <TS>
-# checkpoints/log:     results/cc4b_oracle_composition_expansion/<TS>/checkpoints/{heartbeat.json,trial_results.jsonl}
-# session log:         logs/cc4b_cc5_retry_YYYYMMDD_HHMMSS.log
-# quality gates:       scripts/check_cc4b_quality_gates.py results/cc4b_oracle_composition_expansion/<TS>
-# CC5 rerun:            scripts/run_cc5_contextual_predictor.py --dataset-dir results/cc4b_oracle_composition_expansion/<TS> --full-run --timestamp <TS>
+tmux attach -t cc4b_cc5_retry     # session still holds shell history
+# CC4b dataset:  results/cc4b_oracle_composition_expansion/20260803T182426Z/
+# CC5 retry run: results/cc5_contextual_composition_predictor_retry/20260803T192246Z/
+# quality gates: scripts/check_cc4b_quality_gates.py results/cc4b_oracle_composition_expansion/20260803T182426Z
+# session logs:  logs/cc4b_cc5_retry_20260803_182107.log, logs/cc5_retry_finalize_20260803_192106.log
 ```
 
-**Do not start a second CC4b build, a second CC5 training run, or any CC6
-work in parallel with this.** Check `results/cc4b_oracle_composition_expansion/*/checkpoints/heartbeat.json`
-for the latest progress before starting anything else. Exact next decision
-once the run completes: check the quality gates, then interpret the CC5
-retry verdict (`PROCEED` / `REGIME_SPECIFIC_ONLY` / `STOP_OR_REDESIGN` /
-`INCONCLUSIVE`) before any model redesign or CC6 work -- see the
-[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-for the actual outcome. Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
+**Do not start another CC4b build or CC5 retry, and do not begin CC6 work,
+until the exact next research step below is addressed.** Exact next
+decision (per the retry report section 10): (1) address the
+uncertainty-method gap -- across two independent retries, leave-one-window-out
+model selection has never chosen `RandomForestRegressor`, the only model
+type this pipeline computes real ensemble uncertainty for; (2) then a
+per-regime regret breakdown to determine whether the predictor's value
+(clearly established vs. fixed policy, not yet vs. global composition) is
+regime-concentrated. Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5)
+(remains open).
 
-CC5 trained a KNN regret-regression predictor over CC4's already-verified,
+CC5 trains a regret-regression predictor over CC4's already-verified,
 already-executed candidate pool (`src/llmserveopt/experiments/cc5_contextual_predictor.py`),
-with leave-one-window-out model selection, OOD-gated abstention/fallback,
-and a full evaluation against CC4's 6 held-out windows. Result: the
-predictor ties the best fixed policy (mean ANWG 0.2306 vs 0.2310) and is
-beaten by the single best global composition (0.2633) -- judged a
-data-scarcity finding (n=6 held-out windows cannot statistically
-distinguish these methods), not a methodology failure. 22 new focused tests
-pass. Completion-fraction constraints hold (0 violations).
+with leave-one-window-out model selection, OOD-gated abstention/fallback.
+First attempt (n=6 held-out): tied best fixed policy, beaten by best global
+composition -- data-scarcity finding, not a methodology failure. Retry
+(n=76 held-out, same unchanged pipeline): beats best fixed policy, ties
+best global composition. 22 + 8 new focused tests pass across both stages.
+Completion-fraction constraints hold (0 violations) in both runs.
 
 CC4 built the first reproducible, resumable, simulator-derived oracle
 composition dataset (`src/llmserveopt/experiments/cc4_oracle_composition_dataset.py`,
@@ -81,9 +85,10 @@ equivalence/registry tests. Six of seven reconstructions are EXACT; one
 [architecture doc](architecture/contextual_composition_primitives.md) and the
 [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md).
 
-Exact next task: see "Active Task Right Now" above. In summary: interpret
-the CC4b/CC5 retry verdict once the current run completes, before any model
-redesign or CC6 work. Do not begin CC6 dynamic adaptation until CC5 passes.
+Exact next task: see "Active Task Right Now" above. In summary: address the
+uncertainty-method gap, then run a per-regime regret breakdown, before any
+further dataset expansion, model redesign, or CC6 work. Do not begin CC6
+dynamic adaptation until CC5's exit gate fully passes.
 
 ## Read In This Order
 
@@ -114,11 +119,12 @@ redesign or CC6 work. Do not begin CC6 dynamic adaptation until CC5 passes.
 
 CC2's primitive interface, representative-policy reconstructions, CC3's
 compositional DSL/verifier extension, and CC4's oracle composition dataset
-are all complete. CC5's first attempt did not pass its exit gate
-(`INCONCLUSIVE`) and a retry (CC4b expansion + unchanged CC5 rerun) is
-underway; do not start a second, parallel retry, and do not begin dynamic
-adaptation (CC6) until CC5 actually passes. Do not begin counterexample
-hardening (CC7), real-vLLM jobs, hosted API experiments, evolutionary/QD
+are all complete. CC5's first attempt (`INCONCLUSIVE`) and its retry
+(`REGIME_SPECIFIC_ONLY`) have both completed without fully passing the
+exit gate; do not start a third retry before addressing the exact next
+research step in the retry report, and do not begin dynamic adaptation
+(CC6) until CC5 actually passes. Do not begin counterexample hardening
+(CC7), real-vLLM jobs, hosted API experiments, evolutionary/QD
 library-expansion work, or LLM-guided synthesis work (all future
 directions, none implemented -- see the roadmap's "Future Research
 Directions" section) before the roadmap phase gate allows them.

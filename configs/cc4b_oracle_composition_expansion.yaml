@@ -1,0 +1,3359 @@
+schema_version: 1
+mode: cc4
+seed: 20260803
+policy_subset:
+- fifo
+- edf
+- weighted_shortest_processing
+- estimated_service_time_first
+- scorpio_style_slo_guard
+cc1b_borda_baseline:
+  policy_subset:
+  - weighted_shortest_processing
+  - scorpio_style_slo_guard
+  - edf
+  - estimated_service_time_first
+  - fifo
+  method: borda
+  top_k: 2
+  weights:
+    weighted_shortest_processing: 0.5
+    scorpio_style_slo_guard: 0.5
+candidate_search:
+  primitive_pool:
+  - name: laxity_urgency
+    higher_is_preferred: true
+  - name: priority
+    higher_is_preferred: true
+  - name: queue_age
+    higher_is_preferred: true
+  - name: predicted_output_length
+    higher_is_preferred: false
+  - name: prompt_length
+    higher_is_preferred: false
+  - name: estimated_service_time
+    higher_is_preferred: false
+  weight_grid_step: 0.5
+  weight_grid_top_k: 2
+  topk_mixture_k_values:
+  - 1
+  - 2
+  - 3
+  admission_gate_laxity_thresholds:
+  - 0.0
+  - 0.05
+  placement_key_variants:
+  - []
+  - - projected_gpu_load
+  - - projected_gpu_load
+    - kv_pressure
+metrics:
+  primary: arrival_normalized_weighted_goodput
+  completion_fraction_tolerance: 0.005
+near_tie_primary_threshold: 0.005
+near_tie_thresholds:
+- 0.001
+- 0.005
+- 0.01
+development_splits:
+- TRAIN
+- VALIDATION
+evaluation_splits:
+- ID_TEST
+- OOD_TEST
+safeguards:
+  max_runs: 20000
+  require_clean_git_for_full: true
+  forbid_live_api: true
+  forbid_gpu: true
+  forbid_real_vllm: true
+outputs:
+  root: results/cc4b_oracle_composition_expansion
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 128
+  step_token_budget: 128
+  enable_decode_prefill_contention: false
+  decode_first: false
+simulator:
+  drain_steps: 2500
+gpus:
+- gpu_id: 0
+  max_active_sequences: 4
+  max_batch_tokens: 64
+  max_kv_tokens: 1200
+workloads:
+- tag: cc4b_underloaded_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: underloaded
+  seed: 40001
+  arrival_process: poisson
+  arrival_rate: 8.0
+  duration: 3.0
+  prompt_mean: 96.0
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 64.0
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: underloaded
+  seed: 40002
+  arrival_process: poisson
+  arrival_rate: 7.2
+  duration: 3.0
+  prompt_mean: 86.4
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 57.6
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: underloaded
+  seed: 40020
+  arrival_process: poisson
+  arrival_rate: 8.8
+  duration: 3.0
+  prompt_mean: 105.6
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 70.4
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: underloaded
+  seed: 40030
+  arrival_process: poisson
+  arrival_rate: 6.56
+  duration: 3.0
+  prompt_mean: 78.72
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 52.48
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: underloaded
+  seed: 40031
+  arrival_process: poisson
+  arrival_rate: 9.44
+  duration: 3.0
+  prompt_mean: 113.28
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 75.52
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: underloaded
+  seed: 40032
+  arrival_process: poisson
+  arrival_rate: 7.6
+  duration: 3.0
+  prompt_mean: 91.2
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 60.8
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: underloaded
+  seed: 40033
+  arrival_process: poisson
+  arrival_rate: 8.4
+  duration: 3.0
+  prompt_mean: 100.8
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 67.2
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: underloaded
+  seed: 40034
+  arrival_process: poisson
+  arrival_rate: 7.04
+  duration: 3.0
+  prompt_mean: 84.48
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 56.32
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: underloaded
+  seed: 40060
+  arrival_process: poisson
+  arrival_rate: 10.8
+  duration: 3.0
+  prompt_mean: 129.6
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 86.4
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_underloaded_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: underloaded
+  seed: 40061
+  arrival_process: poisson
+  arrival_rate: 5.2
+  duration: 3.0
+  prompt_mean: 62.4
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 41.6
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.1
+  max_requests: 60
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_saturated_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: saturated
+  seed: 40101
+  arrival_process: poisson
+  arrival_rate: 80.0
+  duration: 1.0
+  prompt_mean: 96.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 128.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: saturated
+  seed: 40102
+  arrival_process: poisson
+  arrival_rate: 72.0
+  duration: 1.0
+  prompt_mean: 86.4
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 115.2
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: saturated
+  seed: 40120
+  arrival_process: poisson
+  arrival_rate: 88.0
+  duration: 1.0
+  prompt_mean: 105.6
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 140.8
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: saturated
+  seed: 40130
+  arrival_process: poisson
+  arrival_rate: 65.6
+  duration: 1.0
+  prompt_mean: 78.72
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 104.96
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: saturated
+  seed: 40131
+  arrival_process: poisson
+  arrival_rate: 94.4
+  duration: 1.0
+  prompt_mean: 113.28
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 151.04
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: saturated
+  seed: 40132
+  arrival_process: poisson
+  arrival_rate: 76.0
+  duration: 1.0
+  prompt_mean: 91.2
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 121.6
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: saturated
+  seed: 40133
+  arrival_process: poisson
+  arrival_rate: 84.0
+  duration: 1.0
+  prompt_mean: 100.8
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 134.4
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: saturated
+  seed: 40134
+  arrival_process: poisson
+  arrival_rate: 70.4
+  duration: 1.0
+  prompt_mean: 84.48
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 112.64
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: saturated
+  seed: 40160
+  arrival_process: poisson
+  arrival_rate: 108.0
+  duration: 1.0
+  prompt_mean: 129.6
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 172.8
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_saturated_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: saturated
+  seed: 40161
+  arrival_process: poisson
+  arrival_rate: 52.0
+  duration: 1.0
+  prompt_mean: 62.4
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 83.2
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_mixed_slo_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: mixed_slo
+  seed: 40201
+  arrival_process: poisson
+  arrival_rate: 40.0
+  duration: 1.3
+  prompt_mean: 128.0
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 96.0
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: mixed_slo
+  seed: 40202
+  arrival_process: poisson
+  arrival_rate: 36.0
+  duration: 1.3
+  prompt_mean: 115.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 86.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: mixed_slo
+  seed: 40220
+  arrival_process: poisson
+  arrival_rate: 44.0
+  duration: 1.3
+  prompt_mean: 140.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 105.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: mixed_slo
+  seed: 40230
+  arrival_process: poisson
+  arrival_rate: 32.8
+  duration: 1.3
+  prompt_mean: 104.96
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 78.72
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: mixed_slo
+  seed: 40231
+  arrival_process: poisson
+  arrival_rate: 47.2
+  duration: 1.3
+  prompt_mean: 151.04
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 113.28
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: mixed_slo
+  seed: 40232
+  arrival_process: poisson
+  arrival_rate: 38.0
+  duration: 1.3
+  prompt_mean: 121.6
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 91.2
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: mixed_slo
+  seed: 40233
+  arrival_process: poisson
+  arrival_rate: 42.0
+  duration: 1.3
+  prompt_mean: 134.4
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 100.8
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: mixed_slo
+  seed: 40234
+  arrival_process: poisson
+  arrival_rate: 35.2
+  duration: 1.3
+  prompt_mean: 112.64
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 84.48
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: mixed_slo
+  seed: 40260
+  arrival_process: poisson
+  arrival_rate: 54.0
+  duration: 1.3
+  prompt_mean: 172.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 129.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_mixed_slo_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: mixed_slo
+  seed: 40261
+  arrival_process: poisson
+  arrival_rate: 26.0
+  duration: 1.3
+  prompt_mean: 83.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 62.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_long_prompt_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: long_prompt
+  seed: 40301
+  arrival_process: poisson
+  arrival_rate: 50.0
+  duration: 1.2
+  prompt_mean: 768.0
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 96.0
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: long_prompt
+  seed: 40302
+  arrival_process: poisson
+  arrival_rate: 45.0
+  duration: 1.2
+  prompt_mean: 691.2
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 86.4
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: long_prompt
+  seed: 40320
+  arrival_process: poisson
+  arrival_rate: 55.0
+  duration: 1.2
+  prompt_mean: 844.8
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 105.6
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: long_prompt
+  seed: 40330
+  arrival_process: poisson
+  arrival_rate: 41.0
+  duration: 1.2
+  prompt_mean: 629.76
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 78.72
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: long_prompt
+  seed: 40331
+  arrival_process: poisson
+  arrival_rate: 59.0
+  duration: 1.2
+  prompt_mean: 906.24
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 113.28
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: long_prompt
+  seed: 40332
+  arrival_process: poisson
+  arrival_rate: 47.5
+  duration: 1.2
+  prompt_mean: 729.6
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 91.2
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: long_prompt
+  seed: 40333
+  arrival_process: poisson
+  arrival_rate: 52.5
+  duration: 1.2
+  prompt_mean: 806.4
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 100.8
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: long_prompt
+  seed: 40334
+  arrival_process: poisson
+  arrival_rate: 44.0
+  duration: 1.2
+  prompt_mean: 675.84
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 84.48
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: long_prompt
+  seed: 40360
+  arrival_process: poisson
+  arrival_rate: 67.5
+  duration: 1.2
+  prompt_mean: 1036.8
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 129.6
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_prompt_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: long_prompt
+  seed: 40361
+  arrival_process: poisson
+  arrival_rate: 32.5
+  duration: 1.2
+  prompt_mean: 499.2
+  prompt_sigma: 0.6
+  prompt_low: 128
+  prompt_high: 1500
+  output_mean: 62.4
+  output_sigma: 0.6
+  output_low: 16
+  output_high: 256
+  prediction_noise_rel: 0.15
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: long_output
+  seed: 40401
+  arrival_process: poisson
+  arrival_rate: 45.0
+  duration: 1.2
+  prompt_mean: 96.0
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 640.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: long_output
+  seed: 40402
+  arrival_process: poisson
+  arrival_rate: 40.5
+  duration: 1.2
+  prompt_mean: 86.4
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 576.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: long_output
+  seed: 40420
+  arrival_process: poisson
+  arrival_rate: 49.5
+  duration: 1.2
+  prompt_mean: 105.6
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 704.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: long_output
+  seed: 40430
+  arrival_process: poisson
+  arrival_rate: 36.9
+  duration: 1.2
+  prompt_mean: 78.72
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 524.8
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: long_output
+  seed: 40431
+  arrival_process: poisson
+  arrival_rate: 53.1
+  duration: 1.2
+  prompt_mean: 113.28
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 755.2
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: long_output
+  seed: 40432
+  arrival_process: poisson
+  arrival_rate: 42.75
+  duration: 1.2
+  prompt_mean: 91.2
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 608.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: long_output
+  seed: 40433
+  arrival_process: poisson
+  arrival_rate: 47.25
+  duration: 1.2
+  prompt_mean: 100.8
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 672.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: long_output
+  seed: 40434
+  arrival_process: poisson
+  arrival_rate: 39.6
+  duration: 1.2
+  prompt_mean: 84.48
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 563.2
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: long_output
+  seed: 40460
+  arrival_process: poisson
+  arrival_rate: 60.75
+  duration: 1.2
+  prompt_mean: 129.6
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 864.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_long_output_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: long_output
+  seed: 40461
+  arrival_process: poisson
+  arrival_rate: 29.25
+  duration: 1.2
+  prompt_mean: 62.4
+  prompt_sigma: 0.6
+  prompt_low: 16
+  prompt_high: 384
+  output_mean: 416.0
+  output_sigma: 0.6
+  output_low: 128
+  output_high: 1400
+  prediction_noise_rel: 0.15
+  max_requests: 65
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_burst_transition_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: burst_transition
+  seed: 40501
+  arrival_process: bursty
+  arrival_rate: 30.0
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 128.0
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 96.0
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: burst_transition
+  seed: 40502
+  arrival_process: bursty
+  arrival_rate: 27.0
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 115.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 86.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: burst_transition
+  seed: 40520
+  arrival_process: bursty
+  arrival_rate: 33.0
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 140.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 105.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: burst_transition
+  seed: 40530
+  arrival_process: bursty
+  arrival_rate: 24.6
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 104.96
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 78.72
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: burst_transition
+  seed: 40531
+  arrival_process: bursty
+  arrival_rate: 35.4
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 151.04
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 113.28
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: burst_transition
+  seed: 50532
+  arrival_process: bursty
+  arrival_rate: 28.5
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 121.6
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 91.2
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: burst_transition
+  seed: 40533
+  arrival_process: bursty
+  arrival_rate: 31.5
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 134.4
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 100.8
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: burst_transition
+  seed: 40534
+  arrival_process: bursty
+  arrival_rate: 26.4
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 112.64
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 84.48
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: burst_transition
+  seed: 50560
+  arrival_process: bursty
+  arrival_rate: 40.5
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 172.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 129.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_burst_transition_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: burst_transition
+  seed: 40561
+  arrival_process: bursty
+  arrival_rate: 19.5
+  duration: 1.5
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_mean: 83.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 62.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 80
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_kv_pressure_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: kv_pressure
+  seed: 40601
+  arrival_process: poisson
+  arrival_rate: 60.0
+  duration: 1.2
+  prompt_mean: 256.0
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 192.0
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: kv_pressure
+  seed: 40602
+  arrival_process: poisson
+  arrival_rate: 54.0
+  duration: 1.2
+  prompt_mean: 230.4
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 172.8
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: kv_pressure
+  seed: 40620
+  arrival_process: poisson
+  arrival_rate: 66.0
+  duration: 1.2
+  prompt_mean: 281.6
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 211.2
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: kv_pressure
+  seed: 40630
+  arrival_process: poisson
+  arrival_rate: 49.2
+  duration: 1.2
+  prompt_mean: 209.92
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 157.44
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: kv_pressure
+  seed: 40631
+  arrival_process: poisson
+  arrival_rate: 70.8
+  duration: 1.2
+  prompt_mean: 302.08
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 226.56
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: kv_pressure
+  seed: 40632
+  arrival_process: poisson
+  arrival_rate: 57.0
+  duration: 1.2
+  prompt_mean: 243.2
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 182.4
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: kv_pressure
+  seed: 40633
+  arrival_process: poisson
+  arrival_rate: 63.0
+  duration: 1.2
+  prompt_mean: 268.8
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 201.6
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: kv_pressure
+  seed: 40634
+  arrival_process: poisson
+  arrival_rate: 52.8
+  duration: 1.2
+  prompt_mean: 225.28
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 168.96
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: kv_pressure
+  seed: 40660
+  arrival_process: poisson
+  arrival_rate: 81.0
+  duration: 1.2
+  prompt_mean: 345.6
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 259.2
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_kv_pressure_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: kv_pressure
+  seed: 40661
+  arrival_process: poisson
+  arrival_rate: 39.0
+  duration: 1.2
+  prompt_mean: 166.4
+  prompt_sigma: 0.7
+  prompt_low: 32
+  prompt_high: 768
+  output_mean: 124.8
+  output_sigma: 0.7
+  output_low: 32
+  output_high: 512
+  prediction_noise_rel: 0.15
+  max_requests: 85
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.08
+    priority: 3.0
+    weight: 0.45
+  - class_id: medium
+    slo_slack: 0.16
+    priority: 2.0
+    weight: 0.35
+  - class_id: loose
+    slo_slack: 0.35
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_prediction_noise_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: prediction_noise
+  seed: 40701
+  arrival_process: poisson
+  arrival_rate: 40.0
+  duration: 1.3
+  prompt_mean: 128.0
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 128.0
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: prediction_noise
+  seed: 40702
+  arrival_process: poisson
+  arrival_rate: 36.0
+  duration: 1.3
+  prompt_mean: 115.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 115.2
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: prediction_noise
+  seed: 40720
+  arrival_process: poisson
+  arrival_rate: 44.0
+  duration: 1.3
+  prompt_mean: 140.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 140.8
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: prediction_noise
+  seed: 40730
+  arrival_process: poisson
+  arrival_rate: 32.8
+  duration: 1.3
+  prompt_mean: 104.96
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 104.96
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: prediction_noise
+  seed: 40731
+  arrival_process: poisson
+  arrival_rate: 47.2
+  duration: 1.3
+  prompt_mean: 151.04
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 151.04
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: prediction_noise
+  seed: 40732
+  arrival_process: poisson
+  arrival_rate: 38.0
+  duration: 1.3
+  prompt_mean: 121.6
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 121.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: prediction_noise
+  seed: 40733
+  arrival_process: poisson
+  arrival_rate: 42.0
+  duration: 1.3
+  prompt_mean: 134.4
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 134.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: prediction_noise
+  seed: 40734
+  arrival_process: poisson
+  arrival_rate: 35.2
+  duration: 1.3
+  prompt_mean: 112.64
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 112.64
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: prediction_noise
+  seed: 40760
+  arrival_process: poisson
+  arrival_rate: 54.0
+  duration: 1.3
+  prompt_mean: 172.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 172.8
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_prediction_noise_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: prediction_noise
+  seed: 40761
+  arrival_process: poisson
+  arrival_rate: 26.0
+  duration: 1.3
+  prompt_mean: 83.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 83.2
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 512
+  prediction_noise_rel: 0.6
+  max_requests: 70
+  slo_classes:
+  - class_id: tight
+    slo_slack: 0.1
+    priority: 3.0
+    weight: 0.3
+  - class_id: medium
+    slo_slack: 0.22
+    priority: 2.0
+    weight: 0.4
+  - class_id: loose
+    slo_slack: 0.45
+    priority: 1.0
+    weight: 0.3
+- tag: cc4b_priority_conflict_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: priority_conflict
+  seed: 40801
+  arrival_process: poisson
+  arrival_rate: 45.0
+  duration: 1.3
+  prompt_mean: 128.0
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 96.0
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: priority_conflict
+  seed: 40802
+  arrival_process: poisson
+  arrival_rate: 40.5
+  duration: 1.3
+  prompt_mean: 115.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 86.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: priority_conflict
+  seed: 40820
+  arrival_process: poisson
+  arrival_rate: 49.5
+  duration: 1.3
+  prompt_mean: 140.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 105.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: priority_conflict
+  seed: 40830
+  arrival_process: poisson
+  arrival_rate: 36.9
+  duration: 1.3
+  prompt_mean: 104.96
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 78.72
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: priority_conflict
+  seed: 40831
+  arrival_process: poisson
+  arrival_rate: 53.1
+  duration: 1.3
+  prompt_mean: 151.04
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 113.28
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: priority_conflict
+  seed: 40832
+  arrival_process: poisson
+  arrival_rate: 42.75
+  duration: 1.3
+  prompt_mean: 121.6
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 91.2
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: priority_conflict
+  seed: 40833
+  arrival_process: poisson
+  arrival_rate: 47.25
+  duration: 1.3
+  prompt_mean: 134.4
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 100.8
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: priority_conflict
+  seed: 40834
+  arrival_process: poisson
+  arrival_rate: 39.6
+  duration: 1.3
+  prompt_mean: 112.64
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 84.48
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: priority_conflict
+  seed: 40860
+  arrival_process: poisson
+  arrival_rate: 60.75
+  duration: 1.3
+  prompt_mean: 172.8
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 129.6
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_priority_conflict_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: priority_conflict
+  seed: 40861
+  arrival_process: poisson
+  arrival_rate: 29.25
+  duration: 1.3
+  prompt_mean: 83.2
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 512
+  output_mean: 62.4
+  output_sigma: 0.7
+  output_low: 16
+  output_high: 384
+  prediction_noise_rel: 0.15
+  max_requests: 75
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_train_00
+  kind: synthetic
+  split: TRAIN
+  regime: selective_admission_trap
+  seed: 40901
+  arrival_process: poisson
+  arrival_rate: 90.0
+  duration: 1.0
+  prompt_mean: 160.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 160.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_train_01
+  kind: synthetic
+  split: TRAIN
+  regime: selective_admission_trap
+  seed: 40902
+  arrival_process: poisson
+  arrival_rate: 81.0
+  duration: 1.0
+  prompt_mean: 144.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 144.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_validation_00
+  kind: synthetic
+  split: VALIDATION
+  regime: selective_admission_trap
+  seed: 40920
+  arrival_process: poisson
+  arrival_rate: 99.0
+  duration: 1.0
+  prompt_mean: 176.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 176.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_id_test_00
+  kind: synthetic
+  split: ID_TEST
+  regime: selective_admission_trap
+  seed: 40930
+  arrival_process: poisson
+  arrival_rate: 73.8
+  duration: 1.0
+  prompt_mean: 131.2
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 131.2
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_id_test_01
+  kind: synthetic
+  split: ID_TEST
+  regime: selective_admission_trap
+  seed: 40931
+  arrival_process: poisson
+  arrival_rate: 106.2
+  duration: 1.0
+  prompt_mean: 188.8
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 188.8
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_id_test_02
+  kind: synthetic
+  split: ID_TEST
+  regime: selective_admission_trap
+  seed: 40932
+  arrival_process: poisson
+  arrival_rate: 85.5
+  duration: 1.0
+  prompt_mean: 152.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 152.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_id_test_03
+  kind: synthetic
+  split: ID_TEST
+  regime: selective_admission_trap
+  seed: 40933
+  arrival_process: poisson
+  arrival_rate: 94.5
+  duration: 1.0
+  prompt_mean: 168.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 168.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_id_test_04
+  kind: synthetic
+  split: ID_TEST
+  regime: selective_admission_trap
+  seed: 40934
+  arrival_process: poisson
+  arrival_rate: 79.2
+  duration: 1.0
+  prompt_mean: 140.8
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 140.8
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_ood_test_00
+  kind: synthetic
+  split: OOD_TEST
+  regime: selective_admission_trap
+  seed: 40960
+  arrival_process: poisson
+  arrival_rate: 121.5
+  duration: 1.0
+  prompt_mean: 216.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 216.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_selective_admission_trap_ood_test_01
+  kind: synthetic
+  split: OOD_TEST
+  regime: selective_admission_trap
+  seed: 40961
+  arrival_process: poisson
+  arrival_rate: 58.5
+  duration: 1.0
+  prompt_mean: 104.0
+  prompt_sigma: 0.8
+  prompt_low: 16
+  prompt_high: 640
+  output_mean: 104.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 640
+  prediction_noise_rel: 0.2
+  max_requests: 90
+  slo_classes:
+  - class_id: tight_hi
+    slo_slack: 0.07
+    priority: 5.0
+    weight: 0.25
+  - class_id: tight_low
+    slo_slack: 0.09
+    priority: 1.0
+    weight: 0.35
+  - class_id: medium_hi
+    slo_slack: 0.2
+    priority: 4.0
+    weight: 0.2
+  - class_id: loose_low
+    slo_slack: 0.4
+    priority: 1.0
+    weight: 0.2
+- tag: cc4b_azure_conversation_like_ood_test_baseline
+  kind: real_trace
+  split: OOD_TEST
+  regime: azure_conversation_like
+  seed: 3102
+  max_requests: 80
+  path: data/processed/azure/azure_llm_2023_conv.jsonl
+  request_transform:
+    arrival_time_scale: 0.05
+    slo_slack_scale: 0.02
+    slo_slack_cap: 0.2
+    slo_slack_floor: 0.02
+- tag: cc4b_azure_conversation_like_ood_test_tight_slo
+  kind: real_trace
+  split: OOD_TEST
+  regime: azure_conversation_like
+  seed: 3103
+  max_requests: 80
+  path: data/processed/azure/azure_llm_2023_conv.jsonl
+  request_transform:
+    arrival_time_scale: 0.05
+    slo_slack_scale: 0.012
+    slo_slack_cap: 0.12
+    slo_slack_floor: 0.015
+- tag: cc4b_azure_conversation_like_ood_test_loose_slo
+  kind: real_trace
+  split: OOD_TEST
+  regime: azure_conversation_like
+  seed: 3104
+  max_requests: 80
+  path: data/processed/azure/azure_llm_2023_conv.jsonl
+  request_transform:
+    arrival_time_scale: 0.08
+    slo_slack_scale: 0.035
+    slo_slack_cap: 0.3
+    slo_slack_floor: 0.03
+- tag: cc4b_burstgpt_derived_ood_test_baseline
+  kind: real_trace
+  split: OOD_TEST
+  regime: burstgpt_derived
+  seed: 3200
+  max_requests: 80
+  path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+  request_transform:
+    arrival_time_scale: 0.00012
+    slo_slack_scale: 0.02
+    slo_slack_cap: 0.2
+    slo_slack_floor: 0.02
+- tag: cc4b_burstgpt_derived_ood_test_tight_slo
+  kind: real_trace
+  split: OOD_TEST
+  regime: burstgpt_derived
+  seed: 3201
+  max_requests: 80
+  path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+  request_transform:
+    arrival_time_scale: 0.00012
+    slo_slack_scale: 0.012
+    slo_slack_cap: 0.12
+    slo_slack_floor: 0.015
+- tag: cc4b_burstgpt_derived_ood_test_loose_slo
+  kind: real_trace
+  split: OOD_TEST
+  regime: burstgpt_derived
+  seed: 3202
+  max_requests: 80
+  path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+  request_transform:
+    arrival_time_scale: 0.00018
+    slo_slack_scale: 0.035
+    slo_slack_cap: 0.3
+    slo_slack_floor: 0.03

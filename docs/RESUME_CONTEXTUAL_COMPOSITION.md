@@ -69,37 +69,38 @@ behind, and a passing contextual-composition status checker.
 ## Current Phase
 
 - Current phase: `CC5 - Contextual composition predictor`
-- Current status: `IN PROGRESS` (first attempt: exit gate NOT passed --
-  verdict `INCONCLUSIVE`, not negative; retry underway)
-- Decision gate: CC4's exit gate passed and CC5 was attempted against it;
-  the trained predictor tied the best fixed policy on CC4's 6 evaluation
-  windows (mean ANWG 0.2306 vs 0.2310) and was beaten by
-  `best_global_composition` (0.2633). Judged a data-scarcity finding (n=6
-  held-out windows cannot statistically distinguish these methods), not a
-  methodology failure -- see the CC5 predictor report. **A targeted CC4b
-  dataset expansion + unchanged CC5 rerun is the approved response, tracked
-  in the CC4b/CC5 retry report.**
+- Current status: `IN PROGRESS` (first attempt: `INCONCLUSIVE`; retry:
+  `REGIME_SPECIFIC_ONLY` -- exit gate still not fully passed)
+- Decision gate: CC4's exit gate passed and CC5 was attempted twice. First
+  attempt (n=6 held-out): the predictor tied best fixed policy (0.2306 vs
+  0.2310) and was beaten by `best_global_composition` (0.2633) --
+  data-scarcity finding, not a methodology failure. **Retry** (n=76
+  held-out, same unchanged pipeline, against the CC4b-expanded dataset):
+  the predictor now clearly beats best fixed policy (0.4006 vs 0.3895) and
+  is competitive with the hard selector (0.3938), but does not clearly
+  beat `best_global_composition` (0.4025 -- within the bootstrap CI
+  overlap). See the CC4b/CC5 retry report for full evidence.
 
 ## Exact Next Implementation Task
 
-Check the latest status in
-[audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-first. If the CC4b build and CC5 rerun have already completed, that report
-holds the actual retry verdict and the real exact-next-task. If not yet
-complete: do not start a second build/rerun -- check
-`results/cc4b_oracle_composition_expansion/*/checkpoints/heartbeat.json`
-for progress, run `scripts/check_cc4b_quality_gates.py <dataset_dir>` once
-the build finishes, and only then rerun
-`scripts/run_cc5_contextual_predictor.py --dataset-dir <cc4b_dir>
---full-run` (the existing, unchanged CC5 pipeline -- no code changes are
-anticipated to be required).
+Per the CC4b/CC5 retry report's exact next research step: (1) address the
+uncertainty-method gap -- across two independent retries, leave-one-window-out
+model selection has never chosen `RandomForestRegressor`, the only model
+type `cc5_contextual_predictor.py`'s `_predict_with_uncertainty` computes
+real ensemble uncertainty for (either extend it to support gradient-boosting/
+KNN uncertainty, or factor ensemble-uncertainty-availability into model
+selection itself); (2) then compute a per-regime regret breakdown
+(predictor vs. global-composition regret, already derivable from
+`per_window_predictions.csv`/`regret_tables.csv` in the retry run
+directory) to determine whether the predictor's value is regime-concentrated.
+Do not start a third CC4b/CC5 retry cycle before doing this analysis.
 
 ## Do Not Start Prematurely
 
-Do not start a second CC4b build or CC5 retry in parallel with an
-in-progress one. Do not begin CC6 adaptation until CC5 actually passes its
-exit gate. Do not begin CC7 hardening, CC8 real-serving validation, hosted
-API jobs, GPU jobs, real-vLLM jobs, evolutionary/QD library-expansion work,
+Do not start another CC4b build or CC5 retry before completing the analysis
+above. Do not begin CC6 adaptation until CC5 actually passes its exit gate.
+Do not begin CC7 hardening, CC8 real-serving validation, hosted API jobs,
+GPU jobs, real-vLLM jobs, evolutionary/QD library-expansion work,
 LLM-guided synthesis work, or other new experiments before the roadmap
 gates allow them -- see the roadmap's "Future Research Directions" section
 for what remains unimplemented future work, not current capability.
@@ -174,8 +175,13 @@ Key files: `manifest.json`, `verdict.json`, `model_card.md`,
 `cv_model_selection.csv`, `per_window_predictions.csv`,
 `uncertainty_ood_diagnostics.csv`, `fallback_analysis.csv`.
 
-Regenerate only if needed (against the same CC4 dataset -- a real retry
-needs a larger CC4 dataset first, per the exact next task above):
+This is the **first-attempt** run only (n=6 held-out, verdict
+`INCONCLUSIVE`). The retry against the CC4b-expanded dataset (n=76
+held-out, verdict `REGIME_SPECIFIC_ONLY`) lives in
+`results/cc5_contextual_composition_predictor_retry/20260803T192246Z/` --
+see the "CC4b/CC5 Retry Evidence" section below.
+
+Regenerate only if needed (against the same CC4 dataset used originally):
 
 ```bash
 python scripts/run_cc5_contextual_predictor.py \
@@ -194,24 +200,28 @@ Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 Primary local result directories (untracked, per repository convention):
 
 ```text
-results/cc4b_oracle_composition_expansion/<timestamp>/
-results/cc5_contextual_composition_predictor_retry/<timestamp>/
+results/cc4b_oracle_composition_expansion/20260803T182426Z/     # 106 windows, 3604 executions
+results/cc5_contextual_composition_predictor_retry/20260803T192246Z/  # verdict REGIME_SPECIFIC_ONLY
 ```
 
 Config: `configs/cc4b_oracle_composition_expansion.yaml` (generated by
-`scripts/generate_cc4b_expansion_config.py`, targets 50-100+ held-out
-windows across 10 synthetic regime templates + real-trace variants, reusing
-CC4's exact candidate-search config for direct comparability). Quality
-gates: `scripts/check_cc4b_quality_gates.py <dataset_dir>`. See
+`scripts/generate_cc4b_expansion_config.py`; 76 held-out windows across 10
+synthetic regime templates + real-trace variants, reusing CC4's exact
+candidate-search config for direct comparability). Quality gates
+(`scripts/check_cc4b_quality_gates.py <dataset_dir>`) all passed: 76
+held-out (>=50), 35 non-near-tie (>=20), no dominant oracle family (39%
+max share, <=70%), completion accounting consistent. See
 [audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-for the full status and verdict once available.
+for the full status and verdict.
 
 Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
 ## GitHub
 
-Continue with GitHub issue #5 (it remains OPEN -- do not close until the
-CC4b/CC5 retry verdict is complete):
+Continue with GitHub issue #5 (it remains OPEN -- the CC4b/CC5 retry
+verdict is now complete, `REGIME_SPECIFIC_ONLY`, but that is not `PROCEED`,
+so the issue stays open until the exact next research step is addressed
+and CC5's exit gate actually passes):
 [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
 CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier

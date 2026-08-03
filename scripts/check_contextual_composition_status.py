@@ -48,8 +48,8 @@ REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
     "current_phase": "CC5",
     "current_status": "IN PROGRESS",
-    "next_action": "a targeted CC4b oracle-dataset expansion (configs/cc4b_oracle_composition_expansion.yaml, results/cc4b_oracle_composition_expansion/) is actively running to grow the evaluation set from 6 to 50-100+ held-out windows; once quality gates pass, the existing unchanged CC5 pipeline reruns against it and the retry verdict is interpreted before any model redesign or CC6 work begins",
-    "roadmap_version": 6,
+    "next_action": "the CC4b/CC5 retry completed with verdict REGIME_SPECIFIC_ONLY (predictor beats best fixed policy and is competitive with the hard selector on 76 held-out windows, but does not clearly beat best_global_composition); CC6 remains not queued; next step is addressing the uncertainty-method gap (no LOWO-CV-selected model has supported ensemble uncertainty across two retries) then a per-regime regret breakdown, per the CC4b/CC5 retry report section 10",
+    "roadmap_version": 7,
 }
 
 CANONICAL_FILES = [
@@ -226,7 +226,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "Do not start a second, parallel CC4b build or CC5 retry",
+            "Do not start a third CC4b build or CC5 retry",
         ],
     )
     check_required_strings(
@@ -236,7 +236,7 @@ def check_pause_contract(
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "Current phase: `CC5 - Contextual composition predictor`",
-            "Check the latest status in",
+            "read this one for current status",
             "GitHub issue #5",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
@@ -526,7 +526,7 @@ def main(argv: list[str] | None = None) -> int:
             "contextual_composition_roadmap.md",
             "experiments/cc1_composition_opportunity_spec.md",
             "architecture/contextual_composition_primitives.md",
-            "Do not start a second, parallel CC4b build or CC5 retry",
+            "Do not start a third CC4b build or CC5 retry",
         ],
     )
     check_required_strings(
