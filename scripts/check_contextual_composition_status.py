@@ -332,7 +332,7 @@ def check_resume_readiness_extra() -> None:
             "python scripts/check_contextual_composition_status.py --resume-readiness",
             "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py -q",
             "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
-            "GitHub issue #3",
+            "GitHub issue #4",
         ],
     )
     check_required_strings(
