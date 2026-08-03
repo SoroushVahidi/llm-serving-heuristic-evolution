@@ -425,7 +425,7 @@ def check_resume_readiness_extra() -> None:
         [
             "current_phase: CC5",
             "current_status: IN PROGRESS",
-            "Retry in progress (started 2026-08-03)",
+            "Retry complete (2026-08-03). Verdict: `REGIME_SPECIFIC_ONLY`.",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
