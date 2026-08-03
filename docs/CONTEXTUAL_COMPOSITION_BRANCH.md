@@ -34,15 +34,25 @@ Start from the synchronization-aware audit:
 - [CC2 Primitive Interface Report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md)
 - [Architecture: CC3 Compositional DSL](architecture/contextual_composition_dsl.md)
 - [CC3 DSL/Verifier Report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
+- [CC4 Oracle Dataset Report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 
-Current high-level status: Query 9 implemented CC3 (the compositional DSL
-and verifier extension over the CC2 primitive registry) and its exit gate
-passed: all 8 required constructs implemented, 447 focused+regression tests
-pass, and every pre-CC3 example and genome-derived heuristic remains
-backward compatible. CC3 is COMPLETE; CC4 (offline oracle composition
-dataset) is the single `NEXT` phase but has **not** been started -- a
-future, explicitly authorized query must begin it after reading the CC3
-report. Query 8 implemented CC2 (the canonical scheduling primitive
+Current high-level status: Query 10 implemented CC4 (the true
+simulator-executed oracle composition dataset over the CC2/CC3
+primitive-composition surface) and its exit gate passed: 12 workload
+windows across all required regime categories, 34 verified candidates (0
+rejected), 408 simulator executions, reproducible (byte-identical verdict
+across an independent from-scratch re-run) and resumable (verified via an
+interrupt-and-resume cycle plus an automated integration test). A
+composition-family candidate is the oracle winner on 66.7% of held-out
+evaluation windows; completion-fraction constraints hold on every window.
+CC4 is COMPLETE; CC5 (contextual composition predictor) is the single
+`NEXT` phase but has **not** been started -- a future, explicitly
+authorized query must begin it after reading the CC4 report. Query 9
+implemented CC3 (the compositional DSL and verifier extension over the CC2
+primitive registry) and its exit gate passed: all 8 required constructs
+implemented, 447 focused+regression tests pass, and every pre-CC3 example
+and genome-derived heuristic remains backward compatible. Query 8
+implemented CC2 (the canonical scheduling primitive
 interface) and its equivalence gate passed: six of seven
 representative-policy reconstructions are EXACT and one
 (`scorpio_style_slo_guard`) is documented APPROXIMATE. Query 5
@@ -71,20 +81,24 @@ simulator-executed weighted Borda composition opportunity and cleared the
    representative-policy equivalence tests. COMPLETE.
 9. Query 9: implement the CC3 compositional DSL/verifier extension over the
    CC2 primitive registry. COMPLETE.
+10. Query 10: build the CC4 true simulator-executed oracle composition
+    dataset. COMPLETE.
 
 ## Guardrail
 
-Do not implement CC4 dataset generation, CC5 predictor training, selector
+Do not implement CC5 predictor training, CC6 adaptation, selector
 redesigns, real-vLLM jobs, hosted API experiments, or large ungated sweeps
-before the roadmap allows them. CC3's own exit gate passed (see the CC3
-DSL/verifier report), but CC4 must not begin without a separate, explicitly
-authorized query.
+before the roadmap allows them. CC4's own exit gate passed (see the CC4
+oracle dataset report), but CC5 must not begin without a separate,
+explicitly authorized query.
 
 ## Next Action
 
-CC4 (offline oracle composition dataset) is queued as `NEXT` but has not
+CC5 (contextual composition predictor) is queued as `NEXT` but has not
 been started. A future, explicitly authorized query should begin it by
-reading `docs/architecture/contextual_composition_dsl.md` and
-`docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
-first, then sampling/mutating over the CC3-exposed primitive-reference
-surface per the roadmap's CC4 required comparisons.
+reading `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
+(its "Exact CC5 Entry Condition" section) first, then training against the
+CC4 dataset's `oracle_labels.parquet`/`regret_matrix.parquet`/
+`causal_features.parquet`, fitting only on `development_splits` windows and
+reserving `evaluation_splits` windows exclusively for the reported
+validation claim.

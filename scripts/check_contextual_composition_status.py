@@ -28,6 +28,7 @@ CC2_ARCHITECTURE_DOC = ROOT / "docs" / "architecture" / "contextual_composition_
 CC2_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc2_primitive_interface_report_20260802.md"
 CC3_ARCHITECTURE_DOC = ROOT / "docs" / "architecture" / "contextual_composition_dsl.md"
 CC3_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc3_dsl_verifier_report_20260803.md"
+CC4_REPORT = ROOT / "docs" / "audits" / "contextual_composition_cc4_oracle_dataset_report_20260803.md"
 
 EXPECTED_BRANCH = "contextual-compositional-heuristics-20260731"
 EXPECTED_UPSTREAM = f"origin/{EXPECTED_BRANCH}"
@@ -44,10 +45,10 @@ ALLOWED_STATUS = {
 
 REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
-    "current_phase": "CC4",
+    "current_phase": "CC5",
     "current_status": "NEXT",
-    "next_action": "CC4 (offline oracle composition dataset) remains BLOCKED; do not begin without a separate, explicitly authorized query that first reads the CC3 DSL report and architecture doc",
-    "roadmap_version": 3,
+    "next_action": "CC5 (contextual composition predictor) is queued but not started; a future, explicitly authorized query must first read the CC4 oracle dataset report and train only against its evaluation_splits-held-out labels",
+    "roadmap_version": 4,
 }
 
 CANONICAL_FILES = [
@@ -120,8 +121,8 @@ def check_status_table(text: str) -> None:
         "CC1": "COMPLETE",
         "CC2": "COMPLETE",
         "CC3": "COMPLETE",
-        "CC4": "NEXT",
-        "CC5": "BLOCKED",
+        "CC4": "COMPLETE",
+        "CC5": "NEXT",
         "CC6": "PLANNED",
         "CC7": "PLANNED",
         "CC8": "PLANNED",
@@ -202,7 +203,7 @@ def check_pause_contract(
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC4",
+            "current_phase: CC5",
             "current_status: NEXT",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
@@ -225,9 +226,9 @@ def check_pause_contract(
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
-            "Current phase: `CC4 - Offline oracle composition dataset`",
-            "CC4 has **not** been started",
-            "GitHub issue #4",
+            "Current phase: `CC5 - Contextual composition predictor`",
+            "CC5 has **not** been started",
+            "GitHub issue #5",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
         ],
     )
@@ -330,9 +331,9 @@ def check_resume_readiness_extra() -> None:
             EXPECTED_BRANCH,
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
-            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py -q",
+            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py -q",
             "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
-            "GitHub issue #4",
+            "GitHub issue #5",
         ],
     )
     check_required_strings(
@@ -349,9 +350,9 @@ def check_resume_readiness_extra() -> None:
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC4",
+            "current_phase: CC5",
             "current_status: NEXT",
-            "CC4 (offline oracle composition dataset) remains BLOCKED",
+            "CC5 (contextual composition predictor) is queued but not started",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
@@ -368,6 +369,7 @@ def check_resume_readiness_extra() -> None:
                 "CC2",
                 "CC3",
                 "CC4",
+                "CC5",
             ],
         )
     check_no_cc2_in_progress()
@@ -426,7 +428,7 @@ def main(argv: list[str] | None = None) -> int:
         START_HERE,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Current phase: `CC4 - Offline oracle composition dataset`",
+            "Current phase: `CC5 - Contextual composition predictor`",
             "docs/experiments/cc1_composition_opportunity_spec.md",
             "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
             "docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md",
@@ -436,6 +438,7 @@ def main(argv: list[str] | None = None) -> int:
             "docs/audits/contextual_composition_cc2_primitive_interface_report_20260802.md",
             "docs/architecture/contextual_composition_dsl.md",
             "docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md",
+            "docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md",
             "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
             "docs/audits/contextual_composition_query2_roadmap_report_20260731.md",
             "python scripts/check_contextual_composition_status.py",

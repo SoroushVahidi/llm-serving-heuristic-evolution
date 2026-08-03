@@ -385,3 +385,69 @@ Related files or evidence:
 - `src/llmserveopt/heuristics/primitive_composition_examples.py`
 - `tests/test_contextual_composition_cc3_dsl.py`
 - GitHub issue #3 (closing), issue #4 (queued, not started)
+
+## CCD-014: CC4 Oracle Composition Dataset Complete, CC5 Queued But Not Started
+
+Date: 2026-08-03
+
+Status: accepted
+
+Decision: Mark CC4 (offline oracle composition dataset) COMPLETE. Do not
+begin CC5 (contextual composition predictor) in this same query even though
+CC4's exit gate passed; CC5 becomes the single `NEXT` phase, queued for a
+future, explicitly authorized query.
+
+Rationale: `src/llmserveopt/experiments/cc4_oracle_composition_dataset.py`
+(new) reuses CC1's workload-window construction, GPU/service-model
+construction, and git-state capture verbatim, and executes every candidate
+(fixed policies, the CC1b weighted-Borda baseline replayed unchanged,
+bounded weighted-primitive-mixture and sparse-top-k DSL mixtures,
+admission-gate and placement variants) through the same `run_policy` entry
+point CC1 uses -- no new simulator-invocation code, no reward-vector
+interpolation anywhere in the pipeline. 12 workload windows cover every
+required regime category (underloaded, saturated, mixed SLO, long
+prompt/output, burst transition, KV pressure, prediction noise, priority
+conflict, selective-admission trap, Azure-conversation-like, BurstGPT-derived)
+across TRAIN/VALIDATION/ID_TEST/OOD_TEST splits; 34 candidates were
+generated and 0 rejected by the CC3 verifier; 408 true simulator executions
+completed in ~4.5 minutes locally. Reproducibility was verified twice (an
+interrupt-and-resume cycle via `CC4TrialStore`'s append-only checkpoint, and
+an independent from-scratch re-run reproducing a byte-identical verdict). A
+composition-family candidate is the oracle winner on 4/6 (66.7%) held-out
+evaluation windows; completion-fraction constraints hold on all 12 windows;
+`admission_gate_variant` candidates show the lowest mean regret of any
+family. 20 new focused tests pass, including a real (non-mocked)
+resume/reproducibility integration test. Two real issues were found and
+fixed during development (not left as known bugs): a BurstGPT real-trace
+`arrival_time_scale` misconfiguration that caused an ~12.5M-step simulator
+hang, and a dev/eval split-separation gap where `development_splits`/
+`evaluation_splits` were collected in config but never actually used to
+scope the dataset-level verdict (fixed to mirror CC1's own dev/eval
+separation, so TRAIN-window signal cannot certify the held-out claim).
+
+Consequences: CC5 is now `NEXT` (queued, not started). A future query must
+read `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
+(its "Exact CC5 Entry Condition" section) before training against
+`oracle_labels.parquet`/`regret_matrix.parquet`/`causal_features.parquet`,
+fitting only on `development_splits` windows and reserving
+`evaluation_splits` windows exclusively for the reported validation claim.
+CC6-CC8 remain blocked until CC5's gate passes. Non-blocking scope
+boundaries for a future CC4 iteration or for CC5 to be aware of:
+`admission_budget` was not searched at all in this dataset (deliberately,
+per CC3's own documented risk about combining it with
+`on_no_admits: safe_fallback`); `fallback_activated_last_step` is a
+best-effort last-step flag, not a full-run aggregate (CC3's
+`HeuristicPolicy.last_trace` does not accumulate across a run); one
+evaluation window (`cc4_burstgpt_derived_ood_test`) is near-collapse
+(0.0375 completion fraction across every candidate) and carries little
+discriminative signal -- flagged, not excluded.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
+- `configs/cc4_oracle_composition_dataset.yaml`
+- `src/llmserveopt/experiments/cc4_oracle_composition_dataset.py`
+- `scripts/run_cc4_oracle_composition_dataset.py`
+- `tests/test_cc4_oracle_composition_dataset.py`
+- `results/cc4_oracle_composition_dataset/20260803T170735Z/` (local, untracked)
+- GitHub issue #4 (closing), issue #5 (queued, not started)

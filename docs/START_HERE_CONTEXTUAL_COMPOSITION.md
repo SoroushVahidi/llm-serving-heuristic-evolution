@@ -2,9 +2,20 @@
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
 
-Current phase: `CC4 - Offline oracle composition dataset`
+Current phase: `CC5 - Contextual composition predictor`
 
-Pause state: none. CC3 is COMPLETE; CC4 is `NEXT` (queued, not started).
+Pause state: none. CC4 is COMPLETE; CC5 is `NEXT` (queued, not started).
+
+CC4 built the first reproducible, resumable, simulator-derived oracle
+composition dataset (`src/llmserveopt/experiments/cc4_oracle_composition_dataset.py`,
+`configs/cc4_oracle_composition_dataset.yaml`): 12 workload windows across
+all required regime categories, 34 verified DSL/fixed candidates (0
+rejected), 408 true simulator executions, 0 GPU/live-API/real-vLLM. A
+composition-family candidate is the oracle winner on 66.7% of held-out
+evaluation windows; completion-fraction constraints hold on every window.
+20 new focused tests pass, including a real (non-mocked) resume/reproducibility
+integration test. See
+[CC4 oracle dataset report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md).
 
 CC3 extended the JSON DSL/verifier (`src/llmserveopt/heuristics/`) to expose
 named references to the CC2 primitive registry: weighted sums, sparse top-k
@@ -26,12 +37,14 @@ equivalence/registry tests. Six of seven reconstructions are EXACT; one
 [architecture doc](architecture/contextual_composition_primitives.md) and the
 [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md).
 
-Exact next task: CC4 (offline oracle composition dataset generation) has
+Exact next task: CC5 (contextual composition predictor training) has
 **not** been started. A future, explicitly authorized query should begin it
-by reading the CC3 architecture doc and DSL/verifier report first, then
-searching for high-quality composition parameters through true simulator
-execution per the roadmap's CC4 required comparisons. Do not begin CC5
-predictor training.
+by reading the CC4 oracle dataset report (its "Exact CC5 Entry Condition"
+section) first, then training against `oracle_labels.parquet`/
+`regret_matrix.parquet`/`causal_features.parquet`, fitting only on
+`development_splits` windows and reserving `evaluation_splits` windows
+exclusively for the reported validation claim. Do not begin CC6 dynamic
+adaptation.
 
 ## Read In This Order
 
@@ -53,15 +66,16 @@ predictor training.
 16. `docs/audits/contextual_composition_cc2_primitive_interface_report_20260802.md`
 17. `docs/architecture/contextual_composition_dsl.md`
 18. `docs/audits/contextual_composition_cc3_dsl_verifier_report_20260803.md`
+19. `docs/audits/contextual_composition_cc4_oracle_dataset_report_20260803.md`
     or the latest later contextual-composition audit report
 
 ## What Not To Do Yet
 
-CC2's primitive interface, representative-policy reconstructions, and CC3's
-compositional DSL/verifier extension are all complete. Do not begin CC4
-offline oracle dataset generation without a separate, explicitly authorized
-query, and do not begin contextual predictor training (CC5), dynamic
-adaptation (CC6), counterexample hardening (CC7), real-vLLM jobs, hosted API
+CC2's primitive interface, representative-policy reconstructions, CC3's
+compositional DSL/verifier extension, and CC4's oracle composition dataset
+are all complete. Do not begin CC5 contextual predictor training without a
+separate, explicitly authorized query, and do not begin dynamic adaptation
+(CC6), counterexample hardening (CC7), real-vLLM jobs, hosted API
 experiments, or large simulator sweeps before the roadmap phase gate allows
 them.
 

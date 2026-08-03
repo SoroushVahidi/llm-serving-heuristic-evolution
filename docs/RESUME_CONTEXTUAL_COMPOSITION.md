@@ -18,6 +18,10 @@ git checkout contextual-compositional-heuristics-20260731
   report's `New SHA` with `git rev-parse HEAD`
 - Starting SHA before the CC3 checkpoint commit:
   `ed85e585bb42a37f47530939b1d2d11bb1ea0b3e`
+- CC4 (Query 10) checkpoint SHA: verify against the CC4 oracle dataset
+  report's `New SHA` with `git rev-parse HEAD`
+- Starting SHA before the CC4 checkpoint commit:
+  `19708f741d0bfb944b4a11ff34572a811df94d66`
 
 ## Read In Order
 
@@ -31,7 +35,8 @@ git checkout contextual-compositional-heuristics-20260731
 8. [audits/contextual_composition_cc2_primitive_interface_report_20260802.md](audits/contextual_composition_cc2_primitive_interface_report_20260802.md)
 9. [architecture/contextual_composition_dsl.md](architecture/contextual_composition_dsl.md)
 10. [audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
-11. GitHub issue #4
+11. [audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
+12. GitHub issue #5
 
 ## Verify State
 
@@ -42,7 +47,7 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}
 git rev-list --left-right --count @{u}...HEAD
 python scripts/check_contextual_composition_status.py
 python scripts/check_contextual_composition_status.py --resume-readiness
-python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py -q
+python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py -q
 ```
 
 The expected state is a clean working tree, upstream
@@ -51,32 +56,31 @@ behind, and a passing contextual-composition status checker.
 
 ## Current Phase
 
-- Current phase: `CC4 - Offline oracle composition dataset`
+- Current phase: `CC5 - Contextual composition predictor`
 - Current status: `NEXT` (queued, not started)
-- Decision gate: CC3's exit gate passed (8/8 required constructs
-  implemented, 447 focused+regression tests, legacy compatibility
-  preserved); CC4 may start, but only in a separate, explicitly authorized
-  query.
+- Decision gate: CC4's exit gate passed (12 windows/34 candidates/408
+  simulator executions, 0 rejected, reproducible+resumable, 66.7%
+  evaluation-window composition-oracle gain, completion constraints hold on
+  all windows); CC5 may start, but only in a separate, explicitly
+  authorized query.
 
 ## Exact Next Implementation Task
 
-CC4 has **not** been started. A future, explicitly authorized query should
+CC5 has **not** been started. A future, explicitly authorized query should
 begin it by reading
-[architecture/contextual_composition_dsl.md](architecture/contextual_composition_dsl.md)
-and
-[audits/contextual_composition_cc3_dsl_verifier_report_20260803.md](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md)
-first, then search for high-quality composition parameters through true
-simulator execution for each training window, sampling/mutating over
-`CompiledHeuristic.primitive_refs`/`placement_keys`/`admission_budget_spec`/
-`param_declarations` (the causal-input surface CC3 exposes) per the
-roadmap's CC4 required comparisons.
+[audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
+(its "Exact CC5 Entry Condition" section) first, then train against
+`oracle_labels.parquet`/`regret_matrix.parquet`/`causal_features.parquet`
+(joined on `window_id`), fitting only on `development_splits` windows and
+reserving `evaluation_splits` windows exclusively for the reported
+validation claim.
 
 ## Do Not Start Prematurely
 
-Do not begin CC4 dataset generation in this same query even though CC3's
-gate passed. Do not begin CC5 predictor training, CC6 adaptation, CC7
-hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
-real-vLLM jobs, or new experiments before the roadmap gates allow them.
+Do not begin CC5 predictor training in this same query even though CC4's
+gate passed. Do not begin CC6 adaptation, CC7 hardening, CC8 real-serving
+validation, hosted API jobs, GPU jobs, real-vLLM jobs, or new experiments
+before the roadmap gates allow them.
 
 ## CC1b Evidence
 
@@ -109,10 +113,37 @@ python scripts/run_cc1_composition_opportunity.py \
 
 Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
+## CC4 Evidence
+
+Primary local result directory (untracked, per repository convention --
+regenerate via `replay_commands.sh` inside it):
+
+```text
+results/cc4_oracle_composition_dataset/20260803T170735Z/
+```
+
+Key files: `manifest.json`, `dataset_card.md`, `oracle_labels.parquet`,
+`regret_matrix.parquet`, `causal_features.parquet`, `search_summary.csv`.
+
+Regenerate only if needed:
+
+```bash
+python scripts/run_cc4_oracle_composition_dataset.py \
+  --config configs/cc4_oracle_composition_dataset.yaml \
+  --dry-run
+
+python scripts/run_cc4_oracle_composition_dataset.py \
+  --config configs/cc4_oracle_composition_dataset.yaml \
+  --full-run --allow-dirty --timestamp <new_timestamp>
+```
+
+Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
+
 ## GitHub
 
-Continue with GitHub issue #4 (only in a separate, explicitly authorized
+Continue with GitHub issue #5 (only in a separate, explicitly authorized
 query):
-[#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4).
+[#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
-CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier gate.
+CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier
+gate; issue #4 is the completed CC4 oracle dataset gate.

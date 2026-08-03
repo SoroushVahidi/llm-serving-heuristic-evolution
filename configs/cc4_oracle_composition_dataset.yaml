@@ -1,0 +1,329 @@
+schema_version: 1
+mode: cc4
+seed: 20260803
+policy_subset:
+  - fifo
+  - edf
+  - weighted_shortest_processing
+  - estimated_service_time_first
+  - scorpio_style_slo_guard
+
+# CC1b's own discovered best weighted-Borda mixture, replayed unchanged as a
+# roadmap-required comparison baseline (not re-searched).
+cc1b_borda_baseline:
+  policy_subset:
+    - weighted_shortest_processing
+    - scorpio_style_slo_guard
+    - edf
+    - estimated_service_time_first
+    - fifo
+  method: borda
+  top_k: 2
+  # Equal-weight two-expert reference point; CC1b's own best_global_mixture
+  # weights are workload-dependent and not re-derived here (see CC4 report).
+  weights:
+    weighted_shortest_processing: 0.5
+    scorpio_style_slo_guard: 0.5
+
+candidate_search:
+  # RANKING-family CC3 primitives, each pre-oriented so "higher score wins"
+  # (matches request_score convention: sort by -score, tie-break next).
+  primitive_pool:
+    - name: laxity_urgency
+      higher_is_preferred: true
+    - name: priority
+      higher_is_preferred: true
+    - name: queue_age
+      higher_is_preferred: true
+    - name: predicted_output_length
+      higher_is_preferred: false
+    - name: prompt_length
+      higher_is_preferred: false
+    - name: estimated_service_time
+      higher_is_preferred: false
+  weight_grid_step: 0.5
+  weight_grid_top_k: 2
+  topk_mixture_k_values: [1, 2, 3]
+  admission_gate_laxity_thresholds: [0.0, 0.05]
+  placement_key_variants:
+    - []
+    - ["projected_gpu_load"]
+    - ["projected_gpu_load", "kv_pressure"]
+
+metrics:
+  primary: arrival_normalized_weighted_goodput
+  completion_fraction_tolerance: 0.005
+near_tie_primary_threshold: 0.005
+near_tie_thresholds: [0.001, 0.005, 0.01]
+development_splits: [TRAIN, VALIDATION]
+evaluation_splits: [ID_TEST, OOD_TEST]
+safeguards:
+  max_runs: 20000
+  require_clean_git_for_full: true
+  forbid_live_api: true
+  forbid_gpu: true
+  forbid_real_vllm: true
+outputs:
+  root: results/cc4_oracle_composition_dataset
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 128
+  step_token_budget: 128
+  enable_decode_prefill_contention: false
+  decode_first: false
+simulator:
+  drain_steps: 2500
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 64
+    max_kv_tokens: 1200
+
+slo_classes_tight: &slo_classes_tight
+  - {class_id: tight, slo_slack: 0.08, priority: 3.0, weight: 0.45}
+  - {class_id: medium, slo_slack: 0.16, priority: 2.0, weight: 0.35}
+  - {class_id: loose, slo_slack: 0.35, priority: 1.0, weight: 0.20}
+slo_classes_mixed: &slo_classes_mixed
+  - {class_id: tight, slo_slack: 0.10, priority: 3.0, weight: 0.30}
+  - {class_id: medium, slo_slack: 0.22, priority: 2.0, weight: 0.40}
+  - {class_id: loose, slo_slack: 0.45, priority: 1.0, weight: 0.30}
+slo_classes_priority: &slo_classes_priority
+  - {class_id: tight_hi, slo_slack: 0.07, priority: 5.0, weight: 0.25}
+  - {class_id: tight_low, slo_slack: 0.09, priority: 1.0, weight: 0.35}
+  - {class_id: medium_hi, slo_slack: 0.20, priority: 4.0, weight: 0.20}
+  - {class_id: loose_low, slo_slack: 0.40, priority: 1.0, weight: 0.20}
+
+workloads:
+  - tag: cc4_underloaded_train
+    kind: synthetic
+    split: TRAIN
+    regime: underloaded
+    seed: 400
+    max_requests: 60
+    arrival_process: poisson
+    arrival_rate: 8.0
+    duration: 3.0
+    prompt_mean: 96.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 64.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 256
+    prediction_noise_rel: 0.1
+    slo_classes: *slo_classes_mixed
+
+  - tag: cc4_saturated_train
+    kind: synthetic
+    split: TRAIN
+    regime: saturated
+    seed: 401
+    max_requests: 90
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 1.0
+    prompt_mean: 96.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 128.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.2
+    slo_classes: *slo_classes_tight
+
+  - tag: cc4_mixed_slo_train
+    kind: synthetic
+    split: TRAIN
+    regime: mixed_slo
+    seed: 402
+    max_requests: 70
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 1.3
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 640
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.15
+    slo_classes: *slo_classes_mixed
+
+  - tag: cc4_long_prompt_val
+    kind: synthetic
+    split: VALIDATION
+    regime: long_prompt
+    seed: 403
+    max_requests: 70
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 1.2
+    prompt_mean: 768.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1500
+    output_mean: 96.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 256
+    prediction_noise_rel: 0.15
+    slo_classes: *slo_classes_tight
+
+  - tag: cc4_long_output_val
+    kind: synthetic
+    split: VALIDATION
+    regime: long_output
+    seed: 404
+    max_requests: 65
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 1.2
+    prompt_mean: 96.0
+    prompt_sigma: 0.6
+    prompt_low: 16
+    prompt_high: 384
+    output_mean: 640.0
+    output_sigma: 0.6
+    output_low: 128
+    output_high: 1400
+    prediction_noise_rel: 0.15
+    slo_classes: *slo_classes_tight
+
+  - tag: cc4_burst_transition_val
+    kind: synthetic
+    split: VALIDATION
+    regime: burst_transition
+    seed: 405
+    max_requests: 80
+    arrival_process: bursty
+    arrival_rate: 30.0
+    duration: 1.5
+    burst_factor: 6.0
+    burst_fraction: 0.25
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.15
+    slo_classes: *slo_classes_mixed
+
+  - tag: cc4_kv_pressure_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: kv_pressure
+    seed: 406
+    max_requests: 85
+    arrival_process: poisson
+    arrival_rate: 60.0
+    duration: 1.2
+    prompt_mean: 256.0
+    prompt_sigma: 0.7
+    prompt_low: 32
+    prompt_high: 768
+    output_mean: 192.0
+    output_sigma: 0.7
+    output_low: 32
+    output_high: 512
+    prediction_noise_rel: 0.15
+    slo_classes: *slo_classes_tight
+
+  - tag: cc4_prediction_noise_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: prediction_noise
+    seed: 407
+    max_requests: 70
+    arrival_process: poisson
+    arrival_rate: 40.0
+    duration: 1.3
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 128.0
+    output_sigma: 0.7
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.6
+    slo_classes: *slo_classes_mixed
+
+  - tag: cc4_priority_conflict_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: priority_conflict
+    seed: 408
+    max_requests: 75
+    arrival_process: poisson
+    arrival_rate: 45.0
+    duration: 1.3
+    prompt_mean: 128.0
+    prompt_sigma: 0.7
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 96.0
+    output_sigma: 0.7
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.15
+    slo_classes: *slo_classes_priority
+
+  - tag: cc4_selective_admission_trap_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: selective_admission_trap
+    seed: 409
+    max_requests: 90
+    arrival_process: poisson
+    arrival_rate: 90.0
+    duration: 1.0
+    prompt_mean: 160.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 640
+    output_mean: 160.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 640
+    prediction_noise_rel: 0.2
+    slo_classes: *slo_classes_priority
+
+  - tag: cc4_azure_conversation_like_ood_test
+    kind: real_trace
+    split: OOD_TEST
+    regime: azure_conversation_like
+    seed: 3102
+    max_requests: 80
+    path: data/processed/azure/azure_llm_2023_conv.jsonl
+    request_transform:
+      arrival_time_scale: 0.05
+      slo_slack_scale: 0.02
+      slo_slack_cap: 0.20
+      slo_slack_floor: 0.02
+
+  - tag: cc4_burstgpt_derived_ood_test
+    kind: real_trace
+    split: OOD_TEST
+    regime: burstgpt_derived
+    seed: 3103
+    max_requests: 80
+    path: data/processed/burstgpt/burstgpt_natural_10k.jsonl
+    # Raw BurstGPT arrival timestamps are in seconds with a mean inter-arrival
+    # gap of ~170s (80-request span ~12,555s); at service_model.step_size
+    # (0.001) that would require ~12.5M simulation steps. Scale down to a
+    # ~1.5s span, matching the other synthetic windows' durations.
+    request_transform:
+      arrival_time_scale: 0.00012
+      slo_slack_scale: 0.02
+      slo_slack_cap: 0.20
+      slo_slack_floor: 0.02

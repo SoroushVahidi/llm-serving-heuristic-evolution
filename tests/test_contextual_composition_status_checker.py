@@ -50,7 +50,7 @@ def test_cc1_spec_required_sections_are_present():
         assert section in text
 
 
-def test_roadmap_links_cc1b_report_and_has_cc4_next():
+def test_roadmap_links_cc1b_report_and_has_cc5_next():
     text = (ROOT / "docs/contextual_composition_roadmap.md").read_text()
     assert "experiments/cc1_composition_opportunity_spec.md" in text
     assert "audits/contextual_composition_query4_cc1_results_20260731.md" in text
@@ -64,7 +64,8 @@ def test_roadmap_links_cc1b_report_and_has_cc4_next():
     assert phases["CC1"] == "COMPLETE"
     assert phases["CC2"] == "COMPLETE"
     assert phases["CC3"] == "COMPLETE"
-    assert phases["CC4"] == "NEXT"
+    assert phases["CC4"] == "COMPLETE"
+    assert phases["CC5"] == "NEXT"
     assert list(phases.values()).count("NEXT") == 1
 
 
@@ -90,17 +91,18 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
     text = (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
     assert "Authoritative branch: `contextual-compositional-heuristics-20260731`" in text
     assert "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`" in text
-    assert "Current phase: `CC4 - Offline oracle composition dataset`" in text
+    assert "Current phase: `CC5 - Contextual composition predictor`" in text
     assert "python scripts/check_contextual_composition_status.py --resume-readiness" in text
     assert (
         "python -m pytest tests/test_contextual_composition_status_checker.py "
         "tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py "
         "tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py "
-        "tests/test_primitive_reconstructed_policies.py -q"
+        "tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py "
+        "tests/test_cc4_oracle_composition_dataset.py -q"
     ) in text
-    assert "CC4 has **not** been started" in text
-    assert "primitive_refs" in text
-    assert "GitHub issue #4" in text
+    assert "CC5 has **not** been started" in text
+    assert "oracle_labels.parquet" in text
+    assert "GitHub issue #5" in text
 
 
 def test_canonical_docs_do_not_make_cc1_current():
