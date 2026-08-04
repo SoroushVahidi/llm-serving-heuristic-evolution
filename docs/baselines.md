@@ -600,3 +600,45 @@ simulator-compatible approximation of SCORPIO's policy-level admission and guard
 
 **Safe claim:** "SCORPIO-inspired SLO guard baseline"  
 **Unsafe claim:** "Official SCORPIO reproduction"
+
+---
+
+## Baseline-integration scaffolds (evaluation-only, not yet runnable end-to-end)
+
+Distinct from every policy above: these are not `BasePolicy` entries usable
+in a normal experiment sweep today. They live outside `src/llmserveopt`
+entirely, are never imported by it, and are never selector candidates.
+
+### vLLM-LTR (`baselines/vllm_ltr/`) — added 2026-08-04
+
+Official source: https://github.com/hao-ai-lab/vllm-ltr, pinned commit
+`13bbf6ff3dab661791d41362551b089e5f77c91c` (Apache-2.0). Paper: Fu et al.,
+*"Efficient LLM Scheduling by Learning to Rank"*, arXiv:2408.15792 (2024).
+Fulfills/supersedes the "Prompt-Aware LTR / PARS-style Scheduler" item in
+`docs/external_baseline_decision.md` §B.1.
+
+**Status:** scaffold only. The official predictor requires tokenized prompt
+*text*; this simulator's `Request`/`ObservableRequest` carries only integer
+`prompt_tokens` counts, so the real ranking model cannot be invoked from
+inside the live per-step simulator loop. What exists: a faithful
+reproduction of the official ranking/tie-break rule
+(`adapter/ranking_adapter.py`), an optional-dependency checkpoint loader
+that reproduces the official predictor's architecture via plain
+`transformers` (`adapter/checkpoint_loader.py`, gated behind a provenance
+sidecar), and a simulator policy wrapper
+(`VLLMLTRSemanticReferencePolicy`) that admits requests in official-ranked
+order given a precomputed, offline `{request_id: score}` map — no fallback
+heuristic if a score is missing. Full classification, fidelity
+verification, and remaining work:
+`docs/audits/vllm_ltr_baseline_audit_20260804.md`.
+
+**Not** in `BASELINE_NAMES`, `SELECTOR_CANDIDATE_NAMES`,
+`POLICY_LIBRARY_V2_NAMES`, or `EXTERNAL_BASELINE_NAMES` (locked by
+`tests/test_vllm_ltr_baseline_adapter.py::TestSelectorScopeInvariants`).
+
+**Safe claim:** "vLLM-LTR baseline-integration scaffold (official
+predictor architecture + ranking rule reproduced; not yet wired into a live
+simulator run due to a prompt-text gap in this project's request data
+model)"  
+**Unsafe claim:** "vLLM-LTR baseline" (implies a runnable, evaluated
+comparison, which does not exist yet)

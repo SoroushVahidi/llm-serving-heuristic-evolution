@@ -45,6 +45,11 @@ Development did not stop at the Phase 2C pause below -- it continued on an
    quality gates passed, but an independent audit confirmed a real
    cross-transform leakage bug in the non-OOD splits; the one confirmed-clean
    split (OOD_TEST) loses to best-fixed. Not yet a finished result.
+7. Baseline-integration phase begun (2026-08-04): official vLLM-LTR
+   (hao-ai-lab/vllm-ltr, pinned commit `13bbf6ff3dab661791d41362551b089e5f77c91c`)
+   inspected and scaffolded under `baselines/vllm_ltr/` as an isolated,
+   evaluation-only integration -- not yet a selector candidate.
+   `docs/audits/vllm_ltr_baseline_audit_20260804.md`.
 
 **Full synthesis, in narrative order, with the current (confirmed leakage
 bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).

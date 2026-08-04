@@ -66,9 +66,26 @@ These baselines are needed to fairly position the work in the LLM scheduling lit
 
 ---
 
-### B.1 Prompt-Aware LTR / PARS-style Scheduler
+### B.1 Prompt-Aware LTR / PARS-style Scheduler — **SCAFFOLD ADDED (baseline-integration phase, 2026-08-04)**
 
-**Why it matters:** PARS (2023) introduces learning-to-rank (LTR) for LLM request scheduling, predicting completion order to reduce mean latency. The current `estimated_service_time_first` is a simplified SJF proxy (uses predicted output as service proxy) but lacks the ranking model. Without a true LTR baseline, it is unclear whether the selector's benefit comes from policy selection or could be matched by a good learned ranker.
+**Registry:** not registered (not yet selector-eligible or runnable
+end-to-end). **Files:** `baselines/vllm_ltr/` (isolated, outside
+`src/llmserveopt`). **Status:** the official implementation for this exact
+gap was found and used instead of a hand-rolled ranker —
+[hao-ai-lab/vllm-ltr](https://github.com/hao-ai-lab/vllm-ltr) (pinned
+commit `13bbf6ff3dab661791d41362551b089e5f77c91c`, Apache-2.0), paper Fu et
+al. *"Efficient LLM Scheduling by Learning to Rank,"* arXiv:2408.15792. The
+official ranking/tie-break rule and predictor architecture are faithfully
+reproduced; the official predictor itself cannot yet be invoked live inside
+this simulator because `ObservableRequest` carries only integer
+`prompt_tokens` counts, not the raw prompt text the predictor requires. See
+`docs/audits/vllm_ltr_baseline_audit_20260804.md` for the full
+classification, fidelity tests, and remaining work (real-checkpoint
+download/verification, offline scoring pipeline). This entry is **not**
+struck through/closed — it remains open until an offline-scored trace makes
+`vllm_ltr_semantic_reference` runnable end-to-end.
+
+**Why it matters (original rationale, unchanged):** PARS (2023) introduces learning-to-rank (LTR) for LLM request scheduling, predicting completion order to reduce mean latency. The current `estimated_service_time_first` is a simplified SJF proxy (uses predicted output as service proxy) but lacks the ranking model. Without a true LTR baseline, it is unclear whether the selector's benefit comes from policy selection or could be matched by a good learned ranker.
 
 **Decisions it makes:** Ranks requests by predicted service time using a learned ranker (e.g., RankNet) rather than a hand-coded proxy.
 
@@ -222,4 +239,4 @@ For the next development phase, implement in this order:
 | Implementation priority order specified | ✅ |
 | Oracle excluded from all comparisons | ✅ |
 | All baselines are deployable (no oracle leak) | ✅ |
-| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); B.1, B.3–B.5 pending |
+| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 scaffold added** (official vLLM-LTR predictor + ranking rule, not yet runnable end-to-end — see `docs/audits/vllm_ltr_baseline_audit_20260804.md`); B.3–B.5 pending |
