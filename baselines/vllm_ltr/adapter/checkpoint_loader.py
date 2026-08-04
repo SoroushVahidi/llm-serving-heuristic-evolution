@@ -27,7 +27,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
 
 from . import provenance
@@ -172,6 +172,12 @@ class OPTPredictorHandle:
     model: object
     tokenizer: object
     num_labels: int
+    # Cumulative count of prompts across all score_batch() calls on this
+    # handle whose raw (pre-truncation) token count exceeded
+    # model.config.max_position_embeddings and were therefore truncated.
+    # Truncation-metadata bookkeeping for the bug documented below -- see
+    # docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md.
+    num_prompts_truncated: int = field(default=0)
 
     def _reduce(self, logits) -> List[float]:
         if self.num_labels > 1:
@@ -184,10 +190,41 @@ class OPTPredictorHandle:
     def score_batch(self, prompts: Sequence[str], batch_size: int = 8) -> List[float]:
         torch, _ = _require_torch_and_transformers()
         device = next(self.model.parameters()).device
+        # NOTE: facebook/opt-125m's tokenizer ships with model_max_length
+        # left at HF's "unset" sentinel (~1e30, not 2048) -- `truncation=True`
+        # alone is therefore a no-op, and a prompt longer than the model's
+        # real max_position_embeddings raises "index out of range in self"
+        # from the position-embedding lookup deep inside the forward pass,
+        # not from tokenization. Found 2026-08-04 scoring real WildChat
+        # prompts (some >8k tokens) offline -- see
+        # docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md.
+        # Truncate explicitly to the model's own configured limit.
+        max_length = getattr(self.model.config, "max_position_embeddings", None)
         scores: List[float] = []
         for start in range(0, len(prompts), batch_size):
             chunk = list(prompts[start : start + batch_size])
-            inputs = self.tokenizer(chunk, return_tensors="pt", truncation=True, padding=True)
+            if max_length is not None:
+                # Cheap (tokenizer-only, no model forward) pre-check of the
+                # raw token count so truncation is recorded, not silently
+                # applied -- reproducibility/provenance requirement.
+                raw_lengths = [
+                    len(ids) for ids in self.tokenizer(chunk, truncation=False)["input_ids"]
+                ]
+                self.num_prompts_truncated += sum(1 for n in raw_lengths if n > max_length)
+            inputs = self.tokenizer(
+                chunk,
+                return_tensors="pt",
+                truncation=True,
+                padding=True,
+                max_length=max_length,
+            )
+            if max_length is not None:
+                seq_len = inputs["input_ids"].shape[1]
+                assert seq_len <= max_length, (
+                    f"tokenizer produced {seq_len} tokens > max_position_embeddings="
+                    f"{max_length} after truncation=True, max_length={max_length}; "
+                    "this should be impossible and indicates a tokenizer API change."
+                )
             inputs = {k: v.to(device) for k, v in inputs.items()}
             with torch.no_grad():
                 outputs = self.model(**inputs)

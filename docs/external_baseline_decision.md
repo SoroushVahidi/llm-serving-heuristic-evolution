@@ -87,10 +87,16 @@ deliberately not modified to carry raw text (explicit scope boundary, not
 an unresolved gap). See `docs/audits/vllm_ltr_baseline_audit_20260804.md`
 for the full verification record, real overhead measurements, and the one
 disclosed-but-infeasible check (a live differential against the actually
-served vLLM-fork engine). **Still not registered as a selector candidate**
-— open only pending a real, license-cleared, prompt-text-carrying dataset
-large enough for an actual comparison sweep (see the audit doc's remaining
-work); the baseline itself is complete.
+served vLLM-fork engine). A comparison sweep has since been run (real
+WildChat-1M text, 300 requests, 3 seeds, 10 policies, independently
+re-verified) — `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`.
+Result: it tied FIFO/EDF/EST/SOF/WSP/`oracle_srtf` exactly in that regime
+(the oracle itself ties FIFO, so no reordering policy had headroom to show
+benefit there); ranking agreement with EST/SOF is moderate, not near-1.0,
+so it is not behaviorally redundant with them. **Still not registered as a
+selector candidate** — EVALUATION_ONLY; foundational-library eligibility
+was not established by this run and needs a higher-contention workload
+regime to actually test.
 
 **Why it matters (original rationale, unchanged):** PARS (2023) introduces learning-to-rank (LTR) for LLM request scheduling, predicting completion order to reduce mean latency. The current `estimated_service_time_first` is a simplified SJF proxy (uses predicted output as service proxy) but lacks the ranking model. Without a true LTR baseline, it is unclear whether the selector's benefit comes from policy selection or could be matched by a good learned ranker.
 
@@ -246,4 +252,4 @@ For the next development phase, implement in this order:
 | Implementation priority order specified | ✅ |
 | Oracle excluded from all comparisons | ✅ |
 | All baselines are deployable (no oracle leak) | ✅ |
-| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 evaluation-ready, offline-scored** (official vLLM-LTR checkpoint downloaded + hash-verified + architecturally/numerically verified; not yet run in a comparison sweep for lack of a real prompt-text dataset — see `docs/audits/vllm_ltr_baseline_audit_20260804.md`); B.3–B.5 pending |
+| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 evaluation-ready, offline-scored, and now comparison-swept** (official vLLM-LTR checkpoint downloaded + hash-verified + architecturally/numerically verified; comparison sweep run and independently re-verified 2026-08-04 on real WildChat-1M text — tied FIFO/oracle exactly in the tested regime, EVALUATION_ONLY classification, not yet a selector candidate — see `docs/audits/vllm_ltr_baseline_audit_20260804.md` and `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`); B.3–B.5 pending |

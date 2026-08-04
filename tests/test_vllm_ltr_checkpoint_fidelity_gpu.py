@@ -144,7 +144,19 @@ class TestSemanticEquivalence:
         raw_sd = load_file(os.path.join(ckpt_dir, "model.safetensors"))
         score_weight = raw_sd["score.weight"]
 
-        inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
+        # Same explicit max_length bound as OPTPredictorHandle.score_batch()
+        # (checkpoint_loader.py) -- facebook/opt-125m's tokenizer ships
+        # model_max_length at HF's ~1e30 "unset" sentinel, so bare
+        # truncation=True is a no-op and a prompt longer than the model's
+        # real max_position_embeddings crashes deep in the forward pass
+        # instead of being truncated. Both scoring paths must use the same
+        # bound or this cross-check would silently stop being representative
+        # of the adapter's real behavior on long prompts. See
+        # docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md.
+        max_length = getattr(model_a.config, "max_position_embeddings", None)
+        inputs = tokenizer(
+            prompts, return_tensors="pt", padding=True, truncation=True, max_length=max_length
+        )
         with torch.no_grad():
             logits_a = model_a(**inputs).logits
             hidden = backbone(**inputs).last_hidden_state
@@ -213,6 +225,94 @@ class TestRealScoringBehavior:
         singleton = [handle.score(p) for p in prompts]
         for b, s in zip(batched, singleton):
             assert abs(b - s) < 0.01, (b, s)
+
+
+@pytest.mark.gpu
+class TestLongPromptTruncation:
+    """Regression coverage for the real bug found scoring real WildChat
+    prompts (some >8k tokens) offline: facebook/opt-125m's tokenizer ships
+    model_max_length at HF's ~1e30 "unset" sentinel, so bare
+    truncation=True is a no-op, and a prompt longer than the checkpoint's
+    real max_position_embeddings=2048 raised "index out of range in self"
+    from the position-embedding lookup deep in the forward pass, not from
+    tokenization. See
+    docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md."""
+
+    def test_max_position_embeddings_is_2048(self, regression_handle):
+        handle, _ = regression_handle
+        assert handle.model.config.max_position_embeddings == 2048
+
+    def test_prompt_over_max_position_embeddings_does_not_crash(self, regression_handle):
+        handle, _ = regression_handle
+        max_len = handle.model.config.max_position_embeddings
+        # "word " repeated is >1 token/word under BPE; comfortably exceeds
+        # max_len regardless of exact tokenization.
+        long_prompt = "word " * (max_len * 3)
+        score = handle.score(long_prompt)
+        assert isinstance(score, float)
+        import math
+
+        assert math.isfinite(score)
+
+    def test_truncation_never_exceeds_model_limit(self, regression_handle):
+        """Direct check that the actual tokenized input fed to the model
+        never exceeds max_position_embeddings, independent of the internal
+        assertion inside score_batch()."""
+        handle, _ = regression_handle
+        max_len = handle.model.config.max_position_embeddings
+        long_prompt = "word " * (max_len * 3)
+        inputs = handle.tokenizer(
+            [long_prompt], return_tensors="pt", truncation=True, padding=True, max_length=max_len
+        )
+        assert inputs["input_ids"].shape[1] <= max_len
+
+    def test_long_prompt_scoring_is_deterministic(self, regression_handle):
+        handle, _ = regression_handle
+        max_len = handle.model.config.max_position_embeddings
+        long_prompt = "word " * (max_len * 3)
+        first = handle.score(long_prompt)
+        second = handle.score(long_prompt)
+        assert first == second
+
+    def test_truncation_metadata_is_recorded(self, regression_handle):
+        """num_prompts_truncated must increment for prompts that actually
+        exceeded the limit, and not for short prompts that didn't."""
+        from baselines.vllm_ltr.adapter.checkpoint_loader import (
+            download_and_provision_checkpoint,
+            load_opt_predictor_from_local,
+        )
+
+        # Use a fresh handle (independent counter) rather than the shared
+        # module-scoped fixture, so this test's count isn't polluted by
+        # other tests in this module that also call score_batch().
+        ckpt_dir = download_and_provision_checkpoint(
+            repo_id="LLM-ltr/OPT-Predictors",
+            subfolder=REGRESSION_SUBFOLDER,
+            revision=CHECKPOINT_REVISION,
+            local_dir="unused",
+            verified_environments=[
+                {"torch_version": "2.2.1", "transformers_version": "4.45.2"},
+            ]
+            + [
+                {"torch_version": __import__("torch").__version__,
+                 "transformers_version": __import__("transformers").__version__}
+            ],
+        )
+        handle = load_opt_predictor_from_local(ckpt_dir)
+        assert handle.num_prompts_truncated == 0
+
+        max_len = handle.model.config.max_position_embeddings
+        long_prompt = "word " * (max_len * 3)
+        short_prompt = "What is 2+2?"
+
+        handle.score_batch([short_prompt], batch_size=4)
+        assert handle.num_prompts_truncated == 0
+
+        handle.score_batch([long_prompt], batch_size=4)
+        assert handle.num_prompts_truncated == 1
+
+        handle.score_batch([long_prompt, short_prompt, long_prompt], batch_size=4)
+        assert handle.num_prompts_truncated == 3
 
 
 @pytest.mark.gpu

@@ -52,9 +52,19 @@ Development did not stop at the Phase 2C pause below -- it continued on an
    evaluation-ready, offline-scored external baseline -- official
    checkpoint downloaded/hash-verified/architecturally verified, offline
    scoring pipeline built, semantic equivalence confirmed bit-exact via
-   independent recomputation. Not yet a selector candidate; not yet run in
-   a comparison sweep (needs a real prompt-text dataset).
+   independent recomputation. Not yet a selector candidate.
    `docs/audits/vllm_ltr_baseline_audit_20260804.md`.
+8. First comparison sweep run and independently re-verified (2026-08-04,
+   after recovering from an initial run that never finished -- a selector
+   performance bug, fixed): real WildChat-1M text, 300 requests, 3 seeds, 10
+   policies. Result: `vllm_ltr_semantic_reference` tied FIFO/EDF/EST/SOF/
+   WSP/`oracle_srtf` exactly in this regime (the oracle itself ties FIFO --
+   no reorderable headroom for any policy here); moderate-not-near-1.0
+   ranking agreement with EST/SOF confirms it is not behaviorally redundant.
+   Classification: EVALUATION_ONLY; foundational-library eligibility not
+   established by this run (needs a higher-contention regime).
+   `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`,
+   `docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md`.
 
 **Full synthesis, in narrative order, with the current (confirmed leakage
 bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).

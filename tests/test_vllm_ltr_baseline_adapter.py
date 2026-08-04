@@ -264,12 +264,14 @@ class TestDeterministicScoring:
     def test_score_uses_no_grad_and_eval_mode(self):
         """Structural determinism check: OPTPredictorHandle.score() must not
         rely on any stochastic module state (model/tokenizer/num_labels are
-        the only state; no RNG/seed field exists to make scoring
-        non-reproducible). A real end-to-end determinism check against the
-        actual checkpoint runs in tests/test_vllm_ltr_checkpoint_fidelity_gpu.py
-        (gated on LLMSERVEOPT_RUN_GPU_TESTS=1)."""
+        the only scoring-relevant state; num_prompts_truncated is a
+        write-only bookkeeping counter, not an input that could make
+        scoring non-reproducible -- no RNG/seed field exists). A real
+        end-to-end determinism check against the actual checkpoint runs in
+        tests/test_vllm_ltr_checkpoint_fidelity_gpu.py (gated on
+        LLMSERVEOPT_RUN_GPU_TESTS=1)."""
         fields = {f.name for f in dataclasses.fields(OPTPredictorHandle)}
-        assert fields == {"model", "tokenizer", "num_labels"}
+        assert fields == {"model", "tokenizer", "num_labels", "num_prompts_truncated"}
 
 
 class TestSelectorScopeInvariants:

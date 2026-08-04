@@ -645,10 +645,33 @@ its CUDA extensions from source): `docs/audits/vllm_ltr_baseline_audit_20260804.
 still deliberate, per the original task's "do not add to the main selector
 candidate set yet."
 
+**Comparative evaluation completed 2026-08-04.** A first head-to-head
+simulator comparison ran on real WildChat-1M prompt/response text (300
+requests, 3 seeds, 10 policies including vLLM-LTR evaluation-only), after
+recovering from an initial run that never finished (selector performance
+bug, fixed; see `docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md`).
+Full results, independent re-verification, and classification:
+`docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`.
+**Bottom line:** in this workload regime, `vllm_ltr_semantic_reference` tied
+FIFO/EDF/EST/SOF/WSP/`oracle_srtf` exactly (ANWG=0.9957 all three seeds) —
+the oracle itself also tied FIFO, meaning this specific regime has no
+reorderable headroom for *any* ordering policy to demonstrate, so vLLM-LTR
+neither beat nor lost to anything. It does make genuinely different
+per-request ranking decisions (Spearman agreement with EST ≈0.35–0.40, with
+SOF ≈0.43–0.48 — moderate, not near-1.0), so it is not behaviorally
+redundant with the existing SJF-proxy policies; whether that distinct
+ranking translates into measurable ANWG benefit remains untested and needs
+a higher-contention regime. Classification: **EVALUATION_ONLY** (still not
+registered as a selector candidate); foundational-library eligibility not
+established by this run.
+
 **Safe claim:** "vLLM-LTR offline-scored external baseline (official
 checkpoint downloaded, hash-verified, and architecturally/numerically
 verified against an independent recomputation; ranking rule reproduced
-exactly; not yet run in a head-to-head simulator sweep for lack of a
-prompt-text-carrying dataset in this repo)"  
-**Unsafe claim:** "vLLM-LTR beats/loses to policy X in our experiments"
-(no comparison run has been performed — see the audit doc's remaining work)
+exactly; evaluated head-to-head against 9 other policies on real WildChat-1M
+text across 3 seeds — tied FIFO/oracle exactly in this (uncontended)
+workload regime, with moderate-but-not-near-1.0 ranking agreement with the
+existing SJF-proxy policies)"  
+**Unsafe claim:** "vLLM-LTR beats/loses to policy X" (it was statistically
+tied with FIFO and the theoretical oracle in the one regime tested so far;
+see the audit doc for the full result set and its regime-specific caveat)
