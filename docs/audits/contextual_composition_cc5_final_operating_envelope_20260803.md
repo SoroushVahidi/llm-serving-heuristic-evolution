@@ -3,7 +3,7 @@
 Date: 2026-08-03/04
 Branch: `contextual-compositional-heuristics-20260731`
 Starting SHA: `f5a4f82d54111a656e5f49c554c2b41974de5349`
-New SHA: recorded after commit in the branch-marker update (see `docs/CONTEXTUAL_COMPOSITION_BRANCH.md`).
+New SHA: `33e832c2b2d6cc8f8ce3405f3ffc19f80e3cae2c`
 Canonical issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
 tmux session: `cc5_uncertainty_regime`; log: `logs/cc5_uncertainty_regime_finalization_20260804_024058.log`.
 Reference run: `results/cc5_final_operating_envelope/20260804T024524Z/`
