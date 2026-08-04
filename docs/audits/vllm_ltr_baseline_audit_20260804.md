@@ -1,283 +1,313 @@
 # vLLM-LTR Baseline-Integration Audit
 
-**Date:** 2026-08-04
+**Date:** 2026-08-04 (scaffold pass + completion pass, same day)
 **Branch:** `contextual-compositional-heuristics-20260731`
-**Tests:** 23/23 new tests pass (`tests/test_vllm_ltr_baseline_adapter.py`); full non-live suite unaffected (see §8)
-**Scope:** Baseline-integration phase begun. **CC5/CC6 logic and results are untouched** — see `docs/contextual_composition_roadmap.md` for that track; this document and all files it describes are entirely outside it.
+**Tests:** 25/25 CPU tests pass (`tests/test_vllm_ltr_baseline_adapter.py`); 13/13 real-checkpoint GPU tests pass (`tests/test_vllm_ltr_checkpoint_fidelity_gpu.py`, `LLMSERVEOPT_RUN_GPU_TESTS=1`); full non-live suite unaffected (see §9)
+**Scope:** Baseline-completion phase. **CC5/CC6 logic and results are untouched** — see `docs/contextual_composition_roadmap.md` for that track; nothing here touches it.
+
+This document supersedes the same-day scaffold pass: every "untested
+assumption" from that pass has now been checked against the real official
+checkpoint. Section numbers below are reorganized around the completion
+task's own requirements (docs correction, checkpoint acquisition,
+architectural fidelity, offline pipeline, semantic equivalence, overhead,
+recommendation).
 
 ---
 
-## 1. Official source
+## 1. Documentation correction: venue
+
+**Corrected.** "Efficient LLM Scheduling by Learning to Rank" is a
+**NeurIPS 2024 main-conference paper**, not merely an arXiv preprint.
+Confirmed independently (not just trusting the task's assertion) via:
+
+- `https://proceedings.neurips.cc/paper_files/paper/2024/hash/6c8985579293e0209bdaa4f21bb1d237-Abstract-Conference.html`
+- `https://papers.nips.cc/paper_files/paper/2024/hash/6c8985579293e0209bdaa4f21bb1d237-Abstract-Conference.html`
+- The official repository's own title has since been updated to
+  "**[NeurIPS 2024]** Efficient LLM Scheduling by Learning to Rank" —
+  independent confirmation beyond the repo's own README, which cites only
+  the arXiv preprint.
+
+Updated in `adapter/provenance.py` (`PAPER_VENUE`,
+`PAPER_NEURIPS_PROCEEDINGS_URL`), `PROVENANCE.md`, `docs/baselines.md`, and
+`docs/external_baseline_decision.md`. The arXiv id (`2408.15792`) is kept as
+a supplementary preprint identifier, not the venue.
+
+---
+
+## 2. Official checkpoint: acquisition and provenance
+
+Downloaded via `huggingface_hub.snapshot_download` (through the new
+`adapter.checkpoint_loader.download_and_provision_checkpoint`), **outside
+the git repository** (HF cache, `~/.cache/huggingface`) — weight files are
+never committed; only hashes, revision, and code are.
 
 | Field | Value |
 |---|---|
-| Repository | https://github.com/hao-ai-lab/vllm-ltr |
-| Pinned commit | `13bbf6ff3dab661791d41362551b089e5f77c91c` (tip of `main`, 2024-10-31) |
-| Why this pin | No tags/releases exist in the repository (`git tag` is empty); this is the tip of `main` at inspection time — the correct fallback per "prefer a release; if none exists, pin a commit and explain why." |
-| License | Apache License 2.0 |
-| Paper | Fu, Yichao; Zhu, Siqi; Su, Runlong; Qiao, Aurick; Stoica, Ion; Zhang, Hao. *"Efficient LLM Scheduling by Learning to Rank."* arXiv:2408.15792 (2024). No venue beyond the arXiv preprint is asserted (do not upgrade to a conference name without independent verification). |
-| Checkpoints | `LLM-ltr/OPT-Predictors` (Hugging Face); 125M and 350M OPT-backbone variants, regression and classification config flavors |
-| Training dataset | `LLM-ltr/Llama3-Trace` (Hugging Face) |
+| HF repo | `LLM-ltr/OPT-Predictors` |
+| Repo revision | `39df2b41ffe88d5ed967c6035d3838b5b5960379` |
+| Model card | **none** (`README.md` → "Entry not found") |
+| License | **not declared** on the HF repo (no tag, no model card, no `LICENSE` file among its 43 files) — see the explicit caveat in `CHECKPOINT_PROVENANCE.md`. The *code* repo is Apache-2.0; that does not automatically cover separately-hosted weights. Treated as unconfirmed, not assumed permissive. |
+| Variants downloaded | classification (`opt-125m-llama3-8b-sharegpt-class-trainbucket820-b32`, `num_labels=10`) and regression (`opt-125m-llama3-8b-sharegpt-score-trainbucket10-b32`, `num_labels=1`) — both ShareGPT-trained, 125M backbone |
+| `model.safetensors` size | 250,516,416 bytes (~239 MiB) per variant |
+| sha256 hashes | recorded in `CHECKPOINT_PROVENANCE.md` (both variants, both files) |
+| Weights modified? | No — read-only load throughout; a regression test (`TestCheckpointProvenanceDocFormat`) locks the hash strings' *format* (64 hex chars) after an actual transcription bug (one hex digit truncated on all four hashes) was caught and fixed during this pass — see §8. |
 
-Full manifest, environment versions (Python 3.10, PyTorch 2.2.1, CUDA 12.1,
-flash-attn etc.), and architecture details: `baselines/vllm_ltr/PROVENANCE.md`.
-
----
-
-## 2. Architecture (from reading the pinned commit, not just the README)
-
-- **Ranking model:** `OPTForSequenceClassification` in
-  `vllm/model_executor/models/opt.py` = a standard OPT transformer backbone
-  (`OPTModel`) + one `nn.Linear(word_embed_proj_dim, num_labels, bias=False)`
-  score head. No pooling/MLP/dropout at inference.
-- **Score semantics:** for `num_labels > 1` (the classification config), the
-  head's logits are reduced via `argmax` to a single bin index (ordinal
-  classifier over output-length bins); for `num_labels == 1` (regression
-  config) the raw logit is used directly.
-- **Scheduler integration:**
-  `vllm/core/scheduler.py::_get_ltr_ordered_requests` sorts
-  `waiting + running + swapped` by `-req.aux_model_score` (descending score
-  = highest priority), via Python's stable `sorted()` (ties keep input
-  order). Scores are computed once per request via a second, dedicated vLLM
-  engine (`AUXLLMEngine`) and cached (`need_aux_model_score()` /
-  `obtain_aux_scores()`), not recomputed every step.
-- Literal pinned-source excerpts (citation only, never imported):
-  `baselines/vllm_ltr/official_reference/scheduler_ranking_excerpt.md`,
-  `baselines/vllm_ltr/official_reference/opt_predictor_head_excerpt.md`.
-
-**Key finding used to design the loader:** the pinned commit's
-`OPTForSequenceClassification` is field-for-field identical to
-HuggingFace `transformers`' own `OPTForSequenceClassification` (verified by
-diffing against `transformers` v4.30.0's `modeling_opt.py`: same
-`self.model = OPTModel(config)`, same
-`self.score = nn.Linear(config.word_embed_proj_dim, num_labels, bias=False)`).
-The vLLM fork's custom class exists only to plug into vLLM's paged-attention
-serving plumbing, not to change the ranking computation. This means the
-official checkpoint should be loadable through plain `transformers`
-(`AutoModelForSequenceClassification`), with no custom weight-key
-remapping — **this specific claim has not been verified against the real
-checkpoint bytes** (no ~GB-scale network fetch was performed for this
-scaffold); see §9.
+**Full record:** `baselines/vllm_ltr/CHECKPOINT_PROVENANCE.md`.
 
 ---
 
-## 3. Integration classification
+## 3. Architectural fidelity: checkpoint vs. reconstructed HF architecture
 
-None of the six single-label categories in the task instructions fits
-cleanly on its own; the honest answer is a **structural split**, driven by
-one finding:
+**Result: exact match, both variants.**
 
-> **The official predictor's only input is tokenized prompt *text*. This
-> project's simulator (`src/llmserveopt/core/types.py::Request`/
-> `ObservableRequest`) represents every request as integer token *counts*
-> only (`prompt_tokens: int`) — there is no prompt text or token-ID field
-> anywhere in the data model.**
+- `raw safetensors state dict keys == fresh AutoModelForSequenceClassification(same config).state_dict() keys` — set difference empty in both directions (197/197 keys for the classification variant).
+- Zero shape mismatches across all 197 keys.
+- `config.json` declares `"architectures": ["OPTForSequenceClassification"]` — the checkpoint **is** a stock HF `OPTForSequenceClassification` export, not a vLLM-fork-specific serialization. This confirms the scaffold pass's hypothesis (built from reading pinned source only) against the real artifact.
+- Automated, reproducible: `tests/test_vllm_ltr_checkpoint_fidelity_gpu.py::TestArchitectureFidelity`.
 
-Consequences:
+### Real deviation found and fixed: tokenizer
 
-- **The predictor artifact itself** (OPT backbone + linear score head):
-  classified as **"official predictor reused with a simulator adapter"** —
-  it can be loaded and run *independently* of vLLM (no vLLM internals
-  needed, per the `transformers`-compatibility finding above), *given real
-  prompt text*. This is fully implemented in
-  `baselines/vllm_ltr/adapter/checkpoint_loader.py`, gated behind an
-  optional dependency and a provenance sidecar.
-- **The scheduling/ranking rule** (`-aux_model_score` descending sort,
-  stable tie-break): classified as **"official code usable only as a
-  semantic reference"** for the vLLM-engine-specific plumbing around it
-  (paged KV, `AttentionMetadata`, `LogitsProcessor`, the separate
-  `AUXLLMEngine`) — none of that is vendored or executed — but the *rule
-  itself* is simple enough to reproduce exactly and is implemented
-  faithfully in `baselines/vllm_ltr/adapter/ranking_adapter.py`.
-- **Wiring the real predictor into the live discrete-event simulator loop**
-  (i.e., a `BasePolicy.select_action()` that calls the OPT model on each
-  step): **not currently possible** — `ObservableRequest` has nothing to
-  tokenize. This is a gap in the simulator's data model, not a limitation
-  of the official code or this adapter. `simulator_policy.py` handles this
-  explicitly (see §4) rather than papering over it.
+**The checkpoint repository ships no tokenizer files** (`tokenizer.json`,
+`vocab.json`, `merges.txt`, `tokenizer_config.json`) for any of its 12
+variants — only `config.json` + `model.safetensors` + `usage_config.json`.
+`AutoTokenizer.from_pretrained(checkpoint_dir)` does **not** raise an error
+in this situation: it silently falls back to a generic GPT-2-style
+tokenizer (`pad_token_id=None`, `bos/eos/unk="<|endoftext|>"`) that is
+**wrong** for this checkpoint — mismatched vocabulary, and scoring would
+have proceeded without ever erroring, just silently producing meaningless
+scores from mistokenized input.
 
-### Answers to the task's specific questions
-
-| Question | Answer |
-|---|---|
-| Which official files can be reused unchanged? | None verbatim (vLLM-engine plumbing is not vendored); the *architecture* (backbone + head shape) is reproduced via plain `transformers`, and the *ranking rule* is reproduced as ~5 lines of pure Python. Both are cited, not copied, at the file/line level in `official_reference/`. |
-| Which pieces depend on vLLM internals? | The scheduler's `AttentionMetadata`/`LogitsProcessor`/`Sampler`/`AUXLLMEngine` plumbing — all serving-efficiency machinery, not part of the ranking computation itself. |
-| Can the learned ranker run independently? | Yes, in principle, given real prompt text and the checkpoint — via plain `transformers`, no vLLM needed. Untested against real weights in this environment (no torch/transformers installed; no checkpoint downloaded — see §9). |
-| What exact input features does it require? | Tokenized prompt text (`input_ids`) only. No other feature channel exists in the official architecture. |
-| What output does it produce? | A single scalar per request: an output-length bin index (classification config, `num_labels > 1`) or a raw regression value (`num_labels == 1`). |
-| How is its output converted into request order? | `sorted(requests, key=lambda r: -score)`, stable (Python's `sorted`) — reproduced exactly in `ranking_adapter.order_by_ltr_score`. |
-| Can its ranking semantics be reproduced inside our simulator without replacing the official model? | The *sort rule*: yes, exactly. The *score*: no — it structurally requires real prompt text the simulator doesn't carry, so it cannot be reproduced *or* replaced with a substitute inside the simulator; scores must come from outside (see §4). |
-| Vendoring / submodule / pinned dependency / isolated environment? | A pinned **optional dependency** (`torch`, `transformers` — new `vllm_ltr` extra in `pyproject.toml`), plus a provenance-sidecar convention for the checkpoint. No git submodule, no vendored C++/CUDA, no isolated environment needed, because only the backbone+head (plain HF-compatible) matters, not the full vLLM fork build. |
+**Fix applied to `adapter/checkpoint_loader.py`:** read the checkpoint's raw
+`config.json` *before* `from_pretrained()` mutates `_name_or_path`, extract
+the recorded base pretrained model (`facebook/opt-125m` for both variants
+downloaded here), load the tokenizer from there instead, and verify its
+`pad_token_id` matches the checkpoint's own `config.pad_token_id` (both are
+`1`) — raising `StaleArtifactError` if they don't. This is exactly the
+class of silent-wrong-result failure mode a fidelity audit is supposed to
+catch; it would not have been found without actually downloading and
+loading the real checkpoint.
 
 ---
 
-## 4. What was implemented
+## 4. Offline scoring pipeline
 
-```
-baselines/vllm_ltr/
-  PROVENANCE.md                                   # manifest (source of truth)
-  official_reference/
-    scheduler_ranking_excerpt.md                   # pinned citation, not executable
-    opt_predictor_head_excerpt.md                  # pinned citation, not executable
-  adapter/
-    provenance.py                                  # importable constants mirroring the manifest
-    errors.py                                       # MissingDependencyError, MissingCheckpointError,
-                                                      # StaleArtifactError, VersionMismatchError, MissingScoreError
-    checkpoint_loader.py                            # optional torch/transformers loader + provenance-sidecar gate
-    ranking_adapter.py                              # faithful -score-descending stable sort
-    simulator_policy.py                             # VLLMLTRSemanticReferencePolicy(BasePolicy)
-tests/test_vllm_ltr_baseline_adapter.py             # 23 tests, see §5
-```
+`baselines/vllm_ltr/adapter/offline_scoring.py` (new this pass):
 
-`VLLMLTRSemanticReferencePolicy` takes a precomputed `{request_id: score}`
-map at construction (produced *offline*, before a simulator run, by
-tokenizing each request's real prompt text and calling
-`OPTPredictorHandle.score()`) and admits requests in official-ranked order
-each step. A request missing from the score map raises `MissingScoreError`
-— there is no fallback heuristic, satisfying the "do not silently replace
-the ranker" constraint. It reads no oracle information: `ObservableRequest`
-structurally has no `actual_output_tokens` field, and the policy never
-reads `predicted_output_tokens` either (locked by
-`TestNoLeakage.test_policy_never_reads_predicted_output_tokens_either`).
-
-**Not implemented / explicitly out of scope for this scaffold:** actually
-downloading and loading the real `LLM-ltr/OPT-Predictors` checkpoint bytes
-(no torch/transformers installed in this environment; no network fetch of
-GB-scale weights performed — see §9), and any offline scoring pipeline that
-would tokenize a real dataset's prompt text and populate the score map for
-a full simulator run.
+- `score_prompts_offline(handle, id_to_prompt, batch_size)` — scores every
+  `(request_id, prompt_text)` pair once, using only prompt text (no
+  `actual_output_tokens`, not even accepted as a parameter).
+- `save_score_cache` / `load_score_cache` — JSON persistence.
+- `scores_only(cache, id_to_prompt=None)` — extracts the plain
+  `{request_id: score}` map `VLLMLTRSemanticReferencePolicy` consumes; when
+  given `id_to_prompt`, verifies every cached entry's stored sha256 prompt
+  hash still matches the current prompt text, raising `StaleScoreCacheError`
+  on any mismatch (the "prompt hash" integrity key the task asked for,
+  layered on top of request-id keying since `ObservableRequest` itself has
+  nowhere to carry a hash).
+- **No simulator request objects were modified** — `Request`/`ObservableRequest`
+  in `src/llmserveopt/core/types.py` are byte-for-byte unchanged from before
+  this task. The pipeline is entirely external; `VLLMLTRSemanticReferencePolicy`
+  (unchanged from the scaffold pass) still requires an externally-supplied
+  `{request_id: score}` map at construction, with no fallback for a missing
+  score (`MissingScoreError`).
+- **No future-information leakage:** input is prompt text only; verified by
+  the existing structural test (`ObservableRequest` has no
+  `actual_output_tokens` field to leak) plus the new
+  `TestOfflineScoringPipelineEndToEnd` tests exercising the real checkpoint
+  end-to-end (score → cache → reload → rank), including the stale-hash
+  rejection path.
 
 ---
 
-## 5. Fidelity verification
+## 5. Semantic equivalence: quantitative agreement
 
-All 23 tests in `tests/test_vllm_ltr_baseline_adapter.py` pass. Coverage:
+Two independent forms of "compare against the official implementation"
+were performed; a third (live differential against the actually-served
+vLLM-fork engine) remains infeasible and is disclosed as a limitation, not
+silently skipped.
 
-- **Feature construction:** N/A at the simulator-wiring layer (no live
-  feature construction happens — see §3); the checkpoint loader's expected
-  input (tokenized prompt text) is documented and asserted structurally.
-- **Ranking-input / score equivalence:** `TestRankingSemanticEquivalence`
-  cross-checks the adapter's sort against the literal official key formula
-  (`sorted(reqs, key=lambda req: -req.aux_model_score)`) applied to
-  identical synthetic inputs — orders match exactly.
-- **Ranking-order equivalence:** same tests, plus a 200-request batching
-  test confirming per-score-bin stability at larger scale.
-- **Deterministic tie-breaking:** `test_deterministic_tie_breaking_preserves_input_order`
-  and `test_deterministic_across_repeated_calls`.
-- **Batching behavior:** `test_batching_many_requests_preserves_stable_partial_ties`.
-- **No inference-time label leakage:** `TestNoLeakage` — structural
-  (`ObservableRequest` has no `actual_output_tokens` field at all) and
-  behavioral (the policy prefers the *injected score*, not
-  `predicted_output_tokens`, when the two disagree).
-- **Missing-checkpoint behavior:** `test_missing_dependency_or_missing_checkpoint`
-  (genuinely exercises `MissingDependencyError` in this environment, since
-  torch/transformers are not installed — not mocked).
-- **Version-mismatch rejection:** `test_version_mismatch_rejected`.
-- **Stale-artifact rejection:** `test_stale_artifact_rejected_when_sidecar_absent`,
-  `test_stale_artifact_rejected_when_pinned_commit_differs`.
-- **Selector-scope invariants:** `TestSelectorScopeInvariants` — not in
-  `BASELINE_NAMES`, `SELECTOR_CANDIDATE_NAMES`, `POLICY_LIBRARY_V2_NAMES`,
-  or `EXTERNAL_BASELINE_NAMES`; `src/llmserveopt` has zero references to
-  `baselines.vllm_ltr` (grep-verified test).
+### 5a. Independent recomputation cross-check (performed, bit-exact)
 
-### Fidelity label
+For both checkpoint variants, two completely separate code paths were run
+on the same real ShareGPT text and compared:
 
-**`FIDELITY_LABEL = "official predictor reused with a simulator adapter (offline-only)"`**
-(`adapter/provenance.py`). Not labeled plain "official" (the checkpoint
-itself is untested against real weights) or "faithful" (that label is
-reserved, by this repo's convention, for the six `*_faithful` scheduling
-*policies* that run entirely inside the simulator — this baseline's
-predictor cannot run inside the simulator loop at all, live). Not "proxy"
-or "cite-only" either: the ranking *rule* is exactly reproduced and the
-predictor architecture is a real, loadable artifact once real prompt text
-and the checkpoint are supplied out-of-band.
+- **Path A** (what the adapter uses): `transformers.AutoModelForSequenceClassification.from_pretrained(...)` — HF's own pooling/head logic.
+- **Path B** (independent reimplementation): `transformers.AutoModel` backbone-only forward (bypassing HF's classification wrapper entirely) + the checkpoint's real `score.weight` tensor applied *by hand* via matrix multiply, with last-non-pad-token pooling implemented from scratch from the attention mask — replicating the pinned source's `compute_logits` formula (`official_reference/opt_predictor_head_excerpt.md`) from first principles, not by trusting HF's wrapper to do the right thing.
 
-### Known deviations
+**Result: `(logits_a - logits_b).abs().max() == 0.0` for both variants** — bit-exact agreement in float16, on real text. This is strong evidence that the adapter's understanding of the official score-extraction formula is exactly correct, independent of the convenience wrapper. Reproducible: `TestSemanticEquivalence` in the GPU test file.
 
-1. **Source of divergence:** structural/data-model, not numerical or
-   architectural. The simulator's `ObservableRequest` has no prompt text —
-   the official predictor cannot be invoked live inside `select_action()`.
-2. **Untested claim:** the "loadable via plain `transformers`, no custom
-   weight remapping" hypothesis (§2) is architecturally well-supported
-   (identical class shape, verified against `transformers` v4.30.0 source)
-   but has not been checked against the actual `LLM-ltr/OPT-Predictors`
-   checkpoint files.
-3. **Scope of the ranking rule:** the official rule reorders
-   `waiting + running + swapped` combined; this simulator's policies only
-   choose admission order from `waiting_queue` per step (already-admitted
-   requests are advanced by the service model, not reordered by the
-   policy). The adapter reproduces the rule over whatever sequence it's
-   given rather than the three-queue concatenation — see
-   `ranking_adapter.py`'s module docstring.
+### 5b. Ranking/tie-break equivalence (performed, exact — carried over from the scaffold pass)
+
+`ranking_adapter.order_by_ltr_score` was already verified byte-for-byte against the literal official sort formula (`sorted(reqs, key=lambda req: -req.aux_model_score)`, stable) on synthetic scores in the scaffold pass (24 tests, still passing). This pass adds an end-to-end version using **real** regression-variant scores on real ShareGPT text (`TestOfflineScoringPipelineEndToEnd::test_score_cache_roundtrip_and_ranking`): scored → cached → reloaded → ranked, and the resulting order is exactly descending by score.
+
+### 5c. Live official-engine differential (NOT performed — disclosed limitation)
+
+Running the actual forked `vllm-ltr` engine (real paged-attention scheduler, `AUXLLMEngine`, `_get_ltr_ordered_requests` executing for real) requires building the fork's compiled CUDA extensions (`vllm/csrc`) from source against a pinned older toolchain (torch 2.2.1 / CUDA 12.1), in an environment whose driver/toolkit (CUDA 13.0, torch 2.12) is substantially newer. This was judged out of scope: a multi-step, failure-prone native build, not a "download and run" step, and not necessary to establish the two facts that actually matter for using this baseline correctly — (1) the checkpoint's math is being computed correctly (§5a, bit-exact), and (2) the ranking rule is being applied correctly (§5b, exact). **This is the one deviation the audit cannot close without a substantially larger, riskier effort**, and is reported as such rather than glossed over.
+
+### Quantitative agreement summary
+
+| Check | Sample | Result |
+|---|---|---|
+| Independent recomputation (classification) | 9 real ShareGPT prompts | 0.0 max abs diff (bit-exact, fp16) |
+| Independent recomputation (regression) | 9 real ShareGPT prompts | 0.0 max abs diff (bit-exact, fp16) |
+| Ranking order vs. official sort formula | synthetic, n=200 batched | 100% order agreement, all ties stable |
+| Batched vs. singleton scoring | 9 real prompts, regression variant | agree to <2e-3 abs (fp16 padding-order noise — see §7), not bit-identical |
+| Deterministic across repeated runs | 9 real prompts | 100% identical (both variants) |
 
 ---
 
-## 6. Resource and comparability audit
+## 6. Real scoring behavior on real text — an honest finding, not oversold
 
-| Question | Answer |
-|---|---|
-| GPU required? | Not for this scaffold's tests (pure Python + optional CPU-side `transformers` inference). Real checkpoint inference (125M/350M OPT forward pass per request) is feasible on CPU but would be far slower than any of the existing 20 simulator-side policies, which are O(1) Python per request. |
-| CPU inference possible? | Yes, architecturally (small OPT variants) — not attempted here. |
-| Expected per-request inference overhead | Not measured (no checkpoint loaded). Order-of-magnitude expectation: milliseconds-to-tens-of-milliseconds per request on CPU for a 125M-350M parameter transformer forward pass over a short prompt — several orders of magnitude more than any existing policy's `select_action()` call. |
-| Training cost | Per official docs: 350M predictor needs ~80GB GPU memory to train, 125M needs ~40GB. Not attempted; training is out of scope for this baseline-integration phase. |
-| Checkpoint size | Not measured (not downloaded). Expect roughly the OPT-125M/350M base-model size plus a small linear head (~250MB-1.4GB range, typical for these HF checkpoint sizes — not verified). |
-| Compatible with current simulator workloads? | Only if a workload also carries real prompt text (e.g., the raw ShareGPT/BurstGPT text ingested in Phase 1.7A, before it was reduced to `prompt_tokens` counts) — not the synthetic Poisson/bursty generators, which never had text. |
-| Fair to compare under the same resource budget as the other 20 policies? | No, not as a live per-step policy — it would require an offline preprocessing pass (tokenize + score every request in a dataset before the simulator run even starts) that none of the other 20 policies need. Any future comparison must account for that asymmetric setup cost explicitly. |
-| Evaluation-only or future selector candidate? | Evaluation-only for now, and only once the offline scoring pipeline exists. Explicitly excluded from the selector candidate set per the task instructions and locked by `TestSelectorScopeInvariants`. |
+Using the 9 genuine human-authored prompts in `tests/fixtures/sharegpt_tiny.json` (the only real ShareGPT-style text already vetted/committed in this repo — the full `ShareGPT_V3_unfiltered_cleaned_split.json` corpus is not staged locally, see `data/raw/sharegpt/.gitkeep` and `external/datasets/sharegpt.md`'s own license-verification caveat):
 
-No GPU jobs were run for this scaffold.
+- **Classification variant** (`num_labels=10`, argmax-reduced): **collapses to the same top bin (9) for all 9 prompts.** The pre-argmax logits *do* vary meaningfully by prompt (e.g. top-bin logit 8.19 vs. 5.23 vs. 8.23 across different prompts) — only the argmax reduction discards that signal on this short-prompt sample. This is a real, reproducible property of this checkpoint variant on short inputs, not an adapter defect (confirmed via the bit-exact cross-check in §5a using the *same* raw logits).
+- **Regression variant** (`num_labels=1`, raw logit): **9/9 distinct scores** on the same sample — retains the discrimination the classification variant's argmax throws away.
 
----
+**Recommendation for future ranking use:** the regression variant
+(`opt-125m-llama3-8b-sharegpt-score-trainbucket10-b32`) is the more useful
+of the two for an actual ranking comparison on short-to-medium prompts;
+`adapter/provenance.py` documents both and defaults nothing silently — the
+caller picks the variant explicitly via
+`download_and_provision_checkpoint(subfolder=...)`.
 
-## 7. Documentation updated
-
-- `docs/baselines.md` — new "Baseline-integration scaffolds (evaluation-only, not yet runnable end-to-end)" section documenting vLLM-LTR's status.
-- `docs/external_baseline_decision.md` — §B.1 status line updated (scaffold added; not yet a runnable selector-eligible baseline), mirroring the §B.2 SCORPIO precedent; §F checklist row updated.
-- `docs/roadmap.md` — one additive line appended to the existing "Current track" numbered list (item 7); the CC5/CC6 banner (lines 1-13) and the historical phase table are untouched.
-- **Not touched:** anything under the CC-scoped canonical files (`docs/contextual_composition_roadmap.md`, `docs/contextual_composition_decisions.md`, `docs/START_HERE_CONTEXTUAL_COMPOSITION.md`, `docs/CONTEXTUAL_COMPOSITION_BRANCH.md`, `docs/RESUME_CONTEXTUAL_COMPOSITION.md`, `scripts/check_contextual_composition_status.py`), nor `docs/current/PROJECT_STATUS.md`'s unrelated Wolverine/pause narrative.
+**Explicit limitation on this finding:** n=9 is small. It demonstrates the
+mechanism works end-to-end on genuine text and surfaces a real
+variant-selection consideration; it is not a statistically powered claim
+about either variant's ranking quality. A larger, licensed ShareGPT sample
+would be needed for that — out of scope here (see §10).
 
 ---
 
-## 8. Validation run
+## 7. Resource and overhead measurement (real, on this session's hardware)
 
-```
-python -m compileall -q src scripts tests         # PASS
-python scripts/check_contextual_composition_status.py                    # "contextual composition status check passed"
-python scripts/check_contextual_composition_status.py --resume-readiness # "contextual composition resume-readiness check passed"
-pytest --collect-only -q                          # collected cleanly, no errors
-pytest tests/test_vllm_ltr_baseline_adapter.py -q # 23 passed
-```
+Hardware: RTX 5060 Ti (per `nvidia-smi`), driver 580.159.03, CUDA 13.0. Measured with the regression-variant handle, batch of 32 (9 real prompts cycled), `torch==2.12.0+cu130`, `transformers==5.8.1`.
 
-(Full non-live suite result recorded in the final commit summary printed to
-the user; see that output for the exact pass count.)
+| Batch size | CPU mean | CPU per-request | GPU mean | GPU per-request |
+|---|---|---|---|---|
+| 1 | 47.3 ms | 47.3 ms | 60.2 ms (2.3 ms p50 — see note) | 60.2 ms |
+| 4 | 90.3 ms | 22.6 ms | 15.5 ms (3.2 ms p50) | 3.9 ms |
+| 8 | 361.3 ms | 45.2 ms | 2.9 ms | 0.36 ms |
+| 16 | 714.5 ms | 44.6 ms | 3.1 ms | 0.20 ms |
+| 32 | 1344.3 ms | 42.0 ms | 4.9 ms | 0.15 ms |
+| 64 | — | — | 8.1 ms | 0.13 ms |
+
+- **Note on GPU bs=1 mean vs. p50:** the mean is dominated by first-call CUDA kernel warm-up noise even after a tokenizer-only warmup loop; p50 (2.27 ms) is the more representative steady-state figure. Later batch sizes are stable mean≈p50.
+- **Peak GPU memory:** 438 MB at batch 32 (125M-parameter model; well within any single-GPU budget).
+- **CPU process RSS after a CPU run:** ~1080 MB (includes Python/torch/transformers overhead, not just model weights).
+- **Batch-size sensitivity:** GPU per-request cost drops ~450x from batch 1 (p50-adjusted) to batch 64; CPU per-request cost is roughly flat (~42-47 ms) across batch sizes 4-32 — CPU is compute-bound per-token regardless of batching at this model size, GPU is latency-bound at small batches.
+- **Comparison to existing policies:** every one of the 20 registered simulator policies' `select_action()` calls is O(request count) pure-Python arithmetic — microseconds, not milliseconds. Even the fastest GPU-batched LTR scoring here (0.13-0.36 ms/request) is 2-4 orders of magnitude slower per request than any existing policy, and that cost is paid **once per request, offline, before the simulator run** (per the caching design in §4) rather than per simulation step — the asymmetry noted in the original scaffold pass's resource audit still holds and is now quantified rather than estimated.
+
+Reproducible (sanity-bounded, not exact-value-pinned, since latency is hardware-dependent): `TestOverhead` in the GPU test file.
 
 ---
 
-## 9. Remaining work
+## 8. A real bug caught and fixed during this pass
 
-1. Download the real `LLM-ltr/OPT-Predictors` checkpoint and verify the
-   "loadable via plain `transformers`, no custom weight remapping"
-   hypothesis against actual weight files (requires network access +
-   ~GB-scale storage; not done here per "do not run expensive jobs unless
-   already safe").
-2. Install the `vllm_ltr` optional extra (`torch`, `transformers`) in a
-   dedicated environment and re-run `TestCheckpointLoaderFailureModes` to
-   confirm the `MissingCheckpointError` (rather than `MissingDependencyError`)
-   path, plus a real end-to-end `OPTPredictorHandle.score()` call.
-3. Build an offline scoring pipeline: for a real-text dataset (e.g. the
-   Phase 1.7A ShareGPT ingestion, before token-count reduction), tokenize
-   each prompt, run it through the checkpoint, and produce the
-   `{request_id: score}` map `VLLMLTRSemanticReferencePolicy` requires.
-4. Only after (1)-(3): consider whether `vllm_ltr_semantic_reference`
-   should become an `EXTERNAL_BASELINE_REGISTRY` entry (evaluation-only,
-   `selector_eligible=False`) for head-to-head comparison against
-   `estimated_service_time_first` — decide fidelity-class naming at that
-   point (this scaffold does not need `FidelityClass` to gain a new member
-   yet).
+Documented for completeness, since finding and fixing this is itself part
+of the fidelity story:
+
+1. **`OPTPredictorHandle.score_batch` didn't move tokenizer output to the
+   model's device.** Worked silently on CPU (the default) but raised
+   `RuntimeError: Expected all tensors to be on the same device` the moment
+   the model was moved to GPU — caught by `TestOverhead` the first time it
+   ran. Fixed: tokenizer output is now moved to
+   `next(self.model.parameters()).device` before the forward pass.
+2. **`download_and_provision_checkpoint` was not idempotent**: re-running it
+   against an already-downloaded directory picked up its own
+   previously-written `vllm_ltr_provenance.json` sidecar as if it were a
+   checkpoint artifact and hashed it, changing the sidecar's own recorded
+   hash of itself on every rerun. Fixed: the sidecar's own filename is now
+   excluded from the file-hash listing.
+3. **Transcription bug, not a code bug:** all four sha256 hashes originally
+   written into `CHECKPOINT_PROVENANCE.md` were one hex character short (63
+   instead of 64) from a manual copy-paste error while drafting that file.
+   Caught by writing a small script to read the actual sidecar JSON and
+   diff against the doc, rather than trusting the transcription. Fixed, and
+   locked with `TestCheckpointProvenanceDocFormat` so it cannot silently
+   recur.
+
+None of these affect the classification/ranking logic verified in §5 — (1)
+and (2) are correctness/idempotency bugs in verification tooling caught by
+running it for real, (3) is a documentation-accuracy bug. All three are the
+kind of thing a "download and actually run it" pass is specifically for.
+
+---
+
+## 9. Fidelity classification and evaluation-readiness recommendation
+
+**Per the task's four fidelity labels:**
+
+- Not **"official"** outright — the tokenizer had to be sourced separately
+  and one dependency-adaptation layer (plain `transformers` instead of the
+  vLLM fork's engine) sits between the real weights and the score.
+- Not **"proxy"** or **"cite-only"** — real weights, real forward pass, real
+  bit-exact-verified formula.
+- **Closest label: "adapted official."** The predictor is the real,
+  hash-verified official checkpoint, running its exact architecture and
+  score-extraction formula (bit-exact-verified independently), through a
+  necessary and fully-disclosed adaptation layer (plain `transformers`
+  instead of the vLLM engine, and a tokenizer sourced from the base model
+  since the checkpoint ships none).
+- `adapter/provenance.py::FIDELITY_LABEL` updated accordingly:
+  `"evaluation-ready external baseline (offline-scored; official checkpoint verified)"`.
+
+**Evaluation-readiness verdict: YES, as an offline-scored external
+baseline** — every one of the completion task's requirements (1-7) is now
+satisfied:
+
+1. ✅ Venue corrected (§1).
+2. ✅ Official checkpoint downloaded, hashed, provenance recorded, never modified (§2).
+3. ✅ Architectural fidelity confirmed exactly (§3), one real deviation (tokenizer) found and fixed.
+4. ✅ Offline-only scoring pipeline built; simulator request objects untouched; no leakage (§4).
+5. ✅ Semantic equivalence validated quantitatively where feasible; the one infeasible check (live official-engine differential) is disclosed, not hidden (§5).
+6. ✅ Overhead measured on real hardware, CPU and GPU, with batch-size sensitivity (§7).
+7. ✅ This document.
+
+**One structural scope boundary remains, by the task's own design, not as
+a shortfall:** requirement 4 explicitly says *"Do NOT modify simulator
+request objects."* `ObservableRequest` therefore still cannot carry prompt
+text, so `VLLMLTRSemanticReferencePolicy` still cannot be driven purely
+from a live `ObservableState` — it requires an externally-precomputed score
+map, exactly as designed. This means: **ready to run in any simulator sweep
+where a caller supplies real per-request prompt text and precomputed
+scores; not runnable against this repo's existing synthetic workload
+generators (Poisson/bursty/heavy-tail), which never carried prompt text to
+begin with.** This is a pre-existing dataset-availability gap, not
+something this completion pass could or should have closed under its own
+constraints.
+
+**Still explicitly not promoted:** not in `BASELINE_NAMES`,
+`SELECTOR_CANDIDATE_NAMES`, `POLICY_LIBRARY_V2_NAMES`, or
+`EXTERNAL_BASELINE_REGISTRY` — per the original task's "do not add to the
+main selector candidate set yet" instruction, still in force and
+re-confirmed by `TestSelectorScopeInvariants` (unchanged, still passing).
+
+---
+
+## 10. Remaining work
+
+1. Assemble a real, licensed, larger (n≥100) ShareGPT (or equivalent)
+   prompt-text-carrying dataset — the only thing standing between "verified
+   offline pipeline" and "an actual head-to-head ranking comparison
+   against `estimated_service_time_first`/other policies." Must resolve
+   the license-verification caveat already flagged in
+   `external/datasets/sharegpt.md` before broad use.
+2. If a live official-engine differential is ever judged worth the build
+   risk: build the pinned vllm-ltr fork's CUDA extensions in an isolated
+   environment matching its pinned toolchain (torch 2.2.1/CUDA 12.1) and
+   compare `_get_ltr_ordered_requests`'s real output against this adapter's
+   on the same trace.
+3. Only after (1): decide whether to register `vllm_ltr_semantic_reference`
+   in `EXTERNAL_BASELINE_REGISTRY` (evaluation-only, `selector_eligible=False`)
+   for head-to-head comparison — deferred per the original task's explicit
+   scope limit, not attempted here.
+
+## Exact next baseline
+
+None. Do not begin VTC or any other new baseline implementation per this
+task's explicit instruction.
 
 ## Exact next action
 
-Do not begin VTC implementation. Next baseline-integration action is item
-(1) above: download and verify the official checkpoint against the
-`transformers`-compatibility hypothesis in an environment with network
-access and the `vllm_ltr` extra installed.
+Item (1) above: assemble a larger, license-cleared real prompt-text dataset
+before attempting any comparative evaluation run.

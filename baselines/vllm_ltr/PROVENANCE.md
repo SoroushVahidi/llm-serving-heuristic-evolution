@@ -16,10 +16,14 @@ tests lock them so this file cannot silently drift from the code.
   inspection time.
 - **License:** Apache License 2.0 (repository `LICENSE` file, standard ASF text).
 - **Paper:** Fu, Yichao; Zhu, Siqi; Su, Runlong; Qiao, Aurick; Stoica, Ion;
-  Zhang, Hao. *"Efficient LLM Scheduling by Learning to Rank."* arXiv:2408.15792
-  (2024). (No venue string is asserted beyond the arXiv preprint the repo's own
-  `README.md`/`CITATION` cite — do not upgrade this to a conference name
-  without independent verification.)
+  Zhang, Hao. *"Efficient LLM Scheduling by Learning to Rank."*
+  **NeurIPS 2024 (main conference)**. Confirmed 2026-08-04 via
+  `proceedings.neurips.cc`/`papers.nips.cc` (paper id
+  `6c8985579293e0209bdaa4f21bb1d237`) and the official repository's own
+  title, "[NeurIPS 2024] Efficient LLM Scheduling by Learning to Rank" —
+  independent of the repo's README, which only cites the preprint. The
+  arXiv identifier (`2408.15792`) is retained as a supplementary preprint
+  reference, not as the venue.
 
 ## Environment (per official `README.md`)
 
@@ -46,6 +50,10 @@ tests lock them so this file cannot silently drift from the code.
   `config_prefill_opt_350m.txt`) and **classification**
   (`config_prefill_opt_classify.txt`, `config_prefill_opt_350m_classify.txt`)
   training targets — see `train/configs/`.
+- **Downloaded and verified 2026-08-04:** both the classification and
+  regression 125M/ShareGPT variants. Exact revision, sha256 hashes, tokenizer
+  gotcha, and verified-environment record: `CHECKPOINT_PROVENANCE.md`. Full
+  fidelity results: `docs/audits/vllm_ltr_baseline_audit_20260804.md`.
 
 ## Datasets
 

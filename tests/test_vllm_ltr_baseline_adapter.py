@@ -11,6 +11,8 @@ the selector candidate set.
 from __future__ import annotations
 
 import dataclasses
+import pathlib
+import re
 
 import pytest
 
@@ -169,12 +171,12 @@ class TestNoLeakage:
 
 class TestCheckpointLoaderFailureModes:
     def test_missing_dependency_or_missing_checkpoint(self, tmp_path):
-        """In this environment torch/transformers are not installed, so this
-        genuinely exercises the MissingDependencyError path (rather than
-        being mocked) -- see baselines/vllm_ltr/PROVENANCE.md environment
-        section. If a future environment has torch/transformers installed,
-        this instead exercises the (equally required) MissingCheckpointError
-        path for a directory that doesn't exist."""
+        """torch/transformers are installed in this environment (see
+        baselines/vllm_ltr/CHECKPOINT_PROVENANCE.md), so this genuinely
+        exercises the MissingCheckpointError path for a directory that
+        doesn't exist. In an environment without torch/transformers, this
+        instead exercises the (equally required) MissingDependencyError
+        path -- both are accepted since either is a correct rejection."""
         from baselines.vllm_ltr.adapter.checkpoint_loader import load_opt_predictor_from_local
 
         missing_dir = str(tmp_path / "does_not_exist")
@@ -196,7 +198,9 @@ class TestCheckpointLoaderFailureModes:
         monkeypatch.setattr(checkpoint_loader, "_require_torch_and_transformers", lambda: (None, None))
         ckpt_dir = tmp_path / "ckpt"
         write_local_provenance_sidecar(
-            str(ckpt_dir), pinned_commit="deadbeef", torch_version="2.2.1", transformers_version="4.30.0"
+            str(ckpt_dir),
+            pinned_commit="deadbeef",
+            verified_environments=[{"torch_version": "2.2.1", "transformers_version": "4.30.0"}],
         )
         with pytest.raises(StaleArtifactError):
             checkpoint_loader.load_opt_predictor_from_local(str(ckpt_dir))
@@ -214,8 +218,10 @@ class TestCheckpointLoaderFailureModes:
         write_local_provenance_sidecar(
             str(ckpt_dir),
             pinned_commit=provenance.PINNED_COMMIT,
-            torch_version="2.2.1",
-            transformers_version="4.30.0",
+            verified_environments=[
+                {"torch_version": "2.2.1", "transformers_version": "4.30.0"},
+                {"torch_version": "2.12.0", "transformers_version": "5.8.1"},
+            ],
         )
         with pytest.raises(VersionMismatchError):
             checkpoint_loader.load_opt_predictor_from_local(str(ckpt_dir))
@@ -237,20 +243,31 @@ class TestCheckpointLoaderFailureModes:
         write_local_provenance_sidecar(
             str(ckpt_dir),
             pinned_commit=provenance.PINNED_COMMIT,
-            torch_version="2.2.1",
-            transformers_version="2.2.1",
+            verified_environments=[{"torch_version": "2.2.1", "transformers_version": "2.2.1"}],
         )
         sidecar = checkpoint_loader._read_provenance_sidecar(str(ckpt_dir))
         checkpoint_loader._validate_provenance_sidecar(sidecar, _FakeModule(), _FakeModule())
+
+    def test_empty_verified_environments_rejected(self, tmp_path, monkeypatch):
+        from baselines.vllm_ltr.adapter import checkpoint_loader
+
+        monkeypatch.setattr(checkpoint_loader, "_require_torch_and_transformers", lambda: (None, None))
+        ckpt_dir = tmp_path / "ckpt"
+        write_local_provenance_sidecar(
+            str(ckpt_dir), pinned_commit=provenance.PINNED_COMMIT, verified_environments=[]
+        )
+        with pytest.raises(StaleArtifactError):
+            checkpoint_loader.load_opt_predictor_from_local(str(ckpt_dir))
 
 
 class TestDeterministicScoring:
     def test_score_uses_no_grad_and_eval_mode(self):
         """Structural determinism check: OPTPredictorHandle.score() must not
-        rely on any stochastic module state. We can't run a real forward
-        pass without torch installed, so this asserts the handle's
-        dataclass contract instead (model/tokenizer/num_labels are the only
-        state; no RNG/seed field exists to make scoring non-reproducible)."""
+        rely on any stochastic module state (model/tokenizer/num_labels are
+        the only state; no RNG/seed field exists to make scoring
+        non-reproducible). A real end-to-end determinism check against the
+        actual checkpoint runs in tests/test_vllm_ltr_checkpoint_fidelity_gpu.py
+        (gated on LLMSERVEOPT_RUN_GPU_TESTS=1)."""
         fields = {f.name for f in dataclasses.fields(OPTPredictorHandle)}
         assert fields == {"model", "tokenizer", "num_labels"}
 
@@ -295,3 +312,31 @@ class TestSelectorScopeInvariants:
             if "baselines.vllm_ltr" in text or "baselines/vllm_ltr" in text:
                 offenders.append(str(path))
         assert offenders == []
+
+
+class TestCheckpointProvenanceDocFormat:
+    """Regression lock for a real transcription bug caught during this
+    baseline's completion pass: all four sha256 hashes in
+    CHECKPOINT_PROVENANCE.md were originally copy-pasted one hex digit
+    short (63 chars instead of 64) and would have silently passed any
+    check that didn't verify hash *format*, not just presence. This test
+    parses every string the doc labels as a sha256 hash and asserts it is
+    exactly 64 lowercase hex characters -- it would have caught the
+    original mistake and catches any future one."""
+
+    def test_every_declared_sha256_is_64_hex_chars(self):
+        doc_path = (
+            pathlib.Path(__file__).resolve().parents[1]
+            / "baselines"
+            / "vllm_ltr"
+            / "CHECKPOINT_PROVENANCE.md"
+        )
+        text = doc_path.read_text(encoding="utf-8")
+        # Intentionally permissive character class (not `+`/fixed-length in
+        # the regex itself) so a truncated hash is *captured*, not silently
+        # skipped by the pattern -- the length assertion below is what must
+        # catch it.
+        hashes = re.findall(r"sha256:\s*`([0-9a-f]*)`", text)
+        assert len(hashes) >= 4, "expected at least 4 sha256 hashes documented"
+        for h in hashes:
+            assert len(h) == 64, f"hash {h!r} is {len(h)} chars, not 64"

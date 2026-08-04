@@ -66,24 +66,31 @@ These baselines are needed to fairly position the work in the LLM scheduling lit
 
 ---
 
-### B.1 Prompt-Aware LTR / PARS-style Scheduler — **SCAFFOLD ADDED (baseline-integration phase, 2026-08-04)**
+### B.1 Prompt-Aware LTR / PARS-style Scheduler — **EVALUATION-READY, OFFLINE-SCORED (completed 2026-08-04)**
 
-**Registry:** not registered (not yet selector-eligible or runnable
-end-to-end). **Files:** `baselines/vllm_ltr/` (isolated, outside
+**Registry:** not registered (deliberately still not selector-eligible —
+see below). **Files:** `baselines/vllm_ltr/` (isolated, outside
 `src/llmserveopt`). **Status:** the official implementation for this exact
 gap was found and used instead of a hand-rolled ranker —
 [hao-ai-lab/vllm-ltr](https://github.com/hao-ai-lab/vllm-ltr) (pinned
 commit `13bbf6ff3dab661791d41362551b089e5f77c91c`, Apache-2.0), paper Fu et
-al. *"Efficient LLM Scheduling by Learning to Rank,"* arXiv:2408.15792. The
-official ranking/tie-break rule and predictor architecture are faithfully
-reproduced; the official predictor itself cannot yet be invoked live inside
-this simulator because `ObservableRequest` carries only integer
-`prompt_tokens` counts, not the raw prompt text the predictor requires. See
-`docs/audits/vllm_ltr_baseline_audit_20260804.md` for the full
-classification, fidelity tests, and remaining work (real-checkpoint
-download/verification, offline scoring pipeline). This entry is **not**
-struck through/closed — it remains open until an offline-scored trace makes
-`vllm_ltr_semantic_reference` runnable end-to-end.
+al. *"Efficient LLM Scheduling by Learning to Rank,"* **NeurIPS 2024 (main
+conference)**, arXiv:2408.15792 as supplementary preprint id. The official
+checkpoint (`LLM-ltr/OPT-Predictors`) was downloaded, hash-recorded, and
+verified — exact architecture match and bit-exact independent-recomputation
+agreement on real ShareGPT text; a complete offline scoring pipeline turns
+real prompt text into cached, integrity-checked scores; the ranking/
+tie-break rule is reproduced exactly. The official predictor still cannot
+be invoked *live* inside the per-step simulator loop, because
+`ObservableRequest` carries only integer `prompt_tokens` counts and was
+deliberately not modified to carry raw text (explicit scope boundary, not
+an unresolved gap). See `docs/audits/vllm_ltr_baseline_audit_20260804.md`
+for the full verification record, real overhead measurements, and the one
+disclosed-but-infeasible check (a live differential against the actually
+served vLLM-fork engine). **Still not registered as a selector candidate**
+— open only pending a real, license-cleared, prompt-text-carrying dataset
+large enough for an actual comparison sweep (see the audit doc's remaining
+work); the baseline itself is complete.
 
 **Why it matters (original rationale, unchanged):** PARS (2023) introduces learning-to-rank (LTR) for LLM request scheduling, predicting completion order to reduce mean latency. The current `estimated_service_time_first` is a simplified SJF proxy (uses predicted output as service proxy) but lacks the ranking model. Without a true LTR baseline, it is unclear whether the selector's benefit comes from policy selection or could be matched by a good learned ranker.
 
@@ -239,4 +246,4 @@ For the next development phase, implement in this order:
 | Implementation priority order specified | ✅ |
 | Oracle excluded from all comparisons | ✅ |
 | All baselines are deployable (no oracle leak) | ✅ |
-| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 scaffold added** (official vLLM-LTR predictor + ranking rule, not yet runnable end-to-end — see `docs/audits/vllm_ltr_baseline_audit_20260804.md`); B.3–B.5 pending |
+| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 evaluation-ready, offline-scored** (official vLLM-LTR checkpoint downloaded + hash-verified + architecturally/numerically verified; not yet run in a comparison sweep for lack of a real prompt-text dataset — see `docs/audits/vllm_ltr_baseline_audit_20260804.md`); B.3–B.5 pending |

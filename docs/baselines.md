@@ -603,42 +603,52 @@ simulator-compatible approximation of SCORPIO's policy-level admission and guard
 
 ---
 
-## Baseline-integration scaffolds (evaluation-only, not yet runnable end-to-end)
+## Baseline-integration scaffolds (evaluation-ready, offline-scored — not yet a live sweep entry)
 
 Distinct from every policy above: these are not `BasePolicy` entries usable
 in a normal experiment sweep today. They live outside `src/llmserveopt`
 entirely, are never imported by it, and are never selector candidates.
 
-### vLLM-LTR (`baselines/vllm_ltr/`) — added 2026-08-04
+### vLLM-LTR (`baselines/vllm_ltr/`) — added 2026-08-04, completed same day
 
 Official source: https://github.com/hao-ai-lab/vllm-ltr, pinned commit
 `13bbf6ff3dab661791d41362551b089e5f77c91c` (Apache-2.0). Paper: Fu et al.,
-*"Efficient LLM Scheduling by Learning to Rank"*, arXiv:2408.15792 (2024).
-Fulfills/supersedes the "Prompt-Aware LTR / PARS-style Scheduler" item in
+*"Efficient LLM Scheduling by Learning to Rank"*, **NeurIPS 2024 (main
+conference)** (arXiv:2408.15792 as supplementary preprint id). Fulfills/
+supersedes the "Prompt-Aware LTR / PARS-style Scheduler" item in
 `docs/external_baseline_decision.md` §B.1.
 
-**Status:** scaffold only. The official predictor requires tokenized prompt
-*text*; this simulator's `Request`/`ObservableRequest` carries only integer
-`prompt_tokens` counts, so the real ranking model cannot be invoked from
-inside the live per-step simulator loop. What exists: a faithful
-reproduction of the official ranking/tie-break rule
-(`adapter/ranking_adapter.py`), an optional-dependency checkpoint loader
-that reproduces the official predictor's architecture via plain
-`transformers` (`adapter/checkpoint_loader.py`, gated behind a provenance
-sidecar), and a simulator policy wrapper
-(`VLLMLTRSemanticReferencePolicy`) that admits requests in official-ranked
-order given a precomputed, offline `{request_id: score}` map — no fallback
-heuristic if a score is missing. Full classification, fidelity
-verification, and remaining work:
-`docs/audits/vllm_ltr_baseline_audit_20260804.md`.
+**Status: evaluation-ready external baseline (offline-scored; official
+checkpoint verified).** The real official checkpoint
+(`LLM-ltr/OPT-Predictors`, both a classification and a regression variant)
+was downloaded, hash-recorded (`CHECKPOINT_PROVENANCE.md`), and verified:
+exact state-dict key/shape match against the checkpoint's own declared
+`OPTForSequenceClassification` architecture, and bit-exact agreement
+between the adapter's scoring path and an independent from-scratch
+recomputation of the pinned source's score formula, on real ShareGPT text.
+A complete offline scoring pipeline (`adapter/offline_scoring.py`) turns
+real prompt text into a cached, integrity-hashed `{request_id: score}` map
+consumed by `VLLMLTRSemanticReferencePolicy` — no fallback heuristic if a
+score is missing, no simulator request objects modified. **Still not a live
+per-step simulator policy**: the official predictor requires tokenized
+prompt *text*, and this simulator's `Request`/`ObservableRequest`
+deliberately was not modified to carry it (out of scope by design, not a
+gap in this baseline's completeness) — so it needs an externally-supplied
+score map, exactly as built. Full verification results, real overhead
+numbers, and the one disclosed-but-infeasible check (a live differential
+against the actual served vLLM-fork engine, which would require building
+its CUDA extensions from source): `docs/audits/vllm_ltr_baseline_audit_20260804.md`.
 
 **Not** in `BASELINE_NAMES`, `SELECTOR_CANDIDATE_NAMES`,
 `POLICY_LIBRARY_V2_NAMES`, or `EXTERNAL_BASELINE_NAMES` (locked by
-`tests/test_vllm_ltr_baseline_adapter.py::TestSelectorScopeInvariants`).
+`tests/test_vllm_ltr_baseline_adapter.py::TestSelectorScopeInvariants`) —
+still deliberate, per the original task's "do not add to the main selector
+candidate set yet."
 
-**Safe claim:** "vLLM-LTR baseline-integration scaffold (official
-predictor architecture + ranking rule reproduced; not yet wired into a live
-simulator run due to a prompt-text gap in this project's request data
-model)"  
-**Unsafe claim:** "vLLM-LTR baseline" (implies a runnable, evaluated
-comparison, which does not exist yet)
+**Safe claim:** "vLLM-LTR offline-scored external baseline (official
+checkpoint downloaded, hash-verified, and architecturally/numerically
+verified against an independent recomputation; ranking rule reproduced
+exactly; not yet run in a head-to-head simulator sweep for lack of a
+prompt-text-carrying dataset in this repo)"  
+**Unsafe claim:** "vLLM-LTR beats/loses to policy X in our experiments"
+(no comparison run has been performed — see the audit doc's remaining work)
