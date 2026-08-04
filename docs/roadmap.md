@@ -1,13 +1,22 @@
 # Roadmap
 
-> **Contextual-composition branch note (2026-08-03, active -- not paused):**
+> **Contextual-composition branch note (2026-08-04, active -- not paused):**
 > The active roadmap for branch `contextual-compositional-heuristics-20260731`
 > is [contextual_composition_roadmap.md](contextual_composition_roadmap.md).
-> CC1-CC4 are complete; CC5 is `IN PROGRESS` (targeted dataset expansion +
-> rerun underway) -- current status:
-> [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md);
-> active issue:
-> [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
+> CC1-CC5 are complete -- CC5 closed `COMPLETE_REGIME_SPECIFIC` on
+> 2026-08-03 (frozen operating-envelope system statistically beats best
+> fixed and the hard selector; edge over `best_global_composition` not
+> statistically distinguishable from zero) -- current status:
+> [CC5 final operating envelope report](audits/contextual_composition_cc5_final_operating_envelope_20260803.md);
+> CC6 is queued but **restricted** to the CC5 trusted envelope
+> (`burst_transition`, `kv_pressure`, `long_output`, `prediction_noise`,
+> `saturated`, `selective_admission_trap`, `underloaded`), not yet
+> started; active issue:
+> [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6).
+> A separate, parallel baseline-integration effort is also underway on
+> this branch (vLLM-LTR complete/evaluation-only; PARS-Serve-2026 training
+> in progress -- see [BASELINE_STATUS.md](BASELINE_STATUS.md)); it does
+> not affect CC5/CC6 status.
 > Resume that branch from
 > [RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md).
 > The document below remains a historical numbered-phase roadmap and Selector
@@ -65,6 +74,32 @@ Development did not stop at the Phase 2C pause below -- it continued on an
    established by this run (needs a higher-contention regime).
    `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`,
    `docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md`.
+9. Canonical discriminative benchmark suite designed, generated, and
+   characterized (2026-08-04): the WildChat-only comparison above gave
+   ordering policies essentially zero headroom (oracle ties fifo exactly)
+   -- diagnosed as a benchmark limitation, not a scheduler limitation
+   (`docs/audits/ordering_workload_headroom_audit_20260804.md`). 9
+   synthetic workload families were designed and headroom-validated; 7
+   accepted (real, substantial ordering headroom restored), 2 rejected
+   with documented reasons. A foundational-heuristic characterization
+   pass across the accepted suite + WildChat control found
+   `scorpio_style_slo_guard` -- the *worst* policy on the WildChat control
+   -- is the *best* policy in 4 of 7 accepted synthetic families,
+   confirming the WildChat-only comparison was hiding real
+   admission-control value. `docs/audits/canonical_benchmark_suite_design_20260804.md`,
+   `benchmarks/canonical_suite/`.
+10. PARS-Serve-2026 baseline integration begun 2026-08-04 (**training in
+    progress as of this writing; evaluation not yet run** -- see
+    `docs/BASELINE_STATUS.md` for current status): official code
+    (`SPEAR-UIC/PARS`, pinned commit `fd4e125b65bb73aef5eccafa79c2509434be61ec`)
+    integrated unmodified; no pretrained checkpoint is released, so a
+    real `bert-base-uncased` pairwise ranker is being trained locally with
+    the official, unmodified training script. Named "PARS-Serve-2026" in
+    this project's prose to disambiguate from an unrelated, earlier "PARS"
+    already referenced elsewhere in this repo's docs (now "PARS-2023").
+    Known license gap (no upstream LICENSE file) disclosed, not hidden --
+    see `baselines/pars/PROVENANCE.md`.
+    `docs/audits/pars_baseline_implementation_20260804.md`.
 
 **Full synthesis, in narrative order, with the current (confirmed leakage
 bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).

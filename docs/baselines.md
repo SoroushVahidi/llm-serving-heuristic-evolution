@@ -675,3 +675,45 @@ existing SJF-proxy policies)"
 **Unsafe claim:** "vLLM-LTR beats/loses to policy X" (it was statistically
 tied with FIFO and the theoretical oracle in the one regime tested so far;
 see the audit doc for the full result set and its regime-specific caveat)
+
+### PARS-Serve-2026 (`baselines/pars/`) — integration started 2026-08-04, **TRAINING IN PROGRESS, EVALUATION NOT YET RUN**
+
+Official source: `https://github.com/SPEAR-UIC/PARS` (pinned commit
+`fd4e125b65bb73aef5eccafa79c2509434be61ec`). Paper: Tao et al., *"Ranking
+Before Serving: Low-Latency LLM Serving via Pairwise Learning-to-Rank,"*
+ISC High Performance 2026 (arXiv:2510.03243). **Named "PARS-Serve-2026" in
+this project's prose to disambiguate from an unrelated, earlier "PARS"
+already referenced in `docs/external_baseline_coverage_report.md`
+(Zheng et al., NeurIPS 2023, now called "PARS-2023" there) — see
+`baselines/pars/PROVENANCE.md`'s naming-disambiguation note.**
+
+**Status: official code integrated and verified; a real checkpoint is
+being trained locally** (the official repository ships no pretrained
+checkpoint — only training code — a real `bert-base-uncased`-based
+pairwise ranker is being trained here with the official, unmodified
+training script). Every official script (preprocessing, training) runs
+completely unmodified; the adapter (`baselines/pars/adapter/`)
+dynamically imports the official `PairwiseRanker` class from a local,
+non-committed clone at runtime rather than duplicating it. **Known
+license gap, disclosed not hidden:** the official repository has no
+LICENSE file at all — see `baselines/pars/PROVENANCE.md` for the full
+explanation and the explicit, user-directed decision to proceed with
+local, non-commercial research use.
+
+**Not yet evaluated against any other policy** — do not treat this
+baseline as having any comparative result until
+`docs/audits/pars_first_comparative_evaluation_20260804.md` exists and is
+independently verified (mirroring vLLM-LTR's own recovery/verification
+process). Full implementation record:
+`docs/audits/pars_baseline_implementation_20260804.md`. Also see
+`docs/BASELINE_STATUS.md` for the single-table cross-baseline status
+index.
+
+**Safe claim:** "PARS-Serve-2026 official code (training/scoring
+pipeline) integrated as an evaluation-only external baseline; a local
+checkpoint is being trained with the unmodified official training script
+since no pretrained checkpoint is released; not yet evaluated against any
+other policy."  
+**Unsafe claim:** any claim that PARS-Serve-2026 has been evaluated,
+compared against another policy, or shown to win/lose/tie anything — no
+such run has completed yet.

@@ -253,3 +253,20 @@ For the next development phase, implement in this order:
 | Oracle excluded from all comparisons | ✅ |
 | All baselines are deployable (no oracle leak) | ✅ |
 | Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 evaluation-ready, offline-scored, and now comparison-swept** (official vLLM-LTR checkpoint downloaded + hash-verified + architecturally/numerically verified; comparison sweep run and independently re-verified 2026-08-04 on real WildChat-1M text — tied FIFO/oracle exactly in the tested regime, EVALUATION_ONLY classification, not yet a selector candidate — see `docs/audits/vllm_ltr_baseline_audit_20260804.md` and `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`); B.3–B.5 pending |
+
+**Additional baseline beyond the original B.1–B.5 list (added 2026-08-04,
+not a fulfillment of any B.1–B.5 item — B.1 was already fulfilled by
+vLLM-LTR above): PARS-Serve-2026** (`baselines/pars/`, official repo
+`SPEAR-UIC/PARS`, paper Tao et al., ISC High Performance 2026,
+arXiv:2510.03243). **Status as of this writing: TRAINING IN PROGRESS,
+EVALUATION NOT YET RUN** — official preprocessing/training code integrated
+and running unmodified; no pretrained checkpoint is released, so a real
+checkpoint is being trained locally. Known license gap (no upstream
+LICENSE file) disclosed in `baselines/pars/PROVENANCE.md`. Named
+"PARS-Serve-2026" in prose to disambiguate from this document's own
+unrelated "PARS-2023-like" reference (B.1's original rationale text
+above, and `docs/external_baseline_coverage_report.md` §15, both refer to
+a *different* 2023 paper). See `docs/BASELINE_STATUS.md` for the current
+cross-baseline status index and
+`docs/audits/pars_baseline_implementation_20260804.md` for the full
+implementation record.
