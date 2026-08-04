@@ -46,10 +46,10 @@ ALLOWED_STATUS = {
 
 REQUIRED_MARKER = {
     "canonical_branch": EXPECTED_BRANCH,
-    "current_phase": "CC5",
-    "current_status": "IN PROGRESS",
-    "next_action": 'CC5 uncertainty/regime refinement complete with verdict REGIME_SPECIFIC_ONLY (normalized split-conformal uncertainty attached; best completion-safe hybrid system ANWG 0.4019 beats fixed 0.3895 and hard selector 0.3938 but remains 0.0006 short of best_global 0.4025; pure global fallback fails completion); CC6 remains blocked; next step is either freeze the restricted operating envelope (trust predictor on kv_pressure/saturated; hybrid fallback elsewhere) or a narrow regime-specialist follow-up on the six global-win regimes, per docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md',
-    "roadmap_version": 8,
+    "current_phase": "CC6",
+    "current_status": "NEXT",
+    "next_action": 'CC5 is COMPLETE (COMPLETE_REGIME_SPECIFIC) -- the frozen operating-envelope system statistically beats best fixed (paired 95% CI [+0.0074,+0.0235], p<0.0001) and the hard selector (paired 95% CI [+0.0020,+0.0199], p=0.021), with 0 completion violations, but its point-estimate edge over best_global (+0.0019 ANWG) is NOT statistically distinguishable from zero (paired 95% CI [-0.0044,+0.0083], p=0.5654) -- full-context superiority over best_global was not established. Trusted envelope (development-LOWO-derived, never touching held-out data) -- burst_transition, kv_pressure, long_output, prediction_noise, saturated, selective_admission_trap, underloaded. CC6 is now the single NEXT phase, restricted -- evaluate controlled temporal adaptation only inside this envelope, with hysteresis and fallback; do not enable contextual switching in unsupported regimes (azure_conversation_like, burstgpt_derived, long_prompt, mixed_slo, priority_conflict). Per docs/audits/contextual_composition_cc5_final_operating_envelope_20260803.md',
+    "roadmap_version": 9,
 }
 
 CANONICAL_FILES = [
@@ -123,8 +123,8 @@ def check_status_table(text: str) -> None:
         "CC2": "COMPLETE",
         "CC3": "COMPLETE",
         "CC4": "COMPLETE",
-        "CC5": "IN PROGRESS",
-        "CC6": "BLOCKED",
+        "CC5": "COMPLETE",
+        "CC6": "NEXT",
         "CC7": "BLOCKED",
         "CC8": "BLOCKED",
     }
@@ -212,8 +212,8 @@ def check_pause_contract(
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC5",
-            "current_status: IN PROGRESS",
+            "current_phase: CC6",
+            "current_status: NEXT",
             "audits/contextual_composition_pause_checkpoint_20260731.md",
             "RESUME_CONTEXTUAL_COMPOSITION.md",
             "audits/contextual_composition_query7_final_pause_readiness_20260731.md",
@@ -226,7 +226,7 @@ def check_pause_contract(
         [
             "Pause Checkpoint",
             "Resume Guide",
-            "Do not begin CC6",
+            "Do not begin CC6 implementation",
         ],
     )
     check_required_strings(
@@ -235,7 +235,7 @@ def check_pause_contract(
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
-            "Current phase: `CC5 - Contextual composition predictor`",
+            "Current phase: `CC6 - Dynamic adaptation and stability`",
             "read this one for current status",
             "GitHub issue #5",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
@@ -311,14 +311,12 @@ def check_no_cc2_in_progress() -> None:
                 fail(f"{path.relative_to(ROOT)} says CC2 is already in progress")
 
 
-def check_no_cc6_active() -> None:
-    """CC6 must never be marked active (NEXT/IN PROGRESS/COMPLETE) while
-    CC5's own decision gate is unresolved -- complements check_status_table's
-    table-row check by also catching stray prose claims outside the table."""
+def check_cc6_not_yet_implemented() -> None:
+    """CC5 closed COMPLETE_REGIME_SPECIFIC, so CC6 is legitimately `NEXT`
+    (queued) -- but this query explicitly must not implement CC6 itself.
+    Forbid any canonical doc from claiming CC6 has actually started or
+    finished; being queued as NEXT is fine and expected."""
     forbidden_patterns = [
-        r"Current phase:\s*`CC6\b",
-        r"current_phase:\s*CC6\b",
-        r"CC6\s+is\s+`?NEXT`?",
         r"CC6\s+is\s+`?IN PROGRESS`?",
         r"CC6\s+is\s+`?COMPLETE`?",
         r"CC6\s+has\s+started",
@@ -327,11 +325,11 @@ def check_no_cc6_active() -> None:
         text = read(path)
         for pattern in forbidden_patterns:
             if re.search(pattern, text):
-                fail(f"{path.relative_to(ROOT)} marks CC6 active while CC5 is unresolved")
+                fail(f"{path.relative_to(ROOT)} claims CC6 has been implemented -- not authorized yet")
 
 
 def check_start_here_and_resume_name_same_current_task(start_here: str, resume_doc: str) -> None:
-    needle = "CC5 - Contextual composition predictor"
+    needle = "CC6 - Dynamic adaptation and stability"
     if needle not in start_here:
         fail(f"{START_HERE.relative_to(ROOT)} does not name the current task ({needle!r})")
     if needle not in resume_doc:
@@ -404,7 +402,7 @@ def check_resume_readiness_extra() -> None:
             EXPECTED_BRANCH,
             "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`",
             "python scripts/check_contextual_composition_status.py --resume-readiness",
-            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q",
+            "python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py tests/test_cc5_uncertainty_regime.py tests/test_cc5_final_operating_envelope.py -q",
             "results/cc1b_composition_discriminative/query5_cc1b_full_20260731/",
             "GitHub issue #5",
         ],
@@ -423,9 +421,9 @@ def check_resume_readiness_extra() -> None:
         roadmap,
         ROADMAP,
         [
-            "current_phase: CC5",
-            "current_status: IN PROGRESS",
-            "Retry complete (2026-08-03). Verdict: `REGIME_SPECIFIC_ONLY`. Uncertainty/regime refinement (2026-08-03) also `REGIME_SPECIFIC_ONLY`",
+            "current_phase: CC6",
+            "current_status: NEXT",
+            "Finalized (2026-08-04). Verdict: `COMPLETE_REGIME_SPECIFIC`. CC5 is now",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2",
             "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3",
         ],
@@ -446,7 +444,7 @@ def check_resume_readiness_extra() -> None:
             ],
         )
     check_no_cc2_in_progress()
-    check_no_cc6_active()
+    check_cc6_not_yet_implemented()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -502,7 +500,7 @@ def main(argv: list[str] | None = None) -> int:
         START_HERE,
         [
             "Authoritative branch: `contextual-compositional-heuristics-20260731`",
-            "Current phase: `CC5 - Contextual composition predictor`",
+            "Current phase: `CC6 - Dynamic adaptation and stability`",
             "docs/experiments/cc1_composition_opportunity_spec.md",
             "docs/audits/contextual_composition_query4_cc1_results_20260731.md",
             "docs/audits/contextual_composition_query5_discriminativeness_review_20260731.md",
@@ -561,7 +559,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     check_no_cc1_current()
     check_no_cc2_in_progress()
-    check_no_cc6_active()
+    check_cc6_not_yet_implemented()
     check_start_here_and_resume_name_same_current_task(start_here, resume_doc)
     check_future_work_labeled(roadmap)
     check_active_issue_referenced()

@@ -680,3 +680,70 @@ Related files or evidence:
 - `src/llmserveopt/experiments/cc5_uncertainty_regime_refinement.py`
 - `tests/test_cc5_uncertainty_regime.py`
 - GitHub issue #5 (remains open)
+
+## CCD-019: CC5 Finalized -- COMPLETE_REGIME_SPECIFIC, Restricted CC6 Queued
+
+Date: 2026-08-04
+
+Status: accepted
+
+Decision: Close CC5 as `COMPLETE_REGIME_SPECIFIC` (not `COMPLETE_FULL`).
+Freeze a deterministic, versioned operating-envelope gate derived
+exclusively from development-split (never held-out) evidence. Queue CC6,
+but only in a restricted form scoped to the frozen envelope's trusted
+regimes -- issue #5 closes, issue #6 becomes ready-but-not-started.
+
+Rationale: `src/llmserveopt/experiments/cc5_final_operating_envelope.py`
+(new) adds paired statistical analysis (paired bootstrap CI, paired
+sign-flip permutation test, Cohen's d, win/tie/loss) on the CC4b 76-window
+held-out set, and a frozen envelope selected via leave-one-development-
+window-out (LOWO) evidence only (never touching `ID_TEST`/`OOD_TEST`).
+The paired analysis shows the predictor's advantage over best global
+composition is a point-estimate edge only (+0.0019 to +0.0032 ANWG
+depending on subset) and is **not** statistically distinguishable from
+zero in any subset (paired 95% CIs all straddle zero, p >= 0.55) --
+correcting CCD-017/018's naive point-estimate framing of "0.0006/0.0019
+short of global." In contrast, the frozen system's advantage over best
+fixed policy (paired 95% CI [+0.0074, +0.0235], p<0.0001) and the hard
+selector (paired 95% CI [+0.0020, +0.0199], p=0.021) IS statistically
+significant. The frozen envelope (LOWO predictor ANWG >= LOWO
+best-global-composition ANWG on >=2 development windows per regime) trusts
+7 of 12 regimes (`burst_transition`, `kv_pressure`, `long_output`,
+`prediction_noise`, `saturated`, `selective_admission_trap`,
+`underloaded`) -- broader than the task's stated expected-initial
+envelope (`kv_pressure`, `saturated`), since dev-only LOWO evidence
+supports five more regimes without any held-out tuning. Evaluated once on
+the 76 held-out windows (never re-adjusted): frozen system ANWG 0.4044
+(best of the five non-oracle systems, edging out the unrestricted
+predictor's 0.4019 by excluding exactly the three regimes where the
+unrestricted predictor lost to global composition), 0 completion
+violations, 57.9% fallback rate, ~0.20 ms/window inference overhead.
+`determine_final_cc5_verdict` was rewritten to require paired statistical
+significance (not point-estimate comparison alone) for a superiority
+claim -- this is why the classification is `COMPLETE_REGIME_SPECIFIC`
+rather than `COMPLETE_FULL` despite the frozen system's point estimate
+technically exceeding best global composition's. 19 new focused tests
+cover paired-statistics correctness, envelope leakage-freedom, gate
+versioning/staleness rejection, deterministic+logged decisions, and
+verdict-logic edge cases (rejects `COMPLETE_FULL` on a non-significant
+global comparison).
+
+Consequences: CC5 closes `COMPLETE_REGIME_SPECIFIC`; full-context
+superiority over best global composition remains undemonstrated and must
+not be claimed. CC6 is queued in a restricted form only: "Evaluate
+controlled temporal adaptation only inside the validated CC5 operating
+envelope (`burst_transition`, `kv_pressure`, `long_output`,
+`prediction_noise`, `saturated`, `selective_admission_trap`,
+`underloaded`), with hysteresis and fallback. Do not enable contextual
+switching in unsupported regimes." CC6 implementation itself is not
+started by this decision. Issue #5 closes; issue #6 marked ready but not
+started.
+
+Related files or evidence:
+
+- `docs/audits/contextual_composition_cc5_final_operating_envelope_20260803.md`
+- `results/cc5_final_operating_envelope/20260804T024524Z/` (local, untracked)
+- `src/llmserveopt/experiments/cc5_final_operating_envelope.py`
+- `scripts/run_cc5_final_operating_envelope.py`
+- `tests/test_cc5_final_operating_envelope.py`
+- GitHub issue #5 (closing), issue #6 (ready, restricted scope, not started)

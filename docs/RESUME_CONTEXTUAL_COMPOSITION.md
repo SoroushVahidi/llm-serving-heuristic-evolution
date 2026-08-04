@@ -36,6 +36,12 @@ git checkout contextual-compositional-heuristics-20260731
   uncertainty/regime report's `New SHA` with `git rev-parse HEAD`
 - Starting SHA before the uncertainty/regime checkpoint commit:
   `7718214119e7eff8f242ff974aad00d37063906a`
+- CC5 final operating envelope (Query 14) checkpoint SHA: verify against
+  the final operating envelope report's `New SHA` with `git rev-parse HEAD`
+  (this checkpoint closes CC5 `COMPLETE_REGIME_SPECIFIC` and queues CC6,
+  restricted scope)
+- Starting SHA before the CC5 final operating envelope checkpoint commit:
+  `f5a4f82d54111a656e5f49c554c2b41974de5349`
 
 ## Read In Order
 
@@ -52,8 +58,9 @@ git checkout contextual-compositional-heuristics-20260731
 11. [audits/contextual_composition_cc4_oracle_dataset_report_20260803.md](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 12. [audits/contextual_composition_cc5_predictor_report_20260803.md](audits/contextual_composition_cc5_predictor_report_20260803.md)
 13. [audits/contextual_composition_cc4b_cc5_retry_report_20260803.md](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-14. [audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md) -- **read this one for current status**
-15. GitHub issue #5
+14. [audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md)
+15. [audits/contextual_composition_cc5_final_operating_envelope_20260803.md](audits/contextual_composition_cc5_final_operating_envelope_20260803.md) -- **read this one for current status**
+16. GitHub issue #6
 
 ## Verify State
 
@@ -64,7 +71,7 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}
 git rev-list --left-right --count @{u}...HEAD
 python scripts/check_contextual_composition_status.py
 python scripts/check_contextual_composition_status.py --resume-readiness
-python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q
+python -m pytest tests/test_contextual_composition_status_checker.py tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py tests/test_cc5_uncertainty_regime.py tests/test_cc5_final_operating_envelope.py -q
 ```
 
 The expected state is a clean working tree, upstream
@@ -73,32 +80,49 @@ behind, and a passing contextual-composition status checker.
 
 ## Current Phase
 
-- Current phase: `CC5 - Contextual composition predictor`
-- Current status: `IN PROGRESS` (first attempt: `INCONCLUSIVE`; retry:
-  `REGIME_SPECIFIC_ONLY`; uncertainty/regime refinement:
-  `REGIME_SPECIFIC_ONLY` -- exit gate still not fully passed)
-- Decision gate: CC4's exit gate passed and CC5 was attempted twice. First
-  attempt (n=6 held-out): the predictor tied best fixed policy (0.2306 vs
-  0.2310) and was beaten by `best_global_composition` (0.2633) --
-  data-scarcity finding, not a methodology failure. **Retry** (n=76
-  held-out, same unchanged pipeline, against the CC4b-expanded dataset):
-  the predictor now clearly beats best fixed policy (0.4006 vs 0.3895) and
-  is competitive with the hard selector (0.3938), but does not clearly
-  beat `best_global_composition` (0.4025 -- within the bootstrap CI
-  overlap). See the CC4b/CC5 retry report for full evidence.
+- Current phase: `CC6 - Dynamic adaptation and stability`
+- Current status: `NEXT` (restricted scope -- CC5 is `COMPLETE`,
+  `COMPLETE_REGIME_SPECIFIC`)
+- Decision gate: CC4's exit gate passed and CC5 was attempted, retried, and
+  finalized across four evidence stages. First attempt (n=6 held-out): the
+  predictor tied best fixed policy and was beaten by
+  `best_global_composition` -- data-scarcity finding. **Retry** (n=76
+  held-out): the predictor clearly beat best fixed policy and was
+  competitive with the hard selector, but did not clearly beat
+  `best_global_composition` under independent-CI comparison. **Uncertainty/
+  regime refinement**: attached model-agnostic conformal uncertainty,
+  still `REGIME_SPECIFIC_ONLY`. **Final operating envelope** (this
+  checkpoint): a frozen, development-evidence-only envelope (7 of 12
+  regimes) evaluated once on held-out data reaches ANWG 0.4044, and a
+  **paired** statistical analysis (not independent-CI comparison) shows
+  this statistically beats best fixed (p<0.0001) and the hard selector
+  (p=0.021), while its edge over `best_global_composition` is **not**
+  statistically distinguishable from zero (p=0.5654) -- verdict
+  `COMPLETE_REGIME_SPECIFIC`. See the final operating envelope report for
+  full evidence.
 
 ## Exact Next Implementation Task
 
-Per the CC5 uncertainty/regime report: uncertainty gap closed (`normalized_split_conformal`); best completion-safe hybrid ANWG 0.4019 still 0.0006 short of best_global 0.4025. Exact next step: freeze the restricted envelope (trust predictor on kv_pressure/saturated; hybrid fallback elsewhere) or run a narrow regime-specialist follow-up on the six global-win regimes. Do not begin CC6.
+CC5 is closed. Per the final operating envelope report: CC6 is now queued,
+but **restricted** to the CC5 trusted envelope (`burst_transition`,
+`kv_pressure`, `long_output`, `prediction_noise`, `saturated`,
+`selective_admission_trap`, `underloaded`). Evaluate controlled temporal
+adaptation only inside this envelope, with hysteresis and fallback; do not
+enable contextual switching in unsupported regimes
+(`azure_conversation_like`, `burstgpt_derived`, `long_prompt`, `mixed_slo`,
+`priority_conflict`). Do not begin CC6 implementation until a future query
+explicitly authorizes it.
 
 ## Do Not Start Prematurely
 
-Do not begin CC6 adaptation until CC5 actually passes its exit gate.
-Do not begin CC7 hardening, CC8 real-serving validation, hosted API jobs,
-GPU jobs, real-vLLM jobs, evolutionary/QD library-expansion work,
-LLM-guided synthesis work, or other new experiments before the roadmap
-gates allow them -- see the roadmap's "Future Research Directions" section
-for what remains unimplemented future work, not current capability.
+Do not begin CC6 implementation in this query. When a future query does
+begin it, keep it restricted to the CC5 trusted envelope above -- do not
+enable contextual switching in unsupported regimes. Do not begin CC7
+hardening, CC8 real-serving validation, hosted API jobs, GPU jobs,
+real-vLLM jobs, evolutionary/QD library-expansion work, LLM-guided
+synthesis work, or other new experiments before the roadmap gates allow
+them -- see the roadmap's "Future Research Directions" section for what
+remains unimplemented future work, not current capability.
 
 ## CC1b Evidence
 
@@ -213,15 +237,17 @@ Do not use live APIs, GPU jobs, or real-vLLM jobs for this evidence.
 
 ## GitHub
 
-Continue with GitHub issue #5 (it remains OPEN -- the CC4b/CC5 retry
-verdict is now complete, `REGIME_SPECIFIC_ONLY`, but that is not `PROCEED`,
-so the issue stays open until the exact next research step is addressed
-and CC5's exit gate actually passes):
-[#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
-Issue #1 is the completed CC1/CC1b evidence gate; issue #2 is the completed
-CC2 primitive interface gate; issue #3 is the completed CC3 DSL/verifier
-gate; issue #4 is the completed CC4 oracle dataset gate; issue #6 (CC6-CC8)
-remains correctly blocked on issue #5.
+GitHub issue #5
+([#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5))
+is **CLOSED** -- CC5 finalized `COMPLETE_REGIME_SPECIFIC`. Continue with
+GitHub issue #6
+([#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6)),
+which is ready but marked restricted scope / not started: evaluate
+controlled temporal adaptation only inside the CC5 trusted envelope, with
+hysteresis and fallback. Issue #1 is the completed CC1/CC1b evidence gate;
+issue #2 is the completed CC2 primitive interface gate; issue #3 is the
+completed CC3 DSL/verifier gate; issue #4 is the completed CC4 oracle
+dataset gate.
 
 
 ## CC5 Uncertainty / Regime Refinement Evidence
@@ -232,5 +258,19 @@ docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md
 logs/cc5_uncertainty_regime_20260803_195020.log
 ```
 
-Continue with GitHub issue #5 (remains OPEN -- exit gate still not fully
-passed after uncertainty/regime refinement). Issue #6 stays blocked.
+Superseded by the final operating envelope below (still valid provenance
+for the uncertainty-calibration work).
+
+## CC5 Final Operating Envelope Evidence
+
+```bash
+results/cc5_final_operating_envelope/20260804T024524Z/
+docs/audits/contextual_composition_cc5_final_operating_envelope_20260803.md
+logs/cc5_uncertainty_regime_finalization_20260804_024058.log
+```
+
+This is the **final, authoritative** CC5 evidence: paired statistical
+analysis, the frozen development-evidence-only operating envelope, and the
+single held-out evaluation of the frozen system. Verdict
+`COMPLETE_REGIME_SPECIFIC`. Continue with GitHub issue #6 (restricted
+scope, not started).

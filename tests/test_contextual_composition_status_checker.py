@@ -65,8 +65,8 @@ def test_roadmap_links_cc1b_report_and_has_cc5_active():
     assert phases["CC2"] == "COMPLETE"
     assert phases["CC3"] == "COMPLETE"
     assert phases["CC4"] == "COMPLETE"
-    assert phases["CC5"] == "IN PROGRESS"
-    assert phases["CC6"] == "BLOCKED"
+    assert phases["CC5"] == "COMPLETE"
+    assert phases["CC6"] == "NEXT"
     # Exactly one phase is "active" (queued NEXT or actively IN PROGRESS).
     active = [s for s in phases.values() if s in ("NEXT", "IN PROGRESS")]
     assert len(active) == 1
@@ -94,14 +94,15 @@ def test_resume_doc_names_branch_expected_sha_field_and_exact_task():
     text = (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
     assert "Authoritative branch: `contextual-compositional-heuristics-20260731`" in text
     assert "Query 6 checkpoint SHA: `f6b4be9dc15fc4f13286f23b5aae39f48fbd01fb`" in text
-    assert "Current phase: `CC5 - Contextual composition predictor`" in text
+    assert "Current phase: `CC6 - Dynamic adaptation and stability`" in text
     assert "python scripts/check_contextual_composition_status.py --resume-readiness" in text
     assert (
         "python -m pytest tests/test_contextual_composition_status_checker.py "
         "tests/test_cc1_composition_opportunity.py tests/test_policy_composition.py "
         "tests/test_score_and_reciprocal_rank_composition.py tests/test_primitive_interface.py "
         "tests/test_primitive_reconstructed_policies.py tests/test_contextual_composition_cc3_dsl.py "
-        "tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py -q"
+        "tests/test_cc4_oracle_composition_dataset.py tests/test_cc5_contextual_predictor.py "
+        "tests/test_cc5_uncertainty_regime.py tests/test_cc5_final_operating_envelope.py -q"
     ) in text
     assert "read this one for current status" in text
     assert "oracle_labels.parquet" in text
@@ -148,7 +149,10 @@ def test_canonical_docs_do_not_make_cc2_in_progress():
             assert needle not in text, f"{path.relative_to(ROOT)} contains {needle!r}"
 
 
-def test_canonical_docs_do_not_make_cc6_active():
+def test_canonical_docs_do_not_claim_cc6_implemented():
+    # CC5 closed COMPLETE_REGIME_SPECIFIC, so CC6 is legitimately `NEXT`
+    # (queued) -- but no canonical doc may claim CC6 has actually started
+    # or finished being implemented.
     canonical_paths = [
         ROOT / "docs/contextual_composition_roadmap.md",
         ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md",
@@ -157,10 +161,8 @@ def test_canonical_docs_do_not_make_cc6_active():
         ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md",
     ]
     forbidden = [
-        "Current phase: `CC6",
-        "current_phase: CC6",
-        "CC6 is `NEXT`",
         "CC6 is `IN PROGRESS`",
+        "CC6 is `COMPLETE`",
         "CC6 has started",
     ]
     for path in canonical_paths:
@@ -170,7 +172,7 @@ def test_canonical_docs_do_not_make_cc6_active():
 
 
 def test_start_here_and_resume_name_same_current_task():
-    needle = "CC5 - Contextual composition predictor"
+    needle = "CC6 - Dynamic adaptation and stability"
     assert needle in (ROOT / "docs/START_HERE_CONTEXTUAL_COMPOSITION.md").read_text()
     assert needle in (ROOT / "docs/RESUME_CONTEXTUAL_COMPOSITION.md").read_text()
 

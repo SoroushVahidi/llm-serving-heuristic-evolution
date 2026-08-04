@@ -37,17 +37,28 @@ Start from the synchronization-aware audit:
 - [CC4 Oracle Dataset Report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md)
 - [CC5 Predictor Report](audits/contextual_composition_cc5_predictor_report_20260803.md)
 - [CC4b/CC5 Retry Report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-- [CC5 Uncertainty/Regime Report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md) -- **current status**
+- [CC5 Uncertainty/Regime Report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md)
+- [CC5 Final Operating Envelope Report](audits/contextual_composition_cc5_final_operating_envelope_20260803.md) -- **current status**
 
-Current high-level status: Query 13 completed the CC5 uncertainty/regime
+Current high-level status: Query 14 finalized CC5 with a frozen,
+development-evidence-only operating envelope and a paired statistical
+analysis. Verdict `COMPLETE_REGIME_SPECIFIC`: the frozen system (ANWG
+0.4044) statistically beats best fixed (paired 95% CI [+0.0074,+0.0235],
+p<0.0001) and the hard selector (paired 95% CI [+0.0020,+0.0199],
+p=0.021), 0 completion violations, but its edge over best global
+composition (+0.0019 ANWG) is **not** statistically distinguishable from
+zero (paired 95% CI [-0.0044,+0.0083], p=0.5654). Trusted envelope (7 of
+12 regimes, dev-LOWO-derived, no held-out tuning): `burst_transition`,
+`kv_pressure`, `long_output`, `prediction_noise`, `saturated`,
+`selective_admission_trap`, `underloaded`. **CC5 is now COMPLETE**; CC6 is
+queued but **restricted** to this envelope, not yet implemented. Query 13
+completed the CC5 uncertainty/regime
 refinement (`normalized_split_conformal` + completion-safe hybrid fallback).
-Verdict remains `REGIME_SPECIFIC_ONLY`: hybrid ANWG 0.4019 beats fixed
-0.3895 and hard selector 0.3938 with 0 completion violations, but stays
-0.0006 short of best global composition 0.4025. Pure global fallback fails
-completion (7 violations). Restricted envelope: trust predictor on
-`kv_pressure`/`saturated`; hybrid fallback elsewhere. CC6 remains
-**BLOCKED**. Query 12 completed the CC4b expansion + unchanged CC5 retry
-(`REGIME_SPECIFIC_ONLY` at n=76). Do not begin CC6. Query 11 implemented and attempted CC5 (the
+Verdict was `REGIME_SPECIFIC_ONLY`: hybrid ANWG 0.4019 beats fixed
+0.3895 and hard selector 0.3938 with 0 completion violations, but stayed
+0.0006 short of best global composition 0.4025 under independent-CI
+comparison. Query 12 completed the CC4b expansion + unchanged CC5 retry
+(`REGIME_SPECIFIC_ONLY` at n=76). Query 11 implemented and attempted CC5 (the
 deployable contextual composition predictor) against CC4's oracle dataset.
 The pipeline itself is complete and tested (22 new tests), but the exit
 gate did **not** pass: verdict `INCONCLUSIVE`. The trained predictor (KNN
@@ -108,31 +119,34 @@ simulator-executed weighted Borda composition opportunity and cleared the
 12. Query 12: targeted CC4b oracle-dataset expansion and unchanged CC5
     rerun. COMPLETE -- verdict `REGIME_SPECIFIC_ONLY`, exit gate not fully
     passed. See the CC4b/CC5 retry report for full evidence.
-
-## Guardrail
-
 13. Query 13: CC5 uncertainty/regime refinement. COMPLETE -- verdict
     `REGIME_SPECIFIC_ONLY`; exit gate still not fully passed. See the
     uncertainty/regime report.
+14. Query 14: CC5 finalization -- paired statistical analysis and frozen
+    regime-specific operating envelope. COMPLETE -- verdict
+    `COMPLETE_REGIME_SPECIFIC`. CC5 exit gate now PASSED (regime-specific
+    scope). See the final operating envelope report.
 
-Do not begin CC6 before completing the exact
-next research step below. Do not implement CC6 adaptation, selector
-redesigns, real-vLLM jobs, hosted API experiments, evolutionary/QD
-library-expansion work, LLM-guided synthesis work, or large ungated sweeps
-before the roadmap allows them -- see the roadmap's "Future Research
-Directions -- Not Yet Implemented" section for what remains future work,
-not current capability. CC5's exit gate has not fully passed after the
-first attempt, the CC4b retry, or the uncertainty/regime refinement; CC6
-must not begin until it does.
+## Guardrail
+
+Do not begin CC6 implementation until a future query explicitly
+authorizes it, and when it does, keep CC6 restricted to the CC5 trusted
+envelope (`burst_transition`, `kv_pressure`, `long_output`,
+`prediction_noise`, `saturated`, `selective_admission_trap`,
+`underloaded`) -- do not enable contextual switching in unsupported
+regimes. Do not implement selector redesigns, real-vLLM jobs, hosted API
+experiments, evolutionary/QD library-expansion work, LLM-guided synthesis
+work, or large ungated sweeps before the roadmap allows them -- see the
+roadmap's "Future Research Directions -- Not Yet Implemented" section for
+what remains future work, not current capability.
 
 ## Next Action
 
-Per `docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md`:
-uncertainty gap closed (`normalized_split_conformal`); best completion-safe
-hybrid system ANWG 0.4019 still 0.0006 short of best global 0.4025. Exact
-next step: freeze the restricted operating envelope (trust predictor on
-`kv_pressure`/`saturated`; hybrid fallback elsewhere) or run a narrow
-regime-specialist follow-up on the six global-win regimes. Do not begin
-CC6.
+Per `docs/audits/contextual_composition_cc5_final_operating_envelope_20260803.md`:
+CC5 is finalized `COMPLETE_REGIME_SPECIFIC`. CC6 is now the single `NEXT`
+phase, restricted to the CC5 trusted envelope above, with hysteresis and
+fallback; do not enable contextual switching in unsupported regimes
+(`azure_conversation_like`, `burstgpt_derived`, `long_prompt`, `mixed_slo`,
+`priority_conflict`). Do not begin CC6 implementation in this query.
 
-Active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) (remains open).
+Active issue: [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) (ready, restricted scope, not started). Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) is now closed.

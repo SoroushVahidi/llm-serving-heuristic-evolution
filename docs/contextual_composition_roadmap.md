@@ -2,10 +2,10 @@
 
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
-current_phase: CC5
-current_status: IN PROGRESS
-next_action: CC5 uncertainty/regime refinement complete with verdict REGIME_SPECIFIC_ONLY (normalized split-conformal uncertainty attached; best completion-safe hybrid system ANWG 0.4019 beats fixed 0.3895 and hard selector 0.3938 but remains 0.0006 short of best_global 0.4025; pure global fallback fails completion); CC6 remains blocked; next step is either freeze the restricted operating envelope (trust predictor on kv_pressure/saturated; hybrid fallback elsewhere) or a narrow regime-specialist follow-up on the six global-win regimes, per docs/audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md
-roadmap_version: 8
+current_phase: CC6
+current_status: NEXT
+next_action: "CC5 is COMPLETE (COMPLETE_REGIME_SPECIFIC) -- the frozen operating-envelope system statistically beats best fixed (paired 95% CI [+0.0074,+0.0235], p<0.0001) and the hard selector (paired 95% CI [+0.0020,+0.0199], p=0.021), with 0 completion violations, but its point-estimate edge over best_global (+0.0019 ANWG) is NOT statistically distinguishable from zero (paired 95% CI [-0.0044,+0.0083], p=0.5654) -- full-context superiority over best_global was not established. Trusted envelope (development-LOWO-derived, never touching held-out data) -- burst_transition, kv_pressure, long_output, prediction_noise, saturated, selective_admission_trap, underloaded. CC6 is now the single NEXT phase, restricted -- evaluate controlled temporal adaptation only inside this envelope, with hysteresis and fallback; do not enable contextual switching in unsupported regimes (azure_conversation_like, burstgpt_derived, long_prompt, mixed_slo, priority_conflict). Per docs/audits/contextual_composition_cc5_final_operating_envelope_20260803.md"
+roadmap_version: 9
 ```
 
 Authoritative branch: `contextual-compositional-heuristics-20260731`
@@ -25,8 +25,8 @@ Current date: 2026-07-31
 | CC2 | Canonical primitive interface | COMPLETE | CC1b decision gate passed | Representative policies reproduced from primitive configurations | Issue [#2](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/2); [architecture doc](architecture/contextual_composition_primitives.md); [CC2 primitive interface report](audits/contextual_composition_cc2_primitive_interface_report_20260802.md) | Complete; CC2 equivalence gate passed (6/7 EXACT, 1/7 documented APPROXIMATE) |
 | CC3 | Compositional DSL and verifier | COMPLETE | CC1 and CC2 gates pass | Verified deterministic composition programs pass all safety tests | Issue [#3](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/3); [architecture doc](architecture/contextual_composition_dsl.md); [CC3 DSL/verifier report](audits/contextual_composition_cc3_dsl_verifier_report_20260803.md) | Complete; CC3 exit gate passed (8/8 required constructs, 447 focused+regression tests, legacy compatibility preserved). CC4 remains BLOCKED pending explicit authorization. |
 | CC4 | Offline oracle composition dataset | COMPLETE | CC1-CC3 gates pass | Oracle dataset shows reproducible composition signal | Issue [#4](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/4); [CC4 oracle dataset report](audits/contextual_composition_cc4_oracle_dataset_report_20260803.md) | Complete; CC4 exit gate passed (12 windows/34 candidates/408 executions, 0 rejected, reproducible+resumable, 66.7% evaluation-window composition-oracle gain, completion constraints hold on all windows). CC5 remains queued pending explicit authorization. |
-| CC5 | Contextual composition predictor | IN PROGRESS | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md); [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md); [CC5 uncertainty/regime report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md) | Uncertainty/regime refinement complete: model-agnostic `normalized_split_conformal` uncertainty attached; best completion-safe hybrid system ANWG 0.4019 (beats fixed 0.3895 and hard selector 0.3938; 0 completion violations) but still 0.0006 short of `best_global_composition` 0.4025. Pure global fallback fails completion (7 violations). Verdict remains `REGIME_SPECIFIC_ONLY`. Restricted envelope: trust predictor on `kv_pressure`/`saturated`; hybrid fallback elsewhere. CC6 not queued. |
-| CC6 | Dynamic adaptation and stability | BLOCKED | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on the CC5 exit gate (uncertainty/regime refinement still `REGIME_SPECIFIC_ONLY`) |
+| CC5 | Contextual composition predictor | COMPLETE | CC4 signal gate passes | Deployable predictor beats fixed, hard selector, and global composition with fallback | Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) (closed); [CC5 predictor report](audits/contextual_composition_cc5_predictor_report_20260803.md); [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md); [CC5 uncertainty/regime report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md); [CC5 final operating envelope report](audits/contextual_composition_cc5_final_operating_envelope_20260803.md) | Finalized `COMPLETE_REGIME_SPECIFIC`: frozen operating-envelope system statistically beats best fixed (paired 95% CI [+0.0074,+0.0235], p<0.0001) and the hard selector (paired 95% CI [+0.0020,+0.0199], p=0.021), 0 completion violations, deterministic/versioned gate. Its point-estimate edge over `best_global_composition` (+0.0019 ANWG) is NOT statistically distinguishable from zero (paired 95% CI [-0.0044,+0.0083], p=0.5654) -- full-context superiority over global composition not established. Trusted envelope (dev-LOWO-derived, no held-out tuning): `burst_transition`, `kv_pressure`, `long_output`, `prediction_noise`, `saturated`, `selective_admission_trap`, `underloaded`. |
+| CC6 | Dynamic adaptation and stability | NEXT | CC5 deployable model gate passes | Adaptation improves changing regimes without instability | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | RESTRICTED SCOPE: CC5 exit gate passed as `COMPLETE_REGIME_SPECIFIC`. CC6 is queued but restricted: evaluate controlled temporal adaptation only inside the CC5 trusted envelope (`burst_transition`, `kv_pressure`, `long_output`, `prediction_noise`, `saturated`, `selective_admission_trap`, `underloaded`), with hysteresis and fallback; do not enable contextual switching in unsupported regimes. Not started. |
 | CC7 | Counterexample-guided hardening | BLOCKED | CC6 stable adaptation or explicit static-only scope | No critical supported-envelope failures remain | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on CC6 |
 | CC8 | Real-trace and real-serving validation | BLOCKED | CC7 hardening gate passes | Clean staged validation through real-serving evidence | Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) | Blocked on CC7 |
 
@@ -475,7 +475,32 @@ ANWG still 0.0006 short of best global 0.4025, verdict still
 or a narrow global-win-regime follow-up. See also the
 [CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md).
 
-Canonical issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
+**Finalized (2026-08-04). Verdict: `COMPLETE_REGIME_SPECIFIC`. CC5 is now
+`COMPLETE`.** The frozen envelope was defined per the exact next action
+above, using only development-split (never held-out) leave-one-window-out
+(LOWO) evidence: a regime is trusted only if it has >=2 development
+windows and LOWO predictor ANWG >= LOWO best-global-composition ANWG on
+those windows. This trusts 7 of 12 regimes -- `burst_transition`,
+`kv_pressure`, `long_output`, `prediction_noise`, `saturated`,
+`selective_admission_trap`, `underloaded` -- broader than the originally
+expected `kv_pressure`/`saturated`-only envelope. Evaluated once on the 76
+held-out windows (never re-adjusted): frozen system ANWG 0.4044, the best
+point estimate of the five non-oracle systems. Crucially, a **paired**
+statistical analysis (not the independent-CI point-estimate comparison
+used in the two prior reports) shows the frozen system's advantage over
+best fixed policy (paired 95% CI [+0.0074, +0.0235], p<0.0001) and the
+hard selector (paired 95% CI [+0.0020, +0.0199], p=0.021) IS statistically
+significant, but its point-estimate edge over `best_global_composition`
+(+0.0019 ANWG) is **not** distinguishable from zero (paired 95% CI
+[-0.0044, +0.0083], p=0.5654) -- correcting the earlier point-estimate-only
+framing. 0 completion violations; deterministic, versioned, logged gate;
+no held-out tuning anywhere in the envelope or fallback-rule derivation.
+See the
+[CC5 final operating envelope report](audits/contextual_composition_cc5_final_operating_envelope_20260803.md)
+for the full paired-statistics tables, envelope derivation, and
+per-regime breakdown.
+
+Canonical issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) (closed).
 
 ## Phase CC6 - Dynamic Adaptation And Stability
 
@@ -483,6 +508,20 @@ Goal:
 
 Allow controlled per-window updates rather than per-step uncontrolled
 switching.
+
+**Scope restriction (2026-08-04, from CC5's `COMPLETE_REGIME_SPECIFIC`
+closure):** CC6 is queued, but restricted to the CC5 frozen operating
+envelope. Evaluate controlled temporal adaptation only inside the
+validated regimes -- `burst_transition`, `kv_pressure`, `long_output`,
+`prediction_noise`, `saturated`, `selective_admission_trap`,
+`underloaded` -- with hysteresis and fallback. Do **not** enable
+contextual switching in unsupported regimes (`azure_conversation_like`,
+`burstgpt_derived`, `long_prompt`, `mixed_slo`, `priority_conflict`); those
+must continue to use the frozen system's validation-tuned completion-safe
+fallback. See the
+[CC5 final operating envelope report](audits/contextual_composition_cc5_final_operating_envelope_20260803.md)
+§9 for the exact entry condition. CC6 implementation itself has not been
+started.
 
 Required mechanisms:
 
@@ -605,6 +644,29 @@ kept separate from the phase-gate mechanics above.
   universal contextual superiority over best global composition is not yet
   demonstrated. See the
   [uncertainty/regime report](audits/contextual_composition_cc5_uncertainty_regime_report_20260803.md).
+* **Final resolution (2026-08-04, paired statistical analysis + frozen
+  envelope, n=76 held-out).** A rigorous paired analysis (not the
+  independent-CI point-estimate comparison used above) resolves the
+  "decisive comparison" precisely: the frozen regime-specific system's
+  point-estimate edge over `best_global_composition` (+0.0019 ANWG) is
+  **not** statistically distinguishable from zero in any subset (paired
+  95% CI always straddles zero, p >= 0.55) -- this is a genuine, honestly
+  documented **tie** with global composition, not outcome 1 or outcome 2.
+  However, the frozen system's advantage over both best fixed policy
+  (paired 95% CI [+0.0074, +0.0235], p<0.0001) and the hard selector
+  (paired 95% CI [+0.0020, +0.0199], p=0.021) **is** statistically
+  significant, and this holds specifically within a validated,
+  development-evidence-only operating envelope (7 of 12 regimes). Final
+  interpretation: composition (global or contextual, restricted to its
+  validated envelope) is clearly and significantly better than any single
+  fixed policy or the existing hard selector; contextual adaptation adds
+  no statistically demonstrated value over a single well-chosen global
+  composition, but restricting the contextual predictor to its
+  development-validated envelope does at least match global composition
+  without the completion-safety problems of an unrestricted global
+  fallback. CC5 closes `COMPLETE_REGIME_SPECIFIC`; CC6 is queued but
+  restricted to the same validated envelope. See the
+  [CC5 final operating envelope report](audits/contextual_composition_cc5_final_operating_envelope_20260803.md).
 
 ## Future Research Directions -- Not Yet Implemented
 
