@@ -1,0 +1,48 @@
+name: burst_independent_lengths
+purpose: >
+  Bursty arrivals; prompt length and predicted/actual output length are
+  drawn from independent distributions with independent seeds-worth of
+  variance, so a request can have (long prompt, short output) or (short
+  prompt, long output) with roughly equal likelihood -- letting EST
+  (alpha*prompt + beta*output) and SOF (output only) genuinely disagree on
+  ranking, unlike a workload where prompt and output length are
+  incidentally correlated.
+expected_divergent_policies: [estimated_service_time_first, shortest_output_first, oracle_srtf]
+scientific_purpose: >
+  Directly targets the EST/SOF ranking-agreement question this repo's
+  vLLM-LTR comparison already investigates (moderate, not near-1.0,
+  agreement in the real WildChat run) -- this workload is designed so a
+  *scheduling-outcome* difference between EST and SOF should also be
+  visible, not just a ranking-order difference with no ANWG consequence.
+workload:
+  arrival_process: bursty
+  arrival_rate: 10.0
+  duration: 20.0
+  burst_factor: 6.0
+  burst_fraction: 0.25
+  prompt_dist: lognormal
+  prompt_mean: 150.0
+  prompt_sigma: 1.0
+  prompt_low: 16
+  prompt_high: 2000
+  output_dist: lognormal
+  output_mean: 80.0
+  output_sigma: 1.0
+  output_low: 8
+  output_high: 1500
+  prediction_noise_rel: 0.1
+  slo_classes:
+    # see 1_staggered_heterogeneous.yaml's comment: slack calibrated near a
+    # typical single request's own service time, not multi-second slack.
+    - {class_id: medium, slo_slack: 0.2, priority: 1.0, weight: 1.0}
+gpu:
+  max_active_sequences: 2
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

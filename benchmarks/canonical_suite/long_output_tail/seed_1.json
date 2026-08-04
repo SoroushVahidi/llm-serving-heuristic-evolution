@@ -1,0 +1,2102 @@
+[
+  {
+    "request_id": 0,
+    "arrival_time": 0.08736892661971418,
+    "prompt_tokens": 43,
+    "predicted_output_tokens": 120,
+    "actual_output_tokens": 131,
+    "slo_deadline": 0.23736892661971418,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 1,
+    "arrival_time": 0.10637742904749392,
+    "prompt_tokens": 61,
+    "predicted_output_tokens": 99,
+    "actual_output_tokens": 94,
+    "slo_deadline": 0.25637742904749394,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 2,
+    "arrival_time": 0.25084232453065625,
+    "prompt_tokens": 91,
+    "predicted_output_tokens": 142,
+    "actual_output_tokens": 147,
+    "slo_deadline": 0.40084232453065627,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 3,
+    "arrival_time": 0.2524092702031949,
+    "prompt_tokens": 51,
+    "predicted_output_tokens": 147,
+    "actual_output_tokens": 112,
+    "slo_deadline": 0.40240927020319495,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 4,
+    "arrival_time": 0.367360162400448,
+    "prompt_tokens": 63,
+    "predicted_output_tokens": 109,
+    "actual_output_tokens": 91,
+    "slo_deadline": 0.517360162400448,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 5,
+    "arrival_time": 0.39726823355958507,
+    "prompt_tokens": 53,
+    "predicted_output_tokens": 201,
+    "actual_output_tokens": 205,
+    "slo_deadline": 0.5472682335595851,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 6,
+    "arrival_time": 0.4133866986460255,
+    "prompt_tokens": 66,
+    "predicted_output_tokens": 136,
+    "actual_output_tokens": 141,
+    "slo_deadline": 0.5633866986460255,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 7,
+    "arrival_time": 0.5938931499630429,
+    "prompt_tokens": 39,
+    "predicted_output_tokens": 127,
+    "actual_output_tokens": 107,
+    "slo_deadline": 0.7438931499630429,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 8,
+    "arrival_time": 0.935243687248134,
+    "prompt_tokens": 57,
+    "predicted_output_tokens": 82,
+    "actual_output_tokens": 99,
+    "slo_deadline": 1.085243687248134,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 9,
+    "arrival_time": 0.9407688385615237,
+    "prompt_tokens": 64,
+    "predicted_output_tokens": 67,
+    "actual_output_tokens": 70,
+    "slo_deadline": 1.0907688385615237,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 10,
+    "arrival_time": 1.0978510858644897,
+    "prompt_tokens": 60,
+    "predicted_output_tokens": 89,
+    "actual_output_tokens": 81,
+    "slo_deadline": 1.2478510858644896,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 11,
+    "arrival_time": 1.1281666772160666,
+    "prompt_tokens": 73,
+    "predicted_output_tokens": 80,
+    "actual_output_tokens": 88,
+    "slo_deadline": 1.2781666772160665,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 12,
+    "arrival_time": 1.1562571275080813,
+    "prompt_tokens": 61,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 66,
+    "slo_deadline": 1.3062571275080812,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 13,
+    "arrival_time": 1.2232892604526908,
+    "prompt_tokens": 103,
+    "predicted_output_tokens": 171,
+    "actual_output_tokens": 177,
+    "slo_deadline": 1.3732892604526907,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 14,
+    "arrival_time": 1.5888185506098669,
+    "prompt_tokens": 60,
+    "predicted_output_tokens": 289,
+    "actual_output_tokens": 271,
+    "slo_deadline": 1.7388185506098668,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 15,
+    "arrival_time": 1.646019960100451,
+    "prompt_tokens": 66,
+    "predicted_output_tokens": 114,
+    "actual_output_tokens": 112,
+    "slo_deadline": 1.796019960100451,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 16,
+    "arrival_time": 1.7379841870615547,
+    "prompt_tokens": 51,
+    "predicted_output_tokens": 235,
+    "actual_output_tokens": 226,
+    "slo_deadline": 1.8879841870615546,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 17,
+    "arrival_time": 1.8669049877321975,
+    "prompt_tokens": 54,
+    "predicted_output_tokens": 94,
+    "actual_output_tokens": 89,
+    "slo_deadline": 2.0169049877321976,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 18,
+    "arrival_time": 1.9143102974410442,
+    "prompt_tokens": 38,
+    "predicted_output_tokens": 87,
+    "actual_output_tokens": 87,
+    "slo_deadline": 2.064310297441044,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 19,
+    "arrival_time": 1.9300981847575416,
+    "prompt_tokens": 92,
+    "predicted_output_tokens": 259,
+    "actual_output_tokens": 232,
+    "slo_deadline": 2.0800981847575417,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 20,
+    "arrival_time": 1.9904444632018086,
+    "prompt_tokens": 40,
+    "predicted_output_tokens": 70,
+    "actual_output_tokens": 75,
+    "slo_deadline": 2.1404444632018085,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 21,
+    "arrival_time": 2.0106254587074712,
+    "prompt_tokens": 49,
+    "predicted_output_tokens": 77,
+    "actual_output_tokens": 89,
+    "slo_deadline": 2.160625458707471,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 22,
+    "arrival_time": 2.162394190794506,
+    "prompt_tokens": 84,
+    "predicted_output_tokens": 89,
+    "actual_output_tokens": 106,
+    "slo_deadline": 2.312394190794506,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 23,
+    "arrival_time": 2.218830536774348,
+    "prompt_tokens": 86,
+    "predicted_output_tokens": 54,
+    "actual_output_tokens": 64,
+    "slo_deadline": 2.368830536774348,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 24,
+    "arrival_time": 2.235720350560688,
+    "prompt_tokens": 58,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 67,
+    "slo_deadline": 2.385720350560688,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 25,
+    "arrival_time": 2.257872456317662,
+    "prompt_tokens": 26,
+    "predicted_output_tokens": 182,
+    "actual_output_tokens": 164,
+    "slo_deadline": 2.407872456317662,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 26,
+    "arrival_time": 2.4097801316269027,
+    "prompt_tokens": 87,
+    "predicted_output_tokens": 201,
+    "actual_output_tokens": 198,
+    "slo_deadline": 2.5597801316269027,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 27,
+    "arrival_time": 2.4676089971115194,
+    "prompt_tokens": 80,
+    "predicted_output_tokens": 60,
+    "actual_output_tokens": 64,
+    "slo_deadline": 2.6176089971115193,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 28,
+    "arrival_time": 2.6785781726155786,
+    "prompt_tokens": 35,
+    "predicted_output_tokens": 185,
+    "actual_output_tokens": 206,
+    "slo_deadline": 2.8285781726155785,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 29,
+    "arrival_time": 2.817371138482025,
+    "prompt_tokens": 104,
+    "predicted_output_tokens": 68,
+    "actual_output_tokens": 72,
+    "slo_deadline": 2.967371138482025,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 30,
+    "arrival_time": 2.869858890858004,
+    "prompt_tokens": 50,
+    "predicted_output_tokens": 125,
+    "actual_output_tokens": 130,
+    "slo_deadline": 3.019858890858004,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 31,
+    "arrival_time": 2.8742438853020285,
+    "prompt_tokens": 40,
+    "predicted_output_tokens": 112,
+    "actual_output_tokens": 118,
+    "slo_deadline": 3.0242438853020284,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 32,
+    "arrival_time": 2.944453276721301,
+    "prompt_tokens": 74,
+    "predicted_output_tokens": 77,
+    "actual_output_tokens": 89,
+    "slo_deadline": 3.094453276721301,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 33,
+    "arrival_time": 3.018048010869967,
+    "prompt_tokens": 65,
+    "predicted_output_tokens": 60,
+    "actual_output_tokens": 63,
+    "slo_deadline": 3.168048010869967,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 34,
+    "arrival_time": 3.0486231613109487,
+    "prompt_tokens": 78,
+    "predicted_output_tokens": 3320,
+    "actual_output_tokens": 3000,
+    "slo_deadline": 3.1986231613109486,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 35,
+    "arrival_time": 3.0518286101422443,
+    "prompt_tokens": 32,
+    "predicted_output_tokens": 163,
+    "actual_output_tokens": 202,
+    "slo_deadline": 3.201828610142244,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 36,
+    "arrival_time": 3.139215639266782,
+    "prompt_tokens": 175,
+    "predicted_output_tokens": 73,
+    "actual_output_tokens": 75,
+    "slo_deadline": 3.2892156392667817,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 37,
+    "arrival_time": 3.1751211391126577,
+    "prompt_tokens": 52,
+    "predicted_output_tokens": 91,
+    "actual_output_tokens": 112,
+    "slo_deadline": 3.3251211391126576,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 38,
+    "arrival_time": 3.192464930105015,
+    "prompt_tokens": 33,
+    "predicted_output_tokens": 141,
+    "actual_output_tokens": 138,
+    "slo_deadline": 3.342464930105015,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 39,
+    "arrival_time": 3.228272507444604,
+    "prompt_tokens": 96,
+    "predicted_output_tokens": 58,
+    "actual_output_tokens": 62,
+    "slo_deadline": 3.378272507444604,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 40,
+    "arrival_time": 3.3376029891940866,
+    "prompt_tokens": 59,
+    "predicted_output_tokens": 119,
+    "actual_output_tokens": 146,
+    "slo_deadline": 3.4876029891940865,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 41,
+    "arrival_time": 3.4784981769320766,
+    "prompt_tokens": 83,
+    "predicted_output_tokens": 76,
+    "actual_output_tokens": 75,
+    "slo_deadline": 3.6284981769320765,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 42,
+    "arrival_time": 3.648231964594907,
+    "prompt_tokens": 60,
+    "predicted_output_tokens": 73,
+    "actual_output_tokens": 61,
+    "slo_deadline": 3.798231964594907,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 43,
+    "arrival_time": 3.6832840086476635,
+    "prompt_tokens": 69,
+    "predicted_output_tokens": 73,
+    "actual_output_tokens": 72,
+    "slo_deadline": 3.8332840086476634,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 44,
+    "arrival_time": 3.769013672566227,
+    "prompt_tokens": 80,
+    "predicted_output_tokens": 84,
+    "actual_output_tokens": 75,
+    "slo_deadline": 3.919013672566227,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 45,
+    "arrival_time": 3.853012008406541,
+    "prompt_tokens": 49,
+    "predicted_output_tokens": 73,
+    "actual_output_tokens": 74,
+    "slo_deadline": 4.003012008406541,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 46,
+    "arrival_time": 3.867046784951049,
+    "prompt_tokens": 99,
+    "predicted_output_tokens": 56,
+    "actual_output_tokens": 69,
+    "slo_deadline": 4.017046784951049,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 47,
+    "arrival_time": 3.901461716058348,
+    "prompt_tokens": 56,
+    "predicted_output_tokens": 150,
+    "actual_output_tokens": 143,
+    "slo_deadline": 4.051461716058348,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 48,
+    "arrival_time": 3.9322019428498423,
+    "prompt_tokens": 46,
+    "predicted_output_tokens": 79,
+    "actual_output_tokens": 82,
+    "slo_deadline": 4.082201942849842,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 49,
+    "arrival_time": 3.9347001066277425,
+    "prompt_tokens": 73,
+    "predicted_output_tokens": 60,
+    "actual_output_tokens": 69,
+    "slo_deadline": 4.084700106627743,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 50,
+    "arrival_time": 3.9374206912515226,
+    "prompt_tokens": 88,
+    "predicted_output_tokens": 70,
+    "actual_output_tokens": 65,
+    "slo_deadline": 4.0874206912515225,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 51,
+    "arrival_time": 4.110725829205774,
+    "prompt_tokens": 63,
+    "predicted_output_tokens": 66,
+    "actual_output_tokens": 64,
+    "slo_deadline": 4.260725829205774,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 52,
+    "arrival_time": 4.153368060680562,
+    "prompt_tokens": 46,
+    "predicted_output_tokens": 61,
+    "actual_output_tokens": 64,
+    "slo_deadline": 4.303368060680563,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 53,
+    "arrival_time": 4.206131369790599,
+    "prompt_tokens": 96,
+    "predicted_output_tokens": 309,
+    "actual_output_tokens": 283,
+    "slo_deadline": 4.3561313697905995,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 54,
+    "arrival_time": 4.228167410468132,
+    "prompt_tokens": 29,
+    "predicted_output_tokens": 105,
+    "actual_output_tokens": 115,
+    "slo_deadline": 4.378167410468133,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 55,
+    "arrival_time": 4.2570973341619665,
+    "prompt_tokens": 42,
+    "predicted_output_tokens": 108,
+    "actual_output_tokens": 101,
+    "slo_deadline": 4.407097334161967,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 56,
+    "arrival_time": 4.281978431783677,
+    "prompt_tokens": 72,
+    "predicted_output_tokens": 59,
+    "actual_output_tokens": 65,
+    "slo_deadline": 4.431978431783677,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 57,
+    "arrival_time": 4.314234032939935,
+    "prompt_tokens": 36,
+    "predicted_output_tokens": 113,
+    "actual_output_tokens": 107,
+    "slo_deadline": 4.4642340329399355,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 58,
+    "arrival_time": 4.425096642082792,
+    "prompt_tokens": 72,
+    "predicted_output_tokens": 130,
+    "actual_output_tokens": 145,
+    "slo_deadline": 4.5750966420827925,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 59,
+    "arrival_time": 4.4285138349404365,
+    "prompt_tokens": 69,
+    "predicted_output_tokens": 949,
+    "actual_output_tokens": 818,
+    "slo_deadline": 4.578513834940437,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 60,
+    "arrival_time": 4.547922439374675,
+    "prompt_tokens": 111,
+    "predicted_output_tokens": 141,
+    "actual_output_tokens": 137,
+    "slo_deadline": 4.6979224393746755,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 61,
+    "arrival_time": 4.55263389899266,
+    "prompt_tokens": 45,
+    "predicted_output_tokens": 82,
+    "actual_output_tokens": 71,
+    "slo_deadline": 4.70263389899266,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 62,
+    "arrival_time": 4.6345229861338675,
+    "prompt_tokens": 52,
+    "predicted_output_tokens": 746,
+    "actual_output_tokens": 810,
+    "slo_deadline": 4.784522986133868,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 63,
+    "arrival_time": 4.677471780157282,
+    "prompt_tokens": 83,
+    "predicted_output_tokens": 190,
+    "actual_output_tokens": 199,
+    "slo_deadline": 4.827471780157282,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 64,
+    "arrival_time": 4.695717882299065,
+    "prompt_tokens": 21,
+    "predicted_output_tokens": 142,
+    "actual_output_tokens": 131,
+    "slo_deadline": 4.845717882299065,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 65,
+    "arrival_time": 4.712008434034533,
+    "prompt_tokens": 300,
+    "predicted_output_tokens": 69,
+    "actual_output_tokens": 91,
+    "slo_deadline": 4.862008434034533,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 66,
+    "arrival_time": 4.751072498354464,
+    "prompt_tokens": 50,
+    "predicted_output_tokens": 106,
+    "actual_output_tokens": 118,
+    "slo_deadline": 4.9010724983544645,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 67,
+    "arrival_time": 4.945975747486383,
+    "prompt_tokens": 49,
+    "predicted_output_tokens": 72,
+    "actual_output_tokens": 65,
+    "slo_deadline": 5.095975747486383,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 68,
+    "arrival_time": 5.126920859101695,
+    "prompt_tokens": 109,
+    "predicted_output_tokens": 179,
+    "actual_output_tokens": 171,
+    "slo_deadline": 5.276920859101695,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 69,
+    "arrival_time": 5.3968038973891534,
+    "prompt_tokens": 69,
+    "predicted_output_tokens": 97,
+    "actual_output_tokens": 88,
+    "slo_deadline": 5.546803897389154,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 70,
+    "arrival_time": 5.440452855867726,
+    "prompt_tokens": 29,
+    "predicted_output_tokens": 69,
+    "actual_output_tokens": 71,
+    "slo_deadline": 5.590452855867726,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 71,
+    "arrival_time": 5.475108952628384,
+    "prompt_tokens": 97,
+    "predicted_output_tokens": 67,
+    "actual_output_tokens": 63,
+    "slo_deadline": 5.625108952628384,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 72,
+    "arrival_time": 5.5154935453500995,
+    "prompt_tokens": 108,
+    "predicted_output_tokens": 61,
+    "actual_output_tokens": 66,
+    "slo_deadline": 5.6654935453501,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 73,
+    "arrival_time": 5.5778185480515905,
+    "prompt_tokens": 56,
+    "predicted_output_tokens": 198,
+    "actual_output_tokens": 227,
+    "slo_deadline": 5.727818548051591,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 74,
+    "arrival_time": 5.627204947449628,
+    "prompt_tokens": 61,
+    "predicted_output_tokens": 59,
+    "actual_output_tokens": 70,
+    "slo_deadline": 5.777204947449628,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 75,
+    "arrival_time": 5.643577521421413,
+    "prompt_tokens": 90,
+    "predicted_output_tokens": 74,
+    "actual_output_tokens": 78,
+    "slo_deadline": 5.793577521421414,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 76,
+    "arrival_time": 5.706364048297985,
+    "prompt_tokens": 45,
+    "predicted_output_tokens": 101,
+    "actual_output_tokens": 107,
+    "slo_deadline": 5.856364048297985,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 77,
+    "arrival_time": 5.714723089396313,
+    "prompt_tokens": 88,
+    "predicted_output_tokens": 649,
+    "actual_output_tokens": 691,
+    "slo_deadline": 5.864723089396313,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 78,
+    "arrival_time": 5.7223939895988005,
+    "prompt_tokens": 78,
+    "predicted_output_tokens": 138,
+    "actual_output_tokens": 197,
+    "slo_deadline": 5.872393989598801,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 79,
+    "arrival_time": 5.8165367348393096,
+    "prompt_tokens": 50,
+    "predicted_output_tokens": 60,
+    "actual_output_tokens": 73,
+    "slo_deadline": 5.96653673483931,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 80,
+    "arrival_time": 5.851118279097926,
+    "prompt_tokens": 35,
+    "predicted_output_tokens": 297,
+    "actual_output_tokens": 313,
+    "slo_deadline": 6.001118279097926,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 81,
+    "arrival_time": 5.887376640188736,
+    "prompt_tokens": 63,
+    "predicted_output_tokens": 134,
+    "actual_output_tokens": 130,
+    "slo_deadline": 6.037376640188737,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 82,
+    "arrival_time": 5.933346315786431,
+    "prompt_tokens": 46,
+    "predicted_output_tokens": 141,
+    "actual_output_tokens": 149,
+    "slo_deadline": 6.083346315786431,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 83,
+    "arrival_time": 5.9438424332547966,
+    "prompt_tokens": 116,
+    "predicted_output_tokens": 67,
+    "actual_output_tokens": 73,
+    "slo_deadline": 6.093842433254797,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 84,
+    "arrival_time": 6.0245433583277626,
+    "prompt_tokens": 76,
+    "predicted_output_tokens": 95,
+    "actual_output_tokens": 119,
+    "slo_deadline": 6.174543358327763,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 85,
+    "arrival_time": 6.046694796706938,
+    "prompt_tokens": 104,
+    "predicted_output_tokens": 373,
+    "actual_output_tokens": 305,
+    "slo_deadline": 6.196694796706939,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 86,
+    "arrival_time": 6.137987045537419,
+    "prompt_tokens": 76,
+    "predicted_output_tokens": 104,
+    "actual_output_tokens": 116,
+    "slo_deadline": 6.287987045537419,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 87,
+    "arrival_time": 6.313820919261944,
+    "prompt_tokens": 81,
+    "predicted_output_tokens": 149,
+    "actual_output_tokens": 126,
+    "slo_deadline": 6.463820919261944,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 88,
+    "arrival_time": 6.317832213434329,
+    "prompt_tokens": 48,
+    "predicted_output_tokens": 88,
+    "actual_output_tokens": 75,
+    "slo_deadline": 6.467832213434329,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 89,
+    "arrival_time": 6.340753604181559,
+    "prompt_tokens": 99,
+    "predicted_output_tokens": 132,
+    "actual_output_tokens": 128,
+    "slo_deadline": 6.49075360418156,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 90,
+    "arrival_time": 6.349896734588635,
+    "prompt_tokens": 172,
+    "predicted_output_tokens": 73,
+    "actual_output_tokens": 77,
+    "slo_deadline": 6.499896734588635,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 91,
+    "arrival_time": 6.468401231661093,
+    "prompt_tokens": 60,
+    "predicted_output_tokens": 92,
+    "actual_output_tokens": 91,
+    "slo_deadline": 6.618401231661093,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 92,
+    "arrival_time": 6.641833351057426,
+    "prompt_tokens": 52,
+    "predicted_output_tokens": 58,
+    "actual_output_tokens": 65,
+    "slo_deadline": 6.791833351057426,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 93,
+    "arrival_time": 6.702194276016779,
+    "prompt_tokens": 65,
+    "predicted_output_tokens": 76,
+    "actual_output_tokens": 74,
+    "slo_deadline": 6.852194276016779,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 94,
+    "arrival_time": 6.725944640167264,
+    "prompt_tokens": 56,
+    "predicted_output_tokens": 109,
+    "actual_output_tokens": 109,
+    "slo_deadline": 6.875944640167265,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 95,
+    "arrival_time": 6.802468342209773,
+    "prompt_tokens": 50,
+    "predicted_output_tokens": 102,
+    "actual_output_tokens": 97,
+    "slo_deadline": 6.952468342209773,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 96,
+    "arrival_time": 6.838934445656233,
+    "prompt_tokens": 76,
+    "predicted_output_tokens": 109,
+    "actual_output_tokens": 99,
+    "slo_deadline": 6.988934445656233,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 97,
+    "arrival_time": 6.890038243281056,
+    "prompt_tokens": 61,
+    "predicted_output_tokens": 78,
+    "actual_output_tokens": 66,
+    "slo_deadline": 7.040038243281057,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 98,
+    "arrival_time": 7.078645790381853,
+    "prompt_tokens": 145,
+    "predicted_output_tokens": 216,
+    "actual_output_tokens": 225,
+    "slo_deadline": 7.2286457903818535,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 99,
+    "arrival_time": 7.156110084560242,
+    "prompt_tokens": 71,
+    "predicted_output_tokens": 118,
+    "actual_output_tokens": 106,
+    "slo_deadline": 7.306110084560243,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 100,
+    "arrival_time": 7.233185822990048,
+    "prompt_tokens": 83,
+    "predicted_output_tokens": 84,
+    "actual_output_tokens": 91,
+    "slo_deadline": 7.383185822990049,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 101,
+    "arrival_time": 7.277864616474526,
+    "prompt_tokens": 114,
+    "predicted_output_tokens": 95,
+    "actual_output_tokens": 104,
+    "slo_deadline": 7.427864616474526,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 102,
+    "arrival_time": 7.326738406282858,
+    "prompt_tokens": 61,
+    "predicted_output_tokens": 80,
+    "actual_output_tokens": 85,
+    "slo_deadline": 7.476738406282858,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 103,
+    "arrival_time": 7.403573399150943,
+    "prompt_tokens": 145,
+    "predicted_output_tokens": 86,
+    "actual_output_tokens": 95,
+    "slo_deadline": 7.5535733991509435,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 104,
+    "arrival_time": 7.5053464610530645,
+    "prompt_tokens": 51,
+    "predicted_output_tokens": 119,
+    "actual_output_tokens": 108,
+    "slo_deadline": 7.655346461053065,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 105,
+    "arrival_time": 7.557044252917944,
+    "prompt_tokens": 47,
+    "predicted_output_tokens": 84,
+    "actual_output_tokens": 77,
+    "slo_deadline": 7.707044252917944,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 106,
+    "arrival_time": 7.590973837940594,
+    "prompt_tokens": 59,
+    "predicted_output_tokens": 143,
+    "actual_output_tokens": 126,
+    "slo_deadline": 7.740973837940595,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 107,
+    "arrival_time": 7.642438222822641,
+    "prompt_tokens": 67,
+    "predicted_output_tokens": 84,
+    "actual_output_tokens": 84,
+    "slo_deadline": 7.792438222822641,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 108,
+    "arrival_time": 7.663333266997995,
+    "prompt_tokens": 35,
+    "predicted_output_tokens": 76,
+    "actual_output_tokens": 74,
+    "slo_deadline": 7.813333266997995,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 109,
+    "arrival_time": 7.741028783218181,
+    "prompt_tokens": 69,
+    "predicted_output_tokens": 220,
+    "actual_output_tokens": 233,
+    "slo_deadline": 7.891028783218181,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 110,
+    "arrival_time": 7.822876831986263,
+    "prompt_tokens": 31,
+    "predicted_output_tokens": 113,
+    "actual_output_tokens": 127,
+    "slo_deadline": 7.972876831986263,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 111,
+    "arrival_time": 7.884442847433811,
+    "prompt_tokens": 142,
+    "predicted_output_tokens": 65,
+    "actual_output_tokens": 62,
+    "slo_deadline": 8.03444284743381,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 112,
+    "arrival_time": 7.928838948900324,
+    "prompt_tokens": 68,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 61,
+    "slo_deadline": 8.078838948900325,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 113,
+    "arrival_time": 8.072149698289174,
+    "prompt_tokens": 51,
+    "predicted_output_tokens": 54,
+    "actual_output_tokens": 60,
+    "slo_deadline": 8.222149698289174,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 114,
+    "arrival_time": 8.118402833211514,
+    "prompt_tokens": 45,
+    "predicted_output_tokens": 522,
+    "actual_output_tokens": 492,
+    "slo_deadline": 8.268402833211514,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 115,
+    "arrival_time": 8.155039345026834,
+    "prompt_tokens": 58,
+    "predicted_output_tokens": 57,
+    "actual_output_tokens": 68,
+    "slo_deadline": 8.305039345026834,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 116,
+    "arrival_time": 8.243905315095892,
+    "prompt_tokens": 63,
+    "predicted_output_tokens": 62,
+    "actual_output_tokens": 63,
+    "slo_deadline": 8.393905315095893,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 117,
+    "arrival_time": 8.43077385149564,
+    "prompt_tokens": 42,
+    "predicted_output_tokens": 60,
+    "actual_output_tokens": 64,
+    "slo_deadline": 8.58077385149564,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 118,
+    "arrival_time": 8.65049574379428,
+    "prompt_tokens": 45,
+    "predicted_output_tokens": 71,
+    "actual_output_tokens": 75,
+    "slo_deadline": 8.800495743794281,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 119,
+    "arrival_time": 8.79777490238297,
+    "prompt_tokens": 64,
+    "predicted_output_tokens": 70,
+    "actual_output_tokens": 78,
+    "slo_deadline": 8.947774902382971,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 120,
+    "arrival_time": 8.842530931260722,
+    "prompt_tokens": 54,
+    "predicted_output_tokens": 82,
+    "actual_output_tokens": 75,
+    "slo_deadline": 8.992530931260722,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 121,
+    "arrival_time": 8.89411527156426,
+    "prompt_tokens": 113,
+    "predicted_output_tokens": 92,
+    "actual_output_tokens": 87,
+    "slo_deadline": 9.04411527156426,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 122,
+    "arrival_time": 8.954815957856347,
+    "prompt_tokens": 125,
+    "predicted_output_tokens": 79,
+    "actual_output_tokens": 70,
+    "slo_deadline": 9.104815957856347,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 123,
+    "arrival_time": 9.027351716378474,
+    "prompt_tokens": 71,
+    "predicted_output_tokens": 96,
+    "actual_output_tokens": 95,
+    "slo_deadline": 9.177351716378475,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 124,
+    "arrival_time": 9.077048839162718,
+    "prompt_tokens": 89,
+    "predicted_output_tokens": 142,
+    "actual_output_tokens": 162,
+    "slo_deadline": 9.227048839162718,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 125,
+    "arrival_time": 9.085247229835565,
+    "prompt_tokens": 36,
+    "predicted_output_tokens": 279,
+    "actual_output_tokens": 290,
+    "slo_deadline": 9.235247229835565,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 126,
+    "arrival_time": 9.195049515795606,
+    "prompt_tokens": 97,
+    "predicted_output_tokens": 57,
+    "actual_output_tokens": 64,
+    "slo_deadline": 9.345049515795607,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 127,
+    "arrival_time": 9.352346333062506,
+    "prompt_tokens": 70,
+    "predicted_output_tokens": 75,
+    "actual_output_tokens": 72,
+    "slo_deadline": 9.502346333062507,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 128,
+    "arrival_time": 9.378922266226601,
+    "prompt_tokens": 90,
+    "predicted_output_tokens": 214,
+    "actual_output_tokens": 190,
+    "slo_deadline": 9.528922266226601,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 129,
+    "arrival_time": 9.454766331652174,
+    "prompt_tokens": 157,
+    "predicted_output_tokens": 70,
+    "actual_output_tokens": 68,
+    "slo_deadline": 9.604766331652174,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 130,
+    "arrival_time": 9.482026762502505,
+    "prompt_tokens": 23,
+    "predicted_output_tokens": 126,
+    "actual_output_tokens": 134,
+    "slo_deadline": 9.632026762502505,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 131,
+    "arrival_time": 9.497399190548366,
+    "prompt_tokens": 80,
+    "predicted_output_tokens": 78,
+    "actual_output_tokens": 81,
+    "slo_deadline": 9.647399190548366,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 132,
+    "arrival_time": 9.589970700998817,
+    "prompt_tokens": 41,
+    "predicted_output_tokens": 121,
+    "actual_output_tokens": 119,
+    "slo_deadline": 9.739970700998818,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 133,
+    "arrival_time": 9.619922537090625,
+    "prompt_tokens": 95,
+    "predicted_output_tokens": 145,
+    "actual_output_tokens": 168,
+    "slo_deadline": 9.769922537090626,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 134,
+    "arrival_time": 9.62270384258405,
+    "prompt_tokens": 37,
+    "predicted_output_tokens": 194,
+    "actual_output_tokens": 191,
+    "slo_deadline": 9.77270384258405,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 135,
+    "arrival_time": 9.685813433624217,
+    "prompt_tokens": 55,
+    "predicted_output_tokens": 356,
+    "actual_output_tokens": 350,
+    "slo_deadline": 9.835813433624217,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 136,
+    "arrival_time": 9.807990166025915,
+    "prompt_tokens": 78,
+    "predicted_output_tokens": 321,
+    "actual_output_tokens": 339,
+    "slo_deadline": 9.957990166025915,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 137,
+    "arrival_time": 9.90533070780785,
+    "prompt_tokens": 96,
+    "predicted_output_tokens": 341,
+    "actual_output_tokens": 356,
+    "slo_deadline": 10.055330707807851,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 138,
+    "arrival_time": 9.974763695429411,
+    "prompt_tokens": 73,
+    "predicted_output_tokens": 304,
+    "actual_output_tokens": 299,
+    "slo_deadline": 10.124763695429412,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 139,
+    "arrival_time": 10.101898307294084,
+    "prompt_tokens": 47,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 68,
+    "slo_deadline": 10.251898307294084,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 140,
+    "arrival_time": 10.249303590048857,
+    "prompt_tokens": 54,
+    "predicted_output_tokens": 86,
+    "actual_output_tokens": 93,
+    "slo_deadline": 10.399303590048858,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 141,
+    "arrival_time": 10.344452331706215,
+    "prompt_tokens": 110,
+    "predicted_output_tokens": 255,
+    "actual_output_tokens": 236,
+    "slo_deadline": 10.494452331706215,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 142,
+    "arrival_time": 10.37005552916612,
+    "prompt_tokens": 70,
+    "predicted_output_tokens": 94,
+    "actual_output_tokens": 92,
+    "slo_deadline": 10.52005552916612,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 143,
+    "arrival_time": 10.404342520543729,
+    "prompt_tokens": 30,
+    "predicted_output_tokens": 106,
+    "actual_output_tokens": 90,
+    "slo_deadline": 10.55434252054373,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 144,
+    "arrival_time": 10.46840356024622,
+    "prompt_tokens": 108,
+    "predicted_output_tokens": 87,
+    "actual_output_tokens": 96,
+    "slo_deadline": 10.61840356024622,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 145,
+    "arrival_time": 10.798640752630396,
+    "prompt_tokens": 87,
+    "predicted_output_tokens": 144,
+    "actual_output_tokens": 172,
+    "slo_deadline": 10.948640752630396,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 146,
+    "arrival_time": 10.871849111603005,
+    "prompt_tokens": 109,
+    "predicted_output_tokens": 115,
+    "actual_output_tokens": 105,
+    "slo_deadline": 11.021849111603006,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 147,
+    "arrival_time": 10.879409071143582,
+    "prompt_tokens": 60,
+    "predicted_output_tokens": 72,
+    "actual_output_tokens": 66,
+    "slo_deadline": 11.029409071143583,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 148,
+    "arrival_time": 10.897104154685557,
+    "prompt_tokens": 107,
+    "predicted_output_tokens": 106,
+    "actual_output_tokens": 114,
+    "slo_deadline": 11.047104154685558,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 149,
+    "arrival_time": 10.985412559884068,
+    "prompt_tokens": 42,
+    "predicted_output_tokens": 82,
+    "actual_output_tokens": 95,
+    "slo_deadline": 11.135412559884069,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 150,
+    "arrival_time": 11.003856916105551,
+    "prompt_tokens": 94,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 63,
+    "slo_deadline": 11.153856916105552,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 151,
+    "arrival_time": 11.223269386149182,
+    "prompt_tokens": 55,
+    "predicted_output_tokens": 133,
+    "actual_output_tokens": 159,
+    "slo_deadline": 11.373269386149182,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 152,
+    "arrival_time": 11.255470089450789,
+    "prompt_tokens": 99,
+    "predicted_output_tokens": 71,
+    "actual_output_tokens": 74,
+    "slo_deadline": 11.40547008945079,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 153,
+    "arrival_time": 11.295453115532668,
+    "prompt_tokens": 117,
+    "predicted_output_tokens": 78,
+    "actual_output_tokens": 97,
+    "slo_deadline": 11.445453115532668,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 154,
+    "arrival_time": 11.3026966301221,
+    "prompt_tokens": 49,
+    "predicted_output_tokens": 68,
+    "actual_output_tokens": 70,
+    "slo_deadline": 11.4526966301221,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 155,
+    "arrival_time": 11.374587930057277,
+    "prompt_tokens": 69,
+    "predicted_output_tokens": 96,
+    "actual_output_tokens": 119,
+    "slo_deadline": 11.524587930057278,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 156,
+    "arrival_time": 11.3890275080937,
+    "prompt_tokens": 72,
+    "predicted_output_tokens": 88,
+    "actual_output_tokens": 90,
+    "slo_deadline": 11.5390275080937,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 157,
+    "arrival_time": 11.411831768752238,
+    "prompt_tokens": 128,
+    "predicted_output_tokens": 136,
+    "actual_output_tokens": 117,
+    "slo_deadline": 11.561831768752239,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 158,
+    "arrival_time": 11.446927988160798,
+    "prompt_tokens": 101,
+    "predicted_output_tokens": 64,
+    "actual_output_tokens": 66,
+    "slo_deadline": 11.596927988160799,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 159,
+    "arrival_time": 11.527754983443815,
+    "prompt_tokens": 38,
+    "predicted_output_tokens": 69,
+    "actual_output_tokens": 64,
+    "slo_deadline": 11.677754983443815,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 160,
+    "arrival_time": 11.531576398637498,
+    "prompt_tokens": 89,
+    "predicted_output_tokens": 76,
+    "actual_output_tokens": 81,
+    "slo_deadline": 11.681576398637498,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 161,
+    "arrival_time": 11.61996202385598,
+    "prompt_tokens": 102,
+    "predicted_output_tokens": 56,
+    "actual_output_tokens": 61,
+    "slo_deadline": 11.76996202385598,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 162,
+    "arrival_time": 11.65024671513447,
+    "prompt_tokens": 204,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 74,
+    "slo_deadline": 11.80024671513447,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 163,
+    "arrival_time": 11.741407018892527,
+    "prompt_tokens": 30,
+    "predicted_output_tokens": 75,
+    "actual_output_tokens": 68,
+    "slo_deadline": 11.891407018892528,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 164,
+    "arrival_time": 11.776279388954386,
+    "prompt_tokens": 54,
+    "predicted_output_tokens": 64,
+    "actual_output_tokens": 65,
+    "slo_deadline": 11.926279388954386,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 165,
+    "arrival_time": 11.806454123322016,
+    "prompt_tokens": 138,
+    "predicted_output_tokens": 167,
+    "actual_output_tokens": 143,
+    "slo_deadline": 11.956454123322017,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 166,
+    "arrival_time": 11.826430551426064,
+    "prompt_tokens": 36,
+    "predicted_output_tokens": 54,
+    "actual_output_tokens": 61,
+    "slo_deadline": 11.976430551426064,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 167,
+    "arrival_time": 11.86700922259208,
+    "prompt_tokens": 39,
+    "predicted_output_tokens": 109,
+    "actual_output_tokens": 112,
+    "slo_deadline": 12.01700922259208,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 168,
+    "arrival_time": 11.874843083855108,
+    "prompt_tokens": 91,
+    "predicted_output_tokens": 96,
+    "actual_output_tokens": 96,
+    "slo_deadline": 12.024843083855108,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 169,
+    "arrival_time": 12.03546241701795,
+    "prompt_tokens": 117,
+    "predicted_output_tokens": 215,
+    "actual_output_tokens": 188,
+    "slo_deadline": 12.18546241701795,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 170,
+    "arrival_time": 12.075822497175146,
+    "prompt_tokens": 51,
+    "predicted_output_tokens": 81,
+    "actual_output_tokens": 68,
+    "slo_deadline": 12.225822497175146,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 171,
+    "arrival_time": 12.090535612906855,
+    "prompt_tokens": 92,
+    "predicted_output_tokens": 116,
+    "actual_output_tokens": 124,
+    "slo_deadline": 12.240535612906855,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 172,
+    "arrival_time": 12.154115281594486,
+    "prompt_tokens": 75,
+    "predicted_output_tokens": 68,
+    "actual_output_tokens": 77,
+    "slo_deadline": 12.304115281594486,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 173,
+    "arrival_time": 12.294400786789154,
+    "prompt_tokens": 151,
+    "predicted_output_tokens": 138,
+    "actual_output_tokens": 165,
+    "slo_deadline": 12.444400786789155,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 174,
+    "arrival_time": 12.382317200903337,
+    "prompt_tokens": 71,
+    "predicted_output_tokens": 136,
+    "actual_output_tokens": 120,
+    "slo_deadline": 12.532317200903337,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 175,
+    "arrival_time": 12.402379943350816,
+    "prompt_tokens": 116,
+    "predicted_output_tokens": 112,
+    "actual_output_tokens": 114,
+    "slo_deadline": 12.552379943350816,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 176,
+    "arrival_time": 12.415538907306626,
+    "prompt_tokens": 45,
+    "predicted_output_tokens": 146,
+    "actual_output_tokens": 157,
+    "slo_deadline": 12.565538907306626,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 177,
+    "arrival_time": 12.469122519966918,
+    "prompt_tokens": 64,
+    "predicted_output_tokens": 554,
+    "actual_output_tokens": 560,
+    "slo_deadline": 12.619122519966918,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 178,
+    "arrival_time": 12.533538247504111,
+    "prompt_tokens": 67,
+    "predicted_output_tokens": 55,
+    "actual_output_tokens": 71,
+    "slo_deadline": 12.683538247504112,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 179,
+    "arrival_time": 12.595269054134135,
+    "prompt_tokens": 125,
+    "predicted_output_tokens": 52,
+    "actual_output_tokens": 62,
+    "slo_deadline": 12.745269054134136,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 180,
+    "arrival_time": 12.598222815471132,
+    "prompt_tokens": 94,
+    "predicted_output_tokens": 177,
+    "actual_output_tokens": 162,
+    "slo_deadline": 12.748222815471133,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 181,
+    "arrival_time": 12.618419890385804,
+    "prompt_tokens": 48,
+    "predicted_output_tokens": 208,
+    "actual_output_tokens": 201,
+    "slo_deadline": 12.768419890385804,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 182,
+    "arrival_time": 12.704975559505945,
+    "prompt_tokens": 99,
+    "predicted_output_tokens": 122,
+    "actual_output_tokens": 121,
+    "slo_deadline": 12.854975559505945,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 183,
+    "arrival_time": 12.735667827889081,
+    "prompt_tokens": 104,
+    "predicted_output_tokens": 284,
+    "actual_output_tokens": 316,
+    "slo_deadline": 12.885667827889081,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 184,
+    "arrival_time": 12.78949257720985,
+    "prompt_tokens": 67,
+    "predicted_output_tokens": 84,
+    "actual_output_tokens": 80,
+    "slo_deadline": 12.939492577209851,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 185,
+    "arrival_time": 12.828404614306052,
+    "prompt_tokens": 62,
+    "predicted_output_tokens": 139,
+    "actual_output_tokens": 117,
+    "slo_deadline": 12.978404614306053,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 186,
+    "arrival_time": 12.919000271804912,
+    "prompt_tokens": 64,
+    "predicted_output_tokens": 77,
+    "actual_output_tokens": 88,
+    "slo_deadline": 13.069000271804912,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 187,
+    "arrival_time": 12.919252442665027,
+    "prompt_tokens": 30,
+    "predicted_output_tokens": 64,
+    "actual_output_tokens": 64,
+    "slo_deadline": 13.069252442665027,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 188,
+    "arrival_time": 13.009807584632988,
+    "prompt_tokens": 78,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 66,
+    "slo_deadline": 13.159807584632988,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 189,
+    "arrival_time": 13.148056446248708,
+    "prompt_tokens": 79,
+    "predicted_output_tokens": 65,
+    "actual_output_tokens": 63,
+    "slo_deadline": 13.298056446248708,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 190,
+    "arrival_time": 13.282804000649202,
+    "prompt_tokens": 46,
+    "predicted_output_tokens": 63,
+    "actual_output_tokens": 63,
+    "slo_deadline": 13.432804000649202,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 191,
+    "arrival_time": 13.420737932942602,
+    "prompt_tokens": 102,
+    "predicted_output_tokens": 83,
+    "actual_output_tokens": 85,
+    "slo_deadline": 13.570737932942603,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 192,
+    "arrival_time": 13.575038562271942,
+    "prompt_tokens": 36,
+    "predicted_output_tokens": 87,
+    "actual_output_tokens": 95,
+    "slo_deadline": 13.725038562271942,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 193,
+    "arrival_time": 13.75946557186354,
+    "prompt_tokens": 54,
+    "predicted_output_tokens": 530,
+    "actual_output_tokens": 534,
+    "slo_deadline": 13.90946557186354,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 194,
+    "arrival_time": 13.765383857563691,
+    "prompt_tokens": 56,
+    "predicted_output_tokens": 256,
+    "actual_output_tokens": 274,
+    "slo_deadline": 13.915383857563691,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 195,
+    "arrival_time": 13.786329294507338,
+    "prompt_tokens": 191,
+    "predicted_output_tokens": 90,
+    "actual_output_tokens": 92,
+    "slo_deadline": 13.936329294507338,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 196,
+    "arrival_time": 14.114012814928525,
+    "prompt_tokens": 32,
+    "predicted_output_tokens": 66,
+    "actual_output_tokens": 67,
+    "slo_deadline": 14.264012814928526,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 197,
+    "arrival_time": 14.229741707058658,
+    "prompt_tokens": 94,
+    "predicted_output_tokens": 111,
+    "actual_output_tokens": 105,
+    "slo_deadline": 14.379741707058658,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 198,
+    "arrival_time": 14.424857904956802,
+    "prompt_tokens": 113,
+    "predicted_output_tokens": 2342,
+    "actual_output_tokens": 2495,
+    "slo_deadline": 14.574857904956803,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 199,
+    "arrival_time": 14.442968676648418,
+    "prompt_tokens": 85,
+    "predicted_output_tokens": 163,
+    "actual_output_tokens": 169,
+    "slo_deadline": 14.592968676648418,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 200,
+    "arrival_time": 14.455063092674564,
+    "prompt_tokens": 127,
+    "predicted_output_tokens": 80,
+    "actual_output_tokens": 72,
+    "slo_deadline": 14.605063092674564,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 201,
+    "arrival_time": 14.474516159696035,
+    "prompt_tokens": 43,
+    "predicted_output_tokens": 200,
+    "actual_output_tokens": 205,
+    "slo_deadline": 14.624516159696036,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 202,
+    "arrival_time": 14.548881198241988,
+    "prompt_tokens": 23,
+    "predicted_output_tokens": 171,
+    "actual_output_tokens": 176,
+    "slo_deadline": 14.698881198241988,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 203,
+    "arrival_time": 14.57397620170332,
+    "prompt_tokens": 104,
+    "predicted_output_tokens": 150,
+    "actual_output_tokens": 138,
+    "slo_deadline": 14.723976201703321,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 204,
+    "arrival_time": 14.57534963429632,
+    "prompt_tokens": 39,
+    "predicted_output_tokens": 85,
+    "actual_output_tokens": 83,
+    "slo_deadline": 14.72534963429632,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 205,
+    "arrival_time": 14.62039219323434,
+    "prompt_tokens": 60,
+    "predicted_output_tokens": 68,
+    "actual_output_tokens": 68,
+    "slo_deadline": 14.77039219323434,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 206,
+    "arrival_time": 14.71105799701858,
+    "prompt_tokens": 39,
+    "predicted_output_tokens": 168,
+    "actual_output_tokens": 165,
+    "slo_deadline": 14.86105799701858,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 207,
+    "arrival_time": 14.823283518303183,
+    "prompt_tokens": 119,
+    "predicted_output_tokens": 74,
+    "actual_output_tokens": 84,
+    "slo_deadline": 14.973283518303184,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 208,
+    "arrival_time": 14.942117851779418,
+    "prompt_tokens": 109,
+    "predicted_output_tokens": 96,
+    "actual_output_tokens": 92,
+    "slo_deadline": 15.092117851779419,
+    "priority": 1.0,
+    "class_id": "medium"
+  },
+  {
+    "request_id": 209,
+    "arrival_time": 14.985388234859062,
+    "prompt_tokens": 49,
+    "predicted_output_tokens": 117,
+    "actual_output_tokens": 103,
+    "slo_deadline": 15.135388234859063,
+    "priority": 1.0,
+    "class_id": "medium"
+  }
+]

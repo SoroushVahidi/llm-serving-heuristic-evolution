@@ -1,0 +1,44 @@
+name: prediction_noise_regime
+purpose: >
+  High, deployment-realistic prediction noise (predicted_output_tokens
+  diverges substantially from actual_output_tokens) so a policy that ranks
+  by PREDICTED length (EST, SOF -- the only information a real deployable
+  policy has) can meaningfully disagree with the hindsight oracle (which
+  ranks by ACTUAL length) even when the two would agree under perfect
+  prediction. Isolates "value of a better predictor / learned ranking"
+  from "value of ordering at all."
+expected_divergent_policies: [estimated_service_time_first, shortest_output_first, oracle_srtf]
+scientific_purpose: >
+  This is the regime most directly relevant to vLLM-LTR's actual value
+  proposition (a LEARNED ranker should be more robust to prediction noise
+  than a naive proxy) -- if noise is too low (as an EST/SOF proxy
+  effectively sees near-perfect information), there is nothing for a
+  learned ranker to improve on; this family deliberately widens the gap.
+workload:
+  arrival_process: poisson
+  arrival_rate: 16.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 80.0
+  prompt_sigma: 0.5
+  prompt_low: 16
+  prompt_high: 300
+  output_dist: lognormal
+  output_mean: 80.0
+  output_sigma: 0.8
+  output_low: 8
+  output_high: 1200
+  prediction_noise_rel: 0.6   # deliberately large: predicted vs actual output diverge substantially
+  slo_classes:
+    - {class_id: medium, slo_slack: 0.15, priority: 1.0, weight: 1.0}
+gpu:
+  max_active_sequences: 2
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

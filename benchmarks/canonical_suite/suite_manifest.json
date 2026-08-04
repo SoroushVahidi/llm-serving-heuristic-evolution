@@ -1,0 +1,76 @@
+{
+  "suite_version": "1.0",
+  "generated_utc": "2026-08-04T17:32:10Z",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "families": [
+    "staggered_heterogeneous",
+    "burst_independent_lengths",
+    "mixed_tight_deadlines",
+    "priority_vs_service_time_conflict",
+    "overloaded_queue",
+    "prediction_noise_regime",
+    "long_output_tail",
+    "kv_budget_pressure",
+    "burst_arrivals_isolated"
+  ],
+  "accepted": [
+    "staggered_heterogeneous",
+    "burst_independent_lengths",
+    "mixed_tight_deadlines",
+    "priority_vs_service_time_conflict",
+    "prediction_noise_regime",
+    "long_output_tail",
+    "burst_arrivals_isolated"
+  ],
+  "rejected": [
+    "overloaded_queue",
+    "kv_budget_pressure"
+  ],
+  "control_workload": "wildchat_control (real WildChat-1M data, not regenerated -- see data/processed/wildchat/)",
+  "control_workload_headroom": {
+    "metrics": {
+      "n_requests": 300,
+      "n_decision_steps_with_nonempty_queue": 1678,
+      "queue_contention_fraction": 0.49821215733015495,
+      "fifo_srtf_decision_disagreement_fraction": 0.005363528009535161,
+      "service_time_cv": 0.880679129495786,
+      "deadline_slack_cv": 1.0150932560503498,
+      "prompt_predicted_output_correlation": 0.12179834676859434,
+      "priority_distribution": {
+        "1.0": 46,
+        "2.0": 100,
+        "3.0": 154
+      },
+      "anwg": {
+        "fifo": 0.9957627118644068,
+        "estimated_service_time_first": 0.9957627118644068,
+        "shortest_output_first": 0.9957627118644068,
+        "oracle_srtf": 0.9957627118644068
+      },
+      "fifo_srtf_anwg_gap": 0.0,
+      "completion_fraction": {
+        "fifo": 1.0,
+        "oracle_srtf": 1.0
+      },
+      "fifo_srtf_completion_gap": 0.0,
+      "slo_violation_rate": {
+        "fifo": 0.0033333333333333335,
+        "oracle_srtf": 0.0033333333333333335
+      },
+      "fifo_srtf_slo_violation_gap": 0.0,
+      "all_four_policies_bit_identical_anwg": true
+    },
+    "entropy": {
+      "ordering_entropy_bits": 1.2532975784630431,
+      "n_ranked_decisions": 17,
+      "max_entropy_bits": 1.584962500721156,
+      "normalized_entropy": 0.7907427323313921
+    }
+  },
+  "generation_runtime_s": 73.32461952697486,
+  "foundational_comparison_runtime_s": 258.17303383536637
+}

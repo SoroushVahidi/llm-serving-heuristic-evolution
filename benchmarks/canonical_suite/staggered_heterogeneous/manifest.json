@@ -1,0 +1,227 @@
+{
+  "name": "staggered_heterogeneous",
+  "suite_version": "1.0",
+  "target_phenomenon": "head-of-line blocking under scarce concurrency",
+  "hypothesis": "When max_active_sequences is small (2) and output lengths are widely spread, a long job occupying a scarce slot delays short jobs behind it; SJF-style reordering should reduce this blocking relative to FIFO's strict arrival order.",
+  "expected_divergent_policies": [
+    "fifo",
+    "shortest_output_first",
+    "oracle_srtf"
+  ],
+  "expected_winner": "oracle_srtf (SJF-optimal for head-of-line blocking)",
+  "workload_config": {
+    "arrival_process": "poisson",
+    "arrival_rate": 16.0,
+    "duration": 15.0,
+    "prompt_dist": "lognormal",
+    "prompt_mean": 80.0,
+    "prompt_sigma": 0.5,
+    "prompt_low": 16,
+    "prompt_high": 300,
+    "output_dist": "lognormal",
+    "output_mean": 80.0,
+    "output_sigma": 1.4,
+    "output_low": 8,
+    "output_high": 2000,
+    "prediction_noise_rel": 0.05,
+    "slo_classes": [
+      {
+        "class_id": "medium",
+        "slo_slack": 0.15,
+        "priority": 1.0,
+        "weight": 1.0
+      }
+    ],
+    "burst_factor": 5.0,
+    "burst_fraction": 0.2,
+    "tag": "staggered_heterogeneous"
+  },
+  "gpu": {
+    "max_active_sequences": 2,
+    "max_batch_tokens": 4096,
+    "max_kv_tokens": 65536
+  },
+  "service_model": {
+    "step_size": 0.001,
+    "enable_prefill_modeling": true,
+    "prefill_cost_per_token": 1.0,
+    "max_prefill_chunk_tokens": 512,
+    "step_token_budget": 4096,
+    "decode_first": false
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_sha256_by_seed": {
+    "0": "4d22d956965fa335ca06397d8cd288b05b5281d4a353f4682cf55ad295e72c73",
+    "1": "80cad43d8f541466901a07d34b36d0e22a340b7538d964e947ccd20ce38819cd",
+    "2": "dc19ed3ac3488830268abbf39f7f95bfe73449c3533a44194474e9966096006f"
+  },
+  "validation": {
+    "family": "staggered_heterogeneous",
+    "target_phenomenon": "head-of-line blocking under scarce concurrency",
+    "hypothesis": "When max_active_sequences is small (2) and output lengths are widely spread, a long job occupying a scarce slot delays short jobs behind it; SJF-style reordering should reduce this blocking relative to FIFO's strict arrival order.",
+    "expected_divergent_policies": [
+      "fifo",
+      "shortest_output_first",
+      "oracle_srtf"
+    ],
+    "expected_winner": "oracle_srtf (SJF-optimal for head-of-line blocking)",
+    "per_seed": [
+      {
+        "seed": 0,
+        "metrics": {
+          "n_requests": 246,
+          "n_decision_steps_with_nonempty_queue": 3155,
+          "queue_contention_fraction": 0.5968304278922345,
+          "fifo_srtf_decision_disagreement_fraction": 0.008874801901743265,
+          "service_time_cv": 1.5447638687408622,
+          "deadline_slack_cv": 1.343987751542713e-15,
+          "prompt_predicted_output_correlation": 0.05044482881506192,
+          "priority_distribution": {
+            "1.0": 246
+          },
+          "anwg": {
+            "fifo": 0.7764227642276422,
+            "estimated_service_time_first": 0.7967479674796748,
+            "shortest_output_first": 0.8048780487804879,
+            "oracle_srtf": 0.8008130081300813
+          },
+          "fifo_srtf_anwg_gap": 0.024390243902439046,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.22357723577235772,
+            "oracle_srtf": 0.1991869918699187
+          },
+          "fifo_srtf_slo_violation_gap": 0.02439024390243902,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.617674008988863,
+          "n_ranked_decisions": 56,
+          "max_entropy_bits": 2.0,
+          "normalized_entropy": 0.8088370044944315
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.45676647736148046
+      },
+      {
+        "seed": 1,
+        "metrics": {
+          "n_requests": 240,
+          "n_decision_steps_with_nonempty_queue": 5668,
+          "queue_contention_fraction": 0.681016231474947,
+          "fifo_srtf_decision_disagreement_fraction": 0.008468595624558928,
+          "service_time_cv": 1.9155769417800392,
+          "deadline_slack_cv": 1.2587855373573062e-15,
+          "prompt_predicted_output_correlation": 0.1553817356551262,
+          "priority_distribution": {
+            "1.0": 240
+          },
+          "anwg": {
+            "fifo": 0.6666666666666666,
+            "estimated_service_time_first": 0.75,
+            "shortest_output_first": 0.75,
+            "oracle_srtf": 0.75
+          },
+          "fifo_srtf_anwg_gap": 0.08333333333333337,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.3333333333333333,
+            "oracle_srtf": 0.25
+          },
+          "fifo_srtf_slo_violation_gap": 0.08333333333333331,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 2.2220733457385946,
+          "n_ranked_decisions": 70,
+          "max_entropy_bits": 2.807354922057604,
+          "normalized_entropy": 0.7915184960332564
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.618809993333179
+      },
+      {
+        "seed": 2,
+        "metrics": {
+          "n_requests": 229,
+          "n_decision_steps_with_nonempty_queue": 4293,
+          "queue_contention_fraction": 0.6065688329839273,
+          "fifo_srtf_decision_disagreement_fraction": 0.00791986955508968,
+          "service_time_cv": 2.4998377037987285,
+          "deadline_slack_cv": 1.2941053626098888e-15,
+          "prompt_predicted_output_correlation": -0.05981283175554165,
+          "priority_distribution": {
+            "1.0": 229
+          },
+          "anwg": {
+            "fifo": 0.7030567685589519,
+            "estimated_service_time_first": 0.7903930131004366,
+            "shortest_output_first": 0.7947598253275109,
+            "oracle_srtf": 0.7947598253275109
+          },
+          "fifo_srtf_anwg_gap": 0.09170305676855894,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.29694323144104806,
+            "oracle_srtf": 0.2052401746724891
+          },
+          "fifo_srtf_slo_violation_gap": 0.09170305676855897,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 2.1998345351242676,
+          "n_ranked_decisions": 53,
+          "max_entropy_bits": 3.0,
+          "normalized_entropy": 0.7332781783747558
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.6038187425365165
+      }
+    ],
+    "mean_fifo_srtf_anwg_gap": 0.06647554466811045,
+    "mean_fifo_srtf_decision_disagreement_fraction": 0.008421089027130624,
+    "mean_queue_contention_fraction": 0.6281384974503696,
+    "mean_headroom_score": 0.559798404410392,
+    "accepted": true
+  }
+}

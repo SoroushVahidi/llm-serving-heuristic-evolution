@@ -1,0 +1,46 @@
+name: staggered_heterogeneous
+purpose: >
+  Short jobs arrive interleaved behind long-running jobs under TIGHT
+  concurrency (max_active_sequences=2), so a single long job occupies a
+  scarce slot and can head-of-line-block several short jobs queued behind
+  it. Ordering (admit the short job first) should reduce blocking relative
+  to FIFO's strict arrival order.
+expected_divergent_policies: [fifo, shortest_output_first, oracle_srtf]
+scientific_purpose: >
+  Tests whether SJF-style reordering reduces head-of-line blocking when
+  admission is genuinely scarce (unlike the WildChat control, where
+  max_active_sequences=8 was generous enough that almost no request was
+  ever excluded by another's presence -- see the audit's
+  fifo_srtf_decision_disagreement_fraction=0.0054 finding).
+workload:
+  arrival_process: poisson
+  arrival_rate: 16.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 80.0
+  prompt_sigma: 0.5
+  prompt_low: 16
+  prompt_high: 300
+  output_dist: lognormal
+  output_mean: 80.0
+  output_sigma: 1.4        # wide spread: some very long, some very short
+  output_low: 8
+  output_high: 2000
+  prediction_noise_rel: 0.05  # low noise -- isolate the ordering effect from prediction error
+  slo_classes:
+    # slack calibrated to ~1-2x a TYPICAL single request's own service time
+    # (output_mean=80 decode steps * step_size=0.001s ~= 0.08s), not the
+    # multi-second slack that let the WildChat control tie fifo/oracle --
+    # see 9_validation_aggressive.yaml / the audit doc for why that matters.
+    - {class_id: medium, slo_slack: 0.15, priority: 1.0, weight: 1.0}
+gpu:
+  max_active_sequences: 2
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

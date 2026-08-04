@@ -1,0 +1,50 @@
+name: mixed_tight_deadlines
+purpose: >
+  A mix of very tight, medium, and loose SLO deadlines under real
+  concurrency scarcity, so a pure service-time-minimizing policy (SRTF)
+  and a pure deadline-minimizing policy (EDF/LLF) face a genuine tradeoff:
+  admitting the shortest job first is not always the same choice as
+  admitting the most urgent deadline first.
+expected_divergent_policies: [oracle_srtf, edf, least_laxity_first]
+scientific_purpose: >
+  This repo's WildChat control workload used a single "medium" SLO slack
+  effectively uniform across requests (deadline heterogeneity did not
+  drive any observed divergence there); here deadline heterogeneity is
+  deliberately extreme (0.3s tight vs 12s loose) so EDF-style and
+  SRTF-style ordering choices can genuinely conflict. Only FIFO/EST/SOF/
+  oracle_srtf are run by this cheap smoke checker; EDF/LLF divergence is
+  the deliberate target for the FOLLOW-ON full comparison, not measured
+  here directly.
+workload:
+  arrival_process: poisson
+  arrival_rate: 16.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 80.0
+  prompt_sigma: 0.5
+  prompt_low: 16
+  prompt_high: 300
+  output_dist: lognormal
+  output_mean: 80.0
+  output_sigma: 0.7
+  output_low: 8
+  output_high: 600
+  prediction_noise_rel: 0.1
+  slo_classes:
+    # slack values span roughly [0.5x, 6x] a typical single request's own
+    # service time (~0.08s) -- see 1_staggered_heterogeneous.yaml's
+    # comment for why this scale, not multi-second slack, is needed.
+    - {class_id: tight,  slo_slack: 0.04, priority: 3.0, weight: 0.3}
+    - {class_id: medium, slo_slack: 0.15, priority: 2.0, weight: 0.4}
+    - {class_id: loose,  slo_slack: 0.5,  priority: 1.0, weight: 0.3}
+gpu:
+  max_active_sequences: 2
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

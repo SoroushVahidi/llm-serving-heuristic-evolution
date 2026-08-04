@@ -1,0 +1,127 @@
+{
+  "feature_keys": [
+    "fifo_srtf_anwg_gap",
+    "fifo_srtf_decision_disagreement_fraction",
+    "queue_contention_fraction",
+    "service_time_cv",
+    "deadline_slack_cv",
+    "prompt_predicted_output_correlation"
+  ],
+  "pairwise_feature_distance_zscore": {
+    "staggered_heterogeneous": {
+      "staggered_heterogeneous": 0.0,
+      "burst_independent_lengths": 4.755684510636266,
+      "mixed_tight_deadlines": 4.323782081813706,
+      "priority_vs_service_time_conflict": 0.9275324564725904,
+      "overloaded_queue": 2.525011063356971,
+      "prediction_noise_regime": 2.969230518485389,
+      "long_output_tail": 2.9092880481547656,
+      "kv_budget_pressure": 3.7169994113875657,
+      "burst_arrivals_isolated": 5.448259239924193
+    },
+    "burst_independent_lengths": {
+      "staggered_heterogeneous": 4.755684510636266,
+      "burst_independent_lengths": 0.0,
+      "mixed_tight_deadlines": 5.708496551812493,
+      "priority_vs_service_time_conflict": 4.354566146626118,
+      "overloaded_queue": 4.413805455145688,
+      "prediction_noise_regime": 4.400769652371974,
+      "long_output_tail": 2.387265696689285,
+      "kv_budget_pressure": 4.760312505692257,
+      "burst_arrivals_isolated": 1.8681075303649555
+    },
+    "mixed_tight_deadlines": {
+      "staggered_heterogeneous": 4.323782081813706,
+      "burst_independent_lengths": 5.708496551812493,
+      "mixed_tight_deadlines": 0.0,
+      "priority_vs_service_time_conflict": 3.8079571215177794,
+      "overloaded_queue": 3.627872819286472,
+      "prediction_noise_regime": 3.264811978433648,
+      "long_output_tail": 4.700766108862037,
+      "kv_budget_pressure": 3.6841174812591757,
+      "burst_arrivals_isolated": 5.52769949497271
+    },
+    "priority_vs_service_time_conflict": {
+      "staggered_heterogeneous": 0.9275324564725904,
+      "burst_independent_lengths": 4.354566146626118,
+      "mixed_tight_deadlines": 3.8079571215177794,
+      "priority_vs_service_time_conflict": 0.0,
+      "overloaded_queue": 1.6835909812347638,
+      "prediction_noise_regime": 2.1850329319701927,
+      "long_output_tail": 2.544488216434626,
+      "kv_budget_pressure": 2.927788957857774,
+      "burst_arrivals_isolated": 4.793834343077516
+    },
+    "overloaded_queue": {
+      "staggered_heterogeneous": 2.525011063356971,
+      "burst_independent_lengths": 4.413805455145688,
+      "mixed_tight_deadlines": 3.627872819286472,
+      "priority_vs_service_time_conflict": 1.6835909812347638,
+      "overloaded_queue": 0.0,
+      "prediction_noise_regime": 2.017409411696382,
+      "long_output_tail": 2.6979641009910234,
+      "kv_budget_pressure": 1.9748229756119442,
+      "burst_arrivals_isolated": 4.231698710973735
+    },
+    "prediction_noise_regime": {
+      "staggered_heterogeneous": 2.969230518485389,
+      "burst_independent_lengths": 4.400769652371974,
+      "mixed_tight_deadlines": 3.264811978433648,
+      "priority_vs_service_time_conflict": 2.1850329319701927,
+      "overloaded_queue": 2.017409411696382,
+      "prediction_noise_regime": 0.0,
+      "long_output_tail": 3.162664016865482,
+      "kv_budget_pressure": 1.7063352332428579,
+      "burst_arrivals_isolated": 4.2671163900919105
+    },
+    "long_output_tail": {
+      "staggered_heterogeneous": 2.9092880481547656,
+      "burst_independent_lengths": 2.387265696689285,
+      "mixed_tight_deadlines": 4.700766108862037,
+      "priority_vs_service_time_conflict": 2.544488216434626,
+      "overloaded_queue": 2.6979641009910234,
+      "prediction_noise_regime": 3.162664016865482,
+      "long_output_tail": 0.0,
+      "kv_budget_pressure": 3.208404241904584,
+      "burst_arrivals_isolated": 3.1976990968048744
+    },
+    "kv_budget_pressure": {
+      "staggered_heterogeneous": 3.7169994113875657,
+      "burst_independent_lengths": 4.760312505692257,
+      "mixed_tight_deadlines": 3.6841174812591757,
+      "priority_vs_service_time_conflict": 2.927788957857774,
+      "overloaded_queue": 1.9748229756119442,
+      "prediction_noise_regime": 1.7063352332428579,
+      "long_output_tail": 3.208404241904584,
+      "kv_budget_pressure": 0.0,
+      "burst_arrivals_isolated": 4.409690148588839
+    },
+    "burst_arrivals_isolated": {
+      "staggered_heterogeneous": 5.448259239924193,
+      "burst_independent_lengths": 1.8681075303649555,
+      "mixed_tight_deadlines": 5.52769949497271,
+      "priority_vs_service_time_conflict": 4.793834343077516,
+      "overloaded_queue": 4.231698710973735,
+      "prediction_noise_regime": 4.2671163900919105,
+      "long_output_tail": 3.1976990968048744,
+      "kv_budget_pressure": 4.409690148588839,
+      "burst_arrivals_isolated": 0.0
+    }
+  },
+  "headroom_score_by_family": {
+    "staggered_heterogeneous": 0.559798404410392,
+    "burst_independent_lengths": 0.8073497951329719,
+    "mixed_tight_deadlines": 0.39157278143139546,
+    "priority_vs_service_time_conflict": 0.5630309021171259,
+    "overloaded_queue": 0.4224719257165783,
+    "prediction_noise_regime": 0.44642985783426425,
+    "long_output_tail": 0.7387038610303612,
+    "kv_budget_pressure": 0.3465002310244339,
+    "burst_arrivals_isolated": 0.8347233727949153
+  },
+  "headroom_score_spread": {
+    "min": 0.3465002310244339,
+    "max": 0.8347233727949153,
+    "std": 0.17442211110831504
+  }
+}
