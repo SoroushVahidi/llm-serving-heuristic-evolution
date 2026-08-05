@@ -15,10 +15,10 @@
 > [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6).
 > A separate, parallel baseline-integration effort is also underway on
 > this branch (vLLM-LTR complete/evaluation-only; PARS-Serve-2026 complete,
-> independently verified, EVALUATION_ONLY; VTC initial integration + smoke
-> evaluation complete 2026-08-05, EVALUATION_ONLY, full sweep not yet
-> ready -- see
-> [vtc_initial_integration_20260805.md](audits/vtc_initial_integration_20260805.md) --
+> independently verified, EVALUATION_ONLY; VTC fairness-validated
+> comparative sweep complete 2026-08-05 -- EVALUATION_ONLY (deployment),
+> scientific classification FOUNDATIONAL_CANDIDATE (not registered) -- see
+> [vtc_fairness_comparative_evaluation_20260805.md](audits/vtc_fairness_comparative_evaluation_20260805.md) --
 > see [BASELINE_STATUS.md](BASELINE_STATUS.md)); it does not affect CC5/CC6
 > status.
 > Resume that branch from
@@ -111,26 +111,41 @@ Development did not stop at the Phase 2C pause below -- it continued on an
     across 8 families, dominated by simpler existing policies in every
     discriminative regime. `docs/audits/pars_baseline_implementation_20260804.md`,
     `docs/audits/pars_first_comparative_evaluation_20260804.md`.
-11. VTC baseline integration begun and completed at initial-integration
-    scope on 2026-08-05 (see `docs/BASELINE_STATUS.md` for current
-    status): official artifact (`Ying1123/VTC-artifact`, pinned commit
+11. VTC baseline integration begun 2026-08-05 (initial integration +
+    smoke evaluation), then repaired and completed with a
+    fairness-validated comparative sweep the same day (see
+    `docs/BASELINE_STATUS.md` for current status): official artifact
+    (`Ying1123/VTC-artifact`, pinned commit
     `192c2e2014c69c8c6c699d7113c3822e4db632e6`, Apache-2.0) is a full
     S-LoRA-based GPU serving engine this machine's GPU (RTX 5060 Ti,
     Blackwell) cannot build the CUDA kernels for (a compiler-generation
     gap, not a version-pin fix) -- but VTC's fairness-scheduling
     **algorithm** is pure Python/NumPy and was dynamically imported and
     executed completely unmodified via `baselines/vtc/adapter/`.
-    Classified "official policy reused with simulator adapter." 25/25
-    fidelity tests pass. Six dedicated fairness-extension workload
-    families added (`baselines/vtc/fairness_workloads.py`) since the
-    canonical suite has no tenant concept. Initial smoke evaluation
-    reported honestly: 5/6 families showed no divergence from FIFO at
-    smoke scale (insufficient backlog contention), and the one that
-    diverged was dominated by an admission-gate-conservativeness
-    confound, not a clean fairness signal. Classified
-    **EVALUATION_ONLY**; a full comparative sweep is explicitly not yet
-    ready. `docs/audits/vtc_official_artifact_audit_20260805.md`,
-    `docs/audits/vtc_initial_integration_20260805.md`.
+    Classified "official policy reused with simulator adapter." The
+    initial smoke pass found a methodological confound (5/6 families
+    showed no policy divergence at all -- insufficient backlog
+    contention; the 1 that diverged was admission-gate-driven, traced
+    precisely to a `max_batch_tokens` units mismatch between this
+    simulator's native request-count interpretation and the official
+    code's real token-budget interpretation, not a fairness-ordering
+    effect). The repair pass built three labeled comparison variants
+    (official VTC / matched-admission FIFO via the official FCFS base
+    class / fairness-isolation VTC), retuned all six fairness-extension
+    workloads for verified genuine contention, gated them with
+    `scripts/check_vtc_fairness_headroom.py` (all 6 pass), and ran a
+    108-run comparative sweep independently re-verified with **zero
+    unexplained mismatches**. Result: VTC wins/ties the fairness
+    comparison in 17/18 family x seed combinations, isolated to be an
+    ordering effect, with a real bounded ANWG trade-off (0.680 vs.
+    SCORPIO's 0.984) in the one family designed to expose its
+    SLO-blindness. 45/45 tests pass across three test files. Deployment
+    classification remains **EVALUATION_ONLY**; scientific
+    classification **FOUNDATIONAL_CANDIDATE** (not registered).
+    `docs/audits/vtc_official_artifact_audit_20260805.md`,
+    `docs/audits/vtc_initial_integration_20260805.md`,
+    `docs/audits/vtc_fairness_benchmark_repair_20260805.md`,
+    `docs/audits/vtc_fairness_comparative_evaluation_20260805.md`.
 
 **Full synthesis, in narrative order, with the current (confirmed leakage
 bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).

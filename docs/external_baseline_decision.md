@@ -186,6 +186,23 @@ virtual-counter fairness) address different axes of the same general
 "fairness" concern and are not substitutes for each other -- FairBatching
 remains unimplemented/not prioritized.
 
+**Update (2026-08-05, same day, fairness-benchmark repair):** the initial
+smoke evaluation above was found to be measuring an admission-gate
+confound rather than VTC's fairness mechanism (a `max_batch_tokens` units
+mismatch between this simulator's native request-count interpretation and
+the official code's real token-budget interpretation -- see
+`docs/audits/vtc_fairness_benchmark_repair_20260805.md`). After repair
+(three labeled comparison variants isolating ordering from admission,
+retuned/headroom-gated workloads, a 108-run comparative sweep
+independently re-verified with zero mismatches), VTC wins or ties the
+per-tenant fairness comparison in 17/18 family x seed combinations, with
+a real, bounded ANWG trade-off in the one scenario designed to expose its
+SLO-blindness. Scientific classification:
+**FOUNDATIONAL_CANDIDATE**, scoped to a future fairness-aware composition
+context specifically (not a general ANWG-maximizing candidate) -- not
+registered this task. Full record:
+`docs/audits/vtc_fairness_comparative_evaluation_20260805.md`.
+
 ---
 
 ### B.5 PROSERVE SlideBatching-style Priority-Aware Scheduler

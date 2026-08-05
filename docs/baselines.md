@@ -735,18 +735,22 @@ discriminative workload, WildChat control, is directly comparable between
 the two — see the evaluation doc §6 for the full scope caveat) or any
 claim that PARS is a candidate for selector/deployable-policy inclusion.
 
-### VTC (`baselines/vtc/`) — added 2026-08-05, initial integration + smoke evaluation complete, **EVALUATION_ONLY**
+### VTC (`baselines/vtc/`) — added 2026-08-05, fairness-validated comparative sweep complete, **EVALUATION_ONLY** (FOUNDATIONAL_CANDIDATE, not registered)
 
 Official source: `https://github.com/Ying1123/VTC-artifact` (pinned
 commit `192c2e2014c69c8c6c699d7113c3822e4db632e6`, Apache-2.0). Paper:
 Sheng et al., *"Fairness in Serving Large Language Models,"* OSDI 2024
 (arXiv:2401.00588). Full audit: `docs/audits/
-vtc_official_artifact_audit_20260805.md`. Full smoke-evaluation record:
-`docs/audits/vtc_initial_integration_20260805.md`. Full provenance:
+vtc_official_artifact_audit_20260805.md`. Initial smoke-evaluation record
+(superseded by the repair below): `docs/audits/
+vtc_initial_integration_20260805.md`. Repair methodology: `docs/audits/
+vtc_fairness_benchmark_repair_20260805.md`. Final comparative results +
+independent verification + scientific decision: `docs/audits/
+vtc_fairness_comparative_evaluation_20260805.md`. Full provenance:
 `baselines/vtc/PROVENANCE.md`.
 
-**Status: official fairness-scheduling algorithm integrated and verified;
-no full comparative sweep has been run yet.** The official artifact is a
+**Status: official fairness-scheduling algorithm integrated, verified,
+and evaluated in a fairness-validated comparative sweep.** The official artifact is a
 full S-LoRA-based GPU serving engine with custom CUDA kernels, requiring
 CUDA 11.8/PyTorch ≤2.1.2/`triton==2.1.0` — this development machine's GPU
 (RTX 5060 Ti, Blackwell) cannot build those kernels at all (a
@@ -774,35 +778,71 @@ separate fairness-extension workload families (`balanced_tenants`,
 `returning_inactive_tenant`, `priority_fairness_conflict`), reusing
 `Request.class_id` as the tenant id rather than touching core types.
 
-**Smoke evaluation, reported honestly rather than cherry-picked:**
-comparing `fifo`/`vtc_fairness_reference`/`shortest_prompt_first`/
-`scorpio_style_slo_guard` at smoke scale, 5 of 6 fairness-extension
-families showed **no divergence at all** between VTC and FIFO — the
-capacity/demand ratio used never produced sustained admission backlog, so
-scheduling order never had to break a real tie. The one family that did
-diverge (`heterogeneous_token_sizes`) was dominated by a **disclosed
-methodological confound**: the official `VTCReqQueue`'s memory-safety
-admission gate reserves KV budget for a request's full *predicted* decode
-length, while every comparison policy here uses a much simpler
-current-usage-only check — this makes VTC look far more
-throughput-constrained under tight capacity for a reason unrelated to its
-fairness mechanism. Full detail and a smaller isolated reproduction:
-`docs/audits/vtc_initial_integration_20260805.md`.
+**Initial smoke evaluation found a methodological confound, which was then
+diagnosed and repaired (2026-08-05, same day).** The first smoke pass
+(`docs/audits/vtc_initial_integration_20260805.md`) found 5 of 6 families
+showed no policy divergence at all (insufficient backlog contention), and
+the one that diverged (`heterogeneous_token_sizes`) looked confound-driven
+rather than fairness-driven. `docs/audits/
+vtc_fairness_benchmark_repair_20260805.md` diagnosed this precisely: a
+**units mismatch** — this simulator's native `_feasible_on_gpu` reads
+`GPUConfig.max_batch_tokens` as a per-step ACTIVE-REQUEST-COUNT cap
+(Phase-1 simplification), while the official `VTCReqQueue`/`ReqQueue` code
+reads the same field as a real cumulative PROMPT-TOKEN budget — feeding
+one number into both interpretations created a confound unrelated to
+VTC's fairness mechanism (confirmed directly: `MatchedAdmissionFIFOPolicy`,
+FCFS ordering under VTC's exact same official admission gate, reproduced
+VTC's identical 0.036 completion fraction in that family, proving the
+collapse was 100% admission-driven, not ordering-driven).
 
-**Final classification: EVALUATION_ONLY.** Not registered as a
-selector-candidate or deployable policy. A full comparative sweep is
-explicitly **not** ready — see that document's "Exact next action" for
-what a properly-tuned follow-up pass would need to do differently.
+**Repair:** three labeled comparison variants
+(`baselines/vtc/adapter/variants.py`) — **A** official VTC, **B**
+matched-admission FIFO (via the official, unmodified `ReqQueue` FCFS base
+class VTCReqQueue itself subclasses), **C** fairness-isolation VTC
+(capacity rescaled to avoid the units mismatch, still 100% unmodified
+official code). All six fairness-extension workloads were retuned for
+genuine, verified backlog contention and gated by
+`scripts/check_vtc_fairness_headroom.py` (all 6 pass every threshold) before
+any comparative sweep ran. 20 additional tests (16 headroom + 4
+hand-verifiable micro-traces) lock in the repair.
+
+**Fairness-validated comparative sweep** (6 policies × 6 families × 3
+seeds = 108 runs, independently re-verified with **zero unexplained
+mismatches** via a from-scratch recomputation,
+`scripts/verify_vtc_fairness_sweep.py`): VTC achieves the strictly-best or
+tied-best checkpoint Jain's-index in **17 of 18** family×seed combinations
+(13 outright wins, 4 ties), losing only in `bursty_tenant` (a small, real,
+disclosed negative result). `official_vtc` and `fairness_isolation_vtc`
+are numerically indistinguishable throughout the repaired sweep,
+confirming the fairness wins are an ordering effect, not an admission-gate
+artifact. The trade-off is real and bounded: in
+`priority_fairness_conflict` (engineered to expose VTC's blindness to
+`priority`/`slo_deadline`), VTC has the WORST ANWG of all six policies
+(0.680 vs. `scorpio_style_slo_guard`'s 0.984) and a 38.1% tight-SLO
+violation rate (SCORPIO: 0.0%) in exchange for near-perfect fairness
+(Jain 1.000).
+
+**Final classification: EVALUATION_ONLY** (deployment status, unchanged —
+still a wrapped external adapter, single-GPU only). **Scientific
+classification: FOUNDATIONAL_CANDIDATE**, scoped specifically to VTC's
+fairness objective as a candidate primitive for future fairness-aware
+composition, not as a general ANWG-maximizing policy replacement — see
+`docs/audits/vtc_fairness_comparative_evaluation_20260805.md` for the full
+decision record. **Not registered** as a selector-candidate or deployable
+policy this task, per explicit instruction (eligibility and registration
+are deliberately kept separate).
 
 **Safe claim:** "VTC's official fairness-scheduling algorithm
 (`VTCReqQueue`) is integrated and executed verbatim, unmodified, inside
-this project's simulator via a translation adapter; fidelity-verified
-against the raw official class directly; an initial smoke comparison
-against three native policies did not cleanly demonstrate a fairness
-advantage at the capacity/workload scale tested, for two disclosed,
-understood reasons (insufficient backlog contention in most families; an
-admission-gate-conservativeness confound in the one family that diverged)."
-**Unsafe claim:** "VTC improves fairness over FIFO in this simulator" (not
-demonstrated by this pass — see above) or "VTC ran as the official GPU
-serving system" (it did not; only the scheduling algorithm ran, the GPU
-engine layer is currently unbuildable on this hardware).
+this project's simulator; a headroom-gated, independently-verified
+comparative sweep across 6 dedicated fairness workloads shows VTC achieves
+the best-or-tied fairness outcome in 17/18 family×seed combinations, with
+a real, bounded, well-understood throughput/SLO trade-off in the one
+scenario designed to expose it; classified a scientific
+FOUNDATIONAL_CANDIDATE for a future fairness-aware composition context,
+not registered this task."
+**Unsafe claim:** "VTC is ready for foundational-library registration"
+(explicitly deferred — native, non-wrapped reimplementation is the
+disclosed next step) or "VTC ran as the official GPU serving system" (it
+did not; only the scheduling algorithm ran, the GPU engine layer is
+currently unbuildable on this hardware).

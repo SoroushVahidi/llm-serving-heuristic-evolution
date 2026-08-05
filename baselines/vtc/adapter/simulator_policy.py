@@ -125,7 +125,28 @@ class VTCFairnessPolicy(BasePolicy):
         output_price: Optional[float] = None,
         cost_func: str = provenance.SUPPORTED_COST_FUNC,
         clone_path: Optional[str] = None,
+        batch_token_budget_override: Optional[int] = None,
     ):
+        """
+        batch_token_budget_override: if given, ``self._vtc.batch_max_tokens``
+        is set to this value every step instead of mirroring
+        ``gpu.max_batch_tokens``. Exists to build the "fairness-isolation"
+        comparison variant (see docs/audits/vtc_fairness_benchmark_repair_20260805.md
+        §3, variant C): this project's GPUConfig.max_batch_tokens is
+        interpreted as a per-step ACTIVE-REQUEST-COUNT cap by every native
+        policy's ``BasePolicy._feasible_on_gpu`` (``new_batch = new_count``,
+        a documented Phase-1 simplification), but the official
+        ``VTCReqQueue``/``ReqQueue`` code reads the identically-named field
+        as a real cumulative PROMPT-TOKEN budget
+        (``new_batch_total_tokens + req.input_len <= self.batch_max_tokens``).
+        Feeding the same GPUConfig number into both interpretations is a
+        units mismatch, not a fairness signal -- this override lets the
+        adapter be fed a token budget correctly scaled to the workload's
+        actual token sizes, without touching a single line of the official
+        source. Never used for "official VTC" (variant A); always None
+        there. When None (the default), behavior is unchanged from before
+        this parameter existed.
+        """
         if cost_func != provenance.SUPPORTED_COST_FUNC:
             raise UnsupportedCostFunctionError(
                 f"cost_func={cost_func!r} is not supported; only "
@@ -151,6 +172,7 @@ class VTCFairnessPolicy(BasePolicy):
         self._output_price = provenance.DEFAULT_OUTPUT_PRICE if output_price is None else output_price
         self._cost_func = cost_func
         self._lora_ranks = {t: 0 for t in self._known_tenants}
+        self._batch_token_budget_override = batch_token_budget_override
 
         self._vtc = None
         self._known_request_ids: set = set()
@@ -276,7 +298,11 @@ class VTCFairnessPolicy(BasePolicy):
         self._charge_decode_deltas(gpu)
 
         self._vtc.max_total_tokens = gpu.max_kv_tokens
-        self._vtc.batch_max_tokens = gpu.max_batch_tokens
+        self._vtc.batch_max_tokens = (
+            self._batch_token_budget_override
+            if self._batch_token_budget_override is not None
+            else gpu.max_batch_tokens
+        )
         self._vtc.running_max_req_size = gpu.max_active_sequences
 
         current_batch = self._build_current_batch(gpu)
