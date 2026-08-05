@@ -676,7 +676,7 @@ existing SJF-proxy policies)"
 tied with FIFO and the theoretical oracle in the one regime tested so far;
 see the audit doc for the full result set and its regime-specific caveat)
 
-### PARS-Serve-2026 (`baselines/pars/`) — integration started 2026-08-04, **TRAINING IN PROGRESS, EVALUATION NOT YET RUN**
+### PARS-Serve-2026 (`baselines/pars/`) — integration complete, **EVALUATED, INDEPENDENTLY VERIFIED, EVALUATION_ONLY**
 
 Official source: `https://github.com/SPEAR-UIC/PARS` (pinned commit
 `fd4e125b65bb73aef5eccafa79c2509434be61ec`). Paper: Tao et al., *"Ranking
@@ -687,33 +687,50 @@ already referenced in `docs/external_baseline_coverage_report.md`
 (Zheng et al., NeurIPS 2023, now called "PARS-2023" there) — see
 `baselines/pars/PROVENANCE.md`'s naming-disambiguation note.**
 
-**Status: official code integrated and verified; a real checkpoint is
-being trained locally** (the official repository ships no pretrained
+**Status: official code integrated and verified; a real checkpoint was
+trained locally** (the official repository ships no pretrained
 checkpoint — only training code — a real `bert-base-uncased`-based
-pairwise ranker is being trained here with the official, unmodified
-training script). Every official script (preprocessing, training) runs
-completely unmodified; the adapter (`baselines/pars/adapter/`)
-dynamically imports the official `PairwiseRanker` class from a local,
-non-committed clone at runtime rather than duplicating it. **Known
-license gap, disclosed not hidden:** the official repository has no
-LICENSE file at all — see `baselines/pars/PROVENANCE.md` for the full
-explanation and the explicit, user-directed decision to proceed with
-local, non-commercial research use.
+pairwise ranker was trained here with the official, unmodified training
+script: 3 epochs, `best_val_accuracy=0.9141`, checkpoint SHA256
+`d54be0871ebc9f2c2538b4e53da7f45cb57ae678563488822cdc1694bc33eb27`).
+Every official script (preprocessing, training) runs completely
+unmodified; the adapter (`baselines/pars/adapter/`) dynamically imports
+the official `PairwiseRanker` class from a local, non-committed clone at
+runtime rather than duplicating it. 22/22 adapter unit tests and 10/10
+real-checkpoint fidelity tests pass. **Known license gap, disclosed not
+hidden:** the official repository has no LICENSE file at all — see
+`baselines/pars/PROVENANCE.md` for the full explanation and the explicit,
+user-directed decision to proceed with local, non-commercial research
+use.
 
-**Not yet evaluated against any other policy** — do not treat this
-baseline as having any comparative result until
-`docs/audits/pars_first_comparative_evaluation_20260804.md` exists and is
-independently verified (mirroring vLLM-LTR's own recovery/verification
-process). Full implementation record:
-`docs/audits/pars_baseline_implementation_20260804.md`. Also see
+**Comparative evaluation complete and independently verified**
+(WildChat control + all 7 accepted canonical-suite families, 8 workloads
+× 3 seeds × 10 policies, 60,830 request-level rows, zero unexplained
+mismatches): PARS never ranks above 5th of 10 policies in any family,
+records zero unique wins across all 8 families, and is statistically
+significantly worse than the best policy in 5 of 8 families — while
+being significantly better than FIFO/EDF in 3 burst/long-tail-heavy
+families, showing its length-prediction signal is real but consistently
+dominated by simpler heuristics (`shortest_output_first`,
+`estimated_service_time_first`) and by this project's best
+fixed/adaptive policies (`scorpio_style_slo_guard`,
+`regression_anwg_selector`). **Final classification: EVALUATION_ONLY** —
+not promoted to any selector-candidate or deployable-policy list. Full
+implementation record: `docs/audits/pars_baseline_implementation_20260804.md`.
+Full evaluation, recovery, and verification record:
+`docs/audits/pars_first_comparative_evaluation_20260804.md`. Also see
 `docs/BASELINE_STATUS.md` for the single-table cross-baseline status
 index.
 
 **Safe claim:** "PARS-Serve-2026 official code (training/scoring
-pipeline) integrated as an evaluation-only external baseline; a local
-checkpoint is being trained with the unmodified official training script
-since no pretrained checkpoint is released; not yet evaluated against any
-other policy."  
-**Unsafe claim:** any claim that PARS-Serve-2026 has been evaluated,
-compared against another policy, or shown to win/lose/tie anything — no
-such run has completed yet.
+pipeline) integrated as an evaluation-only external baseline with a
+locally-trained, hash-verified checkpoint; evaluated head-to-head against
+9 other policies across WildChat control and all 7 accepted
+canonical-suite families; classified EVALUATION_ONLY — zero unique wins,
+consistently dominated by simpler/existing policies in discriminative
+regimes, though statistically better than FIFO/EDF in burst-heavy
+regimes."  
+**Unsafe claim:** "PARS beats/matches vLLM-LTR" (only one non-
+discriminative workload, WildChat control, is directly comparable between
+the two — see the evaluation doc §6 for the full scope caveat) or any
+claim that PARS is a candidate for selector/deployable-policy inclusion.

@@ -14,9 +14,10 @@
 > started; active issue:
 > [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6).
 > A separate, parallel baseline-integration effort is also underway on
-> this branch (vLLM-LTR complete/evaluation-only; PARS-Serve-2026 training
-> in progress -- see [BASELINE_STATUS.md](BASELINE_STATUS.md)); it does
-> not affect CC5/CC6 status.
+> this branch (vLLM-LTR complete/evaluation-only; PARS-Serve-2026 complete,
+> independently verified, EVALUATION_ONLY -- see
+> [BASELINE_STATUS.md](BASELINE_STATUS.md)); it does not affect CC5/CC6
+> status.
 > Resume that branch from
 > [RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md).
 > The document below remains a historical numbered-phase roadmap and Selector
@@ -88,18 +89,25 @@ Development did not stop at the Phase 2C pause below -- it continued on an
    confirming the WildChat-only comparison was hiding real
    admission-control value. `docs/audits/canonical_benchmark_suite_design_20260804.md`,
    `benchmarks/canonical_suite/`.
-10. PARS-Serve-2026 baseline integration begun 2026-08-04 (**training in
-    progress as of this writing; evaluation not yet run** -- see
+10. PARS-Serve-2026 baseline integration begun 2026-08-04, **complete and
+    independently verified as of 2026-08-05** (see
     `docs/BASELINE_STATUS.md` for current status): official code
     (`SPEAR-UIC/PARS`, pinned commit `fd4e125b65bb73aef5eccafa79c2509434be61ec`)
     integrated unmodified; no pretrained checkpoint is released, so a
-    real `bert-base-uncased` pairwise ranker is being trained locally with
-    the official, unmodified training script. Named "PARS-Serve-2026" in
-    this project's prose to disambiguate from an unrelated, earlier "PARS"
-    already referenced elsewhere in this repo's docs (now "PARS-2023").
-    Known license gap (no upstream LICENSE file) disclosed, not hidden --
-    see `baselines/pars/PROVENANCE.md`.
-    `docs/audits/pars_baseline_implementation_20260804.md`.
+    real `bert-base-uncased` pairwise ranker was trained locally with the
+    official, unmodified training script (`best_val_accuracy=0.9141`,
+    checkpoint hash-verified). Named "PARS-Serve-2026" in this project's
+    prose to disambiguate from an unrelated, earlier "PARS" already
+    referenced elsewhere in this repo's docs (now "PARS-2023"). Known
+    license gap (no upstream LICENSE file) disclosed, not hidden -- see
+    `baselines/pars/PROVENANCE.md`. Comparative evaluation across WildChat
+    control + all 7 accepted canonical-suite families completed via a
+    combination of the original run (3 families) and per-family timeout
+    recovery (5 families, after the original run's 10800s timeout killed
+    it mid-flight); classified **EVALUATION_ONLY** -- zero unique wins
+    across 8 families, dominated by simpler existing policies in every
+    discriminative regime. `docs/audits/pars_baseline_implementation_20260804.md`,
+    `docs/audits/pars_first_comparative_evaluation_20260804.md`.
 
 **Full synthesis, in narrative order, with the current (confirmed leakage
 bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).

@@ -258,15 +258,25 @@ For the next development phase, implement in this order:
 not a fulfillment of any B.1–B.5 item — B.1 was already fulfilled by
 vLLM-LTR above): PARS-Serve-2026** (`baselines/pars/`, official repo
 `SPEAR-UIC/PARS`, paper Tao et al., ISC High Performance 2026,
-arXiv:2510.03243). **Status as of this writing: TRAINING IN PROGRESS,
-EVALUATION NOT YET RUN** — official preprocessing/training code integrated
-and running unmodified; no pretrained checkpoint is released, so a real
-checkpoint is being trained locally. Known license gap (no upstream
-LICENSE file) disclosed in `baselines/pars/PROVENANCE.md`. Named
-"PARS-Serve-2026" in prose to disambiguate from this document's own
-unrelated "PARS-2023-like" reference (B.1's original rationale text
-above, and `docs/external_baseline_coverage_report.md` §15, both refer to
-a *different* 2023 paper). See `docs/BASELINE_STATUS.md` for the current
-cross-baseline status index and
+arXiv:2510.03243). **Status: COMPLETE, INDEPENDENTLY VERIFIED,
+EVALUATION_ONLY** — official preprocessing/training code integrated and
+run unmodified; no pretrained checkpoint is released, so a real
+`bert-base-uncased` checkpoint was trained locally
+(`best_val_accuracy=0.9141`, hash-verified `d54be087...c33eb27`). Known
+license gap (no upstream LICENSE file) disclosed in
+`baselines/pars/PROVENANCE.md`. Named "PARS-Serve-2026" in prose to
+disambiguate from this document's own unrelated "PARS-2023-like"
+reference (B.1's original rationale text above, and
+`docs/external_baseline_coverage_report.md` §15, both refer to a
+*different* 2023 paper). Evaluated head-to-head against 9 other policies
+across WildChat control and all 7 accepted canonical-suite families (the
+first baseline on this branch evaluated on the full canonical suite);
+zero unique wins across 8 families, best rank 5th of 10, significantly
+worse than the top policy in 5 of 8 families, significantly better than
+FIFO/EDF in 3 burst-heavy families — final classification
+**EVALUATION_ONLY**, not promoted to any selector-candidate list. See
+`docs/BASELINE_STATUS.md` for the current cross-baseline status index,
 `docs/audits/pars_baseline_implementation_20260804.md` for the full
-implementation record.
+implementation record, and
+`docs/audits/pars_first_comparative_evaluation_20260804.md` for the full
+evaluation, recovery, and independent-verification record.
