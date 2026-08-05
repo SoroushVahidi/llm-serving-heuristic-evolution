@@ -1,0 +1,842 @@
+[
+  {
+    "policy": "fifo",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 60,
+    "num_total": 60,
+    "jains_fairness_index_normalized_service": 0.9933908948952465,
+    "max_min_fairness_ratio": 0.6644754861681731,
+    "service_disparity_tokens": 1225,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 11,
+        "total_service_tokens": 3651,
+        "mean_queuing_delay": 0.000502510875768029,
+        "p95_queuing_delay": 0.0008449948955571579
+      },
+      "tenant_1": {
+        "n_completed": 11,
+        "total_service_tokens": 3348,
+        "mean_queuing_delay": 0.0003788430326103613,
+        "p95_queuing_delay": 0.0006786643469609555
+      },
+      "tenant_2": {
+        "n_completed": 9,
+        "total_service_tokens": 2516,
+        "mean_queuing_delay": 0.0004947238578079598,
+        "p95_queuing_delay": 0.0009097285328096838
+      },
+      "tenant_3": {
+        "n_completed": 7,
+        "total_service_tokens": 2426,
+        "mean_queuing_delay": 0.00047450654494085587,
+        "p95_queuing_delay": 0.0006042165916233522
+      }
+    },
+    "workload_family": "balanced_tenants"
+  },
+  {
+    "policy": "vtc_fairness_reference",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 60,
+    "num_total": 60,
+    "jains_fairness_index_normalized_service": 0.9933908948952465,
+    "max_min_fairness_ratio": 0.6644754861681731,
+    "service_disparity_tokens": 1225,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 11,
+        "total_service_tokens": 3651,
+        "mean_queuing_delay": 0.000502510875768029,
+        "p95_queuing_delay": 0.0008449948955571579
+      },
+      "tenant_1": {
+        "n_completed": 11,
+        "total_service_tokens": 3348,
+        "mean_queuing_delay": 0.0003788430326103613,
+        "p95_queuing_delay": 0.0006786643469609555
+      },
+      "tenant_2": {
+        "n_completed": 9,
+        "total_service_tokens": 2516,
+        "mean_queuing_delay": 0.0004947238578079598,
+        "p95_queuing_delay": 0.0009097285328096838
+      },
+      "tenant_3": {
+        "n_completed": 7,
+        "total_service_tokens": 2426,
+        "mean_queuing_delay": 0.00047450654494085587,
+        "p95_queuing_delay": 0.0006042165916233522
+      }
+    },
+    "workload_family": "balanced_tenants"
+  },
+  {
+    "policy": "shortest_prompt_first",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 60,
+    "num_total": 60,
+    "jains_fairness_index_normalized_service": 0.9933908948952465,
+    "max_min_fairness_ratio": 0.6644754861681731,
+    "service_disparity_tokens": 1225,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 11,
+        "total_service_tokens": 3651,
+        "mean_queuing_delay": 0.000502510875768029,
+        "p95_queuing_delay": 0.0008449948955571579
+      },
+      "tenant_1": {
+        "n_completed": 11,
+        "total_service_tokens": 3348,
+        "mean_queuing_delay": 0.0003788430326103613,
+        "p95_queuing_delay": 0.0006786643469609555
+      },
+      "tenant_2": {
+        "n_completed": 9,
+        "total_service_tokens": 2516,
+        "mean_queuing_delay": 0.0004947238578079598,
+        "p95_queuing_delay": 0.0009097285328096838
+      },
+      "tenant_3": {
+        "n_completed": 7,
+        "total_service_tokens": 2426,
+        "mean_queuing_delay": 0.00047450654494085587,
+        "p95_queuing_delay": 0.0006042165916233522
+      }
+    },
+    "workload_family": "balanced_tenants"
+  },
+  {
+    "policy": "scorpio_style_slo_guard",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 60,
+    "num_total": 60,
+    "jains_fairness_index_normalized_service": 0.9933908948952465,
+    "max_min_fairness_ratio": 0.6644754861681731,
+    "service_disparity_tokens": 1225,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 11,
+        "total_service_tokens": 3651,
+        "mean_queuing_delay": 0.000502510875768029,
+        "p95_queuing_delay": 0.0008449948955571579
+      },
+      "tenant_1": {
+        "n_completed": 11,
+        "total_service_tokens": 3348,
+        "mean_queuing_delay": 0.0003788430326103613,
+        "p95_queuing_delay": 0.0006786643469609555
+      },
+      "tenant_2": {
+        "n_completed": 9,
+        "total_service_tokens": 2516,
+        "mean_queuing_delay": 0.0004947238578079598,
+        "p95_queuing_delay": 0.0009097285328096838
+      },
+      "tenant_3": {
+        "n_completed": 7,
+        "total_service_tokens": 2426,
+        "mean_queuing_delay": 0.00047450654494085587,
+        "p95_queuing_delay": 0.0006042165916233522
+      }
+    },
+    "workload_family": "balanced_tenants"
+  },
+  {
+    "policy": "fifo",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 78,
+    "num_total": 78,
+    "jains_fairness_index_normalized_service": 0.7908224009587356,
+    "max_min_fairness_ratio": 0.0,
+    "service_disparity_tokens": 9533,
+    "starved_tenants": 1,
+    "n_tenants": 5,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 35,
+        "total_service_tokens": 9533,
+        "mean_queuing_delay": 0.00036081121590117606,
+        "p95_queuing_delay": 0.000749082585057792
+      },
+      "light_0": {
+        "n_completed": 0,
+        "total_service_tokens": 0,
+        "mean_queuing_delay": NaN,
+        "p95_queuing_delay": NaN
+      },
+      "light_1": {
+        "n_completed": 1,
+        "total_service_tokens": 202,
+        "mean_queuing_delay": 0.0005319341201293071,
+        "p95_queuing_delay": 0.0005319341201293071
+      },
+      "light_2": {
+        "n_completed": 5,
+        "total_service_tokens": 1293,
+        "mean_queuing_delay": 0.0005894529481500488,
+        "p95_queuing_delay": 0.0009338630712916185
+      },
+      "light_3": {
+        "n_completed": 1,
+        "total_service_tokens": 248,
+        "mean_queuing_delay": 0.0006325316667370462,
+        "p95_queuing_delay": 0.0006325316667370462
+      }
+    },
+    "workload_family": "one_heavy_hitter"
+  },
+  {
+    "policy": "vtc_fairness_reference",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 78,
+    "num_total": 78,
+    "jains_fairness_index_normalized_service": 0.7908224009587356,
+    "max_min_fairness_ratio": 0.0,
+    "service_disparity_tokens": 9533,
+    "starved_tenants": 1,
+    "n_tenants": 5,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 35,
+        "total_service_tokens": 9533,
+        "mean_queuing_delay": 0.00036081121590117606,
+        "p95_queuing_delay": 0.000749082585057792
+      },
+      "light_0": {
+        "n_completed": 0,
+        "total_service_tokens": 0,
+        "mean_queuing_delay": NaN,
+        "p95_queuing_delay": NaN
+      },
+      "light_1": {
+        "n_completed": 1,
+        "total_service_tokens": 202,
+        "mean_queuing_delay": 0.0005319341201293071,
+        "p95_queuing_delay": 0.0005319341201293071
+      },
+      "light_2": {
+        "n_completed": 5,
+        "total_service_tokens": 1293,
+        "mean_queuing_delay": 0.0005894529481500488,
+        "p95_queuing_delay": 0.0009338630712916185
+      },
+      "light_3": {
+        "n_completed": 1,
+        "total_service_tokens": 248,
+        "mean_queuing_delay": 0.0006325316667370462,
+        "p95_queuing_delay": 0.0006325316667370462
+      }
+    },
+    "workload_family": "one_heavy_hitter"
+  },
+  {
+    "policy": "shortest_prompt_first",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 78,
+    "num_total": 78,
+    "jains_fairness_index_normalized_service": 0.7908224009587356,
+    "max_min_fairness_ratio": 0.0,
+    "service_disparity_tokens": 9533,
+    "starved_tenants": 1,
+    "n_tenants": 5,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 35,
+        "total_service_tokens": 9533,
+        "mean_queuing_delay": 0.00036081121590117606,
+        "p95_queuing_delay": 0.000749082585057792
+      },
+      "light_0": {
+        "n_completed": 0,
+        "total_service_tokens": 0,
+        "mean_queuing_delay": NaN,
+        "p95_queuing_delay": NaN
+      },
+      "light_1": {
+        "n_completed": 1,
+        "total_service_tokens": 202,
+        "mean_queuing_delay": 0.0005319341201293071,
+        "p95_queuing_delay": 0.0005319341201293071
+      },
+      "light_2": {
+        "n_completed": 5,
+        "total_service_tokens": 1293,
+        "mean_queuing_delay": 0.0005894529481500488,
+        "p95_queuing_delay": 0.0009338630712916185
+      },
+      "light_3": {
+        "n_completed": 1,
+        "total_service_tokens": 248,
+        "mean_queuing_delay": 0.0006325316667370462,
+        "p95_queuing_delay": 0.0006325316667370462
+      }
+    },
+    "workload_family": "one_heavy_hitter"
+  },
+  {
+    "policy": "scorpio_style_slo_guard",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 78,
+    "num_total": 78,
+    "jains_fairness_index_normalized_service": 0.7908224009587356,
+    "max_min_fairness_ratio": 0.0,
+    "service_disparity_tokens": 9533,
+    "starved_tenants": 1,
+    "n_tenants": 5,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 35,
+        "total_service_tokens": 9533,
+        "mean_queuing_delay": 0.00036081121590117606,
+        "p95_queuing_delay": 0.000749082585057792
+      },
+      "light_0": {
+        "n_completed": 0,
+        "total_service_tokens": 0,
+        "mean_queuing_delay": NaN,
+        "p95_queuing_delay": NaN
+      },
+      "light_1": {
+        "n_completed": 1,
+        "total_service_tokens": 202,
+        "mean_queuing_delay": 0.0005319341201293071,
+        "p95_queuing_delay": 0.0005319341201293071
+      },
+      "light_2": {
+        "n_completed": 5,
+        "total_service_tokens": 1293,
+        "mean_queuing_delay": 0.0005894529481500488,
+        "p95_queuing_delay": 0.0009338630712916185
+      },
+      "light_3": {
+        "n_completed": 1,
+        "total_service_tokens": 248,
+        "mean_queuing_delay": 0.0006325316667370462,
+        "p95_queuing_delay": 0.0006325316667370462
+      }
+    },
+    "workload_family": "one_heavy_hitter"
+  },
+  {
+    "policy": "fifo",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 55,
+    "num_total": 55,
+    "jains_fairness_index_normalized_service": 0.7154996601215015,
+    "max_min_fairness_ratio": 0.10477122051950875,
+    "service_disparity_tokens": 8237,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 7,
+        "total_service_tokens": 964,
+        "mean_queuing_delay": 0.0004640244370380004,
+        "p95_queuing_delay": 0.0009189628188579491
+      },
+      "long_prompts": {
+        "n_completed": 10,
+        "total_service_tokens": 9201,
+        "mean_queuing_delay": 0.00040675322289973614,
+        "p95_queuing_delay": 0.0008919394456952112
+      },
+      "short_outputs": {
+        "n_completed": 10,
+        "total_service_tokens": 2608,
+        "mean_queuing_delay": 0.0005239254891182654,
+        "p95_queuing_delay": 0.0008990107040105499
+      },
+      "long_outputs": {
+        "n_completed": 10,
+        "total_service_tokens": 6890,
+        "mean_queuing_delay": 0.00034417310339273364,
+        "p95_queuing_delay": 0.0005856939987927134
+      }
+    },
+    "workload_family": "heterogeneous_token_sizes"
+  },
+  {
+    "policy": "vtc_fairness_reference",
+    "anwg": 0.03636363636363636,
+    "completion_fraction": 0.03636363636363636,
+    "slo_violation_rate": 0.0,
+    "num_completed": 2,
+    "num_total": 55,
+    "jains_fairness_index_normalized_service": 0.48339654982258196,
+    "max_min_fairness_ratio": 0.0,
+    "service_disparity_tokens": 905,
+    "starved_tenants": 2,
+    "n_tenants": 4,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 0,
+        "total_service_tokens": 0,
+        "mean_queuing_delay": NaN,
+        "p95_queuing_delay": NaN
+      },
+      "long_prompts": {
+        "n_completed": 0,
+        "total_service_tokens": 0,
+        "mean_queuing_delay": NaN,
+        "p95_queuing_delay": NaN
+      },
+      "short_outputs": {
+        "n_completed": 1,
+        "total_service_tokens": 622,
+        "mean_queuing_delay": 0.0004360055555122089,
+        "p95_queuing_delay": 0.0004360055555122089
+      },
+      "long_outputs": {
+        "n_completed": 1,
+        "total_service_tokens": 905,
+        "mean_queuing_delay": 0.00039688145648644757,
+        "p95_queuing_delay": 0.00039688145648644757
+      }
+    },
+    "workload_family": "heterogeneous_token_sizes"
+  },
+  {
+    "policy": "shortest_prompt_first",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 55,
+    "num_total": 55,
+    "jains_fairness_index_normalized_service": 0.7154996601215015,
+    "max_min_fairness_ratio": 0.10477122051950875,
+    "service_disparity_tokens": 8237,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 7,
+        "total_service_tokens": 964,
+        "mean_queuing_delay": 0.0004640244370380004,
+        "p95_queuing_delay": 0.0009189628188579491
+      },
+      "long_prompts": {
+        "n_completed": 10,
+        "total_service_tokens": 9201,
+        "mean_queuing_delay": 0.00040675322289973614,
+        "p95_queuing_delay": 0.0008919394456952112
+      },
+      "short_outputs": {
+        "n_completed": 10,
+        "total_service_tokens": 2608,
+        "mean_queuing_delay": 0.0005239254891182654,
+        "p95_queuing_delay": 0.0008990107040105499
+      },
+      "long_outputs": {
+        "n_completed": 10,
+        "total_service_tokens": 6890,
+        "mean_queuing_delay": 0.00034417310339273364,
+        "p95_queuing_delay": 0.0005856939987927134
+      }
+    },
+    "workload_family": "heterogeneous_token_sizes"
+  },
+  {
+    "policy": "scorpio_style_slo_guard",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 55,
+    "num_total": 55,
+    "jains_fairness_index_normalized_service": 0.7154996601215015,
+    "max_min_fairness_ratio": 0.10477122051950875,
+    "service_disparity_tokens": 8237,
+    "starved_tenants": 0,
+    "n_tenants": 4,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 7,
+        "total_service_tokens": 964,
+        "mean_queuing_delay": 0.0004640244370380004,
+        "p95_queuing_delay": 0.0009189628188579491
+      },
+      "long_prompts": {
+        "n_completed": 10,
+        "total_service_tokens": 9201,
+        "mean_queuing_delay": 0.00040675322289973614,
+        "p95_queuing_delay": 0.0008919394456952112
+      },
+      "short_outputs": {
+        "n_completed": 10,
+        "total_service_tokens": 2608,
+        "mean_queuing_delay": 0.0005239254891182654,
+        "p95_queuing_delay": 0.0008990107040105499
+      },
+      "long_outputs": {
+        "n_completed": 10,
+        "total_service_tokens": 6890,
+        "mean_queuing_delay": 0.00034417310339273364,
+        "p95_queuing_delay": 0.0005856939987927134
+      }
+    },
+    "workload_family": "heterogeneous_token_sizes"
+  },
+  {
+    "policy": "fifo",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 134,
+    "num_total": 134,
+    "jains_fairness_index_normalized_service": 0.9996054747296909,
+    "max_min_fairness_ratio": 0.2714448315110544,
+    "service_disparity_tokens": 21123,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 92,
+        "total_service_tokens": 28993,
+        "mean_queuing_delay": 0.0004901860058578281,
+        "p95_queuing_delay": 0.0008881160939072652
+      },
+      "steady": {
+        "n_completed": 24,
+        "total_service_tokens": 7870,
+        "mean_queuing_delay": 0.00048463410775031676,
+        "p95_queuing_delay": 0.0009556910961752152
+      }
+    },
+    "workload_family": "bursty_tenant"
+  },
+  {
+    "policy": "vtc_fairness_reference",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 134,
+    "num_total": 134,
+    "jains_fairness_index_normalized_service": 0.9996054747296909,
+    "max_min_fairness_ratio": 0.2714448315110544,
+    "service_disparity_tokens": 21123,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 92,
+        "total_service_tokens": 28993,
+        "mean_queuing_delay": 0.0004901860058578281,
+        "p95_queuing_delay": 0.0008881160939072652
+      },
+      "steady": {
+        "n_completed": 24,
+        "total_service_tokens": 7870,
+        "mean_queuing_delay": 0.00048463410775031676,
+        "p95_queuing_delay": 0.0009556910961752152
+      }
+    },
+    "workload_family": "bursty_tenant"
+  },
+  {
+    "policy": "shortest_prompt_first",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 134,
+    "num_total": 134,
+    "jains_fairness_index_normalized_service": 0.9996054747296909,
+    "max_min_fairness_ratio": 0.2714448315110544,
+    "service_disparity_tokens": 21123,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 92,
+        "total_service_tokens": 28993,
+        "mean_queuing_delay": 0.0004901860058578281,
+        "p95_queuing_delay": 0.0008881160939072652
+      },
+      "steady": {
+        "n_completed": 24,
+        "total_service_tokens": 7870,
+        "mean_queuing_delay": 0.00048463410775031676,
+        "p95_queuing_delay": 0.0009556910961752152
+      }
+    },
+    "workload_family": "bursty_tenant"
+  },
+  {
+    "policy": "scorpio_style_slo_guard",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 134,
+    "num_total": 134,
+    "jains_fairness_index_normalized_service": 0.9996054747296909,
+    "max_min_fairness_ratio": 0.2714448315110544,
+    "service_disparity_tokens": 21123,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 92,
+        "total_service_tokens": 28993,
+        "mean_queuing_delay": 0.0004901860058578281,
+        "p95_queuing_delay": 0.0008881160939072652
+      },
+      "steady": {
+        "n_completed": 24,
+        "total_service_tokens": 7870,
+        "mean_queuing_delay": 0.00048463410775031676,
+        "p95_queuing_delay": 0.0009556910961752152
+      }
+    },
+    "workload_family": "bursty_tenant"
+  },
+  {
+    "policy": "fifo",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 221,
+    "num_total": 221,
+    "jains_fairness_index_normalized_service": 0.994580085969029,
+    "max_min_fairness_ratio": 0.8445073250878554,
+    "service_disparity_tokens": 3407,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 59,
+        "total_service_tokens": 18504,
+        "mean_queuing_delay": 0.0005026803467827157,
+        "p95_queuing_delay": 0.0009448130624925
+      },
+      "continuous": {
+        "n_completed": 81,
+        "total_service_tokens": 21911,
+        "mean_queuing_delay": 0.0005214248982885708,
+        "p95_queuing_delay": 0.0008938652559464799
+      }
+    },
+    "workload_family": "returning_inactive_tenant"
+  },
+  {
+    "policy": "vtc_fairness_reference",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 221,
+    "num_total": 221,
+    "jains_fairness_index_normalized_service": 0.994580085969029,
+    "max_min_fairness_ratio": 0.8445073250878554,
+    "service_disparity_tokens": 3407,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 59,
+        "total_service_tokens": 18504,
+        "mean_queuing_delay": 0.0005026803467827157,
+        "p95_queuing_delay": 0.0009448130624925
+      },
+      "continuous": {
+        "n_completed": 81,
+        "total_service_tokens": 21911,
+        "mean_queuing_delay": 0.0005214248982885708,
+        "p95_queuing_delay": 0.0008938652559464799
+      }
+    },
+    "workload_family": "returning_inactive_tenant"
+  },
+  {
+    "policy": "shortest_prompt_first",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 221,
+    "num_total": 221,
+    "jains_fairness_index_normalized_service": 0.994580085969029,
+    "max_min_fairness_ratio": 0.8445073250878554,
+    "service_disparity_tokens": 3407,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 59,
+        "total_service_tokens": 18504,
+        "mean_queuing_delay": 0.0005026803467827157,
+        "p95_queuing_delay": 0.0009448130624925
+      },
+      "continuous": {
+        "n_completed": 81,
+        "total_service_tokens": 21911,
+        "mean_queuing_delay": 0.0005214248982885708,
+        "p95_queuing_delay": 0.0008938652559464799
+      }
+    },
+    "workload_family": "returning_inactive_tenant"
+  },
+  {
+    "policy": "scorpio_style_slo_guard",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 221,
+    "num_total": 221,
+    "jains_fairness_index_normalized_service": 0.994580085969029,
+    "max_min_fairness_ratio": 0.8445073250878554,
+    "service_disparity_tokens": 3407,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 59,
+        "total_service_tokens": 18504,
+        "mean_queuing_delay": 0.0005026803467827157,
+        "p95_queuing_delay": 0.0009448130624925
+      },
+      "continuous": {
+        "n_completed": 81,
+        "total_service_tokens": 21911,
+        "mean_queuing_delay": 0.0005214248982885708,
+        "p95_queuing_delay": 0.0008938652559464799
+      }
+    },
+    "workload_family": "returning_inactive_tenant"
+  },
+  {
+    "policy": "fifo",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 124,
+    "num_total": 124,
+    "jains_fairness_index_normalized_service": 0.9993759337714727,
+    "max_min_fairness_ratio": 0.7782874617737003,
+    "service_disparity_tokens": 2755,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 36,
+        "total_service_tokens": 9671,
+        "mean_queuing_delay": 0.0005190218117103593,
+        "p95_queuing_delay": 0.0009401509167243915
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 44,
+        "total_service_tokens": 12426,
+        "mean_queuing_delay": 0.0004991168365042612,
+        "p95_queuing_delay": 0.0009407709446485057
+      }
+    },
+    "workload_family": "priority_fairness_conflict"
+  },
+  {
+    "policy": "vtc_fairness_reference",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 124,
+    "num_total": 124,
+    "jains_fairness_index_normalized_service": 0.9993759337714727,
+    "max_min_fairness_ratio": 0.7782874617737003,
+    "service_disparity_tokens": 2755,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 36,
+        "total_service_tokens": 9671,
+        "mean_queuing_delay": 0.0005190218117103593,
+        "p95_queuing_delay": 0.0009401509167243915
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 44,
+        "total_service_tokens": 12426,
+        "mean_queuing_delay": 0.0004991168365042612,
+        "p95_queuing_delay": 0.0009407709446485057
+      }
+    },
+    "workload_family": "priority_fairness_conflict"
+  },
+  {
+    "policy": "shortest_prompt_first",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 124,
+    "num_total": 124,
+    "jains_fairness_index_normalized_service": 0.9993759337714727,
+    "max_min_fairness_ratio": 0.7782874617737003,
+    "service_disparity_tokens": 2755,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 36,
+        "total_service_tokens": 9671,
+        "mean_queuing_delay": 0.0005190218117103593,
+        "p95_queuing_delay": 0.0009401509167243915
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 44,
+        "total_service_tokens": 12426,
+        "mean_queuing_delay": 0.0004991168365042612,
+        "p95_queuing_delay": 0.0009407709446485057
+      }
+    },
+    "workload_family": "priority_fairness_conflict"
+  },
+  {
+    "policy": "scorpio_style_slo_guard",
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "num_completed": 124,
+    "num_total": 124,
+    "jains_fairness_index_normalized_service": 0.9993759337714727,
+    "max_min_fairness_ratio": 0.7782874617737003,
+    "service_disparity_tokens": 2755,
+    "starved_tenants": 0,
+    "n_tenants": 2,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 36,
+        "total_service_tokens": 9671,
+        "mean_queuing_delay": 0.0005190218117103593,
+        "p95_queuing_delay": 0.0009401509167243915
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 44,
+        "total_service_tokens": 12426,
+        "mean_queuing_delay": 0.0004991168365042612,
+        "p95_queuing_delay": 0.0009407709446485057
+      }
+    },
+    "workload_family": "priority_fairness_conflict"
+  }
+]

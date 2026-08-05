@@ -15,8 +15,11 @@
 > [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6).
 > A separate, parallel baseline-integration effort is also underway on
 > this branch (vLLM-LTR complete/evaluation-only; PARS-Serve-2026 complete,
-> independently verified, EVALUATION_ONLY -- see
-> [BASELINE_STATUS.md](BASELINE_STATUS.md)); it does not affect CC5/CC6
+> independently verified, EVALUATION_ONLY; VTC initial integration + smoke
+> evaluation complete 2026-08-05, EVALUATION_ONLY, full sweep not yet
+> ready -- see
+> [vtc_initial_integration_20260805.md](audits/vtc_initial_integration_20260805.md) --
+> see [BASELINE_STATUS.md](BASELINE_STATUS.md)); it does not affect CC5/CC6
 > status.
 > Resume that branch from
 > [RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md).
@@ -108,6 +111,26 @@ Development did not stop at the Phase 2C pause below -- it continued on an
     across 8 families, dominated by simpler existing policies in every
     discriminative regime. `docs/audits/pars_baseline_implementation_20260804.md`,
     `docs/audits/pars_first_comparative_evaluation_20260804.md`.
+11. VTC baseline integration begun and completed at initial-integration
+    scope on 2026-08-05 (see `docs/BASELINE_STATUS.md` for current
+    status): official artifact (`Ying1123/VTC-artifact`, pinned commit
+    `192c2e2014c69c8c6c699d7113c3822e4db632e6`, Apache-2.0) is a full
+    S-LoRA-based GPU serving engine this machine's GPU (RTX 5060 Ti,
+    Blackwell) cannot build the CUDA kernels for (a compiler-generation
+    gap, not a version-pin fix) -- but VTC's fairness-scheduling
+    **algorithm** is pure Python/NumPy and was dynamically imported and
+    executed completely unmodified via `baselines/vtc/adapter/`.
+    Classified "official policy reused with simulator adapter." 25/25
+    fidelity tests pass. Six dedicated fairness-extension workload
+    families added (`baselines/vtc/fairness_workloads.py`) since the
+    canonical suite has no tenant concept. Initial smoke evaluation
+    reported honestly: 5/6 families showed no divergence from FIFO at
+    smoke scale (insufficient backlog contention), and the one that
+    diverged was dominated by an admission-gate-conservativeness
+    confound, not a clean fairness signal. Classified
+    **EVALUATION_ONLY**; a full comparative sweep is explicitly not yet
+    ready. `docs/audits/vtc_official_artifact_audit_20260805.md`,
+    `docs/audits/vtc_initial_integration_20260805.md`.
 
 **Full synthesis, in narrative order, with the current (confirmed leakage
 bug, split-fix pending) result:** [docs/current/SELECTOR_V2.md](current/SELECTOR_V2.md).

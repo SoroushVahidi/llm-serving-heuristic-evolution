@@ -734,3 +734,75 @@ regimes."
 discriminative workload, WildChat control, is directly comparable between
 the two — see the evaluation doc §6 for the full scope caveat) or any
 claim that PARS is a candidate for selector/deployable-policy inclusion.
+
+### VTC (`baselines/vtc/`) — added 2026-08-05, initial integration + smoke evaluation complete, **EVALUATION_ONLY**
+
+Official source: `https://github.com/Ying1123/VTC-artifact` (pinned
+commit `192c2e2014c69c8c6c699d7113c3822e4db632e6`, Apache-2.0). Paper:
+Sheng et al., *"Fairness in Serving Large Language Models,"* OSDI 2024
+(arXiv:2401.00588). Full audit: `docs/audits/
+vtc_official_artifact_audit_20260805.md`. Full smoke-evaluation record:
+`docs/audits/vtc_initial_integration_20260805.md`. Full provenance:
+`baselines/vtc/PROVENANCE.md`.
+
+**Status: official fairness-scheduling algorithm integrated and verified;
+no full comparative sweep has been run yet.** The official artifact is a
+full S-LoRA-based GPU serving engine with custom CUDA kernels, requiring
+CUDA 11.8/PyTorch ≤2.1.2/`triton==2.1.0` — this development machine's GPU
+(RTX 5060 Ti, Blackwell) cannot build those kernels at all (a
+compiler-generation gap, not a version to pin around). VTC's actual
+fairness **algorithm** (`slora/server/router/vtc_req_queue.py`), however,
+is pure Python/NumPy with zero GPU dependency, and was verified to import
+and run correctly, completely unmodified, via
+`baselines/vtc/adapter/official_loader.py`. `baselines/vtc/adapter/
+simulator_policy.py`'s `VTCFairnessPolicy` drives the real,
+unmodified `VTCReqQueue.append`/`generate_new_batch`/`update_counter`
+methods directly — nothing about the fairness-selection logic is
+reimplemented. Classification: **official policy reused with simulator
+adapter** (not "official VTC," not a proxy — see the audit doc §4-5 for
+the full, disclosed deviation list). 25/25 fidelity tests pass
+(`tests/test_vtc_baseline_adapter.py`), including tests against the raw,
+unmodified official class directly (min-served selection, insertion-order
+tie-breaking, the counter-lift-on-return rule, aborted-request zero-charge,
+the exact linear cost formula).
+
+**Tenant semantics:** this project's accepted canonical suite has no
+tenant/client concept at all (`Request`/`ObservableRequest` carry no such
+field). `baselines/vtc/fairness_workloads.py` adds six clearly-labeled,
+separate fairness-extension workload families (`balanced_tenants`,
+`one_heavy_hitter`, `heterogeneous_token_sizes`, `bursty_tenant`,
+`returning_inactive_tenant`, `priority_fairness_conflict`), reusing
+`Request.class_id` as the tenant id rather than touching core types.
+
+**Smoke evaluation, reported honestly rather than cherry-picked:**
+comparing `fifo`/`vtc_fairness_reference`/`shortest_prompt_first`/
+`scorpio_style_slo_guard` at smoke scale, 5 of 6 fairness-extension
+families showed **no divergence at all** between VTC and FIFO — the
+capacity/demand ratio used never produced sustained admission backlog, so
+scheduling order never had to break a real tie. The one family that did
+diverge (`heterogeneous_token_sizes`) was dominated by a **disclosed
+methodological confound**: the official `VTCReqQueue`'s memory-safety
+admission gate reserves KV budget for a request's full *predicted* decode
+length, while every comparison policy here uses a much simpler
+current-usage-only check — this makes VTC look far more
+throughput-constrained under tight capacity for a reason unrelated to its
+fairness mechanism. Full detail and a smaller isolated reproduction:
+`docs/audits/vtc_initial_integration_20260805.md`.
+
+**Final classification: EVALUATION_ONLY.** Not registered as a
+selector-candidate or deployable policy. A full comparative sweep is
+explicitly **not** ready — see that document's "Exact next action" for
+what a properly-tuned follow-up pass would need to do differently.
+
+**Safe claim:** "VTC's official fairness-scheduling algorithm
+(`VTCReqQueue`) is integrated and executed verbatim, unmodified, inside
+this project's simulator via a translation adapter; fidelity-verified
+against the raw official class directly; an initial smoke comparison
+against three native policies did not cleanly demonstrate a fairness
+advantage at the capacity/workload scale tested, for two disclosed,
+understood reasons (insufficient backlog contention in most families; an
+admission-gate-conservativeness confound in the one family that diverged)."
+**Unsafe claim:** "VTC improves fairness over FIFO in this simulator" (not
+demonstrated by this pass — see above) or "VTC ran as the official GPU
+serving system" (it did not; only the scheduling algorithm ran, the GPU
+engine layer is currently unbuildable on this hardware).

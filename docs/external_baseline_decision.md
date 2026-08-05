@@ -173,6 +173,19 @@ penalty, and admission credit throttling. See `docs/audits/phase2b10_scorpio_slo
 
 **Safe manuscript wording:** "Fairness-aware batch formation (FairBatching-inspired [cite]); allocates per-SLO-class token budgets to prevent request starvation."
 
+**Update (2026-08-05):** a *different*, distinct fairness axis --
+per-TENANT (not per-SLO-class) service equalization -- is now actually
+integrated, not just a "style/inspired" placeholder: VTC (Sheng et al.,
+"Fairness in Serving Large Language Models," OSDI 2024,
+`Ying1123/VTC-artifact`). Unlike this section's FairBatching entry, VTC's
+real official scheduling algorithm runs unmodified via
+`baselines/vtc/adapter/`; see `docs/BASELINE_STATUS.md` and
+`docs/audits/vtc_official_artifact_audit_20260805.md` for its current
+EVALUATION_ONLY status. FairBatching (per-class quotas) and VTC (per-tenant
+virtual-counter fairness) address different axes of the same general
+"fairness" concern and are not substitutes for each other -- FairBatching
+remains unimplemented/not prioritized.
+
 ---
 
 ### B.5 PROSERVE SlideBatching-style Priority-Aware Scheduler
