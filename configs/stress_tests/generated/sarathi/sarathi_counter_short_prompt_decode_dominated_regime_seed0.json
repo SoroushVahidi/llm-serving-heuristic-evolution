@@ -1,0 +1,228 @@
+{
+  "entry_id": "sarathi_counter_short_prompt_decode_dominated_regime",
+  "seed": 0,
+  "smoke": true,
+  "n_requests": 22,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.006846250425370237,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 754,
+      "actual_output_tokens": 754,
+      "slo_deadline": 1000.0068462504254,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.041319088821322736,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 969,
+      "actual_output_tokens": 969,
+      "slo_deadline": 1000.0413190888213,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.07079917786365741,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1058,
+      "actual_output_tokens": 1058,
+      "slo_deadline": 1000.0707991778637,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.08396393826366089,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 830,
+      "actual_output_tokens": 830,
+      "slo_deadline": 1000.0839639382637,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.10243380984048672,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 876,
+      "actual_output_tokens": 876,
+      "slo_deadline": 1000.1024338098405,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.31070819124890986,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1198,
+      "actual_output_tokens": 1198,
+      "slo_deadline": 1000.3107081912489,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 6,
+      "arrival_time": 0.43913905150639754,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1082,
+      "actual_output_tokens": 1082,
+      "slo_deadline": 1000.4391390515063,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 7,
+      "arrival_time": 0.749279726343462,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1188,
+      "actual_output_tokens": 1188,
+      "slo_deadline": 1000.7492797263435,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 8,
+      "arrival_time": 1.056718052994146,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 827,
+      "actual_output_tokens": 827,
+      "slo_deadline": 1001.0567180529941,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 9,
+      "arrival_time": 1.3536530506227293,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1011,
+      "actual_output_tokens": 1011,
+      "slo_deadline": 1001.3536530506227,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 10,
+      "arrival_time": 1.3590624786635572,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1170,
+      "actual_output_tokens": 1170,
+      "slo_deadline": 1001.3590624786635,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 11,
+      "arrival_time": 1.5165894394179498,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 990,
+      "actual_output_tokens": 990,
+      "slo_deadline": 1001.516589439418,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 12,
+      "arrival_time": 1.6179737789356252,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1104,
+      "actual_output_tokens": 1104,
+      "slo_deadline": 1001.6179737789356,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 13,
+      "arrival_time": 1.6765610367340757,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1013,
+      "actual_output_tokens": 1013,
+      "slo_deadline": 1001.676561036734,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 14,
+      "arrival_time": 1.823741402459996,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1022,
+      "actual_output_tokens": 1022,
+      "slo_deadline": 1001.82374140246,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 15,
+      "arrival_time": 1.82413861607486,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 833,
+      "actual_output_tokens": 833,
+      "slo_deadline": 1001.8241386160748,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 16,
+      "arrival_time": 2.033175598000681,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1125,
+      "actual_output_tokens": 1125,
+      "slo_deadline": 1002.0331755980006,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 17,
+      "arrival_time": 2.0396338853038305,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 681,
+      "actual_output_tokens": 681,
+      "slo_deadline": 1002.0396338853038,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 18,
+      "arrival_time": 2.1435106914689235,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 947,
+      "actual_output_tokens": 947,
+      "slo_deadline": 1002.1435106914689,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 19,
+      "arrival_time": 2.1579473058747163,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1032,
+      "actual_output_tokens": 1032,
+      "slo_deadline": 1002.1579473058747,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 20,
+      "arrival_time": 2.2818889431943044,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1107,
+      "actual_output_tokens": 1107,
+      "slo_deadline": 1002.2818889431943,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 21,
+      "arrival_time": 2.3376810594694204,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 915,
+      "actual_output_tokens": 915,
+      "slo_deadline": 1002.3376810594694,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    }
+  ]
+}

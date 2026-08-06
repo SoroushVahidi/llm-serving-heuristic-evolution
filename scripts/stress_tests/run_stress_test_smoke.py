@@ -47,9 +47,13 @@ from llmserveopt.policies.edf import EDFPolicy  # noqa: E402
 from llmserveopt.policies.estimated_service_time_first import EstimatedServiceTimeFirstPolicy  # noqa: E402
 from llmserveopt.policies.fifo import FIFOPolicy  # noqa: E402
 from llmserveopt.policies.least_laxity_first import LeastLaxityFirstPolicy  # noqa: E402
+from llmserveopt.policies.sarathi_faithful import SarathiFaithfulPolicy  # noqa: E402
 from llmserveopt.policies.scorpio_style_slo_guard import ScorpioStyleSloGuardPolicy  # noqa: E402
 from llmserveopt.policies.shortest_output_first import ShortestOutputFirstPolicy  # noqa: E402
+from llmserveopt.policies.vllm_chunked_prefill_faithful import VLLMChunkedPrefillFaithfulPolicy  # noqa: E402
+from llmserveopt.policies.vllm_faithful import VLLMFaithfulPolicy  # noqa: E402
 from llmserveopt.policies.weighted_shortest_processing import WeightedShortestProcessingPolicy  # noqa: E402
+from llmserveopt.simulator.service_model import ServiceModel  # noqa: E402
 from llmserveopt.simulator.simulator import Simulator, SimulatorConfig  # noqa: E402
 
 POLICY_FACTORIES = {
@@ -61,6 +65,36 @@ POLICY_FACTORIES = {
     "least_laxity_first": lambda: LeastLaxityFirstPolicy(),
     "aging_priority": lambda: AgingPriorityPolicy(),
     "scorpio_style_slo_guard": lambda: ScorpioStyleSloGuardPolicy(),
+    # Sarathi-targeted stress-test entries (see catalog section 12) need
+    # Phase-1.5 prefill/decode-contention modeling to make chunking
+    # behavior observable at all -- see run_policy()'s `simulator_requirements`
+    # handling below and docs/decode_prefill_contention_execution_model.md.
+    # Chunk/block/seq-count defaults match the real Wulver validation
+    # config exactly (gpu-memory-utilization=0.35 equivalent, chunk-size=512,
+    # block-size=16, max-num-seqs=16 -- docs/wulver_sarathi_vllm_repeated_validation.md).
+    "sarathi_faithful": lambda: SarathiFaithfulPolicy(chunk_size=512, block_size=16, max_num_seqs=16, watermark=0.0),
+    "vllm_chunked_prefill_faithful": lambda: VLLMChunkedPrefillFaithfulPolicy(
+        block_size=16, max_num_batched_tokens=512, max_num_seqs=16, watermark=0.0
+    ),
+    "vllm_faithful": lambda: VLLMFaithfulPolicy(block_size=16, max_num_batched_tokens=512, max_num_seqs=16, watermark=0.0),
+}
+
+# Policies that require Phase-1.5 prefill/decode-contention modeling to
+# exhibit their intended scheduling behavior at all (see
+# docs/decode_prefill_contention_execution_model.md). `decode_first` is
+# set per-policy: sarathi_faithful exercises the decode-protected path,
+# vllm_chunked_prefill_faithful exercises the shared-FCFS-contention path
+# -- matching microsoft/sarathi-serve's own stall-free guarantee vs.
+# vLLM's chunked-prefill scheduler having no decode priority, which is the
+# exact mechanism the real Wulver A/B comparison measured.
+_CONTENTION_DECODE_FIRST = {
+    "sarathi_faithful": True,
+    "vllm_chunked_prefill_faithful": False,
+    # vllm_faithful has no chunked-admission model of its own to exercise
+    # the contention path meaningfully -- given decode_first=True for a
+    # fair side-by-side, per docs/decode_prefill_contention_execution_model.md's
+    # own stated convention ("Which policies opt in").
+    "vllm_faithful": True,
 }
 
 EXECUTABLE_ALGORITHM_IDS = set(POLICY_FACTORIES)
@@ -68,17 +102,49 @@ EXECUTABLE_ALGORITHM_IDS = set(POLICY_FACTORIES)
 DEFAULT_GPU = GPUConfig(gpu_id=0, max_active_sequences=4, max_batch_tokens=4096, max_kv_tokens=16384)
 
 
-def run_policy(requests: List, policy_name: str, gpu_overrides: dict) -> dict:
+def _build_service_model(policy_name: str, sim_req: dict) -> ServiceModel:
+    """Default: ServiceModel() -- bit-identical to every pre-existing
+    catalog entry's behavior (none of them set `enable_prefill_modeling`
+    in `simulator_requirements`, so this is fully backward-compatible).
+    Sarathi-targeted entries opt into Phase-1.5 prefill/decode-contention
+    modeling via `simulator_requirements: {enable_prefill_modeling: true, ...}`
+    -- see docs/decode_prefill_contention_execution_model.md."""
+    if not sim_req.get("enable_prefill_modeling"):
+        return ServiceModel()
+    kwargs = dict(
+        enable_prefill_modeling=True,
+        max_prefill_chunk_tokens=int(sim_req.get("max_prefill_chunk_tokens", 512)),
+        step_token_budget=int(sim_req.get("step_token_budget", 4096)),
+    )
+    if sim_req.get("enable_decode_prefill_contention"):
+        kwargs["enable_decode_prefill_contention"] = True
+        kwargs["decode_first"] = _CONTENTION_DECODE_FIRST.get(policy_name, sim_req.get("decode_first", False))
+    else:
+        kwargs["decode_first"] = bool(sim_req.get("decode_first", True))
+    return ServiceModel(**kwargs)
+
+
+def run_policy(requests: List, policy_name: str, gpu_overrides: dict, sim_req: dict | None = None) -> dict:
+    sim_req = sim_req or {}
     gpu_kwargs = dict(gpu_id=0, max_active_sequences=DEFAULT_GPU.max_active_sequences,
                        max_batch_tokens=DEFAULT_GPU.max_batch_tokens, max_kv_tokens=DEFAULT_GPU.max_kv_tokens)
     if "max_active_sequences" in gpu_overrides:
         gpu_kwargs["max_active_sequences"] = gpu_overrides["max_active_sequences"]
+    if "max_batch_tokens" in gpu_overrides:
+        gpu_kwargs["max_batch_tokens"] = gpu_overrides["max_batch_tokens"]
+    if "max_kv_tokens" in gpu_overrides:
+        gpu_kwargs["max_kv_tokens"] = gpu_overrides["max_kv_tokens"]
     gpu = GPUConfig(**gpu_kwargs)
-    cfg = SimulatorConfig(gpu_configs=[gpu])
+    service_model = _build_service_model(policy_name, sim_req)
+    cfg = SimulatorConfig(gpu_configs=[gpu], service_model=service_model)
     sim = Simulator(cfg)
     sim.load_trace(requests)
     policy = POLICY_FACTORIES[policy_name]()
     metrics = sim.run(policy, workload_tag=policy_name)
+
+    ttfts = [cr.ttft for cr in sim._completed if cr.ttft == cr.ttft]  # noqa: SLF001 -- filter NaN
+    tpots = [cr.tpot for cr in sim._completed if cr.tpot == cr.tpot]  # noqa: SLF001
+    duration = max((cr.completion_time for cr in sim._completed), default=0.0)  # noqa: SLF001
 
     by_class = defaultdict(list)
     for cr in sim._completed:  # noqa: SLF001
@@ -107,6 +173,41 @@ def run_policy(requests: List, policy_name: str, gpu_overrides: dict) -> dict:
         cr.request.priority * cr.completion_time for cr in sim._completed
     )
 
+    def _p95(vals: list) -> float:
+        s = sorted(vals)
+        return s[int(0.95 * (len(s) - 1))] if s else float("nan")
+
+    mean_ttft = statistics.mean(ttfts) if ttfts else float("nan")
+    mean_tpot = statistics.mean(tpots) if tpots else float("nan")
+    p95_tpot = _p95(tpots)
+    # Stall-frequency proxy: NOT a direct instrumentation of scheduler-
+    # level stalls (this simulator does not expose a per-step stall
+    # counter) -- ratio of tail-to-mean TPOT, where episodic decode
+    # interruptions (e.g. an arriving prefill delaying an active decode's
+    # next token under enable_decode_prefill_contention=True) inflate the
+    # tail relative to the mean. Disclosed as a proxy, not a ground-truth
+    # stall count.
+    stall_frequency_proxy = (p95_tpot / mean_tpot) if (mean_tpot == mean_tpot and mean_tpot > 0) else float("nan")
+
+    # Scheduling-disagreement proxy: fraction of completed-request pairs
+    # whose COMPLETION order disagrees with their ARRIVAL order (a simple
+    # inversion-count / total-pairs ratio, not a formal rank-correlation
+    # statistic) -- 0.0 means this policy completed requests in exactly
+    # arrival order (FIFO-like); higher values mean it reordered more.
+    completed_sorted_by_arrival = sorted(sim._completed, key=lambda cr: cr.request.arrival_time)  # noqa: SLF001
+    completion_order = [cr.request.request_id for cr in
+                         sorted(completed_sorted_by_arrival, key=lambda cr: cr.completion_time)]
+    arrival_order = [cr.request.request_id for cr in completed_sorted_by_arrival]
+    rank = {rid: i for i, rid in enumerate(arrival_order)}
+    n_pairs = 0
+    n_inversions = 0
+    for i in range(len(completion_order)):
+        for j in range(i + 1, len(completion_order)):
+            n_pairs += 1
+            if rank[completion_order[i]] > rank[completion_order[j]]:
+                n_inversions += 1
+    scheduling_disagreement_proxy = (n_inversions / n_pairs) if n_pairs else float("nan")
+
     return {
         "mean_latency": metrics.mean_latency,
         "p95_latency": metrics.p95_latency,
@@ -122,6 +223,14 @@ def run_policy(requests: List, policy_name: str, gpu_overrides: dict) -> dict:
         "slo_violation_rate": metrics.slo_violation_rate,
         "anwg": metrics.arrival_normalized_weighted_goodput,
         "weighted_completion_time_proxy": weighted_completion_time_proxy,
+        "mean_ttft": mean_ttft,
+        "p95_ttft": _p95(ttfts),
+        "mean_tpot": mean_tpot,
+        "p95_tpot": p95_tpot,
+        "throughput_completions_per_sec": (len(sim._completed) / duration) if duration > 0 else float("nan"),  # noqa: SLF001
+        "stall_frequency_proxy": stall_frequency_proxy,
+        "scheduling_disagreement_proxy": scheduling_disagreement_proxy,
+        "chunk_utilization": None,  # NOT_INSTRUMENTED -- see completion audit doc §7
     }
 
 
@@ -222,10 +331,14 @@ def main() -> int:
         sim_req = entry.get("simulator_requirements", {}) or {}
         if "max_active_sequences" in sim_req:
             gpu_overrides["max_active_sequences"] = sim_req["max_active_sequences"]
+        if "max_batch_tokens" in sim_req:
+            gpu_overrides["max_batch_tokens"] = sim_req["max_batch_tokens"]
+        if "max_kv_tokens" in sim_req:
+            gpu_overrides["max_kv_tokens"] = sim_req["max_kv_tokens"]
 
         results_by_policy = {}
         for pname in algorithms_to_run:
-            results_by_policy[pname] = run_policy(requests, pname, gpu_overrides)
+            results_by_policy[pname] = run_policy(requests, pname, gpu_overrides, sim_req)
 
         entry_summary = results_by_policy.get(algo, {})
         all_entry_results[eid] = entry_summary

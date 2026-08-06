@@ -27,7 +27,9 @@ def catalog():
 class TestCatalogStructure:
     def test_catalog_parses(self, catalog):
         assert catalog["schema_version"] == 1
-        assert len(catalog["stress_tests"]) == 22
+        # 22 pre-Sarathi entries + 7 Sarathi-Serve entries added 2026-08-05
+        # (docs/audits/sarathi_stress_test_catalog_completion_20260805.md).
+        assert len(catalog["stress_tests"]) == 29
 
     def test_every_entry_has_unique_id(self, catalog):
         ids = [t["stress_test_id"] for t in catalog["stress_tests"]]
@@ -41,11 +43,15 @@ class TestCatalogStructure:
         for algo, roles in by_algo.items():
             assert roles == {"TARGET", "COUNTER"}, f"{algo} missing a role: {roles}"
 
-    def test_evidence_class_is_one_of_the_five_allowed(self, catalog):
+    def test_evidence_class_is_one_of_the_six_allowed(self, catalog):
         allowed = {
             "PROVEN_WORST_CASE", "DOCUMENTED_LIMITATION",
             "PAPER_MOTIVATING_STRESS_CASE", "HYPOTHESIZED_ADVERSARIAL_REGIME",
             "INTERNAL_EMPIRICAL_FINDING",
+            # Added 2026-08-05 for the Sarathi-Serve section -- a strictly
+            # stronger evidentiary tier than INTERNAL_EMPIRICAL_FINDING,
+            # reserved for claims backed by real GPU hardware execution.
+            "EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE",
         }
         for t in catalog["stress_tests"]:
             assert t["evidence_class"] in allowed, t["stress_test_id"]
@@ -67,6 +73,7 @@ class TestGeneratorsProduceValidRequests:
             "vllm_ltr_counter_reasoning_domain_shift",
             "pars_target_alpaca_style_instruction_prompts",
             "pars_counter_reasoning_domain_shift",
+            "sarathi_counter_long_context_attention_recompute",
         }
     ])
     def test_generator_produces_sorted_nonempty_requests(self, name):
@@ -85,16 +92,20 @@ class TestGeneratorsProduceValidRequests:
         "vllm_ltr_counter_reasoning_domain_shift",
         "pars_target_alpaca_style_instruction_prompts",
         "pars_counter_reasoning_domain_shift",
+        "sarathi_counter_long_context_attention_recompute",
     ])
     def test_offline_scored_generators_are_explicit_stubs(self, name):
         """These MUST raise NotImplementedError with a clear reason --
-        never silently return a fabricated Request list, since vLLM-LTR/
-        PARS require real offline-scoring infrastructure this task does
-        not build."""
+        never silently return a fabricated Request list. vLLM-LTR/PARS
+        require real offline-scoring infrastructure this task does not
+        build; the Sarathi long-context entry requires an attention-cost
+        scaling term this simulator's timing model does not have (see
+        docs/research/algorithm_stress_tests/SARATHI_COMMIT_DRIFT_20260805.md
+        and the audit doc's simulator-compatibility section)."""
         with pytest.raises(NotImplementedError):
             generators.GENERATORS[name](smoke=True)
 
-    def test_all_22_catalog_entries_have_a_generator_entry(self, catalog):
+    def test_all_catalog_entries_have_a_generator_entry(self, catalog):
         catalog_ids = {t["stress_test_id"] for t in catalog["stress_tests"]}
         generator_ids = set(generators.GENERATORS)
         assert catalog_ids == generator_ids
@@ -118,8 +129,9 @@ class TestDeterminism:
             "vllm_ltr_counter_reasoning_domain_shift",
             "pars_target_alpaca_style_instruction_prompts",
             "pars_counter_reasoning_domain_shift",
+            "sarathi_counter_long_context_attention_recompute",
         }:
-            pytest.skip("offline-scored stub, not applicable")
+            pytest.skip("offline-scored / not-representable stub, not applicable")
         a = generators.GENERATORS[name](smoke=True)
         b = generators.GENERATORS[name](smoke=True)
         assert [(r.request_id, r.arrival_time, r.prompt_tokens, r.predicted_output_tokens,

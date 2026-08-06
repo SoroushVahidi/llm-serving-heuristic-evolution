@@ -443,6 +443,129 @@ def pars_counter_reasoning_domain_shift(smoke: bool = False, seed: int = 10) -> 
     )
 
 
+# ----------------------------------------------------------------------
+# 12. Sarathi-Serve
+# ----------------------------------------------------------------------
+# Prompt-bucket target-token conventions mirror
+# src/llmserveopt/real_llm/calibration_common.py's PROMPT_BUCKET_TARGET_TOKENS
+# (short=100, medium=512, long=2048) -- the exact buckets used by the real
+# Wulver GPU validation this section reproduces the shape of
+# (scripts/run_sarathi_gpu_smoke_and_validation.py's make_scenarios(),
+# docs/wulver_sarathi_vllm_repeated_validation.md). Smoke-scale generators
+# below reproduce the EXACT request count / arrival-offset / bucket /
+# output-target shape of the N=5-trial-validated real-hardware scenario;
+# full-scale generators scale the same shape up for statistical power --
+# an extrapolation beyond the literally-validated N, disclosed as such in
+# the corresponding catalog entries (see
+# docs/audits/sarathi_stress_test_catalog_completion_20260805.md).
+# Requires simulator_requirements.enable_prefill_modeling=true (and, for
+# the two target/counter mechanism entries that depend on decode
+# protection, enable_decode_prefill_contention=true) to make Sarathi's
+# chunked-prefill/stall-free behavior observable at all -- see
+# docs/decode_prefill_contention_execution_model.md. This section does
+# not touch sarathi_faithful.py itself.
+
+_SHORT_TOKENS, _MEDIUM_TOKENS, _LONG_TOKENS = 100, 512, 2048
+
+
+def sarathi_counter_long_prompt_moderate_output(smoke: bool = False, seed: int = 11) -> List[Request]:
+    """Mirrors Wulver scenario A (sarathi_long_prompt_moderate_output /
+    mistral_match_long_prompt_moderate_output): all requests are
+    long-bucket prompts arriving simultaneously, moderate output. Real
+    hardware result: robust vLLM E2E win, 5/5 trials, mean diff -0.2555s,
+    95% CI [-0.298, -0.213] (job pair 1111988/1111989)."""
+    n = 4 if smoke else 16
+    reqs = [_mk(i, 0.0, _LONG_TOKENS, 256, 256, class_id="long") for i in range(n)]
+    return _sorted(reqs)
+
+
+def sarathi_target_active_decode_plus_arriving_prefill(smoke: bool = False, seed: int = 12) -> List[Request]:
+    """Mirrors Wulver scenario B (sarathi_active_decode_plus_arriving_prefill):
+    medium-bucket requests arrive at t=0 (already decoding by the time the
+    long prefills below arrive), THEN long-bucket, short-output requests
+    arrive staggered at t=3.0+1.0*i -- the exact fixture shape
+    docs/decode_prefill_contention_execution_model.md identified as
+    untested (a decode-phase request arriving strictly BEFORE a
+    still-to-arrive long prefill on the same GPU). Real hardware result:
+    ROBUST Sarathi E2E win, 5/5 trials, mean diff +1.0172s, 95% CI
+    [0.990, 1.036] (job pair 1111988/1111989) -- the strongest real-hardware
+    evidence for Sarathi's stall-free decode-protection claim in this
+    project."""
+    n_each = 4 if smoke else 16
+    reqs = [_mk(i, 0.0, _MEDIUM_TOKENS, 256, 256, class_id="medium_decoding")
+            for i in range(n_each)]
+    reqs += [_mk(n_each + i, 3.0 + 1.0 * i, _LONG_TOKENS, 64, 64, class_id="long_arriving_prefill")
+             for i in range(n_each)]
+    return _sorted(reqs)
+
+
+def sarathi_counter_prefill_heavy_burst(smoke: bool = False, seed: int = 13) -> List[Request]:
+    """Mirrors Wulver scenario C (sarathi_prefill_heavy_burst): a burst of
+    long-bucket prompts with SHORT output (prefill-dominated cost, decode
+    barely matters), all arriving at t=0. Real hardware result: robust
+    vLLM E2E win, 5/5 trials, mean diff -0.1466s, 95% CI [-0.157, -0.137]."""
+    n = 6 if smoke else 24
+    reqs = [_mk(i, 0.0, _LONG_TOKENS, 32, 32, class_id="long_prefill_heavy") for i in range(n)]
+    return _sorted(reqs)
+
+
+def sarathi_counter_mixed_prompt_lengths(smoke: bool = False, seed: int = 14) -> List[Request]:
+    """Mirrors Wulver scenario D (sarathi_mixed_prompt_lengths): short/
+    medium/long buckets cycled evenly, moderate output, all at t=0. Real
+    hardware result: robust vLLM E2E win, 5/5 trials, mean diff -0.2052s,
+    95% CI [-0.257, -0.161]."""
+    n = 6 if smoke else 24
+    buckets = [_SHORT_TOKENS, _MEDIUM_TOKENS, _LONG_TOKENS]
+    labels = ["short", "medium", "long"]
+    reqs = [_mk(i, 0.0, buckets[i % 3], 64, 64, class_id=labels[i % 3]) for i in range(n)]
+    return _sorted(reqs)
+
+
+def sarathi_target_kv_pressure(smoke: bool = False, seed: int = 15) -> List[Request]:
+    """Mirrors Wulver scenario E (sarathi_matched_vllm_kv_pressure): long
+    context + long decode at concurrency 12, all at t=0 -- matched to vLLM
+    jobs 1111541/1111545's stress_kv_pressure shape. Real hardware result:
+    ROBUST Sarathi E2E win, 5/5 trials, mean diff +0.8360s, 95% CI
+    [0.769, 0.903]."""
+    n = 12 if smoke else 36
+    reqs = [_mk(i, 0.0, _LONG_TOKENS, 768, 768, class_id="long_kv_pressure") for i in range(n)]
+    return _sorted(reqs)
+
+
+def sarathi_counter_short_prompt_decode_dominated_regime(smoke: bool = False, seed: int = 16) -> List[Request]:
+    """HYPOTHESIZED_ADVERSARIAL_REGIME, not derived from any single Wulver
+    trial or paper-stated result: prefill is already trivially cheap
+    (short-bucket prompts), so chunked-prefill's own fixed per-chunk
+    scheduling overhead has little prefill cost left to amortize against,
+    while decode volume dominates. Motivated by the general chunk-size-
+    sensitivity finding in the literature review (technical review's
+    "below C=128 the attention re-overhead kills throughput" framing,
+    docs/audits/sarathi_official_artifact_audit_20260805.md section 4) but
+    not a direct reproduction of any cited experiment -- an internally
+    constructed hypothesis, labeled conservatively in the catalog."""
+    n = 20 if smoke else 80
+    rng = np.random.default_rng(seed)
+    arrivals = poisson_arrivals(rng, rate=8.0, duration=n / 8.0)
+    reqs = []
+    for i, a in enumerate(arrivals):
+        out = int(rng.integers(600, 1200))
+        reqs.append(_mk(i, a, _SHORT_TOKENS, out, out, class_id="short_decode_dominated"))
+    return _sorted(reqs)
+
+
+def sarathi_counter_long_context_attention_recompute(smoke: bool = False, seed: int = 17) -> List[Request]:
+    raise NotImplementedError(
+        "Long-context (>=32K token) quadratic attention-recompute cost is NOT "
+        "REPRESENTABLE in this simulator's timing model -- it has no attention-cost "
+        "scaling term at all (confirmed in docs/audits/sarathi_official_artifact_audit_20260805.md "
+        "section 6, 'Simulator compatibility'). Executing this generator would silently "
+        "produce a flat-per-token-cost result that says nothing about the real "
+        "quadratic-regime critique the paper itself sidesteps (prompts <=13K tokens "
+        "tested). Catalog entry is spec-only, matching the vLLM-LTR/PARS "
+        "out-of-scope pattern. Not attempted this pass."
+    )
+
+
 GENERATORS = {
     "fifo_target_homogeneous_low_contention": fifo_target_homogeneous_low_contention,
     "fifo_counter_head_of_line_blocking": fifo_counter_head_of_line_blocking,
@@ -466,4 +589,11 @@ GENERATORS = {
     "vllm_ltr_counter_reasoning_domain_shift": vllm_ltr_counter_reasoning_domain_shift,
     "pars_target_alpaca_style_instruction_prompts": pars_target_alpaca_style_instruction_prompts,
     "pars_counter_reasoning_domain_shift": pars_counter_reasoning_domain_shift,
+    "sarathi_counter_long_prompt_moderate_output": sarathi_counter_long_prompt_moderate_output,
+    "sarathi_target_active_decode_plus_arriving_prefill": sarathi_target_active_decode_plus_arriving_prefill,
+    "sarathi_counter_prefill_heavy_burst": sarathi_counter_prefill_heavy_burst,
+    "sarathi_counter_mixed_prompt_lengths": sarathi_counter_mixed_prompt_lengths,
+    "sarathi_target_kv_pressure": sarathi_target_kv_pressure,
+    "sarathi_counter_short_prompt_decode_dominated_regime": sarathi_counter_short_prompt_decode_dominated_regime,
+    "sarathi_counter_long_context_attention_recompute": sarathi_counter_long_context_attention_recompute,
 }

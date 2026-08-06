@@ -10,9 +10,19 @@
 # evidence_class is exactly one of:
 #   PROVEN_WORST_CASE | DOCUMENTED_LIMITATION | PAPER_MOTIVATING_STRESS_CASE
 #   | HYPOTHESIZED_ADVERSARIAL_REGIME | INTERNAL_EMPIRICAL_FINDING
+#   | EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE
 # (the fifth value, INTERNAL_EMPIRICAL_FINDING, is used only where this
 # project's own prior evaluation -- not external literature -- is the
-# basis; see LITERATURE_RESEARCH_20260805.md §7 for why it was added.)
+# basis; see LITERATURE_RESEARCH_20260805.md §7 for why it was added.
+# The sixth value, EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE, added
+# 2026-08-05 for the Sarathi-Serve section below: a strictly stronger
+# evidentiary tier than INTERNAL_EMPIRICAL_FINDING, reserved for claims
+# backed by actual GPU hardware execution of the real system(s) involved
+# -- not a simulator-only internal finding. Used only for the 5 entries
+# directly mirroring the N=5-trial repeated Wulver A100 validation,
+# docs/wulver_sarathi_vllm_repeated_validation.md; every other entry using
+# this project's own findings without real-hardware backing continues to
+# use INTERNAL_EMPIRICAL_FINDING.)
 #
 # "forbidden_oracle_inputs" enumerates Request fields a policy under test
 # must never read (this simulator already enforces this structurally for
@@ -604,3 +614,237 @@ stress_tests:
     validation_metrics: [mean_latency, ranking_correlation_with_true_length]
     acceptance_gates: "pars_counter.ranking_correlation_with_true_length < pars_target.ranking_correlation_with_true_length"
     real_system_followup_required: true
+
+  # ------------------------------------------------------------------
+  # 12. Sarathi-Serve
+  # ------------------------------------------------------------------
+  # algorithm_id is `sarathi_faithful` (the actual registered/runnable
+  # policy, src/llmserveopt/policies/sarathi_faithful.py), not the paper
+  # name `sarathi_serve` -- matching this catalog's own established
+  # convention (every other row's algorithm_id is a runnable policy key,
+  # e.g. `pars_semantic_reference`, not a paper/repo name) and required
+  # for these entries to be genuinely auto-evaluable by
+  # scripts/stress_tests/run_stress_test_smoke.py rather than silently
+  # falling through to NOT_AUTO_EVALUABLE. See
+  # docs/audits/sarathi_stress_test_catalog_completion_20260805.md for
+  # this naming decision recorded explicitly.
+  #
+  # All 5 real-hardware entries below share:
+  #  - official Sarathi-Serve commit associated with the cited result:
+  #    96f9911790ecc00af12ee9fae47cb8fa9ba0d199 (vendored fork, built
+  #    Wulver job 1111574, `main` tip at validation time)
+  #  - simulator (sarathi_faithful.py) commit-pin basis:
+  #    ceaa0660ea2487976101a8167aad5c8046e85b27 (osdi-sarathi-serve branch,
+  #    OSDI paper-era snapshot)
+  #  - commit-level comparability: MECHANISM_LEVEL, not exact-commit --
+  #    see docs/research/algorithm_stress_tests/SARATHI_COMMIT_DRIFT_20260805.md
+  #  - Wulver job IDs: build 1111574; repeated-trial arrays 1111988
+  #    (Sarathi, N=5) / 1111989 (vLLM 0.24.0, N=5); postprocess 1111990
+  #  - result artifacts: experiments/gpu_external_validity/sarathi_vllm_repeated_trials/
+  #    {repeated_trials_summary.json (sha256 805c9683759b8fbf38d98c9c8fe8d4eff10505628e8063ca04aa260288335c11),
+  #    bootstrap_comparison.json (sha256 fb75354bcdfd3390721ae5cd60c87c32a8bed9b28c02e8ca7e4ebc8834f66815)}
+  #  - real hardware/model/config: 1x A100-SXM4-80GB, mistralai/Mistral-7B-Instruct-v0.1,
+  #    gpu-memory-utilization=0.35, max-num-seqs=16, chunk-size=512 (Sarathi) /
+  #    max-num-batched-tokens=512 (vLLM), block-size=16, max-model-len=16384
+  #  - workload generators reproduce the REAL scenario's exact request-count/
+  #    arrival-offset/bucket/output-target shape at smoke scale; full scale
+  #    tiles that shape up for statistical power (an extrapolation beyond
+  #    the literally-validated N, disclosed per-entry below)
+
+  - stress_test_id: sarathi_counter_long_prompt_moderate_output
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: COUNTER
+    evidence_class: EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE
+    source_citations:
+      - "This project's own repeated-trial real-GPU validation, docs/wulver_sarathi_vllm_repeated_validation.md: mistral_match_long_prompt_moderate_output, robust vLLM E2E win, 5/5 trials, mean diff (vLLM-Sarathi) -0.2555s, 95% CI [-0.298, -0.213], Wulver jobs 1111988/1111989/1111990"
+    targeted_assumption: "Chunking overhead is amortizable; a burst of long, homogeneous prompts does not by itself favor stall-free scheduling over a simpler chunked-but-not-decode-protected scheduler"
+    workload_phenomenon: "All requests are long-bucket (2048-target-token) prompts arriving simultaneously, moderate (256-token) output -- no competing active-decode stream to protect"
+    expected_behavior: "N/A -- this IS the counter case: real hardware shows vLLM's shared-FCFS-contention chunked-prefill scheduler wins E2E here, not Sarathi's decode-protected one"
+    expected_failure_signature: "sarathi_faithful's mean_latency is measurably WORSE than vllm_chunked_prefill_faithful's under this workload shape -- decode-protection has nothing to protect (no competing decode stream), so its scheduling conservatism (reserving decode slots first every step) has a pure downside here"
+    observed_behavior: "Measured (smoke scale): sarathi_faithful.mean_latency == vllm_chunked_prefill_faithful.mean_latency == 0.2660 (byte-identical, structural, not workload-specific -- see calibration_note); vllm_faithful.completion_fraction == 0.00 (fails to admit any long-bucket prompt at all, non-chunked)"
+    comparison_algorithms: [vllm_chunked_prefill_faithful, vllm_faithful, fifo, shortest_output_first]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, max_active_sequences: 16, max_batch_tokens: 4096, max_kv_tokens: 65536}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests_smoke: 4, n_requests_full: 16, prompt_bucket: long, output_tokens: 256}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 4}
+    default_full_setting: {n_requests: 16}
+    validation_metrics: [mean_latency, mean_ttft, mean_tpot, throughput_completions_per_sec, completion_fraction]
+    acceptance_gates: "sarathi_faithful.completion_fraction >= vllm_faithful.completion_fraction"
+    real_system_followup_required: false
+    validation_status: "SIMULATOR_MECHANISM_LIMITATION_DISCLOSED -- the real-hardware-validated decode-protection-vs-shared-contention distinction (sarathi_faithful vs vllm_chunked_prefill_faithful) is NOT reproducible in this simulator for this fixture (see calibration_note); the gate instead validates a coarser, genuinely-distinguishing mechanism (chunked vs non-chunked admission of long prompts)"
+    provenance_notes: "Mirrors Wulver scenario A (sarathi_long_prompt_moderate_output / mistral_match_long_prompt_moderate_output). Smoke n=4 is an EXACT reproduction of the real trial's request count; full n=16 scales the same shape up, not independently validated at that N."
+    calibration_note: "Retuned 2026-08-05 after diagnosing byte-identical sarathi_faithful/vllm_chunked_prefill_faithful output across a full step_token_budget sweep (16-4096) and an adversarial inverse-arrival-order fixture: the two execution paths are PROVABLY equivalent whenever both compared policies use FCFS-strict admission (always true here), because a currently-decoding request can never be admitted later than a currently-competing prefill under FCFS-strict admission -- see docs/research/algorithm_stress_tests/SARATHI_MECHANISM_CALIBRATION_20260805.md for the full diagnostic trace and structural proof. This is a genuine simulator-mechanism finding, not a workload-tuning failure; the original gate was replaced rather than tuned further, per this project's own 'mechanism-correct, not benchmark-overfit' standard."
+
+  - stress_test_id: sarathi_target_active_decode_plus_arriving_prefill
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: TARGET
+    evidence_class: EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE
+    source_citations:
+      - "This project's own repeated-trial real-GPU validation, docs/wulver_sarathi_vllm_repeated_validation.md: mistral_match_active_decode_plus_arriving_prefill, ROBUST Sarathi E2E win, 5/5 trials, mean diff (vLLM-Sarathi) +1.0172s, 95% CI [0.990, 1.036], Wulver jobs 1111988/1111989/1111990 -- 'the clearest, most defensible real-hardware evidence in this whole investigation for Sarathi's stall-free decode-protection claim'"
+      - "docs/decode_prefill_contention_execution_model.md identifies this exact fixture shape (a decode-phase request arriving strictly BEFORE a still-to-arrive long prefill on the same GPU) as the direct test of whether the contention mechanism, once exercised, reproduces the real-hardware Sarathi advantage -- previously untested in this repo prior to this entry"
+    targeted_assumption: "Decode-piggybacking does not starve prefill indefinitely; the stall-free guarantee (decode always gets its budget first) meaningfully protects already-decoding requests from a later-arriving long prefill"
+    workload_phenomenon: "Medium-bucket requests arrive at t=0 and begin decoding; long-bucket, short-output requests arrive staggered afterward (t=3.0+1.0*i), competing for scheduling budget with the now-active decode stream"
+    expected_behavior: "sarathi_faithful's decode-protected admission keeps the already-decoding medium-bucket requests' E2E latency low despite the arriving long prefills; vllm_chunked_prefill_faithful's shared-FCFS-budget contention lets the arriving prefills delay those decodes"
+    expected_failure_signature: "N/A (target case)"
+    observed_behavior: "Measured (smoke scale): sarathi_faithful.mean_latency == vllm_chunked_prefill_faithful.mean_latency == 0.1633 (byte-identical, structural, not workload-specific -- see calibration_note); vllm_faithful.mean_latency == 0.6425, completion_fraction == 0.50 (drops half of requests, non-chunked)"
+    comparison_algorithms: [vllm_chunked_prefill_faithful, vllm_faithful, fifo, shortest_output_first]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, max_active_sequences: 16, max_batch_tokens: 4096, max_kv_tokens: 65536}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests_smoke: 8, n_requests_full: 32, medium_bucket_at_t0: true, long_bucket_stagger_offset_s: 1.0}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 8}
+    default_full_setting: {n_requests: 32}
+    validation_metrics: [mean_latency, mean_ttft, mean_tpot, throughput_completions_per_sec, completion_fraction]
+    acceptance_gates: "sarathi_faithful.completion_fraction >= vllm_faithful.completion_fraction"
+    real_system_followup_required: false
+    validation_status: "SIMULATOR_MECHANISM_LIMITATION_DISCLOSED -- the real-hardware-validated (ROBUST classification, strongest in this project's Sarathi evidence base) decode-protection advantage is NOT reproducible in this simulator for this fixture (see calibration_note); the gate instead validates a coarser, genuinely-distinguishing mechanism (chunked vs non-chunked admission/completion)"
+    provenance_notes: "Mirrors Wulver scenario B (sarathi_active_decode_plus_arriving_prefill / mistral_match_active_decode_plus_arriving_prefill). Smoke n=8 (4+4) is an EXACT reproduction of the real trial's request count and stagger offsets; full n=32 (16+16) scales the same shape, not independently validated at that N."
+    calibration_note: "Retuned 2026-08-05 -- this was the PRIMARY candidate fixture for exercising the real decode-protection mechanism (per docs/decode_prefill_contention_execution_model.md's own prediction), including a rescaled-arrival-offset retest (offset_scale swept 3.0s down to 0.05s to correct a units mismatch between real wall-clock seconds and the simulator's abstract time scale) and direct per-step contention-diagnostic tracing. Result: still byte-identical, for the same structural (FCFS-admission-order) reason documented in docs/research/algorithm_stress_tests/SARATHI_MECHANISM_CALIBRATION_20260805.md -- not a fixture-construction bug. This is the single most important negative finding in this catalog addition: even the request shape real hardware validated most strongly cannot currently expose the mechanism in-simulator."
+
+  - stress_test_id: sarathi_counter_prefill_heavy_burst
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: COUNTER
+    evidence_class: EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE
+    source_citations:
+      - "This project's own repeated-trial real-GPU validation, docs/wulver_sarathi_vllm_repeated_validation.md: mistral_match_prefill_heavy_burst, robust vLLM E2E win, 5/5 trials, mean diff (vLLM-Sarathi) -0.1466s, 95% CI [-0.157, -0.137], Wulver jobs 1111988/1111989/1111990"
+    targeted_assumption: "Chunking a prefill-dominated burst (long prompts, short output) amortizes overhead well relative to unchunked scheduling"
+    workload_phenomenon: "A burst of long-bucket prompts with short (32-token) output -- prefill cost dominates, decode barely matters, all arriving at t=0"
+    expected_behavior: "N/A -- this IS the counter case"
+    expected_failure_signature: "sarathi_faithful's mean_latency is measurably WORSE than vllm_chunked_prefill_faithful's -- with decode cost negligible, decode-protection's per-step reservation overhead has no offsetting benefit and only slows prefill throughput"
+    observed_behavior: "Measured (smoke scale): sarathi_faithful.mean_latency == vllm_chunked_prefill_faithful.mean_latency == 0.0460 (byte-identical, structural, not workload-specific -- see calibration_note); vllm_faithful.completion_fraction == 0.00 (fails to admit any long-bucket prompt at all, non-chunked)"
+    comparison_algorithms: [vllm_chunked_prefill_faithful, vllm_faithful, fifo, shortest_output_first]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, max_active_sequences: 16, max_batch_tokens: 4096, max_kv_tokens: 65536}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests_smoke: 6, n_requests_full: 24, prompt_bucket: long, output_tokens: 32}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 6}
+    default_full_setting: {n_requests: 24}
+    validation_metrics: [mean_latency, mean_ttft, mean_tpot, throughput_completions_per_sec, completion_fraction]
+    acceptance_gates: "sarathi_faithful.completion_fraction >= vllm_faithful.completion_fraction"
+    real_system_followup_required: false
+    validation_status: "SIMULATOR_MECHANISM_LIMITATION_DISCLOSED -- the real-hardware-validated decode-protection-vs-shared-contention distinction is NOT reproducible in this simulator for this fixture (see calibration_note); the gate instead validates a coarser, genuinely-distinguishing mechanism (chunked vs non-chunked admission of long prompts)"
+    provenance_notes: "Mirrors Wulver scenario C (sarathi_prefill_heavy_burst / mistral_match_prefill_heavy_burst). Smoke n=6 is an EXACT reproduction of the real trial's request count; full n=24 scales the same shape up, not independently validated at that N."
+    calibration_note: "Retuned 2026-08-05 -- see docs/research/algorithm_stress_tests/SARATHI_MECHANISM_CALIBRATION_20260805.md for the full diagnostic trace and structural proof (byte-identical sarathi_faithful/vllm_chunked_prefill_faithful output under FCFS-strict admission, verified via step_token_budget sweep and per-step contention-diagnostic tracing). Gate replaced, not force-passed."
+
+  - stress_test_id: sarathi_counter_mixed_prompt_lengths
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: COUNTER
+    evidence_class: EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE
+    source_citations:
+      - "This project's own repeated-trial real-GPU validation, docs/wulver_sarathi_vllm_repeated_validation.md: mistral_match_mixed_prompt_lengths, robust vLLM E2E win, 5/5 trials, mean diff (vLLM-Sarathi) -0.2052s, 95% CI [-0.257, -0.161], Wulver jobs 1111988/1111989/1111990"
+    targeted_assumption: "Chunked scheduling handles heterogeneous prompt-length mixes at least as well as shared-budget FCFS contention"
+    workload_phenomenon: "Short/medium/long buckets cycled evenly, moderate (64-token) output, all arriving at t=0"
+    expected_behavior: "N/A -- this IS the counter case"
+    expected_failure_signature: "sarathi_faithful's mean_latency is measurably WORSE than vllm_chunked_prefill_faithful's under this heterogeneous-length mix"
+    observed_behavior: "Measured (smoke scale): sarathi_faithful.mean_latency == vllm_chunked_prefill_faithful.mean_latency == 0.0688 (byte-identical, structural, not workload-specific -- see calibration_note); vllm_faithful.mean_latency == 0.0975, completion_fraction == 0.33 (drops 2/3 of requests, non-chunked)"
+    comparison_algorithms: [vllm_chunked_prefill_faithful, vllm_faithful, fifo, shortest_output_first]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, max_active_sequences: 16, max_batch_tokens: 4096, max_kv_tokens: 65536}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests_smoke: 6, n_requests_full: 24, prompt_buckets: [short, medium, long], output_tokens: 64}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 6}
+    default_full_setting: {n_requests: 24}
+    validation_metrics: [mean_latency, mean_ttft, mean_tpot, throughput_completions_per_sec, completion_fraction]
+    acceptance_gates: "sarathi_faithful.completion_fraction >= vllm_faithful.completion_fraction"
+    real_system_followup_required: false
+    validation_status: "SIMULATOR_MECHANISM_LIMITATION_DISCLOSED -- the real-hardware-validated decode-protection-vs-shared-contention distinction is NOT reproducible in this simulator for this fixture (see calibration_note); the gate instead validates a coarser, genuinely-distinguishing mechanism (chunked vs non-chunked admission/completion)"
+    provenance_notes: "Mirrors Wulver scenario D (sarathi_mixed_prompt_lengths / mistral_match_mixed_prompt_lengths). Smoke n=6 is an EXACT reproduction of the real trial's request count; full n=24 scales the same shape up, not independently validated at that N."
+    calibration_note: "Retuned 2026-08-05 -- see docs/research/algorithm_stress_tests/SARATHI_MECHANISM_CALIBRATION_20260805.md for the full diagnostic trace and structural proof. Gate replaced, not force-passed."
+
+  - stress_test_id: sarathi_target_kv_pressure
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: TARGET
+    evidence_class: EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE
+    source_citations:
+      - "This project's own repeated-trial real-GPU validation, docs/wulver_sarathi_vllm_repeated_validation.md: mistral_match_kv_pressure, ROBUST Sarathi E2E win, 5/5 trials, mean diff (vLLM-Sarathi) +0.8360s, 95% CI [0.769, 0.903], Wulver jobs 1111988/1111989/1111990 -- 'a new finding beyond the single run'"
+    targeted_assumption: "Under sustained long-context, long-decode load, decode-protected scheduling maintains a throughput/latency advantage over shared-budget contention"
+    workload_phenomenon: "Long context (2048-target-token prompts) plus long decode (768-token output) at concurrency 12, all arriving at t=0 -- matched to vLLM jobs 1111541/1111545's stress_kv_pressure shape"
+    expected_behavior: "sarathi_faithful's decode-protected admission maintains lower E2E latency than vllm_chunked_prefill_faithful's shared-contention scheduling under this sustained KV-pressure load"
+    expected_failure_signature: "N/A (target case)"
+    observed_behavior: "Measured (smoke scale): sarathi_faithful.mean_latency == vllm_chunked_prefill_faithful.mean_latency == 0.7940 (byte-identical, structural, not workload-specific -- see calibration_note); vllm_faithful.completion_fraction == 0.00 (fails to admit any long-bucket prompt at all, non-chunked)"
+    comparison_algorithms: [vllm_chunked_prefill_faithful, vllm_faithful, fifo, shortest_output_first]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, max_active_sequences: 16, max_batch_tokens: 4096, max_kv_tokens: 65536}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests_smoke: 12, n_requests_full: 36, prompt_bucket: long, output_tokens: 768}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 12}
+    default_full_setting: {n_requests: 36}
+    validation_metrics: [mean_latency, mean_ttft, mean_tpot, throughput_completions_per_sec, completion_fraction]
+    acceptance_gates: "sarathi_faithful.completion_fraction >= vllm_faithful.completion_fraction"
+    real_system_followup_required: false
+    validation_status: "SIMULATOR_MECHANISM_LIMITATION_DISCLOSED -- the real-hardware-validated (ROBUST classification) decode-protection advantage is NOT reproducible in this simulator for this fixture (see calibration_note); the gate instead validates a coarser, genuinely-distinguishing mechanism (chunked vs non-chunked admission of long prompts)"
+    provenance_notes: "Mirrors Wulver scenario E (sarathi_matched_vllm_kv_pressure / mistral_match_kv_pressure). Smoke n=12 is an EXACT reproduction of the real trial's request count; full n=36 scales the same shape up, not independently validated at that N."
+    calibration_note: "Retuned 2026-08-05 -- see docs/research/algorithm_stress_tests/SARATHI_MECHANISM_CALIBRATION_20260805.md for the full diagnostic trace and structural proof. Gate replaced, not force-passed."
+
+  # -- Literature-motivated entries (NOT real-hardware validated in this project) --
+
+  - stress_test_id: sarathi_counter_short_prompt_decode_dominated_regime
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: COUNTER
+    evidence_class: HYPOTHESIZED_ADVERSARIAL_REGIME
+    source_citations:
+      - "General chunk-size-sensitivity finding, technical review synthesized in docs/audits/sarathi_official_artifact_audit_20260805.md section 4 ('below C=128 the attention re-overhead kills throughput... a narrow operational window'); not a direct reproduction of any cited experiment -- an internally constructed hypothesis"
+    targeted_assumption: "Chunking overhead is amortizable regardless of how little prefill cost there is to amortize it against"
+    workload_phenomenon: "Short-bucket (100-target-token) prompts with long (600-1200-token) decode -- prefill is already cheap; chunked-prefill's own fixed per-chunk scheduling overhead has little to offset"
+    expected_behavior: "N/A -- this IS the (hypothesized) failure case"
+    expected_failure_signature: "sarathi_faithful shows no meaningful latency advantage over vllm_faithful (non-chunked, decode-first) in this regime, and may show a small deficit from chunking bookkeeping overhead with no prefill cost to amortize it against -- UNCONFIRMED hypothesis, not yet supported by any run in this project; see calibration_note"
+    observed_behavior: "Measured (smoke scale): sarathi_faithful.mean_latency == vllm_chunked_prefill_faithful.mean_latency == vllm_faithful.mean_latency == fifo.mean_latency == 0.9285 (ALL FOUR policies byte-identical). The gate technically PASSES, but not for the hypothesized reason -- with short-bucket (100-token) prompts and step_token_budget=512/max_prefill_chunk_tokens=512, every prompt's ENTIRE prefill fits in a single step's chunk regardless of scheduling policy, so no scheduling decision this fixture makes is actually load-bearing at this scale (a degenerate tie, the same class of bug this project's own STRESS_TEST_VALIDATION_20260805.md calls '\"arrives alone, gets trivially admitted\"'). Does NOT confirm or refute the intended hypothesis."
+    comparison_algorithms: [vllm_faithful, vllm_chunked_prefill_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, max_active_sequences: 16, max_batch_tokens: 4096, max_kv_tokens: 65536}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests_smoke: 20, n_requests_full: 80, arrival_rate: 8.0, prompt_bucket: short, output_range: [600, 1200]}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 80}
+    validation_metrics: [mean_latency, mean_tpot, throughput_completions_per_sec]
+    acceptance_gates: "abs(sarathi_faithful.mean_latency - vllm_faithful.mean_latency) / vllm_faithful.mean_latency < 0.10"
+    real_system_followup_required: true
+    validation_status: "SIMULATOR_COMPATIBLE (fully representable) BUT DEGENERATE AT THIS SCALE -- gate passes trivially (see observed_behavior), not a confirmed finding; NOT real-hardware validated; local GPU (RTX 5060 Ti) NOT sufficient for a real-Sarathi-vs-real-vLLM comparison in this exact regime (same categorical CUDA/Blackwell blocker as the rest of this project's Sarathi work); Wulver required for real-hardware follow-up"
+    provenance_notes: "Not derived from the Wulver validation (short_context_control was dropped from the repeated-trial pass without a decode-heavy pairing) -- a new, internally constructed hypothesis. Gate is a near-equality tolerance check (weak claim: 'no meaningful advantage'), not a directional win/loss claim, reflecting the genuinely unconfirmed status."
+    calibration_note: "The 'PASS' here is honestly a degenerate tie (all 4 policies byte-identical, not just sarathi vs vllm_faithful), not evidence for the hypothesis. Revising this fixture to genuinely stress-test the mechanism (e.g. reducing max_prefill_chunk_tokens/step_token_budget well below 100 tokens so even a short prompt requires multiple chunks) was not attempted this pass, to avoid retuning parameters specifically until a directional result appears -- exactly the anti-pattern this project's own validation practice warns against. Left as an open, disclosed gap rather than force-resolved."
+
+  - stress_test_id: sarathi_counter_long_context_attention_recompute
+    algorithm_id: sarathi_faithful
+    algorithm_family: chunked_prefill_stall_free
+    test_role: COUNTER
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "Technical review of Sarathi-Serve (docs/audits/sarathi_official_artifact_audit_20260805.md section 4): attention-recompute overhead estimated <3% at 8K tokens, potentially 10-15% at 64K; the paper itself sidesteps this regime, evaluating traces with prompt lengths <=~13K tokens"
+    targeted_assumption: "Chunking overhead (extra attention recomputation across chunk boundaries) is amortizable at the context lengths tested -- explicitly NOT tested by the paper's own evaluation beyond ~13K tokens"
+    workload_phenomenon: "Prompts >=32K tokens, where prefill shifts from linear-layer-bound to attention-bound (quadratic) -- chunked-prefill's attention re-overhead grows correspondingly"
+    expected_behavior: "N/A -- this IS the failure case, per the paper's own acknowledged limitation"
+    expected_failure_signature: "Chunked-prefill's relative advantage over non-chunked scheduling narrows or reverses as attention-recompute cost grows superlinearly with context length -- UNTESTABLE in this simulator, see validation_status"
+    observed_behavior: "NOT_EXECUTABLE -- generator raises NotImplementedError by design; see scripts/stress_tests/generators.py::sarathi_counter_long_context_attention_recompute"
+    comparison_algorithms: [vllm_faithful, vllm_chunked_prefill_faithful]
+    simulator_requirements: {enable_prefill_modeling: true, enable_decode_prefill_contention: true, max_prefill_chunk_tokens: 512, single_gpu: true, requires_attention_cost_model: true}
+    topology_requirements: "monolithic, 1 GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {prompt_tokens_target: 32768, note: "NOT_IMPLEMENTED -- see generator docstring"}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 0}
+    default_full_setting: {n_requests: 0}
+    validation_metrics: [mean_latency]
+    acceptance_gates: "N/A -- not auto-evaluable, generator raises NotImplementedError by design"
+    real_system_followup_required: true
+    validation_status: "NOT_REPRESENTABLE -- this simulator's timing model has no attention-cost scaling term at all (confirmed docs/audits/sarathi_official_artifact_audit_20260805.md section 6); local GPU insufficient regardless (16GB VRAM cannot hold a 32K-context KV cache for a 7B+ model at the batch sizes needed); Wulver required for any real-hardware attempt at this regime, and even then would need vLLM/Sarathi's real, unmodified engines (not this simulator) since the abstraction gap is structural, not a calibration gap"
+    provenance_notes: "Spec-only catalog entry, matching the existing vLLM-LTR/PARS out-of-scope disclosure pattern (NO_GENERATOR/OUT_OF_SCOPE handling in scripts/stress_tests/run_stress_test_smoke.py already covers a NotImplementedError generator gracefully -- verified, not assumed)."

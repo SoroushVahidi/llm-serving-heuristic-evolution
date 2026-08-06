@@ -1,0 +1,178 @@
+{
+  "entry_id": "sarathi_counter_short_prompt_decode_dominated_regime",
+  "seed": 2,
+  "smoke": true,
+  "n_requests": 17,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.13786656833267047,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 623,
+      "actual_output_tokens": 623,
+      "slo_deadline": 1000.1378665683327,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.22978985533774227,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 712,
+      "actual_output_tokens": 712,
+      "slo_deadline": 1000.2297898553378,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.3751556582633403,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 799,
+      "actual_output_tokens": 799,
+      "slo_deadline": 1000.3751556582633,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.4697526834165086,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 807,
+      "actual_output_tokens": 807,
+      "slo_deadline": 1000.4697526834165,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.6874234197650952,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 947,
+      "actual_output_tokens": 947,
+      "slo_deadline": 1000.6874234197651,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.9790620827000653,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 906,
+      "actual_output_tokens": 906,
+      "slo_deadline": 1000.9790620827,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 6,
+      "arrival_time": 1.0569616831753195,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1015,
+      "actual_output_tokens": 1015,
+      "slo_deadline": 1001.0569616831754,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 7,
+      "arrival_time": 1.0815769770119679,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1134,
+      "actual_output_tokens": 1134,
+      "slo_deadline": 1001.081576977012,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 8,
+      "arrival_time": 1.40566415695107,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1126,
+      "actual_output_tokens": 1126,
+      "slo_deadline": 1001.405664156951,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 9,
+      "arrival_time": 1.500251314914135,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1065,
+      "actual_output_tokens": 1065,
+      "slo_deadline": 1001.5002513149142,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 10,
+      "arrival_time": 1.582960998185291,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1185,
+      "actual_output_tokens": 1185,
+      "slo_deadline": 1001.5829609981853,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 11,
+      "arrival_time": 1.6435825371889814,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 790,
+      "actual_output_tokens": 790,
+      "slo_deadline": 1001.643582537189,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 12,
+      "arrival_time": 1.6732432464363005,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1144,
+      "actual_output_tokens": 1144,
+      "slo_deadline": 1001.6732432464363,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 13,
+      "arrival_time": 1.7076620557740632,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 1154,
+      "actual_output_tokens": 1154,
+      "slo_deadline": 1001.7076620557741,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 14,
+      "arrival_time": 1.8214013170294865,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 734,
+      "actual_output_tokens": 734,
+      "slo_deadline": 1001.8214013170295,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 15,
+      "arrival_time": 2.035564351485701,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 882,
+      "actual_output_tokens": 882,
+      "slo_deadline": 1002.0355643514857,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    },
+    {
+      "request_id": 16,
+      "arrival_time": 2.4185898812341917,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 941,
+      "actual_output_tokens": 941,
+      "slo_deadline": 1002.4185898812342,
+      "priority": 1.0,
+      "class_id": "short_decode_dominated"
+    }
+  ]
+}
