@@ -82,6 +82,33 @@ branch.
 - **Apt-Serve Strategy C vs. D is undetermined** — blocked entirely on the
   above.
 
+## Query 4 final closure facts (added 2026-08-06, after this note's initial version)
+
+- **Worktree cleanup completed.** `.claude/worktrees/phase2b9` was removed
+  (`git worktree remove --force` + `git worktree prune`) after re-verifying
+  it was safe byte-for-byte, not just re-stating Query 1/2's conclusion —
+  see `docs/audits/project_pause_final_closure_query4_20260806.md` for the
+  exact evidence (a minor correction there: the two modified tracked files
+  were superseded earlier drafts, not literally byte-identical as
+  previously summarized; the safety conclusion is unchanged). Its local
+  branch (`worktree-phase2b9`) was intentionally left in place.
+- **Full non-live/non-GPU test suite result:** 3455 passed, 1 failed (see
+  next bullet), 17 skipped, 21 deselected, ~6 minutes.
+- **One known, pre-existing, unrelated failure remains:**
+  `tests/test_decode_prefill_contention_execution.py::TestLegacyModeUnchanged::test_existing_yaml_configs_do_not_set_new_field`,
+  latent since 2026-08-03 (a CC4b research config sets a key the test's
+  guard logic, written 2026-07-20, didn't anticipate) — confirmed via git
+  history to be untouched by any commit in this pause sequence. Not fixed
+  in this query (out of scope); a future query should apply a one-line test
+  fix. Full causal analysis in
+  `docs/audits/project_pause_final_closure_query4_20260806.md`.
+- **No active local jobs** at Query 4's close — confirmed via tmux/process
+  sweep, same result as Queries 1–3.
+- **Final clean/sync confirmation:** working tree clean, 0 ahead / 0 behind
+  `origin/contextual-compositional-heuristics-20260731` after this query's
+  commit(s) — verify live with `git status --short --branch`, do not trust
+  a cached SHA from this document.
+
 ## Known simulator limitations
 
 - Sarathi-Serve's real-hardware decode-protection mechanism does not
@@ -105,13 +132,8 @@ sequence's own commits.
 
 ## Worktrees requiring Query 4 cleanup
 
-`.claude/worktrees/phase2b9` (branch `worktree-phase2b9`, HEAD at the
-already-merged tip of `phase2b8-rule-selector-repair`) contains six dirty
-files, all confirmed byte-present on the already-committed
-`phase2b9-selector-robustness-and-suite-freeze` branch (same evening,
-~15 minutes later). **Safe to `git worktree remove` in Query 4**, after
-final validation, once the user confirms. Not removed in Query 2 or Query 3
-per each query's own scope restriction.
+**Done.** `.claude/worktrees/phase2b9` was removed in Query 4 — see "Query 4
+final closure facts" above. No worktrees remain except the main one.
 
 ---
 

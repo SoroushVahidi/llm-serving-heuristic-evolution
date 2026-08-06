@@ -153,8 +153,10 @@ win rate) → **CC5 finalized `COMPLETE_REGIME_SPECIFIC`** (§D).
    summarizing whether the current baseline set (vLLM-LTR, PARS,
    VTC, Sarathi, Apt-Serve, Llumnix) is now sufficient evidence to revisit
    CC6, or whether further baseline work is needed first.
-7. **Audit DistServe** (official-artifact audit only, following the
-   Sarathi/VTC/Apt-Serve/Llumnix pattern) — not started on this branch.
+7. **Run the DistServe comparative evaluation** — not an audit: `distserve_faithful.py`
+   already exists (implemented the same day as Llumnix, 35/35 tests passing);
+   it has the exact same evidence gap as Llumnix (implemented, unevaluated).
+   Same evaluation pattern as items 1–5 above, sequenced after Llumnix.
 8. **Decide whether external evidence is sufficient to revisit CC6** — this
    decision is gated on (6), not assumed.
 
