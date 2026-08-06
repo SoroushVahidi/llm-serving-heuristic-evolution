@@ -77,7 +77,7 @@ win rate) → **CC5 finalized `COMPLETE_REGIME_SPECIFIC`** (§D).
 - **PARS-Serve-2026** — complete, official-code reproduction with a locally trained, fidelity-verified checkpoint, `EVALUATION_ONLY`; zero unique wins across 8 canonical-suite families.
 - **VTC** — official `VTCReqQueue` reused via adapter (real, unmodified code), fairness-validated 108-run sweep, `FOUNDATIONAL_CANDIDATE` (scientific classification, not registered as deployable).
 - **Sarathi-Serve** — faithful reimplementation + real Wulver A100 GPU validation (N=5 repeated trials); 7-entry stress-test catalog; the real-hardware decode-protection mechanism was found provably unreproducible in-simulator under FCFS-strict admission (a structural finding, documented, gates revised accordingly).
-- **Apt-Serve** — official artifact audited (`CODE_ONLY` reproducibility, SIGMOD 2025); Strategy C/D (reuse-as-component vs. reimplement) question **resolved by executed Wulver evidence** (2026-08-05/06 probe, jobs 1163456/1163782/1164406) — classified `STRATEGY_C_VIABLE_WITH_LIMITATIONS`; no in-repo adapter or implementation exists yet (`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` §9b).
+- **Apt-Serve** — Strategy C (reuse-as-component) Wulver probe classified `STRATEGY_C_VIABLE_WITH_LIMITATIONS`. Simulator dual-tier cache architecture and external adapter specifications are fully designed and approved (`docs/design/apt_serve_simulator_architecture_20260806.md`); implementation is queued (Phase A).
 - **Llumnix** — faithful reimplementation exists and is registered (`llumnix_faithful.py`, 36 fidelity tests, 188/188 passing including cross-baseline integration); **no comparative evaluation has ever been run** (§E).
 - **DistServe** — also has a faithful reimplementation and is registered (`distserve_faithful.py`, implemented the same day as Llumnix, 35 fidelity tests, all passing); `docs/BASELINE_STATUS.md`'s DistServe row was found stale in this same way during Query 3 and corrected. Same evidence gap as Llumnix: no comparative evaluation exists yet.
 
@@ -116,14 +116,10 @@ win rate) → **CC5 finalized `COMPLETE_REGIME_SPECIFIC`** (§D).
   documented, structural simulator limitation, not a tuning gap; stress-test
   gates were revised to a coarser, still-genuinely-discriminating check.
 - **Apt-Serve's Strategy C vs. D question is resolved
-  (`STRATEGY_C_VIABLE_WITH_LIMITATIONS`), but implementation has not
-  started**: the official, patched `vllm.core.scheduler.Scheduler`
-  imports, constructs, and executes real `schedule()` calls on Wulver
-  (7/7 import checks, 3/3 micro-traces, reproduced across two nodes) —
-  this was established from actual execution, not guessed from code
-  reading (`CCD-022`). The paper's hybrid KV/hidden-state cache design
-  still needs a new simulator memory-tier extension regardless of
-  Strategy C/D — that gap is unaffected by this result and remains open.
+  (`STRATEGY_C_VIABLE_WITH_LIMITATIONS`), and architecture design is complete**.
+  The paper's hybrid KV/hidden-state cache design gap has been scoped into
+  a structured dual-tier cache extension. Implementation of Phase A
+  (configuration scaffolding) is the exact next step.
 - **Llumnix's implementation is real and tested, but unevaluated** — 188/188
   tests passing is evidence of correctness, not of competitiveness against
   other policies. Treating "tests pass" as "validated" was an identified
