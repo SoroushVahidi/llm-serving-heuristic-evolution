@@ -1,210 +1,250 @@
 # Resume Here
 
-**Read this document first.** It is the single entry point for resuming
-this project after an intentional pause. Readable in 5–10 minutes.
+**This is the single canonical entry point for this repository.** Every other
+"start here" / "resume" document in this repository now points here first.
+Read this document before any other status document. It supersedes its own
+prior content (the 2026-07-25 pause note below is now historical — see
+`docs/current/pause_2026_07_25/` for that provenance) and the older
+2026-07-23 pause documents in this directory, all of which describe earlier
+project phases.
 
 ---
 
-## Project state (intentional pause — 2026-07-25)
+## A. Where are we?
 
-- **Paused intentionally** after Tier 1 real-dataset staging, validated real-window
-  construction, and the repaired balanced load-discrimination pilot.
-- **Durable source of truth:** GitHub (`origin`), not Wolverine `/mmfs1` storage.
-  External Wolverine paths below **may have disappeared**; reconstruct via
-  `docs/current/pause_2026_07_25/REPRODUCTION_COMMANDS.md`.
-- **Checkout first:** `reality-grounded-dataset-expansion-20260724`
-  (dataset-expansion worktree / branch). Then read the pause snapshot.
-- **Pause snapshot (authoritative for this pause):**
-  `docs/current/pause_2026_07_25/` — start with `PAUSE_HANDOFF.md` and
-  `pause_handoff_state.json`.
-- **Authoritative integration branch (merge target for Part 3):**
-  `wulver-final-integration-20260721` in
-  `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration`
-  (may also need clone from GitHub after storage deletion).
-- **Historical 2026-07-23 pause checkpoint** remains relevant for SLAI/composition
-  lineage context: commit `8c9cedb…` on the integration branch (see below).
-
-### Exact resume commands
+| Field | Value |
+|---|---|
+| Repository | `llm-serving-heuristic-evolution` |
+| Branch | `contextual-compositional-heuristics-20260731` |
+| Authoritative SHA (at time of writing) | `e413ba1dcbe8b79f0ebc0f7511e846481548b6bb` — **verify with `git rev-parse HEAD`, do not trust this number without checking** |
+| Remote | `origin/contextual-compositional-heuristics-20260731` (GitHub, `SoroushVahidi/llm-serving-heuristic-evolution`, private) |
+| Expected state on resume | Working tree clean, 0 ahead / 0 behind `origin`. If not, stop and reconcile before doing anything else — do not build on top of an unexpected diff. |
+| `main` branch | Stale (ancestor of this branch, last commit 2026-07-17) — not the branch to resume from |
 
 ```bash
-git fetch origin --prune --tags
-git checkout reality-grounded-dataset-expansion-20260724
-# After Part 3 push: git pull --ff-only
-source "$(conda info --base)/etc/profile.d/conda.sh" && conda activate repo-env
-less docs/current/RESUME_HERE.md
-less docs/current/pause_2026_07_25/PAUSE_HANDOFF.md
+git fetch origin
+git status --short --branch
+git rev-parse HEAD
+git rev-list --left-right --count HEAD...@{u}
 ```
-
-### Current scientific decision
-
-`LOAD_DISCRIMINATION_PILOT = PARTIALLY_READY` (job `1143392`, stratified 250 windows,
-Mooncake included). **No full 27-policy fingerprint sweep has been authorized.**
-Next work is **targeted simulator / load-regime discrimination repair** using
-natural+busy primary evidence (scaled windows are stress evidence only).
-
-Diagnostic caveat: pilot “behavioral disagreement” / tie causes use **outcome
-signatures**, not true scheduler action traces.
-
-Mooncake: `DATA_LICENSE = NOT_EXPLICITLY_SPECIFIED`;
-`REDISTRIBUTION = PROHIBITED_UNTIL_CLARIFIED`; `EVALUATION_ROLE = INTERNAL_OOD_ONLY`.
-
-### Read these first (in order)
-
-1. This document.
-2. `docs/current/pause_2026_07_25/PAUSE_HANDOFF.md`
-3. `docs/current/pause_2026_07_25/REPAIRED_PILOT_SUMMARY.md`
-4. `docs/current/pause_2026_07_25/KNOWN_LIMITATIONS.md`
-5. `docs/current/PROJECT_HANDOFF_2026-07-23.md` (historical + updated addenda)
-6. `docs/current/project_handoff_state.json`
-7. `docs/current/PROJECT_STATUS.md`
-8. `docs/current/EXPERIMENT_INDEX.md`
 
 ---
 
-## Historical project state (2026-07-23 pause checkpoint)
+## B. What is the project?
 
+This project studies **scheduling-policy selection for LLM inference
+serving**: a GPU-calibrated discrete-event simulator in which requests
+arrive with unknown output length under SLO constraints, and a policy
+decides admission order and placement. Concretely:
 
-## What the project does
+- **Verified scheduling primitives** — 28 registered primitives
+  (RANKING/ADMISSION/PLACEMENT/BATCHING/RESOURCE_GUARD,
+  `src/llmserveopt/policies/primitives.py`), from which representative
+  policies are reconstructed (6/7 exact, 1/7 documented approximate).
+- **DSL / composition framework** — a restricted, verifiable JSON DSL
+  (`src/llmserveopt/heuristics/`) for composing primitives into weighted
+  sums, sparse top-k mixtures, conditional branches, and admission gates
+  with declared fallback.
+- **Oracle simulator datasets** — a reproducible, resumable oracle
+  composition dataset (CC4: 12 workload windows, 34 verified candidates,
+  408 true simulator executions).
+- **Contextual composition predictor** — a regret-regression model with
+  leave-one-window-out selection (CC5), finalized behind a frozen,
+  deterministic operating-envelope gate.
+- **Uncertainty-aware fallback** — the CC5 envelope trusts the predictor in
+  7 of 12 evaluated regimes and falls back to a validation-tuned safe
+  choice elsewhere.
+- **External baseline validation** — faithful, pinned reimplementations of
+  vLLM, vLLM-chunked-prefill, Sarathi-Serve, DistServe, TetriInfer, Llumnix,
+  PARS-Serve-2026, and VTC, each checked against the official paper/artifact.
+- **Stress-test library** — a target/counter-regime catalog
+  (`docs/research/algorithm_stress_tests/`) for testing whether a baseline's
+  claimed mechanism actually holds under adversarial conditions, not just
+  average-case workloads.
 
-This project builds a deterministic discrete-event **LLM-serving scheduling
-simulator** and studies how to select, combine, or synthesize
-request-scheduling policies (admission order, batching, KV/cache
-management) for LLM inference serving. The long-term goal is a
-**state-conditioned mechanism** that estimates the suitability of scheduling
-components for a given serving scenario and uses that evidence to combine
-or synthesize a new policy — evaluated fairly against fixed, adaptive, and
-real-system-derived ("faithful external") baselines. The primary metric is
-**ANWG** (arrival-normalized weighted goodput).
+---
 
-## Current state in one paragraph
+## C. What has been completed?
 
-The repository registers **34 scheduling policies** (20 historical + 7
-Policy Library v2 + 7 faithful external baselines, plus 1 hindsight-oracle
-reference-only policy) — verify this count live against
-`src/llmserveopt/policies/registry.py` /
-`src/llmserveopt/policies/external_baselines_registry.py` before trusting
-any cached number, including this one. The learned **selector is useful but
-not solved**: it beats some fixed baselines in-distribution but does not
-reliably capture the oracle-envelope gain out-of-distribution, and is
-currently frozen for retraining. **External baseline coverage was just
-strengthened** with a new faithful `slai_faithful` baseline (source-grounded
-against `github.com/agrimUT/SLAI`, Apache-2.0). The project's **primary,
-standing bottleneck is simulator/objective discriminative power** — the
-simulator/ANWG objective often collapses diverse real workloads to
-near-identical policy rewards (confirmed independently by three separate
-audits, most recently the SLAI bounded pilot below). **Composition/structural
-synthesis is the most promising longer-term research direction** but is
-infrastructure-ready, not scientifically validated yet (a native composition
-pilot returned `NO_GO`) — do not resume it before the discriminative-power
-bottleneck is addressed.
+**Contextual composition (CC0–CC5), all COMPLETE:**
+CC0 (repo/evidence stabilization) → CC1/CC1b (composition-opportunity gap
+measured) → CC2 (primitive interface, 6/7 exact reconstructions) → CC3
+(DSL/verifier, 447 tests) → CC4 (oracle dataset, 66.7% composition-oracle
+win rate) → **CC5 finalized `COMPLETE_REGIME_SPECIFIC`** (§D).
 
-## Most important recent result: SLAI bounded pilot
+**External baselines:**
+- **vLLM-LTR** — complete, official checkpoint hash+architecture verified, `EVALUATION_ONLY`.
+- **PARS-Serve-2026** — complete, official-code reproduction with a locally trained, fidelity-verified checkpoint, `EVALUATION_ONLY`; zero unique wins across 8 canonical-suite families.
+- **VTC** — official `VTCReqQueue` reused via adapter (real, unmodified code), fairness-validated 108-run sweep, `FOUNDATIONAL_CANDIDATE` (scientific classification, not registered as deployable).
+- **Sarathi-Serve** — faithful reimplementation + real Wulver A100 GPU validation (N=5 repeated trials); 7-entry stress-test catalog; the real-hardware decode-protection mechanism was found provably unreproducible in-simulator under FCFS-strict admission (a structural finding, documented, gates revised accordingly).
+- **Apt-Serve** — official artifact audited (`CODE_ONLY` reproducibility, SIGMOD 2025); Strategy C/D (reuse-as-component vs. reimplement) probe infrastructure fully prepared but not executed (§E).
+- **Llumnix** — faithful reimplementation exists and is registered (`llumnix_faithful.py`, 36 fidelity tests, 188/188 passing including cross-baseline integration); **no comparative evaluation has ever been run** (§E).
+- **DistServe** — also has a faithful reimplementation and is registered (`distserve_faithful.py`, implemented the same day as Llumnix, 35 fidelity tests, all passing); `docs/BASELINE_STATUS.md`'s DistServe row was found stale in this same way during Query 3 and corrected. Same evidence gap as Llumnix: no comparative evaluation exists yet.
 
-Slurm job **1129769** (COMPLETED), root:
-`/mmfs1/project/ikoutis/sv96/llmserveopt-data/slai_faithful_bounded_pilot_20260723T033609Z/`.
-Compared `slai_faithful` against `sarathi_faithful`,
-`vllm_chunked_prefill_faithful`, `weighted_shortest_processing`, and
-`scorpio_style_slo_guard` on 12 small windows (3 each from Azure, BurstGPT,
-SwissAI, TraceLab):
+---
 
-- **Oracle-envelope gain from adding SLAI: exactly `0.0` in every one of the
-  12 windows.**
-- Azure/BurstGPT/SwissAI windows were all underloaded (every policy tied at
-  ANWG=1.0) — consistent with, not contradicting, the standing simulator-
-  discriminative-power bottleneck.
-- On TraceLab (the one loaded regime tested), `slai_faithful` **lost
-  clearly** to WSP/SCORPIO.
-- Decode-hold (the new mechanism this baseline required) **did activate
-  meaningfully** on real data (0–16.4% of steps) — the implementation
-  works and is exercised, it just didn't win here.
-- **`FULL_SWEEP_RECOMMENDATION = NO_GO`.**
+## D. What is scientifically established?
 
-**Why this is not necessarily final:** the pilot was small (12 windows),
-3 of 4 datasets were underloaded by pilot-window construction (not
-necessarily a property of the datasets themselves), and the TraceLab loss
-may be partly a `max_steps` simulation-horizon artifact rather than a clean
-algorithmic result — neither was confirmed. This is a real negative result
-worth taking seriously, not a reason to distrust the implementation (which
-is source-grounded, tested, and behaviorally distinct from the pre-existing
-`slai_style_phase_aware` approximation) — but also not a reason to write
-off `slai_faithful` permanently without a properly load-calibrated re-test.
+- **CC5's contextual predictor beats best fixed and the hard selector, but
+  not best global composition overall.** Frozen operating-envelope system:
+  ANWG 0.4044, statistically beats best fixed (paired 95% CI
+  [+0.0074,+0.0235], p<0.0001) and the hard selector (paired 95% CI
+  [+0.0020,+0.0199], p=0.021), 0 completion violations. Its edge over
+  `best_global_composition` (+0.0019 ANWG) is **not** statistically
+  distinguishable from zero (paired 95% CI [-0.0044,+0.0083], p=0.5654) —
+  full-context superiority over global composition was **not** established.
+  This is documented honestly, not hidden.
+- **CC5 is regime-specific, not universal.** Trusted envelope:
+  `burst_transition`, `kv_pressure`, `long_output`, `prediction_noise`,
+  `saturated`, `selective_admission_trap`, `underloaded`. Untrusted (falls
+  back to best-fixed/best-global): `azure_conversation_like`,
+  `burstgpt_derived`, `long_prompt`, `mixed_slo`, `priority_conflict`.
+- **Uncertainty/fallback is calibrated** — the envelope is derived
+  exclusively from development-split (never held-out) evidence, and was
+  evaluated once, held out, at the numbers above.
+- **VTC contributes a distinct fairness niche**, not a throughput win — it
+  wins/ties the Jain's-index fairness comparison in 17/18 family×seed
+  combinations, with a real, bounded ANWG trade-off (0.680 vs. SCORPIO's
+  0.984) in the one family designed to expose its SLO-blindness.
+- **PARS-Serve-2026 and vLLM-LTR are evaluation-only** — complete,
+  independently verified, but dominated by internal policies
+  (`shortest_output_first`/`estimated_service_time_first`/
+  `scorpio_style_slo_guard`/`regression_anwg_selector`) in every
+  discriminative regime tested.
+- **Sarathi-Serve's real-hardware decode-protection mechanism does not
+  reproduce inside this simulator under FCFS-strict admission** — a known,
+  documented, structural simulator limitation, not a tuning gap; stress-test
+  gates were revised to a coarser, still-genuinely-discriminating check.
+- **Apt-Serve requires further work before any implementation decision**:
+  the paper's hybrid KV/hidden-state cache design would need a new
+  simulator memory-tier extension regardless of Strategy C/D, and Strategy
+  C vs. D itself is unresolved pending actual Wulver execution — not to be
+  guessed from code reading (`CCD-022`).
+- **Llumnix's implementation is real and tested, but unevaluated** — 188/188
+  tests passing is evidence of correctness, not of competitiveness against
+  other policies. Treating "tests pass" as "validated" was an identified
+  and corrected error this project made about its own status documentation
+  (`CCD-021`).
 
-## First three actions when resuming
+---
 
-1. **Re-validate current Git/data availability and load-calibrated
-   benchmark construction.** Confirm this checkpoint is still what's on
-   `origin`, confirm the durable data roots listed below still exist, then
-   fix the underlying issue the SLAI pilot re-exposed: Azure/BurstGPT/SwissAI
-   window construction needs genuinely loaded regimes, not just larger
-   sample counts, before any policy comparison on them means anything
-   (Stage 2 of `docs/current/RESEARCH_ROADMAP.md` — the project's own
-   standing highest-priority item, independent of SLAI).
-2. **Run a realistic, discriminative external-baseline evaluation and
-   regenerate reward vectors** — once (1) is fixed, re-run the SLAI bounded
-   pilot (same script,
-   `.../slai_faithful_bounded_pilot_20260723T033609Z/scripts/bounded_pilot.py`)
-   plus a broader pass across the other 6 faithful baselines, on properly
-   loaded windows, via `sbatch` (never interactively for anything beyond a
-   smoke test).
-3. **Perform one final selector benchmark, then decide whether to freeze
-   selector work and shift to composition/synthesis** — only after (1)
-   and (2) produce trustworthy reward separation, per the project's own
-   stated go/no-go criterion (`docs/current/SELECTOR_STATUS.md`).
+## E. What is unfinished?
 
-## Do not do first
+### LOCAL_UNFINISHED (in order)
 
-- **Do not blindly retrain the selector.** It's explicitly frozen pending
-  simulator calibration — retraining on today's rewards repeats known,
-  already-diagnosed weak-signal problems.
-- **Do not run a full four-dataset SLAI sweep** before fixing load
-  calibration and the TraceLab horizon question — the bounded pilot's
-  `NO_GO` was specifically about *this*, not about SLAI as an algorithm.
-- **Do not confuse style/inspired baselines with faithful baselines.**
-  `scorpio_style_slo_guard`, `sarathi_style`, `slai_style_phase_aware`, etc.
-  are original heuristics with suggestive names, not pinned-commit
-  reproductions. Only the 7 names in `EXTERNAL_BASELINE_REGISTRY`
-  (`src/llmserveopt/policies/external_baselines_registry.py`) are faithful.
-- **Do not treat the other linked worktree
-  (`.../llm-serving-heuristic-evolution`, branch
-  `wulver-policy-composition-readiness`) as authoritative.** It was fully
-  audited during this pause and confirmed to hold no unique work, but it is
-  still not the checkout to build on.
-- **Do not run long jobs interactively on the login node.** Use `sbatch`
-  for anything beyond a trivial smoke test — the login node has 1 visible
-  CPU and no active allocation.
+1. **Add Llumnix stress-test catalog entries** — zero exist today; most of
+   the target/counter regime matrix is representable now or needs only two
+   small simulator extensions (migration-bandwidth modeling,
+   concurrent-transfer contention). See
+   `docs/audits/llumnix_official_artifact_audit_20260806.md` §12/§14.
+2. **Generate/validate Llumnix target and counter workloads** — generators
+   for the cheapest gaps (control-loop delay, migration-cost-exceeds-benefit,
+   tiny-request overhead) do not exist yet.
+3. **Run the Llumnix comparative evaluation** — `llumnix_faithful` vs. the
+   existing deployable policy set on multi-instance configs; no new code, no
+   Wulver required, purely local CPU. This is the single most load-bearing
+   gap identified in the current baseline audit.
+4. **Independently verify the results** — matching this project's standing
+   convention for every other external baseline (re-run, re-check for
+   mismatches, do not trust a single pass).
+5. **Classify Llumnix** — `docs/BASELINE_STATUS.md`'s current entry is
+   `UNESTABLISHED pending evaluation`; update it once (3)/(4) complete.
+6. **Perform the next external-baseline checkpoint** — a short report
+   summarizing whether the current baseline set (vLLM-LTR, PARS,
+   VTC, Sarathi, Apt-Serve, Llumnix) is now sufficient evidence to revisit
+   CC6, or whether further baseline work is needed first.
+7. **Audit DistServe** (official-artifact audit only, following the
+   Sarathi/VTC/Apt-Serve/Llumnix pattern) — not started on this branch.
+8. **Decide whether external evidence is sufficient to revisit CC6** — this
+   decision is gated on (6), not assumed.
 
-## Useful durable paths
+### WULVER_DEFERRED (in order — requires a direct Wulver login, not this workstation)
 
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slai_faithful_bounded_pilot_20260723T033609Z/` — SLAI pilot
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/simulator_discriminative_audit_20260722T223236Z/` — the standing-bottleneck audit
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/v2_selector_regret_benchmark_20260722T134925Z/` — strongest selector result to date
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/v2_real_ood_library_20260721T222521Z/` — real-OOD oracle-gain evidence
-- `/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_v2_policy_sweep_20260722T184451Z/` and `tracelab_v2_policy_sweep_20260722T214129Z/` — the two most recent full dataset sweeps
-- Full index with every job ID: `docs/current/EXPERIMENT_INDEX.md`
+1. Authenticate directly on Wulver (this workstation's non-interactive SSH
+   diagnostic found a valid Kerberos ticket and a successfully-obtainable
+   service ticket, but the GSSAPI exchange with `login02.tartan.njit.edu`
+   is still rejected server-side — see
+   `docs/audits/project_pause_reconciliation_query2_20260806.md` for the
+   full diagnosis; likely needs an interactive `kdestroy && kinit` cycle or
+   HPC-support involvement, neither of which this local finalization
+   sequence should attempt).
+2. Inspect Apt-Serve probe state (`squeue`/`sacct` for job `sv96`).
+3. Submit the prepared CPU probe
+   (`scripts/slurm/wulver_apt_serve_strategy_c_cpu_probe.sbatch`) if not
+   already submitted.
+4. Inspect `squeue`/`sacct` output for the submitted job.
+5. Collect compact logs/manifests (not raw multi-GB logs) back to this repo.
+6. Decide Strategy C vs. D using **executed** evidence, not code reading.
+7. Commit/push any Wulver-side artifacts.
+8. Synchronize this local branch afterward (`git pull --ff-only`).
 
-## Resume verification commands (read-only, non-destructive)
+**This local finalization sequence intentionally defers all Wulver
+reconciliation — do not assert that no Wulver job exists.** No local process
+can see a job submitted independently from a direct Wulver-side session; the
+correct statement is "unverified from here," not "does not exist."
 
-```bash
-# Repo identity and cleanliness
-cd /mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration
-git status --short
-git log --oneline -n 3
-git rev-parse --abbrev-ref --symbolic-full-name @{u}
-git rev-list --left-right --count @{u}...HEAD
+---
 
-# Live policy counts (never trust a cached number without this)
-source $(conda info --base)/etc/profile.d/conda.sh && conda activate repo-env
-PYTHONPATH=src python3 -c "
-from llmserveopt.policies.registry import BASELINE_NAMES, POLICY_LIBRARY_V2_NEW_NAMES, SELECTOR_CANDIDATE_NAMES
-from llmserveopt.policies.external_baselines_registry import EXTERNAL_BASELINE_NAMES
-print('total:', len(BASELINE_NAMES)+len(POLICY_LIBRARY_V2_NEW_NAMES)+len(EXTERNAL_BASELINE_NAMES))
-print('selector candidates:', len(SELECTOR_CANDIDATE_NAMES))
-print('faithful external:', len(EXTERNAL_BASELINE_NAMES), EXTERNAL_BASELINE_NAMES)
-"
+## F. What must not be done
 
-# Current Slurm queue (check before assuming anything is idle)
-squeue -u "$USER" -o '%i|%j|%T|%M|%D|%R'
+- Do not start CC6 implementation before the external-baseline checkpoint
+  (§E, item 6) — CC6 is queued but explicitly restricted and not started.
+- Do not call simulator proxies ("style"/"inspired" policies) official
+  baselines — only the names in `EXTERNAL_BASELINE_REGISTRY`
+  (`src/llmserveopt/policies/external_baselines_registry.py`) are faithful
+  reimplementations.
+- Do not treat passing tests as comparative validation (`CCD-021`) — a
+  baseline with 100% passing fidelity tests may still have zero evaluation
+  evidence, as Llumnix currently does.
+- Do not infer Wulver job state from local files, process lists, or stale
+  documentation alone (`CCD-023`) — attempt direct access first, and label
+  the result `REMOTE_STATE_UNVERIFIED` rather than a false negative when it
+  fails.
+- Do not modify canonical workloads or benchmark definitions to favor a
+  particular policy's evaluation numbers.
+- Do not register a `FOUNDATIONAL_CANDIDATE` as deployable/foundational
+  without an explicit decision gate — VTC, for example, remains a
+  scientific classification only, not registered.
 
-# Handoff JSON sanity check
-python3 -c "import json; print(json.load(open('docs/current/project_handoff_state.json'))['recommended_next_step'])"
-```
+---
+
+## G. Exact next local task
+
+**"Llumnix stress-test coverage and first comparative evaluation"**
+
+Do not execute it as part of reading this document — it is the next task to
+pick up, not a command to run now. See §E items 1–5 and
+`docs/audits/llumnix_official_artifact_audit_20260806.md` §12–§14 for full
+scope.
+
+---
+
+## H. Exact next Wulver task
+
+**"Execute Apt-Serve Strategy C CPU probe and decide Strategy C vs. D"**
+
+Do not execute it as part of reading this document. Requires a direct
+Wulver login (not this workstation) — see §E `WULVER_DEFERRED` for the
+exact ordered steps, and
+`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` for the
+prepared probe scripts themselves.
+
+---
+
+## Where to go next
+
+- **Full navigation map:** `docs/current/PROJECT_MAP.md`
+- **Per-workstream status table:** `docs/current/WORK_STATUS.md`
+- **Ordered, dependency-aware action list:** `docs/current/NEXT_ACTIONS.md`
+- **High-impact scientific decisions, summarized:** `docs/current/SCIENTIFIC_DECISIONS.md`
+- **Full decision log:** `docs/contextual_composition_decisions.md`
+- **Dated pause note (why paused, exact resumption procedure):** `docs/current/PROJECT_PAUSE_HANDOFF_20260806.md`
+- **Latest reconciled factual snapshot:** `docs/current/PROJECT_SNAPSHOT_20260806.md`
+- **CC-specific technical roadmap (detailed):** `docs/START_HERE_CONTEXTUAL_COMPOSITION.md` → `docs/contextual_composition_roadmap.md`
+- **Cross-baseline status index:** `docs/BASELINE_STATUS.md`
+
+## Historical provenance (superseded, do not treat as current status)
+
+- `docs/current/pause_2026_07_25/` — the 2026-07-25 pause snapshot (dataset-expansion branch). Superseded by the contextual-composition branch and this document.
+- `docs/current/PROJECT_HANDOFF_2026-07-23.md`, `project_handoff_state.json`, `PAUSE_PROVENANCE_2026-07-23.md` — the 2026-07-23 pause checkpoint. Superseded.
+- `docs/current/PROJECT_STATUS.md`, `docs/current/EXPERIMENT_INDEX.md` — historical status documents for the pre-CC-branch project phase. Retained as provenance only.

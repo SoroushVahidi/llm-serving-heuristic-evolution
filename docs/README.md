@@ -5,32 +5,31 @@ guidance for the LLM Serving Heuristic Evolution project.
 
 ## 0. START HERE
 
-For the contextual-compositional heuristic research branch, start with
-**[START_HERE_CONTEXTUAL_COMPOSITION.md](START_HERE_CONTEXTUAL_COMPOSITION.md)**.
-The authoritative branch-scoped roadmap is
-**[contextual_composition_roadmap.md](contextual_composition_roadmap.md)** and
-the decision log is
-**[contextual_composition_decisions.md](contextual_composition_decisions.md)**.
-The branch is **active, not paused**: CC1-CC4 are complete, and CC5
-(contextual composition predictor) is `IN PROGRESS` via a targeted dataset
-expansion and rerun -- see the
-**[latest CC5 report](audits/contextual_composition_cc5_predictor_report_20260803.md)**
-and the
-**[CC4b/CC5 retry report](audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)**
-for current status. Resume from
-**[RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md)**;
-active issue:
-[#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
+The single canonical entry point for this repository is
+**[current/RESUME_HERE.md](current/RESUME_HERE.md)**, on the active branch
+`contextual-compositional-heuristics-20260731`. Read it first — it is kept
+current and links out to the project map, per-workstream status table,
+ordered next-actions list, and scientific-decision summary.
+
+The CC-specific **technical roadmap** (detailed phase-by-phase status,
+useful once you're past the top-level resume doc) is
+**[START_HERE_CONTEXTUAL_COMPOSITION.md](START_HERE_CONTEXTUAL_COMPOSITION.md)**
+→ **[contextual_composition_roadmap.md](contextual_composition_roadmap.md)**
+→ **[contextual_composition_decisions.md](contextual_composition_decisions.md)**
+(the decision log). As of `current/RESUME_HERE.md`'s last update: CC0–CC5 are
+complete, CC5 finalized `COMPLETE_REGIME_SPECIFIC`, CC6 is queued but
+restricted and not started — do not trust the older "CC5 IN PROGRESS"
+framing that used to live in this section; it is superseded.
+**[RESUME_CONTEXTUAL_COMPOSITION.md](RESUME_CONTEXTUAL_COMPOSITION.md)**
+remains useful for its per-phase checkout-SHA list, current through the CC5
+final operating envelope checkpoint.
 The (now historical) pause-era checkpoint remains provenance at
 **[audits/contextual_composition_pause_checkpoint_20260731.md](audits/contextual_composition_pause_checkpoint_20260731.md)**
 and
 **[audits/contextual_composition_query7_final_pause_readiness_20260731.md](audits/contextual_composition_query7_final_pause_readiness_20260731.md)**.
-These files are canonical for the
-`contextual-compositional-heuristics-20260731` branch only; they do not rewrite
-the historical phase record below.
 
-For the canonical, current-state documentation set, go to
-**[current/README.md](current/README.md)**, which indexes:
+For the older, broader current-state documentation set (mostly historical,
+pre-CC-branch), see **[current/README.md](current/README.md)**, which indexes:
 
 - [current/PROJECT_STATUS.md](current/PROJECT_STATUS.md) — authoritative current state
 - [current/ARCHITECTURE.md](current/ARCHITECTURE.md) — code architecture

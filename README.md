@@ -3,34 +3,19 @@
 **Learning to select LLM-inference-serving scheduling policies, evaluated against
 faithful external baselines in a GPU-calibrated discrete-event simulator.**
 
-> ## Contextual composition branch (active, not paused)
-> For the new contextual-compositional heuristic research path, use branch
-> **`contextual-compositional-heuristics-20260731`** and start with
-> **[docs/START_HERE_CONTEXTUAL_COMPOSITION.md](docs/START_HERE_CONTEXTUAL_COMPOSITION.md)**.
-> Its authoritative technical roadmap is
-> **[docs/contextual_composition_roadmap.md](docs/contextual_composition_roadmap.md)**.
-> CC1-CC4 are complete; CC5 (contextual composition predictor) is
-> `IN PROGRESS` -- see the
-> **[latest CC5 report](docs/audits/contextual_composition_cc5_predictor_report_20260803.md)**
-> and, for current status, the
-> **[CC4b/CC5 retry report](docs/audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)**.
-> Resume from **[docs/RESUME_CONTEXTUAL_COMPOSITION.md](docs/RESUME_CONTEXTUAL_COMPOSITION.md)**;
-> active issue: [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
-> This scoped roadmap does not replace the historical project-status documents
-> for unrelated branches or earlier phases.
-
-> ## ⏸ Project paused as of 2026-07-23 — resume here first
-> **[docs/current/RESUME_HERE.md](docs/current/RESUME_HERE.md)** is the
-> single entry point for resuming this project after the pause. It
+> ## Start here — [docs/current/RESUME_HERE.md](docs/current/RESUME_HERE.md)
+> That is the single canonical entry point for this repository, on the
+> active branch **`contextual-compositional-heuristics-20260731`**. It
 > supersedes everything below this notice, including the policy/baseline
-> counts and "current blocker" description in this file, which describe an
-> **older, superseded** project phase (pre-Policy-Library-v2,
-> pre-`slai_faithful`). Read `RESUME_HERE.md` before anything else.
-
-> **New here? Start with [docs/current/README.md](docs/current/README.md).**
-> That's the canonical, current-state documentation set. Everything below is a
-> quick orientation; `docs/current/PROJECT_STATUS.md` is the authoritative
-> source for exactly where this project stands right now.
+> counts and "current blocker" description further down in this file, which
+> describe an older, superseded project phase. As of this writing: CC0–CC5
+> are complete (CC5 finalized `COMPLETE_REGIME_SPECIFIC`), CC6 is queued but
+> restricted and not started, and a baseline-integration effort (Apt-Serve,
+> Llumnix) is in progress in parallel — see `RESUME_HERE.md` for the current,
+> accurate state and exact next actions rather than any status text below.
+> The CC-specific technical roadmap remains
+> [docs/START_HERE_CONTEXTUAL_COMPOSITION.md](docs/START_HERE_CONTEXTUAL_COMPOSITION.md) →
+> [docs/contextual_composition_roadmap.md](docs/contextual_composition_roadmap.md).
 
 ---
 

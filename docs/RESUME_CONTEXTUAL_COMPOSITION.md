@@ -1,5 +1,11 @@
 # Resume Contextual Composition
 
+> Overall repository entry point:
+> **[docs/current/RESUME_HERE.md](current/RESUME_HERE.md)**. This file's
+> checkout/SHA-checkpoint list is current through the CC5 final operating
+> envelope checkpoint; it predates the subsequent Apt-Serve/Llumnix
+> baseline-integration work, which `RESUME_HERE.md` covers.
+
 Use this file to resume the contextual-compositional heuristic branch.
 
 ## Checkout

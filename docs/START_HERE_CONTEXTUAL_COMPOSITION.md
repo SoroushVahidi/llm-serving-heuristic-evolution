@@ -1,5 +1,11 @@
 # Start Here: Contextual Composition
 
+> This is the detailed CC-roadmap technical status document. The overall
+> repository entry point (Wulver/local task split, baseline status,
+> guardrails, exact next actions) is
+> **[docs/current/RESUME_HERE.md](current/RESUME_HERE.md)** — read that
+> first if you haven't already.
+
 Authoritative branch: `contextual-compositional-heuristics-20260731`
 
 Current phase: `CC6 - Dynamic adaptation and stability`

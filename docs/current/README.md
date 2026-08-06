@@ -1,30 +1,33 @@
 # Current documentation
 
-> **2026-07-25 intentional pause.** Start at [`RESUME_HERE.md`](RESUME_HERE.md) and [`pause_2026_07_25/`](pause_2026_07_25/).
-
-> **Contextual-composition branch note (2026-08-03, active -- not paused).**
-> For the scoped contextual-compositional heuristic path on
-> `contextual-compositional-heuristics-20260731`, start at
+> **Start at [`RESUME_HERE.md`](RESUME_HERE.md).** That is the single
+> canonical entry point for this repository, on the active branch
+> `contextual-compositional-heuristics-20260731` (not
+> `wulver-final-integration-20260721` — that branch is an older, unmerged
+> lineage; see `RESUME_HERE.md`'s "Historical provenance" section). As of
+> `RESUME_HERE.md`'s last update: CC0–CC5 are complete (CC5 finalized
+> `COMPLETE_REGIME_SPECIFIC`), CC6 is queued but restricted and not started,
+> and a baseline-integration effort (Apt-Serve, Llumnix) is in progress in
+> parallel. The detailed CC-specific technical roadmap is
 > [`../START_HERE_CONTEXTUAL_COMPOSITION.md`](../START_HERE_CONTEXTUAL_COMPOSITION.md)
-> and then [`../RESUME_CONTEXTUAL_COMPOSITION.md`](../RESUME_CONTEXTUAL_COMPOSITION.md).
-> CC1-CC4 are complete; CC5 is `IN PROGRESS` (targeted dataset expansion +
-> rerun underway) -- see
-> [`../audits/contextual_composition_cc4b_cc5_retry_report_20260803.md`](../audits/contextual_composition_cc4b_cc5_retry_report_20260803.md)
-> for current status and active issue
-> [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5).
-> That branch-specific roadmap supersedes this directory only for the new
-> contextual-composition sequence; the documents below remain historical and
-> project-wide provenance.
+> → [`../contextual_composition_roadmap.md`](../contextual_composition_roadmap.md).
+> Everything else in this directory below this notice — including the
+> 2026-07-25 and 2026-07-23 pause notes and the `wulver-final-integration-20260721`
+> framing that used to open this file — is **historical provenance for an
+> earlier project phase**, not current status.
 
-Start Here
+Start Here (historical framing below, retained as provenance)
 
-This directory is the current source-of-truth navigation layer for the
-authoritative branch **`wulver-final-integration-20260721`** (remote:
-`origin/wulver-final-integration-20260721`). That branch combines Policy
+This directory was originally the source-of-truth navigation layer for the
+branch `wulver-final-integration-20260721` (remote:
+`origin/wulver-final-integration-20260721`). That branch combined Policy
 Library v2 / composition / structural-synthesis work with the Phase 2C
 selector-improvement and leakage-fix lineage formerly developed on
 `phase2c-final-selector-improvement` (merged tip includes commit
-`37849b0`). Read these documents in order when picking up the project.
+`37849b0`). It has since been superseded by
+`contextual-compositional-heuristics-20260731` — see `RESUME_HERE.md`. The
+documents below remain useful project-wide provenance and architecture
+reference; read them for depth, not for current top-level status.
 
 ## Project Paused 2026-07-23 — Read This First
 

@@ -921,3 +921,68 @@ Related files or evidence:
 
 - `docs/audits/project_pause_reconciliation_query1_20260806.md`
 - `docs/audits/project_pause_reconciliation_query2_20260806.md`
+
+## CCD-025: Adopt A Single Canonical Resume Document And A Fixed Handoff-Document Structure
+
+Date: 2026-08-06
+
+Status: accepted
+
+Decision: `docs/current/RESUME_HERE.md` is the single canonical entry point
+for this entire repository (not just the CC path). It is supported by four
+fixed, purpose-scoped documents rather than an unbounded set of ad hoc
+status files: `docs/current/PROJECT_MAP.md` (stable navigation, not dated),
+`docs/current/WORK_STATUS.md` (per-workstream status table),
+`docs/current/NEXT_ACTIONS.md` (ordered, dependency-aware action list), and
+`docs/current/SCIENTIFIC_DECISIONS.md` (a fast-read index into this
+decision log, not a replacement for it). All prior competing entry points
+(`README.md`'s three separate banners, `docs/README.md`, `docs/current/README.md`'s
+stale `wulver-final-integration-20260721` framing,
+`docs/START_HERE_CONTEXTUAL_COMPOSITION.md`, `docs/RESUME_CONTEXTUAL_COMPOSITION.md`)
+were reconciled to point here rather than compete with it.
+
+Rationale: Query 1 of the 2026-08-06 project-pause sequence found at least
+three documents simultaneously claiming to be "the" entry point, with
+mutually contradictory status claims (one banner said CC5 was `IN PROGRESS`
+while the CC-roadmap doc it sat above correctly said `COMPLETE_REGIME_SPECIFIC`;
+`docs/current/README.md` claimed `wulver-final-integration-20260721` as the
+authoritative branch, which is not the branch this work is on). A future
+session picking the wrong entry point, or trusting a stale banner over the
+accurate roadmap doc beneath it, was a real and observed risk, not a
+hypothetical one.
+
+While reconciling this, the same staleness pattern already found and fixed
+for Apt-Serve/Llumnix in Query 2 (`CCD-020`) was independently found a third
+time for **DistServe**: `docs/BASELINE_STATUS.md` claimed "no policy
+implemented," when `distserve_faithful.py` has existed since 2026-07-18
+(same day as Llumnix), is registered, and has 35 passing fidelity tests.
+This is corrected in the same pass and recorded here as further evidence for
+why a single, consistency-checked canonical document matters more than any
+individual status fix.
+
+Also decided as part of this same entry: local and Wulver resume work must
+be tracked as two explicitly separate tracks (`LOCAL_UNFINISHED` /
+`WULVER_DEFERRED` in `RESUME_HERE.md` §E, mirrored in
+`NEXT_ACTIONS.md`), never interleaved as if they had the same preconditions
+-- this follows directly from `CCD-023`'s requirement that Wulver state not
+be conflated with local state.
+
+Consequences: any future query updating project status should update
+`docs/current/RESUME_HERE.md` and the four supporting documents, not create
+a fifth. `scripts/check_project_handoff_consistency.py` (new this query)
+enforces that exactly one canonical `RESUME_HERE*.md` exists, that the three
+main entry points link to it, and that a small set of known-stale claims
+(CC5 "IN PROGRESS", Llumnix/Apt-Serve "not integrated"/"not prioritized")
+do not silently reappear.
+
+Related files or evidence:
+
+- `docs/current/RESUME_HERE.md`
+- `docs/current/PROJECT_MAP.md`
+- `docs/current/WORK_STATUS.md`
+- `docs/current/NEXT_ACTIONS.md`
+- `docs/current/SCIENTIFIC_DECISIONS.md`
+- `docs/current/PROJECT_PAUSE_HANDOFF_20260806.md`
+- `scripts/check_project_handoff_consistency.py`
+- `tests/test_project_handoff_consistency.py`
+- `docs/audits/project_pause_documentation_query3_20260806.md`
