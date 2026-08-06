@@ -132,7 +132,13 @@ Wulver work" and "Known blockers" sections above describe Query 1–4's
 accurate-at-the-time understanding, not the current state — see
 `docs/current/RESUME_HERE.md` §E/§H and
 `docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` for what is
-now current.
+now current. Before committing, that reconciliation created a local-only
+git branch, `apt-serve-wulver-probe-safety-20260806`, as a pre-commit
+safety net for the uncommitted probe work — its content is now fully
+identical to and superseded by the pushed authoritative branch tip; it
+is redundant but harmless, was never pushed, and is safe to delete in a
+future cleanup pass (not done here, out of scope for a docs-only
+correction).
 
 ## Known simulator limitations
 
