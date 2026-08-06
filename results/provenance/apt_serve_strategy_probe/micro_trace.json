@@ -1,0 +1,106 @@
+{
+  "probe": "apt_serve_strategy_c_micro_trace",
+  "timestamp_utc": "2026-08-06T03:31:00.900300+00:00",
+  "apt_serve_commit": "c953217988274a761da35cf06c01033b18dadf68",
+  "environment_hash": "159abed20e53debe (torch=2.3.0+cu121|vllm=0.5.0.post1|xformers=0.0.26.post1)",
+  "seed": 20260806,
+  "command": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-cc-probe/scripts/wulver_probes/apt_serve_micro_trace.py --output /mmfs1/scratch/ikoutis/sv96/apt_serve_strategy_c_probe_1164406/micro_trace.json --commit c953217988274a761da35cf06c01033b18dadf68",
+  "hostname": "n0041",
+  "introspection": {
+    "Sequence.__init__": {
+      "qualname": "Sequence.__init__",
+      "signature": "(self, seq_id: int, inputs: vllm.inputs.LLMInputs, block_size: int, eos_token_id: Optional[int] = None, lora_request: Optional[vllm.lora.request.LoRARequest] = None) -> None"
+    },
+    "SequenceGroup.__init__": {
+      "qualname": "SequenceGroup.__init__",
+      "signature": "(self, request_id: str, seqs: List[vllm.sequence.Sequence], arrival_time: float, sampling_params: Optional[vllm.sampling_params.SamplingParams] = None, lora_request: Optional[vllm.lora.request.LoRARequest] = None, embeddings: Optional[List[float]] = None, pooling_params: Optional[vllm.pooling_params.PoolingParams] = None, encoder_seq: Optional[vllm.sequence.Sequence] = None) -> None"
+    },
+    "SequenceData.__init__": {
+      "qualname": "SequenceData.__init__",
+      "signature": "(self, prompt_token_ids: List[int], output_token_ids: Optional[List[int]] = None) -> None"
+    }
+  },
+  "scenarios": [
+    {
+      "name": "three_requests_two_fit_memory_budget",
+      "requests": [
+        {
+          "request_id": "req-a",
+          "prompt_len": 200
+        },
+        {
+          "request_id": "req-b",
+          "prompt_len": 200
+        },
+        {
+          "request_id": "req-c",
+          "prompt_len": 4000
+        }
+      ],
+      "status": "OK",
+      "scheduled_request_ids": [
+        "req-a",
+        "req-b"
+      ],
+      "num_scheduled": 2,
+      "waiting_after": 1,
+      "running_after": 2
+    },
+    {
+      "name": "homogeneous_low_contention",
+      "requests": [
+        {
+          "request_id": "req-0",
+          "prompt_len": 100
+        },
+        {
+          "request_id": "req-1",
+          "prompt_len": 100
+        },
+        {
+          "request_id": "req-2",
+          "prompt_len": 100
+        },
+        {
+          "request_id": "req-3",
+          "prompt_len": 100
+        }
+      ],
+      "status": "OK",
+      "scheduled_request_ids": [
+        "req-0",
+        "req-1",
+        "req-2",
+        "req-3"
+      ],
+      "num_scheduled": 4,
+      "waiting_after": 0,
+      "running_after": 4
+    },
+    {
+      "name": "single_oversized_request_extreme_case",
+      "requests": [
+        {
+          "request_id": "req-small-1",
+          "prompt_len": 50
+        },
+        {
+          "request_id": "req-small-2",
+          "prompt_len": 50
+        },
+        {
+          "request_id": "req-huge",
+          "prompt_len": 8000
+        }
+      ],
+      "status": "OK",
+      "scheduled_request_ids": [
+        "req-small-1",
+        "req-small-2"
+      ],
+      "num_scheduled": 2,
+      "waiting_after": 1,
+      "running_after": 2
+    }
+  ]
+}

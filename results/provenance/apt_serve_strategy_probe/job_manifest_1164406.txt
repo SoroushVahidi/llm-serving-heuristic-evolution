@@ -1,0 +1,14 @@
+job_id=1164406
+host=n0041
+date_utc=2026-08-06T03:29:55Z
+pinned_commit=c953217988274a761da35cf06c01033b18dadf68
+vendor_dir=/mmfs1/project/ikoutis/sv96/vendor/apt-serve
+env_prefix=/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe
+out_dir=/mmfs1/scratch/ikoutis/sv96/apt_serve_strategy_c_probe_1164406
+conda_prefix_verified=/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe
+pip_install_status=0
+python=3.11.15 (main, Jun 11 2026, 15:20:16) [GCC 14.3.0]
+actual_checked_out_commit=c953217988274a761da35cf06c01033b18dadf68
+vllm_dir=/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe/lib/python3.11/site-packages/vllm
+patched scheduler construction succeeded -- running micro-trace
+out_dir=/mmfs1/scratch/ikoutis/sv96/apt_serve_strategy_c_probe_1164406

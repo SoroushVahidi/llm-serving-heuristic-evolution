@@ -41,14 +41,35 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=16G
-#SBATCH --time=00:45:00
+#SBATCH --mem=32G
+#SBATCH --time=04:00:00
 #SBATCH --output=logs/%x.%j.out
 #SBATCH --error=logs/%x.%j.err
 
+# Resource note (2026-08-05 execution pass): bumped from the originally
+# prepared 16G/00:45:00 to this task's stated preferred defaults
+# (32G/04:00:00). The smaller sizing was never measured against a real
+# run (execution was blocked on Wulver auth when it was written -- see
+# docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md section 0);
+# mamba env creation plus torch==2.3.0/vllm==0.5.0.post1 wheel
+# resolution and download is the dominant cost here and has enough
+# variance (network, shared filesystem contention) to warrant the
+# larger, task-preferred margin for this first real attempt rather than
+# an unmeasured guess. CPU/partition/GPU-none/exclusive=no unchanged.
+#
+# set -uo pipefail (not -e) is a deliberate, disclosed choice, not an
+# oversight: this probe's whole purpose is FAILURE CLASSIFICATION (task
+# step 5 -- "do not treat an import failure as proof of semantic
+# inseparability until the failure is classified"). Each stage is
+# already individually guarded (Python-side try/except in the probe
+# scripts, `|| true`/status-capture on the shell side where it matters),
+# so letting a later stage run even after an earlier one degrades
+# produces a diagnostic JSON explaining WHY, instead of an empty log
+# directory with no classification at all.
+
 set -uo pipefail
 
-REPO_DIR="/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution"
+REPO_DIR="/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-cc-probe"
 VENDOR_DIR="/mmfs1/project/ikoutis/sv96/vendor/apt-serve"
 ENV_PREFIX="/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe"
 SCRATCH_ROOT="/mmfs1/scratch/ikoutis/sv96"
@@ -71,11 +92,39 @@ MANIFEST="${OUT_DIR}/manifest.txt"
 module purge
 
 # --- 1. Isolated Python 3.11 conda env (never touches the project's own env) ---
+#
+# Fix (2026-08-05, job 1163456 post-mortem): the originally prepared
+# script called `mamba create`, but the Anaconda3/2023.09-0 module's
+# conda.sh does NOT provide a `mamba` binary (that only ships with the
+# separate Miniforge3 module) -- so `mamba create` failed with "command
+# not found", and because the driver script deliberately runs under
+# `set -uo pipefail` (not -e, see header rationale), execution fell
+# through to `conda activate "${ENV_PREFIX}"` on a directory that was
+# never created, which itself failed (EnvironmentLocationNotFound) and
+# ALSO fell through -- silently leaving every subsequent `pip install`
+# targeting the shared, read-only Anaconda module `site-packages`
+# instead of an isolated env. Every install then failed with
+# `PermissionError` against that shared path (protected by filesystem
+# permissions, so no lasting damage occurred -- confirmed by re-reading
+# job 1163456's full log), and 0 packages actually installed. This is
+# fixed two ways: (a) use plain `conda create`, which IS provided by
+# Anaconda3's own conda.sh, so no second module/binary dependency is
+# introduced; (b) add an explicit, loud abort immediately after
+# activation if the active environment does not actually match
+# ENV_PREFIX, so a future silent-fallthrough of this exact kind fails
+# the job immediately with a clear diagnostic instead of quietly
+# corrupting every later step's results.
 source /apps/easybuild/software/Anaconda3/2023.09-0/etc/profile.d/conda.sh
 if [ ! -d "${ENV_PREFIX}" ]; then
-  mamba create -y -p "${ENV_PREFIX}" python=3.11 2>&1 | tee "${OUT_DIR}/env_create.log"
+  conda create -y -p "${ENV_PREFIX}" python=3.11 pip 2>&1 | tee "${OUT_DIR}/env_create.log"
 fi
 conda activate "${ENV_PREFIX}"
+if [ "${CONDA_PREFIX:-}" != "${ENV_PREFIX}" ]; then
+  echo "FATAL: conda activate did not select the isolated env (CONDA_PREFIX=${CONDA_PREFIX:-<unset>}, expected ${ENV_PREFIX}) -- aborting before any install to avoid touching a shared/system Python" \
+    | tee -a "${MANIFEST}"
+  exit 1
+fi
+echo "conda_prefix_verified=${CONDA_PREFIX}" | tee -a "${MANIFEST}"
 unset PYTHONPATH
 export PYTHONNOUSERSITE=1
 

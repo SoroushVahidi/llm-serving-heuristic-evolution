@@ -1,0 +1,60 @@
+{
+  "probe": "apt_serve_strategy_c_import_probe",
+  "phase_requested": "vanilla",
+  "timestamp_utc": "2026-08-06T03:30:07.475423+00:00",
+  "python_version": "3.11.15 (main, Jun 11 2026, 15:20:16) [GCC 14.3.0]",
+  "results": [
+    {
+      "label": "env_fingerprint_torch",
+      "status": "OK",
+      "detail": {
+        "torch_version": "2.3.0+cu121",
+        "torch_cuda_version": "12.1",
+        "cuda_available": false,
+        "cuda_device_count": 0
+      }
+    },
+    {
+      "label": "import_vllm_bare",
+      "status": "OK",
+      "detail": "0.5.0.post1"
+    },
+    {
+      "label": "import_vllm_core_scheduler",
+      "status": "OK",
+      "detail": true
+    },
+    {
+      "label": "import_vllm_sequence",
+      "status": "OK",
+      "detail": true
+    },
+    {
+      "label": "import_vllm_core_interfaces",
+      "status": "OK",
+      "detail": true
+    },
+    {
+      "label": "import_vllm_config",
+      "status": "OK",
+      "detail": true
+    },
+    {
+      "label": "import_vllm_lora_request",
+      "status": "OK",
+      "detail": true
+    },
+    {
+      "label": "import_vllm_core_policy",
+      "status": "OK",
+      "detail": true
+    },
+    {
+      "label": "vanilla_scheduler_construct_synthetic_config",
+      "status": "OK",
+      "detail": {
+        "scheduler_repr": "<class 'vllm.core.scheduler.Scheduler'>"
+      }
+    }
+  ]
+}

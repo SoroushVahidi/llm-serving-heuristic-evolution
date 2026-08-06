@@ -1,0 +1,63 @@
+{
+  "probe": "apt_serve_strategy_c_import_probe",
+  "phase_requested": "patched",
+  "timestamp_utc": "2026-08-06T03:30:54.909919+00:00",
+  "python_version": "3.11.15 (main, Jun 11 2026, 15:20:16) [GCC 14.3.0]",
+  "results": [
+    {
+      "label": "env_fingerprint_torch",
+      "status": "OK",
+      "detail": {
+        "torch_version": "2.3.0+cu121",
+        "torch_cuda_version": "12.1",
+        "cuda_available": false,
+        "cuda_device_count": 0
+      }
+    },
+    {
+      "label": "import_ray",
+      "status": "OK",
+      "detail": "2.56.1"
+    },
+    {
+      "label": "import_patched_scheduler_module",
+      "status": "OK",
+      "detail": {
+        "scheduler_module_file": "/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe/lib/python3.11/site-packages/vllm/core/scheduler.py",
+        "has_greedy_selection_prefill": true,
+        "has_greedy_selection_decode": true,
+        "has_dynamic_priority": true
+      }
+    },
+    {
+      "label": "import_patched_block_manager",
+      "status": "OK",
+      "detail": {
+        "block_manager_module_file": "/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe/lib/python3.11/site-packages/vllm/core/block_manager_v1.py"
+      }
+    },
+    {
+      "label": "import_patched_sequence",
+      "status": "OK",
+      "detail": {
+        "sequence_module_file": "/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe/lib/python3.11/site-packages/vllm/sequence.py",
+        "sequence_group_has_use_hidden": true
+      }
+    },
+    {
+      "label": "import_patched_block",
+      "status": "OK",
+      "detail": {
+        "block_module_file": "/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe/lib/python3.11/site-packages/vllm/block.py"
+      }
+    },
+    {
+      "label": "patched_scheduler_construct_synthetic_config",
+      "status": "OK",
+      "detail": {
+        "scheduler_repr": "<class 'vllm.core.scheduler.Scheduler'>",
+        "block_manager_type": "<class 'vllm.core.block_manager_v1.BlockSpaceManagerV1'>"
+      }
+    }
+  ]
+}

@@ -33,7 +33,7 @@
 
 set -uo pipefail
 
-REPO_DIR="/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution"
+REPO_DIR="/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-cc-probe"
 VENDOR_DIR="/mmfs1/project/ikoutis/sv96/vendor/apt-serve"
 ENV_PREFIX="/mmfs1/project/ikoutis/sv96/conda_env/apt-serve-strategy-c-probe"
 SCRATCH_ROOT="/mmfs1/scratch/ikoutis/sv96"
@@ -57,15 +57,28 @@ source /apps/easybuild/software/Anaconda3/2023.09-0/etc/profile.d/conda.sh
 # create it here if this job is somehow run without the CPU probe ever
 # having run, which should not normally happen given the "CPU first"
 # policy above.
+# Fix (2026-08-05, mirrors the CPU probe's job-1163456 post-mortem):
+# `mamba` is not provided by Anaconda3/2023.09-0's conda.sh -- use plain
+# `conda create`, and verify activation actually landed on the isolated
+# env before installing anything (see the CPU probe script's matching
+# comment for the full failure mode this guards against).
 if [ ! -d "${ENV_PREFIX}" ]; then
-  mamba create -y -p "${ENV_PREFIX}" python=3.11 2>&1 | tee "${OUT_DIR}/env_create.log"
+  conda create -y -p "${ENV_PREFIX}" python=3.11 pip 2>&1 | tee "${OUT_DIR}/env_create.log"
   conda activate "${ENV_PREFIX}"
+  if [ "${CONDA_PREFIX:-}" != "${ENV_PREFIX}" ]; then
+    echo "FATAL: conda activate did not select the isolated env (CONDA_PREFIX=${CONDA_PREFIX:-<unset>}, expected ${ENV_PREFIX})" | tee -a "${OUT_DIR}/manifest.txt"
+    exit 1
+  fi
   unset PYTHONPATH
   export PYTHONNOUSERSITE=1
   pip install "torch==2.3.0" "vllm==0.5.0.post1" "xformers==0.0.26.post1" "vllm-flash-attn==2.5.9" \
     2>&1 | tee "${OUT_DIR}/pip_install.log"
 else
   conda activate "${ENV_PREFIX}"
+  if [ "${CONDA_PREFIX:-}" != "${ENV_PREFIX}" ]; then
+    echo "FATAL: conda activate did not select the isolated env (CONDA_PREFIX=${CONDA_PREFIX:-<unset>}, expected ${ENV_PREFIX})" | tee -a "${OUT_DIR}/manifest.txt"
+    exit 1
+  fi
   unset PYTHONPATH
   export PYTHONNOUSERSITE=1
 fi

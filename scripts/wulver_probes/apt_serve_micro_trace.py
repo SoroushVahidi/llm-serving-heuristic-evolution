@@ -112,17 +112,24 @@ def main() -> int:
         return Scheduler(sched_cfg, cache_cfg, lora_config=None)
 
     def _try_build_seq_group(request_id: str, prompt_len: int, block_size: int = 16):
-        """Best-effort synthetic SequenceGroup construction. vLLM's exact
-        Sequence(seq_id, prompt, prompt_token_ids, block_size, ...) signature
-        varies slightly across versions -- this tries the 0.5.x-era shape
-        documented in vLLM's own source at this pin and reports exactly
-        what happened if it doesn't match."""
+        """Synthetic SequenceGroup construction, corrected against job
+        1163782's real introspection output (--commit c953217988's pinned
+        vLLM 0.5.0.post1 build): `Sequence.__init__` takes an `inputs:
+        LLMInputs` TypedDict (`{"prompt_token_ids": [...], "prompt": ...}`),
+        not separate `prompt`/`prompt_token_ids` kwargs -- the original
+        best-effort guess (a plausible but wrong assumption about an
+        earlier vLLM minor version's shape) failed with `TypeError:
+        Sequence.__init__() got an unexpected keyword argument 'prompt'`
+        on the first run; this is the exact fix, not a re-guess."""
+        from vllm.inputs import LLMInputs
+        from vllm.sampling_params import SamplingParams
         from vllm.sequence import Sequence, SequenceGroup
         prompt_token_ids = list(range(prompt_len))
-        seq = Sequence(seq_id=hash(request_id) & 0xFFFFFFF, prompt="x" * prompt_len,
-                        prompt_token_ids=prompt_token_ids, block_size=block_size)
+        inputs = LLMInputs(prompt_token_ids=prompt_token_ids, prompt="x" * prompt_len)
+        seq = Sequence(seq_id=hash(request_id) & 0xFFFFFFF, inputs=inputs, block_size=block_size)
         seq_group = SequenceGroup(
-            request_id=request_id, seqs=[seq], arrival_time=0.0, sampling_params=None,
+            request_id=request_id, seqs=[seq], arrival_time=0.0,
+            sampling_params=SamplingParams(max_tokens=16),
         )
         return seq_group
 
