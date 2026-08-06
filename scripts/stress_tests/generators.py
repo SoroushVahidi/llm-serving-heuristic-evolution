@@ -721,7 +721,70 @@ def llumnix_counter_balanced_load_no_migration(smoke: bool = False, seed: int = 
         reqs.append(_mk(i, arrival=i * 0.1, prompt=16, predicted_out=output, actual_out=output))
     return _sorted(reqs)
 
+
+
+def distserve_target_prefill_decode_interference(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        # Interleave long prefills (blocking) with long decodes.
+        prompt = 2000 if i % 2 == 0 else 20
+        output = 20 if i % 2 == 0 else 500
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=prompt, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def distserve_target_sustained_stable_phase_balance(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        # Balanced demand roughly equal on both phases to fit a 1:1 split perfectly.
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=1000, predicted_out=1000, actual_out=1000))
+    return _sorted(reqs)
+
+
+def distserve_counter_prefill_dominated_split_mismatch(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        # Massive prefills, tiny decodes
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=4000, predicted_out=10, actual_out=10))
+    return _sorted(reqs)
+
+
+def distserve_counter_decode_dominated_split_mismatch(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        # Tiny prefills, massive decodes
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=10, predicted_out=2000, actual_out=2000))
+    return _sorted(reqs)
+
+
+def distserve_counter_small_requests_transfer_overhead(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        # Tiny requests where transfer overhead dominates execution
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=10, predicted_out=10, actual_out=10))
+    return _sorted(reqs)
+
+
+def distserve_counter_low_bandwidth_large_kv(smoke: bool = False, seed: int = 0) -> List[Request]:
+    raise NotImplementedError(
+        "Large KV state over low effective bandwidth is NOT REPRESENTABLE "
+        "in this simulator because it lacks a byte-size-aware transfer latency "
+        "and link bandwidth model. Pinned reference uses flat delay only."
+    )
+
 GENERATORS = {
+    "distserve_target_prefill_decode_interference": distserve_target_prefill_decode_interference,
+    "distserve_target_sustained_stable_phase_balance": distserve_target_sustained_stable_phase_balance,
+    "distserve_counter_prefill_dominated_split_mismatch": distserve_counter_prefill_dominated_split_mismatch,
+    "distserve_counter_decode_dominated_split_mismatch": distserve_counter_decode_dominated_split_mismatch,
+    "distserve_counter_small_requests_transfer_overhead": distserve_counter_small_requests_transfer_overhead,
+    "distserve_counter_low_bandwidth_large_kv": distserve_counter_low_bandwidth_large_kv,
+
     "llumnix_target_persistent_load_imbalance": llumnix_target_persistent_load_imbalance,
     "llumnix_target_memory_fragmentation_pressure": llumnix_target_memory_fragmentation_pressure,
     "llumnix_target_sustained_imbalance_payback": llumnix_target_sustained_imbalance_payback,

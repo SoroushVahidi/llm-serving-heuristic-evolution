@@ -1261,3 +1261,154 @@ stress_tests:
     validation_metrics: [mean_latency, anwg]
     acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
     real_system_followup_required: false
+
+
+  # ------------------------------------------------------------------
+  # 14. DistServe (distserve_faithful)
+  # ------------------------------------------------------------------
+
+  - stress_test_id: distserve_target_prefill_decode_interference
+    algorithm_id: distserve_faithful
+    algorithm_family: disaggregated_prefill_decode
+    test_role: TARGET
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 1, Section 3.1: monolithic serving couples prefill and decode, causing prefill blocks to delay decodes and decodes to limit prefill batch size."
+    targeted_assumption: "Disaggregating prefill and decode into separate pools eliminates compute interference."
+    workload_phenomenon: "Mixed workload of long-prompt requests arriving alongside long-decode active requests. In a monolithic system, the long prefills block the decodes."
+    expected_behavior: "DistServe processes prefills on the context worker and decodes on the decode worker, isolating them."
+    expected_failure_signature: "vllm_faithful has high TTFT and high TPOT due to interference; distserve_faithful lowers TPOT by protecting decode from prefill stalls."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_disaggregation: true, enable_decode_prefill_contention: true, decode_first: false, migration_transfer_delay: 0.001, total_kv_tokens: 200000, n_prefill: 1, n_decode: 1}
+    topology_requirements: "disaggregated, 1 prefill + 1 decode GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [mean_tpot, mean_ttft, anwg]
+    acceptance_gates: "distserve_faithful.mean_latency < vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: distserve_target_sustained_stable_phase_balance
+    algorithm_id: distserve_faithful
+    algorithm_family: disaggregated_prefill_decode
+    test_role: TARGET
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: stable goodput improvements under high traffic rates when workload profile matches the static resource partition."
+    targeted_assumption: "The workload's prefill/decode demand ratio matches the static 1:1 hardware split, maintaining high utilization on both stages."
+    workload_phenomenon: "Continuous high-rate arrivals where the token processing demands of prefill and decode phases are naturally balanced."
+    expected_behavior: "Both prefill and decode stages remain highly utilized, pipelining requests effectively."
+    expected_failure_signature: "vllm_faithful throughput is constrained by memory and compute sharing; distserve_faithful achieves higher overall throughput."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_disaggregation: true, enable_decode_prefill_contention: true, decode_first: false, migration_transfer_delay: 0.001, total_kv_tokens: 200000, n_prefill: 1, n_decode: 1}
+    topology_requirements: "disaggregated, 1 prefill + 1 decode GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [throughput_completions_per_sec, mean_latency]
+    acceptance_gates: "distserve_faithful.throughput_completions_per_sec > vllm_faithful.throughput_completions_per_sec"
+    real_system_followup_required: false
+
+  - stress_test_id: distserve_counter_prefill_dominated_split_mismatch
+    algorithm_id: distserve_faithful
+    algorithm_family: disaggregated_prefill_decode
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5: static resource allocations cannot adapt to dynamic workload phase shifts."
+    targeted_assumption: "Workload phase composition must match the static node split to avoid severe stage starvation."
+    workload_phenomenon: "A workload composed almost entirely of massive prefills with very short decodes (e.g., 2 tokens). Decode GPUs sit idle while prefill GPUs queue up."
+    expected_behavior: "The 1:1 static split becomes a bottleneck at the prefill stage, wasting 50% of the cluster's compute."
+    expected_failure_signature: "vllm_faithful (which pools all GPUs) handles the prefill surge gracefully. distserve_faithful has much lower throughput because decode GPUs are idle."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_disaggregation: true, enable_decode_prefill_contention: true, decode_first: false, migration_transfer_delay: 0.001, total_kv_tokens: 200000, n_prefill: 1, n_decode: 1}
+    topology_requirements: "disaggregated, 1 prefill + 1 decode GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [throughput_completions_per_sec, mean_ttft]
+    acceptance_gates: "distserve_faithful.throughput_completions_per_sec < vllm_faithful.throughput_completions_per_sec"
+    real_system_followup_required: false
+
+  - stress_test_id: distserve_counter_decode_dominated_split_mismatch
+    algorithm_id: distserve_faithful
+    algorithm_family: disaggregated_prefill_decode
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5: static resource allocations cannot adapt to dynamic workload phase shifts."
+    targeted_assumption: "Workload phase composition must match the static node split to avoid severe stage starvation."
+    workload_phenomenon: "A workload composed of tiny prefills and massive, long-running decodes. Prefill GPUs sit idle while decode GPUs queue up."
+    expected_behavior: "The 1:1 static split becomes a bottleneck at the decode stage, wasting prefill compute."
+    expected_failure_signature: "vllm_faithful (monolithic) achieves higher throughput than distserve_faithful."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_disaggregation: true, enable_decode_prefill_contention: true, decode_first: false, migration_transfer_delay: 0.001, total_kv_tokens: 200000, n_prefill: 1, n_decode: 1}
+    topology_requirements: "disaggregated, 1 prefill + 1 decode GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [throughput_completions_per_sec, mean_tpot]
+    acceptance_gates: "distserve_faithful.throughput_completions_per_sec < vllm_faithful.throughput_completions_per_sec"
+    real_system_followup_required: false
+
+  - stress_test_id: distserve_counter_small_requests_transfer_overhead
+    algorithm_id: distserve_faithful
+    algorithm_family: disaggregated_prefill_decode
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 3.2: communication overhead of transferring KV caches over the network."
+    targeted_assumption: "Disaggregation is only beneficial when compute isolation gains outweigh transfer latency."
+    workload_phenomenon: "Many tiny requests (e.g. 10 prompt, 10 output) where scheduling/transfer time rivals execution time."
+    expected_behavior: "Transfer delay penalizes every request without providing any meaningful isolation benefit."
+    expected_failure_signature: "distserve_faithful has higher mean latency than vllm_faithful due to the strict transfer penalty on small queries."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_disaggregation: true, enable_decode_prefill_contention: true, decode_first: false, migration_transfer_delay: 0.02, total_kv_tokens: 200000, n_prefill: 1, n_decode: 1}
+    topology_requirements: "disaggregated, 1 prefill + 1 decode GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [mean_latency, throughput_completions_per_sec]
+    acceptance_gates: "distserve_faithful.mean_latency > vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: distserve_counter_low_bandwidth_large_kv
+    algorithm_id: distserve_faithful
+    algorithm_family: disaggregated_prefill_decode
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 3.2: PCIe/Network bandwidth limitations for large context sizes."
+    targeted_assumption: "Transfer latency is sufficiently low. Large KV sizes over constrained bandwidth violate this."
+    workload_phenomenon: "Large KV blocks transferred over low bandwidth link."
+    expected_behavior: "N/A -- spec-only entry."
+    expected_failure_signature: "N/A -- not executable."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {enable_prefill_modeling: true, enable_disaggregation: true, migration_transfer_delay: 1.0}
+    topology_requirements: "disaggregated, 1 prefill + 1 decode GPU"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {prompt_tokens_target: 32768, note: "NOT_IMPLEMENTED"}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 0}
+    default_full_setting: {n_requests: 0}
+    validation_metrics: [mean_latency]
+    acceptance_gates: "N/A -- not auto-evaluable, generator raises NotImplementedError by design"
+    real_system_followup_required: true
+    validation_status: "NOT_REPRESENTABLE -- same reason as Llumnix/Sarathi large-context/bandwidth variants: the simulator lacks a byte-aware link bandwidth model."
+

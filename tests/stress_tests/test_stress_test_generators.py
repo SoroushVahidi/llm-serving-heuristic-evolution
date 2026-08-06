@@ -29,7 +29,7 @@ class TestCatalogStructure:
         assert catalog["schema_version"] == 1
         # 22 pre-Sarathi entries + 7 Sarathi-Serve entries added 2026-08-05
         # (docs/audits/sarathi_stress_test_catalog_completion_20260805.md).
-        assert len(catalog["stress_tests"]) == 46
+        assert len(catalog["stress_tests"]) == 52
 
     def test_every_entry_has_unique_id(self, catalog):
         ids = [t["stress_test_id"] for t in catalog["stress_tests"]]
@@ -78,6 +78,7 @@ class TestGeneratorsProduceValidRequests:
             "llumnix_counter_simultaneous_migration_contention",
             "llumnix_counter_noisy_load_observations",
             "llumnix_counter_topology_asymmetry",
+            "distserve_counter_low_bandwidth_large_kv",
         }
     ])
     def test_generator_produces_sorted_nonempty_requests(self, name):
@@ -101,6 +102,7 @@ class TestGeneratorsProduceValidRequests:
         "llumnix_counter_simultaneous_migration_contention",
         "llumnix_counter_noisy_load_observations",
         "llumnix_counter_topology_asymmetry",
+        "distserve_counter_low_bandwidth_large_kv",
     ])
     def test_offline_scored_generators_are_explicit_stubs(self, name):
         """These MUST raise NotImplementedError with a clear reason --
@@ -142,6 +144,7 @@ class TestDeterminism:
             "llumnix_counter_simultaneous_migration_contention",
             "llumnix_counter_noisy_load_observations",
             "llumnix_counter_topology_asymmetry",
+            "distserve_counter_low_bandwidth_large_kv",
         }:
             pytest.skip("offline-scored / not-representable stub, not applicable")
         a = generators.GENERATORS[name](smoke=True)
