@@ -566,7 +566,180 @@ def sarathi_counter_long_context_attention_recompute(smoke: bool = False, seed: 
     )
 
 
+
+
+def llumnix_target_persistent_load_imbalance(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        output = 250 if i % 4 == 0 else 10
+        # Simultaneous arrival to force queueing
+        reqs.append(_mk(i, arrival=0.0, prompt=16, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_target_memory_fragmentation_pressure(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 10 if smoke else 30
+    reqs = []
+    for i in range(n):
+        output = 100 if i < (n // 2) else 10
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=128, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_target_sustained_imbalance_payback(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 10 if smoke else 30
+    reqs = []
+    for i in range(n):
+        output = 600 if i % 2 == 0 else 20
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=32, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_target_heterogeneous_slo_isolation(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 12 if smoke else 36
+    reqs = []
+    for i in range(n):
+        is_high = (i % 3 == 0)
+        output = 200
+        slo = 20.0 if is_high else 200.0
+        prio = 5.0 if is_high else 1.0
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=32, predicted_out=output, actual_out=output, slo_deadline=i*0.1 + slo, priority=prio))
+    return _sorted(reqs)
+
+
+def llumnix_target_high_priority_acceleration(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 12 if smoke else 36
+    reqs = []
+    for i in range(n):
+        is_prio = (i % 2 == 0)
+        output = 150
+        prio = 10.0 if is_prio else 1.0
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=32, predicted_out=output, actual_out=output, priority=prio))
+    return _sorted(reqs)
+
+
+def llumnix_target_skewed_request_size_imbalance(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 16 if smoke else 48
+    reqs = []
+    for i in range(n):
+        prompt = 256 if i % 2 == 0 else 16
+        output = 300 if i % 2 == 0 else 20
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=prompt, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_target_placement_imbalance_persistent(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 12 if smoke else 36
+    reqs = []
+    for i in range(n):
+        output = 400 if i % 2 == 0 else 20
+        # Simultaneous arrival to force queueing
+        reqs.append(_mk(i, arrival=0.0, prompt=64, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_counter_rapidly_oscillating_load(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 20 if smoke else 60
+    reqs = []
+    for i in range(n):
+        output = 30 if i % 2 == 0 else 5
+        reqs.append(_mk(i, arrival=i * 0.01, prompt=16, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_counter_short_lived_imbalance(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 10 if smoke else 30
+    reqs = []
+    for i in range(n):
+        output = 15 if i % 2 == 0 else 5
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=16, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_counter_migration_cost_exceeds_benefit(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 10 if smoke else 30
+    reqs = []
+    for i in range(n):
+        output = 5
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=16, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_counter_large_kv_low_bandwidth(smoke: bool = False, seed: int = 0) -> List[Request]:
+    raise NotImplementedError(
+        "Large KV state over low effective bandwidth is NOT REPRESENTABLE "
+        "in this simulator because it lacks a byte-size-aware transfer latency "
+        "and link bandwidth model. Pinned reference uses flat delay only."
+    )
+
+
+def llumnix_counter_simultaneous_migration_contention(smoke: bool = False, seed: int = 0) -> List[Request]:
+    raise NotImplementedError(
+        "Simultaneous migration contention is NOT REPRESENTABLE in this simulator "
+        "because there is no concurrent-transfer link bandwidth sharing or contention model."
+    )
+
+
+def llumnix_counter_noisy_load_observations(smoke: bool = False, seed: int = 0) -> List[Request]:
+    raise NotImplementedError(
+        "Noisy load observations causing unnecessary migration are NOT REPRESENTABLE "
+        "because load monitoring is perfectly deterministic without noise injection."
+    )
+
+
+def llumnix_counter_delayed_control_loop(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 15 if smoke else 45
+    reqs = []
+    for i in range(n):
+        output = 50 if i % 2 == 0 else 10
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=16, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_counter_topology_asymmetry(smoke: bool = False, seed: int = 0) -> List[Request]:
+    raise NotImplementedError(
+        "Topology asymmetry is NOT REPRESENTABLE in this simulator because "
+        "all serving instances are assumed homogeneous and fully connected."
+    )
+
+
+def llumnix_counter_tiny_requests_overhead_dominates(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 15 if smoke else 45
+    reqs = []
+    for i in range(n):
+        output = 2
+        reqs.append(_mk(i, arrival=i * 0.05, prompt=8, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
+
+def llumnix_counter_balanced_load_no_migration(smoke: bool = False, seed: int = 0) -> List[Request]:
+    n = 16 if smoke else 48
+    reqs = []
+    for i in range(n):
+        output = 50
+        reqs.append(_mk(i, arrival=i * 0.1, prompt=16, predicted_out=output, actual_out=output))
+    return _sorted(reqs)
+
 GENERATORS = {
+    "llumnix_target_persistent_load_imbalance": llumnix_target_persistent_load_imbalance,
+    "llumnix_target_memory_fragmentation_pressure": llumnix_target_memory_fragmentation_pressure,
+    "llumnix_target_sustained_imbalance_payback": llumnix_target_sustained_imbalance_payback,
+    "llumnix_target_heterogeneous_slo_isolation": llumnix_target_heterogeneous_slo_isolation,
+    "llumnix_target_high_priority_acceleration": llumnix_target_high_priority_acceleration,
+    "llumnix_target_skewed_request_size_imbalance": llumnix_target_skewed_request_size_imbalance,
+    "llumnix_target_placement_imbalance_persistent": llumnix_target_placement_imbalance_persistent,
+    "llumnix_counter_rapidly_oscillating_load": llumnix_counter_rapidly_oscillating_load,
+    "llumnix_counter_short_lived_imbalance": llumnix_counter_short_lived_imbalance,
+    "llumnix_counter_migration_cost_exceeds_benefit": llumnix_counter_migration_cost_exceeds_benefit,
+    "llumnix_counter_large_kv_low_bandwidth": llumnix_counter_large_kv_low_bandwidth,
+    "llumnix_counter_simultaneous_migration_contention": llumnix_counter_simultaneous_migration_contention,
+    "llumnix_counter_noisy_load_observations": llumnix_counter_noisy_load_observations,
+    "llumnix_counter_delayed_control_loop": llumnix_counter_delayed_control_loop,
+    "llumnix_counter_topology_asymmetry": llumnix_counter_topology_asymmetry,
+    "llumnix_counter_tiny_requests_overhead_dominates": llumnix_counter_tiny_requests_overhead_dominates,
+    "llumnix_counter_balanced_load_no_migration": llumnix_counter_balanced_load_no_migration,
+
     "fifo_target_homogeneous_low_contention": fifo_target_homogeneous_low_contention,
     "fifo_counter_head_of_line_blocking": fifo_counter_head_of_line_blocking,
     "sof_target_mixed_lengths_accurate_prediction": sof_target_mixed_lengths_accurate_prediction,

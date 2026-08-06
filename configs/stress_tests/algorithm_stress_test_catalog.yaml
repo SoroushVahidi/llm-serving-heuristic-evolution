@@ -848,3 +848,416 @@ stress_tests:
     real_system_followup_required: true
     validation_status: "NOT_REPRESENTABLE -- this simulator's timing model has no attention-cost scaling term at all (confirmed docs/audits/sarathi_official_artifact_audit_20260805.md section 6); local GPU insufficient regardless (16GB VRAM cannot hold a 32K-context KV cache for a 7B+ model at the batch sizes needed); Wulver required for any real-hardware attempt at this regime, and even then would need vLLM/Sarathi's real, unmodified engines (not this simulator) since the abstraction gap is structural, not a calibration gap"
     provenance_notes: "Spec-only catalog entry, matching the existing vLLM-LTR/PARS out-of-scope disclosure pattern (NO_GENERATOR/OUT_OF_SCOPE handling in scripts/stress_tests/run_stress_test_smoke.py already covers a NotImplementedError generator gracefully -- verified, not assumed)."
+
+
+  # ------------------------------------------------------------------
+  # 13. Llumnix (llumnix_faithful)
+  # ------------------------------------------------------------------
+
+  - stress_test_id: llumnix_target_persistent_load_imbalance
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 1, 5, 6: load imbalance across independent homogeneous instances is Llumnix's main target case."
+    targeted_assumption: "Round-robin dispatch is load-oblivious; some instances get heavy decodes, others get light ones; periodic migration balances the load."
+    workload_phenomenon: "Heavy decodes interspersed with short decodes, resulting in severe queue/load hotspots under round-robin initial placement."
+    expected_behavior: "Llumnix periodic migration detects load imbalance and migrates continuing decodes to underloaded instances."
+    expected_failure_signature: "Static round-robin (no-migration) has high latency and hotspot starvation; Llumnix reduces mean/tail latency by balancing load."
+    comparison_algorithms: [vllm_faithful, fifo, shortest_output_first]
+    simulator_requirements: {n_instances: 4, migration_delay: 0.001, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 4 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [mean_latency, p95_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency < vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_target_memory_fragmentation_pressure
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: migrating active requests resolves memory fragmentation and aggregate KV block exhaustion."
+    targeted_assumption: "Defragmentation can be achieved implicitly by balancing aggregate load and transferring active decodes away from near-capacity GPUs."
+    workload_phenomenon: "A burst of memory-heavy (large prompt/output) requests saturating KV capacity on a subset of GPUs."
+    expected_behavior: "Migration transfers continuing active requests to instances with sufficient free blocks."
+    expected_failure_signature: "No-migration baseline stalls or preempts requests due to block capacity exhaustion, leading to completion drops; Llumnix completes more requests."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.001, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 30}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 10}
+    default_full_setting: {n_requests: 30}
+    validation_metrics: [mean_latency, completion_fraction, anwg]
+    acceptance_gates: "llumnix_faithful.completion_fraction >= vllm_faithful.completion_fraction"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_target_sustained_imbalance_payback
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 5: migration benefit (payback) outweighs its transfer delay for long-running decodes."
+    targeted_assumption: "Migration overhead is small and amortized over many remaining decode steps."
+    workload_phenomenon: "Sustained imbalance with very long decode lengths (high output tokens)."
+    expected_behavior: "Approved migrations lead to rapid payback as migrated requests finish sooner on underloaded GPUs."
+    expected_failure_signature: "No-migration has high queue starvation; Llumnix achieves high ANWG utility and low latency."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.01, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 30}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 10}
+    default_full_setting: {n_requests: 30}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency < vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_target_heterogeneous_slo_isolation
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5.3: prioritization protects high-priority requests by excluding them as sources and prioritizing them."
+    targeted_assumption: "Priority-exempt status preserves high-priority SLO attainment during load-balancing migrations."
+    workload_phenomenon: "Mixed-priority workload under high load; high-priority requests have tight SLOs, low-priority have loose ones."
+    expected_behavior: "Llumnix keeps high-priority requests on their instances (exempting them from being migrated off) while migrating low-priority ones."
+    expected_failure_signature: "Without priority exempt, high-priority SLO attainment suffers due to migration overhead; with it, high-priority SLO attainment is protected."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 3, migration_delay: 0.005, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 3 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens, slo_deadline, priority]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 36}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 12}
+    default_full_setting: {n_requests: 36}
+    validation_metrics: [mean_latency, slo_attainment, anwg]
+    acceptance_gates: "llumnix_faithful.slo_attainment >= vllm_faithful.slo_attainment"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_target_high_priority_acceleration
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5.3: high-priority SLO isolation and acceleration."
+    targeted_assumption: "High-priority requests finish faster when low-priority requests migrate away from their instances."
+    workload_phenomenon: "High-priority requests arrive at a busy instance, prompting migration of low-priority decodes to clear space."
+    expected_behavior: "Low-priority decodes are migrated off, accelerating the high-priority ones."
+    expected_failure_signature: "No-migration baseline has high queuing delay for high-priority requests; Llumnix accelerates them."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.001, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens, priority]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 36}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 12}
+    default_full_setting: {n_requests: 36}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency <= vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_target_skewed_request_size_imbalance
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: HYPOTHESIZED_ADVERSARIAL_REGIME
+    source_citations:
+      - "OSDI 2024 paper Section 5: skewed distributions of prompts and outputs causing severe load imbalance across instances."
+    targeted_assumption: "Skewed request size distributions cause round-robin placement to create massive hotspots that only migration can heal."
+    workload_phenomenon: "Highly skewed request sizes distributed round-robin, creating highly uneven block and sequence loads."
+    expected_behavior: "Migration relocates decodes to balance the skewed resource footprint across instances."
+    expected_failure_signature: "Static round-robin suffers severe tail latencies due to skewed block starvation; Llumnix resolves this."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.001, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 48}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 16}
+    default_full_setting: {n_requests: 48}
+    validation_metrics: [mean_latency, p95_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency < vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_target_placement_imbalance_persistent
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: TARGET
+    evidence_class: HYPOTHESIZED_ADVERSARIAL_REGIME
+    source_citations:
+      - "OSDI 2024 paper Section 5: initial placement imbalance that persists beyond control intervals."
+    targeted_assumption: "Initial placement imbalance persists and gets worse unless periodic migration dynamically redistributes load."
+    workload_phenomenon: "A severe load hotspot on one instance caused by persistent placement imbalance."
+    expected_behavior: "Llumnix migrates active decodes to balance the load dynamically."
+    expected_failure_signature: "No-migration has high latency on the hotspot; Llumnix balances the system load and reduces latency."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.001, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 36}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 12}
+    default_full_setting: {n_requests: 36}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency < vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_counter_rapidly_oscillating_load
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: HYPOTHESIZED_ADVERSARIAL_REGIME
+    source_citations:
+      - "OSDI 2024 paper Section 5: rapid oscillations of load flip-flop instances between overloaded and underloaded, causing migration storm."
+    targeted_assumption: "Load imbalance is persistent; if load oscillates faster than the control loop can damp, migration causes wasteful overhead."
+    workload_phenomenon: "Load balance rapidly fluctuates (short alternating bursts), triggering multiple migrations."
+    expected_behavior: "N/A -- this is the counter case where migration overhead dominates and reduces performance."
+    expected_failure_signature: "Llumnix has worse latency than the no-migration baseline because migration overhead exceeds any tiny short-term balance gain."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.01, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 60}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 20}
+    default_full_setting: {n_requests: 60}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
+    real_system_followup_required: true
+
+  - stress_test_id: llumnix_counter_short_lived_imbalance
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: HYPOTHESIZED_ADVERSARIAL_REGIME
+    source_citations:
+      - "OSDI 2024 paper Section 5: short-lived imbalance where decodes finish on their own before payback can be achieved."
+    targeted_assumption: "Imbalance will persist long enough to justify migration cost."
+    workload_phenomenon: "Imbalance of very short duration (requests with low remaining decode lengths)."
+    expected_behavior: "N/A -- this is the counter case."
+    expected_failure_signature: "Llumnix performs worse or identical to no-migration due to net negative payback."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.01, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 30}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 10}
+    default_full_setting: {n_requests: 30}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_counter_migration_cost_exceeds_benefit
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: migration cost (delay) exceeds remaining service time of the request."
+    targeted_assumption: "The remaining decode steps of a candidate request are high enough to amortize migration delay."
+    workload_phenomenon: "Migrated requests have extremely short remaining decode times (e.g. 5 tokens) but non-zero migration delay."
+    expected_behavior: "N/A -- this is the counter case."
+    expected_failure_signature: "Llumnix performs worse than the no-migration baseline because the migration overhead exceeds the remaining work."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.05, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 30}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 10}
+    default_full_setting: {n_requests: 30}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_counter_large_kv_low_bandwidth
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: network bandwidth limits migration transfer times, making overhead high."
+    targeted_assumption: "Effective bandwidth is high enough that KV cache transfer delay is negligible."
+    workload_phenomenon: "Large KV blocks transferred over low bandwidth link, leading to high migration delay."
+    expected_behavior: "N/A -- spec-only entry."
+    expected_failure_signature: "N/A -- not executable."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 1.0}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {prompt_tokens_target: 32768, note: "NOT_IMPLEMENTED -- see generator docstring"}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 0}
+    default_full_setting: {n_requests: 0}
+    validation_metrics: [mean_latency]
+    acceptance_gates: "N/A -- not auto-evaluable, generator raises NotImplementedError by design"
+    real_system_followup_required: true
+
+  - stress_test_id: llumnix_counter_simultaneous_migration_contention
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: link contention from simultaneous transfers saturates bandwidth and hurts latency."
+    targeted_assumption: "No cross-migration link contention occurs."
+    workload_phenomenon: "Multiple instances trigger migration concurrently, saturating the transfer network."
+    expected_behavior: "N/A -- spec-only entry."
+    expected_failure_signature: "N/A -- not executable."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 4, migration_delay: 0.5}
+    topology_requirements: "multi-instance, 4 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 0, note: "NOT_IMPLEMENTED -- see generator docstring"}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 0}
+    default_full_setting: {n_requests: 0}
+    validation_metrics: [mean_latency]
+    acceptance_gates: "N/A -- not auto-evaluable, generator raises NotImplementedError by design"
+    real_system_followup_required: true
+
+  - stress_test_id: llumnix_counter_noisy_load_observations
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: HYPOTHESIZED_ADVERSARIAL_REGIME
+    source_citations:
+      - "OSDI 2024 paper Section 5: load metrics must be highly accurate to prevent overreactions."
+    targeted_assumption: "Load reporting is perfectly accurate and noiseless."
+    workload_phenomenon: "High measurement/reporting noise in load metrics."
+    expected_behavior: "N/A -- spec-only entry."
+    expected_failure_signature: "N/A -- not executable."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.01}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 0, note: "NOT_IMPLEMENTED -- see generator docstring"}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 0}
+    default_full_setting: {n_requests: 0}
+    validation_metrics: [mean_latency]
+    acceptance_gates: "N/A -- not auto-evaluable, generator raises NotImplementedError by design"
+    real_system_followup_required: true
+
+  - stress_test_id: llumnix_counter_delayed_control_loop
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5: migration check frequency need_migrate_frequency is critical to avoid stale decisions."
+    targeted_assumption: "The control loop operates fast enough to react to current load state, not stale history."
+    workload_phenomenon: "Slow control loop (high need_migrate_frequency) combined with moderate load variations."
+    expected_behavior: "N/A -- this is the counter case."
+    expected_failure_signature: "Llumnix performs worse with high need_migrate_frequency because migration decisions are delayed and apply to stale load."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.001, need_migrate_frequency: 32, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 45}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 15}
+    default_full_setting: {n_requests: 45}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_counter_topology_asymmetry
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: DOCUMENTED_LIMITATION
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: asymmetric interconnects make some migration paths significantly more expensive than others."
+    targeted_assumption: "The cluster topology is homogeneous and symmetric."
+    workload_phenomenon: "Asymmetric instance layout where cross-node migration delay is high."
+    expected_behavior: "N/A -- spec-only entry."
+    expected_failure_signature: "N/A -- not executable."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 4, migration_delay: 1.0}
+    topology_requirements: "multi-instance, 4 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 0, note: "NOT_IMPLEMENTED -- see generator docstring"}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 0}
+    default_full_setting: {n_requests: 0}
+    validation_metrics: [mean_latency]
+    acceptance_gates: "N/A -- not auto-evaluable, generator raises NotImplementedError by design"
+    real_system_followup_required: true
+
+  - stress_test_id: llumnix_counter_tiny_requests_overhead_dominates
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 5.1: tiny requests where migration overhead (even near-zero) is high compared to remaining service time."
+    targeted_assumption: "Requests have high enough decoding times to justify the flat migration delay."
+    workload_phenomenon: "A workload consisting entirely of extremely short requests (e.g. 2 output tokens)."
+    expected_behavior: "N/A -- this is the counter case."
+    expected_failure_signature: "Llumnix performs worse than no-migration because migration delay is high compared to the 2-token decode duration."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.05, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 45}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 15}
+    default_full_setting: {n_requests: 45}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
+    real_system_followup_required: false
+
+  - stress_test_id: llumnix_counter_balanced_load_no_migration
+    algorithm_id: llumnix_faithful
+    algorithm_family: migratory_load_balancer
+    test_role: COUNTER
+    evidence_class: PAPER_MOTIVATING_STRESS_CASE
+    source_citations:
+      - "OSDI 2024 paper Section 5: completely balanced load where migration is unnecessary and can only add negative overhead."
+    targeted_assumption: "There is some load imbalance to resolve; on perfectly balanced systems, migration is a no-op."
+    workload_phenomenon: "Perfect load balance with identical request lengths arriving sequentially round-robin."
+    expected_behavior: "N/A -- this is the counter case."
+    expected_failure_signature: "Llumnix performs identically or worse than no-migration due to lack of any useful migration triggers."
+    comparison_algorithms: [vllm_faithful, fifo]
+    simulator_requirements: {n_instances: 2, migration_delay: 0.01, enable_prefill_modeling: false}
+    topology_requirements: "multi-instance, 2 GPUs"
+    deployable_observables: [arrival_time, prompt_tokens, predicted_output_tokens]
+    forbidden_oracle_inputs: [actual_output_tokens]
+    generator_parameters: {n_requests: 48}
+    parameter_ranges: {}
+    default_smoke_setting: {n_requests: 16}
+    default_full_setting: {n_requests: 48}
+    validation_metrics: [mean_latency, anwg]
+    acceptance_gates: "llumnix_faithful.mean_latency >= vllm_faithful.mean_latency"
+    real_system_followup_required: false

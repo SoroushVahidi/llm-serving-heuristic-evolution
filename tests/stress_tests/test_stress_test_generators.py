@@ -29,7 +29,7 @@ class TestCatalogStructure:
         assert catalog["schema_version"] == 1
         # 22 pre-Sarathi entries + 7 Sarathi-Serve entries added 2026-08-05
         # (docs/audits/sarathi_stress_test_catalog_completion_20260805.md).
-        assert len(catalog["stress_tests"]) == 29
+        assert len(catalog["stress_tests"]) == 46
 
     def test_every_entry_has_unique_id(self, catalog):
         ids = [t["stress_test_id"] for t in catalog["stress_tests"]]
@@ -74,6 +74,10 @@ class TestGeneratorsProduceValidRequests:
             "pars_target_alpaca_style_instruction_prompts",
             "pars_counter_reasoning_domain_shift",
             "sarathi_counter_long_context_attention_recompute",
+            "llumnix_counter_large_kv_low_bandwidth",
+            "llumnix_counter_simultaneous_migration_contention",
+            "llumnix_counter_noisy_load_observations",
+            "llumnix_counter_topology_asymmetry",
         }
     ])
     def test_generator_produces_sorted_nonempty_requests(self, name):
@@ -93,6 +97,10 @@ class TestGeneratorsProduceValidRequests:
         "pars_target_alpaca_style_instruction_prompts",
         "pars_counter_reasoning_domain_shift",
         "sarathi_counter_long_context_attention_recompute",
+        "llumnix_counter_large_kv_low_bandwidth",
+        "llumnix_counter_simultaneous_migration_contention",
+        "llumnix_counter_noisy_load_observations",
+        "llumnix_counter_topology_asymmetry",
     ])
     def test_offline_scored_generators_are_explicit_stubs(self, name):
         """These MUST raise NotImplementedError with a clear reason --
@@ -130,6 +138,10 @@ class TestDeterminism:
             "pars_target_alpaca_style_instruction_prompts",
             "pars_counter_reasoning_domain_shift",
             "sarathi_counter_long_context_attention_recompute",
+            "llumnix_counter_large_kv_low_bandwidth",
+            "llumnix_counter_simultaneous_migration_contention",
+            "llumnix_counter_noisy_load_observations",
+            "llumnix_counter_topology_asymmetry",
         }:
             pytest.skip("offline-scored / not-representable stub, not applicable")
         a = generators.GENERATORS[name](smoke=True)
