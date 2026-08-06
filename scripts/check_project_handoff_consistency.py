@@ -49,6 +49,16 @@ FORBIDDEN_CLAIMS = [
     (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC6 has started", "CC6 is queued/restricted, not started"),
     (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC6 is COMPLETE", "CC6 has not begun"),
     (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC6 is `IN PROGRESS`", "CC6 has not begun"),
+    (
+        ROOT / "docs" / "BASELINE_STATUS.md",
+        "blocked on Wulver authentication",
+        "the Apt-Serve Wulver probe executed 2026-08-06; auth is no longer a blocker",
+    ),
+    (
+        ROOT / "docs" / "current" / "WORK_STATUS.md",
+        "Wulver GSSAPI authentication failing",
+        "the Apt-Serve Wulver probe executed 2026-08-06; auth is no longer a blocker",
+    ),
 ]
 
 # (file, required substring) -- current status facts that MUST be present,
@@ -57,7 +67,13 @@ REQUIRED_CLAIMS = [
     (CANONICAL_RESUME, "COMPLETE_REGIME_SPECIFIC"),
     (CANONICAL_RESUME, "restricted"),
     (ROOT / "docs" / "BASELINE_STATUS.md", "llumnix_faithful"),
-    (ROOT / "docs" / "BASELINE_STATUS.md", "REMOTE_STATE_UNVERIFIED"),
+    # Superseded 2026-08-06 (Wulver reconciliation query): the Apt-Serve
+    # Wulver probe executed and the remote/Wulver state this used to flag
+    # as unverified is now verified -- see
+    # docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md §9b. The
+    # required claim is now the resulting classification, not the old
+    # "we don't know" placeholder.
+    (ROOT / "docs" / "BASELINE_STATUS.md", "STRATEGY_C_VIABLE_WITH_LIMITATIONS"),
 ]
 
 

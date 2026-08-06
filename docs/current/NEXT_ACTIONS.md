@@ -41,7 +41,7 @@ this document has been executed — it is a plan, not a log.
 - **Success criterion:** `docs/BASELINE_STATUS.md` and `docs/audits/llumnix_official_artifact_audit_20260806.md` agree.
 
 ### 5. External-baseline checkpoint report
-- **Prerequisite:** (4) complete, and Apt-Serve Strategy C/D resolved (see WULVER track) or explicitly deferred with a stated reason.
+- **Prerequisite:** (4) complete. Apt-Serve Strategy C/D is now resolved (`STRATEGY_C_VIABLE_WITH_LIMITATIONS`, 2026-08-06 — see the Apt-Serve item below).
 - **Expected deliverable:** a short report answering: is the current baseline set (vLLM-LTR, PARS, VTC, Sarathi, Apt-Serve, Llumnix) sufficient evidence to revisit CC6, or is further baseline work needed first?
 - **Location:** Local.
 - **Effort:** SMALL.
@@ -57,29 +57,31 @@ any of these from a local, non-interactive session — see
 `docs/current/RESUME_HERE.md` §E for why the last attempt failed and what
 diagnosis has already been done.
 
-### 1. Apt-Serve Strategy C/D probe
-- **Prerequisite:** working Wulver SSH/Kerberos access (likely needs an interactive `kdestroy && kinit` cycle or HPC-support involvement — not resolvable non-interactively).
-- **Expected deliverable:** submit `scripts/slurm/wulver_apt_serve_strategy_c_cpu_probe.sbatch` (CPU-only, preferred first); fall back to `wulver_apt_serve_strategy_c_gpu_fallback.sbatch` only if the CPU probe shows a genuine CUDA-at-import failure.
-- **Location:** Wulver.
-- **Effort:** SMALL (once access works) — the probe scripts are already written and syntax-validated.
-- **Stop condition:** if the CPU probe's import-chain test shows Apt-Serve's scheduler cannot be imported as a separable component, that itself is the Strategy D signal — don't keep pushing for Strategy C past that evidence.
-- **Success criterion:** a definitive Strategy C vs. D determination based on executed evidence.
+### 1. Apt-Serve Strategy C/D probe — **DONE (2026-08-06)**
+Executed on Wulver: jobs 1163456 (environment-construction bug, corrected),
+1163782 (imports OK, micro-trace failed on a probe-script signature bug,
+corrected), 1164406 (fully successful, reproduced structurally on a
+second node). Official patched `vllm.core.scheduler.Scheduler` import
+7/7, construction OK, 3/3 real `schedule()` micro-traces OK. Decision:
+**`STRATEGY_C_VIABLE_WITH_LIMITATIONS`** — see
+`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` §9b for the
+five scoped caveats (technical reuse, legal redistribution, pinned-
+environment requirement, remaining dual-tier-cache simulator gap,
+full-system validation status).
 
 ### 2. Official-system validation where needed
-- **Prerequisite:** (1) resolved in favor of Strategy C, or a Strategy D reimplementation reaching parity with other faithful baselines' validation bar.
-- **Expected deliverable:** if Strategy C, a working adapter-wrapped Apt-Serve scheduler; if Strategy D, a `apt_serve_faithful.py` matching the pattern of `sarathi_faithful.py`/`llumnix_faithful.py`.
-- **Location:** Wulver (for any real-GPU cross-check) + Local (for the simulator-side implementation itself, once the strategy is known).
-- **Effort:** LARGE — this is genuinely new implementation work, gated on (1).
-- **Stop condition:** do not start this before (1) resolves — implementation scope differs substantially between Strategy C and D.
+- **Prerequisite:** (1) resolved in favor of Strategy C — **now satisfied**, with the limitations recorded in §9b.
+- **Expected deliverable, next increment (design only, not this query):** the thin external-checkout adapter design and the minimal dual-tier cache interface specification (`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` §10) — implementation itself is a later, separate increment.
+- **Location:** Local (design step and simulator-side implementation do not require Wulver) + Wulver only for a later real-GPU cross-check, if one turns out to be needed.
+- **Effort:** LARGE overall (design increment is SMALL–MEDIUM) — genuinely new implementation work.
+- **Stop condition:** do not begin full implementation before the design increment above is reviewed.
 - **Success criterion:** matches this project's existing bar for a faithful baseline (fidelity tests, reference doc, registry entry).
 
-### 3. Wulver-side commit/push reconciliation
-- **Prerequisite:** any of the above produced artifacts worth keeping.
-- **Expected deliverable:** compact logs/manifests (not raw multi-GB output) committed and pushed from wherever they were generated.
-- **Location:** Wulver (generation) → pushed to the same `origin/contextual-compositional-heuristics-20260731` branch.
-- **Effort:** SMALL.
-- **Stop condition:** none.
-- **Success criterion:** `git fetch` on this workstation shows the new commits; branch stays a single line of history (no accidental divergent branch).
+### 3. Wulver-side commit/push reconciliation — **DONE (2026-08-06, this pass)**
+Compact provenance artifacts (JSON probe reports, hashes, pip freeze,
+job manifests) and the corrected probe scripts/audit doc were committed
+and pushed to `origin/contextual-compositional-heuristics-20260731`; raw
+per-job logs remain Wulver-local only, as intended.
 
 ---
 
@@ -93,7 +95,7 @@ diagnosis has already been done.
   and has 35 passing fidelity tests. DistServe does **not** need a
   green-field official-artifact audit; it needs the same missing step as
   Llumnix: a comparative evaluation.
-- **Prerequisite:** Llumnix (IMMEDIATE 1–5) and Apt-Serve Strategy C/D decision (WULVER 1) both resolved — DistServe is sequenced after them, not because it needs their output, but because Llumnix/Apt-Serve were judged higher-priority gaps first.
+- **Prerequisite:** Llumnix (IMMEDIATE 1–5) resolved. Apt-Serve's Strategy C/D decision (WULVER 1) is now resolved (`STRATEGY_C_VIABLE_WITH_LIMITATIONS`, 2026-08-06) — DistServe is sequenced after both, not because it needs their output, but because Llumnix/Apt-Serve were judged higher-priority gaps first.
 - **Expected deliverable:** `distserve_faithful` scored against the deployable policy set, using its disaggregated prefill/decode topology, following the same evaluation pattern as Llumnix's comparative sweep.
 - **Location:** Local (pure CPU simulator).
 - **Effort:** MEDIUM.

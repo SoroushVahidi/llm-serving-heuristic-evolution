@@ -79,8 +79,9 @@ branch.
   of which a non-interactive local session can do. No Kerberos secrets,
   passwords, or Duo details are recorded anywhere in this repository's
   documentation, per standing project convention.
-- **Apt-Serve Strategy C vs. D is undetermined** — blocked entirely on the
-  above.
+- ~~**Apt-Serve Strategy C vs. D is undetermined** — blocked entirely on the
+  above.~~ **Resolved 2026-08-06, after this note's initial version** — see
+  "Query 5 correction" below.
 
 ## Query 4 final closure facts (added 2026-08-06, after this note's initial version)
 
@@ -108,6 +109,30 @@ branch.
   `origin/contextual-compositional-heuristics-20260731` after this query's
   commit(s) — verify live with `git status --short --branch`, do not trust
   a cached SHA from this document.
+
+## Query 5 correction (Wulver, added 2026-08-06, after Query 4's close)
+
+Queries 1–4 above were written from a non-interactive workstation session
+that never obtained working Wulver SSH/Kerberos access (see "Known
+blockers"), and correctly reported, from that vantage point, that no
+Apt-Serve SLURM job had ever been submitted. That was accurate for what
+that session could observe, but incomplete: a **separate, interactive**
+Wulver session/worktree (`llm-serving-heuristic-evolution-cc-probe`,
+based on this same branch's `f967c095826900aed0eb0326d3d1f3ea60936261`)
+had already run the probe to completion on 2026-08-05 — auth worked fine
+there — leaving the results uncommitted in that other worktree, invisible
+to a workstation session that only reads git history. This Wulver-side
+reconciliation query found that worktree, verified its results (official
+patched `vllm.core.scheduler.Scheduler` import 7/7, construction OK, 3/3
+real `schedule()` micro-traces OK, reproduced across two nodes), completed
+the missing Strategy C/D write-up
+(`STRATEGY_C_VIABLE_WITH_LIMITATIONS`), and committed/pushed it to
+`origin/contextual-compositional-heuristics-20260731`. The "Deferred
+Wulver work" and "Known blockers" sections above describe Query 1–4's
+accurate-at-the-time understanding, not the current state — see
+`docs/current/RESUME_HERE.md` §E/§H and
+`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` for what is
+now current.
 
 ## Known simulator limitations
 
@@ -160,7 +185,8 @@ Then read, in order: `docs/current/RESUME_HERE.md` →
 2. Pick up **"Llumnix stress-test coverage and first comparative
    evaluation"** (`docs/current/RESUME_HERE.md` §G) — the cheapest,
    most load-bearing local gap identified in this pause sequence.
-3. Separately, when a direct Wulver login is available: **"Execute Apt-Serve
-   Strategy C CPU probe and decide Strategy C vs. D"**
-   (`docs/current/RESUME_HERE.md` §H) — this does not need to happen before
-   task 2, and does not need to happen from this workstation.
+3. ~~Separately, when a direct Wulver login is available: **"Execute Apt-Serve
+   Strategy C CPU probe and decide Strategy C vs. D"**~~ **Done — see
+   "Query 5 correction" above.** The next Apt-Serve action is a design-only
+   step (thin external-checkout adapter + dual-tier cache interface spec,
+   `docs/current/RESUME_HERE.md` §H) and does not require Wulver.
