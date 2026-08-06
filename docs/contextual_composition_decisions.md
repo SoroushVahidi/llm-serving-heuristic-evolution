@@ -747,3 +747,177 @@ Related files or evidence:
 - `scripts/run_cc5_final_operating_envelope.py`
 - `tests/test_cc5_final_operating_envelope.py`
 - GitHub issue #5 (closing), issue #6 (ready, restricted scope, not started)
+
+---
+
+**Note on scope from CCD-020 onward:** the entries below are not CC-roadmap-phase
+decisions. This branch also carries a parallel baseline-integration effort
+(`docs/roadmap.md`'s "Current track" banner), and this log is the only decision
+log that exists anywhere in this repository, so the project-pause reconciliation
+sequence (2026-08-06) records its decisions here rather than creating a second,
+competing log. CC0-CC8 phase status is unaffected by any decision below.
+
+## CCD-020: Recognize The Existing Llumnix Faithful Implementation Instead Of Treating It As Green-Field
+
+Date: 2026-08-06
+
+Status: accepted
+
+Decision: Stop describing Llumnix as "not integrated" / "reference doc only."
+`llumnix_faithful.py` (385 lines, commit `4bb54b5`, 2026-07-18) is a complete,
+line-cited faithful reimplementation of the pinned OSDI 2024 artifact
+(`alibaba/llm-scheduling-artifact@a908243`), registered in
+`external_baselines_registry.py`, with 36 passing fidelity tests
+(188/188 including cross-baseline integration, re-verified 2026-08-06).
+
+Rationale: `docs/BASELINE_STATUS.md`'s Llumnix row said "Unverified in this
+pass... Not prioritized" while `docs/current/BASELINES.md` (updated
+2026-07-23) already correctly listed it as "Execution-health clean." The
+status index had drifted stale for roughly 2.5 weeks against code and tests
+that already existed; a parallel research audit
+(`docs/audits/llumnix_official_artifact_audit_20260806.md`) independently
+re-derived and confirmed this from git history, not from the stale doc.
+
+Consequences: `docs/BASELINE_STATUS.md` is corrected in this same
+reconciliation. Llumnix's real, load-bearing gap is not implementation but
+evaluation (CCD-021) — no comparative sweep against this project's other
+policies has ever been run.
+
+Related files or evidence:
+
+- `docs/audits/llumnix_official_artifact_audit_20260806.md`
+- `docs/llumnix_faithful_scheduler_reference.md`
+- `src/llmserveopt/policies/llumnix_faithful.py`
+- `tests/test_llumnix_faithful_scheduler.py`
+- `docs/BASELINE_STATUS.md` (Llumnix row, corrected 2026-08-06)
+- `docs/audits/project_pause_reconciliation_query2_20260806.md`
+
+## CCD-021: Passing Fidelity Tests Are Not Comparative Validation
+
+Date: 2026-08-06
+
+Status: accepted
+
+Decision: A baseline with passing unit/fidelity tests ("execution-health
+clean") must not be described or classified as "evaluated" until it has
+actually been run in a scored comparison against other policies. This
+applies generally, not only to Llumnix.
+
+Rationale: This exact conflation was found in progress for Llumnix during
+the 2026-08-06 reconciliation audit — 36/36 (188/188) tests passing was at
+risk of being read as "validated," when in fact zero comparative-evaluation
+results exist anywhere in the repository for this baseline. The project
+already distinguishes these two evidence classes correctly for every other
+faithful baseline (VTC, PARS-Serve-2026, Sarathi-Serve all have dedicated
+comparative-evaluation audit docs); Llumnix's status index simply hadn't
+been held to the same bar.
+
+Consequences: `docs/BASELINE_STATUS.md`'s "Evaluation status" column for
+Llumnix reads "Not run," distinct from its "Implementation status" (Complete)
+and "Checkpoint status" (36 tests passing) columns. Any future baseline
+audit in this project must keep these columns independently honest rather
+than letting a strong implementation-status entry imply a strong
+evaluation-status one.
+
+Related files or evidence:
+
+- `docs/BASELINE_STATUS.md`
+- `docs/audits/llumnix_official_artifact_audit_20260806.md` §8, §18
+
+## CCD-022: Preserve Apt-Serve Strategy C/D As Unresolved Without Executed Evidence
+
+Date: 2026-08-06
+
+Status: accepted
+
+Decision: Do not classify Apt-Serve's integration strategy (Strategy C:
+reuse the official scheduler as a separable component, vs. Strategy D:
+independent reimplementation) as resolved, in either direction, until an
+actual Wulver probe executes and produces a result. Code-reading alone is
+not sufficient evidence for this decision.
+
+Rationale: This is an explicit, standing instruction already embedded in
+commit `f967c09`'s own message and honored again in this reconciliation
+pass: audit and probe-preparation work (`db4ba0f`, `f967c09`) went as far as
+possible without cluster access, but the probe itself was never submitted
+(blocked on Wulver authentication — see CCD-023). Guessing Strategy C or D
+from source inspection would undermine the entire point of running the
+probe.
+
+Consequences: `docs/BASELINE_STATUS.md`'s Apt-Serve row records
+"REMOTE_STATE_UNVERIFIED" rather than picking a strategy. The prepared
+SLURM/probe scripts remain unexecuted; the next action is to resolve Wulver
+access (CCD-023) and then submit
+`scripts/slurm/wulver_apt_serve_strategy_c_cpu_probe.sbatch`.
+
+Related files or evidence:
+
+- `docs/audits/apt_serve_official_artifact_audit_20260805.md`
+- `docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md`
+- `scripts/wulver_probes/apt_serve_import_probe.py`
+- `scripts/slurm/wulver_apt_serve_strategy_c_cpu_probe.sbatch`
+- `docs/audits/project_pause_reconciliation_query2_20260806.md`
+
+## CCD-023: Remote Wulver State Must Be Verified Independently Of Local Visibility
+
+Date: 2026-08-06
+
+Status: accepted
+
+Decision: Never conclude "no job is running" or "no work happened" on
+Wulver from local Git state, local process lists, or local documentation
+alone. Attempt direct, read-only Wulver access (`squeue`/`sacct`) first;
+only fall back to local-evidence-based statements when direct access
+genuinely fails, and label the result `REMOTE_STATE_UNVERIFIED` rather than
+a false negative.
+
+Rationale: A same-day parallel research pass
+(`docs/audits/llumnix_official_artifact_audit_20260806.md` §1) had already
+caught a task briefing wrongly asserting the Apt-Serve probe was "currently
+running" when local evidence showed it was blocked, not running — the
+opposite framing error (assuming remote inactivity from local silence) is
+just as easy to make and just as important to avoid. This reconciliation
+pass attempted direct SSH access to `login02.tartan.njit.edu` and diagnosed
+the failure precisely (GSSAPI rejected even with a locally valid Kerberos
+service ticket obtainable via `kvno`) rather than asserting "Wulver has no
+job" from local silence alone.
+
+Consequences: Apt-Serve's Wulver status is recorded as
+`REMOTE_STATE_UNVERIFIED` with the exact authentication diagnosis attached,
+not as a flat "no job exists." Any future session must re-attempt direct
+access before trusting this status, rather than propagating it indefinitely
+as if it were confirmed.
+
+Related files or evidence:
+
+- `docs/audits/project_pause_reconciliation_query1_20260806.md`
+- `docs/audits/project_pause_reconciliation_query2_20260806.md`
+
+## CCD-024: Reconcile And Document Before Further Baseline Implementation
+
+Date: 2026-08-06
+
+Status: accepted
+
+Decision: Before starting any new baseline implementation, new comparative
+experiment, or CC6 work, first reconcile the repository's actual state
+(uncommitted research artifacts, stale status docs, unresolved remote
+blockers) into a single coherent, committed record.
+
+Rationale: A four-query project-pause sequence found a repository that was
+git-clean but documentation-stale in exactly the two places it had most
+recently worked (Apt-Serve, Llumnix), plus a genuinely useful audit
+(`/tmp/llumnix_official_artifact_audit_20260806.md`) sitting outside version
+control entirely. Starting new work on top of that would have compounded
+the drift rather than resolved it.
+
+Consequences: Query 2 of the pause sequence is scoped to reconciliation and
+documentation only — no new baseline, no CC5/CC6 changes, no new
+comparative experiments (see `docs/audits/project_pause_reconciliation_query2_20260806.md`).
+New baseline/experiment work resumes only after Query 3/4 leave the
+repository in a documented, synchronized state.
+
+Related files or evidence:
+
+- `docs/audits/project_pause_reconciliation_query1_20260806.md`
+- `docs/audits/project_pause_reconciliation_query2_20260806.md`

@@ -244,14 +244,26 @@ These baselines would strengthen the paper but are not blockers for a first subm
 
 These systems are cited as context but are not implemented.
 
+**Update (2026-08-06, does not rewrite the original decision below):** several rows in this
+table are stale relative to later work on this branch. "Full Sarathi-Serve integration"
+now has a faithful reimplementation plus real Wulver A100 validation
+(`docs/audits/sarathi_official_artifact_audit_20260805.md`), and "Llumnix" now has a
+complete faithful simulator implementation with 36 passing fidelity tests, registered as
+`llumnix_faithful` — it is not "out of scope," it simply has no comparative evaluation run
+against it yet (see `docs/BASELINE_STATUS.md`'s Llumnix row and
+`docs/audits/llumnix_official_artifact_audit_20260806.md`). This table is retained
+unedited below as a historical record of the original first-paper scoping decision;
+`docs/BASELINE_STATUS.md` is the authoritative current-status index and should be
+consulted instead of this table for present-day status.
+
 | System | Reason for exclusion |
 |--------|---------------------|
 | Full vLLM integration | Requires running real GPU inference; out of simulator scope |
-| Full Sarathi-Serve integration | Same; our `sarathi_style` is a simulator proxy |
+| Full Sarathi-Serve integration | Same; our `sarathi_style` is a simulator proxy *(superseded — see update note above)* |
 | Full DeepSpeed-FastGen stack | Multi-node; out of scope |
 | DistServe | Disaggregated prefill/decode; requires different simulator architecture |
 | Mooncake / Conductor | Cluster-level KV transfer scheduling; out of scope |
-| Llumnix | Live migration system; out of scope |
+| Llumnix | Live migration system; out of scope *(superseded — see update note above)* |
 | ORBITFLOW full ILP/offload stack | Requires ILP solver + offload system; out of scope |
 | Full cluster disaggregated systems | All require cluster infrastructure |
 
