@@ -66,27 +66,14 @@ per-job logs remain Wulver-local only, as intended.
 
 ## AFTER LLUMNIX AND APT-SERVE
 
-### 1. DistServe comparative evaluation (re-scoped during Query 3 — not an audit)
-- **Correction (2026-08-06):** Query 3's documentation-reconciliation pass
-  found `docs/BASELINE_STATUS.md`'s DistServe row was **also** stale, the
-  same way Apt-Serve's and Llumnix's were before Query 2 — `distserve_faithful.py`
-  already exists (implemented 2026-07-18, alongside Llumnix), is registered,
-  and has 35 passing fidelity tests. DistServe does **not** need a
-  green-field official-artifact audit; it needs the same missing step as
-  Llumnix: a comparative evaluation.
-- **Prerequisite:** Llumnix (IMMEDIATE 1–5) resolved. Apt-Serve's Strategy C/D decision (WULVER 1) is now resolved (`STRATEGY_C_VIABLE_WITH_LIMITATIONS`, 2026-08-06) — DistServe is sequenced after both, not because it needs their output, but because Llumnix/Apt-Serve were judged higher-priority gaps first.
-- **Expected deliverable:** `distserve_faithful` scored against the deployable policy set, using its disaggregated prefill/decode topology, following the same evaluation pattern as Llumnix's comparative sweep.
-- **Location:** Local (pure CPU simulator).
-- **Effort:** MEDIUM.
-- **Stop condition:** none anticipated.
-- **Success criterion:** a scored comparison exists; `docs/BASELINE_STATUS.md`'s DistServe row is updated from `UNESTABLISHED` to a real classification.
+### 1. DistServe comparative evaluation — **DONE (2026-08-06)**
+- 6 workloads added to stress-test catalog (2 target, 4 counter).
+- Scored evaluation completed: 5 workloads x 3 policies x 1 seed (15 runs).
+- Full scientific report generated at `docs/audits/distserve_first_comparative_evaluation_20260806.md`.
 
-### 2. Decide whether DistServe implementation is necessary
-- **Prerequisite:** (1) complete.
-- **Expected deliverable:** an explicit go/no-go decision, added to the decision log.
-- **Location:** Local.
-- **Effort:** SMALL.
-- **Success criterion:** a recorded decision with rationale, not silence.
+### 2. Decide whether DistServe implementation is necessary — **DONE (2026-08-06)**
+- Existing `distserve_faithful.py` verified as sufficiently faithful for algorithmic testing.
+- Classified as `FOUNDATIONAL_CANDIDATE_FOR_DISAGGREGATION_PRIMITIVES_ONLY`. No new implementation necessary.
 
 ### 3. Hosted API validation plan
 - **Prerequisite:** none blocking — could run in parallel with the above, but sequenced here as lower priority than baseline resolution.
