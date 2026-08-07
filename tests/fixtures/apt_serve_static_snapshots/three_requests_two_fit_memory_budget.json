@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "scenario_id": "three_requests_two_fit_memory_budget",
+  "official_source_pin": "c953217988274a761da35cf06c01033b18dadf68",
+  "source_hashes": {
+    "additional_designs/aptserve_block.py": "771d3590abfef2e6fc3a71a37bce231c276bade4188c0eadd12bf48d642980c5",
+    "additional_designs/aptserve_sequence.py": "e50a546a267c832256eaa554e74cecd8e3e50ef8cd737e4e4ba8647c9943ac52",
+    "additional_designs/core/aptserve_block_manager.py": "8ec4fed8417227f2bdd40c695b9c4bbe3d7164272f771200e72aeef9ad552943",
+    "additional_designs/core/aptserve_interfaces.py": "703009b951c1bf61e34c6a1bc92123334ea6568b6b668d2f966192df76e036d1",
+    "additional_designs/core/aptserve_scheduler.py": "b381415aafeb46d8cdad3598a00983dfad7a1c9ff992b0a3a7708596b979b02e"
+  },
+  "environment_fingerprint": "torch=2.3.0|vllm=0.5.0.post1",
+  "simulator_neutral_input_snapshot": {
+    "request_id": 100,
+    "simulator_step": 0,
+    "timestamp": 0.0,
+    "gpus": [
+      {
+        "gpu_id": 0,
+        "max_active_sequences": 16,
+        "max_batch_tokens": 2048,
+        "max_kv_tokens": 1600,
+        "apt_serve_ttft_slo": 1.0,
+        "apt_serve_tbt_slo": 1.0,
+        "hidden_cache_capacity_blocks": 0
+      }
+    ],
+    "waiting_requests": [
+      {
+        "request_id": 1,
+        "prompt_tokens": 200,
+        "arrival_time": 0.0,
+        "predicted_output_tokens": 16,
+        "current_cache_tier": "none"
+      },
+      {
+        "request_id": 2,
+        "prompt_tokens": 200,
+        "arrival_time": 0.0,
+        "predicted_output_tokens": 16,
+        "current_cache_tier": "none"
+      },
+      {
+        "request_id": 3,
+        "prompt_tokens": 4000,
+        "arrival_time": 0.0,
+        "predicted_output_tokens": 16,
+        "current_cache_tier": "none"
+      }
+    ],
+    "running_requests": [],
+    "cache_snapshot": {}
+  },
+  "expected_official_decision": {
+    "selected_request_ids": [1, 2],
+    "cache_assignments": {
+      "1": "kv",
+      "2": "kv",
+      "3": "none"
+    },
+    "evictions": [],
+    "deprioritized_requests": [],
+    "value_scores": {
+      "1": 1.0,
+      "2": 1.0,
+      "3": 1.0
+    }
+  },
+  "fidelity_classification": "STATIC_FIDELITY_EXACT"
+}
