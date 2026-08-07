@@ -27,6 +27,15 @@ this document has been executed — it is a plan, not a log.
 ### 5. External-baseline checkpoint report — **DONE (2026-08-06)**
 - Checked go/no-go CC6 readiness: we recommend progressing to CC6 once Apt-Serve and DistServe evaluations are fully closed (see `docs/audits/llumnix_first_comparative_evaluation_20260806.md`).
 
+### 6. Apt-Serve Phase A implementation — **DONE (2026-08-06)**
+- Configuration schema, interfaces, IPC schemas, and scaffolding completed with 24 tests passing.
+
+### 7. Apt-Serve Phase B implementation
+- **Prerequisite:** Phase A complete.
+- **Expected deliverable:** dual-tier `HybridCacheManager` (Phase B of 8).
+- **Location:** Local.
+- **Effort:** MEDIUM.
+
 ---
 
 ## DEFERRED WULVER ACTIONS
@@ -48,13 +57,9 @@ five scoped caveats (technical reuse, legal redistribution, pinned-
 environment requirement, remaining dual-tier-cache simulator gap,
 full-system validation status).
 
-### 2. Official-system validation where needed
-- **Prerequisite:** (1) resolved in favor of Strategy C — **now satisfied**, with the limitations recorded in §9b.
-- **Expected deliverable, next increment (design only, not this query):** the thin external-checkout adapter design and the minimal dual-tier cache interface specification (`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` §10) — implementation itself is a later, separate increment.
-- **Location:** Local (design step and simulator-side implementation do not require Wulver) + Wulver only for a later real-GPU cross-check, if one turns out to be needed.
-- **Effort:** LARGE overall (design increment is SMALL–MEDIUM) — genuinely new implementation work.
-- **Stop condition:** do not begin full implementation before the design increment above is reviewed.
-- **Success criterion:** matches this project's existing bar for a faithful baseline (fidelity tests, reference doc, registry entry).
+### 2. Official-system validation where needed — **DESIGN & PHASE A DONE (2026-08-06)**
+- Simulator architecture, dual-tier cache, external IPC adapter designed, and Phase A scaffolding implemented with 24 tests passing.
+- Implementation of remaining phases is local (Wulver not needed until final validation).
 
 ### 3. Wulver-side commit/push reconciliation — **DONE (2026-08-06, this pass)**
 Compact provenance artifacts (JSON probe reports, hashes, pip freeze,
