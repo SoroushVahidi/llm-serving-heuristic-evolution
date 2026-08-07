@@ -1,7 +1,7 @@
 """apt_serve_faithful: Interface scaffolding, configuration schemas, typed contracts,
 and JSON-based versioned IPC schemas for Apt-Serve's upcoming implementation.
 
-This is a Phase C implementation of the official scheduler subprocess adapter.
+This is a Phase E implementation of the multi-step simulator policy integration.
 """
 from __future__ import annotations
 
@@ -10,13 +10,14 @@ import os
 import sys
 import subprocess
 import hashlib
+import copy
 from dataclasses import asdict, dataclass, field
 from enum import Enum, auto
 from typing import Dict, List, Optional, Protocol, Set, Tuple, Union, Any
 
 from .base import BasePolicy
 from ..core.action import Action
-from ..core.types import GPUConfig, ObservableRequest, ObservableState
+from ..core.types import GPUConfig, ObservableRequest, ObservableState, ObservableGPUState
 
 
 # ======================================================================
@@ -240,6 +241,8 @@ class AptServeSubprocessClient:
         self.terminate()
 
     def initialize(self) -> None:
+        self.terminate() # ensure clean start
+
         if self.config.execution_mode == "official":
             # 1. Verify checkout path exists
             if not self.config.checkout_path or not os.path.exists(self.config.checkout_path):
@@ -317,7 +320,7 @@ except ImportError as e:
         # Launch the subprocess worker in corresponding mode
         policy_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(policy_dir)))
-
+        
         if self.config.execution_mode == "official":
             worker_path = os.path.join(project_root, "scripts", "apt_serve", "apt_serve_scheduler_worker.py")
             py_exe = self.config.python_executable or "python3"
@@ -340,8 +343,9 @@ except ImportError as e:
             raise AptServeAdapterError(f"Failed to start subprocess worker: {e}")
 
     def schedule_step(self, state_input: AptServeSchedulerInput) -> AptServeSchedulerDecision:
+        # Re-initialize process if not running (enabling multiple sequential one-shot calls)
         if not self.proc or self.proc.poll() is not None:
-            raise AptServeAdapterError("Subprocess worker is not running.")
+            self.initialize()
 
         # Serialize request
         payload = state_input.serialize_json().decode("utf-8") + "\n"
@@ -474,23 +478,233 @@ class AptServeSchedulerOutput:
 
 
 # ======================================================================
-# 4. PLACEHOLDER SCHEDULER POLICY (Step 5)
+# 4. ACTIVE RUNTIME POLICY INTEGRATION (Step 4)
 # ======================================================================
 
 class AptServeSchedulerPolicy(BasePolicy):
-    """Placeholder policy scaffolding for Apt-Serve's upcoming subprocess runner.
-
-    Raises NotImplementedError on execution in Phase A.
+    """Faithful implementation of Apt-Serve's adaptive request scheduling
+    running inside the simulator via JSON IPC subprocess worker.
     """
     name = "apt_serve_faithful"
 
-    def __init__(self, adapter_config: Optional[AptServeAdapterConfig] = None) -> None:
+    def __init__(
+        self,
+        adapter_config: Optional[AptServeAdapterConfig] = None,
+        hybrid_cache_enabled: bool = False,
+        hidden_cache_capacity_blocks: int = 0,
+        hidden_to_kv_memory_ratio: float = 0.1,
+        cache_switch_latency: float = 0.0,
+        hidden_restore_latency: float = 0.0,
+        recomputation_cost_model: str = "full",
+        apt_serve_rho: float = 0.5,
+        apt_serve_ttft_slo: float = 2.0,
+        apt_serve_tbt_slo: float = 0.05,
+        block_size: int = 16
+    ) -> None:
         self.adapter_config = adapter_config
+        self.hybrid_cache_enabled = hybrid_cache_enabled
+        self.hidden_cache_capacity_blocks = hidden_cache_capacity_blocks
+        self.hidden_to_kv_memory_ratio = hidden_to_kv_memory_ratio
+        self.cache_switch_latency = cache_switch_latency
+        self.hidden_restore_latency = hidden_restore_latency
+        self.recomputation_cost_model = recomputation_cost_model
+        self.apt_serve_rho = apt_serve_rho
+        self.apt_serve_ttft_slo = apt_serve_ttft_slo
+        self.apt_serve_tbt_slo = apt_serve_tbt_slo
+        self.block_size = block_size
+        
+        self._cache_managers: Dict[int, Any] = {}
+        self._client: Optional[AptServeSubprocessClient] = None
         self.provenance = AptServeSourceProvenance()
 
+    def reset(self) -> None:
+        self._cache_managers = {}
+        self.terminate_client()
+
+    def terminate(self) -> None:
+        self.terminate_client()
+
+    def terminate_client(self) -> None:
+        if self._client:
+            self._client.terminate()
+            self._client = None
+
+    def _get_cache_manager(self, gpu: ObservableGPUState) -> Any:
+        from ..simulator.hybrid_cache_manager import HybridCacheManager
+        mgr = self._cache_managers.get(gpu.gpu_id)
+        if mgr is None:
+            # Reconstruct GPUConfig from ObservableGPUState and policy configs
+            gpu_config = GPUConfig(
+                gpu_id=gpu.gpu_id,
+                max_active_sequences=gpu.max_active_sequences,
+                max_batch_tokens=gpu.max_batch_tokens,
+                max_kv_tokens=gpu.max_kv_tokens,
+                role=gpu.role,
+                hybrid_cache_enabled=self.hybrid_cache_enabled,
+                hidden_cache_capacity_blocks=self.hidden_cache_capacity_blocks,
+                hidden_to_kv_memory_ratio=self.hidden_to_kv_memory_ratio,
+                cache_switch_latency=self.cache_switch_latency,
+                hidden_restore_latency=self.hidden_restore_latency,
+                recomputation_cost_model=self.recomputation_cost_model,
+                apt_serve_rho=self.apt_serve_rho,
+                apt_serve_ttft_slo=self.apt_serve_ttft_slo,
+                apt_serve_tbt_slo=self.apt_serve_tbt_slo
+            )
+            mgr = HybridCacheManager(gpu_config, block_size=self.block_size)
+            self._cache_managers[gpu.gpu_id] = mgr
+        return mgr
+
     def select_action(self, state: ObservableState) -> Action:
-        raise NotImplementedError(
-            "Apt-Serve baseline execution is NOT IMPLEMENTED in Phase A scaffolding "
-            "(see docs/design/apt_serve_simulator_architecture_20260806.md). "
-            "Only configuration schemas, validation rules, and IPC boundaries exist."
+        action = Action()
+        if not state.gpu_states:
+            return action
+
+        gpu = state.gpu_states[0]
+        mgr = self._get_cache_manager(gpu)
+
+        # 1. Reconcile completed sequences on our HybridCacheManager
+        active_ids = set(gpu.active_request_ids)
+        for rid in list(mgr.assignments.keys()):
+            if rid not in active_ids:
+                mgr.release(rid)
+
+        # Reconcile untracked active sequences
+        for req in gpu.active_requests_info:
+            rid = req.request_id
+            if rid not in mgr.assignments:
+                decoded = gpu.tokens_decoded_per_request.get(rid, 0)
+                mgr.allocate(rid, req.prompt_tokens + decoded, CacheTier.KV)
+
+        # 2. Lazy initializer for persistent subprocess client
+        if self._client is None and self.adapter_config is not None:
+            self._client = AptServeSubprocessClient(self.adapter_config)
+            self._client.initialize()
+
+        if self._client is None:
+            # Replay/No-adapter mode
+            return action
+
+        # 3. Map state to AptServeSchedulerInput
+        waiting_requests = []
+        for ir in state.waiting_queue:
+            waiting_requests.append({
+                "request_id": ir.request_id,
+                "prompt_tokens": ir.prompt_tokens,
+                "arrival_time": ir.arrival_time,
+                "predicted_output_tokens": ir.predicted_output_tokens,
+                "slo_deadline": ir.slo_deadline,
+                "priority": ir.priority,
+                "current_cache_tier": "none"
+            })
+
+        running_requests = []
+        for req in gpu.active_requests_info:
+            rid = req.request_id
+            decoded = gpu.tokens_decoded_per_request.get(rid, 0)
+            running_dur = state.time - req.arrival_time
+            running_requests.append({
+                "request_id": rid,
+                "prompt_tokens": req.prompt_tokens,
+                "arrival_time": req.arrival_time,
+                "predicted_output_tokens": req.predicted_output_tokens,
+                "slo_deadline": req.slo_deadline,
+                "priority": req.priority,
+                "current_cache_tier": mgr.get_request_tier(rid).value,
+                "running_duration": running_dur
+            })
+
+        gpus_info = [{
+            "gpu_id": gpu.gpu_id,
+            "max_active_sequences": gpu.max_active_sequences,
+            "max_batch_tokens": gpu.max_batch_tokens,
+            "max_kv_tokens": gpu.max_kv_tokens,
+            "apt_serve_ttft_slo": self.apt_serve_ttft_slo,
+            "apt_serve_tbt_slo": self.apt_serve_tbt_slo,
+            "hidden_cache_capacity_blocks": self.hidden_cache_capacity_blocks
+        }]
+
+        cache_snapshots = asdict(mgr.snapshot(step=state.step, timestamp=state.time))
+
+        scheduler_input = AptServeSchedulerInput(
+            schema_version=1,
+            request_id=state.step,
+            simulator_step=state.step,
+            timestamp=state.time,
+            gpus=gpus_info,
+            waiting_requests=waiting_requests,
+            running_requests=running_requests,
+            cache_snapshot=cache_snapshots
         )
+
+        # 4. Invoke client
+        try:
+            decision = self._client.schedule_step(scheduler_input)
+        except Exception as e:
+            raise AptServeAdapterError(f"Step {state.step} schedule_step failed: {e}")
+
+        # 5. Atomic Decision-Application Transaction & Rollback mapping (Step 6) using copy.deepcopy()
+        backup_mgr = copy.deepcopy(mgr)
+
+        def rollback() -> None:
+            mgr.assignments = backup_mgr.assignments
+            mgr.num_tokens = backup_mgr.num_tokens
+            mgr.kv_manager = backup_mgr.kv_manager
+            mgr.hidden_manager = backup_mgr.hidden_manager
+
+        try:
+            # 5a. Apply Evictions first (Reclaim capacity)
+            for rid in decision.evictions:
+                res = mgr.evict(rid)
+                if not res.success:
+                    raise AptServeCapacityViolation(f"Eviction failed for request {rid}: {res.error_message}")
+                
+                # Preempt maps to preempt action
+                if gpu.gpu_id not in action.preempt:
+                    action.preempt[gpu.gpu_id] = []
+                action.preempt[gpu.gpu_id].append(rid)
+
+            # 5b. Apply Cache Transitions (switch and restorations)
+            for rid, target_tier in decision.cache_assignments.items():
+                if rid in mgr.assignments:
+                    curr_tier = mgr.get_request_tier(rid)
+                    if curr_tier != target_tier:
+                        res = mgr.switch_tier(rid, target_tier)
+                        if not res.success:
+                            raise AptServeCapacityViolation(
+                                f"Transition failed for request {rid} to tier {target_tier}: {res.error_message}"
+                            )
+                        # Inject transition delay by adding to hold_decode
+                        if res.expected_delay > 0.0:
+                            if gpu.gpu_id not in action.hold_decode:
+                                action.hold_decode[gpu.gpu_id] = []
+                            action.hold_decode[gpu.gpu_id].append(rid)
+
+            # 5c. Allocate newly selected waiting requests
+            # Build local waiting_map to support fast and correct lookup
+            waiting_map = {ir.request_id: ir for ir in state.waiting_queue}
+            for rid in decision.selected_request_ids:
+                if rid not in active_ids:
+                    # Brand new admission from waiting queue
+                    ir = waiting_map.get(rid)
+                    if ir is None:
+                        raise AptServeAdapterError(f"Selected request {rid} not found in waiting queue.")
+                    
+                    target_tier = decision.cache_assignments.get(rid, CacheTier.KV)
+                    mgr.allocate(rid, ir.prompt_tokens, target_tier)
+
+                    if gpu.gpu_id not in action.admit:
+                        action.admit[gpu.gpu_id] = []
+                    action.admit[gpu.gpu_id].append(rid)
+
+            # 5d. Enforce strict invariants
+            mgr.validate_invariants()
+
+        except Exception as e:
+            rollback()
+            raise AptServeAdapterError(f"Decision transaction failed and state rolled back: {e}")
+
+        return action
+
+
+# Alias name
+AptServeFaithfulPolicy = AptServeSchedulerPolicy
