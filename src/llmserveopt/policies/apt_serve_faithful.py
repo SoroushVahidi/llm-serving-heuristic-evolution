@@ -516,9 +516,22 @@ class AptServeSchedulerPolicy(BasePolicy):
         self._cache_managers: Dict[int, Any] = {}
         self._client: Optional[AptServeSubprocessClient] = None
         self.provenance = AptServeSourceProvenance()
+        self.stats: Dict[str, float] = self._empty_stats()
+
+    @staticmethod
+    def _empty_stats() -> Dict[str, float]:
+        return {
+            "kv_to_hidden_transitions": 0,
+            "hidden_to_kv_transitions": 0,
+            "evictions": 0,
+            "recomputations": 0,
+            "switch_latency_paid": 0.0,
+            "restore_latency_paid": 0.0,
+        }
 
     def reset(self) -> None:
         self._cache_managers = {}
+        self.stats = self._empty_stats()
         self.terminate_client()
 
     def terminate(self) -> None:
@@ -657,7 +670,8 @@ class AptServeSchedulerPolicy(BasePolicy):
                 res = mgr.evict(rid)
                 if not res.success:
                     raise AptServeCapacityViolation(f"Eviction failed for request {rid}: {res.error_message}")
-                
+                self.stats["evictions"] += 1
+
                 # Preempt maps to preempt action
                 if gpu.gpu_id not in action.preempt:
                     action.preempt[gpu.gpu_id] = []
@@ -673,6 +687,14 @@ class AptServeSchedulerPolicy(BasePolicy):
                             raise AptServeCapacityViolation(
                                 f"Transition failed for request {rid} to tier {target_tier}: {res.error_message}"
                             )
+                        if res.transition_kind == CacheTransitionKind.KV_TO_HIDDEN:
+                            self.stats["kv_to_hidden_transitions"] += 1
+                            self.stats["switch_latency_paid"] += res.expected_delay
+                        else:
+                            self.stats["hidden_to_kv_transitions"] += 1
+                            self.stats["restore_latency_paid"] += res.expected_delay
+                            if res.recomputation_required:
+                                self.stats["recomputations"] += 1
                         # Inject transition delay by adding to hold_decode
                         if res.expected_delay > 0.0:
                             if gpu.gpu_id not in action.hold_decode:
