@@ -677,29 +677,46 @@ class AptServeSchedulerPolicy(BasePolicy):
                     action.preempt[gpu.gpu_id] = []
                 action.preempt[gpu.gpu_id].append(rid)
 
-            # 5b. Apply Cache Transitions (switch and restorations)
+            # 5b. Apply Cache Transitions (switch and restorations) in two
+            # phases: release every transitioning request's *current*
+            # tier allocation first, then acquire every destination-tier
+            # allocation. A whole decision batch's net capacity effect
+            # can be feasible even when a HIDDEN->KV restore needs room a
+            # KV->HIDDEN move elsewhere would free, AND that KV->HIDDEN
+            # move needs room the HIDDEN->KV restore would free, in the
+            # same step -- a mutual dependency in both directions at
+            # once. No single per-request application order (raw client
+            # dict order, or any static tier-based priority) can resolve
+            # that; decoupling every release from every acquisition does,
+            # since by the time any acquisition is attempted all releases
+            # in the batch have already freed their capacity.
+            pending_transitions = []
             for rid, target_tier in decision.cache_assignments.items():
-                if rid in mgr.assignments:
-                    curr_tier = mgr.get_request_tier(rid)
-                    if curr_tier != target_tier:
-                        res = mgr.switch_tier(rid, target_tier)
-                        if not res.success:
-                            raise AptServeCapacityViolation(
-                                f"Transition failed for request {rid} to tier {target_tier}: {res.error_message}"
-                            )
-                        if res.transition_kind == CacheTransitionKind.KV_TO_HIDDEN:
-                            self.stats["kv_to_hidden_transitions"] += 1
-                            self.stats["switch_latency_paid"] += res.expected_delay
-                        else:
-                            self.stats["hidden_to_kv_transitions"] += 1
-                            self.stats["restore_latency_paid"] += res.expected_delay
-                            if res.recomputation_required:
-                                self.stats["recomputations"] += 1
-                        # Inject transition delay by adding to hold_decode
-                        if res.expected_delay > 0.0:
-                            if gpu.gpu_id not in action.hold_decode:
-                                action.hold_decode[gpu.gpu_id] = []
-                            action.hold_decode[gpu.gpu_id].append(rid)
+                if rid in mgr.assignments and mgr.get_request_tier(rid) != target_tier:
+                    pending_transitions.append((rid, target_tier))
+
+            released_by_rid = {
+                rid: mgr.begin_transition_release(rid) for rid, _ in pending_transitions
+            }
+            for rid, target_tier in pending_transitions:
+                res = mgr.finish_transition_acquire(released_by_rid[rid], target_tier)
+                if not res.success:
+                    raise AptServeCapacityViolation(
+                        f"Transition failed for request {rid} to tier {target_tier}: {res.error_message}"
+                    )
+                if res.transition_kind == CacheTransitionKind.KV_TO_HIDDEN:
+                    self.stats["kv_to_hidden_transitions"] += 1
+                    self.stats["switch_latency_paid"] += res.expected_delay
+                else:
+                    self.stats["hidden_to_kv_transitions"] += 1
+                    self.stats["restore_latency_paid"] += res.expected_delay
+                    if res.recomputation_required:
+                        self.stats["recomputations"] += 1
+                # Inject transition delay by adding to hold_decode
+                if res.expected_delay > 0.0:
+                    if gpu.gpu_id not in action.hold_decode:
+                        action.hold_decode[gpu.gpu_id] = []
+                    action.hold_decode[gpu.gpu_id].append(rid)
 
             # 5c. Allocate newly selected waiting requests
             # Build local waiting_map to support fast and correct lookup

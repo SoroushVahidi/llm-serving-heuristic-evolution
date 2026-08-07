@@ -25,6 +25,13 @@ from llmserveopt.workloads.apt_serve_stress import (
     generate_apt_serve_regime_workload,
 )
 from llmserveopt.workloads.apt_serve_phase_g_regimes import REGIME_CATALOG
+from llmserveopt.evaluation.run_policy import run_policy
+from llmserveopt.policies.apt_serve_faithful import (
+    AptServeAdapterConfig,
+    AptServeSchedulerInput,
+    AptServeSubprocessClient,
+    CacheTier,
+)
 
 _SPEC = importlib.util.spec_from_file_location(
     "run_apt_serve_phase_g",
@@ -159,6 +166,130 @@ def test_atomic_write_json_never_leaves_partial_file(tmp_path):
 # ======================================================================
 # End-to-end: one small unit, exercising baselines + all transition costs
 # ======================================================================
+
+# ======================================================================
+# SS15 incident regression: overnight sweep self-terminated on
+# pressure_sustained_overload_baseline / seed=1005 / transition_cost=4x
+# with AptServeCapacityViolation ("Insufficient destination hidden
+# capacity" for request 11). Root cause was two independent bugs -- see
+# docs/audits/apt_serve_phase_g_ss15_incident_20260807.md:
+#   1. apt_serve_faithful.py applied cache-tier transitions in raw client
+#      dict order instead of an order that respects capacity dependencies
+#      (fixed: apply HIDDEN->KV releases before KV->HIDDEN acquisitions).
+#   2. fake_scheduler_worker.py's "evict one relaxed KV resident to admit
+#      an urgent waiting request" fallback never checked that the evicted
+#      resident's freed KV blocks actually covered the new request's need
+#      (fixed: added a fits_after_eviction check).
+# ======================================================================
+
+def _sustained_overload_regime():
+    return next(r for r in REGIME_CATALOG if r["regime_id"] == "pressure_sustained_overload_baseline")
+
+
+def test_ss15_known_failing_cell_now_completes():
+    """Exact reproduction of the cell that crashed the overnight sweep:
+    must now run to completion with zero dropped requests, no exception."""
+    regime = _sustained_overload_regime()
+    requests = generate_apt_serve_regime_workload(
+        seed=1005, n_requests=regime["n_requests"], arrival_pattern=regime["arrival_pattern"],
+        kv_pressure=regime["kv_pressure"], slo_pattern=regime["slo_pattern"],
+        length_pattern=regime["length_pattern"], cache_use_structure=regime["cache_use_structure"],
+    )
+    service_model = runner.ServiceModel(step_size=runner.SERVICE_MODEL_STEP_SIZE)
+    policy = runner.build_apt_policy("4x")
+    m = run_policy(policy=policy, requests=requests, gpu_configs=runner.GPU_CONFIGS,
+                    service_model=service_model, workload_tag=regime["regime_id"], seed=1005)
+    policy.terminate()
+    assert m.num_completed == regime["n_requests"]
+    assert m.num_dropped == 0
+
+
+def test_ss15_neighboring_cells_no_critical_failure():
+    """Neighboring seeds and transition costs around the known failing
+    cell must all complete without a critical Apt-Serve invariant
+    failure -- guards against the fix being a narrow special case."""
+    regime = _sustained_overload_regime()
+    for seed in (1004, 1005, 1006):
+        requests = generate_apt_serve_regime_workload(
+            seed=seed, n_requests=regime["n_requests"], arrival_pattern=regime["arrival_pattern"],
+            kv_pressure=regime["kv_pressure"], slo_pattern=regime["slo_pattern"],
+            length_pattern=regime["length_pattern"], cache_use_structure=regime["cache_use_structure"],
+        )
+        for tc_label in runner.TRANSITION_COST_LABELS:
+            service_model = runner.ServiceModel(step_size=runner.SERVICE_MODEL_STEP_SIZE)
+            policy = runner.build_apt_policy(tc_label)
+            try:
+                m = run_policy(policy=policy, requests=requests, gpu_configs=runner.GPU_CONFIGS,
+                                service_model=service_model, workload_tag=regime["regime_id"], seed=seed)
+            except Exception as e:  # noqa: BLE001
+                pytest.fail(f"seed={seed} tc={tc_label} raised {type(e).__name__}: {e}")
+            finally:
+                policy.terminate()
+            assert m.num_completed + m.num_dropped == regime["n_requests"]
+
+
+def test_ss15_run_one_unit_reports_no_critical_failure():
+    """run_one_unit (the exact function the overnight sweep called) must
+    report critical_failure=None and a full complement of cells for the
+    known-bad unit."""
+    regime = _sustained_overload_regime()
+    result = runner.run_one_unit(regime, seed=1005, stage="regression_test")
+    assert result["critical_failure"] is None
+    assert result["failures"] == []
+    labels = {(c["policy_label"], c["transition_cost"]) for c in result["cells"]}
+    for tc in runner.TRANSITION_COST_LABELS:
+        assert ("apt_serve_faithful", tc) in labels
+
+
+def test_fake_worker_preemption_requires_eviction_to_cover_admission():
+    """The fake scheduler's urgent-preemption fallback must not evict a
+    relaxed KV resident and admit a new request when the eviction alone
+    doesn't free enough KV blocks to cover it -- doing so silently
+    produces a decision that overcommits KV capacity by the client's own
+    ledger, which the adapter then can only catch downstream as a raw
+    KVBlockManagerError ('Out of memory')."""
+    config = AptServeAdapterConfig(checkout_path="", execution_mode="test")
+
+    # max_kv_tokens=112 -> raw 7 blocks, watermark 1 -> 6 usable blocks.
+    # hidden_cache_capacity_blocks=2 -> raw 2 blocks, watermark 1 -> 1 usable block.
+    gpus = [{"max_kv_tokens": 112, "hidden_cache_capacity_blocks": 2}]
+
+    running_requests = [
+        # A: filler, non-relaxed, stays on KV (3 blocks).
+        {"request_id": 1, "prompt_tokens": 48, "arrival_time": 0.0, "predicted_output_tokens": 10,
+         "slo_deadline": 1.0, "priority": 1.0, "current_cache_tier": "kv"},
+        # B: non-relaxed HIDDEN resident that restores to KV in pass 1,
+        # freeing the hidden headroom C's eviction will need in pass 2
+        # (2 blocks -> 1 hidden block).
+        {"request_id": 2, "prompt_tokens": 32, "arrival_time": 0.0, "predicted_output_tokens": 10,
+         "slo_deadline": 1.0, "priority": 1.0, "current_cache_tier": "hidden"},
+        # C: relaxed KV resident, small (1 block) -- the only eviction
+        # candidate for the urgent admission below.
+        {"request_id": 3, "prompt_tokens": 16, "arrival_time": 0.0, "predicted_output_tokens": 10,
+         "slo_deadline": 100.0, "priority": 1.0, "current_cache_tier": "kv"},
+    ]
+    # D: urgent waiting request needing 3 KV blocks -- more than evicting
+    # C (1 block) can free (current_kv would go 6 - 1 + 3 = 8 > 6).
+    waiting_requests = [
+        {"request_id": 4, "prompt_tokens": 48, "arrival_time": 0.0, "predicted_output_tokens": 10,
+         "slo_deadline": 1.0, "priority": 1.0},
+    ]
+
+    state_input = AptServeSchedulerInput(
+        schema_version=1, request_id=1, simulator_step=1, timestamp=0.0,
+        gpus=gpus, waiting_requests=waiting_requests, running_requests=running_requests,
+        cache_snapshot={},
+    )
+
+    with AptServeSubprocessClient(config) as client:
+        decision = client.schedule_step(state_input)
+
+    assert decision.cache_assignments.get(4) == CacheTier.NONE
+    assert 4 in decision.deprioritized_requests
+    assert 4 not in decision.selected_request_ids
+    # C must be left exactly where it was -- no partial/speculative eviction.
+    assert decision.cache_assignments.get(3) == CacheTier.KV
+
 
 def test_run_one_unit_smoke():
     small_regime = {

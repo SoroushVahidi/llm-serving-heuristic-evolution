@@ -134,11 +134,116 @@ class HybridCacheManager:
         self.assignments.pop(request_id, None)
         self.num_tokens.pop(request_id, None)
 
-    def switch_tier(self, request_id: int, target_tier: CacheTier) -> CacheTransitionResult:
-        """Atomically transition a request's format and tier."""
+    def begin_transition_release(self, request_id: int) -> Dict[str, Any]:
+        """Phase 1 of a decoupled transition: release request_id's
+        current tier allocation without yet acquiring the destination.
+
+        Exists so a whole decision *batch* can release every request's
+        source-tier allocation before acquiring any destination-tier
+        allocation (see finish_transition_acquire). Per-request
+        release-then-acquire cannot express a batch where a HIDDEN->KV
+        restore needs room a KV->HIDDEN move elsewhere would free, AND a
+        KV->HIDDEN move needs room a HIDDEN->KV restore elsewhere would
+        free, in the same step -- whichever single direction is applied
+        first would spuriously fail even though the batch's net effect
+        is feasible. self.num_tokens[request_id] is deliberately left in
+        place so the pending acquisition can still size itself.
+        """
         if request_id not in self.assignments:
             raise ValueError(f"Unknown request {request_id}")
-            
+        curr_tier = self.assignments[request_id]
+        kv_blocks_before = self.kv_manager.num_blocks_for(request_id) if curr_tier == CacheTier.KV else None
+        hidden_blocks_before = (
+            self.hidden_manager.num_blocks_for(request_id)
+            if (curr_tier == CacheTier.HIDDEN and self.hidden_manager) else None
+        )
+        if curr_tier == CacheTier.KV:
+            self.kv_manager.free(request_id)
+        elif curr_tier == CacheTier.HIDDEN:
+            if self.hidden_manager:
+                self.hidden_manager.free(request_id)
+        del self.assignments[request_id]
+        return {
+            "request_id": request_id, "source_tier": curr_tier,
+            "kv_blocks_before": kv_blocks_before, "hidden_blocks_before": hidden_blocks_before,
+        }
+
+    def finish_transition_acquire(self, released: Dict[str, Any], target_tier: CacheTier) -> CacheTransitionResult:
+        """Phase 2: acquire the destination-tier allocation for a
+        request already released by begin_transition_release. On
+        failure the request is left unassigned (neither tier) --
+        callers applying a whole decision batch must roll back the
+        entire manager on any failure here (the existing deepcopy-backup
+        transaction in apt_serve_faithful.py already does this), not
+        attempt to restore just this one request."""
+        request_id = released["request_id"]
+        curr_tier = released["source_tier"]
+        tokens = self.num_tokens[request_id]
+
+        if curr_tier == CacheTier.KV and target_tier == CacheTier.HIDDEN:
+            if not self.config.hybrid_cache_enabled or self.hidden_manager is None:
+                raise ValueError("Hybrid cache is disabled")
+            hidden_blocks = self.hidden_blocks_needed(released["kv_blocks_before"])
+            if self.hidden_manager._allocator.num_free_blocks < hidden_blocks:
+                return CacheTransitionResult(
+                    request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
+                    transition_kind=CacheTransitionKind.KV_TO_HIDDEN, expected_delay=0.0,
+                    recomputation_required=False, success=False, error_message="Insufficient destination hidden capacity"
+                )
+            self.hidden_manager.allocate(request_id, hidden_blocks * self.block_size)
+            self.assignments[request_id] = CacheTier.HIDDEN
+            return CacheTransitionResult(
+                request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
+                transition_kind=CacheTransitionKind.KV_TO_HIDDEN, expected_delay=self.config.cache_switch_latency,
+                recomputation_required=False, success=True
+            )
+
+        elif curr_tier == CacheTier.HIDDEN and target_tier == CacheTier.KV:
+            kv_blocks = self.blocks_needed(tokens)
+            if self.kv_manager._allocator.num_free_blocks < kv_blocks:
+                return CacheTransitionResult(
+                    request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
+                    transition_kind=CacheTransitionKind.HIDDEN_TO_KV, expected_delay=0.0,
+                    recomputation_required=False, success=False, error_message="Insufficient destination KV capacity"
+                )
+            self.kv_manager.allocate(request_id, tokens)
+            self.assignments[request_id] = CacheTier.KV
+            delay = self.config.hidden_restore_latency * tokens
+            recomp = (self.config.recomputation_cost_model == "full")
+            return CacheTransitionResult(
+                request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
+                transition_kind=CacheTransitionKind.HIDDEN_TO_KV, expected_delay=delay,
+                recomputation_required=recomp, success=True
+            )
+
+        else:
+            raise ValueError(f"Invalid transition from {curr_tier} to {target_tier}")
+
+    def _restore_release(self, released: Dict[str, Any]) -> None:
+        """Reverse begin_transition_release for a single request whose
+        subsequent finish_transition_acquire failed, used only by the
+        single-request switch_tier() wrapper to preserve its own
+        atomic-per-call contract (batch callers roll back the whole
+        manager instead; see finish_transition_acquire)."""
+        request_id = released["request_id"]
+        curr_tier = released["source_tier"]
+        tokens = self.num_tokens[request_id]
+        if curr_tier == CacheTier.KV:
+            self.kv_manager.allocate(request_id, tokens)
+        elif curr_tier == CacheTier.HIDDEN:
+            self.hidden_manager.allocate(request_id, released["hidden_blocks_before"] * self.block_size)
+        self.assignments[request_id] = curr_tier
+
+    def switch_tier(self, request_id: int, target_tier: CacheTier) -> CacheTransitionResult:
+        """Atomically transition a single request's format and tier.
+        Thin wrapper over begin_transition_release +
+        finish_transition_acquire that restores the release on failure,
+        for callers transitioning one request at a time (batch callers
+        applying a whole decision should use the two phases directly --
+        see apt_serve_faithful.py's select_action)."""
+        if request_id not in self.assignments:
+            raise ValueError(f"Unknown request {request_id}")
+
         curr_tier = self.assignments[request_id]
         if curr_tier == target_tier:
             return CacheTransitionResult(
@@ -146,60 +251,14 @@ class HybridCacheManager:
                 transition_kind=CacheTransitionKind.KV_TO_HIDDEN if target_tier == CacheTier.HIDDEN else CacheTransitionKind.HIDDEN_TO_KV,
                 expected_delay=0.0, recomputation_required=False, success=True
             )
-            
-        if curr_tier == CacheTier.KV and target_tier == CacheTier.HIDDEN:
-            if not self.config.hybrid_cache_enabled or self.hidden_manager is None:
-                raise ValueError("Hybrid cache is disabled")
-            kv_blocks = self.kv_manager.num_blocks_for(request_id)
-            hidden_blocks = self.hidden_blocks_needed(kv_blocks)
-            
-            if self.hidden_manager._allocator.num_free_blocks < hidden_blocks:
-                return CacheTransitionResult(
-                    request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
-                    transition_kind=CacheTransitionKind.KV_TO_HIDDEN, expected_delay=0.0,
-                    recomputation_required=False, success=False, error_message="Insufficient destination hidden capacity"
-                )
-                
-            # Atomic swap
-            self.kv_manager.free(request_id)
-            self.hidden_manager.allocate(request_id, hidden_blocks * self.block_size)
-            self.assignments[request_id] = CacheTier.HIDDEN
-            
-            return CacheTransitionResult(
-                request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
-                transition_kind=CacheTransitionKind.KV_TO_HIDDEN, expected_delay=self.config.cache_switch_latency,
-                recomputation_required=False, success=True
-            )
-            
-        elif curr_tier == CacheTier.HIDDEN and target_tier == CacheTier.KV:
-            tokens = self.num_tokens[request_id]
-            kv_blocks = self.blocks_needed(tokens)
-            
-            if self.kv_manager._allocator.num_free_blocks < kv_blocks:
-                return CacheTransitionResult(
-                    request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
-                    transition_kind=CacheTransitionKind.HIDDEN_TO_KV, expected_delay=0.0,
-                    recomputation_required=False, success=False, error_message="Insufficient destination KV capacity"
-                )
-                
-            # Atomic restore
-            if self.hidden_manager:
-                self.hidden_manager.free(request_id)
-            self.kv_manager.allocate(request_id, tokens)
-            self.assignments[request_id] = CacheTier.KV
-            
-            # Compute delay and recomputation requirement
-            delay = self.config.hidden_restore_latency * tokens
-            recomp = (self.config.recomputation_cost_model == "full")
-            
-            return CacheTransitionResult(
-                request_id=request_id, source_tier=curr_tier, destination_tier=target_tier,
-                transition_kind=CacheTransitionKind.HIDDEN_TO_KV, expected_delay=delay,
-                recomputation_required=recomp, success=True
-            )
-            
-        else:
+        if curr_tier not in (CacheTier.KV, CacheTier.HIDDEN) or target_tier not in (CacheTier.KV, CacheTier.HIDDEN):
             raise ValueError(f"Invalid transition from {curr_tier} to {target_tier}")
+
+        released = self.begin_transition_release(request_id)
+        result = self.finish_transition_acquire(released, target_tier)
+        if not result.success:
+            self._restore_release(released)
+        return result
 
     def evict(self, request_id: int) -> CacheTransitionResult:
         """Evict a request fully from the cache, discarding all progress."""

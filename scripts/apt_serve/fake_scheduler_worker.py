@@ -216,22 +216,28 @@ def main() -> int:
                     evict_kv_blocks = -(-evict_req["prompt_tokens"] // 16)
                     evict_hidden_blocks = max(1, math.ceil(evict_kv_blocks * 0.5))
                     
-                    if current_hidden_blocks + evict_hidden_blocks <= max_hidden_blocks:
+                    fits_after_eviction = current_kv_blocks - evict_kv_blocks + kv_blocks <= max_kv_blocks
+                    if current_hidden_blocks + evict_hidden_blocks <= max_hidden_blocks and fits_after_eviction:
                         # Evict from KV to Hidden
                         cache_assignments[str(evict_id)] = "hidden"
                         current_kv_blocks -= evict_kv_blocks
                         current_hidden_blocks += evict_hidden_blocks
-                        
+
                         # Admit this urgent request to KV
                         cache_assignments[str(rid)] = "kv"
                         current_kv_blocks += kv_blocks
                         selected_ids.append(rid)
                         log_messages.append(f"  Preempt {evict_id} to Hidden, Admit {rid} to KV")
                     else:
-                        # Keep in queue
+                        # Keep in queue -- either no Hidden room to receive the
+                        # eviction, or the single eviction candidate doesn't
+                        # free enough KV blocks to actually fit the urgent
+                        # request (evicting it anyway would produce an
+                        # internally-inconsistent decision that overcommits
+                        # KV capacity beyond max_kv_blocks).
                         cache_assignments[str(rid)] = "none"
                         deprioritized.append(rid)
-                        log_messages.append(f"  Queue {rid} (no space & no Hidden space to evict)")
+                        log_messages.append(f"  Queue {rid} (no space & eviction of {evict_id} insufficient)")
                 else:
                     # Keep in queue
                     cache_assignments[str(rid)] = "none"
