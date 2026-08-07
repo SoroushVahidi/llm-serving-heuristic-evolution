@@ -42,11 +42,11 @@ def test_historical_registry_has_20_policies():
     assert len(BASELINE_NAMES) == 20
 
 
-def test_external_baseline_registry_has_7_baselines():
+def test_external_baseline_registry_has_8_baselines():
     # Was 6 prior to slai_faithful's addition (see
     # docs/slai_faithful_scheduler_reference.md) -- a deliberate,
     # documented increment, not a silent drift.
-    assert len(EXTERNAL_BASELINE_NAMES) == 7
+    assert len(EXTERNAL_BASELINE_NAMES) == 8
 
 
 def test_option_b_is_exactly_the_approved_8_policies():
@@ -88,7 +88,7 @@ def test_diagnostic_pool_at_11_historical_plus_4_external():
     # below, which remain unaffected: Option B is a fixed 8-name
     # historical-only list).
     assert len(MONOLITHIC_DIAGNOSTIC_POLICY_POOL) == 11
-    assert len(monolithic_candidate_policies()) == 11 + 4
+    assert len(monolithic_candidate_policies()) == 11 + 5
 
 
 def test_calibrated_pilot_imports_the_canonical_option_b_constant():

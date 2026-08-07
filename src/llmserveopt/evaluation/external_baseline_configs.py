@@ -176,7 +176,7 @@ def native_config_for(name: str, total_kv_tokens: int = DEFAULT_TOTAL_KV_TOKENS,
     """Each baseline's own architecture-native topology at a given
     aggregate KV budget -- Protocol C: report resource consumption
     explicitly rather than forcing identical topology shapes."""
-    if name in ("vllm_faithful", "sarathi_faithful", "vllm_chunked_prefill_faithful", "slai_faithful"):
+    if name in ("vllm_faithful", "sarathi_faithful", "vllm_chunked_prefill_faithful", "slai_faithful", "apt_serve_faithful"):
         return monolithic_config(n_gpus=kwargs.pop("n_gpus", 1), total_kv_tokens=total_kv_tokens, **kwargs)
     if name == "distserve_faithful":
         return disaggregated_config(n_prefill=1, n_decode=1, total_kv_tokens=total_kv_tokens, **kwargs)

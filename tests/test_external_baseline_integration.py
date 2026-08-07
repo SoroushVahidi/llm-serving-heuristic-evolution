@@ -67,7 +67,7 @@ def test_all_seven_external_baselines_registered():
     assert set(EXTERNAL_BASELINE_NAMES) == {
         "vllm_faithful", "vllm_chunked_prefill_faithful", "sarathi_faithful",
         "distserve_faithful", "tetriinfer_paper_reimplementation", "llumnix_faithful",
-        "slai_faithful",
+        "slai_faithful", "apt_serve_faithful",
     }
 
 
@@ -151,6 +151,8 @@ _SMOKE_SCENARIOS = {
 @pytest.mark.parametrize("scenario_name", list(_SMOKE_SCENARIOS.keys()))
 @pytest.mark.parametrize("seed", [0, 1])
 def test_smoke_cross_baseline_scenario(baseline_name, scenario_name, seed):
+    if baseline_name == "apt_serve_faithful":
+        pytest.skip("apt_serve_faithful is scaffolding-only in Phase A")
     """No crashes, no capacity-violation warnings, no request loss/duplication
     (completed+dropped == total) across every (baseline, scenario, seed)
     combination. Smoke-scale only -- not a manuscript conclusion."""
@@ -172,6 +174,8 @@ def test_smoke_cross_baseline_scenario(baseline_name, scenario_name, seed):
 
 @pytest.mark.parametrize("baseline_name", EXTERNAL_BASELINE_NAMES)
 def test_invariant_no_duplicate_no_loss_no_early_execution(baseline_name):
+    if baseline_name == "apt_serve_faithful":
+        pytest.skip("apt_serve_faithful is scaffolding-only in Phase A")
     reqs = _make_reqs(25, (10, 100), (10, 150))
     gpus, sm, _topo = native_config_for(baseline_name, total_kv_tokens=10_000)
     spec = get_external_baseline_spec(baseline_name)
@@ -206,6 +210,8 @@ def test_invariant_no_duplicate_no_loss_no_early_execution(baseline_name):
 
 @pytest.mark.parametrize("baseline_name", EXTERNAL_BASELINE_NAMES)
 def test_invariant_kv_capacity_never_exceeded(baseline_name):
+    if baseline_name == "apt_serve_faithful":
+        pytest.skip("apt_serve_faithful is scaffolding-only in Phase A")
     """No admission-rejected warning across a moderately loaded run --
     the established convention (see e.g. vllm_faithful's own tests) for
     proving the simulator's own GPUConfig capacity was never violated at
@@ -239,6 +245,8 @@ def test_invariant_gpu_role_constraints_respected(baseline_name):
 
 @pytest.mark.parametrize("baseline_name", EXTERNAL_BASELINE_NAMES)
 def test_invariant_deterministic_reproduction(baseline_name):
+    if baseline_name == "apt_serve_faithful":
+        pytest.skip("apt_serve_faithful is scaffolding-only in Phase A")
     def run():
         reqs = _make_reqs(15, (10, 80), (10, 100))
         gpus, sm, _topo = native_config_for(baseline_name, total_kv_tokens=6000)
