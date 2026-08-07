@@ -46,6 +46,7 @@ from typing import Callable, Optional, Tuple
 from .base import BasePolicy
 from .distserve_faithful import DistServeFaithfulPolicy
 from .llumnix_faithful import LlumnixFaithfulPolicy
+from .apt_serve_faithful import AptServeSchedulerPolicy
 from .sarathi_faithful import SarathiFaithfulPolicy
 from .slai_faithful import SlaiFaithfulPolicy
 from .tetriinfer_paper_reimplementation import TetriInferPaperReimplementationPolicy
@@ -132,6 +133,10 @@ def _llumnix_faithful_factory(**kwargs) -> LlumnixFaithfulPolicy:
 
 def _slai_faithful_factory(**kwargs) -> SlaiFaithfulPolicy:
     return SlaiFaithfulPolicy(**kwargs)
+
+
+def _apt_serve_faithful_factory(**kwargs) -> AptServeSchedulerPolicy:
+    return AptServeSchedulerPolicy(**kwargs)
 
 
 EXTERNAL_BASELINE_REGISTRY: dict = {
@@ -329,6 +334,28 @@ EXTERNAL_BASELINE_REGISTRY: dict = {
             "request -- it only reorders continuing-vs-new-admission "
             "priority and defers decode-iterations, never forces one back "
             "into the waiting queue."
+        ),
+    ),
+    "apt_serve_faithful": ExternalBaselineSpec(
+        name="apt_serve_faithful",
+        fidelity_class=FidelityClass.FAITHFUL,
+        topology_class=TopologyClass.MONOLITHIC,
+        pinned_source="eddiegaoo/Apt-Serve commit c953217988274a761da35cf06c01033b18dadf68",
+        reference_doc="docs/design/apt_serve_simulator_architecture_20260806.md",
+        factory=_apt_serve_faithful_factory,
+        min_gpu_count=1,
+        required_roles=(None,),
+        requires_kv_block_model=True,
+        requires_disaggregation=False,
+        requires_cross_instance_migration=False,
+        preemption_mode=PreemptionMode.SWAP,
+        requires_chunked_prefill_scheduling=False,
+        requires_length_prediction=False,
+        selector_eligible=False,
+        historical=False,
+        notes=(
+            "Placeholder baseline scaffolding for Apt-Serve's Phase A "
+            "configuration, types, and interface contracts."
         ),
     ),
 }

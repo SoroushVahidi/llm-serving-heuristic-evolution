@@ -53,6 +53,17 @@ class GPUConfig:
     # GPU, unchanged behavior. Every existing config leaves this unset.
     role: Optional[str] = None
 
+    # Dual-tier cache support (Apt-Serve style)
+    hybrid_cache_enabled: bool = False
+    hidden_cache_capacity_blocks: int = 0
+    hidden_to_kv_memory_ratio: float = 0.1
+    cache_switch_latency: float = 0.0
+    hidden_restore_latency: float = 0.0
+    recomputation_cost_model: str = "full"
+    apt_serve_rho: float = 0.5
+    apt_serve_ttft_slo: float = 2.0
+    apt_serve_tbt_slo: float = 0.05
+
     def __post_init__(self) -> None:
         if self.max_active_sequences <= 0:
             raise ValueError("max_active_sequences must be positive")
@@ -64,6 +75,34 @@ class GPUConfig:
             raise ValueError(
                 f"role must be one of {DISAGGREGATION_ROLES} or None, got {self.role!r}"
             )
+
+        if self.hybrid_cache_enabled:
+            if self.hidden_cache_capacity_blocks <= 0:
+                raise ValueError("hidden_cache_capacity_blocks must be positive when hybrid cache is enabled")
+            if self.hidden_to_kv_memory_ratio <= 0.0 or self.hidden_to_kv_memory_ratio > 1.0:
+                raise ValueError("hidden_to_kv_memory_ratio must be in (0.0, 1.0]")
+            if self.cache_switch_latency < 0.0:
+                raise ValueError("cache_switch_latency must be non-negative")
+            if self.hidden_restore_latency < 0.0:
+                raise ValueError("hidden_restore_latency must be non-negative")
+            if self.recomputation_cost_model not in ("full", "hidden_restore"):
+                raise ValueError(f"unsupported recomputation_cost_model: {self.recomputation_cost_model}")
+            if self.apt_serve_rho < 0.0:
+                raise ValueError("apt_serve_rho must be non-negative")
+            if self.apt_serve_ttft_slo <= 0.0:
+                raise ValueError("apt_serve_ttft_slo must be positive")
+            if self.apt_serve_tbt_slo <= 0.0:
+                raise ValueError("apt_serve_tbt_slo must be positive")
+        else:
+            if (self.hidden_cache_capacity_blocks != 0 or
+                self.hidden_to_kv_memory_ratio != 0.1 or
+                self.cache_switch_latency != 0.0 or
+                self.hidden_restore_latency != 0.0 or
+                self.recomputation_cost_model != "full" or
+                self.apt_serve_rho != 0.5 or
+                self.apt_serve_ttft_slo != 2.0 or
+                self.apt_serve_tbt_slo != 0.05):
+                raise ValueError("Hybrid cache fields can only be set when hybrid_cache_enabled=True")
 
 
 @dataclass
