@@ -36,9 +36,12 @@ this document has been executed — it is a plan, not a log.
 ### 8. Apt-Serve Phase C implementation — **DONE (2026-08-06)**
 - Subprocess adapter and versioned JSON IPC worker completed with 16 unit, verification, and protocol tests passing.
 
-### 9. Apt-Serve Phase D implementation
-- **Prerequisite:** Phase C complete.
-- **Expected deliverable:** static-snapshot fidelity and official decision differential (Phase D of 8).
+### 9. Apt-Serve Phase D implementation — **DONE (2026-08-06)**
+- Static snapshot differential verifications and 24 focused scenario tests complete and passing.
+
+### 10. Apt-Serve Phase E implementation
+- **Prerequisite:** Phase D complete.
+- **Expected deliverable:** multi-step simulator integration (Phase E of 8).
 - **Location:** Local.
 - **Effort:** MEDIUM.
 
