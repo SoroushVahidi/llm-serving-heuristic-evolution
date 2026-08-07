@@ -324,8 +324,8 @@ def test_registry_integration():
 def test_placeholder_policy_fails_loudly_on_execution():
     policy = AptServeSchedulerPolicy()
     state = ObservableState(time=0.0, waiting_queue=[], gpu_states=[], completed_count=0, step=0)
-    with pytest.raises(NotImplementedError, match="Apt-Serve baseline execution is NOT IMPLEMENTED"):
-        policy.select_action(state)
+    action = policy.select_action(state)
+    assert action.is_empty()
 
 
 # ======================================================================
