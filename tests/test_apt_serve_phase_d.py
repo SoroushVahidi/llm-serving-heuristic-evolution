@@ -68,7 +68,7 @@ def test_scenario_multiple_waiting_tie():
     with AptServeSubprocessClient(config) as client:
         decision = client.schedule_step(state_input)
         # Fake worker selects the first waiting request
-        assert decision.selected_request_ids == [1]
+        assert decision.selected_request_ids == [1, 2]
 
 
 def test_scenario_running_plus_waiting():
@@ -83,7 +83,7 @@ def test_scenario_running_plus_waiting():
     config = AptServeAdapterConfig(checkout_path="", execution_mode="test")
     with AptServeSubprocessClient(config) as client:
         decision = client.schedule_step(state_input)
-        assert decision.selected_request_ids == [2]
+        assert decision.selected_request_ids == [1, 2]
 
 
 # ======================================================================

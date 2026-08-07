@@ -88,7 +88,7 @@ def test_decision_transaction_rollback_on_infeasible_allocation():
         hidden_to_kv_memory_ratio=0.5
     )
     
-    req = ObservableRequest(request_id=1, arrival_time=0.0, prompt_tokens=32, predicted_output_tokens=16, slo_deadline=1.0, priority=1.0, class_id="default")
+    req = ObservableRequest(request_id=444444, arrival_time=0.0, prompt_tokens=32, predicted_output_tokens=16, slo_deadline=1.0, priority=1.0, class_id="default")
     gpu_state = ObservableGPUState(
         gpu_id=0, max_active_sequences=16, max_batch_tokens=2048, max_kv_tokens=16, # only 1 block!
         active_request_ids=[], active_requests_info=[], current_kv_tokens=0, tokens_decoded_per_request={}

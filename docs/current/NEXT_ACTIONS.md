@@ -42,9 +42,13 @@ this document has been executed — it is a plan, not a log.
 ### 10. Apt-Serve Phase E implementation — **DONE (2026-08-06)**
 - Multi-step simulator integration, context-managed persistent lifecycle, and deepcopy-rollback transaction support complete with 8 unit and multi-step tests passing.
 
-### 11. Apt-Serve Phase F implementation
-- **Prerequisite:** Phase E complete.
-- **Expected deliverable:** target/counter stress-test generators and headroom validation (Phase F of 8).
+### 11. Apt-Serve Phase F implementation — **ENGINEERING DONE (2026-08-06), EXPERIMENT INCONCLUSIVE**
+- Headroom target/counter generators, hybrid-tier-aware KV accounting fix, and a comparative sweep script are complete, with 5 focused tests passing (79/79 across Apt-Serve A-F).
+- The one sweep actually run (3 regimes × 3 seeds × {FIFO, EDF}) tied exactly in all three regimes (`+0.0000` gap), including the regime designed to favor Apt-Serve. This is a null result, not a demonstration of headroom — see `docs/audits/apt_serve_phase_f_headroom_stress_validation_20260806.md` (corrected 2026-08-07) and `docs/PROJECT_MAP.md` §5/§8.
+
+### 12. Apt-Serve Phase G implementation
+- **Prerequisite:** Phase F complete AND the Phase F tie diagnosed (not just rerun at larger scale) — see item 11.
+- **Expected deliverable:** either a statistically significant, CI-backed headroom result against a broader baseline set (VTC/Llumnix/DistServe/SCORPIO-style, not just FIFO/EDF), or a documented structural-limit finding in the Sarathi style (Phase G of 8).
 - **Location:** Local.
 - **Effort:** MEDIUM.
 

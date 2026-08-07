@@ -61,6 +61,7 @@ class InternalRequest:
     request: Request
     phase: RequestPhase = RequestPhase.WAITING
     gpu_id: int = -1
+    current_tier: str = "kv" 
     admission_time: float = -1.0
     completion_time: float = -1.0
     tokens_decoded: int = 0

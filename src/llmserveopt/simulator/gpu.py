@@ -65,7 +65,7 @@ class GPUState:
 
     @property
     def current_kv_tokens(self) -> int:
-        return sum(r.kv_tokens for r in self._active.values())
+        return sum(r.kv_tokens for r in self._active.values() if getattr(r, "current_tier", "kv") == "kv")
 
     @property
     def current_batch_tokens(self) -> int:

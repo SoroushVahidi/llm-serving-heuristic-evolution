@@ -172,6 +172,13 @@ class Simulator:
             action = policy.select_action(state)
             self._policy_times.append(_time.perf_counter() - t0)
 
+            # --- 3b. Sync request tiers for hybrid cache support ---
+            if getattr(policy, "hybrid_cache_enabled", False):
+                for g in self._gpus:
+                    mgr = policy._get_cache_manager(g.to_observable())
+                    for rid, req in g._active.items():
+                        req.current_tier = mgr.get_request_tier(rid).value
+
             # --- 4. Apply action ---
             self._apply_action(action)
 

@@ -9,6 +9,7 @@ from .synthetic import (
     DEFAULT_SLO_CLASSES,
 )
 from .trace_io import save_jsonl, load_jsonl, save_csv, load_csv
+from .apt_serve_stress import generate_apt_serve_target_workload, generate_apt_serve_counter_workload
 from . import augmentation
 from . import azure
 from . import bailian
@@ -32,6 +33,8 @@ __all__ = [
     "load_jsonl",
     "save_csv",
     "load_csv",
+    "generate_apt_serve_target_workload",
+    "generate_apt_serve_counter_workload",
     "augmentation",
     "azure",
     "bailian",
