@@ -1,12 +1,15 @@
 """apt_serve_faithful: Interface scaffolding, configuration schemas, typed contracts,
 and JSON-based versioned IPC schemas for Apt-Serve's upcoming implementation.
 
-This is a Phase A pure scaffolding and contract definition. No allocation
-logic or subprocess runner is implemented in this phase.
+This is a Phase C implementation of the official scheduler subprocess adapter.
 """
 from __future__ import annotations
 
 import json
+import os
+import sys
+import subprocess
+import hashlib
 from dataclasses import asdict, dataclass, field
 from enum import Enum, auto
 from typing import Dict, List, Optional, Protocol, Set, Tuple, Union, Any
@@ -180,6 +183,8 @@ class AptServeAdapterConfig:
     checkout_path: str
     conda_env_name: str = "apt-serve"
     subprocess_timeout_seconds: float = 10.0
+    python_executable: Optional[str] = None
+    execution_mode: str = "official" # "official", "test", or "recorded_trace"
 
 
 @dataclass(frozen=True)
@@ -209,6 +214,196 @@ class AptServeSchedulerClient(Protocol):
     def terminate(self) -> None:
         """Terminate the subprocess cleanly."""
         ...
+
+
+APT_SERVE_EXPECTED_HASHES = {
+    "additional_designs/aptserve_block.py": "771d3590abfef2e6fc3a71a37bce231c276bade4188c0eadd12bf48d642980c5",
+    "additional_designs/aptserve_sequence.py": "e50a546a267c832256eaa554e74cecd8e3e50ef8cd737e4e4ba8647c9943ac52",
+    "additional_designs/core/aptserve_block_manager.py": "8ec4fed8417227f2bdd40c695b9c4bbe3d7164272f771200e72aeef9ad552943",
+    "additional_designs/core/aptserve_interfaces.py": "703009b951c1bf61e34c6a1bc92123334ea6568b6b668d2f966192df76e036d1",
+    "additional_designs/core/aptserve_scheduler.py": "b381415aafeb46d8cdad3598a00983dfad7a1c9ff992b0a3a7708596b979b02e"
+}
+
+
+class AptServeSubprocessClient:
+    """Subprocess client running Apt-Serve scheduler in isolated python 3.11 environment."""
+    def __init__(self, config: AptServeAdapterConfig) -> None:
+        self.config = config
+        self.provenance = AptServeSourceProvenance()
+        self.proc: Optional[subprocess.Popen] = None
+
+    def __enter__(self) -> AptServeSubprocessClient:
+        self.initialize()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.terminate()
+
+    def initialize(self) -> None:
+        if self.config.execution_mode == "official":
+            # 1. Verify checkout path exists
+            if not self.config.checkout_path or not os.path.exists(self.config.checkout_path):
+                raise AptServeSourceCheckoutMissing(
+                    f"Official Apt-Serve checkout directory missing: {self.config.checkout_path}"
+                )
+
+            # 2. Run git verification
+            git_dir = os.path.join(self.config.checkout_path, ".git")
+            if not os.path.exists(git_dir):
+                raise AptServeSourceCheckoutMissing(
+                    f"Apt-Serve checkout path is not a git repository: {self.config.checkout_path}"
+                )
+
+            try:
+                commit = subprocess.check_output(
+                    ["git", "rev-parse", "HEAD"],
+                    cwd=self.config.checkout_path,
+                    text=True,
+                    stderr=subprocess.DEVNULL
+                ).strip()
+            except subprocess.CalledProcessError as e:
+                raise AptServeSourceCheckoutMissing(f"Failed to check git commit on {self.config.checkout_path}: {e}")
+
+            if commit != self.provenance.pinned_commit:
+                raise AptServeWrongCommit(
+                    f"Official Apt-Serve commit mismatch: expected {self.provenance.pinned_commit}, got {commit}"
+                )
+
+            # 3. Verify file hashes
+            for rel_path, expected_sha in APT_SERVE_EXPECTED_HASHES.items():
+                abs_path = os.path.join(self.config.checkout_path, rel_path)
+                if not os.path.exists(abs_path):
+                    raise AptServeSourceHashMismatch(f"Expected source file missing: {rel_path}")
+                h = hashlib.sha256()
+                with open(abs_path, "rb") as f:
+                    h.update(f.read())
+                actual_sha = h.hexdigest()
+                if actual_sha != expected_sha:
+                    raise AptServeSourceHashMismatch(
+                        f"Source file hash mismatch for {rel_path}: expected {expected_sha}, got {actual_sha}"
+                    )
+
+            # 4. Verify external python environment
+            py_exe = self.config.python_executable or "python3"
+            env_check_code = """
+import sys
+if sys.version_info[:2] != (3, 11):
+    sys.exit(11)
+try:
+    import torch
+    import vllm
+    import xformers
+    import vllm_flash_attn
+except ImportError as e:
+    print(e)
+    sys.exit(12)
+"""
+            try:
+                res = subprocess.run(
+                    [py_exe, "-c", env_check_code],
+                    capture_output=True,
+                    text=True,
+                    check=False
+                )
+                if res.returncode == 11:
+                    raise AptServeEnvironmentMissing(f"Python 3.11 required, but {py_exe} version is different.")
+                elif res.returncode == 12:
+                    raise AptServeEnvironmentMissing(f"Missing required imports in 3.11 environment: {res.stdout.strip()}")
+                elif res.returncode != 0:
+                    raise AptServeEnvironmentMissing(f"Conda/Python environment check failed with exit code {res.returncode}: {res.stderr.strip()}")
+            except FileNotFoundError:
+                raise AptServeEnvironmentMissing(f"External Python executable '{py_exe}' not found.")
+
+        # Launch the subprocess worker in corresponding mode
+        policy_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(policy_dir)))
+
+        if self.config.execution_mode == "official":
+            worker_path = os.path.join(project_root, "scripts", "apt_serve", "apt_serve_scheduler_worker.py")
+            py_exe = self.config.python_executable or "python3"
+            cmd = [py_exe, worker_path, "--checkout", self.config.checkout_path]
+        else:
+            worker_path = os.path.join(project_root, "scripts", "apt_serve", "fake_scheduler_worker.py")
+            py_exe = sys.executable
+            cmd = [py_exe, worker_path]
+
+        try:
+            self.proc = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1
+            )
+        except Exception as e:
+            raise AptServeAdapterError(f"Failed to start subprocess worker: {e}")
+
+    def schedule_step(self, state_input: AptServeSchedulerInput) -> AptServeSchedulerDecision:
+        if not self.proc or self.proc.poll() is not None:
+            raise AptServeAdapterError("Subprocess worker is not running.")
+
+        # Serialize request
+        payload = state_input.serialize_json().decode("utf-8") + "\n"
+        if len(payload) > 10 * 1024 * 1024:
+            raise AptServeUnsupportedConfiguration("Request payload size exceeds maximum limit of 10MB.")
+
+        # Non-blocking communication with timeout
+        try:
+            stdout_data, stderr_data = self.proc.communicate(
+                input=payload,
+                timeout=self.config.subprocess_timeout_seconds
+            )
+        except subprocess.TimeoutExpired:
+            self.terminate()
+            raise AptServeSubprocessTimeout("External scheduler subprocess timed out.")
+        except Exception as e:
+            raise AptServeAdapterError(f"Subprocess communication failed: {e}")
+
+        # Post-execution cleanup for one-shot worker lifecycle
+        ret_code = self.proc.poll()
+        if ret_code is not None and ret_code != 0:
+            raise AptServeAdapterError(f"Subprocess worker exited with non-zero code {ret_code}. Stderr: {stderr_data.strip()}")
+
+        if not stdout_data.strip():
+            raise AptServeMalformedResponse("Subprocess worker returned empty response.")
+
+        try:
+            output = AptServeSchedulerOutput.deserialize_json(stdout_data.encode("utf-8"))
+        except AptServeProtocolMismatch:
+            raise
+        except Exception as e:
+            raise AptServeMalformedResponse(f"Failed to parse subprocess JSON output: {e}. Output was: {stdout_data}")
+
+        # Validate response consistency
+        # Validate that every selected ID was present in input
+        input_ids = {r["request_id"] for r in state_input.waiting_requests} | {r["request_id"] for r in state_input.running_requests}
+        for sid in output.selected_request_ids:
+            if sid not in input_ids:
+                raise AptServeInvalidSchedulerDecision(f"Selected request ID {sid} was not present in input requests.")
+
+        return AptServeSchedulerDecision(
+            selected_request_ids=output.selected_request_ids,
+            cache_assignments={int(k): CacheTier(v) for k, v in output.cache_assignments.items()},
+            evictions=output.evictions,
+            deprioritized_requests=output.deprioritized_requests,
+            value_scores={int(k): v for k, v in output.value_scores.items()}
+        )
+
+    def terminate(self) -> None:
+        if self.proc:
+            try:
+                self.proc.stdin.close()
+            except Exception:
+                pass
+            try:
+                self.proc.terminate()
+                self.proc.wait(timeout=1.0)
+            except subprocess.TimeoutExpired:
+                self.proc.kill()
+            except Exception:
+                pass
+            self.proc = None
 
 
 # ======================================================================
