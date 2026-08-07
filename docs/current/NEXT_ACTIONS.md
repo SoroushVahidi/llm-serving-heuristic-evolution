@@ -39,9 +39,12 @@ this document has been executed — it is a plan, not a log.
 ### 9. Apt-Serve Phase D implementation — **DONE (2026-08-06)**
 - Static snapshot differential verifications and 24 focused scenario tests complete and passing.
 
-### 10. Apt-Serve Phase E implementation
-- **Prerequisite:** Phase D complete.
-- **Expected deliverable:** multi-step simulator integration (Phase E of 8).
+### 10. Apt-Serve Phase E implementation — **DONE (2026-08-06)**
+- Multi-step simulator integration, context-managed persistent lifecycle, and deepcopy-rollback transaction support complete with 8 unit and multi-step tests passing.
+
+### 11. Apt-Serve Phase F implementation
+- **Prerequisite:** Phase E complete.
+- **Expected deliverable:** target/counter stress-test generators and headroom validation (Phase F of 8).
 - **Location:** Local.
 - **Effort:** MEDIUM.
 
