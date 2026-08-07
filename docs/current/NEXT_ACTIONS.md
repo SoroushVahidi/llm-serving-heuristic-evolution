@@ -33,9 +33,12 @@ this document has been executed — it is a plan, not a log.
 ### 7. Apt-Serve Phase B implementation — **DONE (2026-08-06)**
 - Dual-tier HybridCacheManager and capacity/rounding logic implemented with 18 unit and scenario tests passing.
 
-### 8. Apt-Serve Phase C implementation
-- **Prerequisite:** Phase B complete.
-- **Expected deliverable:** official scheduler subprocess adapter (Phase C of 8).
+### 8. Apt-Serve Phase C implementation — **DONE (2026-08-06)**
+- Subprocess adapter and versioned JSON IPC worker completed with 16 unit, verification, and protocol tests passing.
+
+### 9. Apt-Serve Phase D implementation
+- **Prerequisite:** Phase C complete.
+- **Expected deliverable:** static-snapshot fidelity and official decision differential (Phase D of 8).
 - **Location:** Local.
 - **Effort:** MEDIUM.
 
