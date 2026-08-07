@@ -8,6 +8,12 @@ prior content (the 2026-07-25 pause note below is now historical — see
 2026-07-23 pause documents in this directory, all of which describe earlier
 project phases.
 
+> **Research-program roadmap:** this document answers "what's the current
+> checkpoint." For "what is this project actually trying to prove, and what
+> is the dependency-ordered path from here to the end system," see
+> [`docs/PROJECT_MAP.md`](../PROJECT_MAP.md) — the canonical research
+> roadmap, which this file's status details should stay consistent with.
+
 ---
 
 ## A. Where are we?

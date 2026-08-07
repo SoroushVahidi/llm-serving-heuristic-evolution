@@ -1,5 +1,13 @@
 # Contextual Compositional Heuristics Roadmap
 
+> **Scope note (2026-08-07):** this is the CC-track technical roadmap
+> (CC0-CC8) — it does not cover the baseline-integration track
+> (Apt-Serve/VTC/Llumnix/DistServe/PARS/vLLM-LTR), simulator/metric
+> foundation work, or the workstream framing that ties them together. For
+> the whole-project canonical roadmap, see
+> [`docs/PROJECT_MAP.md`](PROJECT_MAP.md) — CC0-CC8 map onto its
+> WS-E/WS-H/WS-I/WS-J workstreams.
+
 ```yaml
 canonical_branch: contextual-compositional-heuristics-20260731
 current_phase: CC6

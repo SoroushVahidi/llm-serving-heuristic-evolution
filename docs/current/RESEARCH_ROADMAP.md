@@ -1,5 +1,17 @@
 # Research Roadmap
 
+> **SUPERSEDED (2026-08-07).** This document's stage numbering and its
+> "STOP" call on composition experiments are superseded by
+> [`docs/PROJECT_MAP.md`](../PROJECT_MAP.md) (the canonical roadmap) and
+> by `docs/contextual_composition_roadmap.md` (CC0-CC5 completed,
+> 2026-08-03, after this document's freeze — under explicit per-phase
+> authorization, not because the bottleneck below was resolved). The
+> underlying scientific question this document raises — simulator
+> reward-saturation / weak feature-to-simulator coupling — was **never
+> independently re-verified as closed**; see `docs/PROJECT_MAP.md` §8 for
+> that open item. Read this file as historical stage-planning context
+> only, not as current guidance.
+
 > **Pause addendum 2026-07-25.** Completed since prior roadmap freeze:
 > Tier 1 real-dataset staging; validated real-window construction; first
 > (flawed) and repaired (stratified) load-discrimination pilots. Remaining

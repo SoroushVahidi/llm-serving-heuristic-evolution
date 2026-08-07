@@ -4,6 +4,13 @@ A stable navigation map of this repository — not a dated narrative. For
 current status, see `docs/current/RESUME_HERE.md` and
 `docs/current/WORK_STATUS.md`; this file only answers "where do I look."
 
+> **Not to be confused with `docs/PROJECT_MAP.md`** (one directory up),
+> which is the canonical *research-program roadmap* — north star, math
+> objects, workstream/status dashboard, and dependency-aware future
+> roadmap for the whole project. This file only answers "where is the
+> code for X"; that file answers "why does the code exist and what's
+> next."
+
 ---
 
 ## Core simulator

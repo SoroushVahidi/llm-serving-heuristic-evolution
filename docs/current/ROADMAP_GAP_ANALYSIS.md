@@ -1,5 +1,12 @@
 # Roadmap Gap Analysis
 
+> **SUPERSEDED as a roadmap (2026-08-07)** by
+> [`docs/PROJECT_MAP.md`](../PROJECT_MAP.md). Its ranked-bottleneck
+> content (reward saturation, weak feature-to-simulator coupling, ...) is
+> still cited there (§8, §10 item 6) as an open, never-independently-
+> closed question — this document is retained as the source evidence for
+> that item, not as current guidance on what to do next.
+
 > **Pause addendum 2026-07-25.** Gaps closed: Tier 1 staging + window materialization +
 > repaired pilot evidence. Gaps open: natural-load discrimination still weak;
 > full fingerprint sweep not run/authorized; simulator heuristic wiring gaps

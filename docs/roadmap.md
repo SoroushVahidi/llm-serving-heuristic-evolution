@@ -1,5 +1,14 @@
 # Roadmap
 
+> **Canonical research roadmap note (2026-08-07):** the whole-project
+> research roadmap — north star, workstream map, status dashboard,
+> supported/hypothesis/not-established findings, negative results, and
+> dependency-aware future plan — now lives at
+> [`docs/PROJECT_MAP.md`](PROJECT_MAP.md). This document remains a
+> historical numbered-phase roadmap and Selector v2/external-baseline
+> status bridge; treat `docs/PROJECT_MAP.md` as authoritative if the two
+> disagree.
+
 > **Contextual-composition branch note (2026-08-04, active -- not paused):**
 > The active roadmap for branch `contextual-compositional-heuristics-20260731`
 > is [contextual_composition_roadmap.md](contextual_composition_roadmap.md).
