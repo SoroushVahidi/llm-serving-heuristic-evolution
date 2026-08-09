@@ -39,7 +39,9 @@ from llmserveopt.workloads.trace_io_extended import load_extended_jsonl  # noqa:
 
 DEFAULT_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 DEFAULT_SERVER_URL = "http://127.0.0.1:8001"
-DEFAULT_VLLM_EXECUTABLE = "/home/soroush/.venvs/vllm_baseline_pilot/bin/vllm"
+DEFAULT_VLLM_VENV = Path(os.environ.get("LLMSERVEOPT_VLLM_VENV", Path.home() / ".venvs" / "vllm_baseline_pilot"))
+DEFAULT_VLLM_EXECUTABLE = str(Path(os.environ.get("LLMSERVEOPT_VLLM_EXECUTABLE", DEFAULT_VLLM_VENV / "bin" / "vllm")))
+DEFAULT_VLLM_PYTHON = Path(os.environ.get("LLMSERVEOPT_VLLM_PYTHON", DEFAULT_VLLM_VENV / "bin" / "python"))
 
 
 @dataclass(frozen=True)
@@ -722,7 +724,7 @@ def _summarize_runtime(scenario: RuntimeScenario, results: list[RuntimeResult], 
     }
 
 
-def audit_environment(server_url: str, model: str) -> dict:
+def audit_environment(server_url: str, model: str, vllm_python: Path = DEFAULT_VLLM_PYTHON) -> dict:
     env = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "model": model,
@@ -745,8 +747,7 @@ def audit_environment(server_url: str, model: str) -> dict:
             env[key] = _urlopen_text(url, timeout_s=3.0)
         except Exception as exc:  # noqa: BLE001
             env[key] = f"ERROR: {exc}"
-    py = Path("/home/soroush/.venvs/vllm_baseline_pilot/bin/python")
-    if py.exists():
+    if vllm_python.exists():
         code = (
             "import importlib.metadata as m, json;"
             "pkgs=['vllm','torch','transformers','sarathi','sarathi-serve'];"
@@ -754,7 +755,7 @@ def audit_environment(server_url: str, model: str) -> dict:
             "print(json.dumps({p:(m.version(installed[p]) if p in installed else None) for p in pkgs}))"
         )
         try:
-            env["python_packages"] = json.loads(_run([str(py), "-c", code]) or "{}")
+            env["python_packages"] = json.loads(_run([str(vllm_python), "-c", code]) or "{}")
         except Exception:
             env["python_packages"] = {}
     return env
@@ -900,6 +901,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-live-server", action="store_true")
     parser.add_argument("--start-vllm-server", action="store_true")
     parser.add_argument("--vllm-executable", default=DEFAULT_VLLM_EXECUTABLE)
+    parser.add_argument("--vllm-python", default=str(DEFAULT_VLLM_PYTHON))
+    parser.add_argument("--vllm-venv", default=str(DEFAULT_VLLM_VENV))
     parser.add_argument("--server-log", default=None)
     parser.add_argument("--server-ready-timeout-seconds", type=float, default=900.0)
     parser.add_argument("--port", type=int, default=None)
@@ -966,7 +969,7 @@ def main() -> int:
         server_log_path.parent.mkdir(parents=True, exist_ok=True)
         server_log_handle = open(server_log_path, "a")
         server_cmd = _build_vllm_server_command(args)
-        server_proc = _start_vllm_server(server_cmd, server_log_handle)
+        server_proc = _start_vllm_server(server_cmd, server_log_handle, Path(args.vllm_venv))
         _install_server_cleanup(server_proc)
         if not _wait_for_server(args.server_url, args.server_ready_timeout_seconds):
             print(f"ERROR: vLLM server did not become ready at {args.server_url}", file=sys.stderr)
@@ -976,7 +979,7 @@ def main() -> int:
         server_cmd = None
 
     try:
-        env = audit_environment(args.server_url, args.model)
+        env = audit_environment(args.server_url, args.model, Path(args.vllm_python))
         env.update({
             "phase": args.phase,
             "server_command": " ".join(server_cmd) if server_cmd else None,
@@ -1089,11 +1092,18 @@ def _build_vllm_server_command(args: argparse.Namespace) -> list[str]:
     return cmd
 
 
-def _start_vllm_server(cmd: list[str], log_handle) -> subprocess.Popen:
+def _start_vllm_server(cmd: list[str], log_handle, vllm_venv: Path = DEFAULT_VLLM_VENV) -> subprocess.Popen:
     env = os.environ.copy()
-    cuda_home = "/home/soroush/.venvs/vllm_baseline_pilot/lib/python3.12/site-packages/nvidia/cu13"
-    env["CUDA_HOME"] = env.get("CUDA_HOME", cuda_home)
-    env["PATH"] = f"{cuda_home}/bin:/home/soroush/.venvs/vllm_baseline_pilot/bin:{env.get('PATH', '')}"
+    cuda_home = (
+        vllm_venv
+        / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}"
+        / "site-packages"
+        / "nvidia"
+        / "cu13"
+    )
+    env["CUDA_HOME"] = env.get("CUDA_HOME", str(cuda_home))
+    env["PATH"] = f"{cuda_home / 'bin'}:{vllm_venv / 'bin'}:{env.get('PATH', '')}"
     env.setdefault("VLLM_USE_FLASHINFER_SAMPLER", "0")
     print(f"starting vLLM server: {' '.join(cmd)}", flush=True)
     log_handle.write(f"\n# starting vLLM server: {' '.join(cmd)}\n")

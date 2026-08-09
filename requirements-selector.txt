@@ -1,5 +1,4 @@
-# Optional selector / suitability / module-credit ML dependencies.
-# Install with: pip install -r requirements-selector.txt
-# or: pip install -e ".[selector]"
+# Convenience install file matching pyproject.toml's ``selector`` optional
+# extra. Prefer ``pip install -e ".[selector]"`` when using editable installs.
 scikit-learn>=1.3
 joblib>=1.2

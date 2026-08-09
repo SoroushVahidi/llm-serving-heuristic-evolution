@@ -1,3 +1,6 @@
+# Convenience install file for environments that do not install from
+# pyproject.toml. Keep this in sync with project dependencies plus the
+# ``dev`` optional extra; do not treat it as a locked environment.
 numpy>=1.24
 pandas>=2.0
 pyyaml>=6.0

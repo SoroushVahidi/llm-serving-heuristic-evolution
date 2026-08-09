@@ -52,6 +52,9 @@ logs/
 *.out
 *.err
 *.log
+tmux_command.txt
+tmux_*command*.txt
+*_wrapper_meta.txt
 
 # Raw GPU/server runtime logs under experiments/ -- these are verbose,
 # regeneratable raw stdout, not the canonical result. The small structured

@@ -13,7 +13,9 @@ if [[ "${LLMSERVEOPT_ALLOW_PAID_API_CALLS:-}" != "1" ]]; then
     exit 2
 fi
 
-cd /home/soroush/llm-serving-heuristic-evolution
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
 EXP_DIR="experiments/real_llm/cohere_v2_length_targeted_$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir -p "$EXP_DIR"
 python scripts/run_cohere_api_calibration.py \
