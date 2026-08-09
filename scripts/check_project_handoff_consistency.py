@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""Check that this repository's pause/resume documentation is internally
-consistent: the canonical entry point exists and is linked from every
-competing "start here" document, and no live document contradicts the
-current CC5/CC6/baseline status.
+"""Check that this repository's current documentation is internally consistent.
 
 Deliberately lightweight: this is a handful of string/existence checks, not
 a general documentation framework. It complements, and does not replace,
@@ -17,14 +14,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 CANONICAL_RESUME = ROOT / "docs" / "current" / "RESUME_HERE.md"
+PROJECT_MAP = ROOT / "docs" / "PROJECT_MAP.md"
+WORK_STATUS = ROOT / "docs" / "current" / "WORK_STATUS.md"
+NEXT_ACTIONS = ROOT / "docs" / "current" / "NEXT_ACTIONS.md"
+BASELINE_STATUS = ROOT / "docs" / "BASELINE_STATUS.md"
+PHASE_G_AUDIT = ROOT / "docs" / "audits" / "apt_serve_phase_g_analysis_20260809.md"
 
 REQUIRED_CURRENT_DOCS = [
     CANONICAL_RESUME,
+    PROJECT_MAP,
     ROOT / "docs" / "current" / "PROJECT_MAP.md",
-    ROOT / "docs" / "current" / "WORK_STATUS.md",
-    ROOT / "docs" / "current" / "NEXT_ACTIONS.md",
+    WORK_STATUS,
+    NEXT_ACTIONS,
     ROOT / "docs" / "current" / "SCIENTIFIC_DECISIONS.md",
-    ROOT / "docs" / "BASELINE_STATUS.md",
+    BASELINE_STATUS,
+    PHASE_G_AUDIT,
 ]
 
 # Files that must point a reader at the canonical resume doc, rather than
@@ -42,38 +46,50 @@ ENTRY_POINTS_REQUIRING_CANONICAL_LINK = [
 # dated audit docs under docs/audits/ are intentionally NOT checked here --
 # they are point-in-time snapshots, not living status.
 FORBIDDEN_CLAIMS = [
-    (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC5 IN PROGRESS", "CC5 is finalized COMPLETE_REGIME_SPECIFIC"),
-    (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC5 is `IN PROGRESS`", "CC5 is finalized COMPLETE_REGIME_SPECIFIC"),
-    (ROOT / "docs" / "BASELINE_STATUS.md", "**Llumnix** | — | — | — | Not integrated", "Llumnix row must not read as unimplemented"),
-    (ROOT / "docs" / "BASELINE_STATUS.md", "**Apt-Serve** | — | — | — | Not integrated | N/A | N/A | Not implemented | N/A | N/A | N/A | N/A | N/A | Not prioritized", "Apt-Serve row must not read as merely 'not prioritized'"),
-    (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC6 has started", "CC6 is queued/restricted, not started"),
-    (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC6 is COMPLETE", "CC6 has not begun"),
-    (ROOT / "docs" / "current" / "RESUME_HERE.md", "CC6 is `IN PROGRESS`", "CC6 has not begun"),
-    (
-        ROOT / "docs" / "BASELINE_STATUS.md",
-        "blocked on Wulver authentication",
-        "the Apt-Serve Wulver probe executed 2026-08-06; auth is no longer a blocker",
-    ),
-    (
-        ROOT / "docs" / "current" / "WORK_STATUS.md",
-        "Wulver GSSAPI authentication failing",
-        "the Apt-Serve Wulver probe executed 2026-08-06; auth is no longer a blocker",
-    ),
+    (CANONICAL_RESUME, "CC5 IN PROGRESS", "CC5 is finalized COMPLETE_REGIME_SPECIFIC"),
+    (CANONICAL_RESUME, "CC6 has started", "CC6 is not started"),
+    (CANONICAL_RESUME, "CC6 is COMPLETE", "CC6 is not started"),
+    (BASELINE_STATUS, "Phase G reached only 9.5%", "Phase G collection is complete"),
+    (BASELINE_STATUS, "sweep has not yet been relaunched", "Phase G collection was resumed and completed"),
+    (BASELINE_STATUS, "Relaunch the Phase G sweep", "the next task is post-Phase-G interpretation"),
+]
+
+LIVE_STATUS_DOCS = [
+    ROOT / "README.md",
+    PROJECT_MAP,
+    CANONICAL_RESUME,
+    WORK_STATUS,
+    NEXT_ACTIONS,
+    BASELINE_STATUS,
+]
+
+STALE_PHASE_G_TOKENS = [
+    "PHASE_G_SS15_FIXED_RESUME_PENDING",
+    "Phase G UNSTARTED",
+    "Phase G `UNSTARTED`",
+    "do not start Phase G",
+    "Do not start Phase G",
+    "resume the Phase G sweep",
+    "Resume the Phase G sweep",
+    "sweep has not yet been relaunched",
+    "Phase G reached only 9.5%",
+    "Phase F work is uncommitted",
+    "e413ba1dcbe8b79f0ebc0f7511e846481548b6bb",
+    "891881281b650f549b0bbebaa49df8182e535ba8",
 ]
 
 # (file, required substring) -- current status facts that MUST be present,
 # to catch silent regressions (e.g. a future edit removing the correction).
 REQUIRED_CLAIMS = [
     (CANONICAL_RESUME, "COMPLETE_REGIME_SPECIFIC"),
-    (CANONICAL_RESUME, "restricted"),
-    (ROOT / "docs" / "BASELINE_STATUS.md", "llumnix_faithful"),
-    # Superseded 2026-08-06 (Wulver reconciliation query): the Apt-Serve
-    # Wulver probe executed and the remote/Wulver state this used to flag
-    # as unverified is now verified -- see
-    # docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md §9b. The
-    # required claim is now the resulting classification, not the old
-    # "we don't know" placeholder.
-    (ROOT / "docs" / "BASELINE_STATUS.md", "STRATEGY_C_VIABLE_WITH_LIMITATIONS"),
+    (CANONICAL_RESUME, "Posthoc analysis: complete with wrapper `exit_code=0`"),
+    (CANONICAL_RESUME, "post-Phase-G module-envelope interpretation"),
+    (PROJECT_MAP, "Documentation Authority"),
+    (PROJECT_MAP, "Return from Apt-Serve-specific collection to broader library-envelope"),
+    (WORK_STATUS, "Apt-Serve Phase G analysis"),
+    (NEXT_ACTIONS, "post-Phase-G module-envelope interpretation"),
+    (BASELINE_STATUS, "Positive marginal portfolio contribution; no global superiority claim"),
+    (PHASE_G_AUDIT, "Not Yet Established"),
 ]
 
 
@@ -115,6 +131,27 @@ def check_forbidden_claims() -> list[str]:
     return errors
 
 
+def check_no_stale_phase_g_tokens() -> list[str]:
+    errors = []
+    for path in LIVE_STATUS_DOCS:
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for token in STALE_PHASE_G_TOKENS:
+            if token in text:
+                errors.append(f"{path.relative_to(ROOT)} contains stale Phase G token: {token!r}")
+    return errors
+
+
+def check_resume_and_next_action_agree() -> list[str]:
+    phrase = "post-Phase-G module-envelope interpretation"
+    errors = []
+    for path in [CANONICAL_RESUME, NEXT_ACTIONS, WORK_STATUS]:
+        if path.is_file() and phrase not in path.read_text(encoding="utf-8"):
+            errors.append(f"{path.relative_to(ROOT)} does not name the current next action: {phrase}")
+    return errors
+
+
 def check_required_claims() -> list[str]:
     errors = []
     for path, required in REQUIRED_CLAIMS:
@@ -151,7 +188,9 @@ def main() -> int:
     errors += check_required_docs_exist()
     errors += check_canonical_links()
     errors += check_forbidden_claims()
+    errors += check_no_stale_phase_g_tokens()
     errors += check_required_claims()
+    errors += check_resume_and_next_action_agree()
     errors += check_single_canonical_resume_doc()
 
     if errors:

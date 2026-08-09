@@ -5,6 +5,7 @@ import json
 import math
 import pytest
 from dataclasses import asdict
+from pathlib import Path
 
 from llmserveopt.core.types import GPUConfig, ObservableRequest, ObservableState
 from llmserveopt.policies.external_baselines_registry import get_external_baseline_spec
@@ -28,6 +29,9 @@ from llmserveopt.policies.apt_serve_faithful import (
     AptServeAdapterError,
     AptServeProtocolMismatch
 )
+
+ROOT = Path(__file__).resolve().parents[1]
+APT_SERVE_EXAMPLE_DIR = ROOT / "configs" / "examples" / "apt_serve"
 
 
 # ======================================================================
@@ -332,10 +336,16 @@ def test_placeholder_policy_fails_loudly_on_execution():
 # 6. CONFIG EXAMPLES TESTS (Step 10)
 # ======================================================================
 
+def test_apt_serve_example_dir_is_repo_relative():
+    assert APT_SERVE_EXAMPLE_DIR == ROOT / "configs" / "examples" / "apt_serve"
+    forbidden = "/home/" + "soroush/llm-serving-heuristic-evolution"
+    assert forbidden not in Path(__file__).read_text()
+    assert (APT_SERVE_EXAMPLE_DIR / "valid_hybrid.yaml").is_file()
+
+
 def test_load_legacy_disabled_yaml():
     import yaml
-    from pathlib import Path
-    path = Path("/home/soroush/llm-serving-heuristic-evolution/configs/examples/apt_serve/legacy_disabled.yaml")
+    path = APT_SERVE_EXAMPLE_DIR / "legacy_disabled.yaml"
     with open(path) as f:
         data = yaml.safe_load(f)
     gpus = [GPUConfig(**raw) for raw in data["gpus"]]
@@ -345,8 +355,7 @@ def test_load_legacy_disabled_yaml():
 
 def test_load_valid_hybrid_yaml():
     import yaml
-    from pathlib import Path
-    path = Path("/home/soroush/llm-serving-heuristic-evolution/configs/examples/apt_serve/valid_hybrid.yaml")
+    path = APT_SERVE_EXAMPLE_DIR / "valid_hybrid.yaml"
     with open(path) as f:
         data = yaml.safe_load(f)
     gpus = [GPUConfig(**raw) for raw in data["gpus"]]
@@ -358,8 +367,7 @@ def test_load_valid_hybrid_yaml():
 
 def test_load_invalid_negative_capacity_yaml():
     import yaml
-    from pathlib import Path
-    path = Path("/home/soroush/llm-serving-heuristic-evolution/configs/examples/apt_serve/invalid_negative_capacity.yaml")
+    path = APT_SERVE_EXAMPLE_DIR / "invalid_negative_capacity.yaml"
     with open(path) as f:
         data = yaml.safe_load(f)
     with pytest.raises(ValueError, match="hidden_cache_capacity_blocks must be positive"):
@@ -368,8 +376,7 @@ def test_load_invalid_negative_capacity_yaml():
 
 def test_load_invalid_ratio_yaml():
     import yaml
-    from pathlib import Path
-    path = Path("/home/soroush/llm-serving-heuristic-evolution/configs/examples/apt_serve/invalid_ratio.yaml")
+    path = APT_SERVE_EXAMPLE_DIR / "invalid_ratio.yaml"
     with open(path) as f:
         data = yaml.safe_load(f)
     with pytest.raises(ValueError, match="hidden_to_kv_memory_ratio must be in"):
@@ -378,8 +385,7 @@ def test_load_invalid_ratio_yaml():
 
 def test_load_invalid_recomputation_model_yaml():
     import yaml
-    from pathlib import Path
-    path = Path("/home/soroush/llm-serving-heuristic-evolution/configs/examples/apt_serve/invalid_recomputation_model.yaml")
+    path = APT_SERVE_EXAMPLE_DIR / "invalid_recomputation_model.yaml"
     with open(path) as f:
         data = yaml.safe_load(f)
     with pytest.raises(ValueError, match="unsupported recomputation_cost_model"):
