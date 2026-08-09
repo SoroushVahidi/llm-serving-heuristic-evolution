@@ -57,14 +57,14 @@ current status, see `docs/current/RESUME_HERE.md` and
 - **Path:** `baselines/{pars,vllm_ltr,vtc}/` (dedicated adapter directories), plus faithful policy files directly in `src/llmserveopt/policies/` (`sarathi_faithful.py`, `distserve_faithful.py`, `llumnix_faithful.py`, `vllm_faithful.py`, `vllm_chunked_prefill_faithful.py`, `tetriinfer_paper_reimplementation.py`, `slai_faithful.py`).
 - **Status index (authoritative):** `docs/BASELINE_STATUS.md` — always check this before trusting any other doc's baseline-status claim.
 - **Per-baseline narrative detail:** `docs/baselines.md`.
-- **Look here first for:** VTC adapter (`baselines/vtc/adapter/`, wraps the real unmodified `VTCReqQueue`), PARS/vLLM-LTR checkpoint loaders (`baselines/{pars,vllm_ltr}/adapter/checkpoint_loader.py`), Llumnix (`src/llmserveopt/policies/llumnix_faithful.py` + `docs/llumnix_faithful_scheduler_reference.md`), Apt-Serve (audit-only — `docs/audits/apt_serve_official_artifact_audit_20260805.md`, probe scripts in `scripts/wulver_probes/` and `scripts/slurm/`).
+- **Look here first for:** VTC adapter (`baselines/vtc/adapter/`, wraps the real unmodified `VTCReqQueue`), PARS/vLLM-LTR checkpoint loaders (`baselines/{pars,vllm_ltr}/adapter/checkpoint_loader.py`), Llumnix (`src/llmserveopt/policies/llumnix_faithful.py` + `docs/llumnix_faithful_scheduler_reference.md`), Apt-Serve (`src/llmserveopt/policies/apt_serve_faithful.py`, `scripts/run_apt_serve_phase_g.py`, `scripts/analyze_apt_serve_phase_g.py`, and the Phase G audit).
 - **Common confusion to avoid:** this project has four distinct "vLLM" things, two "Sarathi" things — see `docs/baselines.md`'s disambiguation section before citing any of them.
 
 ## Stress-test library
 
 - **Purpose:** target/counter-regime catalog testing whether a baseline's claimed mechanism holds under adversarial, not just average-case, conditions.
 - **Catalog:** `configs/stress_tests/algorithm_stress_test_catalog.yaml`, narrative `docs/research/algorithm_stress_tests/STRESS_TEST_CATALOG.md`, candidate inventory `docs/research/algorithm_stress_tests/ALGORITHM_INVENTORY_20260805.md`.
-- **Coverage today:** Sarathi-Serve (7 entries, `docs/audits/sarathi_stress_test_catalog_completion_20260805.md`). **Llumnix: zero entries** (the current highest-priority gap — see `docs/current/NEXT_ACTIONS.md`). Apt-Serve: none yet (no implementation exists to test).
+- **Coverage today:** Sarathi-Serve, Llumnix, DistServe, VTC, and Apt-Serve all have point-in-time coverage/evaluation evidence. Current baseline status is centralized in `docs/BASELINE_STATUS.md`; Phase G Apt-Serve status is summarized in `docs/audits/apt_serve_phase_g_analysis_20260809.md`.
 - **Common confusion to avoid:** a row in `ALGORITHM_INVENTORY_20260805.md` is candidate-identification, not catalog coverage — check the actual catalog YAML for whether a test genuinely exists.
 
 ## Audits
@@ -90,7 +90,7 @@ current status, see `docs/current/RESUME_HERE.md` and
 ## Scripts
 
 - **Purpose:** experiment runners, dataset generators, status/consistency checkers, Wulver probe/SLURM scripts.
-- **Path:** `scripts/` (top-level runners), `scripts/wulver_probes/` (Apt-Serve import/micro-trace probes, not yet executed), `scripts/slurm/` (`.sbatch` job scripts), `scripts/stress_tests/`, `scripts/workloads/`, `scripts/experiments/`, `scripts/data/`.
+- **Path:** `scripts/` (top-level runners), `scripts/wulver_probes/` (Apt-Serve import/micro-trace probes, historical after execution), `scripts/slurm/` (`.sbatch` job scripts), `scripts/stress_tests/`, `scripts/workloads/`, `scripts/experiments/`, `scripts/data/`.
 - **Status checkers:** `scripts/check_contextual_composition_status.py` (run before every commit on this branch; `--resume-readiness` flag for a stricter post-commit check).
 
 ## Tests
@@ -100,6 +100,6 @@ current status, see `docs/current/RESUME_HERE.md` and
 
 ## HPC / SLURM assets
 
-- **Path:** `scripts/slurm/*.sbatch` — currently: Sarathi/vLLM real-hardware validation scripts (executed, results committed), Apt-Serve Strategy C CPU probe + GPU fallback (prepared, **not yet executed** — see `docs/current/RESUME_HERE.md` §H).
+- **Path:** `scripts/slurm/*.sbatch` — includes Sarathi/vLLM real-hardware validation scripts and Apt-Serve Strategy C probe scripts. Check the relevant audit before submitting anything; the 2026-08-06 Apt-Serve Strategy C probe already executed.
 - **Convention:** `account=ikoutis`, `qos=standard`, `partition=general` for CPU-only, `partition=gpu` + `--gres=gpu:a100:N` for GPU. Durable Wulver storage root: `/mmfs1/project/ikoutis/sv96/`.
 - **Common confusion to avoid:** this workstation cannot execute or directly observe Wulver jobs without a working SSH/Kerberos session — see `docs/current/RESUME_HERE.md` §E `WULVER_DEFERRED` before assuming any job state.

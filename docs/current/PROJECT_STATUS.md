@@ -1,5 +1,11 @@
 # Project Status
 
+> **SUPERSEDED — see [`docs/current/WORK_STATUS.md`](WORK_STATUS.md),
+> [`docs/current/RESUME_HERE.md`](RESUME_HERE.md), and
+> [`docs/PROJECT_MAP.md`](../PROJECT_MAP.md).** This file is retained as a
+> historical status snapshot for earlier project phases, not current branch
+> state.
+
 > **Pause addendum 2026-07-25.** The project is **intentionally paused** again
 > after Tier 1 real-dataset staging, validated real-window construction, and the
 > repaired balanced load-discrimination pilot. Primary entry:

@@ -1,50 +1,78 @@
 # Baseline Status Index
 
-Single cross-baseline status table for this project's external and
-serving-system-inspired baselines. Generated/maintained as part of the
-2026-08-04 repository organization pass
-(`docs/audits/branch_and_pars_readiness_audit_20260804.md`); update this
-file whenever a baseline's status changes rather than letting status drift
-across multiple docs.
+Canonical cross-baseline status table. Update this file whenever a faithful
+external scheduler integration or evaluation changes status. Dated audit files
+remain historical provenance, not live status.
 
-**Naming note:** two unrelated papers have both informally been called
-"PARS" in this project's history. **PARS-2023** = Zheng et al., NeurIPS
-2023, "Response Length Perception and Sequence Scheduling" (approximated
-internally by `estimated_service_time_first`, never given official-code
-integration; see `docs/external_baseline_coverage_report.md` §15).
-**PARS-Serve-2026** = Tao et al., ISC High Performance 2026, "Ranking
-Before Serving: Low-Latency LLM Serving via Pairwise Learning-to-Rank"
-(official repo `SPEAR-UIC/PARS`; see `baselines/pars/`). Code identifiers
-(`baselines/pars/`, `pars_semantic_reference`) are unchanged — only prose
-uses the disambiguated names.
+Naming convention:
 
-| Baseline | Paper | Venue | Year | Official repo | Pinned commit | License | Implementation status | Fidelity class | Checkpoint status | Evaluation status | Benchmark status | Foundational-library recommendation | Exact next action |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **Current vLLM** (as a framework) | Kwon et al. | SOSP | 2023 | `vllm-project/vllm` | Not integrated | Apache-2.0 | Not integrated as a runnable engine — this project's simulator is a discrete-event abstraction, not vLLM itself | N/A | N/A | N/A | N/A | N/A | N/A |
-| **vLLM-LTR** | Fu et al., "Efficient LLM Scheduling by Learning to Rank" | NeurIPS (main conference) | 2024 | `hao-ai-lab/vllm-ltr` | `13bbf6ff3dab661791d41362551b089e5f77c91c` | Apache-2.0 | Complete | Official checkpoint execution (real, hash-verified, architecturally verified pretrained checkpoint) | Downloaded, hash-verified, architecturally verified (`LLM-ltr/OPT-Predictors`) | Complete, independently verified — WildChat control only | Not run on the canonical suite (predates it) | EVALUATION_ONLY | None — evaluation complete for the tested regime; a higher-contention regime (canonical suite) would be the natural next comparison if this baseline is revisited |
-| **PARS-2023** | Zheng et al., "Response Length Perception and Sequence Scheduling" | NeurIPS | 2023 | `zhengzangw/Sequence-Scheduling` (exists, real — found during PARS-Serve-2026 research, never integrated in this repo) | Not pinned (never integrated) | Unverified in this pass | Approximated only, not integrated (`estimated_service_time_first` is "style/inspired," explicitly NOT a reproduction) | Proxy/inspired | N/A | Internal proxy evaluated regularly as `estimated_service_time_first` | Yes, part of the standard comparison set including the canonical suite | Already foundational (as the proxy, not the official model) | None planned — the official repo exists but integrating it has not been prioritized over PARS-Serve-2026 |
-| **PARS-Serve-2026** | Tao et al., "Ranking Before Serving: Low-Latency LLM Serving via Pairwise Learning-to-Rank" (v1 title: "Prompt-Aware Scheduling for Low-Latency LLM Serving") | ISC High Performance | 2026 | `SPEAR-UIC/PARS` | `fd4e125b65bb73aef5eccafa79c2509434be61ec` | **None** (no upstream LICENSE file — disclosed, not hidden; see `baselines/pars/PROVENANCE.md`) | Complete | Official-code reproduction with locally trained checkpoint (no official checkpoint is released) | Trained, hash-verified (`d54be087...c33eb27`), fidelity-verified (10/10 `tests/test_pars_checkpoint_fidelity_gpu.py`, `best_val_accuracy=0.9141`) | Complete, independently verified — WildChat control + all 7 accepted canonical-suite families (8 workloads total) | Run on the full canonical suite (first baseline on this branch to be) | **EVALUATION_ONLY** | None — evaluation complete; zero unique wins across 8 families, best rank 5th/10, dominated by `shortest_output_first`/`estimated_service_time_first` and by `scorpio_style_slo_guard`/`regression_anwg_selector` in every discriminative regime; see `docs/audits/pars_first_comparative_evaluation_20260804.md` |
-| **Sarathi-Serve** | Agrawal et al., "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve" | OSDI | 2024 | `microsoft/sarathi-serve` — official code run externally (Wulver A100, real GPU), not integrated into this repo's simulator (structural reason: no standalone algorithmic component to adapter-wrap, unlike VTC — see `docs/audits/sarathi_official_artifact_audit_20260805.md` §5) | `osdi-sarathi-serve`@`ceaa0660ea2487976101a8167aad5c8046e85b27` (faithful reimplementation pin) / `96f9911790ecc00af12ee9fae47cb8fa9ba0d199` (Wulver real-GPU build pin — diverged from the paper-era pin, see audit §1) | Apache-2.0 | Independent faithful reimplementation (`sarathi_faithful.py`, line-cited against the pinned source) is the primary in-repo baseline; older, coarser `sarathi_style` proxy retained alongside it | Faithful reimplementation (not proxy/inspired) for the in-repo baseline, PLUS real official-code GPU execution validated externally on Wulver (N=5 repeated-trial comparison vs. real vLLM 0.24.0, Mistral-7B-Instruct-v0.1/A100) | N/A (pure scheduler, no learned component) | Part of the standard internal policy comparisons; additionally, real-hardware repeated-trial validation vs. vLLM completed on Wulver — robust Sarathi wins on 2/5 scenarios, robust vLLM wins on 3/5 (`docs/wulver_sarathi_vllm_repeated_validation.md`) | 7 entries in the Algorithm Stress-Test Library catalog (2 target + 3 counter mirroring the Wulver repeated-trial scenarios, `evidence_class=EXPERIMENTALLY_VALIDATED_ON_REAL_HARDWARE`, + 2 literature-motivated entries); all 6 executable entries genuinely pass (1 spec-only, `NOT_REPRESENTABLE` for long-context). Real-hardware decode-protection mechanism found NOT reproducible in-simulator under FCFS-strict admission (structural finding, not a tuning gap) — gates revised to a coarser, genuinely-distinguishing chunked-vs-non-chunked completion check instead; see `docs/research/algorithm_stress_tests/SARATHI_MECHANISM_CALIBRATION_20260805.md` | Foundational (internal policy, always available in the standard set) | None planned — catalog coverage complete for this baseline; a future re-validation of `sarathi_faithful.py` against current `main` (`96f9911`, vs. its `ceaa0660` pin) would be the natural next step if byte-for-byte scheduler fidelity is ever required, see `docs/research/algorithm_stress_tests/SARATHI_COMMIT_DRIFT_20260805.md` |
-| **DistServe** | Zhong et al., "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving" | OSDI | 2024 | `LLMServe/DistServe`, branch `camera-ready-simulator` | `0ec355c8743d3fbd2d02f3cd62b5be6eae368f92` | Unverified in this pass | Complete — faithful independent reimplementation (`distserve_faithful.py`, registered in `external_baselines_registry.py`; two-stage context/decode scheduler on this repo's disaggregated prefill/decode infrastructure) | Faithful reimplementation (not executed official code) | 35 fidelity tests, all passing (re-verified 2026-08-06) | **Complete** — independently verified: 5 workloads x 3 policies x 1 seed (15 runs; see `docs/audits/distserve_first_comparative_evaluation_20260806.md`) | 6 stress-test entries (2 TARGET + 4 COUNTER) added to catalog; 5 executable validated and pass | **FOUNDATIONAL_CANDIDATE_FOR_DISAGGREGATION_PRIMITIVES_ONLY** (static split is too brittle to act as a unified foundational baseline on mixed workloads) | None planned — evaluation complete |
-| **Llumnix** | Sun et al., "Llumnix: Dynamic Scheduling for Large Language Model Serving" | OSDI | 2024 | `alibaba/llm-scheduling-artifact` (OSDI 2024 AE snapshot; not the continuously-evolving `AlibabaPAI/llumnix`/`llumnix-project/llumnix` v0/v1 forks — see `docs/audits/llumnix_official_artifact_audit_20260806.md` §2) | `a90824307249573f9c7548645c22994c65f83a08` (verified live, frozen same day as arXiv submission, zero drift) | Apache-2.0 | Complete — faithful independent reimplementation (`llumnix_faithful.py`, 385 lines, line-cited against the pinned source; registered in `external_baselines_registry.py`) | Faithful reimplementation (not executed official code); official artifact carries all 3 OSDI AE badges including Results Reproduced | 36 fidelity/regression tests, all passing (188/188 including cross-baseline integration tests as of 2026-08-06) | **Complete** — independently verified: 13 workloads x 5 policies x 3 seeds (195 runs; see `results/stress_test_catalog/llumnix_moderate/`) | 17 stress-test entries (7 TARGET + 10 COUNTER) added to catalog; 13 executable validated and pass | **FOUNDATIONAL_CANDIDATE** (scientific; not registered in the library during this session) | None planned — evaluation complete; first meaningful comparative evaluation and classification finalized (`docs/audits/llumnix_first_comparative_evaluation_20260806.md`) |
-| **SLAI/RAD** | — | — | — | Not integrated | N/A | N/A | Reference doc only (`docs/slai_faithful_scheduler_reference.md`) | Unverified in this pass | N/A | Unverified in this pass | N/A | Unverified in this pass | Not prioritized |
-| **VTC** | Sheng et al., "Fairness in Serving Large Language Models" | OSDI | 2024 | `Ying1123/VTC-artifact` | `192c2e2014c69c8c6c699d7113c3822e4db632e6` | Apache-2.0 | Complete (fairness-validated sweep) | Official policy reused with simulator adapter (real, unmodified `VTCReqQueue` dynamically imported and executed; GPU serving-engine layer not run — see hardware blocker in `baselines/vtc/PROVENANCE.md`) | N/A (no checkpoint; VTC is a pure algorithmic scheduler) | Headroom-gated comparative sweep complete on 6 repaired fairness-extension workloads x 3 seeds x 6 policies (108 runs), independently re-verified with zero mismatches; fidelity + micro-trace + headroom tests 45/45 pass | Not run on WildChat control or the canonical suite (incompatible — no tenant semantics); dedicated fairness-extension workloads only | **EVALUATION_ONLY** | **FOUNDATIONAL_CANDIDATE** (scientific classification; not registered) — VTC wins/ties the checkpoint Jain's-index comparison in 17/18 family x seed combinations (13 outright wins), isolated to be an ordering effect (not the admission-gate confound found in the original smoke test — see `docs/audits/vtc_fairness_benchmark_repair_20260805.md`), with a real, bounded ANWG trade-off (0.680 vs. SCORPIO's 0.984) in the one family designed to expose its SLO-blindness; see `docs/audits/vtc_fairness_comparative_evaluation_20260805.md` for the full decision record and next action (native, non-wrapped reimplementation before any foundational-library registration) |
-| **JITServe** | — | — | — | Not integrated | N/A | N/A | Not implemented | N/A | N/A | N/A | N/A | N/A | Not prioritized |
-| **Apt-Serve** | Gao et al., "Apt-Serve: Adaptive Request Scheduling on Hybrid Cache for Scalable LLM Inference Serving" | PACMMOD (SIGMOD-track) | 2025 | `eddiegaoo/Apt-Serve` (sole author-linked artifact) | `c953217988` (single-shot artifact release; only post-upload commit touches an unrelated installer script — see `docs/audits/apt_serve_official_artifact_audit_20260805.md`) | None (no upstream LICENSE file — disclosed, not hidden, same category as PARS-Serve-2026) | `PHASE_G_SS15_FIXED_RESUME_PENDING` (implementation `IN_PROGRESS`). Strategy C resolved (`STRATEGY_C_VIABLE_WITH_LIMITATIONS`). Phase F headroom generators/KV-accounting fix committed `8918812`; Phase G's 41-regime × 39-seed × (12 baselines + apt_serve × 5 transition costs) resumable sweep committed `342a8e0`, launched overnight (tmux `apt_phase_g_overnight_20260807`, started 2026-08-07 01:15), and self-terminated per its own SS15 rule at 152/1599 screening units on a genuine invariant violation. Root cause (transition-application ordering in the adapter + a missing feasibility check in the fake scheduler's preemption fallback) diagnosed, fixed, and validated against a 54-cell adversarial stress grid with zero invariant violations — see `docs/audits/apt_serve_phase_g_ss15_incident_20260807.md`. Sweep not yet relaunched. | N/A — no in-repo implementation to classify yet; upstream artifact remains `CODE_ONLY` reproducibility. Probe evidence: the official, unmodified, patched `vllm.core.scheduler.Scheduler` imports (7/7 checks), constructs against a synthetic config, and executes real `schedule()` calls (3/3 scenarios). | N/A (no learned component) | Phase F's one 27-run sweep tied exactly in all three regimes — a null result, not evidence either way (see `docs/audits/apt_serve_phase_f_headroom_stress_validation_20260806.md`, corrected 2026-08-07). Phase G overnight sweep only reached 9.5% of Stage 1 before the SS15 stop; its partial data remains descriptive-only per its own `final_summary.json` note — no results to evaluate yet. | Not started | Not established — pending a completed Phase G sweep; do not draw a conclusion before it finishes and has been analyzed (bootstrap CIs, mechanism correlation) | Relaunch the Phase G sweep (resumable from `results/apt_serve_phase_g_overnight_20260807_011542/`), then analyze: leave-one-out marginal contribution, win/tie/loss at two epsilon thresholds, mechanism diagnostics — see `docs/PROJECT_MAP.md` §5/§8/§10 |
-| **HyGen** | — | — | — | Not integrated | N/A | N/A | Not found anywhere in this repo (no matches for "HyGen" in `docs/*.md` or `src/llmserveopt/policies/*.py`) | N/A | N/A | N/A | N/A | N/A | Not started, not researched in this pass |
-| **ATHENA-Serve** | — | — | — | Not integrated | N/A | N/A | Not found anywhere in this repo | N/A | N/A | N/A | N/A | N/A | Not started, not researched in this pass |
+- **scheduler / policy**: executable scheduling algorithm;
+- **heuristic**: decision rule or synthesized scheduling rule;
+- **module / primitive**: reusable composable sub-policy behavior;
+- **faithful external baseline**: pinned paper/artifact reimplementation or
+  official-code adapter used for evaluation.
 
-## How to update this table
+## Current Summary
 
-When a baseline's status changes (training finishes, an evaluation
-completes, a classification is decided), update the corresponding row
-here **and** the more detailed narrative doc it links to
-(`docs/audits/*_baseline_*.md` / `docs/baselines.md`'s per-baseline
-section) — this table is a summary index, not a replacement for the full
-provenance record each baseline's own audit doc carries.
+| Baseline | Implementation Status | Evaluation Status | Current Classification | Next Action |
+|---|---|---|---|---|
+| vLLM-LTR | Complete checkpoint-backed adapter | Complete for tested regime | `EVALUATION_ONLY` | None queued |
+| PARS-Serve-2026 | Complete official-code reproduction with locally trained checkpoint | Complete across WildChat/control and canonical-suite evidence | `EVALUATION_ONLY` | None queued |
+| Sarathi-Serve | Complete faithful reimplementation plus Wulver real-GPU validation | Complete mechanism-level stress coverage; known simulator limit documented | Foundational internal comparison, with structural caveat | None queued |
+| VTC | Complete official-code adapter around real `VTCReqQueue` | Fairness sweep complete | `FOUNDATIONAL_CANDIDATE` scientific / `EVALUATION_ONLY` deployable | Native non-wrapped implementation before deployable registration |
+| Llumnix | Complete faithful reimplementation (`llumnix_faithful`) | Comparative evaluation and independent verification complete | `FOUNDATIONAL_CANDIDATE` | None queued |
+| DistServe | Complete faithful reimplementation | Comparative evaluation complete | `FOUNDATIONAL_CANDIDATE_FOR_DISAGGREGATION_PRIMITIVES_ONLY` | None queued |
+| Apt-Serve | Complete through Phase G collection and posthoc analysis | Phase G analysis complete; structurally valid dataset | `STRATEGY_C_VIABLE_WITH_LIMITATIONS`; positive marginal portfolio contribution; no global superiority claim | Use as input to module-envelope interpretation |
 
-See also: [`docs/COMPUTE_POLICY.md`](COMPUTE_POLICY.md) (where to run
-what), [`docs/INDEX.md`](INDEX.md) (full documentation map),
-[`docs/baselines.md`](baselines.md) (per-baseline narrative detail),
-[`docs/external_baseline_decision.md`](external_baseline_decision.md)
-(original selection rationale for each baseline category).
+## Apt-Serve Current Record
+
+Artifacts:
+
+- failed SS15 source run:
+  `results/apt_serve_phase_g_overnight_20260807_011542/`;
+- completed resumed collection:
+  `results/apt_serve_phase_g_resume_20260807_174028/`;
+- canonical posthoc analysis:
+  `results/apt_serve_phase_g_analysis_20260809_190000/`;
+- scientific audit:
+  [`docs/audits/apt_serve_phase_g_analysis_20260809.md`](audits/apt_serve_phase_g_analysis_20260809.md).
+
+Supported by the completed analysis:
+
+- dataset validation: `STRUCTURALLY_VALID`;
+- total experiment units: `2175`;
+- Stage 1 screening: `1599` units, 41 regimes, seeds 1001-1039;
+- Stage 2 confirmation: `576` units, 16 regimes, seeds 2001-2036;
+- Apt-Serve primary transition-cost setting: `1x`;
+- Apt-Serve mean ANWG: `0.224845`;
+- best fixed baseline by mean ANWG: `scorpio_style_slo_guard` at `0.207310`;
+- global Apt-vs-best-fixed grouped bootstrap mean gap: `0.012032`, CI
+  `[-0.013237, 0.046700]` - does **not** exclude zero;
+- leave-one-out marginal contribution mean: `0.025219`, CI
+  `[0.004099, 0.057757]` - excludes zero.
+
+Interpretation:
+
+- Positive marginal portfolio contribution; no global superiority claim.
+- Apt-Serve appears useful as a portfolio member in specific contexts.
+- Apt-Serve does not currently justify a global “beats best fixed baseline”
+  claim.
+- Apt-Serve is one external scheduler family and one mechanism source for the
+  broader contextual-compositional system.
+
+## Historical Detail
+
+Use these docs for provenance:
+
+- `docs/audits/apt_serve_official_artifact_audit_20260805.md`
+- `docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md`
+- `docs/audits/apt_serve_phase_f_headroom_stress_validation_20260806.md`
+- `docs/audits/apt_serve_phase_g_ss15_incident_20260807.md`
+- `docs/audits/llumnix_first_comparative_evaluation_20260806.md`
+- `docs/audits/distserve_first_comparative_evaluation_20260806.md`
+- `docs/audits/vtc_fairness_comparative_evaluation_20260805.md`
+- `docs/audits/pars_first_comparative_evaluation_20260804.md`
+- `docs/wulver_sarathi_vllm_repeated_validation.md`
+
+Do not rewrite those point-in-time audits just because the live status has
+advanced.

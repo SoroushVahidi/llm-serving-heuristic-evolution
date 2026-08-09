@@ -1,213 +1,139 @@
 # llm-serving-heuristic-evolution
 
-**Learning to select LLM-inference-serving scheduling policies, evaluated against
-faithful external baselines in a GPU-calibrated discrete-event simulator.**
+Research code for **contextual, compositional scheduler synthesis for LLM
+inference serving**.
 
-> ## Start here — [docs/current/RESUME_HERE.md](docs/current/RESUME_HERE.md)
-> That is the single canonical entry point for this repository, on the
-> active branch **`contextual-compositional-heuristics-20260731`**. It
-> supersedes everything below this notice, including the policy/baseline
-> counts and "current blocker" description further down in this file, which
-> describe an older, superseded project phase. As of this writing: CC0–CC5
-> are complete (CC5 finalized `COMPLETE_REGIME_SPECIFIC`), CC6 is queued but
-> restricted and not started, and a baseline-integration effort (Apt-Serve,
-> Llumnix) is in progress in parallel — see `RESUME_HERE.md` for the current,
-> accurate state and exact next actions rather than any status text below.
-> The CC-specific technical roadmap remains
-> [docs/START_HERE_CONTEXTUAL_COMPOSITION.md](docs/START_HERE_CONTEXTUAL_COMPOSITION.md) →
-> [docs/contextual_composition_roadmap.md](docs/contextual_composition_roadmap.md).
+The repository studies when a serving system should select, combine, or
+synthesize scheduling policies under changing workload pressure. It includes a
+GPU-calibrated discrete-event simulator, a library of internal policies,
+faithful external scheduler integrations, a typed scheduling DSL, contextual
+performance models, and reproducible experiment/audit artifacts.
 
----
+## Start Here
 
-## A. What this project does
+Documentation authority is intentionally narrow:
 
-This project studies **dynamic scheduling-policy selection** for online LLM
-inference serving: requests arrive with unknown output length under tight
-SLO constraints, and a policy must decide who to admit and in what order.
-Concretely, the project:
+1. [`README.md`](README.md) - public project overview and navigation.
+2. [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) - canonical long-term roadmap.
+3. [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md) - shortest current operational handoff.
+4. [`docs/current/WORK_STATUS.md`](docs/current/WORK_STATUS.md) - detailed current status table.
+5. [`docs/current/NEXT_ACTIONS.md`](docs/current/NEXT_ACTIONS.md) - prioritized next actions.
+6. [`docs/BASELINE_STATUS.md`](docs/BASELINE_STATUS.md) - external-baseline status index.
+7. [`docs/audits/`](docs/audits/) - immutable point-in-time audit trail.
 
-1. Implements a GPU-calibrated discrete-event simulator and a 20-policy
-   internal scheduling portfolio (classical, packing, composite, and
-   literature-inspired "style" policies).
-2. Implements 6 **faithful** external-system reimplementations (vLLM,
-   vLLM-chunked-prefill, Sarathi-Serve, DistServe, TetriInfer, Llumnix), each
-   pinned to an exact upstream commit and validated against real GPU
-   hardware.
-3. Trains a **selector** -- currently a supervised model -- that picks the
-   best internal policy per workload window, and compares it against the
-   strongest fixed internal policy and against the faithful external
-   baselines (which are evaluation-only references, never selector
-   actions).
-4. Separately explores LLM-generated scheduling heuristics under a
-   restricted, verifiable DSL (a secondary, currently dormant research
-   track relative to the selector work).
+If a status claim elsewhere conflicts with these files, treat it as historical
+until reconciled.
 
-See [docs/current/PROJECT_STATUS.md](docs/current/PROJECT_STATUS.md) for
-what is scientifically complete today and what isn't yet.
+## Research Objective
 
-## B. Current scientific architecture
+The project is not just a fixed-policy benchmark and not just an Apt-Serve
+reproduction. The target system is a verified contextual compositional
+hyper-heuristic:
 
-- **Simulator**: deterministic, iteration-level, GPU-calibrated (RTX 5060 Ti
-  / Qwen2.5-0.5B). [docs/current/ARCHITECTURE.md](docs/current/ARCHITECTURE.md)
-- **Historical/internal policy portfolio**: 20 policies.
-- **Selector v2 trainable action space**: exactly **8** of those 20 policies
-  (`fifo`, `edf`, `scorpio_style_slo_guard`, `admission_control`,
-  `weighted_shortest_processing`, `estimated_service_time_first`,
-  `best_fit`, `multi_bin_batching`) -- an evidence-based scope decision
-  ("Option B"), not an arbitrary subset.
-- **Faithful external baselines are evaluation-only**: all 6 (3 monolithic,
-  2 disaggregated, 1 migratory) are confirmed genuinely dominated under the
-  current objective when tested as selector *actions*, but remain valuable,
-  topology-aware, real-hardware-validated *comparison points*.
-- Full inventory, exact names, and the "why 8" evidence:
-  [docs/current/BASELINES.md](docs/current/BASELINES.md)
+```text
+workload/state context
+  -> policy/module performance modeling
+  -> uncertainty, pairwise advantage, marginal contribution
+  -> typed DSL / AST
+  -> parent and module selection
+  -> structural composition / symbolic synthesis
+  -> verification
+  -> evaluation
+  -> policy-library envelope expansion
+  -> iteration
+  -> real-system validation
+```
 
-## C. Current objective
+The primary metric for current work is
+`arrival_normalized_weighted_goodput` (ANWG): weighted SLO goodput normalized
+by all arriving requests. Completion-conditioned quality is tracked only as a
+secondary diagnostic.
 
-The primary objective is **`arrival_normalized_weighted_goodput`** (ANWG) --
-weighted SLO goodput normalized by *all arriving requests*, not just
-completed ones. An earlier metric (`weighted_goodput`, denominator =
-completed requests only) was found to be biased toward policies that reject
-or drop more work; that field is retained (renamed in interpretation, not
-deleted) as a distinct "conditional quality of completions" metric, and ANWG
-is the corrected primary objective for all current selector work. See
-[docs/selector_objective_audit.md](docs/selector_objective_audit.md).
+## Current Checkpoint
 
-## D. Current status
+Current branch: `contextual-compositional-heuristics-20260731`.
 
-- Internal policy portfolio and 6 faithful external baselines: **complete**,
-  pinned, real-GPU-hardware-validated (local RTX 5060 Ti + Wulver A100).
-- Selector Dataset v2 infrastructure (SLO calibration, leakage-safe splits,
-  automated quality gates): **complete and in active use**.
-- The most recent calibrated targeted pilot (250 windows, Option B scope)
-  passed all of the pipeline's own automated quality gates, but an
-  independent audit **confirmed a real leakage bug** in its non-OOD split
-  construction (cross-transform row-range reuse -- the automated gate
-  doesn't check for it). VALIDATION/ID_TEST are not trustworthy held-out
-  splits as a result; on OOD_TEST, the one confirmed-clean split, the
-  trained prototype selector loses to the best fixed policy. **Do not treat
-  Selector v2 as a finished, working result.**
-- **Current blocker**: fix the split-construction bug and regenerate a clean
-  pilot. Until a clean pilot exists, comparing the selector against the
-  faithful external baselines (Protocol C) is premature.
+As of the latest reconciliation, the most recent major local experiment is
+**Apt-Serve Phase G**:
 
-Full detail: [docs/current/SELECTOR_V2.md](docs/current/SELECTOR_V2.md).
+- collection: complete;
+- posthoc analysis: complete with exit code 0;
+- canonical analysis artifact:
+  `results/apt_serve_phase_g_analysis_20260809_190000/`;
+- scientific audit:
+  [`docs/audits/apt_serve_phase_g_analysis_20260809.md`](docs/audits/apt_serve_phase_g_analysis_20260809.md).
 
-## E. Quick start
+The supported Phase G result is deliberately narrow: Apt-Serve has a positive
+leave-one-out marginal contribution to the policy portfolio with a bootstrap CI
+excluding zero, but global superiority over the best fixed baseline is **not**
+established because the Apt-vs-best-fixed CI crosses zero. Apt-Serve remains one
+external scheduler family and a source of cache/tier-transition mechanisms, not
+the whole project or proof that compositional synthesis works.
+
+The canonical next task is to reconcile the completed Phase G interpretation
+into the broader module-decomposition and library-envelope roadmap, then return
+to contextual composition work rather than launching another Apt-Serve sweep.
+
+## Repository Layout
+
+```text
+src/llmserveopt/    library code: simulator, policies, DSL, selector, workloads
+tests/              pytest suite, including historical phase regression tests
+scripts/            experiment runners, analysis scripts, maintenance tools
+configs/            YAML/JSON experiment and calibration configs
+baselines/          official-code adapters and provenance for external baselines
+benchmarks/         canonical workload suites
+experiments/        small committed experiment artifacts and curated provenance
+docs/               roadmap, current status, design docs, historical audits
+data/               local datasets; raw/processed data are gitignored
+results/            local generated outputs; gitignored except selected provenance
+logs/               local runtime logs; gitignored
+```
+
+See [`docs/README.md`](docs/README.md), [`scripts/README.md`](scripts/README.md),
+and [`configs/README.md`](configs/README.md) for detailed navigation.
+
+## Install
 
 ```bash
-# Install (editable) -- use python3 -m pip / python3 -m pytest throughout;
-# the bare `pytest` on PATH may resolve to an interpreter missing pandas.
-pip install -e ".[dev]"
-python3 -c "import pandas"   # sanity check before trusting bare `pytest`
-
-# Smoke test
-python scripts/smoke_test.py
-
-# Quick debug run (seconds)
-python scripts/run_baseline_comparison.py --config configs/small_debug.yaml
-
-# Full synthetic baseline comparison
-python scripts/run_baseline_comparison.py --config configs/baseline_comparison.yaml
-
-# Real-trace replay (requires data/processed/burstgpt/*.jsonl)
-python scripts/run_real_trace_comparison.py --config configs/real_trace/burstgpt_scaled_moderate_calibrated.yaml
+python3 -m pip install -e ".[dev]"
+python3 -c "import llmserveopt, pandas"
 ```
 
-### Tests
+Optional extras:
 
 ```bash
-python3 -m pytest                    # full non-GPU-safe suite
-python3 -m pytest -m gpu             # GPU-only (requires a CUDA-capable GPU)
-python3 -m pytest --collect-only -q  # count/list without running
+python3 -m pip install -e ".[selector]"   # selector/suitability models
+python3 -m pip install -e ".[vllm_ltr]"   # checkpoint-loading tests only
 ```
 
-Exact current test count and environment caveats:
-[docs/current/PROJECT_STATUS.md](docs/current/PROJECT_STATUS.md) and
-[docs/current/REPRODUCIBILITY.md](docs/current/REPRODUCIBILITY.md).
+`requirements.txt` and `requirements-selector.txt` are convenience equivalents
+for environments that do not install from `pyproject.toml`.
 
-## F. Canonical documentation
+## Test
 
-Start with **[docs/current/README.md](docs/current/README.md)**, which
-indexes:
-
-- [PROJECT_STATUS.md](docs/current/PROJECT_STATUS.md) -- authoritative current state
-- [ARCHITECTURE.md](docs/current/ARCHITECTURE.md) -- code architecture
-- [BASELINES.md](docs/current/BASELINES.md) -- exact policy/baseline inventory
-- [SELECTOR_V2.md](docs/current/SELECTOR_V2.md) -- full selector research narrative
-- [EXPERIMENTS_AND_RESULTS.md](docs/current/EXPERIMENTS_AND_RESULTS.md) -- what's committed vs. local-only
-- [REPRODUCIBILITY.md](docs/current/REPRODUCIBILITY.md) -- environment, tests, GPU workflows
-- [NEXT_STEPS.md](docs/current/NEXT_STEPS.md) -- the exact next recommended action
-
-The full legacy documentation index (~75 detailed design/audit documents) is
-[docs/README.md](docs/README.md).
-
-## G. Repository layout
-
-```
-src/llmserveopt/   # library code -- see docs/current/ARCHITECTURE.md for the module map
-scripts/           # CLI entry points -- scripts/README.md covers Phase-1.7C-and-earlier
-                   # scripts only; see docs/README.md §16A for the current Selector v2 scripts
-configs/           # YAML experiment configs -- see configs/README.md
-docs/              # docs/current/ = canonical current docs; docs/README.md = full legacy index
-tests/             # pytest suite
-data/              # local datasets -- gitignored (raw/processed), see data/README.md
-results/           # experiment outputs -- gitignored except results/.gitkeep; local-only, large
-logs/              # run logs -- gitignored entirely; local-only
-experiments/       # small, curated experiment artifacts -- NOT gitignored, the only one of
-                   # results/logs/experiments that is actually version-controlled
+```bash
+python3 -m pytest tests/test_project_handoff_consistency.py tests/test_apt_serve_phase_g_analysis.py -q
+python3 -m pytest --collect-only -q
 ```
 
-**`results/` and `logs/` are local-only.** A fresh clone will not have them.
-`experiments/` is the committed, cloneable record of experiment outputs. See
-[docs/current/EXPERIMENTS_AND_RESULTS.md](docs/current/EXPERIMENTS_AND_RESULTS.md)
-for what's canonical, what's historical, and what's still local-only pending
-a decision (e.g. the most recent calibrated pilot).
+GPU/checkpoint tests are opt-in:
 
-## H. Current next step
+```bash
+LLMSERVEOPT_RUN_GPU_TESTS=1 python3 -m pytest -m gpu
+```
 
-Fix the confirmed split-construction leakage bug and regenerate a clean
-calibrated pilot, then proceed through the sequence in
-[docs/current/NEXT_STEPS.md](docs/current/NEXT_STEPS.md) -- do not scale
-Dataset v2 generation or claim selector superiority before clean, confirmed
-held-out generalization exists.
+## Reproduce Key Workflows
 
----
+- Phase G collection runner: `python scripts/run_apt_serve_phase_g.py --help`
+- Phase G analysis runner: `python scripts/analyze_apt_serve_phase_g.py --help`
+- Status consistency check: `python scripts/check_project_handoff_consistency.py`
+- General smoke test: `python scripts/smoke_test.py`
 
-## Historical: Phase 1-2B.4 headline result (kept for continuity, not current)
-
-Prior to the Selector v2 / external-baseline program described above, this
-project's furthest evaluated result (Phase 2A.4/2B.4, "Final held-out
-evaluation") was:
-
-- **Selector (RF/DT)**: +3.0 pp over best fixed on the then-current
-  18-policy portfolio (52 windows).
-- **Best LLM-generated heuristic** (`slo_kv_balance_heuristic`): mean
-  WG=0.9595 on final held-out test regimes; 95% CI [0.00, 0.27] --
-  achieved via **selective request dropping** (completed only 58% of
-  requests on the hardest regime), not a full-admission throughput win.
-  Do not present this as a full-admission result.
-
-Safe claims for this historical result, and the exact per-regime breakdown:
-[docs/result_claims.md](docs/result_claims.md),
-[docs/gpu_validation_claims.md](docs/gpu_validation_claims.md).
-
-For the full phase-by-phase roadmap (historical, superseded as the "current"
-narrative by the unnumbered Selector v2 track): [docs/roadmap.md](docs/roadmap.md).
-
----
-
-## Data policy
-
-- `data/raw/` and `data/processed/` are gitignored.
-- Results in `results/` are gitignored.
-- See `data/README.md` and `.env.example` for download and credential
-  instructions. **Never commit API keys, model weights, or raw dataset
-  files.**
-
-All randomness is seeded via `numpy.random.default_rng`; same config + same
-seed = identical results.
+Most full experiment runs write to `results/` and should be launched in tmux or
+the cluster scheduler. See the relevant audit before rerunning any major
+experiment; generated results are intentionally not version-controlled.
 
 ## License
 
-MIT -- see [LICENSE](LICENSE).
+MIT. See [`LICENSE`](LICENSE).

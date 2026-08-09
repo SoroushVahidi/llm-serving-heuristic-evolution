@@ -1,5 +1,10 @@
 # Next Steps
 
+> **SUPERSEDED — see [`docs/current/NEXT_ACTIONS.md`](NEXT_ACTIONS.md) and
+> [`docs/PROJECT_MAP.md`](../PROJECT_MAP.md).** This file is retained as
+> historical context for an older simulator-calibration/selector planning
+> thread. It is not the current prioritized action list.
+
 Short and actionable. See `PROJECT_STATUS.md`, `ROADMAP_GAP_ANALYSIS.md`, and
 `RESEARCH_ROADMAP.md` for context.
 

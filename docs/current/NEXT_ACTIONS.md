@@ -1,139 +1,63 @@
 # Next Actions
 
-Ordered, dependency-aware action map. Effort categories: `SMALL` (part of a
-session), `MEDIUM` (most of a session), `LARGE` (multi-session). Nothing in
-this document has been executed — it is a plan, not a log.
+This is the current prioritized action list. It must agree with
+[`../PROJECT_MAP.md`](../PROJECT_MAP.md), [`RESUME_HERE.md`](RESUME_HERE.md),
+[`WORK_STATUS.md`](WORK_STATUS.md), and [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 
----
+## P0 - Current Task
 
-## IMMEDIATE LOCAL ACTIONS
+**post-Phase-G module-envelope interpretation.**
 
-### 1. Llumnix stress-test coverage — **DONE (2026-08-06)**
-- 17 entries (7 TARGET, 10 COUNTER) added to catalog; 13 executable validated and pass.
-- Expected deliverables, generators, and headroom gates fully completed.
+Inputs:
 
-### 2. Llumnix comparative evaluation — **DONE (2026-08-06)**
-- Scored comparison completed: 13 workloads x 5 policies x 3 seeds (195 runs).
-- Report written to `docs/audits/llumnix_first_comparative_evaluation_20260806.md`.
+- Phase G collection:
+  `results/apt_serve_phase_g_resume_20260807_174028/`
+- Preserved failed SS15 run:
+  `results/apt_serve_phase_g_overnight_20260807_011542/`
+- Canonical Phase G analysis:
+  `results/apt_serve_phase_g_analysis_20260809_190000/`
+- Audit:
+  [`../audits/apt_serve_phase_g_analysis_20260809.md`](../audits/apt_serve_phase_g_analysis_20260809.md)
 
-### 3. Llumnix independent verification — **DONE (2026-08-06)**
-- Independent verifier script written and executed with 975 checks and zero mismatches.
-- Self-test corruption checks fully pass.
+Deliverable:
 
-### 4. Llumnix classification — **DONE (2026-08-06)**
-- Classified scientifically as `FOUNDATIONAL_CANDIDATE`.
-- Updated `docs/BASELINE_STATUS.md` and `docs/current/WORK_STATUS.md`.
+- Decide which Apt-Serve cache/tier-transition mechanisms are candidates for
+  typed module decomposition.
+- Decide whether those mechanisms should enter a library-envelope evaluation
+  tool as module candidates.
+- Define the next WS-H/WS-K experiment without launching another broad
+  Apt-Serve sweep.
 
-### 5. External-baseline checkpoint report — **DONE (2026-08-06)**
-- Checked go/no-go CC6 readiness: we recommend progressing to CC6 once Apt-Serve and DistServe evaluations are fully closed (see `docs/audits/llumnix_first_comparative_evaluation_20260806.md`).
+## P1 - Library-Envelope Tooling
 
-### 6. Apt-Serve Phase A implementation — **DONE (2026-08-06)**
-- Configuration schema, interfaces, IPC schemas, and scaffolding completed with 24 tests passing.
+Build a standing evaluator for:
 
-### 7. Apt-Serve Phase B implementation — **DONE (2026-08-06)**
-- Dual-tier HybridCacheManager and capacity/rounding logic implemented with 18 unit and scenario tests passing.
+- existing-policy marginal contribution `MC_i(x; P)`;
+- candidate marginal gain `MG_c(x; P)`;
+- grouped bootstrap CIs by regime/context family;
+- clear win/tie/loss classification at practical epsilon thresholds.
 
-### 8. Apt-Serve Phase C implementation — **DONE (2026-08-06)**
-- Subprocess adapter and versioned JSON IPC worker completed with 16 unit, verification, and protocol tests passing.
+This should generalize the Phase G analysis pattern beyond Apt-Serve.
 
-### 9. Apt-Serve Phase D implementation — **DONE (2026-08-06)**
-- Static snapshot differential verifications and 24 focused scenario tests complete and passing.
+## P2 - Module Decomposition
 
-### 10. Apt-Serve Phase E implementation — **DONE (2026-08-06)**
-- Multi-step simulator integration, context-managed persistent lifecycle, and deepcopy-rollback transaction support complete with 8 unit and multi-step tests passing.
+Select one or two mechanisms from the completed external-baseline work and map
+them into the typed DSL/module vocabulary. Apt-Serve's tier-transition behavior
+is now a candidate input, but it is not the only candidate; Sarathi, VTC,
+Llumnix, and DistServe mechanisms should stay visible.
 
-### 11. Apt-Serve Phase F implementation — **ENGINEERING DONE (2026-08-06), EXPERIMENT INCONCLUSIVE**
-- Headroom target/counter generators, hybrid-tier-aware KV accounting fix, and a comparative sweep script are complete, with 5 focused tests passing (79/79 across Apt-Serve A-F).
-- The one sweep actually run (3 regimes × 3 seeds × {FIFO, EDF}) tied exactly in all three regimes (`+0.0000` gap), including the regime designed to favor Apt-Serve. This is a null result, not a demonstration of headroom — see `docs/audits/apt_serve_phase_f_headroom_stress_validation_20260806.md` (corrected 2026-08-07) and `docs/PROJECT_MAP.md` §5/§8.
+## P3 - CC6 Decision
 
-### 12. Apt-Serve Phase G implementation
-- **Prerequisite:** Phase F complete AND the Phase F tie diagnosed (not just rerun at larger scale) — see item 11.
-- **Expected deliverable:** either a statistically significant, CI-backed headroom result against a broader baseline set (VTC/Llumnix/DistServe/SCORPIO-style, not just FIFO/EDF), or a documented structural-limit finding in the Sarathi style (Phase G of 8).
-- **Location:** Local.
-- **Effort:** MEDIUM.
+Only after P0-P2, decide whether CC6 dynamic adaptation should start. If it
+starts, keep it restricted to the previously trusted CC5 operating envelope and
+retain safe fallback outside that envelope.
 
----
+## Stop Conditions
 
-## DEFERRED WULVER ACTIONS
-
-These require a **direct Wulver login**, not this workstation. Do not attempt
-any of these from a local, non-interactive session — see
-`docs/current/RESUME_HERE.md` §E for why the last attempt failed and what
-diagnosis has already been done.
-
-### 1. Apt-Serve Strategy C/D probe — **DONE (2026-08-06)**
-Executed on Wulver: jobs 1163456 (environment-construction bug, corrected),
-1163782 (imports OK, micro-trace failed on a probe-script signature bug,
-corrected), 1164406 (fully successful, reproduced structurally on a
-second node). Official patched `vllm.core.scheduler.Scheduler` import
-7/7, construction OK, 3/3 real `schedule()` micro-traces OK. Decision:
-**`STRATEGY_C_VIABLE_WITH_LIMITATIONS`** — see
-`docs/audits/apt_serve_strategy_c_wulver_probe_20260806.md` §9b for the
-five scoped caveats (technical reuse, legal redistribution, pinned-
-environment requirement, remaining dual-tier-cache simulator gap,
-full-system validation status).
-
-### 2. Official-system validation where needed — **DESIGN & PHASE A DONE (2026-08-06)**
-- Simulator architecture, dual-tier cache, external IPC adapter designed, and Phase A scaffolding implemented with 24 tests passing.
-- Implementation of remaining phases is local (Wulver not needed until final validation).
-
-### 3. Wulver-side commit/push reconciliation — **DONE (2026-08-06, this pass)**
-Compact provenance artifacts (JSON probe reports, hashes, pip freeze,
-job manifests) and the corrected probe scripts/audit doc were committed
-and pushed to `origin/contextual-compositional-heuristics-20260731`; raw
-per-job logs remain Wulver-local only, as intended.
-
----
-
-## AFTER LLUMNIX AND APT-SERVE
-
-### 1. DistServe comparative evaluation — **DONE (2026-08-06)**
-- 6 workloads added to stress-test catalog (2 target, 4 counter).
-- Scored evaluation completed: 5 workloads x 3 policies x 1 seed (15 runs).
-- Full scientific report generated at `docs/audits/distserve_first_comparative_evaluation_20260806.md`.
-
-### 2. Decide whether DistServe implementation is necessary — **DONE (2026-08-06)**
-- Existing `distserve_faithful.py` verified as sufficiently faithful for algorithmic testing.
-- Classified as `FOUNDATIONAL_CANDIDATE_FOR_DISAGGREGATION_PRIMITIVES_ONLY`. No new implementation necessary.
-
-### 3. Hosted API validation plan
-- **Prerequisite:** none blocking — could run in parallel with the above, but sequenced here as lower priority than baseline resolution.
-- **Expected deliverable:** a plan for whether/how to extend the existing Cohere/Gemini pilot work (see `docs/real_llm_cohere_gemini_comparison.md`) further.
-- **Location:** Local (API calls, no Wulver).
-- **Effort:** SMALL (planning only).
-
-### 4. External-baseline sufficiency review
-- **Prerequisite:** (1)–(3) above.
-- **Expected deliverable:** a final review of whether the full external-baseline set is sufficient for the project's scientific claims, before returning to CC6.
-- **Location:** Local.
-- **Effort:** SMALL.
-
----
-
-## RETURN TO CORE METHOD
-
-### 1. Reassess the CC6 gate
-- **Prerequisite:** the "AFTER LLUMNIX AND APT-SERVE" section complete, and IMMEDIATE LOCAL ACTION 5 (external-baseline checkpoint) complete.
-- **Expected deliverable:** an explicit reassessment of whether CC6's entry condition (external-baseline checkpoint sufficiency) is met.
-- **Location:** Local.
-- **Effort:** SMALL.
-
-### 2. Decide whether the restricted operating envelope is sufficient
-- **Prerequisite:** (1).
-- **Expected deliverable:** a decision on whether CC5's regime-specific envelope, as-is, is good enough to ship, or whether CC6's adaptation work is worth the additional scope.
-- **Location:** Local.
-- **Effort:** SMALL.
-
-### 3. Decide: regime specialists vs. current CC5 result
-- **Prerequisite:** (2).
-- **Expected deliverable:** an explicit choice, recorded in the decision log, between building regime-specialist predictors or freezing CC5 as the final contextual-composition result.
-- **Location:** Local.
-- **Effort:** MEDIUM (analysis) before any implementation.
-
-### 4. Only then begin CC6
-- **Prerequisite:** (1)–(3), plus explicit authorization (per the standing roadmap instruction — this has never been a rubber stamp in this project's history).
-- **Expected deliverable:** CC6 implementation, restricted to the 7 trusted regimes (`burst_transition`, `kv_pressure`, `long_output`, `prediction_noise`, `saturated`, `selective_admission_trap`, `underloaded`), with hysteresis and fallback.
-- **Location:** Local.
-- **Effort:** LARGE.
-- **Stop condition:** do not enable contextual switching in unsupported regimes (`azure_conversation_like`, `burstgpt_derived`, `long_prompt`, `mixed_slo`, `priority_conflict`).
-- **Success criterion:** matches CC5's own bar — paired statistical significance for any superiority claim, not point-estimate comparison alone.
+- Do not claim Phase G proves global Apt-Serve superiority.
+- Do not rerun Phase G collection unless a concrete missing/invalid cell is
+  discovered.
+- Do not delete Phase G artifacts.
+- Do not convert Apt-Serve into the whole project narrative.
+- Do not start broad symbolic synthesis until module contribution evidence is
+  stronger.

@@ -1,29 +1,49 @@
 # Work Status
 
-Per-workstream status table. Statuses use a fixed vocabulary — do not use
-vague phrases like "mostly done." See `docs/current/NEXT_ACTIONS.md` for the
-ordered, dependency-aware version of the "exact next action" column.
+Detailed current status table. The roadmap authority is
+[`../PROJECT_MAP.md`](../PROJECT_MAP.md); this file is the operational status
+companion. Historical audit reports remain authoritative only for the time they
+were written.
 
-**Status vocabulary:** `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
-`FOUNDATIONAL_CANDIDATE`, `EVALUATION_ONLY`, `IMPLEMENTED_UNEVALUATED`,
-`AUDIT_COMPLETE`, `WULVER_DEFERRED`, `NOT_STARTED`, `BLOCKED`, `UNESTABLISHED`.
+Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
+`FOUNDATIONAL_CANDIDATE`, `EVALUATION_ONLY`, `IN_PROGRESS`,
+`IMPLEMENTED_NEEDS_VALIDATION`, `NOT_STARTED`, `BLOCKED`, `DEFERRED`,
+`SUPERSEDED`.
 
-| Workstream | Status | Completed evidence | Current blocker | Exact next action | Compute location | Authoritative document |
-|---|---|---|---|---|---|---|
-| Contextual composition (CC0–CC5) | `COMPLETE_REGIME_SPECIFIC` | CC0–CC4 complete; CC5 frozen operating-envelope gate beats best-fixed (p<0.0001) and hard selector (p=0.021); edge over best-global not significant (p=0.5654) | None — closed, evaluated once on held-out data | None until CC6 is authorized | Local | `docs/contextual_composition_roadmap.md`, `docs/audits/contextual_composition_cc5_final_operating_envelope_20260803.md` |
-| CC6 (dynamic adaptation) | `BLOCKED` | Restricted scope defined (7 trusted regimes), issue #6 ready | Explicit future-query authorization required; external-baseline checkpoint not yet run | Do not start — wait for authorization + checkpoint (see NEXT_ACTIONS.md) | Local | `docs/contextual_composition_roadmap.md` |
-| vLLM-LTR | `EVALUATION_ONLY` | Official checkpoint hash+architecture verified; complete, independently verified evaluation (WildChat control) | None | None planned — revisit only if canonical-suite regime is prioritized | Local | `docs/BASELINE_STATUS.md` |
-| PARS-Serve-2026 | `EVALUATION_ONLY` | Official-code reproduction, locally trained+fidelity-verified checkpoint (10/10 tests); full canonical suite (8 workloads) | None | None — zero unique wins across 8 families, evaluation complete | Local | `docs/audits/pars_first_comparative_evaluation_20260804.md` |
-| VTC | `FOUNDATIONAL_CANDIDATE` (scientific; not registered) | Real official `VTCReqQueue` reused via adapter; 108-run fairness sweep, 45/45 fidelity tests; wins/ties 17/18 family×seed fairness comparisons | Registration requires a native, non-wrapped reimplementation first | Native reimplementation before foundational registration | Local | `docs/audits/vtc_fairness_comparative_evaluation_20260805.md` |
-| Sarathi-Serve | `COMPLETE` (mechanism-level, with known limit) | Faithful reimplementation + real Wulver A100 validation (N=5); 7-entry stress catalog, 6/7 executable pass | Decode-protection mechanism provably unreproducible in-simulator under FCFS-strict admission (documented structural limit, not a gap to close) | None — catalog coverage complete | Local (sim) + Wulver (validation, already run) | `docs/audits/sarathi_official_artifact_audit_20260805.md`, `docs/wulver_sarathi_vllm_repeated_validation.md` |
-| Apt-Serve | `PHASE_G_SS15_FIXED_RESUME_PENDING` (implementation `IN_PROGRESS`) | Phase F (target/counter generators, hybrid-tier-aware KV accounting fix, 79/79 tests) committed `891881281b650f549b0bbebaa49df8182e535ba8`. Phase G infrastructure committed `342a8e09f89187b34fb51e78a696a1e0b4fbcb83`; overnight sweep self-terminated per SS15 at 152/1599 screening units on a genuine Apt-Serve invariant violation (capacity-transition ordering + a missing feasibility check in the fake scheduler's preemption fallback — see `docs/audits/apt_serve_phase_g_ss15_incident_20260807.md`). Both bugs fixed and regression-tested; exact failing cell + a 54-cell adversarial stress grid (near-capacity/overload regimes × 6 seeds × 3 transition costs) now pass with zero invariant violations; full suite 3610/3610 passing | None for the fix itself — the overnight sweep has not yet been relaunched | Resume the Phase G sweep from `results/apt_serve_phase_g_overnight_20260807_011542/` (resumable by design), then run the deferred bootstrap-CI/mechanism-correlation analysis once it completes | Local | `docs/audits/apt_serve_phase_g_ss15_incident_20260807.md`, `docs/PROJECT_MAP.md` §5/§8/§10, `results/apt_serve_phase_g_overnight_20260807_011542/run_manifest.json` |
-| Llumnix | `FOUNDATIONAL_CANDIDATE` | Faithful reimplementation and unit tests, PLUS first comparative evaluation (13 workloads x 5 policies x 3 seeds, 195 runs; see `docs/audits/llumnix_first_comparative_evaluation_20260806.md`) | None | None — evaluation complete | Local | `docs/audits/llumnix_official_artifact_audit_20260806.md`, `docs/audits/llumnix_first_comparative_evaluation_20260806.md`, `docs/BASELINE_STATUS.md` |
-| DistServe | `FOUNDATIONAL_CANDIDATE_FOR_DISAGGREGATION_PRIMITIVES_ONLY` | Faithful reimplementation; 6 stress test entries added; 15-run comparative evaluation complete (`docs/audits/distserve_first_comparative_evaluation_20260806.md`) | None | None — evaluation complete | Local | `docs/audits/distserve_existing_implementation_audit_20260806.md`, `docs/BASELINE_STATUS.md` |
-| Algorithm Stress-Test Library | `COMPLETE` (mechanism-level coverage) | Literature-grounded catalog exists; Sarathi (7 entries) and Llumnix (17 entries, 13 executable validated and pass) fully covered; VTC covered | Apt-Serve has none (no implementation yet) | Design Apt-Serve cache / hybrid cache simulation requirements | Local | `docs/research/algorithm_stress_tests/STRESS_TEST_CATALOG.md`, `docs/audits/llumnix_stress_test_completion_20260806.md` |
-| Hosted API validation (Cohere/Gemini real-LLM) | `COMPLETE` (pilot scope) | Length-targeted pilots complete for both providers (108/108 each); latency model fit; simulator-vs-hosted sanity check documented | Simulator default decode rate found 3.5–11.3× faster than hosted, no TTFT analogue — documented, not resolved | None currently queued — informs future calibration work, not blocking | Local (API calls) | `docs/real_llm_cohere_gemini_comparison.md`, `docs/real_llm_latency_model_v2.md` |
-| Real-system validation (real vLLM serving) | `COMPLETE` (pilot scope) | Real vLLM server run locally; EDF/LLF/ESTF beat FIFO (0.7955 vs 0.75 WG); `regression_anwg` selector wired in and tied best baseline tier | Selector artifact persisted but not continuously re-validated against newer selector versions | None currently queued | Local (real vLLM, no Wulver) | project memory: `vllm_our_method_comparison_pilot` (see git history around commit `4a21841`) |
-| Repository cleanup | `NOT_STARTED` (intentionally deferred to Query 4) | Duplicate `.claude/worktrees/phase2b9` identified and confirmed safe to remove | Deliberately not removed in Query 2/3 per each query's scope restriction | Remove `.claude/worktrees/phase2b9` after final validation | Local | `docs/current/PROJECT_SNAPSHOT_20260806.md`, `docs/current/PROJECT_PAUSE_HANDOFF_20260806.md` |
+| Workstream | Status | Evidence | Current Gap | Next Action |
+|---|---|---|---|---|
+| Contextual composition CC0-CC5 | `COMPLETE_REGIME_SPECIFIC` | CC5 operating-envelope evaluation and audits under `docs/audits/contextual_composition_cc5_*_20260803.md` | Regime-specific, not universal | Use as the current composition result until a scoped CC6 decision is made |
+| CC6 dynamic adaptation | `NOT_STARTED` | Restricted scope exists in historical CC docs | Requires explicit authorization and updated design | Do not start by default |
+| Internal scheduler/policy library | `COMPLETE` | Registry and Policy Library V2 tests | None immediate | Maintain as baseline/envelope input |
+| Typed DSL / AST / verifier | `COMPLETE` | CC2/CC3 docs and tests | External faithful policies are not yet decomposed into reusable modules | Use Phase G as input to module-decomposition planning |
+| Contextual performance learning | `IMPLEMENTED_NEEDS_VALIDATION` | Selector/CC5 lineages; ANWG objective correction | Generalization and discriminative-power limits remain | Feed module-envelope work, not broad retraining by default |
+| Module decomposition / library-envelope tooling | `IN_PROGRESS` | Prior module-credit and composition-opportunity artifacts | No standing reusable `MC_i`/`MG_c` tool for arbitrary candidates | Canonical next task: post-Phase-G module-envelope interpretation/design |
+| Sarathi-Serve | `COMPLETE` | Faithful reimplementation plus Wulver repeated-trial validation | Known simulator structural limit documented | None queued |
+| VTC | `FOUNDATIONAL_CANDIDATE` scientific / `EVALUATION_ONLY` deployable | Adapter wraps official `VTCReqQueue`; fairness sweep complete | Native non-wrapped implementation needed before deployable registration | Deferred |
+| Llumnix | `FOUNDATIONAL_CANDIDATE` | Faithful reimplementation, stress catalog, comparative evaluation, independent verification | Not registered as deployable foundational library element | None queued |
+| DistServe | `FOUNDATIONAL_CANDIDATE_FOR_DISAGGREGATION_PRIMITIVES_ONLY` | Faithful reimplementation, stress entries, comparative evaluation | Useful mainly for disaggregated primitives | None queued |
+| PARS-Serve-2026 / vLLM-LTR | `EVALUATION_ONLY` | Official-code/checkpoint validation and comparative evaluations | Dominated in tested regimes | None queued |
+| Apt-Serve A-F | `COMPLETE` | Dual-tier cache, adapter, rollback, stress generators, SS15 fix provenance | Phase F alone was inconclusive | Superseded by completed Phase G |
+| Apt-Serve Phase G collection | `COMPLETE` | `results/apt_serve_phase_g_resume_20260807_174028/` | None for collection | Preserve artifacts |
+| Apt-Serve Phase G analysis | `COMPLETE` | `results/apt_serve_phase_g_analysis_20260809_190000/`, wrapper `exit_code=0`, audit `docs/audits/apt_serve_phase_g_analysis_20260809.md` | Interpretation is bounded: marginal contribution yes, global superiority no | Use as input to module-envelope interpretation |
+| Stress-test library | `COMPLETE` for several baselines, `IN_PROGRESS` as an evolving library | `configs/stress_tests/algorithm_stress_test_catalog.yaml` and stress-test docs | Apt-Serve findings need integration as module/mechanism evidence, not another broad sweep | Document future module-level tests after post-Phase-G review |
+| Real-system validation | `IMPLEMENTED_NEEDS_VALIDATION` | Local vLLM, hosted API, Wulver validation artifacts | Not unified into a final transfer protocol | Defer until next candidate/system exists |
+| Repository hygiene | `IN_PROGRESS` | This reconciliation pass | Avoid erasing history while reducing live-doc drift | Keep historical audits immutable; maintain one current status path |
 
-**Note on "Compute location":** any row marked `WULVER_DEFERRED` cannot be
-advanced further from this workstation — see
-`docs/current/RESUME_HERE.md` §E for why, and the exact deferred steps.
+## Current Blocker
+
+There is no active failed job to diagnose. The blocker is now scientific and
+organizational: translate Phase G's bounded Apt-Serve evidence into the broader
+module-decomposition and policy-envelope roadmap without overclaiming global
+Apt-Serve superiority.
+
+## Current Next Action
+
+Read:
+
+1. [`RESUME_HERE.md`](RESUME_HERE.md)
+2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md)
+3. [`../audits/apt_serve_phase_g_analysis_20260809.md`](../audits/apt_serve_phase_g_analysis_20260809.md)
+4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
+
+Then run the post-Phase-G module-envelope interpretation task.

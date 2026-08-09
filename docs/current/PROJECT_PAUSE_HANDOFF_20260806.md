@@ -1,3 +1,8 @@
+# HISTORICAL HANDOFF — see `docs/current/RESUME_HERE.md`
+
+This file is a point-in-time handoff from 2026-08-06. It preserves useful
+provenance but is not current project status.
+
 # Project Pause Handoff — 2026-08-06
 
 **Why paused:** the user is temporarily switching to another project and

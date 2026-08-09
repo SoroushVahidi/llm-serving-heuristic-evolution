@@ -1,110 +1,25 @@
-# Current documentation
+# Current Documentation
 
-> **Start at [`RESUME_HERE.md`](RESUME_HERE.md).** That is the single
-> canonical entry point for this repository, on the active branch
-> `contextual-compositional-heuristics-20260731` (not
-> `wulver-final-integration-20260721` — that branch is an older, unmerged
-> lineage; see `RESUME_HERE.md`'s "Historical provenance" section). As of
-> `RESUME_HERE.md`'s last update: CC0–CC5 are complete (CC5 finalized
-> `COMPLETE_REGIME_SPECIFIC`), CC6 is queued but restricted and not started,
-> and a baseline-integration effort (Apt-Serve, Llumnix) is in progress in
-> parallel. The detailed CC-specific technical roadmap is
-> [`../START_HERE_CONTEXTUAL_COMPOSITION.md`](../START_HERE_CONTEXTUAL_COMPOSITION.md)
-> → [`../contextual_composition_roadmap.md`](../contextual_composition_roadmap.md).
-> Everything else in this directory below this notice — including the
-> 2026-07-25 and 2026-07-23 pause notes and the `wulver-final-integration-20260721`
-> framing that used to open this file — is **historical provenance for an
-> earlier project phase**, not current status.
+This directory contains operational status and supporting current-work docs. It
+is not the top-level roadmap.
 
-Start Here (historical framing below, retained as provenance)
+Read in this order:
 
-This directory was originally the source-of-truth navigation layer for the
-branch `wulver-final-integration-20260721` (remote:
-`origin/wulver-final-integration-20260721`). That branch combined Policy
-Library v2 / composition / structural-synthesis work with the Phase 2C
-selector-improvement and leakage-fix lineage formerly developed on
-`phase2c-final-selector-improvement` (merged tip includes commit
-`37849b0`). It has since been superseded by
-`contextual-compositional-heuristics-20260731` — see `RESUME_HERE.md`. The
-documents below remain useful project-wide provenance and architecture
-reference; read them for depth, not for current top-level status.
+1. [`RESUME_HERE.md`](RESUME_HERE.md) - shortest operational handoff.
+2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md) - canonical research roadmap.
+3. [`WORK_STATUS.md`](WORK_STATUS.md) - current workstream status.
+4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md) - prioritized next actions.
+5. [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md) - external-baseline status.
 
-## Project Paused 2026-07-23 — Read This First
+Supporting current references:
 
-The project is paused for potentially several months as of 2026-07-23.
-**[RESUME_HERE.md](RESUME_HERE.md)** is the single, concise (5–10 min)
-resume entry point — read it first. For full detail, see
-**[PROJECT_HANDOFF_2026-07-23.md](PROJECT_HANDOFF_2026-07-23.md)**,
-its machine-readable companion
-**[project_handoff_state.json](project_handoff_state.json)**, and durable
-test/experiment evidence in
-**[PAUSE_PROVENANCE_2026-07-23.md](PAUSE_PROVENANCE_2026-07-23.md)**. Read
-all four before `PROJECT_STATUS.md` below.
+- [`PROJECT_MAP.md`](PROJECT_MAP.md) - repository/code navigation map, not the
+  research roadmap.
+- [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md)
+- [`SCIENTIFIC_DECISIONS.md`](SCIENTIFIC_DECISIONS.md)
+- [`ARCHITECTURE.md`](ARCHITECTURE.md)
+- [`BASELINES.md`](BASELINES.md)
 
-## Current Bottom Line
-
-As of 2026-07-22, the primary bottleneck is **simulator/objective
-discriminative power**, not generic dataset volume, selector model choice, or
-unrestricted structural synthesis. Recent SwissAI and TraceLab sweeps added
-raw workload novelty but collapsed to near-ceiling ANWG and weak policy
-separation. The next major development step is bounded simulator calibration
-and pressure validation before more selector, module-credit, or combiner
-training.
-
-## Core Current Docs
-
-1. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - canonical current scientific state and bottleneck.
-2. **[RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)** - staged next plan, starting with simulator calibration.
-3. **[ROADMAP_GAP_ANALYSIS.md](ROADMAP_GAP_ANALYSIS.md)** - evidence-ranked bottlenecks, including Phase 2C selector-improvement gaps.
-4. **[REPO_ARCHITECTURE_MAP.md](REPO_ARCHITECTURE_MAP.md)** - current code structure, including policy/composition/synthesis modules and the reconciled selector-v2 split-leakage architecture.
-5. **[SELECTOR_STATUS.md](SELECTOR_STATUS.md)** - selector/suitability status and caveats.
-6. **[POLICY_LIBRARY.md](POLICY_LIBRARY.md)** - 27-policy library inventory, V2 results, and unsupported policy families.
-7. **[COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md](COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md)** - implemented composition and structural synthesis architecture.
-8. **[EXPERIMENT_INDEX.md](EXPERIMENT_INDEX.md)** - durable index of major experiment roots, jobs, reports, and conclusions.
-9. **[POLICY_FRONTIER_STATUS.md](POLICY_FRONTIER_STATUS.md)** - frontier/library workflow summaries.
-10. **[ACTIVE_EXPERIMENT_PROTECTED_PATHS.md](ACTIVE_EXPERIMENT_PROTECTED_PATHS.md)** - protected SLURM roots that must not be modified.
-11. **[KNOWN_SIMULATOR_HEURISTIC_GAPS.md](KNOWN_SIMULATOR_HEURISTIC_GAPS.md)** - verified DSL / calibrated-model wiring gaps retained for reproducibility.
-
-## Selector-v2 / Local-Lineage Integration Docs
-
-- **[LOCAL_BRANCH_STATUS.md](LOCAL_BRANCH_STATUS.md)** -- how
-  `phase2c-final-selector-improvement`'s selector-improvement and
-  split-leakage-fix work was reconciled onto this integration branch: what
-  was transferred intact, what was manually reconciled (and why), and the
-  resulting single source of truth for split grouping. Read this for the
-  history of *this specific merge*.
-- **[WULVER_HANDOFF.md](WULVER_HANDOFF.md)** -- what is ready to scale on
-  Wulver, what remains local-only, expected CPU/GPU job classes, and
-  commands to wrap in SLURM later (written from the local-branch side prior
-  to this integration; still applicable to the selector-v2 pilot path).
-
-## Operational Audit Docs
-
-- **[WULVER_UNPUSHED_WORK_AUDIT.md](WULVER_UNPUSHED_WORK_AUDIT.md)** - Query 1 audit of local-only work.
-- **[WULVER_BRANCH_LINEAGE_AUDIT.md](WULVER_BRANCH_LINEAGE_AUDIT.md)** - Query 1 branch/source-of-truth map.
-- **[AGENT_HANDOFF.md](AGENT_HANDOFF.md)** - older operational handoff retained for continuity.
-- **[LOCAL_ARTIFACT_CLEANUP.md](LOCAL_ARTIFACT_CLEANUP.md)** - older local artifact classification.
-
-## Detailed Research Docs
-
-- **[POLICY_COMPOSITION_READINESS.md](POLICY_COMPOSITION_READINESS.md)**
-- **[COMPOSITION_EXPERIMENT_DESIGN.md](COMPOSITION_EXPERIMENT_DESIGN.md)**
-- **[COMPOSITION_IMPLEMENTATION_STATUS.md](COMPOSITION_IMPLEMENTATION_STATUS.md)**
-- **[WOLVERINE_ORACLE_MIXTURE_HANDOFF.md](WOLVERINE_ORACLE_MIXTURE_HANDOFF.md)** -- handoff spec for the not-yet-submitted large-scale composition sweep; currently BLOCKED pending read-only artifact recovery on Wulver, not launched.
-- **[STRUCTURAL_SYNTHESIS_READINESS.md](STRUCTURAL_SYNTHESIS_READINESS.md)**
-- **[structural_synthesis_experiment_design.md](structural_synthesis_experiment_design.md)**
-
-## Machine-Readable Artifacts
-
-- [policy_component_matrix.json](policy_component_matrix.json)
-- [composable_primitives.json](composable_primitives.json)
-- [composition_operators.json](composition_operators.json)
-- [policy_complementarity.json](policy_complementarity.json)
-- [composition_experiment_schema.json](composition_experiment_schema.json)
-- [composition_hypotheses.json](composition_hypotheses.json)
-- [scheduler_genome_v1.schema.json](scheduler_genome_v1.schema.json)
-- [wolverine_oracle_mixture_spec.json](wolverine_oracle_mixture_spec.json) -- machine-readable spec for the handoff doc above.
-
-## Historical Docs
-
-`docs/README.md` remains the exhaustive historical documentation index. If older current docs such as `ARCHITECTURE.md`, `BASELINES.md`, `SELECTOR_V2.md`, `EXPERIMENTS_AND_RESULTS.md`, `REPRODUCIBILITY.md`, or `NEXT_STEPS.md` disagree with the files listed above, treat this directory's current docs ([PROJECT_STATUS.md](PROJECT_STATUS.md), [LOCAL_BRANCH_STATUS.md](LOCAL_BRANCH_STATUS.md), and the cited experiment final reports) as authoritative.
+Historical or superseded status docs in this directory are retained for
+provenance and should not be used as live status authorities unless explicitly
+linked from the current files above.
