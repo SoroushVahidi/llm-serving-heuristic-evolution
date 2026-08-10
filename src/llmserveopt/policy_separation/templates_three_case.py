@@ -84,8 +84,18 @@ def case1_fcfs_convoy(
     offset: float,
     seed: int,
     role: str,
+    max_active_sequences: int = CASE1_ACTIVE_SEQUENCES,
 ) -> PolicySeparationScenario:
     """One FCFS convoy stress cell or its reversed-order control.
+
+    `max_active_sequences` defaults to CASE1_ACTIVE_SEQUENCES (1, the
+    original single-slot convoy regime) and is only reflected in
+    scenario_id/pair_id when it differs from that default, so every
+    existing caller (including the completed three-case run this module
+    was written for) keeps byte-identical scenario_ids. Passing a value >1
+    lets a caller (see templates_boundary_refinement.py) distinguish
+    "arrival-order degeneracy under a single slot" from "general FCFS
+    convoy behavior under continuous batching with >1 slot".
 
     role="stress": long request arrives at t=0 with the lowest request_id;
     short burst arrives at t=offset (offset>0.0 => strictly after the long
@@ -137,9 +147,13 @@ def case1_fcfs_convoy(
         )
     requests.sort(key=lambda r: (r.arrival_time, r.request_id))
 
-    params = dict(ratio=ratio, n_short=n_short, offset=offset, seed=seed, role=role)
-    pair_id = f"fcfs_convoy.ratio{ratio}.nshort{n_short}.offset{offset}"
-    scenario_id = f"case1_fcfs_convoy.{role}.ratio{ratio}.nshort{n_short}.offset{offset}.s{seed}"
+    params = dict(
+        ratio=ratio, n_short=n_short, offset=offset, seed=seed, role=role,
+        max_active_sequences=max_active_sequences,
+    )
+    mas_suffix = "" if max_active_sequences == CASE1_ACTIVE_SEQUENCES else f".mas{max_active_sequences}"
+    pair_id = f"fcfs_convoy.ratio{ratio}.nshort{n_short}.offset{offset}{mas_suffix}"
+    scenario_id = f"case1_fcfs_convoy.{role}.ratio{ratio}.nshort{n_short}.offset{offset}{mas_suffix}.s{seed}"
 
     return PolicySeparationScenario(
         scenario_id=scenario_id,
@@ -151,8 +165,8 @@ def case1_fcfs_convoy(
         requests=tuple(requests),
         gpu_configs=(GPUConfig(
             gpu_id=0,
-            max_active_sequences=CASE1_ACTIVE_SEQUENCES,
-            max_batch_tokens=CASE1_ACTIVE_SEQUENCES,
+            max_active_sequences=max_active_sequences,
+            max_batch_tokens=max_active_sequences,
             max_kv_tokens=200_000,
         ),),
         target_policy_family="A_fcfs_vs_size_aware",

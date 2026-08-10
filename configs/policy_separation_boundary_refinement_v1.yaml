@@ -1,0 +1,71 @@
+# Policy Separation Boundary Refinement v1 -- SECOND compute experiment,
+# following job 1170116 (docs/audits/policy_separation_three_case_v1_20260810.md).
+# Purpose: refine the three-case generators around the genuine
+# policy-decision boundaries that job found, NOT scale the corpus broadly
+# and NOT start MAP-Elites/CMA-ES/selector training (see that audit doc's
+# readiness section). Three targeted studies, driven by
+# scripts/run_policy_separation_boundary_refinement.py.
+#
+# Scale check (before seed replication):
+#   Study A main:      2 ratios * 3 short_counts * 6 offsets = 36 cells
+#   Study A mas-substudy: 1 ratio * 1 short_count * 6 offsets = 6 cells (mas=4 only;
+#                          mas=1 at that same (ratio,short_count) is already in the main grid)
+#   Study B:            6 target_utilizations * 2 heterogeneity * 11 inversion_fractions = 132 cells
+#   Study C:            5 overload_factors * 6 fraction_impossible = 30 cells
+# Policy evaluations = (36*10*2*4) + (6*10*2*4) + (132*15*5) + (30*8*2*5)
+#                     = 2880 + 480 + 9900 + 2400 = 15660, consistent with
+# "generator calibration data", not a MAP-Elites-scale corpus.
+
+version: 1
+
+# Study A: 10 seeds, matching job 1170116's seed list for continuity/comparability.
+seeds_study_a: [20260809, 20260810, 20260811, 20260812, 20260813, 20260814, 20260815, 20260816, 20260817, 20260818]
+# Study B (primary): 15 seeds -- the 10 above plus 5 more, all deterministic.
+seeds_study_b: [20260809, 20260810, 20260811, 20260812, 20260813, 20260814, 20260815, 20260816, 20260817, 20260818, 20260819, 20260820, 20260821, 20260822, 20260823]
+# Study C: 8 seeds (first 8 of the shared list) -- deliberately small, this
+# is a mechanism audit, not a scaled sweep.
+seeds_study_c: [20260809, 20260810, 20260811, 20260812, 20260813, 20260814, 20260815, 20260816]
+
+study_a_fcfs_boundary:
+  policies: [fifo, estimated_service_time_first, weighted_shortest_processing, shortest_output_first]
+  ratios: [32, 128]
+  short_counts: [16, 32, 64]
+  # Simulator step_size (ServiceModel default) = 0.001s; a request is only
+  # visible to a policy once current_time (which advances in discrete
+  # step_size jumps) >= its arrival_time (Simulator.run / load_trace), so
+  # these are chosen as multiples of step_size -- NOT arbitrary wall-clock
+  # values: 0 (exact tie: both requests visible at the very first
+  # decision), 0.1x and 0.5x step (still sub-step, rounds up to the same
+  # first post-arrival decision as 1x step), 1x/5x/10x step.
+  offsets: [0.0, 0.0001, 0.0005, 0.001, 0.005, 0.01]
+  # max_active_sequences sub-study: mas=1 (the original convoy regime) is
+  # already covered by the main grid above at every (ratio, short_count,
+  # offset); this adds ONLY the mas=4 delta, at one representative
+  # (ratio, short_count) cell, across the full offset grid -- cheap, and
+  # enough to tell "arrival-order degeneracy" (mas=1-specific) apart from
+  # "general FCFS convoy behavior under continuous batching" (mas>1).
+  mas_substudy:
+    ratio: 32
+    short_count: 32
+    max_active_sequences: 4
+
+study_b_prediction_inversion_boundary:
+  policies: [fifo, estimated_service_time_first, weighted_shortest_processing, shortest_output_first, aging_priority]
+  # Target utilization (fraction of case2's fixed 3-slot capacity), derived
+  # from simulator capacity per case2_prediction_inversion_boundary's own
+  # capacity_per_s calculation, not arbitrary request/s values. 0.85 is
+  # reused verbatim from job 1170116's "high" bucket for calibration
+  # continuity; 0.50 similarly reuses that job's "moderate" bucket.
+  target_utilizations: [0.30, 0.50, 0.65, 0.85, 0.95, 1.10]
+  inversion_fractions: [0.00, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
+  heterogeneity: [moderate, strong]
+
+study_c_edf_admission_mechanism:
+  policies: [fifo, edf, least_laxity_first, scorpio_style_slo_guard, admission_control]
+  overload_factors: [0.9, 1.0, 1.1, 1.2, 1.4]
+  fraction_impossible: [0.0, 0.1, 0.2, 0.4, 0.6, 0.8]
+  # slack tier (feasible/borderline/tight) is derived from overload_factor
+  # post-hoc during aggregation, not generated as an independent axis --
+  # see templates_boundary_refinement.py's module docstring for why a
+  # separate slack knob would confound with overload_factor.
+  slack_tier_bounds: {feasible_max: 0.95, borderline_max: 1.05}
