@@ -70,7 +70,7 @@ not read an infrastructure item as a validated result.
   training/regime-probing evidence, not natural real-OOD evidence.
 - The simulator discriminative audit found:
   - TraceLab mean ANWG `0.998822` and effective winner classes `1.12`;
-  - SwissAI mean ANWG `0.991726` and effective winner classes `1.00`;
+  - SwissAI mean ANWG `0.9925129331848189` and effective winner classes `1.00`;
   - V2 real-OOD mean ANWG `0.169498` and effective winner classes `10.12`;
   - `KV_CACHE_COUPLING_VERDICT = WEAK_DIRECT_COUPLING`;
   - `PREFILL_DECODE_COUPLING_VERDICT = PARTIAL_AND_WEAK_UNDER_CURRENT_WORKLOADS`;

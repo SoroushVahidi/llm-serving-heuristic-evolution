@@ -96,9 +96,10 @@ The current repository supports:
   structural synthesis ready.
 - SwissAI staging showed novel KV/cache/reuse feature-space coverage, but the
   512-window x 27-policy evaluation saturated the ANWG objective and produced
-  **zero strict V2 marginal oracle gain**. FIFO/simple behavior dominated near
-  ties. The failed SwissAI final-report stage was a reporting bug around
-  `kv_proxy_p95`; the complete policy-vector matrix exists and is usable.
+  **zero strict V2 marginal oracle gain**. The report was repaired posthoc by
+  joining causal features to the complete policy-vector matrix; corrected mean
+  ANWG is `0.9925129331848189` with zero oracle gap and zero unique V2 wins.
+  Near-ties do not establish FIFO/EDF intrinsic optimality.
 - TraceLab staging showed high long-context, agentic, prefix-reuse, and
   tool-use novelty, but the 512-window x 27-policy evaluation also saturated
   ANWG and produced **zero strict V2 marginal oracle gain**.
@@ -122,7 +123,7 @@ found:
 
 - TraceLab reward saturation near 1: mean ANWG `0.998822`, p5 `1.000000`,
   fraction ANWG > `0.999` equal to `0.988`.
-- SwissAI strong saturation: mean ANWG `0.991726`, p5 `0.979208`, fraction
+- SwissAI strong saturation: mean ANWG `0.9925129331848189`, p5 `0.979208`, fraction
   ANWG > `0.999` equal to `0.361`.
 - V2 real-OOD was not saturated: mean ANWG `0.169498`, no rewards > `0.99`,
   and many meaningful policy margins.

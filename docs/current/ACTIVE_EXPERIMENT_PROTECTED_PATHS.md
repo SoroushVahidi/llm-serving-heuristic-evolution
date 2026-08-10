@@ -30,7 +30,7 @@ must still not be cancelled or modified by repository-cleanup tasks.
 | V2 Selector/Regret Benchmark | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/v2_selector_regret_benchmark_20260722T134925Z` | Complete; useful suitability signal but OOD oracle-gap caveat. |
 | Module Intervention / Structural Credit | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/module_intervention_credit_20260721T224322Z` | Complete; sparse positive single-module transfer. |
 | SwissAI Staging | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_trace_staging_20260722T172215Z` | Complete; novel KV/cache/reuse features. |
-| SwissAI V2 Policy Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_v2_policy_sweep_20260722T184451Z` | Policy matrix complete; final reporting failed on `kv_proxy_p95`. |
+| SwissAI V2 Policy Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_v2_policy_sweep_20260722T184451Z` | Policy matrix complete; report repaired posthoc from causal features. Original root remains read-only. |
 | TraceLab Staging | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/tracelab_staging_20260722T192050Z` | Complete; long-context/agentic novelty. |
 | TraceLab V2 Policy Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/tracelab_v2_policy_sweep_20260722T214129Z` | Complete; reward saturation and zero V2 gain. |
 | SLO/Deadline Augmented V2 Sweep | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/slo_deadline_augmented_v2_sweep_20260722T194529Z` | Complete corrected chain; superseded failures retained for provenance. |
