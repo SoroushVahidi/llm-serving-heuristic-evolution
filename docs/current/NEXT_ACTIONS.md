@@ -28,6 +28,31 @@ Deliverable:
 - Define the next WS-H/WS-K experiment without launching another broad
   Apt-Serve sweep.
 
+## P0 (Policy Separation thread, independent of the above)
+
+**Design and validate Policy Separation Sobol Pilot v1; scientific execution
+pending review.**
+
+Inputs:
+
+- Completed diagnostics: jobs `1170116`, `1171116`
+- Audits: [`../audits/policy_separation_three_case_v1_20260810.md`](../audits/policy_separation_three_case_v1_20260810.md),
+  [`../audits/policy_separation_boundary_refinement_v1_20260810.md`](../audits/policy_separation_boundary_refinement_v1_20260810.md),
+  [`../audits/policy_separation_edf_admission_mechanism_20260810.md`](../audits/policy_separation_edf_admission_mechanism_20260810.md)
+- Sobol pilot design: `configs/policy_separation_sobol_pilot_v1.yaml`,
+  `scripts/run_policy_separation_sobol_pilot_v1.py`
+
+Status: design, implementation, tests, and a local dry-run smoke are complete.
+The scientific sweep has **not** been submitted to Slurm.
+
+Deliverable before submission:
+
+- Explicit review of the Sobol architecture (two subspaces -- prediction-sensitive
+  and deadline/admission -- plus a categorical FCFS add-on) and scale (~1,000-1,800
+  scenarios, ~7,000-12,000 evaluations).
+- Do not mark the synthetic dataset complete, and do not start MAP-Elites or
+  selector retraining, until this pilot has run and been analyzed.
+
 ## P1 - Library-Envelope Tooling
 
 Build a standing evaluator for:

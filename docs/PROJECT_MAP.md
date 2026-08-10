@@ -97,6 +97,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Two theory-grounded diagnostic jobs complete (1170116, 1171116; see `docs/audits/policy_separation_three_case_v1_20260810.md` and `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`), establishing real, load/heterogeneity-gated oracle headroom and a validated set of decision-relevant workload dimensions. A Sobol/space-filling pilot design over those validated dimensions is implemented and reviewed but **not yet executed**. Feeds WS-A (discriminative-power evidence) and WS-F (future selector feature/leakage design). |
 
 ## Current Checkpoint
 
@@ -138,6 +139,12 @@ to WS-H/WS-K:
   contexts;
 - design the next module-decomposition/compositional-learning step without
   launching another broad Apt-Serve sweep.
+
+**Parallel thread (WS-P, independent of the above):** the Policy Separation
+Sobol pilot v1 design is complete and reviewed (see
+`docs/audits/policy_separation_boundary_refinement_v1_20260810.md`'s
+readiness section); scientific execution (`sbatch`) is pending explicit
+review/authorization and has not been submitted.
 
 ## Stop Conditions
 

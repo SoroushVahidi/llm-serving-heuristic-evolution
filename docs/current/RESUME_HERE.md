@@ -39,7 +39,22 @@ context -> performance/marginal-contribution learning -> DSL/module selection
 
 The current primary metric is `arrival_normalized_weighted_goodput` (ANWG).
 
-## Latest Major Result
+## Most Recently Completed Work (independent thread)
+
+**Policy Separation Dataset v1: two diagnostic jobs complete (2026-08-10),
+Sobol pilot v1 designed and reviewed but not yet executed.**
+
+- Jobs `1170116` (three-case diagnostic) and `1171116` (boundary refinement):
+  both `COMPLETE`, structurally valid, 0 failures.
+- Audits: [`../audits/policy_separation_three_case_v1_20260810.md`](../audits/policy_separation_three_case_v1_20260810.md),
+  [`../audits/policy_separation_boundary_refinement_v1_20260810.md`](../audits/policy_separation_boundary_refinement_v1_20260810.md).
+- Next step for this thread: review the Sobol pilot design
+  (`configs/policy_separation_sobol_pilot_v1.yaml`) before `sbatch` submission --
+  **not yet submitted.**
+- This is independent of, and does not change, the Apt-Serve/module-decomposition
+  thread below.
+
+## Latest Major Result (Apt-Serve/CC thread)
 
 **Apt-Serve Phase G completed.**
 
