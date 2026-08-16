@@ -30,28 +30,19 @@ Deliverable:
 
 ## P0 (Policy Separation thread, independent of the above)
 
-**Design and validate Policy Separation Sobol Pilot v1; scientific execution
-pending review.**
+**Design and execute Policy Separation Fairness and Starvation Pilot (Family A).**
 
 Inputs:
 
-- Completed diagnostics: jobs `1170116`, `1171116`
-- Audits: [`../audits/policy_separation_three_case_v1_20260810.md`](../audits/policy_separation_three_case_v1_20260810.md),
-  [`../audits/policy_separation_boundary_refinement_v1_20260810.md`](../audits/policy_separation_boundary_refinement_v1_20260810.md),
-  [`../audits/policy_separation_edf_admission_mechanism_20260810.md`](../audits/policy_separation_edf_admission_mechanism_20260810.md)
-- Sobol pilot design: `configs/policy_separation_sobol_pilot_v1.yaml`,
-  `scripts/run_policy_separation_sobol_pilot_v1.py`
+- Completed Sobol Pilot v1: Slurm Job `1182183`
+- Audit: [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md)
 
-Status: design, implementation, tests, and a local dry-run smoke are complete.
-The scientific sweep has **not** been submitted to Slurm.
+Status: Sobol Pilot v1 is complete, analyzed, and documented. Crossover boundaries on prediction inversion are successfully mapped, and Scorpio's structural dominance under overload is confirmed.
 
-Deliverable before submission:
+Deliverable for Next Step:
 
-- Explicit review of the Sobol architecture (two subspaces -- prediction-sensitive
-  and deadline/admission -- plus a categorical FCFS add-on) and scale (~1,000-1,800
-  scenarios, ~7,000-12,000 evaluations).
-- Do not mark the synthetic dataset complete, and do not start MAP-Elites or
-  selector retraining, until this pilot has run and been analyzed.
+- Draft the design and configuration for **Family A (Fairness, Weight Skew, and Aging Starvation)** over 640 scenarios and 2,560 evaluations.
+- Do not proceed to MAP-Elites or CMA-ES search yet; we must introduce the Fairness-vs-Throughput multi-tenant trade-off to justify Quality-Diversity.
 
 ## P1 - Library-Envelope Tooling
 

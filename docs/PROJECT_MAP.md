@@ -5,8 +5,8 @@
 status, read [`docs/BASELINE_STATUS.md`](BASELINE_STATUS.md). Dated files in
 [`docs/audits/`](audits/) are historical evidence, not live status.
 
-Last reconciled: 2026-08-09, after commit
-`bcff4d8fcb0ee71f033503ee3a0f26ad28d8e576`.
+Last reconciled: 2026-08-16, after commit
+`b1181c6380029254080397c161d5dd281bbd6d89`.
 
 ## Documentation Authority
 
@@ -97,7 +97,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
-| WS-P | Policy Separation Dataset / decision-boundary characterization | Two theory-grounded diagnostic jobs complete (1170116, 1171116; see `docs/audits/policy_separation_three_case_v1_20260810.md` and `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`), establishing real, load/heterogeneity-gated oracle headroom and a validated set of decision-relevant workload dimensions. A Sobol/space-filling pilot design over those validated dimensions is implemented and reviewed but **not yet executed**. Feeds WS-A (discriminative-power evidence) and WS-F (future selector feature/leakage design). |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Complete for Sobol Pilot v1 (Job 1182183; see `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`), establishing real continuous crossovers, headroom (mean 1.59% in Family B, up to 1.84% under strong heterogeneity), and proving Sobol space-filling sampling preserves policy-separation signal without dilution. MAP-Elites is not yet justified without missing fairness/KV mechanisms. Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
 
@@ -140,11 +140,7 @@ to WS-H/WS-K:
 - design the next module-decomposition/compositional-learning step without
   launching another broad Apt-Serve sweep.
 
-**Parallel thread (WS-P, independent of the above):** the Policy Separation
-Sobol pilot v1 design is complete and reviewed (see
-`docs/audits/policy_separation_boundary_refinement_v1_20260810.md`'s
-readiness section); scientific execution (`sbatch`) is pending explicit
-review/authorization and has not been submitted.
+**Parallel thread (WS-P, independent of the above):** the Policy Separation Sobol pilot v1 has been successfully executed (Job 1182183) and analyzed (see `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`). The continuous decision boundaries for prediction inversion under strong heterogeneity are fully mapped. The next recommended step is to design and execute a pilot for Family A (Fairness, Weight Skew, and Aging Starvation) to address crucial coverage gaps before executing MAP-Elites.
 
 ## Stop Conditions
 

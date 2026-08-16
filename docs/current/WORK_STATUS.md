@@ -30,7 +30,7 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Real-system validation | `IMPLEMENTED_NEEDS_VALIDATION` | Local vLLM, hosted API, Wulver validation artifacts | Not unified into a final transfer protocol | Defer until next candidate/system exists |
 | Repository hygiene | `IN_PROGRESS` | This reconciliation pass | Avoid erasing history while reducing live-doc drift | Keep historical audits immutable; maintain one current status path |
 | Policy Separation Dataset v1 (three-case + boundary refinement) | `COMPLETE` for the two diagnostic jobs | Jobs 1170116, 1171116; `docs/audits/policy_separation_three_case_v1_20260810.md`, `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`, `docs/audits/policy_separation_edf_admission_mechanism_20260810.md` | Only 3 narrow mechanisms validated, not the full 5-family/25-template design in `docs/design/POLICY_SEPARATION_DATASET_V1.md` (that document's "Phase 1 implemented" claim is aspirational/superseded -- no fairness/cache templates were ever built) | Review the Sobol pilot design below before executing it |
-| Policy Separation Sobol pilot v1 | `IMPLEMENTED_NEEDS_VALIDATION` (design + smoke only) | `configs/policy_separation_sobol_pilot_v1.yaml`, `scripts/run_policy_separation_sobol_pilot_v1.py`, dry-run smoke passed | Not yet executed at full scale; no scientific results exist yet | Explicit review, then `sbatch` submission is a separate future action |
+| Policy Separation Sobol pilot v1 | `COMPLETE` | Job 1182183; `docs/audits/policy_separation_sobol_pilot_v1_20260816.md` | Complete pilot results analyzed; coverage gaps remain | Design and execute a targeted pilot for Family A (Fairness and Starvation) |
 
 ## Current Blocker
 

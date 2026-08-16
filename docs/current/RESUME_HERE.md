@@ -41,18 +41,13 @@ The current primary metric is `arrival_normalized_weighted_goodput` (ANWG).
 
 ## Most Recently Completed Work (independent thread)
 
-**Policy Separation Dataset v1: two diagnostic jobs complete (2026-08-10),
-Sobol pilot v1 designed and reviewed but not yet executed.**
+**Policy Separation Dataset v1: Sobol pilot v1 is COMPLETE, analyzed, and documented (2026-08-16).**
 
-- Jobs `1170116` (three-case diagnostic) and `1171116` (boundary refinement):
-  both `COMPLETE`, structurally valid, 0 failures.
-- Audits: [`../audits/policy_separation_three_case_v1_20260810.md`](../audits/policy_separation_three_case_v1_20260810.md),
-  [`../audits/policy_separation_boundary_refinement_v1_20260810.md`](../audits/policy_separation_boundary_refinement_v1_20260810.md).
-- Next step for this thread: review the Sobol pilot design
-  (`configs/policy_separation_sobol_pilot_v1.yaml`) before `sbatch` submission --
-  **not yet submitted.**
-- This is independent of, and does not change, the Apt-Serve/module-decomposition
-  thread below.
+- Slurm Job: `1182183` (Completed, 0 failures, 1616 scenarios, 6976 evaluations).
+- Audit: [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md).
+- Key Finding: Preserves policy-separation signal with substantial headroom (mean 1.59% in Family B, up to 1.84% under strong heterogeneity) and replicates continuous crossover boundaries. Family C is completely dominated by Scorpio (no separation).
+- Next Step: Design and execute a targeted missing-mechanism pilot for Family A (Fairness, Weight Skew, and Aging Starvation) to address coverage gaps. MAP-Elites and selector training are not yet justified on the current narrow dataset.
+- This is independent of, and does not change, the Apt-Serve/module-decomposition thread below.
 
 ## Latest Major Result (Apt-Serve/CC thread)
 
