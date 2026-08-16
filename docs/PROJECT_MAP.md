@@ -97,7 +97,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
-| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 EXECUTED+ANALYZED (Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`); verdict `USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED` (no ESTF↔WFS bidirectional niche; Aging saturated; size–priority collinearity). Next: Family A v2. MAP-Elites / selector retrain not yet justified. Feeds WS-A and WS-F. |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 EXECUTED+ANALYZED (Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`); verdict `USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`. Family A v2 DESIGN+IMPLEMENTED (`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`); smoke gate passed; cluster pilot pending/in flight (72×4=288). MAP-Elites / selector retrain not yet justified. Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
 

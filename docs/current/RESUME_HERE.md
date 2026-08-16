@@ -100,9 +100,10 @@ Supported interpretation:
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** Design/implement Family A v2 (orthogonal size×priority, BurstGPT
-   anchoring, canonical ANWG, prediction noise, anti-Aging-saturation). Do not
-   start MAP-Elites or selector retraining yet.
+1. **WS-P:** Family A v2 pilot — design implemented
+   (`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`); launch/analyze the v2
+   cluster pilot (orthogonal size×priority, BurstGPT-required, canonical ANWG).
+   Do not start MAP-Elites or selector retraining yet.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

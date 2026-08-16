@@ -6,28 +6,18 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Design and implement Family A v2 (fairness/starvation), then run a new pilot.**
+**Launch and (after completion) analyze Family A v2 fairness-vs-size pilot.**
 
-Inputs:
+Design: [`../design/POLICY_SEPARATION_FAMILY_A_V2.md`](../design/POLICY_SEPARATION_FAMILY_A_V2.md)  
+Config: `configs/policy_separation_fairness_starvation_pilot_v2.yaml`  
+Runner: `scripts/run_policy_separation_fairness_starvation_pilot_v2.py`  
+Slurm: `scripts/slurm/run_policy_separation_fairness_starvation_pilot_v2.sbatch`
 
-- Completed Family A v1 audit:
-  [`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)
-- Frozen Job 1182306 provenance:
-  [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/)
-- Analysis tables under `…/analysis/`
+Grid: 72 scenarios × 4 policies = **288** evaluations (BurstGPT required;
+canonical ANWG primary).
 
-Family A v1 scientific status: **analyzed**; verdict
-`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`. Retain as audit evidence; do
-**not** use as selector-training rows.
-
-v2 must address confirmed confounds:
-
-- orthogonal 2×2 size × priority (short/high, short/low, long/high, long/low);
-- BurstGPT token-shape anchoring;
-- canonical ANWG as primary metric;
-- imperfect service-time predictions;
-- equal-weight controls;
-- anti-saturation so Aging is not universally perfect.
+Family A v1 remains frozen diagnostic evidence only
+([`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)).
 
 Stop conditions for this thread:
 
