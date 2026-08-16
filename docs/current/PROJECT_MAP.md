@@ -51,13 +51,18 @@ current status, see `docs/current/RESUME_HERE.md` and
   - Family A v2: `experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/`
     (audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`;
     verdict `USEFUL_BUT_NEEDS_REFINEMENT`)
+  - ESTF↔WFS composition: `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`
+    (audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`;
+    verdict `SELECTION_SUFFICIENT_FOR_THIS_PAIR`)
   - Family A v1 (diagnostic): `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`
-- **Design:** `docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`
-- **Audits:** `docs/audits/policy_separation_*`
+- **Design:** `docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`,
+  `docs/design/ESTF_WFS_COMPOSITION_FALSIFICATION_V1.md`
+- **Audits:** `docs/audits/policy_separation_*`, `docs/audits/estf_wfs_*`
 - **Common confusion to avoid:** Job 1182306’s CSV column `anwg` is unweighted
   SLO-success, not canonical ANWG; v1 used synthetic lengths. Job 1182377 uses
-  canonical ANWG + BurstGPT. Next WS-P step is the next mechanism family, not
-  MAP-Elites.
+  canonical ANWG + BurstGPT. ESTF/WFS complementarity does **not** imply
+  composition envelope gain. Next WS-P step is the next mechanism family, not
+  MAP-Elites or distillation from this pair.
 ## Datasets
 
 - **Purpose:** real-trace and synthetic workload sources.
