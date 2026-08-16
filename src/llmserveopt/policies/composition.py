@@ -199,10 +199,31 @@ def causal_context_features(state: ObservableState) -> Dict[str, float]:
         mean_prompt = sum(r.prompt_tokens for r in waiting) / len(waiting)
         mean_output = sum(r.predicted_output_tokens for r in waiting) / len(waiting)
         urgent_frac = sum(1 for r in waiting if r.slo_deadline <= state.time) / len(waiting)
+        priorities = [float(r.priority) for r in waiting]
+        mean_priority = sum(priorities) / len(priorities)
+        max_priority = max(priorities)
+        min_priority = min(priorities)
+        priority_skew = max_priority / max(min_priority, _EPS)
+        outputs = [float(r.predicted_output_tokens) for r in waiting]
+        med_out = sorted(outputs)[len(outputs) // 2]
+        short_frac = sum(1 for o in outputs if o <= med_out) / len(outputs)
+        classes = {}
+        for r in waiting:
+            classes[r.class_id or "unknown"] = classes.get(r.class_id or "unknown", 0) + 1
+        n_cls = len(classes)
+        class_imbalance = max(classes.values()) / len(waiting) if waiting else 0.0
+        waits = [max(0.0, state.time - r.arrival_time) for r in waiting]
+        mean_wait = sum(waits) / len(waits)
     else:
         mean_prompt = 0.0
         mean_output = 0.0
         urgent_frac = 0.0
+        mean_priority = 0.0
+        priority_skew = 1.0
+        short_frac = 0.0
+        n_cls = 0.0
+        class_imbalance = 0.0
+        mean_wait = 0.0
     return {
         "system_pressure": system_pressure(state),
         "queue_pressure": _queue_pressure(state),
@@ -212,6 +233,13 @@ def causal_context_features(state: ObservableState) -> Dict[str, float]:
         "mean_prompt_tokens": mean_prompt,
         "mean_predicted_output_tokens": mean_output,
         "urgent_deadline_fraction": urgent_frac,
+        "mean_priority": mean_priority,
+        "priority_skew": priority_skew,
+        "short_job_fraction": short_frac,
+        "n_classes": float(n_cls),
+        "class_imbalance": class_imbalance,
+        "mean_waiting_time": mean_wait,
+        "queue_length": float(len(waiting)),
     }
 
 
@@ -244,6 +272,27 @@ def rank_with_named_expert(
         ranked = sorted(requests, key=lambda r: (weighted_shortest_processing_score(r, alpha, beta), r.arrival_time, r.request_id))
     elif name == "estimated_service_time_first":
         ranked = sorted(requests, key=lambda r: (predicted_service_proxy(r, alpha, beta), r.slo_deadline, -r.priority, r.arrival_time, r.request_id))
+    elif name == "weighted_fair_share":
+        # Match WeightedFairSharePolicy's initial ranking (admitted_counts empty during sort).
+        from collections import Counter
+
+        from .policy_library_v2_helpers import est_steps, queue_class_counts
+
+        active = queue_class_counts(
+            r for g in state.gpu_states for r in g.active_requests_info
+        )
+        demand = queue_class_counts(requests)
+
+        def _wfs_score(req: ObservableRequest) -> float:
+            cls = req.class_id or "unknown"
+            served_share = active[cls]
+            deficit = demand[cls] / max(1, served_share + 1)
+            return deficit * req.priority / max(est_steps(req, alpha, beta), 1e-9)
+
+        ranked = sorted(
+            requests,
+            key=lambda r: (-_wfs_score(r), r.arrival_time, r.request_id),
+        )
     elif name == "least_laxity_first":
         ranked = sorted(
             requests,

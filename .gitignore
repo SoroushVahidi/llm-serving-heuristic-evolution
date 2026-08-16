@@ -131,3 +131,4 @@ llmserveopt-data/
 .env
 .env.*
 !.env.example
+.local_data/

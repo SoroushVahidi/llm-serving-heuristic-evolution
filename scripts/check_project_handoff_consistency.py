@@ -58,7 +58,8 @@ REQUIRED_CLAIMS = [
     (WORK_STATUS, "Apt-Serve Phase G analysis"),
     (WORK_STATUS, "USEFUL_BUT_NEEDS_REFINEMENT"),
     (NEXT_ACTIONS, "post-Phase-G module-envelope interpretation"),
-    (NEXT_ACTIONS, "next mechanism family"),
+    (NEXT_ACTIONS, "ESTF↔WFS minimal composition"),
+    (CANONICAL_RESUME, "estf-wfs-comp-pilot"),
     (BASELINE_STATUS, "Positive marginal portfolio contribution; no global superiority claim"),
     (PHASE_G_AUDIT, "Not Yet Established"),
 ]
@@ -73,6 +74,7 @@ FORBIDDEN_CLAIMS = [
     (NEXT_ACTIONS, "Draft the design and configuration for **Family A", "Family A generator+pilot already exist"),
     (NEXT_ACTIONS, "Analyze Family A Fairness and Starvation Pilot", "Family A v1 analysis is complete"),
     (NEXT_ACTIONS, "Launch and (after completion) analyze Family A v2", "Family A v2 analysis is complete"),
+    (NEXT_ACTIONS, "Design and execute the next mechanism family after Family A v2", "composition falsification pilot is the next WS-P step"),
     (BASELINE_STATUS, "Phase G reached only 9.5%", "Phase G collection is complete"),
     (BASELINE_STATUS, "sweep has not yet been relaunched", "Phase G collection was resumed and completed"),
     (BASELINE_STATUS, "Relaunch the Phase G sweep", "the next task is post-Phase-G interpretation"),

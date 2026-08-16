@@ -6,22 +6,23 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Design and execute the next mechanism family after Family A v2.**
+**Finish/analyze the ESTF↔WFS minimal composition falsification pilot.**
 
-Family A v2 audit:
-[`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)  
-Verdict: `USEFUL_BUT_NEEDS_REFINEMENT` — include in PSD; ESTF↔WFS bidirectional
-confirmed; proceed to next family. Optional A refinements (more seeds / skew–ANWG
-slice) are non-blocking.
+Status note:
+[`../audits/estf_wfs_composition_falsification_status_20260816.md`](../audits/estf_wfs_composition_falsification_status_20260816.md)  
+Design: [`../design/ESTF_WFS_COMPOSITION_FALSIFICATION_V1.md`](../design/ESTF_WFS_COMPOSITION_FALSIFICATION_V1.md)  
+Run dir: `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`  
+tmux: `estf-wfs-comp-pilot`
 
-Family A v1 remains frozen diagnostic evidence only
-([`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)).
+Family A v2 remains the validated complementary parent pair
+([`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)).
 
 Stop conditions for this thread:
 
-- Do not start MAP-Elites / CMA-ES / QD until multi-family coverage justifies it.
-- Do not retrain selectors from Family A alone.
-- Do not start symbolic distillation or new composition experiments from PSD.
+- Do not start MAP-Elites / CMA-ES / QD.
+- Do not use Fireworks/Cloudrift LLM APIs yet.
+- Do not escalate composition model complexity if selection wins.
+- Do not retrain selectors from Family A alone as a substitute for this pilot.
 
 ## P0 - Apt-Serve / module envelope (independent)
 

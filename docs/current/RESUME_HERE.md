@@ -103,9 +103,10 @@ Supported interpretation:
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** Next mechanism family after Family A v2
-   (`docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`;
-   verdict `USEFUL_BUT_NEEDS_REFINEMENT`). Do not start MAP-Elites yet.
+1. **WS-P:** After ESTF↔WFS composition pilot
+   (`experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`,
+   tmux `estf-wfs-comp-pilot`) finishes, read the verdict and write the audit.
+   Do not start MAP-Elites or LLM synthesis yet.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 
