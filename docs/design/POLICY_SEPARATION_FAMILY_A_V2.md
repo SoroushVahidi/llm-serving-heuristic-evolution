@@ -139,3 +139,20 @@ Local synthetic smoke (24 cells × settings) found:
 Chosen fixed parameters prioritize bidirectional ESTF↔WFS with imperfect Aging
 without extreme under-SLO that would make all policies fail equally. Pilot util
 levels set to `[1.10, 1.30, 1.50]`.
+
+## 11. Cluster pilot launch record (2026-08-16)
+
+| Field | Value |
+|---|---|
+| Git SHA | `5461e51a56921b15bf7c397fddf062379ae6621b` |
+| tmux session | `family-a-v2-pilot` |
+| Slurm job ID | `1182373` |
+| Submit command | `sbatch scripts/slurm/run_policy_separation_fairness_starvation_pilot_v2.sbatch` |
+| Worktree | `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1` |
+| StdOut | `…/logs/policy-separation-fairness-starvation-pilot-v2.1182373.out` |
+| StdErr | `…/logs/policy-separation-fairness-starvation-pilot-v2.1182373.err` |
+| Expected run dir | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_<TS>_1182373` |
+| BurstGPT (preflight) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2/raw/BurstGPT_without_fails_1.csv` |
+| Health check (~3 min) | Job allocated to `n0043`; state remained `CONFIGURING`/`CF`; stdout/run_dir not yet visible when monitoring stopped |
+
+**Next action after job completes:** integrity-check results (288 rows, BurstGPT provenance, canonical ANWG column), then full hypothesis audit H1–H10. Do not analyze while unfinished.
