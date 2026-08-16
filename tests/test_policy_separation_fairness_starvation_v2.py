@@ -112,6 +112,38 @@ def test_production_fails_without_burstgpt(tmp_path):
         )
 
 
+def test_burstgpt_request_tokens_plural_header(tmp_path, monkeypatch):
+    """Staged BurstGPT v2 uses 'Request tokens' / 'Response tokens' (plural)."""
+    from llmserveopt.policy_separation import templates_fairness_starvation_v2 as v2
+
+    raw = tmp_path / "burstgpt_v2" / "raw"
+    raw.mkdir(parents=True)
+    csv_path = raw / "BurstGPT_without_fails_1.csv"
+    lines = ["Timestamp,Model,Request tokens,Response tokens,Total tokens,Log Type\n"]
+    for i in range(200):
+        req = 100 + (i % 50)
+        resp = 20 + (i % 30)
+        lines.append(f"{i},ChatGPT,{req},{resp},{req + resp},Conversation log\n")
+    csv_path.write_text("".join(lines), encoding="utf-8")
+
+    v2._load_burstgpt_arrays.cache_clear()
+    monkeypatch.setenv("LLM_SERVEOPT_BURSTGPT_CSV", str(csv_path))
+    # Also point discovery at tmp datasets root.
+    s = case_fairness_vs_size_v2(
+        target_utilization=1.0,
+        tenant_weight_skew=5.0,
+        favored_tenant_size="long",
+        prediction_noise_sigma=0.0,
+        seed=1,
+        allow_synthetic_tokens=False,
+        datasets_root=tmp_path,
+    )
+    assert s.params["token_length_source"] == "burstgpt_staged"
+    assert s.params.get("burstgpt_path")
+    assert Path(s.params["burstgpt_path"]).name == "BurstGPT_without_fails_1.csv"
+    assert all(r.prompt_tokens > 0 for r in s.requests)
+
+
 def test_prediction_noise_determinism_and_accurate_control():
     rng = np.random.default_rng(0)
     actual = np.array([10, 20, 30, 40])

@@ -42,11 +42,20 @@ class BurstGPTUnavailableError(RuntimeError):
 
 @lru_cache(maxsize=4)
 def _load_burstgpt_arrays(path_str: str) -> Tuple[np.ndarray, np.ndarray]:
+    """Load prompt/output token arrays from a staged BurstGPT CSV.
+
+    Uses the shared BurstGPT schema detector so both ``Request tokens``
+    (release v2) and legacy ``Request Token`` / ``request_token`` headers work.
+    """
+    from ..workloads.burstgpt import detect_burstgpt_schema
+
     df = pd.read_csv(path_str, nrows=20000)
-    p_col = "Request Token" if "Request Token" in df.columns else "request_token"
-    r_col = "Response Token" if "Response Token" in df.columns else "response_token"
-    prompts = df[p_col].dropna().to_numpy(dtype=float)
-    outputs = df[r_col].dropna().to_numpy(dtype=float)
+    schema = detect_burstgpt_schema(list(df.columns))
+    p_col = schema["request_tokens"]
+    r_col = schema["response_tokens"]
+    assert p_col is not None and r_col is not None
+    prompts = pd.to_numeric(df[p_col], errors="coerce").dropna().to_numpy(dtype=float)
+    outputs = pd.to_numeric(df[r_col], errors="coerce").dropna().to_numpy(dtype=float)
     if len(prompts) < 100 or len(outputs) < 100:
         raise BurstGPTUnavailableError(f"BurstGPT CSV too small or unusable: {path_str}")
     return prompts, outputs

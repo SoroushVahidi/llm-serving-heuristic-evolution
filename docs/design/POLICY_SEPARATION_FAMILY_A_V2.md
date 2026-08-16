@@ -142,17 +142,24 @@ levels set to `[1.10, 1.30, 1.50]`.
 
 ## 11. Cluster pilot launch record (2026-08-16)
 
+### Attempt 1 — Job 1182373 — FAILED
+
 | Field | Value |
 |---|---|
-| Git SHA | `5461e51a56921b15bf7c397fddf062379ae6621b` |
+| Git SHA at submit | `5461e51` (later cluster HEAD `65e0a1d`) |
 | tmux session | `family-a-v2-pilot` |
 | Slurm job ID | `1182373` |
 | Submit command | `sbatch scripts/slurm/run_policy_separation_fairness_starvation_pilot_v2.sbatch` |
-| Worktree | `/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1` |
-| StdOut | `…/logs/policy-separation-fairness-starvation-pilot-v2.1182373.out` |
-| StdErr | `…/logs/policy-separation-fairness-starvation-pilot-v2.1182373.err` |
-| Expected run dir | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_<TS>_1182373` |
-| BurstGPT (preflight) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2/raw/BurstGPT_without_fails_1.csv` |
-| Health check (~3 min) | Job allocated to `n0043`; state remained `CONFIGURING`/`CF`; stdout/run_dir not yet visible when monitoring stopped |
+| Scratch | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_20260816T215822Z_1182373` |
+| Result | `FAILED` ExitCode `1:0` after ~23s once past CONFIGURING |
+| Root cause | BurstGPT CSV headers are `Request tokens` / `Response tokens`; loader looked for `Request Token` / `request_token` → `KeyError` |
+| Fix | Use shared `detect_burstgpt_schema` in v2 loader; add regression test |
 
-**Next action after job completes:** integrity-check results (288 rows, BurstGPT provenance, canonical ANWG column), then full hypothesis audit H1–H10. Do not analyze while unfinished.
+### Attempt 2 — pending relaunch after column-schema fix
+
+| Field | Value |
+|---|---|
+| Expected scratch pattern | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_<TS>_<JOBID>` |
+| BurstGPT (preflight) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2/raw/BurstGPT_without_fails_1.csv` |
+
+**Next action after a successful job completes:** integrity-check results (288 rows, BurstGPT provenance, canonical ANWG column), then full hypothesis audit H1–H10. Do not analyze while unfinished.
