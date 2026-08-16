@@ -48,15 +48,16 @@ current status, see `docs/current/RESUME_HERE.md` and
   `docs/design/POLICY_SEPARATION_SOBOL_PILOT_V1.md`
 - **Recent provenance:**
   - Sobol pilot: `experiments/policy_separation_sobol_pilot_20260816T183600Z_1182183/`
-  - Family A pilot: `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`
-    (analysis under `…/analysis/`; audit
-    `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`)
+  - Family A v2: `experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/`
+    (audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`;
+    verdict `USEFUL_BUT_NEEDS_REFINEMENT`)
+  - Family A v1 (diagnostic): `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`
+- **Design:** `docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`
 - **Audits:** `docs/audits/policy_separation_*`
 - **Common confusion to avoid:** Job 1182306’s CSV column `anwg` is unweighted
-  SLO-success, not canonical `RunMetrics.arrival_normalized_weighted_goodput`;
-  that job used synthetic token lengths, not BurstGPT anchoring. Family A v1 is
-  diagnostic-only; next is Family A v2 redesign.
-
+  SLO-success, not canonical ANWG; v1 used synthetic lengths. Job 1182377 uses
+  canonical ANWG + BurstGPT. Next WS-P step is the next mechanism family, not
+  MAP-Elites.
 ## Datasets
 
 - **Purpose:** real-trace and synthetic workload sources.

@@ -97,7 +97,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
-| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 EXECUTED+ANALYZED (Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`); verdict `USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`. Family A v2 DESIGN+IMPLEMENTED (`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`); smoke gate passed; cluster pilot pending/in flight (72×4=288). MAP-Elites / selector retrain not yet justified. Feeds WS-A and WS-F. |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 diagnostic only (Job 1182306). Family A v2 EXECUTED+ANALYZED (Job 1182377; audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`); verdict `USEFUL_BUT_NEEDS_REFINEMENT` — ESTF↔WFS bidirectional confirmed; include in PSD. Next: next mechanism family. MAP-Elites / selector retrain not yet justified. Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
 
@@ -141,18 +141,15 @@ to WS-H/WS-K:
   launching another broad Apt-Serve sweep.
 
 **Parallel thread (WS-P, independent of the above):** Sobol Pilot v1 (Job 1182183)
-is complete and analyzed. Family A Fairness and Starvation pilot Job 1182306 is
+is complete and analyzed. Family A v1 Job 1182306 remains diagnostic-only
+(`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`). Family A v2 Job 1182377 is
 executed **and scientifically analyzed**
-(`docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`):
-verdict `USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`. The intended ESTF↔WFS
-fairness/size crossover did not appear (size–priority collinearity; Aging
-saturation). Historical CSV `anwg` is unweighted SLO-success, not canonical
-ANWG; token lengths were synthetic. Family A v2 is designed and implemented
-(`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`; orthogonal size×priority;
-BurstGPT-required; canonical ANWG; prediction noise). Next WS-P step:
-**launch/analyze the Family A v2 pilot** — not MAP-Elites, selector
-retraining, or new composition experiments. Typed DSL/module composition
-elsewhere in the repo does not substitute for this.
+(`docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`):
+verdict `USEFUL_BUT_NEEDS_REFINEMENT`. ESTF↔WFS bidirectional separation is
+confirmed under orthogonal size×priority with BurstGPT anchoring and canonical
+ANWG. Next WS-P step: **design/execute the next mechanism family** — not
+MAP-Elites, selector retraining, or new composition experiments. Typed
+DSL/module composition elsewhere in the repo does not substitute for this.
 
 
 ## Stop Conditions

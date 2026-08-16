@@ -46,18 +46,20 @@ characterization (WS-P).
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
-**Family A Fairness and Starvation pilot Job 1182306 is EXECUTED and now
-SCIENTIFICALLY ANALYZED.**
+**Family A v2 fairness-vs-size pilot Job 1182377 is EXECUTED and SCIENTIFICALLY
+ANALYZED.**
 
-- Audit: [`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)
-- Provenance: [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/)
-- Analysis artifacts: `…/analysis/` (winners, pairwise, seed stability, fairness surfaces)
-- Verdict: **`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`** — not corpus-ready
-- Key negative result: ESTF↔WFS bidirectional fairness/size niche **absent**;
-  Aging saturated (historical unweighted SLO-success = 1.0 on all 120 scenarios);
-  size–priority collinearity confound
-- Caveats unchanged: synthetic token lengths; historical CSV `anwg` =
-  unweighted SLO-success (**not** canonical ANWG)
+- Audit: [`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)
+- Provenance: [`../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/`](../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/)
+- Verdict: **`USEFUL_BUT_NEEDS_REFINEMENT`** — include in PSD; next mechanism family justified
+- Key positive results: ESTF↔WFS bidirectional @ε=0.01 (**26 / 29**); near-tie
+  **18%** (vs v1 60%); Aging perfect **8.3%**; BurstGPT staged; canonical ANWG
+- Failed predecessor Job 1182373 (BurstGPT plural header) fixed before relaunch
+
+Family A v1 Job 1182306 remains frozen diagnostic evidence
+(`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`; historical CSV `anwg` =
+unweighted SLO-success, not canonical ANWG):
+[`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md).
 
 Predecessor: Sobol pilot v1 Job `1182183` (COMPLETE + analyzed) —
 [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md).
@@ -96,14 +98,14 @@ Supported interpretation:
   [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 - Apt-Serve: Phase G analysis is complete; no new Apt-Serve collection job is
   queued.
-- WS-P: Family A v1 analyzed; **Family A v2 redesign is the next PSD step**.
+- WS-P: Family A v2 analyzed (`USEFUL_BUT_NEEDS_REFINEMENT`); **next mechanism
+  family is the next PSD step**.
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** Family A v2 pilot — design implemented
-   (`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`); launch/analyze the v2
-   cluster pilot (orthogonal size×priority, BurstGPT-required, canonical ANWG).
-   Do not start MAP-Elites or selector retraining yet.
+1. **WS-P:** Next mechanism family after Family A v2
+   (`docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`;
+   verdict `USEFUL_BUT_NEEDS_REFINEMENT`). Do not start MAP-Elites yet.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

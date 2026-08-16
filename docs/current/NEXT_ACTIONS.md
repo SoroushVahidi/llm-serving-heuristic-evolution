@@ -6,23 +6,21 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Launch and (after completion) analyze Family A v2 fairness-vs-size pilot.**
+**Design and execute the next mechanism family after Family A v2.**
 
-Design: [`../design/POLICY_SEPARATION_FAMILY_A_V2.md`](../design/POLICY_SEPARATION_FAMILY_A_V2.md)  
-Config: `configs/policy_separation_fairness_starvation_pilot_v2.yaml`  
-Runner: `scripts/run_policy_separation_fairness_starvation_pilot_v2.py`  
-Slurm: `scripts/slurm/run_policy_separation_fairness_starvation_pilot_v2.sbatch`
-
-Grid: 72 scenarios × 4 policies = **288** evaluations (BurstGPT required;
-canonical ANWG primary).
+Family A v2 audit:
+[`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)  
+Verdict: `USEFUL_BUT_NEEDS_REFINEMENT` — include in PSD; ESTF↔WFS bidirectional
+confirmed; proceed to next family. Optional A refinements (more seeds / skew–ANWG
+slice) are non-blocking.
 
 Family A v1 remains frozen diagnostic evidence only
 ([`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)).
 
 Stop conditions for this thread:
 
-- Do not start MAP-Elites / CMA-ES / QD.
-- Do not retrain selectors from Family A v1.
+- Do not start MAP-Elites / CMA-ES / QD until multi-family coverage justifies it.
+- Do not retrain selectors from Family A alone.
 - Do not start symbolic distillation or new composition experiments from PSD.
 
 ## P0 - Apt-Serve / module envelope (independent)

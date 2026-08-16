@@ -1,7 +1,8 @@
 # Policy Separation Family A v2 — Design (Fairness vs Size)
 
 **Date:** 2026-08-16  
-**Status:** DESIGN + IMPLEMENTATION COMPLETE; smoke gate PASSED; cluster pilot pending / in flight  
+**Status:** PILOT COMPLETE + ANALYZED (Job 1182377); verdict
+`USEFUL_BUT_NEEDS_REFINEMENT`  
 **Predecessor:** Family A v1 Job 1182306 —
 [`docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)  
 **Verdict of v1:** `USEFUL_DIAGNOSTIC_ONLY / REDESIGN_REQUIRED`
@@ -155,11 +156,17 @@ levels set to `[1.10, 1.30, 1.50]`.
 | Root cause | BurstGPT CSV headers are `Request tokens` / `Response tokens`; loader looked for `Request Token` / `request_token` → `KeyError` |
 | Fix | Use shared `detect_burstgpt_schema` in v2 loader; add regression test |
 
-### Attempt 2 — pending relaunch after column-schema fix
+### Attempt 2 — Job 1182377 — COMPLETE
 
 | Field | Value |
 |---|---|
-| Expected scratch pattern | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_<TS>_<JOBID>` |
-| BurstGPT (preflight) | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2/raw/BurstGPT_without_fails_1.csv` |
+| Git SHA at run | `16ad5d3e5af2e02516dfc42cc0825fa8eb7cbf38` |
+| Slurm job ID | `1182377` |
+| Submit command | `sbatch scripts/slurm/run_policy_separation_fairness_starvation_pilot_v2.sbatch` |
+| Scratch | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377` |
+| Result | `COMPLETED` ExitCode `0:0`; 288/288 successes; BurstGPT staged |
+| Audit | [`docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md) |
+| Verdict | `USEFUL_BUT_NEEDS_REFINEMENT` |
 
-**Next action after a successful job completes:** integrity-check results (288 rows, BurstGPT provenance, canonical ANWG column), then full hypothesis audit H1–H10. Do not analyze while unfinished.
+**Next WS-P action:** design/execute the next mechanism family (Family A
+optional refinements are non-blocking).
