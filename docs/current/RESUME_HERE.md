@@ -11,7 +11,7 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | `8b0fc6c7a88d5a596e33ae1088936f659ad1ee63` (Family A pilot code; hygiene commit may supersede — re-run `git rev-parse HEAD`) |
+| Last reconciled SHA | `7278fdefb2aaa4b980e99892ff73bd464ad6bc5f` |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
 | Canonical roadmap | `docs/PROJECT_MAP.md` |
