@@ -46,23 +46,24 @@ characterization (WS-P).
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
-**Family A v2 fairness-vs-size pilot Job 1182377 is EXECUTED and SCIENTIFICALLY
-ANALYZED.**
+**ESTF↔WFS minimal composition falsification is COMPLETE.**
 
-- Audit: [`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)
-- Provenance: [`../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/`](../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/)
-- Verdict: **`USEFUL_BUT_NEEDS_REFINEMENT`** — include in PSD; next mechanism family justified
-- Key positive results: ESTF↔WFS bidirectional @ε=0.01 (**26 / 29**); near-tie
-  **18%** (vs v1 60%); Aging perfect **8.3%**; BurstGPT staged; canonical ANWG
-- Failed predecessor Job 1182373 (BurstGPT plural header) fixed before relaunch
+- Audit: [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)
+- Provenance: [`../../experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`](../../experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/)
+- Verdict: **`SELECTION_SUFFICIENT_FOR_THIS_PAIR`**
+- Contextual rank composition does not beat contextual top-1 on TEST; parent
+  envelope gain is 0. Symbolic distillation / MAP-Elites / LLM synthesis are
+  **not** justified from this pair alone.
+- Next WS-P step: **next mechanism family**.
+
+Family A v2 Job 1182377 remains validated complementary-parent evidence
+(`USEFUL_BUT_NEEDS_REFINEMENT`):
+[`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md).
 
 Family A v1 Job 1182306 remains frozen diagnostic evidence
 (`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`; historical CSV `anwg` =
 unweighted SLO-success, not canonical ANWG):
 [`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md).
-
-Predecessor: Sobol pilot v1 Job `1182183` (COMPLETE + analyzed) —
-[`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md).
 
 ## Latest Major Result (Apt-Serve/CC thread)
 
@@ -98,15 +99,16 @@ Supported interpretation:
   [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 - Apt-Serve: Phase G analysis is complete; no new Apt-Serve collection job is
   queued.
-- WS-P: Family A v2 analyzed (`USEFUL_BUT_NEEDS_REFINEMENT`); **next mechanism
-  family is the next PSD step**.
+- WS-P: Family A v2 analyzed; ESTF↔WFS composition =
+  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; **next mechanism family** is next.
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** After ESTF↔WFS composition pilot
-   (`experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`,
-   tmux `estf-wfs-comp-pilot`) finishes, read the verdict and write the audit.
-   Do not start MAP-Elites or LLM synthesis yet.
+1. **WS-P:** Design/execute the **next mechanism family** after Family A v2.
+   ESTF↔WFS composition pilot verdict:
+   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
+   ([`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)).
+   Do **not** start MAP-Elites, symbolic distillation, or LLM synthesis from this pair.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

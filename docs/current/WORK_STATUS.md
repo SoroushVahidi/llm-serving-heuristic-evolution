@@ -32,15 +32,17 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Policy Separation Dataset v1 (three-case + boundary refinement) | `COMPLETE` for the two diagnostic jobs | Jobs 1170116, 1171116; `docs/audits/policy_separation_three_case_v1_20260810.md`, `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`, `docs/audits/policy_separation_edf_admission_mechanism_20260810.md` | Full 5-family/25-template corpus in `docs/design/POLICY_SEPARATION_DATASET_V1.md` was never fully built; treat that doc's original Phase-1 claim as superseded | Use completed diagnostics + Sobol + Family A pilot as the live PSD path |
 | Policy Separation Sobol pilot v1 | `COMPLETE` | Job 1182183; `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`; local `experiments/policy_separation_sobol_pilot_20260816T183600Z_1182183/` | Coverage gaps for fairness/KV remain | Keep as analyzed predecessor to Family A |
 | Policy Separation Family A (fairness / starvation) v1 | `COMPLETE` analysis; `REDESIGN_REQUIRED` for corpus use | Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`; provenance + `analysis/` under `experiments/…_1182306/` | ESTF↔WFS bidirectional niche absent; Aging saturated; size–priority collinearity; historical `anwg` = unweighted SLO-success; synthetic lengths | Retain frozen; do not train selectors from v1 |
-| Policy Separation Family A v2 (fairness vs size) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT` | Job 1182377; audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`; provenance + `analysis/` under `experiments/…_v2_…_1182377/` | Seed agree 72% (near 75% bar); WFS ANWG non-monotone in skew under conflict; aligned short cells ESTF-dominated | Include in PSD; design/execute next mechanism family |
+| Policy Separation Family A v2 (fairness vs size) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT` | Job 1182377; audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`; provenance + `analysis/` under `experiments/…_v2_…_1182377/` | Seed agree 72% (near 75% bar); WFS ANWG non-monotone in skew under conflict; aligned short cells ESTF-dominated | Include in PSD; next mechanism family |
+| ESTF↔WFS composition falsification v1 | `COMPLETE`; `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`; run `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/` | Contextual α does not beat top-1; envelope gain 0 | Do not distill/MAP-Elites/LLM-synth from this pair; next mechanism family |
 
 ## Current Blocker
 
 There is no active failed job to diagnose. On WS-P, Family A v2 is analyzed and
-usable with documented refinements; the remaining gap is coverage of the next
-mechanism family. Independently, the Apt-Serve/CC blocker remains organizational:
-translate Phase G's bounded evidence into module-decomposition /
-library-envelope work without overclaiming global Apt-Serve superiority.
+usable; ESTF/WFS composition did not unlock envelope gain beyond selection. The
+remaining gap is coverage of the **next mechanism family**. Independently, the
+Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
+evidence into module-decomposition / library-envelope work without overclaiming
+global Apt-Serve superiority.
 
 ## Current Next Action
 
@@ -48,7 +50,7 @@ Read:
 
 1. [`RESUME_HERE.md`](RESUME_HERE.md)
 2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md)
-3. [`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)
+3. [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)
 4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
 5. Family A v2 provenance:
    [`../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/README.md`](../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/README.md)

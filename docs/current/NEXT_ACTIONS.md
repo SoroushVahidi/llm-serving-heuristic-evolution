@@ -6,23 +6,24 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Finish/analyze the ESTF↔WFS minimal composition falsification pilot.**
+**Design and execute the next mechanism family after Family A v2.**
 
-Status note:
-[`../audits/estf_wfs_composition_falsification_status_20260816.md`](../audits/estf_wfs_composition_falsification_status_20260816.md)  
-Design: [`../design/ESTF_WFS_COMPOSITION_FALSIFICATION_V1.md`](../design/ESTF_WFS_COMPOSITION_FALSIFICATION_V1.md)  
-Run dir: `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`  
-tmux: `estf-wfs-comp-pilot`
+ESTF↔WFS composition falsification is COMPLETE:
+[`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  
+**Verdict: `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.** Contextual rank composition
+did not beat contextual top-1 or expand the parent envelope. More complex
+composition, symbolic distillation, MAP-Elites, and LLM synthesis are **not**
+justified from this pair alone.
 
-Family A v2 remains the validated complementary parent pair
+Family A v2 remains validated complementary-parent evidence
 ([`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)).
 
 Stop conditions for this thread:
 
-- Do not start MAP-Elites / CMA-ES / QD.
+- Do not start MAP-Elites / CMA-ES / QD from ESTF/WFS composition.
+- Do not start symbolic distillation from this teacher.
 - Do not use Fireworks/Cloudrift LLM APIs yet.
-- Do not escalate composition model complexity if selection wins.
-- Do not retrain selectors from Family A alone as a substitute for this pilot.
+- Do not escalate composition model complexity to rescue this NO_GO.
 
 ## P0 - Apt-Serve / module envelope (independent)
 

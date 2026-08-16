@@ -1,0 +1,26 @@
+{
+  "alpha_candidates": [
+    {
+      "model_type": "logreg",
+      "val_proxy_accuracy": 0.4
+    },
+    {
+      "model_type": "tree",
+      "val_proxy_accuracy": 0.2
+    }
+  ],
+  "alpha_model_type": "logreg",
+  "alpha_val_proxy_accuracy": 0.4,
+  "selector_candidates": [
+    {
+      "model_type": "logreg",
+      "val_accuracy": 0.3
+    },
+    {
+      "model_type": "tree",
+      "val_accuracy": 0.25
+    }
+  ],
+  "selector_model_type": "logreg",
+  "selector_val_accuracy": 0.3
+}

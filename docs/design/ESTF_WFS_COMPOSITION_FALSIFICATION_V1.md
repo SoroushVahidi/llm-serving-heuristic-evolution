@@ -1,7 +1,7 @@
 # ESTF↔WFS Minimal Composition Falsification (v1)
 
 **Date:** 2026-08-16  
-**Status:** DESIGN FOR EXECUTION  
+**Status:** COMPLETE + ANALYZED — verdict `SELECTION_SUFFICIENT_FOR_THIS_PAIR`  
 **Parents:** `estimated_service_time_first` (ESTF), `weighted_fair_share` (WFS)  
 **Corpus:** Family A v2 Job 1182377  
 **Primary metric:** canonical `arrival_normalized_weighted_goodput`
