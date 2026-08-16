@@ -24,6 +24,8 @@ must still not be cancelled or modified by repository-cleanup tasks.
 
 | Workflow | Root | Status note |
 | --- | --- | --- |
+| Policy Separation Family A Fairness/Starvation Pilot | `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306` (+ Git copy under `experiments/…_1182306/`) | Complete execution; analysis pending; treat as read-only provenance. |
+| Policy Separation Sobol Pilot v1 | `/mmfs1/scratch/ikoutis/sv96/policy_separation_sobol_pilot_20260816T183600Z_1182183` (+ Git copy under `experiments/…_1182183/`) | Complete and analyzed; read-only. |
 | Policy Frontier Cartography | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z` | Complete; final report exists. |
 | Policy Library V2 Expanded Frontier | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_library_v2_expanded_20260721T171933Z` | Complete; final report exists. |
 | V2 Real-OOD 27-Policy Library Audit | `/mmfs1/project/ikoutis/sv96/llmserveopt-data/v2_real_ood_library_20260721T222521Z` | Complete; strong V2 oracle-envelope expansion. |

@@ -41,14 +41,30 @@ ENTRY_POINTS_REQUIRING_CANONICAL_LINK = [
     ROOT / "docs" / "current" / "README.md",
 ]
 
-# (file, forbidden substring, reason) -- each is a stale/contradictory claim
-# that must not appear in a live status document. Historical, explicitly
-# dated audit docs under docs/audits/ are intentionally NOT checked here --
-# they are point-in-time snapshots, not living status.
+REQUIRED_CLAIMS = [
+    (CANONICAL_RESUME, "COMPLETE_REGIME_SPECIFIC"),
+    (CANONICAL_RESUME, "Posthoc analysis: complete with wrapper `exit_code=0`"),
+    (CANONICAL_RESUME, "post-Phase-G module-envelope interpretation"),
+    (CANONICAL_RESUME, "1182306"),
+    (CANONICAL_RESUME, "ANALYSIS PENDING"),
+    (CANONICAL_RESUME, "unweighted SLO-success"),
+    (PROJECT_MAP, "Documentation Authority"),
+    (PROJECT_MAP, "Return from Apt-Serve-specific collection to broader library-envelope"),
+    (PROJECT_MAP, "1182306"),
+    (WORK_STATUS, "Apt-Serve Phase G analysis"),
+    (WORK_STATUS, "EXECUTED_ANALYSIS_PENDING"),
+    (NEXT_ACTIONS, "post-Phase-G module-envelope interpretation"),
+    (NEXT_ACTIONS, "Analyze Family A Fairness and Starvation Pilot"),
+    (BASELINE_STATUS, "Positive marginal portfolio contribution; no global superiority claim"),
+    (PHASE_G_AUDIT, "Not Yet Established"),
+]
+
 FORBIDDEN_CLAIMS = [
     (CANONICAL_RESUME, "CC5 IN PROGRESS", "CC5 is finalized COMPLETE_REGIME_SPECIFIC"),
     (CANONICAL_RESUME, "CC6 has started", "CC6 is not started"),
     (CANONICAL_RESUME, "CC6 is COMPLETE", "CC6 is not started"),
+    (CANONICAL_RESUME, "Design and execute a targeted missing-mechanism pilot for Family A", "Family A pilot Job 1182306 already executed"),
+    (NEXT_ACTIONS, "Draft the design and configuration for **Family A", "Family A generator+pilot already exist"),
     (BASELINE_STATUS, "Phase G reached only 9.5%", "Phase G collection is complete"),
     (BASELINE_STATUS, "sweep has not yet been relaunched", "Phase G collection was resumed and completed"),
     (BASELINE_STATUS, "Relaunch the Phase G sweep", "the next task is post-Phase-G interpretation"),
@@ -76,20 +92,6 @@ STALE_PHASE_G_TOKENS = [
     "Phase F work is uncommitted",
     "e413ba1dcbe8b79f0ebc0f7511e846481548b6bb",
     "891881281b650f549b0bbebaa49df8182e535ba8",
-]
-
-# (file, required substring) -- current status facts that MUST be present,
-# to catch silent regressions (e.g. a future edit removing the correction).
-REQUIRED_CLAIMS = [
-    (CANONICAL_RESUME, "COMPLETE_REGIME_SPECIFIC"),
-    (CANONICAL_RESUME, "Posthoc analysis: complete with wrapper `exit_code=0`"),
-    (CANONICAL_RESUME, "post-Phase-G module-envelope interpretation"),
-    (PROJECT_MAP, "Documentation Authority"),
-    (PROJECT_MAP, "Return from Apt-Serve-specific collection to broader library-envelope"),
-    (WORK_STATUS, "Apt-Serve Phase G analysis"),
-    (NEXT_ACTIONS, "post-Phase-G module-envelope interpretation"),
-    (BASELINE_STATUS, "Positive marginal portfolio contribution; no global superiority claim"),
-    (PHASE_G_AUDIT, "Not Yet Established"),
 ]
 
 

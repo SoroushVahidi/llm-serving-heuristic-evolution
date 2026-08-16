@@ -1,0 +1,31 @@
+job_id=1182306
+job_name=policy-separation-fairness-starvation-pilot-v1
+host=n0007
+date_utc=2026-08-16T21:10:29Z
+repo_dir=/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1
+run_dir=/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306
+config=/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1/configs/policy_separation_fairness_starvation_pilot_v1.yaml
+8b0fc6c7a88d5a596e33ae1088936f659ad1ee63
+policy-separation-v1-wulver-20260809
+git_status_short:
+?? docs/design/POLICY_SEPARATION_DATASET_V1.md
+Python 3.10.20
+python_bin=/home/sv96/.conda/envs/repo-env/bin/python
+cpus_per_task=8
+[2026-08-16T17:10:43] Starting Fairness and Starvation Pilot v1 (dry_run=False)
+[2026-08-16T17:10:43] Generated 120 scenarios.
+[2026-08-16T17:10:43] Total tasks to run: 480
+[2026-08-16T17:10:48] Completed 50/480 tasks.
+[2026-08-16T17:10:53] Completed 100/480 tasks.
+[2026-08-16T17:10:58] Completed 150/480 tasks.
+[2026-08-16T17:11:04] Completed 200/480 tasks.
+[2026-08-16T17:11:11] Completed 250/480 tasks.
+[2026-08-16T17:11:19] Completed 300/480 tasks.
+[2026-08-16T17:11:30] Completed 350/480 tasks.
+[2026-08-16T17:11:42] Completed 400/480 tasks.
+[2026-08-16T17:11:59] Completed 450/480 tasks.
+[2026-08-16T17:12:09] Completed execution of 480 tasks in 85.87 seconds.
+[2026-08-16T17:12:09] Successes: 480, Failures: 0
+[2026-08-16T17:12:09] Completed Pilot Execution successfully!
+wrapper_exit_code=0
+finished_at_utc=2026-08-16T21:12:11Z

@@ -97,7 +97,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
-| WS-P | Policy Separation Dataset / decision-boundary characterization | Complete for Sobol Pilot v1 (Job 1182183; see `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`), establishing real continuous crossovers, headroom (mean 1.59% in Family B, up to 1.84% under strong heterogeneity), and proving Sobol space-filling sampling preserves policy-separation signal without dilution. MAP-Elites is not yet justified without missing fairness/KV mechanisms. Feeds WS-A and WS-F. |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A fairness/starvation generator IMPLEMENTED and pilot EXECUTED (Job 1182306; 120×4=480; provenance under `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`); scientific analysis PENDING. Historical Family A `anwg` column is unweighted SLO-success, not canonical ANWG; Job 1182306 used synthetic token-length fallback. MAP-Elites / selector retrain not yet justified. Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
 
@@ -140,7 +140,15 @@ to WS-H/WS-K:
 - design the next module-decomposition/compositional-learning step without
   launching another broad Apt-Serve sweep.
 
-**Parallel thread (WS-P, independent of the above):** the Policy Separation Sobol pilot v1 has been successfully executed (Job 1182183) and analyzed (see `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`). The continuous decision boundaries for prediction inversion under strong heterogeneity are fully mapped. The next recommended step is to design and execute a pilot for Family A (Fairness, Weight Skew, and Aging Starvation) to address crucial coverage gaps before executing MAP-Elites.
+**Parallel thread (WS-P, independent of the above):** Sobol Pilot v1 (Job 1182183)
+is complete and analyzed. Family A Fairness and Starvation pilot Job 1182306 is
+**executed** (120 scenarios × 4 policies = 480 evaluations; 0 failures; provenance
+in `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`)
+but **not yet scientifically analyzed**. Job 1182306 used synthetic token-length
+fallback and wrote unweighted SLO-success under historical column `anwg` (not
+canonical ANWG). The next WS-P step is Family A analysis — not MAP-Elites,
+selector retraining, or new composition experiments. Typed DSL/module composition
+elsewhere in the repo does not substitute for this analysis.
 
 ## Stop Conditions
 

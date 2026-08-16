@@ -1,0 +1,8 @@
+{
+  "experiment_name": "policy_separation_fairness_starvation_pilot_v1",
+  "n_scenarios": 120,
+  "n_tasks": 480,
+  "n_completed": 480,
+  "n_failed": 0,
+  "elapsed_seconds": 85.87280607223511
+}

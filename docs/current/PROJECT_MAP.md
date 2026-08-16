@@ -37,6 +37,23 @@ current status, see `docs/current/RESUME_HERE.md` and
 - **Look here first for:** how a composed/weighted-mixture policy is specified and verified.
 - **Docs:** `docs/architecture/contextual_composition_primitives.md`, `docs/architecture/contextual_composition_dsl.md`, `docs/llm_heuristic_dsl.md`.
 
+## Policy Separation Dataset (WS-P)
+
+- **Purpose:** theory-grounded / space-filling scenarios that separate classical
+  scheduling mechanisms (prediction, deadlines/admission, fairness/aging, …)
+  before QD/selector expansion.
+- **Code:** `src/llmserveopt/policy_separation/`
+- **Design:** `docs/design/POLICY_SEPARATION_DATASET_V1.md` (status banner is
+  authoritative; original Phase-1 “fully implemented” wording is superseded),
+  `docs/design/POLICY_SEPARATION_SOBOL_PILOT_V1.md`
+- **Recent provenance:**
+  - Sobol pilot: `experiments/policy_separation_sobol_pilot_20260816T183600Z_1182183/`
+  - Family A pilot: `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`
+- **Audits:** `docs/audits/policy_separation_*`
+- **Common confusion to avoid:** Job 1182306’s CSV column `anwg` is unweighted
+  SLO-success, not canonical `RunMetrics.arrival_normalized_weighted_goodput`;
+  that job used synthetic token lengths, not BurstGPT anchoring.
+
 ## Datasets
 
 - **Purpose:** real-trace and synthetic workload sources.

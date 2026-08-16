@@ -1,10 +1,17 @@
 # Policy Separation Fairness and Starvation Pilot v1 Configuration
-# Anchored in real-trace token length distributions with controlled weight/priority skew interventions.
+# Anchored design intent: prefer staged BurstGPT token lengths when discoverable;
+# Job 1182306 historically used synthetic fallback due to a filename miss.
+# Historical result column `anwg` = unweighted SLO-success (not canonical ANWG).
+# Measures crossover boundaries between ESTF, FIFO, Aging Priority, and Weighted Fair Share.
 
 pilot_metadata:
   experiment_name: "policy_separation_fairness_starvation_pilot_v1"
   version: "fairness_starvation_v1"
   description: "Measures crossover boundaries between ESTF, FIFO, Aging Priority, and Weighted Fair Share"
+  historical_job_1182306_notes:
+    - "token_length_source=synthetic_lognormal_fallback"
+    - "csv_column_anwg_means_unweighted_slo_success_rate"
+    - "canonical_anwg_not_written_by_historical_runner"
 
 sweep_grid:
   target_utilization: [0.50, 0.80, 1.00, 1.20, 1.50]

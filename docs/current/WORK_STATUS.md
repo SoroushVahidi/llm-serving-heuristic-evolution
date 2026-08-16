@@ -29,15 +29,17 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Stress-test library | `COMPLETE` for several baselines, `IN_PROGRESS` as an evolving library | `configs/stress_tests/algorithm_stress_test_catalog.yaml` and stress-test docs | Apt-Serve findings need integration as module/mechanism evidence, not another broad sweep | Document future module-level tests after post-Phase-G review |
 | Real-system validation | `IMPLEMENTED_NEEDS_VALIDATION` | Local vLLM, hosted API, Wulver validation artifacts | Not unified into a final transfer protocol | Defer until next candidate/system exists |
 | Repository hygiene | `IN_PROGRESS` | This reconciliation pass | Avoid erasing history while reducing live-doc drift | Keep historical audits immutable; maintain one current status path |
-| Policy Separation Dataset v1 (three-case + boundary refinement) | `COMPLETE` for the two diagnostic jobs | Jobs 1170116, 1171116; `docs/audits/policy_separation_three_case_v1_20260810.md`, `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`, `docs/audits/policy_separation_edf_admission_mechanism_20260810.md` | Only 3 narrow mechanisms validated, not the full 5-family/25-template design in `docs/design/POLICY_SEPARATION_DATASET_V1.md` (that document's "Phase 1 implemented" claim is aspirational/superseded -- no fairness/cache templates were ever built) | Review the Sobol pilot design below before executing it |
-| Policy Separation Sobol pilot v1 | `COMPLETE` | Job 1182183; `docs/audits/policy_separation_sobol_pilot_v1_20260816.md` | Complete pilot results analyzed; coverage gaps remain | Design and execute a targeted pilot for Family A (Fairness and Starvation) |
+| Policy Separation Dataset v1 (three-case + boundary refinement) | `COMPLETE` for the two diagnostic jobs | Jobs 1170116, 1171116; `docs/audits/policy_separation_three_case_v1_20260810.md`, `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`, `docs/audits/policy_separation_edf_admission_mechanism_20260810.md` | Full 5-family/25-template corpus in `docs/design/POLICY_SEPARATION_DATASET_V1.md` was never fully built; treat that doc's original Phase-1 claim as superseded | Use completed diagnostics + Sobol + Family A pilot as the live PSD path |
+| Policy Separation Sobol pilot v1 | `COMPLETE` | Job 1182183; `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`; local `experiments/policy_separation_sobol_pilot_20260816T183600Z_1182183/` | Coverage gaps for fairness/KV remain | Keep as analyzed predecessor to Family A |
+| Policy Separation Family A (fairness / starvation) | `EXECUTED_ANALYSIS_PENDING` | Job 1182306; provenance `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/` (120×4=480, 0 failures) | Scientific analysis not written; historical `anwg` column is unweighted SLO-success; token lengths were synthetic fallback (BurstGPT path miss) | Analyze frozen Job 1182306 results; do not start MAP-Elites/selector retrain yet |
 
 ## Current Blocker
 
-There is no active failed job to diagnose. The blocker is now scientific and
-organizational: translate Phase G's bounded Apt-Serve evidence into the broader
-module-decomposition and policy-envelope roadmap without overclaiming global
-Apt-Serve superiority.
+There is no active failed job to diagnose. On WS-P, Family A scientific analysis
+of Job 1182306 is the blocking next deliverable before MAP-Elites/selector
+expansion. Independently, the Apt-Serve/CC blocker remains organizational:
+translate Phase G's bounded evidence into module-decomposition / library-envelope
+work without overclaiming global Apt-Serve superiority.
 
 ## Current Next Action
 
@@ -47,5 +49,8 @@ Read:
 2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md)
 3. [`../audits/apt_serve_phase_g_analysis_20260809.md`](../audits/apt_serve_phase_g_analysis_20260809.md)
 4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
+5. Family A provenance:
+   [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/README.md`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/README.md)
 
-Then run the post-Phase-G module-envelope interpretation task.
+Then: (WS-P) analyze Job 1182306; and/or (Apt-Serve thread) post-Phase-G
+module-envelope interpretation.

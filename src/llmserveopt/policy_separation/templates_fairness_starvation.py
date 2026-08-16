@@ -1,21 +1,24 @@
 """Fairness, weight skew, and aging starvation scenario templates (Family A).
 
-A hybrid real-trace-anchored or synthetic-fallback workload construction
-designed to measure the exact crossover boundary where size-based/throughput-
-oriented scheduling (ESTF) degrades due to tenant starvation, and fairness/
-starvation-aware scheduling (Weighted Fair Share, Aging Priority) becomes
-advantageous.
+Constructs dual-tenant workloads to probe crossover boundaries where
+size-based scheduling and fairness/aging policies diverge under weight skew
+and SLO asymmetry.
+
+Token lengths prefer staged BurstGPT CSVs when discoverable; otherwise the
+generator uses an explicit synthetic lognormal fallback. Job 1182306 used the
+synthetic fallback because the original hardcoded BurstGPT filename did not
+match staged shards (`BurstGPT_without_fails_{1,2,3}.csv`).
 """
 from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
-from ..core.types import GPUConfig, Request
+from ..core.types import Request
 from .builders import req, generous_gpu
 from .schema import PolicySeparationScenario
 
@@ -25,68 +28,105 @@ STEP_SIZE = 0.001  # ServiceModel default step_size (1ms)
 # Wolverine cluster staging root for raw datasets
 DATASETS_ROOT = Path("/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets")
 
+# Staged BurstGPT shard names observed under burstgpt_v2/raw/ (prefer numbered
+# without_fails shards; keep the historical bare name as a last candidate).
+_BURSTGPT_CANDIDATE_NAMES = (
+    "BurstGPT_without_fails_1.csv",
+    "BurstGPT_without_fails_2.csv",
+    "BurstGPT_without_fails_3.csv",
+    "BurstGPT_without_fails.csv",
+)
 
-def _get_staged_burstgpt_path() -> Optional[Path]:
-    """Return path to staged BurstGPT csv if available on the cluster."""
-    p = DATASETS_ROOT / "burstgpt_v2" / "raw" / "BurstGPT_without_fails.csv"
-    return p if p.exists() else None
+
+def _get_staged_burstgpt_path(
+    datasets_root: Optional[Path] = None,
+) -> Optional[Path]:
+    """Return path to a staged BurstGPT CSV if discoverable.
+
+    Resolution order:
+    1. ``LLM_SERVEOPT_BURSTGPT_CSV`` environment override (explicit path)
+    2. Known staged filenames under ``{datasets_root}/burstgpt_v2/raw/``
+    """
+    override = os.environ.get("LLM_SERVEOPT_BURSTGPT_CSV")
+    if override:
+        p = Path(override)
+        return p if p.is_file() else None
+
+    root = Path(datasets_root) if datasets_root is not None else DATASETS_ROOT
+    raw_dir = root / "burstgpt_v2" / "raw"
+    if not raw_dir.is_dir():
+        return None
+    for name in _BURSTGPT_CANDIDATE_NAMES:
+        candidate = raw_dir / name
+        if candidate.is_file():
+            return candidate
+    return None
 
 
-def _get_staged_azure_path() -> Optional[Path]:
+def _get_staged_azure_path(datasets_root: Optional[Path] = None) -> Optional[Path]:
     """Return path to staged Azure csv if available on the cluster."""
-    p = DATASETS_ROOT / "azure_llm_2023" / "raw" / "AzureLLMInferenceTrace_conv_2023.csv"
-    return p if p.exists() else None
+    root = Path(datasets_root) if datasets_root is not None else DATASETS_ROOT
+    p = root / "azure_llm_2023" / "raw" / "AzureLLMInferenceTrace_conv_2023.csv"
+    return p if p.is_file() else None
 
 
 def sample_trace_token_lengths(
     rng: np.random.Generator,
     count: int,
     use_bulk: bool,
-) -> Tuple[np.ndarray, np.ndarray]:
-    """Sample prompt and output token lengths from staged real traces if present,
-    falling back to synthetic lognormal distributions if raw files are missing
-    (e.g., in local developer environments/tests)."""
-    
-    burstgpt_path = _get_staged_burstgpt_path()
+    *,
+    datasets_root: Optional[Path] = None,
+) -> Tuple[np.ndarray, np.ndarray, str]:
+    """Sample prompt/output token lengths.
+
+    Returns ``(prompts, outputs, token_length_source)`` where
+    ``token_length_source`` is one of:
+    - ``burstgpt_staged``: lengths drawn from a discovered BurstGPT CSV
+    - ``synthetic_lognormal_fallback``: synthetic lengths (no staged CSV)
+    """
+    burstgpt_path = _get_staged_burstgpt_path(datasets_root=datasets_root)
     if burstgpt_path is not None:
         try:
-            # Load a random chunk of the CSV to avoid in-memory overhead
-            # We sample from the prompt/response tokens columns
+            # Load a bounded prefix to avoid large in-memory overhead.
             df = pd.read_csv(burstgpt_path, nrows=5000)
             p_col = "Request Token" if "Request Token" in df.columns else "request_token"
             r_col = "Response Token" if "Response Token" in df.columns else "response_token"
-            
+
             p_vals = df[p_col].dropna().values
             r_vals = df[r_col].dropna().values
-            
+
             if len(p_vals) > 0 and len(r_vals) > 0:
                 if use_bulk:
-                    # Filter for bulk-like requests (longer prompt/output)
                     p_bulk = p_vals[p_vals >= np.percentile(p_vals, 50)]
                     r_bulk = r_vals[r_vals >= np.percentile(r_vals, 50)]
                     prompts = rng.choice(p_bulk if len(p_bulk) > 0 else p_vals, size=count)
                     outputs = rng.choice(r_bulk if len(r_bulk) > 0 else r_vals, size=count)
                 else:
-                    # Filter for interactive-like requests (shorter prompt/output)
                     p_inter = p_vals[p_vals <= np.percentile(p_vals, 50)]
                     r_inter = r_vals[r_vals <= np.percentile(r_vals, 50)]
                     prompts = rng.choice(p_inter if len(p_inter) > 0 else p_vals, size=count)
                     outputs = rng.choice(r_inter if len(r_inter) > 0 else r_vals, size=count)
-                
-                # Sane bounds
-                return np.clip(prompts, 16, 2048), np.clip(outputs, 8, 1024)
-        except Exception:
-            pass # Fall through to synthetic lognormal fallback
 
-    # Highly robust synthetic lognormal fallback (identical statistics to repaired VTC sweep)
+                return (
+                    np.clip(prompts, 16, 2048).astype(int),
+                    np.clip(outputs, 8, 1024).astype(int),
+                    "burstgpt_staged",
+                )
+        except Exception:
+            pass  # Fall through to synthetic lognormal fallback
+
     if use_bulk:
         prompts = rng.lognormal(mean=np.log(500.0), sigma=0.5, size=count)
         outputs = rng.lognormal(mean=np.log(300.0), sigma=0.4, size=count)
     else:
         prompts = rng.lognormal(mean=np.log(200.0), sigma=0.5, size=count)
         outputs = rng.lognormal(mean=np.log(100.0), sigma=0.4, size=count)
-        
-    return np.clip(prompts, 16, 2048).astype(int), np.clip(outputs, 8, 1024).astype(int)
+
+    return (
+        np.clip(prompts, 16, 2048).astype(int),
+        np.clip(outputs, 8, 1024).astype(int),
+        "synthetic_lognormal_fallback",
+    )
 
 
 def case4_fairness_starvation(
@@ -116,9 +156,18 @@ def case4_fairness_starvation(
     n_interactive = max(5, min(n_total_jobs - 5, n_interactive))
     n_bulk = n_total_jobs - n_interactive
 
-    # Sample prompt and output lengths from trace or synthetic fallback
-    p_inter, o_inter = sample_trace_token_lengths(rng, n_interactive, use_bulk=False)
-    p_bulk, o_bulk = sample_trace_token_lengths(rng, n_bulk, use_bulk=True)
+    # Sample prompt and output lengths from BurstGPT (if discoverable) or synthetic fallback.
+    # Note: predicted_output_tokens defaults to actual (accurate prediction); this family
+    # is not a prediction-error study. Priority/class_id are synthetic intervention fields.
+    p_inter, o_inter, source_inter = sample_trace_token_lengths(
+        rng, n_interactive, use_bulk=False
+    )
+    p_bulk, o_bulk, source_bulk = sample_trace_token_lengths(rng, n_bulk, use_bulk=True)
+    token_length_source = (
+        "burstgpt_staged"
+        if source_inter == "burstgpt_staged" and source_bulk == "burstgpt_staged"
+        else "synthetic_lognormal_fallback"
+    )
 
     # Combine service times to calculate mean and arrival rates
     # Service time in this simulator is strictly output_tokens * STEP_SIZE (prefill is 0s)
@@ -188,6 +237,9 @@ def case4_fairness_starvation(
         "tenant_weight_skew": tenant_weight_skew,
         "interactive_volume_fraction": interactive_volume_fraction,
         "generator_family": "sobol_family_a_fairness_starvation",
+        # Provenance: length draws are either staged BurstGPT or synthetic.
+        # class_id / priority remain synthetic multi-tenant interventions.
+        "token_length_source": token_length_source,
     }
 
     return PolicySeparationScenario(

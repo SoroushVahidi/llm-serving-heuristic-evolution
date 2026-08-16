@@ -1,20 +1,22 @@
 #!/bin/bash -l
 #
 # ############################################################################
-# # REVIEWED DESIGN REQUIRED BEFORE SBATCH.
+# # HISTORICAL PILOT COMPLETED: Slurm Job 1182306 (2026-08-16).
 # #
-# # This script is PREPARED, NOT AUTHORIZED FOR SUBMISSION. Do not `sbatch`
-# # this file until the design has been explicitly reviewed -- see Step 8
-# # instructions.
+# # Provenance (do not overwrite):
+# #   scratch: /mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306
+# #   repo copy: experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/
+# #
+# # Job 1182306 used synthetic token-length fallback (BurstGPT path miss) and
+# # wrote unweighted SLO-success under column name `anwg`. Any future resubmit
+# # is a NEW corrected run and must use a new run directory / job id.
 # ############################################################################
 #
 # Policy Separation Fairness and Starvation Pilot v1 (Family A)
 # Runs scripts/run_policy_separation_fairness_starvation_pilot_v1.py over
-# the 120 scenario grid (480 policy evaluations) to map crossover boundaries
-# between ESTF, FIFO, Aging Priority, and Weighted Fair Share.
+# the 120 scenario grid (480 policy evaluations).
 #
 # Simulator-only, CPU-only workload. Pure Python/numpy, no vLLM/torch/GPU dependency.
-# Estimated execution time for 480 evaluations is less than 5 seconds.
 
 #SBATCH --job-name=policy-separation-fairness-starvation-pilot-v1
 #SBATCH --partition=general

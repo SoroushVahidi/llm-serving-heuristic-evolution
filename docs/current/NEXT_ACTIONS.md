@@ -4,7 +4,41 @@ This is the current prioritized action list. It must agree with
 [`../PROJECT_MAP.md`](../PROJECT_MAP.md), [`RESUME_HERE.md`](RESUME_HERE.md),
 [`WORK_STATUS.md`](WORK_STATUS.md), and [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 
-## P0 - Current Task
+## P0 - Policy Separation (WS-P)
+
+**Analyze Family A Fairness and Starvation Pilot (Job 1182306).**
+
+Inputs:
+
+- Provenance copy:
+  [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/)
+- Scratch root:
+  `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306`
+- Design: [`../design/POLICY_SEPARATION_DATASET_V1.md`](../design/POLICY_SEPARATION_DATASET_V1.md)
+- Predecessor audit:
+  [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md)
+
+Facts already established (execution integrity, not scientific conclusions):
+
+- Generator + runner implemented and committed.
+- Job 1182306 completed: **120 scenarios × 4 policies = 480** evaluations, 0 failures.
+- Historical CSV column `anwg` = unweighted SLO-success (not canonical ANWG).
+- Token lengths were **synthetic fallback** (BurstGPT path miss at job time).
+
+Deliverable:
+
+- Write a scientific audit (crossover/boundary/hypothesis checks) without
+  silently rewriting the frozen CSV.
+- Decide whether a corrected BurstGPT-anchored / canonical-ANWG rerun is needed
+  as a **new** job, after interpreting the existing pilot.
+
+Stop conditions for this thread:
+
+- Do not start MAP-Elites / CMA-ES / QD.
+- Do not retrain selectors from this pilot yet.
+- Do not start symbolic distillation or new composition experiments from PSD.
+
+## P0 - Apt-Serve / module envelope (independent)
 
 **post-Phase-G module-envelope interpretation.**
 
@@ -28,21 +62,8 @@ Deliverable:
 - Define the next WS-H/WS-K experiment without launching another broad
   Apt-Serve sweep.
 
-## P0 (Policy Separation thread, independent of the above)
-
-**Design and execute Policy Separation Fairness and Starvation Pilot (Family A).**
-
-Inputs:
-
-- Completed Sobol Pilot v1: Slurm Job `1182183`
-- Audit: [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md)
-
-Status: Sobol Pilot v1 is complete, analyzed, and documented. Crossover boundaries on prediction inversion are successfully mapped, and Scorpio's structural dominance under overload is confirmed.
-
-Deliverable for Next Step:
-
-- Draft the design and configuration for **Family A (Fairness, Weight Skew, and Aging Starvation)** over 640 scenarios and 2,560 evaluations.
-- Do not proceed to MAP-Elites or CMA-ES search yet; we must introduce the Fairness-vs-Throughput multi-tenant trade-off to justify Quality-Diversity.
+Existing typed DSL / module-composition work remains available as infrastructure;
+it does not substitute for Family A analysis on the WS-P thread.
 
 ## P1 - Library-Envelope Tooling
 
@@ -77,3 +98,4 @@ retain safe fallback outside that envelope.
 - Do not convert Apt-Serve into the whole project narrative.
 - Do not start broad symbolic synthesis until module contribution evidence is
   stronger.
+- Do not treat Job 1182306 as BurstGPT-anchored or as using canonical ANWG.
