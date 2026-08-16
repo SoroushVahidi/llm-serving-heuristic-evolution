@@ -49,10 +49,13 @@ current status, see `docs/current/RESUME_HERE.md` and
 - **Recent provenance:**
   - Sobol pilot: `experiments/policy_separation_sobol_pilot_20260816T183600Z_1182183/`
   - Family A pilot: `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`
+    (analysis under `…/analysis/`; audit
+    `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`)
 - **Audits:** `docs/audits/policy_separation_*`
 - **Common confusion to avoid:** Job 1182306’s CSV column `anwg` is unweighted
   SLO-success, not canonical `RunMetrics.arrival_normalized_weighted_goodput`;
-  that job used synthetic token lengths, not BurstGPT anchoring.
+  that job used synthetic token lengths, not BurstGPT anchoring. Family A v1 is
+  diagnostic-only; next is Family A v2 redesign.
 
 ## Datasets
 

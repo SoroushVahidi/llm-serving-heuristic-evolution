@@ -1,6 +1,8 @@
 # Policy Separation Fairness and Starvation Pilot v1 — provenance
 
-**Status:** execution COMPLETE (Job 1182306); scientific analysis PENDING  
+**Status:** execution COMPLETE (Job 1182306); scientific analysis COMPLETE  
+**Audit:** [`docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../../docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)  
+**Verdict:** `USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED` (retain frozen rows; do not train selectors on them)  
 **Git HEAD at run:** `8b0fc6c7a88d5a596e33ae1088936f659ad1ee63`  
 **Cluster scratch (authoritative raw root):**  
 `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306`  
@@ -55,6 +57,7 @@
 
 ## Next scientific step
 
-Analyze this frozen corpus (crossover / boundary / hypothesis checks). Do **not**
-silently rewrite these rows. Any BurstGPT-path or canonical-ANWG correction
-requires a **new** run id and a separate audit.
+Family A v1 analysis is complete. Next: **Family A v2 redesign** (orthogonal
+size×priority, BurstGPT, canonical ANWG, prediction noise, anti-saturation).
+Do **not** silently rewrite these rows. Do not start MAP-Elites or selector
+retraining from this corpus.

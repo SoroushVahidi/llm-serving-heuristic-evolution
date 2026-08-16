@@ -11,7 +11,7 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | `7278fdefb2aaa4b980e99892ff73bd464ad6bc5f` |
+| Last reconciled SHA | see `git rev-parse HEAD` (Family A v1 audit landed after `1be0056`) |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
 | Canonical roadmap | `docs/PROJECT_MAP.md` |
@@ -46,24 +46,21 @@ characterization (WS-P).
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
-**Family A Fairness and Starvation pilot execution is COMPLETE (Job 1182306);
-scientific ANALYSIS PENDING.**
+**Family A Fairness and Starvation pilot Job 1182306 is EXECUTED and now
+SCIENTIFICALLY ANALYZED.**
 
-- Slurm Job: `1182306` (480/480 successes, 0 failures; 120 scenarios × 4 policies).
-- Scratch: `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306`
-- Repo provenance copy: [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/)
-- Design reference: [`../design/POLICY_SEPARATION_DATASET_V1.md`](../design/POLICY_SEPARATION_DATASET_V1.md)
-- Predecessor: Sobol pilot v1 Job `1182183` (COMPLETE + analyzed) —
-  [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md)
+- Audit: [`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)
+- Provenance: [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/)
+- Analysis artifacts: `…/analysis/` (winners, pairwise, seed stability, fairness surfaces)
+- Verdict: **`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`** — not corpus-ready
+- Key negative result: ESTF↔WFS bidirectional fairness/size niche **absent**;
+  Aging saturated (historical unweighted SLO-success = 1.0 on all 120 scenarios);
+  size–priority collinearity confound
+- Caveats unchanged: synthetic token lengths; historical CSV `anwg` =
+  unweighted SLO-success (**not** canonical ANWG)
 
-**Frozen-pilot caveats (do not overclaim):**
-
-- Token lengths used **synthetic lognormal fallback** (BurstGPT staged filename
-  miss at job time). Do not describe Job 1182306 as BurstGPT-anchored.
-- Historical CSV column `anwg` is **unweighted SLO-success**, not canonical
-  `RunMetrics.arrival_normalized_weighted_goodput`.
-- MAP-Elites, selector retraining, and new composition experiments are **not**
-  justified until Family A is scientifically analyzed.
+Predecessor: Sobol pilot v1 Job `1182183` (COMPLETE + analyzed) —
+[`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md).
 
 ## Latest Major Result (Apt-Serve/CC thread)
 
@@ -99,13 +96,13 @@ Supported interpretation:
   [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 - Apt-Serve: Phase G analysis is complete; no new Apt-Serve collection job is
   queued.
-- WS-P: Family A pilot executed; analysis pending before QD/selector expansion.
+- WS-P: Family A v1 analyzed; **Family A v2 redesign is the next PSD step**.
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** Analyze Job 1182306 Family A results (hypothesis checks, crossover /
-   boundary characterization, metric caveats). Do not launch a new Family A run
-   as the default next step.
+1. **WS-P:** Design/implement Family A v2 (orthogonal size×priority, BurstGPT
+   anchoring, canonical ANWG, prediction noise, anti-Aging-saturation). Do not
+   start MAP-Elites or selector retraining yet.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 
@@ -116,8 +113,8 @@ Supported interpretation:
 - Do not start CC6 without explicit authorization.
 - Do not delete Phase G artifacts or historical negative-result audits.
 - Do not start MAP-Elites, selector retraining, or broad synthesis from PSD yet.
-- Do not rewrite Job 1182306 CSV rows; corrected metrics/BurstGPT path require a
-  new run id.
+- Do not train selectors on Family A v1 rows.
+- Do not rewrite Job 1182306 CSV rows.
 - Do not use local `results/` absence as proof an experiment never ran; check
   the audit trail.
 

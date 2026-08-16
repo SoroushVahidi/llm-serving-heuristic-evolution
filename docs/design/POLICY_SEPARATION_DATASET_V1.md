@@ -14,7 +14,7 @@
 | Manual theory-grounded diagnostics (3 cases) | **COMPLETE** | Jobs 1170116; audits under `docs/audits/policy_separation_three_case_*` |
 | Boundary refinement | **COMPLETE** | Job 1171116; audits under `docs/audits/policy_separation_boundary_refinement_*` |
 | Sobol / space-filling pilot (prediction + deadline families) | **COMPLETE + ANALYZED** | Job 1182183; `docs/audits/policy_separation_sobol_pilot_v1_20260816.md` |
-| Family A fairness / weight-skew / aging generator + 120×4 pilot | **EXECUTED; ANALYSIS PENDING** | Job 1182306; provenance `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/` |
+| Family A fairness / weight-skew / aging generator + 120×4 pilot | **EXECUTED + ANALYZED** (`USEFUL_DIAGNOSTIC_ONLY`) | Job 1182306; `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md` |
 | Full 5-family × 5-template (25) manual corpus named in §5 | **NOT BUILT** as specified | Only selected templates/families exist; no `templates_fcfs.py` / `templates_cache.py` pack matching §5 |
 | MAP-Elites / QD, selector retraining, module interventions on PSD | **NOT STARTED / NOT JUSTIFIED YET** | Waiting on Family A scientific analysis and remaining mechanism coverage |
 | Typed DSL / module composition elsewhere in the repo | **EXISTS (separate thread)** | Does **not** by itself solve policy-separation decision-boundary characterization |
@@ -24,8 +24,9 @@ fallback (BurstGPT filename miss); CSV column `anwg` is unweighted SLO-success,
 not canonical `RunMetrics.arrival_normalized_weighted_goodput`. See the
 experiment README under `experiments/…_1182306/`.
 
-**Next WS-P action:** scientific analysis of Job 1182306 (no MAP-Elites,
-selector retrain, or new composition experiments until that analysis lands).
+**Next WS-P action:** Family A v2 redesign (orthogonal size×priority, BurstGPT,
+canonical ANWG, prediction noise, anti-Aging-saturation). MAP-Elites, selector
+retraining, and synthesis remain unjustified.
 
 ---
 

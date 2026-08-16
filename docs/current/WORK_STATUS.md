@@ -31,15 +31,16 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Repository hygiene | `IN_PROGRESS` | This reconciliation pass | Avoid erasing history while reducing live-doc drift | Keep historical audits immutable; maintain one current status path |
 | Policy Separation Dataset v1 (three-case + boundary refinement) | `COMPLETE` for the two diagnostic jobs | Jobs 1170116, 1171116; `docs/audits/policy_separation_three_case_v1_20260810.md`, `docs/audits/policy_separation_boundary_refinement_v1_20260810.md`, `docs/audits/policy_separation_edf_admission_mechanism_20260810.md` | Full 5-family/25-template corpus in `docs/design/POLICY_SEPARATION_DATASET_V1.md` was never fully built; treat that doc's original Phase-1 claim as superseded | Use completed diagnostics + Sobol + Family A pilot as the live PSD path |
 | Policy Separation Sobol pilot v1 | `COMPLETE` | Job 1182183; `docs/audits/policy_separation_sobol_pilot_v1_20260816.md`; local `experiments/policy_separation_sobol_pilot_20260816T183600Z_1182183/` | Coverage gaps for fairness/KV remain | Keep as analyzed predecessor to Family A |
-| Policy Separation Family A (fairness / starvation) | `EXECUTED_ANALYSIS_PENDING` | Job 1182306; provenance `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/` (120×4=480, 0 failures) | Scientific analysis not written; historical `anwg` column is unweighted SLO-success; token lengths were synthetic fallback (BurstGPT path miss) | Analyze frozen Job 1182306 results; do not start MAP-Elites/selector retrain yet |
+| Policy Separation Family A (fairness / starvation) | `COMPLETE` analysis of executed pilot; `REDESIGN_REQUIRED` for corpus use | Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`; provenance + `analysis/` tables under `experiments/…_1182306/` | ESTF↔WFS bidirectional niche absent; Aging saturated; size–priority collinearity; historical `anwg` = unweighted SLO-success; synthetic lengths | Design/implement Family A v2; retain v1 as diagnostic/historical only |
 
 ## Current Blocker
 
-There is no active failed job to diagnose. On WS-P, Family A scientific analysis
-of Job 1182306 is the blocking next deliverable before MAP-Elites/selector
-expansion. Independently, the Apt-Serve/CC blocker remains organizational:
-translate Phase G's bounded evidence into module-decomposition / library-envelope
-work without overclaiming global Apt-Serve superiority.
+There is no active failed job to diagnose. On WS-P, Family A v1 analysis is
+complete; the blocker is scientific redesign (Family A v2) before PSD can
+supply fairness/size complementarity for QD/selector work. Independently, the
+Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
+evidence into module-decomposition / library-envelope work without overclaiming
+global Apt-Serve superiority.
 
 ## Current Next Action
 
@@ -52,5 +53,5 @@ Read:
 5. Family A provenance:
    [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/README.md`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/README.md)
 
-Then: (WS-P) analyze Job 1182306; and/or (Apt-Serve thread) post-Phase-G
-module-envelope interpretation.
+Then: (WS-P) design Family A v2 per the completed audit; and/or (Apt-Serve
+thread) post-Phase-G module-envelope interpretation.

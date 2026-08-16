@@ -6,36 +6,33 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Analyze Family A Fairness and Starvation Pilot (Job 1182306).**
+**Design and implement Family A v2 (fairness/starvation), then run a new pilot.**
 
 Inputs:
 
-- Provenance copy:
+- Completed Family A v1 audit:
+  [`../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v1_20260816.md)
+- Frozen Job 1182306 provenance:
   [`../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`](../../experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/)
-- Scratch root:
-  `/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306`
-- Design: [`../design/POLICY_SEPARATION_DATASET_V1.md`](../design/POLICY_SEPARATION_DATASET_V1.md)
-- Predecessor audit:
-  [`../audits/policy_separation_sobol_pilot_v1_20260816.md`](../audits/policy_separation_sobol_pilot_v1_20260816.md)
+- Analysis tables under `…/analysis/`
 
-Facts already established (execution integrity, not scientific conclusions):
+Family A v1 scientific status: **analyzed**; verdict
+`USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`. Retain as audit evidence; do
+**not** use as selector-training rows.
 
-- Generator + runner implemented and committed.
-- Job 1182306 completed: **120 scenarios × 4 policies = 480** evaluations, 0 failures.
-- Historical CSV column `anwg` = unweighted SLO-success (not canonical ANWG).
-- Token lengths were **synthetic fallback** (BurstGPT path miss at job time).
+v2 must address confirmed confounds:
 
-Deliverable:
-
-- Write a scientific audit (crossover/boundary/hypothesis checks) without
-  silently rewriting the frozen CSV.
-- Decide whether a corrected BurstGPT-anchored / canonical-ANWG rerun is needed
-  as a **new** job, after interpreting the existing pilot.
+- orthogonal 2×2 size × priority (short/high, short/low, long/high, long/low);
+- BurstGPT token-shape anchoring;
+- canonical ANWG as primary metric;
+- imperfect service-time predictions;
+- equal-weight controls;
+- anti-saturation so Aging is not universally perfect.
 
 Stop conditions for this thread:
 
 - Do not start MAP-Elites / CMA-ES / QD.
-- Do not retrain selectors from this pilot yet.
+- Do not retrain selectors from Family A v1.
 - Do not start symbolic distillation or new composition experiments from PSD.
 
 ## P0 - Apt-Serve / module envelope (independent)
@@ -63,7 +60,7 @@ Deliverable:
   Apt-Serve sweep.
 
 Existing typed DSL / module-composition work remains available as infrastructure;
-it does not substitute for Family A analysis on the WS-P thread.
+it does not substitute for Family A v2 on the WS-P thread.
 
 ## P1 - Library-Envelope Tooling
 
@@ -99,3 +96,4 @@ retain safe fallback outside that envelope.
 - Do not start broad symbolic synthesis until module contribution evidence is
   stronger.
 - Do not treat Job 1182306 as BurstGPT-anchored or as using canonical ANWG.
+- Do not treat Family A v1 as corpus-ready policy-separation evidence for QD.
