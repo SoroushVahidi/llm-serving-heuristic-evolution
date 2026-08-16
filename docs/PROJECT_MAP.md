@@ -147,9 +147,12 @@ executed **and scientifically analyzed**
 verdict `USEFUL_DIAGNOSTIC_ONLY` / `REDESIGN_REQUIRED`. The intended ESTF↔WFS
 fairness/size crossover did not appear (size–priority collinearity; Aging
 saturation). Historical CSV `anwg` is unweighted SLO-success, not canonical
-ANWG; token lengths were synthetic. Next WS-P step: **Family A v2 redesign** —
-not MAP-Elites, selector retraining, or new composition experiments. Typed
-DSL/module composition elsewhere in the repo does not substitute for this.
+ANWG; token lengths were synthetic. Family A v2 is designed and implemented
+(`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`; orthogonal size×priority;
+BurstGPT-required; canonical ANWG; prediction noise). Next WS-P step:
+**launch/analyze the Family A v2 pilot** — not MAP-Elites, selector
+retraining, or new composition experiments. Typed DSL/module composition
+elsewhere in the repo does not substitute for this.
 
 
 ## Stop Conditions
