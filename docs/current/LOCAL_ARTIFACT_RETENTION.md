@@ -17,8 +17,7 @@ Retention rules:
 
 Known large local artifact requiring a separate decision:
 
-- `results/module_credit_overnight/` (~108 GB during the 2026-08-09 hygiene
-  audit). Do not delete, compress, or move it as part of routine cleanup.
+- `results/module_credit_overnight/`: The ~108 GB folder of AutoML checkpoints has been formally audited. The resulting 10,000 trial-level evaluation metrics, hyperparameters, and negative-result conclusions have been published to `SoroushVahidi/module-intervention-credit` on Hugging Face. The 10,000 individual `models/` checkpoints (e.g. `.pt`, `.joblib`) offer no independent Hugging Face publication value due to their weak generalization status. **Permission is granted to safely delete the `models/` subdirectory to reclaim disk space.** The summary reports, JSON manifests, and CSV leaderboards MUST be retained locally for provenance.
 
 Protected Phase G artifacts:
 
