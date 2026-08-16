@@ -1,0 +1,4 @@
+generator_family,n,best_fixed_policy,mean_headroom,fraction_positive,fraction_gt_0005,fraction_gt_001,unique_winners,near_tie_rate
+sobol_family_b_prediction_sensitive,1024,estimated_service_time_first,0.015885416666666728,0.4716796875,0.4716796875,0.4716796875,4,0.37109375
+sobol_family_c_deadline_admission,512,scorpio_style_slo_guard,0.0002604166666666666,0.00390625,0.00390625,0.00390625,4,0.009765625
+fcfs_categorical_add_on,80,estimated_service_time_first,0.0,0.0,0.0,0.0,3,1.0

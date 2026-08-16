@@ -1,0 +1,18 @@
+{
+  "config_path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1/configs/policy_separation_sobol_pilot_v1.yaml",
+  "run_dir": "/mmfs1/scratch/ikoutis/sv96/policy_separation_sobol_pilot_20260816T183600Z_1182183",
+  "git_head": "b1181c6380029254080397c161d5dd281bbd6d89",
+  "git_branch": "policy-separation-v1-wulver-20260809",
+  "python_version": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+  "dry_run": false,
+  "workers": 8,
+  "n_scenarios": 1616,
+  "n_tasks": 6976,
+  "n_tasks_remaining_at_start": 6976,
+  "started_at": "2026-08-16T14:36:24",
+  "generator_families": [
+    "sobol_family_b_prediction_sensitive",
+    "sobol_family_c_deadline_admission",
+    "fcfs_categorical_add_on"
+  ]
+}

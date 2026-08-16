@@ -1,0 +1,16 @@
+job_id=1182183
+job_name=policy-separation-sobol-pilot-v1
+host=n0009
+date_utc=2026-08-16T18:36:00Z
+repo_dir=/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1
+run_dir=/mmfs1/scratch/ikoutis/sv96/policy_separation_sobol_pilot_20260816T183600Z_1182183
+config=/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1/configs/policy_separation_sobol_pilot_v1.yaml
+b1181c6380029254080397c161d5dd281bbd6d89
+policy-separation-v1-wulver-20260809
+git_status_short:
+?? docs/design/POLICY_SEPARATION_DATASET_V1.md
+Python 3.10.20
+python_bin=/home/sv96/.conda/envs/repo-env/bin/python
+cpus_per_task=8
+wrapper_exit_code=0
+finished_at_utc=2026-08-16T18:38:53Z

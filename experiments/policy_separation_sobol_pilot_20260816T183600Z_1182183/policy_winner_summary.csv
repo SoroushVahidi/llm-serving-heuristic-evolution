@@ -1,0 +1,12 @@
+generator_family,policy_name,win_count,win_fraction,n_scenarios,winner_entropy_bits
+sobol_family_b_prediction_sensitive,aging_priority,162,0.158203125,1024,1.8714
+sobol_family_b_prediction_sensitive,estimated_service_time_first,447,0.4365234375,1024,1.8714
+sobol_family_b_prediction_sensitive,fifo,181,0.1767578125,1024,1.8714
+sobol_family_b_prediction_sensitive,shortest_output_first,234,0.228515625,1024,1.8714
+sobol_family_c_deadline_admission,admission_control,1,0.001953125,512,0.1067
+sobol_family_c_deadline_admission,edf,4,0.0078125,512,0.1067
+sobol_family_c_deadline_admission,fifo,1,0.001953125,512,0.1067
+sobol_family_c_deadline_admission,scorpio_style_slo_guard,506,0.98828125,512,0.1067
+fcfs_categorical_add_on,estimated_service_time_first,38,0.475,80,1.4803
+fcfs_categorical_add_on,fifo,28,0.35,80,1.4803
+fcfs_categorical_add_on,shortest_output_first,14,0.175,80,1.4803

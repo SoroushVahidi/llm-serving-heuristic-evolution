@@ -1,0 +1,3 @@
+generator_family,dim_0,dim_1,n_bins_per_dim,n_points,n_cells_covered,n_cells_total,coverage_fraction
+sobol_family_b_prediction_sensitive,target_utilization,inversion_fraction,10,1024,89,100,0.89
+sobol_family_c_deadline_admission,overload_factor,fraction_impossible,10,512,88,100,0.88

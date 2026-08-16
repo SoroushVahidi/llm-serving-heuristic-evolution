@@ -1,0 +1,97 @@
+{
+  "family_b": {
+    "scramble_seed": 20260810,
+    "m": 7,
+    "n_points": 128,
+    "dimensions": [
+      "target_utilization",
+      "inversion_fraction"
+    ],
+    "ranges": {
+      "target_utilization": [
+        0.5,
+        1.1
+      ],
+      "inversion_fraction": [
+        0.0,
+        1.0
+      ]
+    },
+    "categorical": {
+      "heterogeneity": [
+        "moderate",
+        "strong"
+      ]
+    },
+    "seeds": [
+      20260809,
+      20260810,
+      20260811,
+      20260812
+    ]
+  },
+  "family_c": {
+    "scramble_seed": 20260812,
+    "m": 7,
+    "n_points": 128,
+    "dimensions": [
+      "overload_factor",
+      "fraction_impossible"
+    ],
+    "ranges": {
+      "overload_factor": [
+        0.85,
+        1.4
+      ],
+      "fraction_impossible": [
+        0.0,
+        0.8
+      ]
+    },
+    "categorical": {},
+    "seeds": [
+      20260809,
+      20260810,
+      20260811,
+      20260812
+    ]
+  },
+  "fcfs_categorical_add_on": {
+    "sobol": false,
+    "reason": "arrival_offset proven discontinuous (job 1171116); fixed small grid instead",
+    "a1": {
+      "a1_ratios": [
+        32,
+        128
+      ],
+      "a1_short_counts": [
+        16,
+        32,
+        64
+      ],
+      "a1_seeds": [
+        20260809,
+        20260810,
+        20260811,
+        20260812,
+        20260813
+      ]
+    },
+    "a2": {
+      "a2_ratio": 32,
+      "a2_short_count": 32,
+      "a2_offsets": [
+        0.001,
+        0.01
+      ],
+      "a2_max_active_sequences": 4,
+      "a2_seeds": [
+        20260809,
+        20260810,
+        20260811,
+        20260812,
+        20260813
+      ]
+    }
+  }
+}
