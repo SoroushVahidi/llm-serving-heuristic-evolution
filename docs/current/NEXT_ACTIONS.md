@@ -45,9 +45,24 @@ cell); (2) on **all 32** Family-B scenarios, `estf`/`wfs`/`least_laxity`/
 Family B's cross-family diversity reduces to one contrast
 (`chunked_prefill_small` vs. everything else), because none of those four
 ranking policies touch the chunk-budget axis Family B was built to
-isolate. **Next action, with explicit authorization: investigate the
-Family-C/KV-v2 BurstGPT reconstruction gap** (a dedicated task, separate
-from selector work) before the matrix can reach `READY`. Do not start
+isolate.
+
+**Family-C/KV-v2 reconstruction gap has been investigated (dedicated
+task):** [`../audits/family_c_step2_reconstruction_audit_20260817.md`](../audits/family_c_step2_reconstruction_audit_20260817.md).
+**Verdict: `FAMILY_C_RECONSTRUCTION_BOUNDED`.** Exact historical replay is
+confirmed structurally impossible — the KV pilot runner never wrote a
+`scenarios.jsonl`/request dump for either v1 or v2 (unlike Family A/B,
+which do have one), and no backup copy exists anywhere in this repo's
+history (checked all 11 backup/`wulver-*` branches). A defensible
+alternative exists but was **not** executed: uniformly re-evaluate all 6
+anchors (including the 2 native ones fresh, never mixed with MF-PSD v1's
+frozen native values) on a newly regenerated, deterministic Family-C
+reconstruction, as its own clearly-versioned artifact layer — see the
+audit §9/§14 for the exact spec.
+
+**Next action, with explicit authorization: execute the "Family C
+reconstruction v1" fallback** (audit §14) before the matrix can reach
+`READY`/`READY_LOW_DIVERSITY`. Do not start
 selector training, hyperparameter tuning, pairwise-regret learning,
 mechanism attribution, or any composition/synthesis experiment before Step
 2 reaches a `READY`/`READY_LOW_DIVERSITY` verdict (per the reassessment
