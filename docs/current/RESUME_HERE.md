@@ -11,7 +11,7 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | see `git rev-parse HEAD` (Family B v1 audit after `1f56828`) |
+| Last reconciled SHA | see `git rev-parse HEAD` (Family B v2 audit after `ecc0422`) |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
 | Canonical roadmap | `docs/PROJECT_MAP.md` |
@@ -46,14 +46,14 @@ characterization (WS-P).
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
-**Family B v1 prefill/decode chunk-control analysis is COMPLETE.**
+**Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**
 
-- Audit: [`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)
-- Provenance: [`../../experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`](../../experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/)
-- Family verdict: **`USEFUL_BUT_NEEDS_REFINEMENT`**
-- Composition: **`PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`**
-- Pairwise full↔small is bidirectional (47/11 at ε=0.01), but unique-winner diversity fails (only `full_prefill` uniquely wins at ε=0.01), 5-policy near-tie rate is 96%, `decode_priority_chunked` ≡ `chunked_prefill_small` on 144/144 cells, and adaptive expands the envelope in 0 cells.
-- Next WS-P step: **Family B refinement**, not PrefillControl synthesis.
+- Audit: [`../audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md)
+- Provenance: [`../../experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/`](../../experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/)
+- Family verdict: **`FAMILY_B_COMPOSITION_READY`**
+- Two anchors only (`full_prefill` vs `chunked_prefill_small`): 16/15 practical wins at ε=0.01, near-tie 3.1% (v1 was 96%), mean \|Δ\|=0.131, seed agree 0.875, held-out seed bidirectional, mechanism = class TTFT.
+- Frozen Family B v1 remains `USEFUL_BUT_NEEDS_REFINEMENT` / `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED` ([`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)); do not rewrite that CSV.
+- Next WS-P step: **smallest two-parent PrefillControl composition falsification** (not GP / MAP-Elites / LLM synth). Do not run it as part of the v2 audit.
 
 **ESTF↔WFS minimal composition falsification remains COMPLETE.**
 
@@ -108,22 +108,21 @@ Supported interpretation:
 - Apt-Serve: Phase G analysis is complete; no new Apt-Serve collection job is
   queued.
 - WS-P: Family A v2 analyzed; ESTF↔WFS composition =
-  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; Family B v1 (the next mechanism family
-  after ESTF/WFS) is analyzed (`USEFUL_BUT_NEEDS_REFINEMENT`;
-  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`).
+  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; Family B (the next mechanism family
+  after ESTF/WFS) v1 is `USEFUL_BUT_NEEDS_REFINEMENT` /
+  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; v2 is `FAMILY_B_COMPOSITION_READY`.
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** Family B v1 H1–H10 analysis is complete
-   ([`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)).
-   Verdict `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`.
-   ESTF↔WFS composition pilot verdict:
+1. **WS-P:** Family B v2 analysis is complete
+   ([`../audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md)).
+   Verdict `FAMILY_B_COMPOSITION_READY`. ESTF↔WFS composition pilot verdict:
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)).
-   Do **not** start MAP-Elites, symbolic distillation, LLM synthesis, or
-   PrefillControl composition from the current Family B grid.
-   Next on this thread: Family B refinement (drop near-twin policies; per-class
-   metrics), not a composition child.
+   Next on this thread: the smallest two-parent PrefillControl composition
+   falsification (`full_prefill` vs `chunked_prefill_small`). Do **not** start
+   MAP-Elites, symbolic distillation, LLM synthesis, or a child from the
+   frozen five-policy v1 grid.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

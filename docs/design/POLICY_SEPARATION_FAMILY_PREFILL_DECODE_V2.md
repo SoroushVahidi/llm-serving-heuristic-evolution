@@ -1,14 +1,18 @@
 # Policy Separation Family B v2 — Prefill/Decode TTFT-Contention Refinement
 
 **Date:** 2026-08-17  
-**Status:** PREREGISTERED — not yet executed  
+**Status:** ANALYZED — `FAMILY_B_COMPOSITION_READY`  
+**Audit:** [`docs/audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md)  
+**Pilot:** `experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/`  
+**Smoke:** `experiments/policy_separation_prefill_decode_smoke_v2_20260817T024136Z/` (`SMOKE_GO`)  
 **Predecessor audit:** [`docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)  
 **Frozen v1 run:** `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/` (do not modify)  
 **v1 verdict (authoritative, unchanged):** `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`
 
-This document preregisters Family B v2 **before** the full pilot. It is not a
-composition experiment, not a child-synthesis design, and not a
-reinterpretation of frozen v1 CSVs.
+Hypotheses and the composition-readiness gate in this document were
+preregistered in commit `ecc0422` **before** the full 64-eval pilot. The
+scored audit is linked above. This is still not a composition experiment and
+not a reinterpretation of frozen v1 CSVs.
 
 ## 1. Scientific goal
 

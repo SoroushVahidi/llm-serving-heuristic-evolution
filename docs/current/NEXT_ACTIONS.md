@@ -6,19 +6,21 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Refine Family B v1 before PrefillControl composition.**
-Family B (the next mechanism family after ESTF/WFS) is analyzed:
-[`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)  
-**Verdict: `USEFUL_BUT_NEEDS_REFINEMENT`.** Composition:
-**`PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`.**
+**Family B v2 is composition-ready; next is a two-parent PrefillControl falsification.**
+Family B (the next mechanism family after ESTF/WFS) v2 audit:
+[`../audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md)  
+**Verdict: `FAMILY_B_COMPOSITION_READY`.** Parents: `full_prefill` vs
+`chunked_prefill_small` (16/15 practical wins at ε=0.01; near-tie 3.1%).
 
-Pairwise `full_prefill`↔`chunked_prefill_small` is bidirectional (47/11 at
-ε=0.01), but unique-winner diversity fails, 5-policy near-tie rate is 96%,
-`decode_priority_chunked` is identical to small-chunk, and adaptive does not
-expand the envelope. Do not launch a PrefillControl child on this grid.
+Frozen v1 remains `USEFUL_BUT_NEEDS_REFINEMENT` /
+`PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`
+([`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)).
+Do not rewrite that CSV or revive decode-priority / large-chunk / adaptive twins.
 
-Design: [`../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`](../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md)  
-Run: `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`
+Next on this thread (not executed in the v2 audit): the smallest two-parent
+PrefillControl composition falsification — contextual top-1 vs a simple
+state-dependent mix, using the online slack × prompt mix. Stop if selection
+is sufficient, as with ESTF↔WFS.
 
 ESTF↔WFS composition falsification is COMPLETE:
 [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  
@@ -32,11 +34,10 @@ Family A v2 remains validated complementary-parent evidence
 
 Stop conditions for this thread:
 
-- Do not start PrefillControl synthesis / adaptive-child composition from Family B v1.
-- Do not start MAP-Elites / CMA-ES / QD from ESTF/WFS composition.
-- Do not start symbolic distillation from this teacher.
-- Do not use Fireworks/Cloudrift LLM APIs yet.
-- Do not escalate composition model complexity to rescue this NO_GO.
+- Do not start GP / MAP-Elites / CMA-ES / QD from ESTF/WFS or from Family B v1 twins.
+- Do not start symbolic distillation or Fireworks/Cloudrift LLM APIs yet.
+- Do not escalate composition model complexity to rescue ESTF/WFS `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.
+- Do not treat Family B v2 as a completed composition result — only as a parent-family gate.
 
 ## P0 - Apt-Serve / module envelope (independent)
 

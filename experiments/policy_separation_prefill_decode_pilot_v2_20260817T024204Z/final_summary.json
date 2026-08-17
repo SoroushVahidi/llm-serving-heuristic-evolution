@@ -1,0 +1,23 @@
+{
+  "experiment_name": "policy_separation_prefill_decode_pilot_v2",
+  "generator_version": "prefill_decode_v2",
+  "n_scenarios": 32,
+  "n_tasks": 64,
+  "n_completed": 64,
+  "n_failed": 0,
+  "elapsed_seconds": 0.17433452606201172,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "token_sources_observed": [
+    "burstgpt_staged"
+  ],
+  "require_burstgpt": true,
+  "allow_synthetic_tokens": false,
+  "policies": [
+    "full_prefill",
+    "chunked_prefill_small"
+  ],
+  "chunk_budgets": {
+    "chunk_small": 64
+  },
+  "output_intervention": "synthetic_short_output_for_ttft_isolation"
+}
