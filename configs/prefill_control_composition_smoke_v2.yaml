@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""Smoke config for Family B v2 PrefillControl composition falsification.
+
+Minimal grid for launch validation.
+"""
+
+sweep_grid:
+  hog_count: ["low"]
+  late_pressure: ["low"]
+  slo_emphasis: ["hog_ttft", "late_ttft"]
+  seeds: [7, 11]
+
+parent_policies:
+  - full_prefill
+  - chunked_prefill_small
+
+child_methods:
+  - contextual_top1
+  - hard_conditional
+  - contextual_alpha
+  - prefill_control_child
+
+fixed_intermediate_chunks: [96, 128, 192]
+allow_synthetic_tokens: true
+workers: 4
