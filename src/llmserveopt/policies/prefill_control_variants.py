@@ -200,3 +200,39 @@ def make_prefill_decode_variants(
             },
         ),
     }
+
+
+def make_prefill_decode_variants_v2(
+    *,
+    chunk_small: int = DEFAULT_CHUNK_SMALL,
+) -> Dict[str, Tuple[BasePolicy, Dict[str, Any]]]:
+    """Family B v2 mechanism set: the two v1 anchors only.
+
+    ``chunked_prefill_large``, ``decode_priority_chunked``, and
+    ``adaptive_prefill_control`` are intentionally omitted. The v1 audit and
+    diagnosis tests show they are twins of the anchors under arrival-FCFS
+    (large ≈ full; decode-priority ≡ small on clean traces; adaptive ≡ small).
+    ``decode_first=True`` is a real GPU semantic, but it is not activatable
+    from natural admission traces without injecting mid-flight decode state
+    or changing FCFS semantics; v2 does not manufacture that separation.
+    """
+    full = GreedyArrivalPrefillControlPolicy()
+    full.name = "full_prefill"
+    chunked_small = GreedyArrivalPrefillControlPolicy()
+    chunked_small.name = "chunked_prefill_small"
+    return {
+        "full_prefill": (
+            full,
+            {
+                "max_prefill_chunk_tokens": UNLIMITED_PREFILL_CHUNK,
+                "decode_first": False,
+            },
+        ),
+        "chunked_prefill_small": (
+            chunked_small,
+            {
+                "max_prefill_chunk_tokens": int(chunk_small),
+                "decode_first": False,
+            },
+        ),
+    }

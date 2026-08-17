@@ -1,0 +1,40 @@
+# Policy Separation Family B v2 Pilot Configuration
+# Prefill–decode TTFT-contention refinement (two anchors only).
+# See docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md
+#
+# Production runs REQUIRE staged BurstGPT (no silent synthetic fallback).
+# Primary metric: RunMetrics.arrival_normalized_weighted_goodput
+#
+# Launch only if the preregistered smoke gate passes.
+# Policies: make_prefill_decode_variants_v2() — full vs small-chunk.
+# decode_priority / large-chunk / adaptive are intentionally absent.
+
+pilot_metadata:
+  experiment_name: "policy_separation_prefill_decode_pilot_v2"
+  version: "prefill_decode_v2"
+  description: "Family B v2 TTFT-contention structural-parent refinement"
+  predecessor_job: null
+  predecessor_verdict: "USEFUL_BUT_NEEDS_REFINEMENT"
+  require_burstgpt: true
+  held_out_seed: 20260823
+
+sweep_grid:
+  hog_count: ["low", "high"]
+  late_pressure: ["low", "high"]
+  slo_emphasis: ["hog_ttft", "late_ttft"]
+  seeds: [20260820, 20260821, 20260822, 20260823]
+
+fixed:
+  n_hog: null
+  n_late: null
+  max_active_sequences: 512
+  step_token_budget: 512
+
+chunk_budgets:
+  chunk_small: 64
+
+policies:
+  - "full_prefill"
+  - "chunked_prefill_small"
+
+# 2*2*2*4 = 32 scenarios x 2 policies = 64 evaluations.

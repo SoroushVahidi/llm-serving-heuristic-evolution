@@ -1,0 +1,13 @@
+{
+  "n_comparable_cells": 8,
+  "full_practical_wins": 4,
+  "small_practical_wins": 4,
+  "policies_seen": [
+    "chunked_prefill_small",
+    "full_prefill"
+  ],
+  "S2_full_win": true,
+  "S3_small_win": true,
+  "S4_two_anchors_only": true,
+  "verdict": "SMOKE_GO"
+}
