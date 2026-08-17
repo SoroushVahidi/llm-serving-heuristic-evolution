@@ -15,12 +15,16 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
+import platform
+import subprocess
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import yaml
@@ -37,6 +41,9 @@ from llmserveopt.policy_separation.templates_kv_pressure import (  # noqa: E402
 from llmserveopt.policy_separation.templates_kv_pressure_v2 import (  # noqa: E402
     assert_policy_visible_fields_clean_kv_v2,
     case_kv_pressure_reserve_contention_v2,
+)
+from llmserveopt.policy_separation.templates_prefill_decode import (  # noqa: E402
+    resolve_burstgpt_path,
 )
 from llmserveopt.policies.kv_constrained_online import KVConstrainedOnlinePolicy  # noqa: E402
 from llmserveopt.policies.least_laxity_first import LeastLaxityFirstPolicy  # noqa: E402
@@ -200,6 +207,82 @@ def build_scenarios(
     return scenarios
 
 
+def _sha256_file(path: Optional[Path]) -> Optional[str]:
+    """Additive provenance helper. Never raises; returns None on any failure
+    (missing file, permissions, etc.) rather than aborting the run."""
+    if path is None:
+        return None
+    try:
+        h = hashlib.sha256()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except Exception:
+        return None
+
+
+def _git_sha() -> Optional[str]:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, stderr=subprocess.DEVNULL
+        ).strip()
+    except Exception:
+        return None
+
+
+def _git_dirty() -> Optional[bool]:
+    try:
+        out = subprocess.check_output(
+            ["git", "status", "--porcelain"], cwd=ROOT, text=True, stderr=subprocess.DEVNULL
+        )
+        return bool(out.strip())
+    except Exception:
+        return None
+
+
+def _pkg_version(name: str) -> Optional[str]:
+    try:
+        mod = __import__(name)
+        return str(getattr(mod, "__version__", None))
+    except Exception:
+        return None
+
+
+def _collect_provenance(
+    *,
+    config_path: Path,
+    dataset_path: Optional[Path],
+    seeds: List[int],
+    template_version: str,
+    policy_names: List[str],
+) -> Dict[str, Any]:
+    """Additive, null-safe run-provenance metadata for FUTURE runs. Never
+    raises; unavailable fields become None/"unknown". Purely observational
+    over already-resolved inputs and already-written outputs -- does not
+    affect scenario generation, RNG order, policy execution, or metrics.
+    `result_csv_sha256` is added by the caller after the CSV write."""
+    return {
+        "git_sha": _git_sha(),
+        "git_dirty": _git_dirty(),
+        "command": " ".join(sys.argv),
+        "config_path": str(config_path.resolve()) if config_path else None,
+        "config_sha256": _sha256_file(config_path),
+        "dataset_path": str(dataset_path.resolve()) if dataset_path else None,
+        "dataset_sha256": _sha256_file(dataset_path),
+        "python_version": sys.version,
+        "platform": platform.platform(),
+        "numpy_version": _pkg_version("numpy"),
+        "pandas_version": _pkg_version("pandas"),
+        "scipy_version": _pkg_version("scipy"),
+        "sklearn_version": _pkg_version("sklearn"),
+        "seeds": sorted(seeds),
+        "template_version": template_version,
+        "policy_names": list(policy_names),
+        "utc_timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
@@ -236,13 +319,32 @@ def main() -> None:
         for fut in as_completed(futures):
             all_results.append(fut.result())
 
-    with open(args.run_dir / "per_policy_results.csv", "w", newline="") as f:
+    results_csv_path = args.run_dir / "per_policy_results.csv"
+    with open(results_csv_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=RESULT_FIELDNAMES, extrasaction="ignore")
         w.writeheader()
         w.writerows(all_results)
 
     success = [r for r in all_results if r.get("status") == "success"]
     failed = [r for r in all_results if r.get("status") == "failed"]
+
+    # Additive forward-looking provenance (docs/audits/kv_v2_reproducibility_forensic_20260817.md
+    # SS9): resolved AFTER scenario generation and the CSV write so
+    # result_csv_sha256 reflects the actual written bytes. Read-only,
+    # null-safe, does not affect scenario generation/RNG/policy behavior.
+    try:
+        dataset_path = resolve_burstgpt_path(datasets_root=args.datasets_root)
+    except Exception:
+        dataset_path = None
+    provenance = _collect_provenance(
+        config_path=args.config,
+        dataset_path=dataset_path,
+        seeds=[int(s) for s in cfg.get("sweep_grid", {}).get("seeds", [])],
+        template_version=args.template_version,
+        policy_names=list(POLICIES.keys()),
+    )
+    provenance["result_csv_sha256"] = _sha256_file(results_csv_path)
+
     summary = {
         "template_version": args.template_version,
         "n_scenarios": len(scenarios),
@@ -253,6 +355,7 @@ def main() -> None:
         "max_kv_tokens": max_kv_tokens,
         "policies": list(POLICIES.keys()),
         "held_out_seeds": sorted(held_out_seeds),
+        "provenance": provenance,
     }
     with open(args.run_dir / "final_summary.json", "w") as f:
         json.dump(summary, f, indent=2)
