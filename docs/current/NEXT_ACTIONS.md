@@ -24,12 +24,35 @@ evaluated its own 2 anchors) — see the audit's §M/§Q for exactly what
 Step 2 requires to build the dense matrix (~704 new policy-scenario
 evaluations).
 
-**Next action, with explicit authorization: Step 2 — unified six-policy
-utility-matrix evaluation.** Do not start selector training,
-hyperparameter tuning, pairwise-regret learning, mechanism attribution, or
-any composition/synthesis experiment before Step 2 is complete (per the
-reassessment doc's own explicit deferred-items list, §P, and the MF-PSD
-task's own stop condition).
+**Step 2 (unified six-policy utility-matrix evaluation) is COMPLETE for
+Family A and Family B, BLOCKED for Family C:**
+[`../audits/unified_policy_utility_matrix_v1_20260817.md`](../audits/unified_policy_utility_matrix_v1_20260817.md)
+(design: [`../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md`](../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md)).
+**Verdict: `UNIFIED_UTILITY_MATRIX_NEEDS_REFINEMENT`.** 416 new cells
+evaluated (0 failures) at `experiments/unified_utility_matrix_v1/`: Family A
+(72 scenarios) and Family B (32 scenarios) are now **fully dense** (6/6
+canonical anchors); Family C (72 scenarios) stays at native 2/6 — its 288
+cross-family cells are explicit `unsupported_scenario_reconstruction`
+placeholders, not silently missing, because Family C / KV v2 scenario
+regeneration is confirmed **not** byte-exact (99/144 mismatch against its
+own frozen native cells, independently reproducing
+[`kv_v2_reproducibility_forensic_20260817.md`](../audits/kv_v2_reproducibility_forensic_20260817.md)).
+Two important findings, both explicitly tagged in the data (not hidden):
+(1) `full_prefill`/`chunked_prefill_small` collapse to one identical
+behavior outside Family B (confirmed: byte-identical ANWG on every Family-A
+cell); (2) on **all 32** Family-B scenarios, `estf`/`wfs`/`least_laxity`/
+`kv_constrained` are byte-identical to each other and to `full_prefill` —
+Family B's cross-family diversity reduces to one contrast
+(`chunked_prefill_small` vs. everything else), because none of those four
+ranking policies touch the chunk-budget axis Family B was built to
+isolate. **Next action, with explicit authorization: investigate the
+Family-C/KV-v2 BurstGPT reconstruction gap** (a dedicated task, separate
+from selector work) before the matrix can reach `READY`. Do not start
+selector training, hyperparameter tuning, pairwise-regret learning,
+mechanism attribution, or any composition/synthesis experiment before Step
+2 reaches a `READY`/`READY_LOW_DIVERSITY` verdict (per the reassessment
+doc's own explicit deferred-items list, §P, and this task's own stop
+condition).
 
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
@@ -190,11 +213,17 @@ retain safe fallback outside that envelope.
   stronger.
 - Do not treat Job 1182306 as BurstGPT-anchored or as using canonical ANWG.
 - Do not treat Family A v1 as corpus-ready policy-separation evidence for QD.
-- Do not start Step 2 (unified six-policy utility-matrix evaluation) implicitly
-  from a broader task; it requires explicit authorization.
+- Step 2 is now partially complete (Family A/B dense, Family C blocked) —
+  see `../audits/unified_policy_utility_matrix_v1_20260817.md`. Do not
+  re-launch the full 416-cell evaluation; `scripts/build_unified_utility_matrix_v1.py`
+  is resume-safe and will only compute newly-unblocked cells.
 - Do not train a contextual selector, tune selector hyperparameters, do
   pairwise-regret learning, do mechanism attribution, or start any
-  composition/synthesis experiment from MF-PSD v1 before Step 2 is complete.
-- Do not modify `experiments/mf_psd_v1/` in place for Step 2 — produce a
-  clearly versioned successor (e.g. `experiments/mf_psd_v2/`) so v1 remains
-  available as a frozen sparse baseline.
+  composition/synthesis experiment from the unified utility matrix before
+  Step 2 reaches a `READY`/`READY_LOW_DIVERSITY` verdict.
+- Do not modify `experiments/mf_psd_v1/` or `experiments/unified_utility_matrix_v1/`
+  in place — any Step 2 v2 rebuild should produce a clearly versioned
+  successor so v1 remains available as a frozen baseline.
+- Do not attempt to fix the Family-C/KV-v2 BurstGPT reconstruction gap as a
+  side effect of an unrelated task; it needs its own dedicated
+  investigation before Family C's 288 cross-family cells can be added.

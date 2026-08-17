@@ -74,14 +74,41 @@ COMPLETE.**
   allowlist/forbidden-field denylist, full source-row/scenario
   conservation, zero duplicates, deterministic byte-for-byte rebuild, and
   zero mutation of any frozen source artifact.
-- The six-anchor policy matrix is **sparse, not dense** (each family only
-  evaluated its own 2 anchors on its own scenarios) — the audit documents
-  exactly what Step 2 (unified six-policy utility-matrix evaluation) would
-  require to make it dense. **This task did not build the dense matrix,
-  train a selector, or run any composition/synthesis experiment** — data
-  unification only, per explicit task scope.
-- Next roadmap step (**not started**): Step 2, unified six-policy
-  utility-matrix evaluation (see audit §M/§Q for the exact evaluation list).
+- The six-anchor policy matrix was **sparse, not dense** at MF-PSD v1 time
+  (each family only evaluated its own 2 anchors) — see below, this is now
+  partially resolved.
+
+**Step 2 (unified six-policy utility-matrix evaluation) is COMPLETE for
+Family A/B, BLOCKED for Family C.**
+
+- Audit: [`../audits/unified_policy_utility_matrix_v1_20260817.md`](../audits/unified_policy_utility_matrix_v1_20260817.md)
+- Design: [`../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md`](../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md)
+- Artifacts: `experiments/unified_utility_matrix_v1/` (`unified_utility_matrix_long_v1.csv`,
+  `unified_utility_matrix_wide_v1.csv`, build manifest); harness
+  `src/llmserveopt/policy_separation/unified_utility_matrix.py`; CLI
+  `scripts/build_unified_utility_matrix_v1.py` (resume-safe); tests
+  `tests/test_unified_utility_matrix_v1.py` (20/20 passing).
+- Verdict: **`UNIFIED_UTILITY_MATRIX_NEEDS_REFINEMENT`**. 416 new cells
+  evaluated (0 failures): Family A (72 scenarios) and Family B (32
+  scenarios) are now fully dense (6/6 anchors); Family C (72 scenarios)
+  stays at native 2/6 — its 288 cells are explicit unsupported placeholders,
+  not silent gaps, because Family C / KV v2 scenario regeneration is
+  confirmed not byte-exact (99/144 mismatch vs. its own frozen native
+  cells, independently reproducing the pre-existing
+  `kv_v2_reproducibility_forensic_20260817.md` finding).
+- Two findings tagged explicitly in the data: `full_prefill`/
+  `chunked_prefill_small` collapse to one identical behavior outside Family
+  B (confirmed byte-identical on every Family-A cell); on all 32 Family-B
+  scenarios, `estf`/`wfs`/`least_laxity`/`kv_constrained` are byte-identical
+  to each other and to `full_prefill` (Family B's cross-family diversity
+  reduces to one contrast: `chunked_prefill_small` vs. everything else).
+- **This task did not train a selector or run any composition/synthesis
+  experiment** — data generation and audit only, per explicit task scope.
+- Next roadmap step (**not started, not authorized**): investigate the
+  Family-C/KV-v2 BurstGPT reconstruction gap (dedicated task), then re-run
+  the resume-safe builder; only after a `READY`/`READY_LOW_DIVERSITY`
+  verdict does Step 3 (preregistered multi-family contextual-selector
+  design) become in scope.
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
