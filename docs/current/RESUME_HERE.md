@@ -55,6 +55,13 @@ characterization (WS-P).
 - Frozen Family B v1 remains `USEFUL_BUT_NEEDS_REFINEMENT` / `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED` ([`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)); do not rewrite that CSV.
 - Next WS-P step: **smallest two-parent PrefillControl composition falsification** (not GP / MAP-Elites / LLM synth). Do not run it as part of the v2 audit.
 
+**PrefillControl composition falsification (`full_prefill` vs `chunked_prefill_small`) is now COMPLETE.**
+
+- Audit: [`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)
+- Provenance: [`../../experiments/prefill_control_composition_v2_20260817T154633Z/`](../../experiments/prefill_control_composition_v2_20260817T154633Z/) (32 scenarios, train=16/val=8/test=4/ood=4, 120/120 success)
+- Verdict: **`SELECTION_SUFFICIENT_FOR_THIS_PAIR`**
+- A real TRAIN/VAL-fitted contextual top-1 selector reaches the two-parent oracle envelope exactly (0 regret) on both TEST and OOD. The genuinely per-step-dynamic `prefill_control_child` policy (verified not to collapse to any fixed baseline) never beats that selector and never expands the oracle envelope on held-out data. Symbolic distillation / broader module composition / MAP-Elites are **not** justified from this pair alone — see the audit's mechanism analysis for why a different per-step rule remains untested, not falsified.
+
 **ESTF↔WFS minimal composition falsification remains COMPLETE.**
 
 - Audit: [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)
@@ -110,7 +117,9 @@ Supported interpretation:
 - WS-P: Family A v2 analyzed; ESTF↔WFS composition =
   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; Family B (the next mechanism family
   after ESTF/WFS) v1 is `USEFUL_BUT_NEEDS_REFINEMENT` /
-  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; v2 is `FAMILY_B_COMPOSITION_READY`.
+  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; v2 is `FAMILY_B_COMPOSITION_READY`;
+  PrefillControl composition falsification on the v2 pair = `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
+  ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)).
 
 ## Exact Next Tasks (two independent threads)
 
@@ -119,10 +128,15 @@ Supported interpretation:
    Verdict `FAMILY_B_COMPOSITION_READY`. ESTF↔WFS composition pilot verdict:
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)).
-   Next on this thread: the smallest two-parent PrefillControl composition
-   falsification (`full_prefill` vs `chunked_prefill_small`). Do **not** start
-   MAP-Elites, symbolic distillation, LLM synthesis, or a child from the
-   frozen five-policy v1 grid.
+   PrefillControl composition falsification (`full_prefill` vs
+   `chunked_prefill_small`) is now COMPLETE, verdict
+   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
+   ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)).
+   Next on this thread: select the next mechanism family / parent pair per
+   the roadmap (`../PROJECT_MAP.md`). Do **not** start MAP-Elites, symbolic
+   distillation, LLM synthesis, or QD work on the strength of this result —
+   two independent pairs (ESTF/WFS and PrefillControl) have now both landed
+   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`, not `COMPOSITION_GO`.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

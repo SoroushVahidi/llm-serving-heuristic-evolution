@@ -36,6 +36,7 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | ESTF↔WFS composition falsification v1 | `COMPLETE`; `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`; run `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/` | Contextual α does not beat top-1; envelope gain 0 | Do not distill/MAP-Elites/LLM-synth from this pair |
 | Policy Separation Family B v1 (prefill/decode chunk-control) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`; run `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/` (720/720) | Unique-winner diversity failed; `decode_priority` ≡ small-chunk; 96% near-ties; adaptive envelope gain 0 | Frozen; superseded scientifically by v2 |
 | Policy Separation Family B v2 (TTFT-contention anchors) | `COMPLETE` analysis; `FAMILY_B_COMPOSITION_READY` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md`; audit `docs/audits/policy_separation_prefill_decode_pilot_v2_20260817.md`; run `experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/` (64/64) | Short-output intervention; decode_first still un-activatable on clean traces | Smallest two-parent PrefillControl composition falsification |
+| PrefillControl composition falsification (`full_prefill` vs `chunked_prefill_small`) | `COMPLETE`; `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | Audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`; run `experiments/prefill_control_composition_v2_20260817T154633Z/` (32 scenarios, 120/120) | Real fitted top-1 selector = oracle (0 regret) TEST+OOD; genuinely dynamic `prefill_control_child` never beats selector or expands envelope; rule tested only used 3/6 chunk options | Do not distill/MAP-Elites/LLM-synth from this pair; next mechanism family per roadmap |
 
 ## Current Blocker
 
@@ -43,8 +44,10 @@ There is no active failed job to diagnose. On WS-P, Family A v2 is analyzed and
 usable; ESTF/WFS composition did not unlock envelope gain beyond selection.
 Family B v1 is frozen (`USEFUL_BUT_NEEDS_REFINEMENT` /
 `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`). Family B v2 (the next mechanism family
-after ESTF/WFS, refined) is `FAMILY_B_COMPOSITION_READY`. Independently, the
-Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
+after ESTF/WFS, refined) is `FAMILY_B_COMPOSITION_READY`, and its PrefillControl
+composition falsification is now COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`
+— second independent pair to land this verdict, after ESTF/WFS). Independently,
+the Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
 evidence into module-decomposition / library-envelope work without overclaiming
 global Apt-Serve superiority.
 
@@ -58,7 +61,10 @@ Read:
 4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
 5. Family B v2 audit:
    [`../audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md)
+6. PrefillControl composition falsification audit (COMPLETE, `SELECTION_SUFFICIENT_FOR_THIS_PAIR`):
+   [`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)
 
-Then: (WS-P) smallest two-parent PrefillControl composition falsification
-(not GP/MAP-Elites/LLM); and/or (Apt-Serve thread)
-post-Phase-G module-envelope interpretation.
+Then: select the next mechanism family / parent pair per the roadmap
+(not GP/MAP-Elites/LLM synth — two independent pairs have now landed
+`SELECTION_SUFFICIENT_FOR_THIS_PAIR`, not `COMPOSITION_GO`); and/or
+(Apt-Serve thread) post-Phase-G module-envelope interpretation.

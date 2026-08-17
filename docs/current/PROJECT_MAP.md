@@ -65,9 +65,13 @@ current status, see `docs/current/RESUME_HERE.md` and
 - **Common confusion to avoid:** Job 1182306’s CSV column `anwg` is unweighted
   SLO-success, not canonical ANWG; v1 used synthetic lengths. Job 1182377 uses
   canonical ANWG + BurstGPT. ESTF/WFS complementarity does **not** imply
-  composition envelope gain. Next WS-P step is Family B v1 refinement (the next
-  mechanism family after ESTF/WFS is analyzed; PrefillControl composition is
-  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`), not MAP-Elites or distillation from ESTF/WFS.
+  composition envelope gain. Family B v1's PrefillControl composition was
+  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; the Family B **v2** anchor pair
+  (`full_prefill` vs `chunked_prefill_small`) has since had its own PrefillControl
+  composition falsification run to completion — verdict
+  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
+  (`docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`).
+  Not MAP-Elites or distillation from ESTF/WFS or PrefillControl.
 ## Datasets
 
 - **Purpose:** real-trace and synthetic workload sources.

@@ -233,9 +233,10 @@ Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issu
 
 ### Current status
 
-- **Composition falsification launching this session** via `p7_runner.py --config p2_config.yaml` (full 32-scenario preregistered grid). No verdict exists until the experiment completes and is analyzed with `p5_analysis_chunk_comp.py` — do not infer a verdict from partial/in-progress output.
-- Broad synthesis/QD work (MAP-Elites, GP, LLM-guided synthesis, symbolic distillation) remains **gated** on this result.
-- All tests pass (120 total in `p8_test_runner.py` + `tests/test_prefill_control_composition_v2.py`; 456 simulator/gpu/action/contention regression tests unaffected; full project suite 3857+ passed).
+- **Composition falsification COMPLETE.** Run: `experiments/prefill_control_composition_v2_20260817T154633Z/` (32 scenarios, train=16/val=8/test=4/ood=4, 120/120 success, 0 failed). Analysis: `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`.
+- **Verdict: `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.** The real TRAIN/VAL-fitted contextual top-1 selector reaches the two-parent oracle envelope exactly (0 regret) on both TEST and OOD. `prefill_control_child` — independently verified to make genuine, scenario-varying, multi-valued per-step chunk decisions and never collapse to a fixed baseline — never beats the fitted selector and never expands the oracle envelope on held-out data. See the audit's mechanism section for why (the tested rule only ever selects 3 of its 6 configured chunk options on this workload).
+- Broad synthesis/QD work (MAP-Elites, GP, LLM-guided synthesis, symbolic distillation) remains **gated** — not justified by this result, same as ESTF/WFS.
+- All tests pass (120 total in `p8_test_runner.py` + `tests/test_prefill_control_composition_v2.py`; 456 simulator/gpu/action/contention regression tests unaffected; full project suite 3869 passed / 62 skipped).
 
 ### Launch gate
 
@@ -250,4 +251,4 @@ Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issu
 - ✅ `prefill_control_child` (the falsification target) and the real fitted top-1/hard-conditional/alpha selector are now genuinely wired into the runner and analysis, not a hindsight-oracle placeholder
 - ✅ All 120 focused composition tests + 456 simulator/gpu/action regression tests pass
 
-> **Verdict will be determined after experiment completion, not before.**
+> **Verdict: `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.** See `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md` for the full scientific analysis.
