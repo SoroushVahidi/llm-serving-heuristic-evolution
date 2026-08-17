@@ -5,7 +5,7 @@ All computation uses canonical `arrival_normalized_weighted_goodput`.
 
 from __future__ import annotations
 
-from typing import Dict, List, Mapping, Sequence, Tuple
+from typing import Dict, Mapping, Sequence, Tuple
 
 import numpy as np
 
@@ -220,33 +220,3 @@ def pairwise_comparison(
         "wins": float(a_better / n) if n else 0.0,
         "losses": float(b_better / n) if n else 0.0,
     }
-
-
-# ===================================================================
-# Best fixed intermediate child
-# ===================================================================
-
-def best_fixed_intermediate_score(
-    intermediate_scores: Dict[str, float],
-    full_scores: Dict[str, float],
-    small_scores: Dict[str, float],
-    scenario_ids: Sequence[str],
-) -> Dict[str, float]:
-    """Best fixed intermediate = the intermediate chunk that has the
-    highest mean score across all candidate scenarios.
-
-    Returns per-scenario scores using that single best intermediate.
-    """
-    chunk_options = [
-        c for c in intermediate_scores
-        if c.startswith("chunk_") and c not in ("chunk_64", "chunk_65536")
-    ]
-    if not chunk_options:
-        return {}
-    # Compute mean score per intermediate chunk
-    means = {}
-    for chunk in chunk_options:
-        vals = [float(intermediate_scores.get(sid, 0.0)) for sid in scenario_ids]
-        means[chunk] = np.mean(vals)
-    best_chunk = max(means, key=means.get)
-    return {sid: float(intermediate_scores.get(f"{best_chunk}.{sid}", 0.0)) for sid in scenario_ids}

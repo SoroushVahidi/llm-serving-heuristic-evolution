@@ -56,14 +56,11 @@ def assign_family_b_v2_splits(
     Logic:
       1. Parse each scenario_id to extract the seed.
       2. TEST / OOD = seed == 20260823 (preregistered held-out).
-      3. Among TEST, split: late_pressure=high -> OOD (interpolation),
-         late_pressure=low -> TEST.
+      3. Among TEST, split: late_pressure=high → OOD (interpolation),
+         late_pressure=low → TEST.
       4. TRAIN / VAL among remaining seeds {20260820, 20260821, 20260822}:
-        - If enough candidates (>= n_val_scenarios), first n_val_scenarios -> VAL,
-          rest -> TRAIN.
-        - If not enough to dedicate a full val set, keep a reasonable ratio:
-          last floor(n_candidates/3) -> VAL, rest -> TRAIN.
-          This ensures both train and val always have data (needed for selector fit).
+         first `n_val_scenarios` scenarios (sorted by scenario_id) → VAL,
+         rest → TRAIN.
     """
     train: List[str] = []
     val: List[str] = []
@@ -79,7 +76,7 @@ def assign_family_b_v2_splits(
     held_out = [(sid, seed) for sid, seed in parsed if seed == TEST_SEED]
     train_candidates = [(sid, seed) for sid, seed in parsed if seed != TEST_SEED]
 
-    # Step 2: held-out split -> test / ood
+    # Step 2: held-out split → test / ood
     for sid, seed in held_out:
         # OOD = high late_pressure on held-out seed
         if "late40" in sid:
@@ -89,22 +86,10 @@ def assign_family_b_v2_splits(
 
     # Step 3: val / train among non-held-out seeds
     train_candidates.sort()
-    if len(train_candidates) >= max(n_val_scenarios, 4):
-        # Enough data for dedicated val set
-        val.extend(train_candidates[:n_val_scenarios])
-        train.extend(train_candidates[n_val_scenarios:])
-    elif len(train_candidates) >= 4:
-        # Enough for meaningful train+val (e.g., smoke grid)
-        n_val = max(1, len(train_candidates) // 3)
-        val.extend(train_candidates[:n_val])
-        train.extend(train_candidates[n_val:])
-    else:
-        # Degenerate case: put all in train (will fail selector fit, but
-        # this is intentionally caught during launch)
-        train.extend([sid for sid, _ in train_candidates])
-
-    val_sids = [sid for sid, _ in val] if val else list(val)
-    train_sids = [sid for sid, _ in train] if all(isinstance(t, tuple) for t in train) else list(train)
+    val.extend(train_candidates[:n_val_scenarios])
+    train.extend(train_candidates[n_val_scenarios:])
+    val_sids = [sid for sid, _ in val]
+    train_sids = [sid for sid, _ in train]
 
     # Integrity: disjoint
     all_sets = [set(train_sids), set(val_sids), set(test), set(ood)]

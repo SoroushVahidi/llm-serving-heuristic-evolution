@@ -1,5 +1,7 @@
-# Configuration for Family B v2 PrefillControl composition falsification.
-# See docs/design/prefill_control_composition_falsification.md.
+"""Configuration for Family B v2 PrefillControl composition falsification.
+
+See docs/design/prefill_control_composition_falsification.md.
+"""
 
 experiment:
   family: "family_b_prefill_decode_v2"
@@ -77,7 +79,7 @@ selector:
 runner:
   workers: 8
   allow_synthetic_tokens: false
-  require_burstgpt: false
+  require_burstgpt: false  # smoke uses allow_synthetic_tokens; production needs burstgpt
   enable_prefill_modeling: true
   step_token_budget: 512
   max_active_sequences: 512
