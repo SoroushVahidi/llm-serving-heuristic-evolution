@@ -225,3 +225,87 @@ class KVAdaptiveReserveChildPolicy(BasePolicy):
             admitted_ids.extend(ids)
         self.admitted_by_step[state.step] = admitted_ids
         return action
+
+
+# ===================================================================
+# KVAdaptiveReserveHysteresisChildPolicy -- the safety-refined composition target
+# ===================================================================
+
+class KVAdaptiveReserveHysteresisChildPolicy(BasePolicy):
+    """Safety-refined within-scenario composition target implementing
+    transition hysteresis based entirely on online-observable states.
+
+    - LLF -> reserve: require urgent trigger AND current KV occupancy <= 0.90
+    - reserve -> LLF: require urgent trigger to clear AND current KV occupancy <= 0.82
+    """
+
+    name = "kv_adaptive_reserve_hysteresis_child"
+
+    ENTER_THRESHOLD = 0.63
+    RELEASE_THRESHOLD = 0.82
+
+    def __init__(self, tau_urgent: int = 2) -> None:
+        self.tau_urgent = int(tau_urgent)
+        self._kv = KVConstrainedOnlinePolicy()
+        self._llf = LeastLaxityFirstPolicy()
+        self.mode_log: List[str] = []
+        self.transition_count: int = 0
+        self.admitted_by_step: Dict[int, List[int]] = {}
+        self.kv_util_at_transition: List[float] = []
+        self.n_urgent_at_transition: List[int] = []
+        self._last_mode: Optional[str] = None
+
+    def reset(self) -> None:
+        self.mode_log.clear()
+        self.transition_count = 0
+        self.admitted_by_step.clear()
+        self.kv_util_at_transition.clear()
+        self.n_urgent_at_transition.clear()
+        self._last_mode = None
+        self._kv = KVConstrainedOnlinePolicy()
+        self._llf = LeastLaxityFirstPolicy()
+
+    @property
+    def n_llf_steps(self) -> int:
+        return sum(1 for m in self.mode_log if m == "llf")
+
+    @property
+    def n_reserve_steps(self) -> int:
+        return sum(1 for m in self.mode_log if m == "reserve")
+
+    def select_action(self, state: ObservableState) -> Action:
+        n_urgent = n_urgent_waiting(state)
+        kv_util = 0.0
+        if state.gpu_states:
+            g = state.gpu_states[0]
+            kv_util = float(g.current_kv_tokens) / max(g.max_kv_tokens, 1)
+
+        trigger_reserve = n_urgent >= self.tau_urgent
+
+        if self._last_mode is None:
+            mode = "reserve" if trigger_reserve else "llf"
+        elif self._last_mode == "llf":
+            if trigger_reserve and kv_util <= self.ENTER_THRESHOLD:
+                mode = "reserve"
+            else:
+                mode = "llf"
+        else:  # self._last_mode == "reserve"
+            if not trigger_reserve and kv_util <= self.RELEASE_THRESHOLD:
+                mode = "llf"
+            else:
+                mode = "reserve"
+
+        self.mode_log.append(mode)
+
+        if self._last_mode is not None and mode != self._last_mode:
+            self.transition_count += 1
+            self.kv_util_at_transition.append(kv_util)
+            self.n_urgent_at_transition.append(n_urgent)
+        self._last_mode = mode
+
+        action = self._kv.select_action(state) if mode == "reserve" else self._llf.select_action(state)
+        admitted_ids: List[int] = []
+        for ids in action.admit.values():
+            admitted_ids.extend(ids)
+        self.admitted_by_step[state.step] = admitted_ids
+        return action

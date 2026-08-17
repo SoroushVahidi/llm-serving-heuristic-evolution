@@ -53,6 +53,7 @@ from llmserveopt.composition.kv_composition_policy import (  # noqa: E402
     PARENT_LLF,
     TAU_URGENT_GRID,
     KVAdaptiveReserveChildPolicy,
+    KVAdaptiveReserveHysteresisChildPolicy,
     hard_conditional_rule,
     select_kv_model_on_val,
 )
@@ -68,6 +69,7 @@ from llmserveopt.composition.kv_composition_metrics import (  # noqa: E402
 
 PARENT_METHODS = (PARENT_KV, PARENT_LLF)
 CHILD_METHOD = "kv_adaptive_reserve_child"
+CHILD_METHOD_HYSTERESIS = "kv_adaptive_reserve_hysteresis_child"
 
 
 def _log(run_dir: Path, msg: str) -> None:
@@ -109,11 +111,17 @@ def _simulate(scenario: Any, policy: Any) -> Dict[str, Any]:
     metrics = sim.run(policy, workload_tag=scenario.scenario_id, seed=scenario.seed)
     completed = list(sim._completed)  # noqa: SLF001
     admission_time = {c.request.request_id: float(c.admission_time) for c in completed}
+    
+    gpu = sim._gpus[0]
+    peak_tokens = max(gpu.step_kv_used) if gpu.step_kv_used else 0
+    peak_kv = peak_tokens / gpu.config.max_kv_tokens
+
     return {
         "anwg": float(metrics.arrival_normalized_weighted_goodput),
         "completion_fraction": float(metrics.completion_fraction),
         "admission_time": admission_time,
-        "n_steps": len(sim._gpus[0].step_kv_used),  # noqa: SLF001
+        "n_steps": len(gpu.step_kv_used),  # noqa: SLF001
+        "peak_kv": peak_kv,
     }
 
 
@@ -131,13 +139,17 @@ def _run_parent_task(args: Tuple[str, Any]) -> Dict[str, Any]:
                 "status": f"failed: {e}"}
 
 
-def _run_child_task(args: Tuple[Any, int]) -> Dict[str, Any]:
-    scenario, tau_urgent = args
+def _run_child_task(args: Tuple[Any, int, str]) -> Dict[str, Any]:
+    scenario, tau_urgent, method_name = args
     try:
-        policy = KVAdaptiveReserveChildPolicy(tau_urgent=tau_urgent)
+        policy_cls = {
+            CHILD_METHOD: KVAdaptiveReserveChildPolicy,
+            CHILD_METHOD_HYSTERESIS: KVAdaptiveReserveHysteresisChildPolicy,
+        }[method_name]
+        policy = policy_cls(tau_urgent=tau_urgent)
         result = _simulate(scenario, policy)
         return {
-            "scenario_id": scenario.scenario_id, "method_name": CHILD_METHOD,
+            "scenario_id": scenario.scenario_id, "method_name": method_name,
             "status": "success",
             "n_llf_steps": policy.n_llf_steps,
             "n_reserve_steps": policy.n_reserve_steps,
@@ -149,7 +161,7 @@ def _run_child_task(args: Tuple[Any, int]) -> Dict[str, Any]:
             **result,
         }
     except Exception as e:  # noqa: BLE001
-        return {"scenario_id": scenario.scenario_id, "method_name": CHILD_METHOD,
+        return {"scenario_id": scenario.scenario_id, "method_name": method_name,
                 "status": f"failed: {e}"}
 
 
@@ -203,14 +215,14 @@ def main() -> None:
                   for sid in by_id if parent_results.get((sid, PARENT_LLF), {}).get("status") == "success"}
 
     # ---- Step 2: fit tau_urgent on TRAIN, confirm on VAL, freeze ----
-    _log(args.run_dir, "Fitting tau_urgent on TRAIN...")
+    _log(args.run_dir, "Fitting tau_urgent on TRAIN using original child...")
     train_scenarios = [by_id[sid] for sid in split.train]
     val_scenarios = [by_id[sid] for sid in split.val]
 
     tau_candidates: Dict[int, float] = {}
     tau_train_rows: Dict[int, List[Dict[str, Any]]] = {}
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
-        futs = {ex.submit(_run_child_task, (s, tau)): (s.scenario_id, tau)
+        futs = {ex.submit(_run_child_task, (s, tau, CHILD_METHOD)): (s.scenario_id, tau)
                 for tau in TAU_URGENT_GRID for s in train_scenarios}
         rows_by_tau: Dict[int, List[Dict[str, Any]]] = {t: [] for t in TAU_URGENT_GRID}
         for fut in as_completed(futs):
@@ -226,7 +238,7 @@ def main() -> None:
     # Confirm on VAL: best_tau must not be worse than runner-up TRAIN candidate on VAL
     val_means: Dict[int, float] = {}
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
-        futs = {ex.submit(_run_child_task, (s, tau)): tau
+        futs = {ex.submit(_run_child_task, (s, tau, CHILD_METHOD)): tau
                 for tau in TAU_URGENT_GRID for s in val_scenarios}
         rows_by_tau_val: Dict[int, List[Dict[str, Any]]] = {t: [] for t in TAU_URGENT_GRID}
         for fut in as_completed(futs):
@@ -259,7 +271,7 @@ def main() -> None:
     }
     child_rows.update({r["scenario_id"]: r for r in rows_by_tau_val[best_tau]})  # VAL, already run
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
-        futs = {ex.submit(_run_child_task, (s, best_tau)): s.scenario_id for s in remaining}
+        futs = {ex.submit(_run_child_task, (s, best_tau, CHILD_METHOD)): s.scenario_id for s in remaining}
         for fut in as_completed(futs):
             r = fut.result()
             child_rows[r["scenario_id"]] = r
@@ -268,9 +280,24 @@ def main() -> None:
 
     child_scores = {sid: r["anwg"] for sid, r in child_rows.items() if r["status"] == "success"}
 
+    # ---- Step 3.5: evaluate safety-refined hysteresis child on ALL scenarios with best_tau ----
+    _log(args.run_dir, f"Evaluating hysteresis child on all scenarios with tau_urgent={best_tau}...")
+    hysteresis_child_rows: Dict[str, Dict[str, Any]] = {}
+    with ProcessPoolExecutor(max_workers=args.workers) as ex:
+        futs = {ex.submit(_run_child_task, (s, best_tau, CHILD_METHOD_HYSTERESIS)): s.scenario_id for s in scenarios}
+        for fut in as_completed(futs):
+            r = fut.result()
+            hysteresis_child_rows[r["scenario_id"]] = r
+    n_hyst_failed = sum(1 for r in hysteresis_child_rows.values() if r["status"] != "success")
+    _log(args.run_dir, f"Hysteresis child done: {len(hysteresis_child_rows)} rows, {n_hyst_failed} failed.")
+
+    hysteresis_scores = {sid: r["anwg"] for sid, r in hysteresis_child_rows.items() if r["status"] == "success"}
+
     # ---- Step 4: non-degeneracy / admission-disagreement diagnostic ----
     _log(args.run_dir, "Computing admission-disagreement diagnostic vs both parents...")
     disagree_counts: Dict[str, int] = {}
+    disagree_counts_hyst: Dict[str, int] = {}
+    
     for sid, crow in child_rows.items():
         if crow["status"] != "success":
             continue
@@ -287,13 +314,35 @@ def main() -> None:
             t_llf = llf_adm.get(rid)
             if t_child != t_kv and t_child != t_llf:
                 n_diff += 1
-        # also count requests admitted by child but never admitted by one/both parents (or vice versa)
         all_ids = set(child_adm) | set(kv_adm) | set(llf_adm)
         for rid in all_ids:
             in_c, in_k, in_l = rid in child_adm, rid in kv_adm, rid in llf_adm
             if in_c != in_k and in_c != in_l:
                 n_diff += 1
         disagree_counts[sid] = n_diff
+
+    for sid, crow in hysteresis_child_rows.items():
+        if crow["status"] != "success":
+            continue
+        kv_row = parent_results.get((sid, PARENT_KV), {})
+        llf_row = parent_results.get((sid, PARENT_LLF), {})
+        if kv_row.get("status") != "success" or llf_row.get("status") != "success":
+            continue
+        child_adm = crow["admission_time"]
+        kv_adm = kv_row["admission_time"]
+        llf_adm = llf_row["admission_time"]
+        n_diff = 0
+        for rid, t_child in child_adm.items():
+            t_kv = kv_adm.get(rid)
+            t_llf = llf_adm.get(rid)
+            if t_child != t_kv and t_child != t_llf:
+                n_diff += 1
+        all_ids = set(child_adm) | set(kv_adm) | set(llf_adm)
+        for rid in all_ids:
+            in_c, in_k, in_l = rid in child_adm, rid in kv_adm, rid in llf_adm
+            if in_c != in_k and in_c != in_l:
+                n_diff += 1
+        disagree_counts_hyst[sid] = n_diff
 
     # ---- Step 5: fit selectors on TRAIN, select on VAL (analytic) ----
     _log(args.run_dir, "Fitting contextual_top1 selector...")
@@ -330,12 +379,15 @@ def main() -> None:
     oracle_after_child = {
         sid: max(envelope.get(sid, 0.0), child_scores.get(sid, 0.0)) for sid in all_ids
     }
+    oracle_after_hysteresis = {
+        sid: max(envelope.get(sid, 0.0), hysteresis_scores.get(sid, 0.0)) for sid in all_ids
+    }
     _log(args.run_dir, f"best_fixed_parent (TRAIN-selected) = {best_fixed_name}")
 
     # ---- Write per_policy_results.csv ----
     fieldnames = [
         "scenario_id", "method_name", "split", "status", PRIMARY,
-        "completion_fraction", "n_steps",
+        "completion_fraction", "n_steps", "peak_kv",
         "n_llf_steps", "n_reserve_steps", "transition_count",
         "kv_util_at_transition_mean", "n_admission_decisions_differ_from_both_parents",
         "tau_urgent",
@@ -350,6 +402,7 @@ def main() -> None:
                 "status": r.get("status", "missing"), PRIMARY: r.get("anwg", float("nan")),
                 "completion_fraction": r.get("completion_fraction", float("nan")),
                 "n_steps": r.get("n_steps", 0),
+                "peak_kv": r.get("peak_kv", float("nan")),
             })
         crow = child_rows.get(sid, {})
         rows_out.append({
@@ -357,6 +410,7 @@ def main() -> None:
             "status": crow.get("status", "missing"), PRIMARY: crow.get("anwg", float("nan")),
             "completion_fraction": crow.get("completion_fraction", float("nan")),
             "n_steps": crow.get("n_steps", 0),
+            "peak_kv": crow.get("peak_kv", float("nan")),
             "n_llf_steps": crow.get("n_llf_steps", 0),
             "n_reserve_steps": crow.get("n_reserve_steps", 0),
             "transition_count": crow.get("transition_count", 0),
@@ -364,15 +418,31 @@ def main() -> None:
             "n_admission_decisions_differ_from_both_parents": disagree_counts.get(sid, 0),
             "tau_urgent": best_tau,
         })
+        hrow = hysteresis_child_rows.get(sid, {})
+        rows_out.append({
+            "scenario_id": sid, "method_name": CHILD_METHOD_HYSTERESIS, "split": sp,
+            "status": hrow.get("status", "missing"), PRIMARY: hrow.get("anwg", float("nan")),
+            "completion_fraction": hrow.get("completion_fraction", float("nan")),
+            "n_steps": hrow.get("n_steps", 0),
+            "peak_kv": hrow.get("peak_kv", float("nan")),
+            "n_llf_steps": hrow.get("n_llf_steps", 0),
+            "n_reserve_steps": hrow.get("n_reserve_steps", 0),
+            "transition_count": hrow.get("transition_count", 0),
+            "kv_util_at_transition_mean": hrow.get("kv_util_at_transition_mean", 0.0),
+            "n_admission_decisions_differ_from_both_parents": disagree_counts_hyst.get(sid, 0),
+            "tau_urgent": best_tau,
+        })
         for method, scores in (
             ("contextual_top1", selector_scores), ("hard_conditional", hard_scores),
             ("best_fixed_parent", best_fixed_scores), ("parent_oracle", envelope),
             ("oracle_after_child", oracle_after_child),
+            ("oracle_after_hysteresis_child", oracle_after_hysteresis),
         ):
             rows_out.append({
                 "scenario_id": sid, "method_name": method, "split": sp,
                 "status": "success", PRIMARY: scores.get(sid, 0.0),
                 "completion_fraction": float("nan"), "n_steps": 0,
+                "peak_kv": float("nan"),
             })
 
     with open(args.run_dir / "per_policy_results.csv", "w", newline="") as f:
@@ -383,7 +453,7 @@ def main() -> None:
     with open(args.run_dir / "selector_choice.json", "w") as f:
         json.dump(selector_choice, f, indent=2)
 
-    n_failed_total = n_parent_failed + n_child_failed
+    n_failed_total = n_parent_failed + n_child_failed + n_hyst_failed
     summary = {
         "experiment": "kv_composition_falsification_v1",
         "n_scenarios": len(scenarios),
