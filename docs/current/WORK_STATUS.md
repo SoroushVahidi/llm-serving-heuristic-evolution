@@ -40,8 +40,8 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 
 There is no active failed job to diagnose. On WS-P, Family A v2 is analyzed and
 usable; ESTF/WFS composition did not unlock envelope gain beyond selection. The
-**next mechanism family** (Family B v1 prefill/decode chunk-control) has passed
-smoke GO and is the live WS-P experiment. Independently, the
+**next mechanism family** (Family B v1 prefill/decode chunk-control) has
+executed (720/720, integrity-clean); H1–H10 analysis is the live WS-P task. Independently, the
 Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
 evidence into module-decomposition / library-envelope work without overclaiming
 global Apt-Serve superiority.
