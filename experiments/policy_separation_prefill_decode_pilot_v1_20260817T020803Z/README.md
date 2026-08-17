@@ -1,5 +1,9 @@
-# Family B v1 full pilot — launch provenance
+# Family B v1 full pilot — provenance
 
+**Status:** execution COMPLETE; scientific analysis COMPLETE  
+**Audit:** [`docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../../docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md)  
+**Design:** [`docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`](../../docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md)  
+**Verdict:** `USEFUL_BUT_NEEDS_REFINEMENT`; composition `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`  
 **Run dir:** `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`  
 **tmux:** `policy-sep-prefill-decode-v1` (exited after completion)  
 **Slurm:** none (local on `al-khwarizmi`)  
@@ -21,6 +25,7 @@ python scripts/run_policy_separation_prefill_decode_pilot_v1.py \
 ```
 
 Logs: `stdout.log` / `run.log` in the run dir (gitignored `*.log`).  
-Full H1–H10 scientific analysis is the **next** task; this file is launch+integrity only.
+Analyzer: `scripts/analyze_policy_separation_prefill_decode_pilot_v1.py` → `analysis/`.  
+Raw `per_policy_results.csv` is frozen evidence and was not rewritten.
 
-Coarse integrity peek (not a verdict): 58/144 cells have ANWG spread > 0.01.
+Coarse integrity peek (reproduced in the audit): 58/144 cells have structural ANWG spread > 0.01. That spread is the full↔small pairwise contrast, not four distinct unique-winner niches.

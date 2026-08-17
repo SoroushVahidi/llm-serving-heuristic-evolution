@@ -1,8 +1,8 @@
 # Policy Separation Family B v1 — Prefill–Decode Interference / Chunk-Control
 
 **Date:** 2026-08-16  
-**Status:** PREREGISTERED + CALIBRATED (design fixed before full pilot; smoke
-gate documented below)  
+**Status:** ANALYZED — `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`  
+**Audit:** [`docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)  
 **Predecessors:**
 - Family A v2 (fairness vs size), Job 1182377 — verdict `USEFUL_BUT_NEEDS_REFINEMENT`
   (`docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`)
@@ -203,3 +203,6 @@ LLM-guided synthesis, Fireworks/Cloudrift APIs, broad real-vLLM validation.
 - `scripts/run_policy_separation_prefill_decode_pilot_v1.py`
 - `scripts/slurm/run_policy_separation_prefill_decode_pilot_v1.sbatch`
 - `tests/test_policy_separation_prefill_decode_v1.py`
+- `scripts/analyze_policy_separation_prefill_decode_pilot_v1.py`
+- `tests/test_analyze_policy_separation_prefill_decode_v1.py`
+- `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`

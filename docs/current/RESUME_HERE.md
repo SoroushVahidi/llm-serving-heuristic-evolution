@@ -11,7 +11,7 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | see `git rev-parse HEAD` (Family A v1 audit landed after `1be0056`) |
+| Last reconciled SHA | see `git rev-parse HEAD` (Family B v1 audit after `1f56828`) |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
 | Canonical roadmap | `docs/PROJECT_MAP.md` |
@@ -46,7 +46,16 @@ characterization (WS-P).
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
-**ESTF↔WFS minimal composition falsification is COMPLETE.**
+**Family B v1 prefill/decode chunk-control analysis is COMPLETE.**
+
+- Audit: [`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)
+- Provenance: [`../../experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`](../../experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/)
+- Family verdict: **`USEFUL_BUT_NEEDS_REFINEMENT`**
+- Composition: **`PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`**
+- Pairwise full↔small is bidirectional (47/11 at ε=0.01), but unique-winner diversity fails (only `full_prefill` uniquely wins at ε=0.01), 5-policy near-tie rate is 96%, `decode_priority_chunked` ≡ `chunked_prefill_small` on 144/144 cells, and adaptive expands the envelope in 0 cells.
+- Next WS-P step: **Family B refinement**, not PrefillControl synthesis.
+
+**ESTF↔WFS minimal composition falsification remains COMPLETE.**
 
 - Audit: [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)
 - Provenance: [`../../experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/`](../../experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/)
@@ -54,7 +63,6 @@ characterization (WS-P).
 - Contextual rank composition does not beat contextual top-1 on TEST; parent
   envelope gain is 0. Symbolic distillation / MAP-Elites / LLM synthesis are
   **not** justified from this pair alone.
-- Next WS-P step: **next mechanism family** = Family B v1 (prefill/decode).
 
 Family A v2 Job 1182377 remains validated complementary-parent evidence
 (`USEFUL_BUT_NEEDS_REFINEMENT`):
@@ -100,17 +108,22 @@ Supported interpretation:
 - Apt-Serve: Phase G analysis is complete; no new Apt-Serve collection job is
   queued.
 - WS-P: Family A v2 analyzed; ESTF↔WFS composition =
-  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; the **next mechanism family** is
-  Family B v1 (prefill/decode chunk-control) — executed (720/720), analysis pending.
+  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; Family B v1 (the next mechanism family
+  after ESTF/WFS) is analyzed (`USEFUL_BUT_NEEDS_REFINEMENT`;
+  `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`).
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** After Family B v1 full pilot completes, analyze H1–H10
-   (`docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`).
+1. **WS-P:** Family B v1 H1–H10 analysis is complete
+   ([`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)).
+   Verdict `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`.
    ESTF↔WFS composition pilot verdict:
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)).
-   Do **not** start MAP-Elites, symbolic distillation, or LLM synthesis from ESTF/WFS.
+   Do **not** start MAP-Elites, symbolic distillation, LLM synthesis, or
+   PrefillControl composition from the current Family B grid.
+   Next on this thread: Family B refinement (drop near-twin policies; per-class
+   metrics), not a composition child.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

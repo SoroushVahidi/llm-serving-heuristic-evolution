@@ -34,14 +34,14 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Policy Separation Family A (fairness / starvation) v1 | `COMPLETE` analysis; `REDESIGN_REQUIRED` for corpus use | Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`; provenance + `analysis/` under `experiments/…_1182306/` | ESTF↔WFS bidirectional niche absent; Aging saturated; size–priority collinearity; historical `anwg` = unweighted SLO-success; synthetic lengths | Retain frozen; do not train selectors from v1 |
 | Policy Separation Family A v2 (fairness vs size) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT` | Job 1182377; audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`; provenance + `analysis/` under `experiments/…_v2_…_1182377/` | Seed agree 72% (near 75% bar); WFS ANWG non-monotone in skew under conflict; aligned short cells ESTF-dominated | Include in PSD; next mechanism family |
 | ESTF↔WFS composition falsification v1 | `COMPLETE`; `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`; run `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/` | Contextual α does not beat top-1; envelope gain 0 | Do not distill/MAP-Elites/LLM-synth from this pair |
-| Policy Separation Family B v1 (prefill/decode chunk-control) | `IN_PROGRESS` analysis; execution `COMPLETE` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; launch `docs/audits/policy_separation_prefill_decode_pilot_v1_launch_20260816.md`; run `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/` (720/720) | H1–H10 scientific audit | Analyze Family B; do not synthesize a child yet |
+| Policy Separation Family B v1 (prefill/decode chunk-control) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`; run `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/` (720/720) | Unique-winner diversity failed; `decode_priority` ≡ small-chunk; 96% near-ties; adaptive envelope gain 0 | Refine Family B; do not synthesize a PrefillControl child yet |
 
 ## Current Blocker
 
 There is no active failed job to diagnose. On WS-P, Family A v2 is analyzed and
-usable; ESTF/WFS composition did not unlock envelope gain beyond selection. The
-**next mechanism family** (Family B v1 prefill/decode chunk-control) has
-executed (720/720, integrity-clean); H1–H10 analysis is the live WS-P task. Independently, the
+usable; ESTF/WFS composition did not unlock envelope gain beyond selection.
+Family B v1 (the next mechanism family after ESTF/WFS) is analyzed:
+`USEFUL_BUT_NEEDS_REFINEMENT` / `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`. Independently, the
 Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
 evidence into module-decomposition / library-envelope work without overclaiming
 global Apt-Serve superiority.
@@ -54,8 +54,8 @@ Read:
 2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md)
 3. [`../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`](../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md)
 4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
-5. Family A v2 provenance:
-   [`../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/README.md`](../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/README.md)
+5. Family B v1 audit:
+   [`../audits/policy_separation_prefill_decode_pilot_v1_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v1_20260817.md)
 
-Then: (WS-P) analyze Family B v1 H1–H10; and/or (Apt-Serve thread)
+Then: (WS-P) Family B refinement, not PrefillControl composition; and/or (Apt-Serve thread)
 post-Phase-G module-envelope interpretation.
