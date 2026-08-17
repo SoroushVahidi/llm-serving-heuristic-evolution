@@ -6,14 +6,18 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Design and execute the next mechanism family after Family A v2.**
+**Analyze Family B v1 (prefill/decode chunk-control) after the full pilot completes.**
+This is the **next mechanism family** after Family A v2.
+
+Design: [`../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`](../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md)  
+Smoke GO: `experiments/policy_separation_prefill_decode_smoke_v1_20260817T020443Z/`
 
 ESTF↔WFS composition falsification is COMPLETE:
 [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  
 **Verdict: `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.** Contextual rank composition
 did not beat contextual top-1 or expand the parent envelope. More complex
 composition, symbolic distillation, MAP-Elites, and LLM synthesis are **not**
-justified from this pair alone.
+justified from that pair alone.
 
 Family A v2 remains validated complementary-parent evidence
 ([`../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`](../audits/policy_separation_fairness_starvation_pilot_v2_20260816.md)).

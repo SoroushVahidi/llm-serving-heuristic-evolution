@@ -1,0 +1,51 @@
+# Policy Separation Family B v1 Pilot Configuration
+# Prefill–decode interference / chunk-control mechanism family.
+# See docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md
+#
+# Production runs REQUIRE staged BurstGPT (no silent synthetic fallback).
+# Primary metric: RunMetrics.arrival_normalized_weighted_goodput
+#
+# Policies are the mechanism variants from
+# llmserveopt.policies.prefill_control_variants.make_prefill_decode_variants().
+# Fixed variants (full/chunked/decode-priority) share greedy arrival-ordered
+# admission and differ ONLY in ServiceModel execution (chunk size / decode
+# priority), isolating the structural mechanism.
+#
+# Arrival shape (execution-model faithful): prefill convoy first, then
+# overlapping decode-tenant arrivals. Chunk caps calibrated at
+# step_token_budget=512 → small=64, large=256, full=unlimited.
+
+pilot_metadata:
+  experiment_name: "policy_separation_prefill_decode_pilot_v1"
+  version: "prefill_decode_v1"
+  description: "Prefill-decode interference / chunk-control separation pilot"
+  predecessor_job: null
+  predecessor_verdict: "SELECTION_SUFFICIENT_FOR_THIS_PAIR"
+  require_burstgpt: true
+
+sweep_grid:
+  prefill_size_class: ["short", "medium", "long", "mixed"]
+  decode_occupancy: ["low", "medium", "high"]
+  slo_regime: ["ttft_tight", "tbt_tight", "balanced"]
+  offered_load: ["moderate", "high"]
+  seeds: [20260818, 20260819]
+
+fixed:
+  n_decode: null
+  n_prefill: null
+  max_active_sequences: 512
+  step_token_budget: 512
+
+chunk_budgets:
+  chunk_small: 64
+  chunk_large: 256
+  decode_priority_chunk: 64
+
+policies:
+  - "full_prefill"
+  - "chunked_prefill_small"
+  - "chunked_prefill_large"
+  - "decode_priority_chunked"
+  - "adaptive_prefill_control"
+
+# 4*3*3*2*2 = 144 scenarios x 5 policies = 720 evaluations.

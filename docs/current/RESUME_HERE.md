@@ -54,7 +54,7 @@ characterization (WS-P).
 - Contextual rank composition does not beat contextual top-1 on TEST; parent
   envelope gain is 0. Symbolic distillation / MAP-Elites / LLM synthesis are
   **not** justified from this pair alone.
-- Next WS-P step: **next mechanism family**.
+- Next WS-P step: **next mechanism family** = Family B v1 (prefill/decode).
 
 Family A v2 Job 1182377 remains validated complementary-parent evidence
 (`USEFUL_BUT_NEEDS_REFINEMENT`):
@@ -100,15 +100,17 @@ Supported interpretation:
 - Apt-Serve: Phase G analysis is complete; no new Apt-Serve collection job is
   queued.
 - WS-P: Family A v2 analyzed; ESTF↔WFS composition =
-  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; **next mechanism family** is next.
+  `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; the **next mechanism family** is
+  Family B v1 (prefill/decode chunk-control) — designed, calibrated, GO.
 
 ## Exact Next Tasks (two independent threads)
 
-1. **WS-P:** Design/execute the **next mechanism family** after Family A v2.
+1. **WS-P:** After Family B v1 full pilot completes, analyze H1–H10
+   (`docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`).
    ESTF↔WFS composition pilot verdict:
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)).
-   Do **not** start MAP-Elites, symbolic distillation, or LLM synthesis from this pair.
+   Do **not** start MAP-Elites, symbolic distillation, or LLM synthesis from ESTF/WFS.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 
