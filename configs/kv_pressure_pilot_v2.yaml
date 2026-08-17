@@ -1,0 +1,17 @@
+# Family C v2 KV-pressure reserve pairwise-separation pilot (frozen, full grid).
+# See docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md section 3/7.
+# 2x3x2x6 = 72 scenarios. 4 in-sample seeds (gate computation) + 2 held-out
+# seeds (G6 replication check only, never used to set any threshold).
+# All 6 seeds are fresh -- none reused from v1 or v2 calibration.
+
+sweep_grid:
+  bulk_pressure: ["low", "high"]
+  urgent_arrival_phase: ["early", "middle", "late"]
+  urgent_tightness: ["loose", "tight"]
+  seeds: [20260910, 20260911, 20260912, 20260913, 20260914, 20260915]
+
+held_out_seeds: [20260914, 20260915]
+
+max_kv_tokens: 6000
+max_active_sequences: 64
+max_batch_tokens: 64

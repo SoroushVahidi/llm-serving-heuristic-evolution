@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""Family C v1 KV-pressure reserve pairwise-separation pilot runner.
+"""Family C KV-pressure reserve pairwise-separation pilot runner (v1 & v2).
 
-See docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md. This is a
-pairwise-separation pilot, NOT a composition falsification: exactly two
+See docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md and _V2.md. This
+is a pairwise-separation pilot, NOT a composition falsification: exactly two
 policies (`kv_constrained_online`, `least_laxity_first`) are evaluated on
 every scenario -- no selector is fit, no child policy is run.
+
+--template-version {v1,v2} selects the scenario generator (default v1, so
+existing v1 configs/invocations are unaffected). v2 configs may set
+`held_out_seeds` (a list) to tag rows for the v2 held-out replication check
+(design doc v2 SS7) -- ignored, and must be omitted, for v1.
 """
 from __future__ import annotations
 
@@ -28,6 +33,10 @@ from llmserveopt.policy_separation.templates_kv_pressure import (  # noqa: E402
     CLASS_URGENT,
     assert_policy_visible_fields_clean_kv_v1,
     case_kv_pressure_reserve_contention,
+)
+from llmserveopt.policy_separation.templates_kv_pressure_v2 import (  # noqa: E402
+    assert_policy_visible_fields_clean_kv_v2,
+    case_kv_pressure_reserve_contention_v2,
 )
 from llmserveopt.policies.kv_constrained_online import KVConstrainedOnlinePolicy  # noqa: E402
 from llmserveopt.policies.least_laxity_first import LeastLaxityFirstPolicy  # noqa: E402
@@ -63,7 +72,7 @@ POLICIES = {
 
 RESULT_FIELDNAMES = [
     "scenario_id", "policy_name", "bulk_pressure", "urgent_arrival_phase",
-    "urgent_tightness", "seed", "status",
+    "urgent_tightness", "seed", "held_out", "status",
     "arrival_normalized_weighted_goodput", "unweighted_slo_success_rate",
     "completion_fraction",
     "bulk_n", "bulk_slo_success_rate",
@@ -88,8 +97,8 @@ def _class_success(completed, class_id: str) -> Tuple[int, float]:
     return len(rows), ok / len(rows)
 
 
-def _run_one(args: Tuple[str, str, Any, int]) -> dict:
-    scenario_id, policy_name, scenario, max_kv_tokens = args
+def _run_one(args: Tuple[str, str, Any, int, bool]) -> dict:
+    scenario_id, policy_name, scenario, max_kv_tokens, held_out = args
     try:
         policy_cls = POLICIES[policy_name]
         policy = policy_cls()
@@ -123,6 +132,7 @@ def _run_one(args: Tuple[str, str, Any, int]) -> dict:
             "urgent_arrival_phase": scenario.params["urgent_arrival_phase"],
             "urgent_tightness": scenario.params["urgent_tightness"],
             "seed": scenario.seed,
+            "held_out": held_out,
             "status": "success",
             "arrival_normalized_weighted_goodput": float(
                 metrics.arrival_normalized_weighted_goodput
@@ -144,23 +154,37 @@ def _run_one(args: Tuple[str, str, Any, int]) -> dict:
         return {
             "scenario_id": scenario_id,
             "policy_name": policy_name,
+            "held_out": held_out,
             "status": "failed",
             "error": str(e),
             "traceback": traceback.format_exc(),
         }
 
 
-def build_scenarios(cfg: dict, *, allow_synthetic_tokens: bool, datasets_root) -> List[Any]:
+def build_scenarios(
+    cfg: dict, *, template_version: str, allow_synthetic_tokens: bool, datasets_root,
+) -> List[Any]:
     grid = cfg["sweep_grid"]
     max_kv_tokens = int(cfg.get("max_kv_tokens", 8000))
     max_active_sequences = int(cfg.get("max_active_sequences", 64))
     max_batch_tokens = int(cfg.get("max_batch_tokens", 64))
+    if template_version == "v1":
+        build_fn = case_kv_pressure_reserve_contention
+        leakage_guard = assert_policy_visible_fields_clean_kv_v1
+        if cfg.get("held_out_seeds"):
+            raise ValueError("held_out_seeds is a v2-only config field; --template-version v1 given")
+    elif template_version == "v2":
+        build_fn = case_kv_pressure_reserve_contention_v2
+        leakage_guard = assert_policy_visible_fields_clean_kv_v2
+    else:
+        raise ValueError(f"--template-version must be v1 or v2, got {template_version!r}")
+
     scenarios = []
     for bulk_pressure in grid["bulk_pressure"]:
         for phase in grid["urgent_arrival_phase"]:
             for tightness in grid["urgent_tightness"]:
                 for seed in grid["seeds"]:
-                    s = case_kv_pressure_reserve_contention(
+                    s = build_fn(
                         bulk_pressure=str(bulk_pressure),
                         urgent_arrival_phase=str(phase),
                         urgent_tightness=str(tightness),
@@ -171,7 +195,7 @@ def build_scenarios(cfg: dict, *, allow_synthetic_tokens: bool, datasets_root) -
                         allow_synthetic_tokens=allow_synthetic_tokens,
                         datasets_root=datasets_root,
                     )
-                    assert_policy_visible_fields_clean_kv_v1(s)
+                    leakage_guard(s)
                     scenarios.append(s)
     return scenarios
 
@@ -181,6 +205,7 @@ def main() -> None:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--template-version", choices=["v1", "v2"], default="v1")
     parser.add_argument("--allow-synthetic-tokens", action="store_true")
     parser.add_argument("--datasets-root", type=Path, default=None)
     args = parser.parse_args()
@@ -189,18 +214,21 @@ def main() -> None:
     with open(args.config) as f:
         cfg = yaml.safe_load(f)
 
-    _log(args.run_dir, "Starting Family C v1 KV-pressure reserve pairwise-separation pilot.")
+    _log(args.run_dir, f"Starting Family C {args.template_version} KV-pressure reserve pairwise-separation pilot.")
     scenarios = build_scenarios(
-        cfg, allow_synthetic_tokens=args.allow_synthetic_tokens,
+        cfg, template_version=args.template_version,
+        allow_synthetic_tokens=args.allow_synthetic_tokens,
         datasets_root=args.datasets_root,
     )
     max_kv_tokens = int(cfg.get("max_kv_tokens", 8000))
-    _log(args.run_dir, f"Generated {len(scenarios)} scenarios.")
+    held_out_seeds = set(int(s) for s in cfg.get("held_out_seeds", []))
+    _log(args.run_dir, f"Generated {len(scenarios)} scenarios. Held-out seeds: {sorted(held_out_seeds) or 'none'}.")
 
     tasks = []
     for s in scenarios:
+        held_out = s.seed in held_out_seeds
         for policy_name in POLICIES:
-            tasks.append((s.scenario_id, policy_name, s, max_kv_tokens))
+            tasks.append((s.scenario_id, policy_name, s, max_kv_tokens, held_out))
 
     all_results: List[dict] = []
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
@@ -216,6 +244,7 @@ def main() -> None:
     success = [r for r in all_results if r.get("status") == "success"]
     failed = [r for r in all_results if r.get("status") == "failed"]
     summary = {
+        "template_version": args.template_version,
         "n_scenarios": len(scenarios),
         "n_tasks": len(all_results),
         "n_completed": len(success),
@@ -223,6 +252,7 @@ def main() -> None:
         "primary_metric": "arrival_normalized_weighted_goodput",
         "max_kv_tokens": max_kv_tokens,
         "policies": list(POLICIES.keys()),
+        "held_out_seeds": sorted(held_out_seeds),
     }
     with open(args.run_dir / "final_summary.json", "w") as f:
         json.dump(summary, f, indent=2)

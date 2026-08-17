@@ -72,6 +72,17 @@ characterization (WS-P).
 - **This is the first family (of ESTF/WFS, PrefillControl, KV-pressure) to demonstrate genuine within-scenario mechanism opportunity**, not just a scenario-level contrast: KV-constrained's advantage over LLF on urgent-tenant SLO attainment is 2× larger when urgent tenants arrive after KV pressure has built up vs before (0.125 vs 0.0625 mean ANWG delta, matched cells) — exactly the structural precondition ESTF/WFS and PrefillControl lacked.
 - **This is a pairwise-separation pilot only — no composition work was started or is currently justified.** Next step is refining this family (larger pilot to test whether the tie-rate gate clears with more power), not a composition falsification and not MAP-Elites/GP/distillation/LLM synthesis.
 
+**Family C v2 KV-pressure reserve refinement is now COMPLETE — `KV_FAMILY_COMPOSITION_READY`.**
+
+- Design: [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md)
+- Audit: [`../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md)
+- Provenance: [`../../experiments/kv_pressure_pilot_v2_20260817T165053Z/`](../../experiments/kv_pressure_pilot_v2_20260817T165053Z/) (72 scenarios, 144/144 success; v1's frozen run untouched)
+- v1's tie-rate gap (59.4%) diagnosed to two root causes: coarse ANWG resolution at the v1 population size, and an accidental confound where bulk "background" tenants were themselves often classified urgent by the policy's own threshold. v2 fixed both (population roughly doubled; bulk slack recalibrated) and added a third arrival-phase level — all changes justified against the diagnosis, not tuned toward a preferred outcome (design doc §1-2 documents the full reasoning, including a case where a further "fix" was tried and rejected because it didn't change the qualitative picture).
+- **All 10 preregistered gates pass**, including two new ones beyond v1's set: G6 (the within-scenario timing pattern replicates on 2 held-out seeds never used in any calibration decision — it does, at comparable-or-larger magnitude) and G10 (6 of 16 matched scenario cells show a *different practical winner* depending purely on when urgent tenants arrive within the same scenario, holding everything else fixed).
+- **This is the first family, of the three studied, to reach `_COMPOSITION_READY`** — stronger motivating evidence for composition than ESTF/WFS or PrefillControl v2 produced, neither of which ever showed a within-scenario-timing dependency (both were already `SELECTION_SUFFICIENT_FOR_THIS_PAIR`, meaning a scenario-level selector was sufficient).
+- **Important precision (audit §S):** this shows the *scenario-level optimal parent choice* depends on within-trajectory timing, and that a scenario-level selector alone therefore has less headroom to be sufficient here than in the other two families — it does **not** yet prove a state-dependent child would beat *both* fixed parents on the *same* trajectory. That is exactly what a composition falsification would test.
+- **No composition work was started in this task**, per explicit scope. The audit states what the smallest next composition falsification would look like (§T) without running it.
+
 **ESTF↔WFS minimal composition falsification remains COMPLETE.**
 
 - Audit: [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)
@@ -130,8 +141,10 @@ Supported interpretation:
   `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; v2 is `FAMILY_B_COMPOSITION_READY`;
   PrefillControl composition falsification on the v2 pair = `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
   ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md));
-  Family C v1 KV-pressure reserve pairwise-separation pilot = `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
-  ([`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)).
+  Family C v2 KV-pressure reserve refinement = `KV_FAMILY_COMPOSITION_READY`
+  ([`../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md));
+  v1 pilot remains `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (frozen, superseded
+  by v2, not rewritten).
 
 ## Exact Next Tasks (two independent threads)
 
@@ -141,23 +154,25 @@ Supported interpretation:
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)).
    PrefillControl composition falsification (`full_prefill` vs
-   `chunked_prefill_small`) is now COMPLETE, verdict
+   `chunked_prefill_small`) is COMPLETE, verdict
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)).
-   A new mechanism family, Family C v1 KV-pressure reserve
-   (`kv_constrained_online` vs `least_laxity_first`), has since had its
-   pairwise-separation pilot run: verdict `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
-   ([`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)) —
-   5/6 gates pass, including the first within-scenario-opportunity evidence
-   (gate G4) seen in any family so far; only the tie-rate gate (G2, 59.4%)
-   did not clear. Next on this thread: refine the KV-pressure pilot (more
-   seeds / wider factor range around its strongest cell) to test whether G2
-   clears with more statistical power — **not** a composition falsification
-   yet (only warranted after `KV_FAMILY_COMPOSITION_READY`), and **not**
-   MAP-Elites, symbolic distillation, LLM synthesis, or QD work — three
-   pairs studied so far (ESTF/WFS, PrefillControl `SELECTION_SUFFICIENT_FOR_THIS_PAIR`;
-   KV-pressure `USEFUL_NEEDS_REFINEMENT`), none has reached `COMPOSITION_GO`
-   or `_READY`.
+   **Family C v2 KV-pressure reserve** (`kv_constrained_online` vs
+   `least_laxity_first`) is now `KV_FAMILY_COMPOSITION_READY`
+   ([`../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md);
+   design [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md))
+   — all 10 preregistered gates pass, including held-out-seed replication
+   (G6) and within-scenario winner-flip evidence (G10) neither prior family
+   produced. **This is the first family, of the three studied, to justify a
+   composition falsification** — but that falsification was **not** run in
+   this task (explicit scope). The audit (§T) states what the smallest next
+   step should be: a two-parent composition falsification structured like
+   the Family B v2 PrefillControl one, with a genuinely state-dependent
+   KV-admission child compared against a TRAIN/VAL-fitted scenario-level
+   selector on held-out TEST/OOD. Do **not** start it, MAP-Elites, symbolic
+   distillation, or LLM synthesis without explicit authorization — a
+   `_COMPOSITION_READY` verdict recommends the next falsification, it does
+   not launch it.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

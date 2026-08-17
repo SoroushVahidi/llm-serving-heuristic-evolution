@@ -37,7 +37,8 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Policy Separation Family B v1 (prefill/decode chunk-control) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`; run `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/` (720/720) | Unique-winner diversity failed; `decode_priority` ≡ small-chunk; 96% near-ties; adaptive envelope gain 0 | Frozen; superseded scientifically by v2 |
 | Policy Separation Family B v2 (TTFT-contention anchors) | `COMPLETE` analysis; `FAMILY_B_COMPOSITION_READY` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md`; audit `docs/audits/policy_separation_prefill_decode_pilot_v2_20260817.md`; run `experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/` (64/64) | Short-output intervention; decode_first still un-activatable on clean traces | Smallest two-parent PrefillControl composition falsification |
 | PrefillControl composition falsification (`full_prefill` vs `chunked_prefill_small`) | `COMPLETE`; `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | Audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`; run `experiments/prefill_control_composition_v2_20260817T154633Z/` (32 scenarios, 120/120) | Real fitted top-1 selector = oracle (0 regret) TEST+OOD; genuinely dynamic `prefill_control_child` never beats selector or expands envelope; rule tested only used 3/6 chunk options | Do not distill/MAP-Elites/LLM-synth from this pair; next mechanism family per roadmap |
-| Family C v1 KV-pressure reserve pairwise-separation pilot (`kv_constrained_online` vs `least_laxity_first`) | `COMPLETE`; `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` | Design `docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md`; audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; run `experiments/kv_pressure_pilot_v1_20260817T162650Z/` (32 scenarios, 64/64) | 5/6 gates pass (bidirectional 9-vs-4/32, mechanism activates, no twin, **first within-scenario timing evidence of any family so far**, gate G4); tie-rate gate 59.4% did not clear <50% bound | Pairwise-separation pilot only, no composition started; refine (more seeds) to test whether G2 clears before any composition falsification |
+| Family C v1 KV-pressure reserve pairwise-separation pilot (`kv_constrained_online` vs `least_laxity_first`) | `COMPLETE`; `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`; frozen, superseded by v2 | Design `docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md`; audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; run `experiments/kv_pressure_pilot_v1_20260817T162650Z/` (32 scenarios, 64/64) | 5/6 gates pass; tie-rate gate 59.4% did not clear <50% bound | Refined into v2 |
+| Family C v2 KV-pressure reserve refinement (`kv_constrained_online` vs `least_laxity_first`) | `COMPLETE`; `KV_FAMILY_COMPOSITION_READY` | Design `docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`; audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`; run `experiments/kv_pressure_pilot_v2_20260817T165053Z/` (72 scenarios, 144/144) | **All 10 gates pass** — bidirectional (29-vs-4/48), tie rate 31.2% (v1: 59.4%), held-out-seed replication (G6), and within-scenario winner-flip evidence (G10, 6/16 matched cells show a different practical winner depending only on urgent-arrival timing) — the first family of three studied to reach a `_READY` verdict | Pairwise-separation pilot only, no composition started (explicit task scope); smallest next step is a two-parent composition falsification for this pair, structured like the Family B v2 PrefillControl one — not run in this task |
 
 ## Current Blocker
 
@@ -47,10 +48,14 @@ Family B v1 is frozen (`USEFUL_BUT_NEEDS_REFINEMENT` /
 `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`). Family B v2 (the next mechanism family
 after ESTF/WFS, refined) is `FAMILY_B_COMPOSITION_READY`, and its PrefillControl
 composition falsification is now COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`
-— second independent pair to land this verdict, after ESTF/WFS). Independently,
-the Apt-Serve/CC blocker remains organizational: translate Phase G's bounded
-evidence into module-decomposition / library-envelope work without overclaiming
-global Apt-Serve superiority.
+— second independent pair to land this verdict, after ESTF/WFS). Family C
+v2 KV-pressure reserve (`kv_constrained_online` vs `least_laxity_first`) is
+now `KV_FAMILY_COMPOSITION_READY` — the first of the three studied pairs to
+reach this verdict; a composition falsification for it is scientifically
+justified but has **not** been started. Independently, the Apt-Serve/CC
+blocker remains organizational: translate Phase G's bounded evidence into
+module-decomposition / library-envelope work without overclaiming global
+Apt-Serve superiority.
 
 ## Current Next Action
 

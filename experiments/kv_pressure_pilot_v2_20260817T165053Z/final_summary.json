@@ -1,0 +1,17 @@
+{
+  "template_version": "v2",
+  "n_scenarios": 72,
+  "n_tasks": 144,
+  "n_completed": 144,
+  "n_failed": 0,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "max_kv_tokens": 6000,
+  "policies": [
+    "kv_constrained_online",
+    "least_laxity_first"
+  ],
+  "held_out_seeds": [
+    20260914,
+    20260915
+  ]
+}
