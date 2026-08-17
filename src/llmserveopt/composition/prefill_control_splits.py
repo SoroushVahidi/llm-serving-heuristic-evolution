@@ -103,8 +103,8 @@ def assign_family_b_v2_splits(
         # this is intentionally caught during launch)
         train.extend([sid for sid, _ in train_candidates])
 
-    val_sids = [sid for sid, _ in val]
-    train_sids = [sid for sid, _ in train]
+    val_sids = [sid for sid, _ in val] if val else list(val)
+    train_sids = [sid for sid, _ in train] if all(isinstance(t, tuple) for t in train) else list(train)
 
     # Integrity: disjoint
     all_sets = [set(train_sids), set(val_sids), set(test), set(ood)]

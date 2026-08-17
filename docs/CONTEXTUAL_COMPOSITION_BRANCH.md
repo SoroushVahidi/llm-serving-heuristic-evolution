@@ -149,4 +149,49 @@ fallback; do not enable contextual switching in unsupported regimes
 (`azure_conversation_like`, `burstgpt_derived`, `long_prompt`, `mixed_slo`,
 `priority_conflict`). Do not begin CC6 implementation in this query.
 
-Active issue: [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) (ready, restricted scope, not started). Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) is now closed.
+Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/6) (ready, restricted scope, not started). Issue [#5](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issues/5) is now closed.
+
+## Family B v2 — PrefillControl Composition Falsification
+
+**Preregistered audit (FAMILY_B_COMPOSITION_READY):** `docs/audits/policy_separation_prefill_decode_pilot_v2_20260817.md`
+**Parents:** `full_prefill` (unlimited chunk) vs `chunked_prefill_small` (chunk=64)
+**Design doc:** `configs/prefill_control_composition_v2.yaml` + this section
+
+### Implementation (current session)
+
+| File | Purpose |
+|---|---|
+| `p3_chunk_control.py` | Composition logic: Family B v2 template imports, feature extraction (13 online-observable, 0 forbidden), composition operator, endpoint identity |
+| `p7_runner.py` | End-to-end runner with `ScenarioBatch` / `ChildCompositionConfig` abstractions, deterministic eval-ID, split-aware parent + child evaluation |
+| `p5_analysis_chunk_comp.py` | Preregistered analysis: integrity, split validation, envelope gain, bootstrap CI, paired deltas, coverage diagnostics, verdict |
+| `p8_test_runner.py` | 51 focused tests: scenario-batch / config, eval-ID determinism, leakage protection, split integrity, verdict logic, all three verdict paths |
+| `p2_config.yaml` | Configuration: parents, children, split spec, feature forbid/allow list, statistical settings, provenance fields |
+
+**Bug fix in this session:** `prefill_control_splits.py` — line 107 tried to unpack plain strings as tuples in the degenerate split case; fixed with type guard.
+
+### Preregistered verdict criteria
+
+| Verdict | Conditions |
+|---|---|
+| `COMPOSITION_GO` | TEST envelope gain > ε=0.01, bootstrap CI lo > 0, adequate samples (test≥4, ood≥2), composition beats selector |
+| `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | Contextual top-1 selector already matches parent envelope (gap < 0.005), no composition gain beyond selection |
+| `INCONCLUSIVE` | Insufficient evidence (too few scenarios), ambiguous results, or envelope gain ≤ 0 |
+
+### Current status
+
+- **Composition falsification NOT YET EXECUTED.** No verdict exists until the experiment completes.
+- Broad synthesis/QD work (MAP-Elites, GP, LLM-guided synthesis, symbolic distillation) remains **gated** on this result.
+- All tests pass (104 total: 53 pre-existing + 51 new).
+
+### Launch gate
+
+- ✅ `p3_chunk_control.py` uses `templates_prefill_decode_v2` (Family B v2), not Family A v2
+- ✅ No generator-label leakage into features (35-column forbidlist verified)
+- ✅ Family B v2 classes: `tenant_prefill` / `tenant_late` (no `.hog` suffix assumptions)
+- ✅ Composition endpoints exactly reproduce parents (chunk=64 → `chunked_prefill_small`, chunk=65536 → `full_prefill`)
+- ✅ Split integrity: disjoint, covered, held-out seed=20260823
+- ✅ Deterministic eval IDs: sha256(scenario_id|method|config_hash)[:16]
+- ✅ Canonical metric: `arrival_normalized_weighted_goodput`
+- ✅ All 104 tests pass
+
+> **Verdict will be determined after experiment completion, not before.**
