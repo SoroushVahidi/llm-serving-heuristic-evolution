@@ -1,0 +1,19 @@
+{
+  "reconstruction_version": "CURRENT_RECONSTRUCTED_FAMILY_C_V1",
+  "builder_version": "unified_utility_matrix_v1.0.0",
+  "build_timestamp_utc": "2026-08-17T23:53:09.631394+00:00",
+  "build_git_head_sha": "0716fbe9f0560bdec7a3950cbda5209775f69498",
+  "build_git_dirty": true,
+  "command_line": "scripts/build_family_c_reconstruction_v1.py --out-dir experiments/family_c_reconstruction_v1 --workers 8",
+  "smoke": false,
+  "workers": 8,
+  "config_sha256": "c3bec881e710047acfe55441a6056272784ea5abe9fba53da97abba1f548e36e",
+  "burstgpt_dataset_path": "/home/soroush/llm-serving-heuristic-evolution/.local_data/burstgpt_v2/raw/BurstGPT_without_fails_1.csv",
+  "burstgpt_dataset_sha256": "a4d068a7113ec0290e74063a1b3447dc6001a30e4298eb313581b71006dda1f4",
+  "scenarios_jsonl_sha256": "9e1acb9bb270eda73c19ac9f1d7673431fac2130f227eb0d342e814361761d20",
+  "n_scenarios": 72,
+  "expected_cells": 432,
+  "this_invocation_success": 432,
+  "this_invocation_failed": 0,
+  "total_rows_after_this_run": 432
+}

@@ -75,40 +75,52 @@ COMPLETE.**
   conservation, zero duplicates, deterministic byte-for-byte rebuild, and
   zero mutation of any frozen source artifact.
 - The six-anchor policy matrix was **sparse, not dense** at MF-PSD v1 time
-  (each family only evaluated its own 2 anchors) — see below, this is now
-  partially resolved.
+  (each family only evaluated its own 2 anchors) — this is now fully
+  resolved, see below.
 
-**Step 2 (unified six-policy utility-matrix evaluation) is COMPLETE for
-Family A/B, BLOCKED for Family C.**
+**Step 2 (unified six-policy utility-matrix evaluation) is now COMPLETE —
+the matrix is fully dense.** Three-part path:
 
-- Audit: [`../audits/unified_policy_utility_matrix_v1_20260817.md`](../audits/unified_policy_utility_matrix_v1_20260817.md)
-- Design: [`../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md`](../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md)
-- Artifacts: `experiments/unified_utility_matrix_v1/` (`unified_utility_matrix_long_v1.csv`,
-  `unified_utility_matrix_wide_v1.csv`, build manifest); harness
-  `src/llmserveopt/policy_separation/unified_utility_matrix.py`; CLI
-  `scripts/build_unified_utility_matrix_v1.py` (resume-safe); tests
-  `tests/test_unified_utility_matrix_v1.py` (20/20 passing).
-- Verdict: **`UNIFIED_UTILITY_MATRIX_NEEDS_REFINEMENT`**. 416 new cells
-  evaluated (0 failures): Family A (72 scenarios) and Family B (32
-  scenarios) are now fully dense (6/6 anchors); Family C (72 scenarios)
-  stays at native 2/6 — its 288 cells are explicit unsupported placeholders,
-  not silent gaps, because Family C / KV v2 scenario regeneration is
-  confirmed not byte-exact (99/144 mismatch vs. its own frozen native
-  cells, independently reproducing the pre-existing
-  `kv_v2_reproducibility_forensic_20260817.md` finding).
-- Two findings tagged explicitly in the data: `full_prefill`/
-  `chunked_prefill_small` collapse to one identical behavior outside Family
-  B (confirmed byte-identical on every Family-A cell); on all 32 Family-B
-  scenarios, `estf`/`wfs`/`least_laxity`/`kv_constrained` are byte-identical
-  to each other and to `full_prefill` (Family B's cross-family diversity
-  reduces to one contrast: `chunked_prefill_small` vs. everything else).
+1. [`../audits/unified_policy_utility_matrix_v1_20260817.md`](../audits/unified_policy_utility_matrix_v1_20260817.md)
+   (design: [`../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md`](../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md)) —
+   416 new cells evaluated, Family A/B densified to 6/6 anchors; Family C
+   blocked (`NEEDS_REFINEMENT`) because its scenario regeneration was
+   confirmed not byte-exact (99/144 mismatch vs. frozen native cells,
+   reproducing `kv_v2_reproducibility_forensic_20260817.md`). Also found:
+   `full_prefill`/`chunked_prefill_small` collapse to one identical
+   behavior outside Family B; on all 32 Family-B scenarios,
+   `estf`/`wfs`/`least_laxity`/`kv_constrained` are byte-identical to each
+   other and to `full_prefill`.
+2. [`../audits/family_c_step2_reconstruction_audit_20260817.md`](../audits/family_c_step2_reconstruction_audit_20260817.md) —
+   diagnosed the Family-C blocker directly: the KV pilot runner never
+   serialized request-level scenario data (unlike Family A/B), and no
+   backup copy exists anywhere in this repo's history. Verdict:
+   `FAMILY_C_RECONSTRUCTION_BOUNDED` — exact historical replay is
+   impossible, but a defensible uniform-reconstruction fallback exists.
+3. [`../audits/family_c_reconstruction_v1_and_unified_matrix_completion_20260817.md`](../audits/family_c_reconstruction_v1_and_unified_matrix_completion_20260817.md)
+   (design: [`../design/FAMILY_C_RECONSTRUCTION_V1.md`](../design/FAMILY_C_RECONSTRUCTION_V1.md)) —
+   built `CURRENT_RECONSTRUCTED_FAMILY_C_V1` (new, explicitly-versioned
+   layer, **not** historical replay: generate-once → serialize → replay
+   all 6 anchors from the frozen serialization, 432/432 cells succeeded),
+   then rebuilt the matrix as v2.
+
+- Artifacts: `experiments/unified_utility_matrix_v2/`
+  (`unified_utility_matrix_long_v2.csv`, `_wide_v2.csv`) —
+  **176×6 = 1,056/1,056 cells populated, 0 missing.**
+- **Final verdict: `UNIFIED_UTILITY_MATRIX_READY`.** 54.0% unique-winner
+  rate, positive oracle gain over best-fixed in every family (0.02–0.05),
+  no anchor universally dominant. Historical KV v2 evidence and MF-PSD
+  v1's frozen Family-C rows are preserved unchanged, never mixed row-wise
+  with the reconstruction.
+- **Caveat carried forward (not a blocker):** Family B (32/176 scenarios)
+  still has near-total policy collapse (5/6 anchors byte-identical) —
+  barely dilutes aggregate diversity (54.0% vs. 55.6% without Family B),
+  but Step 3's design must account for it.
 - **This task did not train a selector or run any composition/synthesis
   experiment** — data generation and audit only, per explicit task scope.
-- Next roadmap step (**not started, not authorized**): investigate the
-  Family-C/KV-v2 BurstGPT reconstruction gap (dedicated task), then re-run
-  the resume-safe builder; only after a `READY`/`READY_LOW_DIVERSITY`
-  verdict does Step 3 (preregistered multi-family contextual-selector
-  design) become in scope.
+- Next roadmap step (**not started, not authorized**): design the
+  preregistered multi-family contextual-selector experiment (Step 3),
+  using `experiments/unified_utility_matrix_v2/` as the frozen input.
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 

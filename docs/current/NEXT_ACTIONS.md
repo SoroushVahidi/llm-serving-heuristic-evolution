@@ -24,50 +24,50 @@ evaluated its own 2 anchors) — see the audit's §M/§Q for exactly what
 Step 2 requires to build the dense matrix (~704 new policy-scenario
 evaluations).
 
-**Step 2 (unified six-policy utility-matrix evaluation) is COMPLETE for
-Family A and Family B, BLOCKED for Family C:**
-[`../audits/unified_policy_utility_matrix_v1_20260817.md`](../audits/unified_policy_utility_matrix_v1_20260817.md)
-(design: [`../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md`](../design/UNIFIED_UTILITY_MATRIX_STEP2_V1.md)).
-**Verdict: `UNIFIED_UTILITY_MATRIX_NEEDS_REFINEMENT`.** 416 new cells
-evaluated (0 failures) at `experiments/unified_utility_matrix_v1/`: Family A
-(72 scenarios) and Family B (32 scenarios) are now **fully dense** (6/6
-canonical anchors); Family C (72 scenarios) stays at native 2/6 — its 288
-cross-family cells are explicit `unsupported_scenario_reconstruction`
-placeholders, not silently missing, because Family C / KV v2 scenario
-regeneration is confirmed **not** byte-exact (99/144 mismatch against its
-own frozen native cells, independently reproducing
-[`kv_v2_reproducibility_forensic_20260817.md`](../audits/kv_v2_reproducibility_forensic_20260817.md)).
-Two important findings, both explicitly tagged in the data (not hidden):
-(1) `full_prefill`/`chunked_prefill_small` collapse to one identical
-behavior outside Family B (confirmed: byte-identical ANWG on every Family-A
-cell); (2) on **all 32** Family-B scenarios, `estf`/`wfs`/`least_laxity`/
-`kv_constrained` are byte-identical to each other and to `full_prefill` —
-Family B's cross-family diversity reduces to one contrast
-(`chunked_prefill_small` vs. everything else), because none of those four
-ranking policies touch the chunk-budget axis Family B was built to
-isolate.
+**Step 2 (unified six-policy utility-matrix evaluation) is now COMPLETE —
+the matrix is fully dense.**
 
-**Family-C/KV-v2 reconstruction gap has been investigated (dedicated
-task):** [`../audits/family_c_step2_reconstruction_audit_20260817.md`](../audits/family_c_step2_reconstruction_audit_20260817.md).
-**Verdict: `FAMILY_C_RECONSTRUCTION_BOUNDED`.** Exact historical replay is
-confirmed structurally impossible — the KV pilot runner never wrote a
-`scenarios.jsonl`/request dump for either v1 or v2 (unlike Family A/B,
-which do have one), and no backup copy exists anywhere in this repo's
-history (checked all 11 backup/`wulver-*` branches). A defensible
-alternative exists but was **not** executed: uniformly re-evaluate all 6
-anchors (including the 2 native ones fresh, never mixed with MF-PSD v1's
-frozen native values) on a newly regenerated, deterministic Family-C
-reconstruction, as its own clearly-versioned artifact layer — see the
-audit §9/§14 for the exact spec.
+Path: MF-PSD v1 (sparse 2/6 per family) →
+[`unified_policy_utility_matrix_v1_20260817.md`](../audits/unified_policy_utility_matrix_v1_20260817.md)
+(Family A/B densified to 6/6; Family C blocked, `NEEDS_REFINEMENT`) →
+[`family_c_step2_reconstruction_audit_20260817.md`](../audits/family_c_step2_reconstruction_audit_20260817.md)
+(diagnosed the Family-C blocker: exact historical KV v2 replay is
+structurally impossible — its runner never serialized request-level data,
+unlike Family A/B — verdict `FAMILY_C_RECONSTRUCTION_BOUNDED`) →
+[`family_c_reconstruction_v1_and_unified_matrix_completion_20260817.md`](../audits/family_c_reconstruction_v1_and_unified_matrix_completion_20260817.md)
+(built `CURRENT_RECONSTRUCTED_FAMILY_C_V1` — a new, explicitly-versioned
+layer, **not** historical replay: all 6 anchors, including the 2 native
+ones, freshly evaluated on one generate-once, byte-exact-replayable set of
+72 scenarios — then rebuilt the matrix as v2).
 
-**Next action, with explicit authorization: execute the "Family C
-reconstruction v1" fallback** (audit §14) before the matrix can reach
-`READY`/`READY_LOW_DIVERSITY`. Do not start
+**Final verdict: `UNIFIED_UTILITY_MATRIX_READY`.**
+`experiments/unified_utility_matrix_v2/` — **176×6 = 1,056/1,056 cells
+populated, 0 missing, 0 failed.** 54.0% unique-winner rate, positive
+oracle gain over best-fixed in every family (0.02–0.05), no anchor
+universally dominant. Historical KV v2 evidence (`KV_FAMILY_COMPOSITION_READY`)
+and MF-PSD v1's frozen Family-C rows are preserved unchanged and were never
+mixed row-wise with the new reconstruction (crosswalk diagnostic in the
+completion audit §D: 99/144 real differences vs. history, independently
+reproducing the forensic audit's own numbers exactly — expected, not an
+error, since this is a fresh sample, not a replay).
+
+**Known caveat carried forward, not resolved and not blocking `READY`:**
+Family B (32/176 scenarios) has near-total policy collapse — 5 of 6
+anchors are byte-identical to each other on every Family-B scenario (only
+`chunked_prefill_small` differs), because none of the four ranking
+policies touch the chunk-budget axis Family B isolates. This does not
+meaningfully dilute the matrix's aggregate diversity (54.0% unique-winner
+with Family B vs. 55.6% without it), but **Step 3's design must account
+for it** — e.g. a leave-Family-B-out fold is expected to be uninformative
+beyond the `chunked_prefill_small` contrast.
+
+**Next action, with explicit authorization: design the preregistered
+multi-family contextual-selector experiment (Step 3)**, using
+`experiments/unified_utility_matrix_v2/` as the frozen input. Do not start
 selector training, hyperparameter tuning, pairwise-regret learning,
-mechanism attribution, or any composition/synthesis experiment before Step
-2 reaches a `READY`/`READY_LOW_DIVERSITY` verdict (per the reassessment
-doc's own explicit deferred-items list, §P, and this task's own stop
-condition).
+mechanism attribution, or any composition/synthesis experiment before that
+design is reviewed (per the reassessment doc's own explicit
+deferred-items list, §P).
 
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
@@ -228,17 +228,29 @@ retain safe fallback outside that envelope.
   stronger.
 - Do not treat Job 1182306 as BurstGPT-anchored or as using canonical ANWG.
 - Do not treat Family A v1 as corpus-ready policy-separation evidence for QD.
-- Step 2 is now partially complete (Family A/B dense, Family C blocked) —
-  see `../audits/unified_policy_utility_matrix_v1_20260817.md`. Do not
-  re-launch the full 416-cell evaluation; `scripts/build_unified_utility_matrix_v1.py`
-  is resume-safe and will only compute newly-unblocked cells.
+- Step 2 is now COMPLETE and dense — `UNIFIED_UTILITY_MATRIX_READY`, see
+  `../audits/family_c_reconstruction_v1_and_unified_matrix_completion_20260817.md`.
+  Do not re-launch `scripts/build_unified_utility_matrix_v1.py` or
+  `scripts/build_family_c_reconstruction_v1.py`; both are resume-safe but
+  there is nothing left to compute.
 - Do not train a contextual selector, tune selector hyperparameters, do
   pairwise-regret learning, do mechanism attribution, or start any
-  composition/synthesis experiment from the unified utility matrix before
-  Step 2 reaches a `READY`/`READY_LOW_DIVERSITY` verdict.
-- Do not modify `experiments/mf_psd_v1/` or `experiments/unified_utility_matrix_v1/`
-  in place — any Step 2 v2 rebuild should produce a clearly versioned
-  successor so v1 remains available as a frozen baseline.
-- Do not attempt to fix the Family-C/KV-v2 BurstGPT reconstruction gap as a
-  side effect of an unrelated task; it needs its own dedicated
-  investigation before Family C's 288 cross-family cells can be added.
+  composition/synthesis experiment from `experiments/unified_utility_matrix_v2/`
+  without a reviewed Step-3 design.
+- Do not modify `experiments/mf_psd_v1/`, `experiments/unified_utility_matrix_v1/`,
+  `experiments/family_c_reconstruction_v1/`, or `experiments/unified_utility_matrix_v2/`
+  in place — any future rebuild should produce a clearly versioned
+  successor so each layer remains available as a frozen baseline.
+- Do not mix `experiments/mf_psd_v1/`'s frozen historical Family-C native
+  rows into `experiments/unified_utility_matrix_v2/` — that matrix's
+  Family-C cells come entirely and uniformly from
+  `CURRENT_RECONSTRUCTED_FAMILY_C_V1`, by design.
+- Historical KV v2 (`KV_FAMILY_COMPOSITION_READY`) remains valid evidence
+  for what it was originally used for; do not reinterpret it using the
+  reconstruction's different numbers, and do not attempt to further
+  resolve the BurstGPT reproducibility gap as a side effect of an
+  unrelated task — it is documented, bounded, and no longer blocks Step 2.
+- Step 3 design must explicitly account for Family B's near-total
+  cross-family policy collapse (see the completion audit §I) — a
+  leave-Family-B-out fold is expected to show little signal beyond the
+  `chunked_prefill_small` contrast.
