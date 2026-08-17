@@ -20,34 +20,28 @@ Last reconciled: 2026-08-17, after commit
 
 ## North Star
 
-The project aims to build a **verified contextual compositional
-hyper-heuristic for online LLM inference serving**.
+The project aims to build a **verified contextual multi-family scheduler system for online LLM inference serving**.
 
 It is not the same thing as:
 
 - choosing the single best fixed scheduler;
-- training only a contextual selector over whole policies;
 - reproducing any one external paper for its own sake;
 - making Apt-Serve the final scheduler.
 
-Those are inputs to the larger system. The durable objective is to learn when
-schedulers and modules are useful, compose new deployable policies, verify them,
-and measure whether the policy-library envelope expands.
+Those are inputs to the larger system. The durable objective is to build a multi-family heuristic library, rigorously separate their performance boundaries via targeted workloads, and use contextual selection to achieve zero-regret scheduling across diverse deployment contexts.
 
 ## Architecture
 
 ```text
-workload/state context
+policy-separating workloads
+  -> complementary policy library
+  -> workload/state context
   -> observable feature extraction
   -> policy/module performance modeling
-  -> uncertainty, pairwise advantage, marginal contribution
-  -> typed DSL / AST
-  -> parent and module selection
-  -> structural composition / symbolic synthesis
-  -> static verification and leakage checks
-  -> simulator evaluation
-  -> policy-library envelope expansion
-  -> iteration
+  -> contextual selection (multi-family)
+  -> uncertainty, pairwise regret, marginal contribution
+  -> mechanism attribution
+  -> bounded envelope
   -> real-system validation
 ```
 
@@ -87,12 +81,12 @@ only average policy rankings.
 | WS-C | Internal scheduler/policy library | Mature fixed-policy portfolio, including Policy Library V2 and SCORPIO-style/admission policies. |
 | WS-D | Faithful external scheduler integrations | vLLM-family, Sarathi, VTC, Llumnix, DistServe, PARS, and Apt-Serve have point-in-time status in `docs/BASELINE_STATUS.md`. |
 | WS-E | Typed heuristic DSL / AST / verification | Implemented through CC3; representative internal policies reconstruct through the DSL. |
-| WS-F | Contextual performance / utility learning | Multiple selector lineages exist; CC5 is the strongest current context-conditioned result. |
-| WS-G | Pairwise regret and complementarity | Not yet a mature reusable workstream. |
-| WS-H | Module decomposition and compositional semantics | Open; earlier broad module-credit work produced negative/weak-signal findings. |
-| WS-I | Parent selection / composition gate | CC5 completed as `COMPLETE_REGIME_SPECIFIC`. |
-| WS-J | Structural crossover / symbolic synthesis | Infrastructure exists, but broad synthesis is not authorized without stronger module-credit evidence. |
-| WS-K | Quality-diversity archive / library-envelope expansion | Needs a standing reusable `MC_i` / `MG_c` evaluation tool. |
+| WS-F | Contextual performance / utility learning | Block lifted; ready for multi-family selector training over unified MF-PSD. |
+| WS-G | Pairwise regret and complementarity | Ready for evaluation alongside direct utility prediction. |
+| WS-H | Module decomposition and compositional semantics | **COMPOSITION_DEMOTED**. Composition/synthesis is exploratory future work, deferred. |
+| WS-I | Parent selection / composition gate | Contextual selection is the primary focus; composition falsification failed or found selection sufficient for A, B, and C. |
+| WS-J | Structural crossover / symbolic synthesis | Explicitly deferred. Not supported by current heuristic evidence. |
+| WS-K | Quality-diversity archive / library-envelope expansion | Paused. Focus shifts to mapping multi-family boundaries. |
 | WS-L | Symbolic distillation / deployable children | Partial, mostly selector-oriented; not yet generic for composed policies. |
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |

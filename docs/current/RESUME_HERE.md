@@ -34,15 +34,15 @@ This project builds toward a verified contextual compositional scheduler system
 for LLM inference serving:
 
 ```text
-context -> performance/marginal-contribution learning -> DSL/module selection
-        -> verified composition/synthesis -> evaluation -> envelope expansion
+policy-separating workloads -> complementary policy library -> contextual selection (multi-family)
+        -> mechanism attribution -> bounded envelope
 ```
 
 The current primary metric is `arrival_normalized_weighted_goodput` (ANWG).
 
-Typed DSL / module-composition infrastructure exists in-repo and is valuable,
-but it does **not** by itself complete policy-separation decision-boundary
-characterization (WS-P).
+Typed DSL / module-composition infrastructure exists in-repo but is deferred; **within-scenario composition and synthesis have been demoted** as a central hypothesis.
+ 
+ 
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
