@@ -1,7 +1,5 @@
-"""Configuration for Family B v2 PrefillControl composition falsification.
-
-See docs/design/prefill_control_composition_falsification.md.
-"""
+# Configuration for Family B v2 PrefillControl composition falsification.
+# See docs/design/prefill_control_composition_falsification.md.
 
 experiment:
   family: "family_b_prefill_decode_v2"
@@ -12,6 +10,11 @@ experiment:
     n_boot: 2000
     ci_alpha: 0.05
     seed: 20261201
+
+pilot_metadata:
+  experiment_name: "policy_separation_prefill_decode_composition_v2"
+  generator_version: "prefill_decode_v2"
+  require_burstgpt: true
 
 parents:
   - name: "full_prefill"
