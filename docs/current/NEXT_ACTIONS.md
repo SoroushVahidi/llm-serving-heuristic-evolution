@@ -29,8 +29,8 @@ Next on this thread: select the next mechanism family / parent pair per the
 roadmap — do not re-run this pair unless with a materially different per-step
 rule (the tested rule only ever used 3 of its 6 configured chunk options).
 
-**Family C v1 KV-pressure reserve pairwise-separation pilot is now COMPLETE**
-(`kv_constrained_online` vs `least_laxity_first`):
+**Family C v1 KV-pressure reserve pairwise-separation pilot is COMPLETE and
+frozen** (`kv_constrained_online` vs `least_laxity_first`):
 [`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)
 (design: [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md))
 **Verdict: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`.** 5/6 gates pass — bidirectional
@@ -39,12 +39,26 @@ deferrals), no policy twin, and (unlike ESTF/WFS and PrefillControl) real
 **within-scenario timing evidence**: the reserve's advantage over greedy
 admission is 2× larger when urgent latecomers arrive after KV pressure has
 built up vs before. Only the tie-rate gate (59.4%, target <50%) did not
-clear. This is a **pairwise-separation pilot only** — no selector was fit,
-no child policy was built, no composition work was started. Next on this
-thread: refine (more seeds / wider factor range around the strongest cell)
-to test whether the tie-rate gate clears with more statistical power —
-**not** a composition falsification yet, which is only warranted after a
-`KV_FAMILY_COMPOSITION_READY` verdict.
+clear. Superseded scientifically by v2 below; frozen, not rewritten.
+
+**Family C v2 KV-pressure reserve refinement is now COMPLETE:**
+[`../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md)
+(design: [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md))
+**Verdict: `KV_FAMILY_COMPOSITION_READY`.** v1's tie-rate gap was diagnosed to
+coarse ANWG resolution at v1's population size plus an accidental
+bulk-tenant-classified-as-urgent confound; both were fixed without touching
+parent algorithms or reserve semantics (population roughly doubled,
+`BULK_SLACK_S` recalibrated, a third `urgent_arrival_phase` level added,
+seeds 4→6 with 2 held out). All 10 preregistered gates pass, including
+held-out-seed replication (G6) and within-scenario winner-flip evidence
+(G10, 6/16 matched cells show a different practical winner depending only on
+urgent-arrival timing) — the first of the three families studied to reach a
+`_READY` verdict. This is still a **pairwise-separation pilot only** — no
+selector was fit, no child policy was built, no composition work was
+started, per explicit task scope. Next on this thread: per the v2 audit's
+§T, the smallest scientifically justified next step is a two-parent
+composition falsification for this pair, structured like the Family B v2
+PrefillControl one — **not started**, pending explicit authorization.
 
 ESTF↔WFS composition falsification is COMPLETE:
 [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  
@@ -62,7 +76,7 @@ Stop conditions for this thread:
 - Do not start symbolic distillation or Fireworks/Cloudrift LLM APIs yet.
 - Do not escalate composition model complexity to rescue ESTF/WFS or PrefillControl `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.
 - Do not treat Family B v2 as a completed composition result on its own — the PrefillControl falsification (above) is the completed composition result for that family's anchor pair.
-- Do not start a composition falsification for the KV-pressure pair yet — `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` is not `KV_FAMILY_COMPOSITION_READY`; refine the pilot first.
+- KV-pressure is now `KV_FAMILY_COMPOSITION_READY` (v2) — a composition falsification is scientifically justified but has **not** been started; do not start it, or MAP-Elites/selector retraining/symbolic distillation/LLM synthesis from any of the three pairs studied, without explicit authorization.
 
 ## P0 - Apt-Serve / module envelope (independent)
 

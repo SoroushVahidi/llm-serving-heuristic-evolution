@@ -71,12 +71,20 @@ current status, see `docs/current/RESUME_HERE.md` and
   composition falsification run to completion — verdict
   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
   (`docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`).
-  A new Family C v1 KV-pressure reserve pairwise-separation pilot
-  (`kv_constrained_online` vs `least_laxity_first`) has since run to
-  completion — verdict `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
-  (`docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`),
-  no composition work started. Not MAP-Elites or distillation from ESTF/WFS,
-  PrefillControl, or KV-pressure.
+  Family C v1 KV-pressure reserve pairwise-separation pilot
+  (`kv_constrained_online` vs `least_laxity_first`) ran to completion —
+  verdict `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
+  (`docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; frozen,
+  superseded scientifically by v2, not rewritten). **Family C v2** (refined:
+  population roughly doubled, `BULK_SLACK_S` recalibrated, third
+  `urgent_arrival_phase` level, 6 seeds with 2 held out) has since run to
+  completion — verdict **`KV_FAMILY_COMPOSITION_READY`**, all 10
+  preregistered gates pass
+  (`docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`;
+  design `docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`) — the
+  first of the three families studied to reach a `_READY` verdict. No
+  composition work has been started for this pair. Not MAP-Elites or
+  distillation from ESTF/WFS, PrefillControl, or KV-pressure.
 ## Datasets
 
 - **Purpose:** real-trace and synthetic workload sources.
