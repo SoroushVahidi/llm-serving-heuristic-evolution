@@ -6,11 +6,13 @@ This is the current prioritized action list. It must agree with
 
 ## P0 - Policy Separation (WS-P)
 
-**Analyze Family B v1 (prefill/decode chunk-control) after the full pilot completes.**
-This is the **next mechanism family** after Family A v2.
+**Analyze Family B v1 (prefill/decode chunk-control) H1–H10.**
+This is the **next mechanism family** after Family A v2; the 720-eval pilot has
+**executed** (integrity-clean).
 
 Design: [`../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`](../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md)  
-Smoke GO: `experiments/policy_separation_prefill_decode_smoke_v1_20260817T020443Z/`
+Launch: [`../audits/policy_separation_prefill_decode_pilot_v1_launch_20260816.md`](../audits/policy_separation_prefill_decode_pilot_v1_launch_20260816.md)  
+Run: `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`
 
 ESTF↔WFS composition falsification is COMPLETE:
 [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  

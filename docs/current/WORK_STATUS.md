@@ -34,7 +34,7 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Policy Separation Family A (fairness / starvation) v1 | `COMPLETE` analysis; `REDESIGN_REQUIRED` for corpus use | Job 1182306; audit `docs/audits/policy_separation_fairness_starvation_pilot_v1_20260816.md`; provenance + `analysis/` under `experiments/…_1182306/` | ESTF↔WFS bidirectional niche absent; Aging saturated; size–priority collinearity; historical `anwg` = unweighted SLO-success; synthetic lengths | Retain frozen; do not train selectors from v1 |
 | Policy Separation Family A v2 (fairness vs size) | `COMPLETE` analysis; `USEFUL_BUT_NEEDS_REFINEMENT` | Job 1182377; audit `docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md`; provenance + `analysis/` under `experiments/…_v2_…_1182377/` | Seed agree 72% (near 75% bar); WFS ANWG non-monotone in skew under conflict; aligned short cells ESTF-dominated | Include in PSD; next mechanism family |
 | ESTF↔WFS composition falsification v1 | `COMPLETE`; `SELECTION_SUFFICIENT_FOR_THIS_PAIR` | `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`; run `experiments/estf_wfs_composition_falsification_v1_20260816T222108Z/` | Contextual α does not beat top-1; envelope gain 0 | Do not distill/MAP-Elites/LLM-synth from this pair |
-| Policy Separation Family B v1 (prefill/decode chunk-control) | `IN_PROGRESS` (smoke GO; full pilot next) | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; smoke `experiments/policy_separation_prefill_decode_smoke_v1_20260817T020443Z/` | Full 720-eval pilot + H1–H10 analysis | Launch/analyze Family B; do not synthesize a child yet |
+| Policy Separation Family B v1 (prefill/decode chunk-control) | `IN_PROGRESS` analysis; execution `COMPLETE` | Design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; launch `docs/audits/policy_separation_prefill_decode_pilot_v1_launch_20260816.md`; run `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/` (720/720) | H1–H10 scientific audit | Analyze Family B; do not synthesize a child yet |
 
 ## Current Blocker
 
@@ -57,5 +57,5 @@ Read:
 5. Family A v2 provenance:
    [`../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/README.md`](../../experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/README.md)
 
-Then: (WS-P) analyze Family B v1 after the full pilot; and/or (Apt-Serve thread)
+Then: (WS-P) analyze Family B v1 H1–H10; and/or (Apt-Serve thread)
 post-Phase-G module-envelope interpretation.

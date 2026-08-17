@@ -178,7 +178,9 @@ Classify later: `CONFIRM` / `CONTRADICT` / `AMBIGUOUS` / `DESIGN_CONFOUND`.
 - 5/8 smoke cells near-tie (loose-deadline / short-prefill); remaining cells show bidirectional structural contrast
 - 40/40 success; canonical ANWG finite; BurstGPT `burstgpt_staged`
 
-**Launch-gate verdict: GO.**
+**Launch-gate verdict: GO.** Full pilot executed locally
+(`experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`,
+720/720, 18.56s). See `docs/audits/policy_separation_prefill_decode_pilot_v1_launch_20260816.md`.
 
 ## 11. GO/NO-GO launch gate
 

@@ -55,8 +55,8 @@ current status, see `docs/current/RESUME_HERE.md` and
     (audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`;
     verdict `SELECTION_SUFFICIENT_FOR_THIS_PAIR`)
   - Family A v1 (diagnostic): `experiments/policy_separation_fairness_starvation_pilot_20260816T211029Z_1182306/`
-  - Family B v1 smoke: `experiments/policy_separation_prefill_decode_smoke_v1_20260817T020443Z/`
-    (design `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`; smoke GO)
+  - Family B v1: `experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/`
+    (launch `docs/audits/policy_separation_prefill_decode_pilot_v1_launch_20260816.md`; 720/720)
 - **Design:** `docs/design/POLICY_SEPARATION_FAMILY_A_V2.md`,
   `docs/design/ESTF_WFS_COMPOSITION_FALSIFICATION_V1.md`,
   `docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V1.md`

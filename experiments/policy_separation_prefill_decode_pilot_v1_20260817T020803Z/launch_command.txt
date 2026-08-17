@@ -1,0 +1,15 @@
+tmux session: policy-sep-prefill-decode-v1
+run_dir: /home/soroush/llm-serving-heuristic-evolution/experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z
+started_utc: 2026-08-17T02:08:03Z
+git_head: ff78897a08a2dd4d04dd0317f79df9a0ba1485ba
+command:
+  PYTHONPATH=/home/soroush/llm-serving-heuristic-evolution/src PYTHONUNBUFFERED=1 LLM_SERVEOPT_BURSTGPT_CSV=/home/soroush/llm-serving-heuristic-evolution/.local_data/burstgpt_v2/raw/BurstGPT_without_fails_1.csv
+  /home/soroush/modal-venv/bin/python3 /home/soroush/llm-serving-heuristic-evolution/scripts/run_policy_separation_prefill_decode_pilot_v1.py
+    --config /home/soroush/llm-serving-heuristic-evolution/configs/policy_separation_prefill_decode_pilot_v1.yaml
+    --run-dir /home/soroush/llm-serving-heuristic-evolution/experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z
+    --workers 8
+    --datasets-root /home/soroush/llm-serving-heuristic-evolution/.local_data
+    --require-burstgpt
+stdout: /home/soroush/llm-serving-heuristic-evolution/experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/stdout.log
+stderr: /home/soroush/llm-serving-heuristic-evolution/experiments/policy_separation_prefill_decode_pilot_v1_20260817T020803Z/stderr.log
+slurm_job_id: none (local tmux on al-khwarizmi)

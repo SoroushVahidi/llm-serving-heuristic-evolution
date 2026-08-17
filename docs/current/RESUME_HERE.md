@@ -101,7 +101,7 @@ Supported interpretation:
   queued.
 - WS-P: Family A v2 analyzed; ESTF↔WFS composition =
   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`; the **next mechanism family** is
-  Family B v1 (prefill/decode chunk-control) — designed, calibrated, GO.
+  Family B v1 (prefill/decode chunk-control) — executed (720/720), analysis pending.
 
 ## Exact Next Tasks (two independent threads)
 
