@@ -1,0 +1,13 @@
+# Family C v1 KV-pressure reserve pairwise-separation pilot (full grid).
+# See docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md section 5.
+# 2x2x2x4 = 32 scenarios, matching Family B v2's pilot scale.
+
+sweep_grid:
+  bulk_pressure: ["low", "high"]
+  urgent_arrival_phase: ["early", "late"]
+  urgent_tightness: ["loose", "tight"]
+  seeds: [20260901, 20260902, 20260903, 20260904]
+
+max_kv_tokens: 6000
+max_active_sequences: 64
+max_batch_tokens: 64

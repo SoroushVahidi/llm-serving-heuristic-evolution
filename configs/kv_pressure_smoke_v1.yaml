@@ -1,0 +1,13 @@
+# Smoke calibration config for Family C v1 KV-pressure reserve pairwise
+# separation pilot. See docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md
+# section 9. Single seed, full 2x2x2 factor grid = 8 scenarios.
+
+sweep_grid:
+  bulk_pressure: ["low", "high"]
+  urgent_arrival_phase: ["early", "late"]
+  urgent_tightness: ["loose", "tight"]
+  seeds: [20260901]
+
+max_kv_tokens: 6000
+max_active_sequences: 64
+max_batch_tokens: 64

@@ -62,6 +62,16 @@ characterization (WS-P).
 - Verdict: **`SELECTION_SUFFICIENT_FOR_THIS_PAIR`**
 - A real TRAIN/VAL-fitted contextual top-1 selector reaches the two-parent oracle envelope exactly (0 regret) on both TEST and OOD. The genuinely per-step-dynamic `prefill_control_child` policy (verified not to collapse to any fixed baseline) never beats that selector and never expands the oracle envelope on held-out data. Symbolic distillation / broader module composition / MAP-Elites are **not** justified from this pair alone — see the audit's mechanism analysis for why a different per-step rule remains untested, not falsified.
 
+**Family C v1 KV-pressure reserve pairwise-separation pilot (new mechanism family) is now COMPLETE.**
+
+- Design: [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md)
+- Audit: [`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)
+- Provenance: [`../../experiments/kv_pressure_pilot_v1_20260817T162650Z/`](../../experiments/kv_pressure_pilot_v1_20260817T162650Z/) (32 scenarios, 64/64 success)
+- Parents: `kv_constrained_online` (soft KV-occupancy admission reserve) vs `least_laxity_first` (KV-blind laxity-greedy)
+- Verdict: **`KV_FAMILY_USEFUL_NEEDS_REFINEMENT`** (5/6 gates pass: bidirectional wins 9-vs-4/32, mechanism activates 28,695 logged deferrals, no twin; tie-rate gate 59.4% did not clear its <50% bound)
+- **This is the first family (of ESTF/WFS, PrefillControl, KV-pressure) to demonstrate genuine within-scenario mechanism opportunity**, not just a scenario-level contrast: KV-constrained's advantage over LLF on urgent-tenant SLO attainment is 2× larger when urgent tenants arrive after KV pressure has built up vs before (0.125 vs 0.0625 mean ANWG delta, matched cells) — exactly the structural precondition ESTF/WFS and PrefillControl lacked.
+- **This is a pairwise-separation pilot only — no composition work was started or is currently justified.** Next step is refining this family (larger pilot to test whether the tie-rate gate clears with more power), not a composition falsification and not MAP-Elites/GP/distillation/LLM synthesis.
+
 **ESTF↔WFS minimal composition falsification remains COMPLETE.**
 
 - Audit: [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)
@@ -119,7 +129,9 @@ Supported interpretation:
   after ESTF/WFS) v1 is `USEFUL_BUT_NEEDS_REFINEMENT` /
   `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; v2 is `FAMILY_B_COMPOSITION_READY`;
   PrefillControl composition falsification on the v2 pair = `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
-  ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)).
+  ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md));
+  Family C v1 KV-pressure reserve pairwise-separation pilot = `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
+  ([`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)).
 
 ## Exact Next Tasks (two independent threads)
 
@@ -132,11 +144,20 @@ Supported interpretation:
    `chunked_prefill_small`) is now COMPLETE, verdict
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)).
-   Next on this thread: select the next mechanism family / parent pair per
-   the roadmap (`../PROJECT_MAP.md`). Do **not** start MAP-Elites, symbolic
-   distillation, LLM synthesis, or QD work on the strength of this result —
-   two independent pairs (ESTF/WFS and PrefillControl) have now both landed
-   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`, not `COMPOSITION_GO`.
+   A new mechanism family, Family C v1 KV-pressure reserve
+   (`kv_constrained_online` vs `least_laxity_first`), has since had its
+   pairwise-separation pilot run: verdict `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
+   ([`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)) —
+   5/6 gates pass, including the first within-scenario-opportunity evidence
+   (gate G4) seen in any family so far; only the tie-rate gate (G2, 59.4%)
+   did not clear. Next on this thread: refine the KV-pressure pilot (more
+   seeds / wider factor range around its strongest cell) to test whether G2
+   clears with more statistical power — **not** a composition falsification
+   yet (only warranted after `KV_FAMILY_COMPOSITION_READY`), and **not**
+   MAP-Elites, symbolic distillation, LLM synthesis, or QD work — three
+   pairs studied so far (ESTF/WFS, PrefillControl `SELECTION_SUFFICIENT_FOR_THIS_PAIR`;
+   KV-pressure `USEFUL_NEEDS_REFINEMENT`), none has reached `COMPOSITION_GO`
+   or `_READY`.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

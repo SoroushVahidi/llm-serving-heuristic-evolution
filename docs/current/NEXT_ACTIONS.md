@@ -29,6 +29,23 @@ Next on this thread: select the next mechanism family / parent pair per the
 roadmap — do not re-run this pair unless with a materially different per-step
 rule (the tested rule only ever used 3 of its 6 configured chunk options).
 
+**Family C v1 KV-pressure reserve pairwise-separation pilot is now COMPLETE**
+(`kv_constrained_online` vs `least_laxity_first`):
+[`../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md)
+(design: [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V1.md))
+**Verdict: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`.** 5/6 gates pass — bidirectional
+wins (9-vs-4/32), mechanism genuinely activates (28,695 logged reserve
+deferrals), no policy twin, and (unlike ESTF/WFS and PrefillControl) real
+**within-scenario timing evidence**: the reserve's advantage over greedy
+admission is 2× larger when urgent latecomers arrive after KV pressure has
+built up vs before. Only the tie-rate gate (59.4%, target <50%) did not
+clear. This is a **pairwise-separation pilot only** — no selector was fit,
+no child policy was built, no composition work was started. Next on this
+thread: refine (more seeds / wider factor range around the strongest cell)
+to test whether the tie-rate gate clears with more statistical power —
+**not** a composition falsification yet, which is only warranted after a
+`KV_FAMILY_COMPOSITION_READY` verdict.
+
 ESTF↔WFS composition falsification is COMPLETE:
 [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  
 **Verdict: `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.** Contextual rank composition
@@ -41,10 +58,11 @@ Family A v2 remains validated complementary-parent evidence
 
 Stop conditions for this thread:
 
-- Do not start GP / MAP-Elites / CMA-ES / QD from ESTF/WFS, PrefillControl, or from Family B v1 twins.
+- Do not start GP / MAP-Elites / CMA-ES / QD from ESTF/WFS, PrefillControl, KV-pressure, or from Family B v1 twins.
 - Do not start symbolic distillation or Fireworks/Cloudrift LLM APIs yet.
 - Do not escalate composition model complexity to rescue ESTF/WFS or PrefillControl `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.
 - Do not treat Family B v2 as a completed composition result on its own — the PrefillControl falsification (above) is the completed composition result for that family's anchor pair.
+- Do not start a composition falsification for the KV-pressure pair yet — `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` is not `KV_FAMILY_COMPOSITION_READY`; refine the pilot first.
 
 ## P0 - Apt-Serve / module envelope (independent)
 

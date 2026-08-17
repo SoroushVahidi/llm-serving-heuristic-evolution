@@ -71,7 +71,12 @@ current status, see `docs/current/RESUME_HERE.md` and
   composition falsification run to completion — verdict
   `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
   (`docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`).
-  Not MAP-Elites or distillation from ESTF/WFS or PrefillControl.
+  A new Family C v1 KV-pressure reserve pairwise-separation pilot
+  (`kv_constrained_online` vs `least_laxity_first`) has since run to
+  completion — verdict `KV_FAMILY_USEFUL_NEEDS_REFINEMENT`
+  (`docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`),
+  no composition work started. Not MAP-Elites or distillation from ESTF/WFS,
+  PrefillControl, or KV-pressure.
 ## Datasets
 
 - **Purpose:** real-trace and synthetic workload sources.

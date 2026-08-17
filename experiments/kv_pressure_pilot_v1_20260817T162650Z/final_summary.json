@@ -1,0 +1,12 @@
+{
+  "n_scenarios": 32,
+  "n_tasks": 64,
+  "n_completed": 64,
+  "n_failed": 0,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "max_kv_tokens": 6000,
+  "policies": [
+    "kv_constrained_online",
+    "least_laxity_first"
+  ]
+}
