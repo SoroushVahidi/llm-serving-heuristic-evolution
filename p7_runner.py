@@ -64,7 +64,7 @@ from llmserveopt.simulator.simulator import Simulator, SimulatorConfig  # noqa: 
 # Data abstractions
 # ===================================================================
 
-@dataclass(frozen=True)
+@dataclass
 class ScenarioBatch:
     """A batch of scenarios plus their scenario-level observable features.
 
@@ -75,7 +75,7 @@ class ScenarioBatch:
             (``train``, ``val``, ``test``, ``ood``).
     """
     scenarios: List[Any]
-    features: Dict[str, Dict[str, float]]
+    features: Dict[str, Dict[str, float]] = field(default_factory=dict)
     split_name: str = ""
 
 
@@ -157,8 +157,14 @@ def build_scenarios_from_config(
                         late_pressure=str(late),
                         slo_emphasis=str(slo),
                         seed=int(seed),
-                        n_hog=fixed.get("max_active_sequences"),
-                        n_late=fixed.get("max_active_sequences"),
+                        # n_hog/n_late are intentionally left unset here so they
+                        # derive from HOG_COUNT[hog_count] / LATE_PRESSURE[late_pressure]
+                        # (templates_prefill_decode_v2.py). max_active_sequences is a
+                        # simulator capacity setting, not a tenant request count, and
+                        # must not be forwarded as n_hog/n_late -- doing so collapses
+                        # the hog_count/late_pressure sweep factors to a single fixed
+                        # value and breaks the scenario_id encoding the OOD split
+                        # predicate depends on (late_pressure=high -> "late40" in id).
                         max_active_sequences=int(fixed.get("max_active_sequences", 512)),
                         step_token_budget=int(fixed.get("step_token_budget", 512)),
                         allow_synthetic_tokens=allow_synthetic_tokens,
@@ -368,14 +374,28 @@ def _eval_single_scenario(
     """Evaluate a single (scenario, policy) pair.
 
     Returns a result dict aligned with RESULT_FIELDNAMES.
+
+    Parent policies come from make_prefill_decode_variants_v2().
+    Fixed-intermediate children use GreedyArrivalPrefillControlPolicy directly.
+    ``prefill_control_child`` uses PrefillControlChildPolicy, which makes a
+    genuine per-step chunk decision via Action.prefill_chunk_override (see
+    Action's docstring) -- `chunk_size`/`variant_kwargs["max_prefill_chunk_tokens"]`
+    is only the ServiceModel base value, overridden every step.
     """
     try:
         from llmserveopt.policy_separation.templates_prefill_decode import STEP_SIZE  # noqa: E402
 
-        policy, _ = make_prefill_decode_variants_v2(
-            chunk_small=int(variant_kwargs.get("max_prefill_chunk_tokens", DEFAULT_CHUNK_SMALL))
-        )[policy_name]
-        policy.name = policy_name
+        # Resolve policy: parents from v2 variants, children from parent policy class
+        variants = make_prefill_decode_variants_v2()
+        if policy_name in variants:
+            policy, _ = variants[policy_name]
+            policy.name = policy_name
+        elif policy_name == "prefill_control_child":
+            policy = p3.PrefillControlChildPolicy()
+        else:
+            # Fixed-intermediate child: use GreedyArrivalPrefillControlPolicy
+            policy = GreedyArrivalPrefillControlPolicy()
+            policy.name = policy_name
 
         merged = dict(scenario.service_model_kwargs)
         merged.update(variant_kwargs)
@@ -390,6 +410,11 @@ def _eval_single_scenario(
         sim.load_trace(list(scenario.requests))
         metrics = sim.run(policy, workload_tag=scenario_id, seed=seed)
         completed = list(sim._completed)  # noqa: SLF001
+
+        if policy_name == "prefill_control_child" and getattr(policy, "decision_log", None):
+            # Diagnostic-only representative chunk (see _contention_metrics'
+            # docstring note): the actual per-step chunk varied.
+            chunk_size = int(np.median([d["chunk_size"] for d in policy.decision_log]))
 
         n_req = len(scenario.requests)
         total_v = sum(1 for c in completed if c.slo_violated)
@@ -449,6 +474,39 @@ def _eval_single_scenario(
             "seed": seed,
             "run_config_id": run_config_id,
         }
+
+
+def _composite_row(
+    scenario_id: str,
+    policy_name: str,
+    score: float,
+    parent_policy: str,
+    composition_id: str,
+    split: str,
+    seed: int,
+    run_config_id: str,
+    cfg_hash: str,
+) -> dict:
+    """Build a result row for a scenario-level composite baseline
+    (contextual_top1 / hard_conditional / contextual_alpha) computed
+    analytically from already-simulated parent scores, per p2_config.yaml
+    ("Composite baselines computed at analysis time (not re-run)"). Only
+    the primary metric is populated -- these are not independent
+    simulations, so secondary/mechanism diagnostics don't apply.
+    """
+    eval_id = _build_eval_id(scenario_id, policy_name, cfg_hash)
+    return {
+        "scenario_id": scenario_id,
+        "policy_name": policy_name,
+        "eval_id": eval_id,
+        "arrival_normalized_weighted_goodput": float(score),
+        "status": "success",
+        "composition_id": composition_id,
+        "parent_policy": parent_policy,
+        "split": split,
+        "seed": seed,
+        "run_config_id": run_config_id,
+    }
 
 
 # ===================================================================
@@ -596,6 +654,108 @@ def run_composition_experiment(cfg: dict, run_dir: Path, *, workers: int = 8, dr
                 for fut in as_completed(futures):
                     all_results.append(fut.result())
 
+    # ---- Step 4b: prefill_control_child -- genuine per-step dynamic
+    # composition (Action.prefill_chunk_override), the actual falsification
+    # target. Evaluated on test & ood only, same as the fixed intermediates. ----
+    for bname in ["test", "ood"]:
+        b = batch_test if bname == "test" else batch_ood
+        _write_log(
+            log_fn,
+            f"  Evaluating child prefill_control_child on {bname}: {len(b.scenarios)} scenarios",
+        )
+        tasks = []
+        for s in b.scenarios:
+            cfg_kv = {"max_prefill_chunk_tokens": 128, "decode_first": False}
+            tasks.append((
+                s.scenario_id, "prefill_control_child", s, cfg_kv, 128,
+                comp_cfg.eval_id_prefix, cfg_hash,
+                comp_cfg.composition_id, "prefill_control_child", bname, seed, run_config_id,
+            ))
+        with ProcessPoolExecutor(max_workers=workers) as ex:
+            futures = {ex.submit(_eval_single_scenario, *t): t for t in tasks}
+            for fut in as_completed(futures):
+                all_results.append(fut.result())
+
+    # ---- Step 4c: scenario-level composite baselines -- contextual_top1,
+    # hard_conditional, contextual_alpha. Per p2_config.yaml ("Composite
+    # baselines computed at analysis time (not re-run)"): computed
+    # analytically from already-simulated parent scores, not re-simulated.
+    # Selector/alpha model fit on TRAIN only, model-type selection on VAL
+    # only; applied to TEST/OOD scenario-level features -- TEST/OOD never
+    # participate in fitting or model selection. ----
+    full_scores_by_sid = {
+        r["scenario_id"]: float(r["arrival_normalized_weighted_goodput"])
+        for r in all_results
+        if r.get("status") == "success" and r.get("policy_name") == "full_prefill"
+    }
+    small_scores_by_sid = {
+        r["scenario_id"]: float(r["arrival_normalized_weighted_goodput"])
+        for r in all_results
+        if r.get("status") == "success" and r.get("policy_name") == "chunked_prefill_small"
+    }
+    train_sids_fit = [
+        s.scenario_id for s in batch_train.scenarios
+        if s.scenario_id in full_scores_by_sid and s.scenario_id in small_scores_by_sid
+    ]
+    val_sids_fit = [
+        s.scenario_id for s in batch_val.scenarios
+        if s.scenario_id in full_scores_by_sid and s.scenario_id in small_scores_by_sid
+    ]
+    if train_sids_fit and val_sids_fit:
+        train_feats = [batch_train.features[sid] for sid in train_sids_fit]
+        train_full = [full_scores_by_sid[sid] for sid in train_sids_fit]
+        train_small = [small_scores_by_sid[sid] for sid in train_sids_fit]
+        val_feats = [batch_val.features[sid] for sid in val_sids_fit]
+        val_full = [full_scores_by_sid[sid] for sid in val_sids_fit]
+        val_small = [small_scores_by_sid[sid] for sid in val_sids_fit]
+
+        selector, alpha_model, selector_meta = p3.select_prefill_model_on_val(
+            train_feats, train_full, train_small, val_feats, val_full, val_small,
+        )
+        _write_log(
+            log_fn,
+            f"  Selector trained on {len(train_sids_fit)} train / "
+            f"{len(val_sids_fit)} val scenarios: "
+            f"val_accuracy={selector_meta.get('selector_val_accuracy')}",
+        )
+
+        for bname in ["test", "ood"]:
+            b = batch_test if bname == "test" else batch_ood
+            for s in b.scenarios:
+                sid = s.scenario_id
+                if sid not in full_scores_by_sid or sid not in small_scores_by_sid:
+                    continue
+                feats = b.features.get(sid, {})
+                fscore = full_scores_by_sid[sid]
+                sscore = small_scores_by_sid[sid]
+
+                top1_parent = selector.predict_parent(feats)
+                top1_score = fscore if top1_parent == "full_prefill" else sscore
+                all_results.append(_composite_row(
+                    sid, "contextual_top1", top1_score, top1_parent,
+                    comp_cfg.composition_id, bname, seed, run_config_id, cfg_hash,
+                ))
+
+                hc_parent = p3.hard_conditional_rule(feats)
+                hc_score = fscore if hc_parent == "full_prefill" else sscore
+                all_results.append(_composite_row(
+                    sid, "hard_conditional", hc_score, hc_parent,
+                    comp_cfg.composition_id, bname, seed, run_config_id, cfg_hash,
+                ))
+
+                alpha = alpha_model.predict_alpha(feats)
+                alpha_score = alpha * fscore + (1.0 - alpha) * sscore
+                all_results.append(_composite_row(
+                    sid, "contextual_alpha", alpha_score, f"alpha={alpha}",
+                    comp_cfg.composition_id, bname, seed, run_config_id, cfg_hash,
+                ))
+    else:
+        _write_log(
+            log_fn,
+            "  WARNING: insufficient train/val scenarios with both parent scores -- "
+            "skipping contextual_top1/hard_conditional/contextual_alpha",
+        )
+
     # ---- Step 5: write CSV ----
     _write_log(log_fn, f"Writing {len(all_results)} result rows to per_policy_results.csv")
     with open(run_dir / "per_policy_results.csv", "w", newline="") as f:
@@ -635,7 +795,10 @@ def run_composition_experiment(cfg: dict, run_dir: Path, *, workers: int = 8, dr
             "ood": len(batch_ood.scenarios),
         },
         "parents": list(comp_cfg.parent_policy_names),
-        "children_evaluated": [p["name"] for p in fixed_chunks],
+        "children_evaluated": [p["name"] for p in fixed_chunks] + ["prefill_control_child"],
+        "composite_baselines_evaluated": [
+            "contextual_top1", "hard_conditional", "contextual_alpha",
+        ],
         "seed": seed,
         "run_config_id": run_config_id,
     }

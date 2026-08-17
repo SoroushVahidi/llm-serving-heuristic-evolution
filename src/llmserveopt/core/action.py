@@ -43,6 +43,22 @@ vllm_faithful/sarathi_faithful/distserve_faithful/
 tetriinfer_paper_reimplementation) leaves it empty, so behavior is
 completely unchanged for them.
 
+`prefill_chunk_override` (added for the Family B v2 PrefillControl composition
+child, ``PrefillControlChildPolicy``; see
+docs/design/prefill_control_composition_falsification.md and
+``llmserveopt.composition.prefill_control_policy``) is a sixth, narrowly-scoped
+verb: it maps each GPU ID to the ``max_prefill_chunk_tokens`` value to use for
+THAT GPU on THIS STEP ONLY, overriding ``ServiceModel.max_prefill_chunk_tokens``
+(itself frozen/fixed for the whole run) without mutating it. This is what lets
+a policy make a genuinely per-step, online-observable-driven prefill-chunk
+decision -- the mechanism every fixed-chunk PrefillControl variant
+(``full_prefill``, ``chunked_prefill_small``, ``chunk_96``/``128``/``192``) is
+a single-decision special case of. Defaults to empty; every pre-existing
+policy leaves it empty, so behavior is completely unchanged for them (see
+``GPUState._advance_decode_protected`` / ``_advance_shared_contention``,
+which fall back to ``service_model.max_prefill_chunk_tokens`` whenever no
+override is present for that GPU this step).
+
 `hold_decode` (added for the slai_faithful baseline; see
 docs/slai_faithful_scheduler_reference.md) is a fifth, narrowly-scoped verb:
 it maps each GPU ID to a list of currently-ACTIVE, currently-DECODING
@@ -81,6 +97,7 @@ class Action:
     swap: Dict[int, List[int]] = field(default_factory=dict)
     migrate: Dict[int, List[Tuple[int, int]]] = field(default_factory=dict)
     hold_decode: Dict[int, List[int]] = field(default_factory=dict)
+    prefill_chunk_override: Dict[int, int] = field(default_factory=dict)
 
     def all_admitted_ids(self) -> Set[int]:
         ids: Set[int] = set()
@@ -119,6 +136,7 @@ class Action:
             and all(len(v) == 0 for v in self.swap.values())
             and all(len(v) == 0 for v in self.migrate.values())
             and all(len(v) == 0 for v in self.hold_decode.values())
+            and len(self.prefill_chunk_override) == 0
         )
 
     def __repr__(self) -> str:

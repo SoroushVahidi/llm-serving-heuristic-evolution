@@ -82,8 +82,12 @@ def _make_scenario(**overrides) -> Any:
         late_pressure="low",
         slo_emphasis="hog_ttft",
         seed=42,
-        n_hog=6,
-        n_late=6,
+        # n_hog/n_late intentionally omitted: they must derive from
+        # hog_count/late_pressure (HOG_COUNT / LATE_PRESSURE) so tests that
+        # vary these factors (e.g. split-integrity tests) exercise the same
+        # scenario_id encoding the production runner produces. Pass explicit
+        # n_hog=/n_late= overrides only for callers that don't care about
+        # factor variation and want a smaller/faster scenario.
         max_active_sequences=512,
         step_token_budget=512,
         allow_synthetic_tokens=True,
@@ -319,6 +323,57 @@ class TestSplitIntegrity:
         for sid in split.ood:
             assert "s20260823" in sid, f"ood scenario {sid} not held-out"
 
+    def test_full_grid_ood_non_empty_and_matches_p2_config(self):
+        """Full Family B v2 grid (32 scenarios) must produce non-empty OOD
+        matching p2_config.yaml (train=16, val=8, test=4, ood=4). Regression
+        test: n_hog/n_late must derive from hog_count/late_pressure, not be
+        overridden by max_active_sequences -- otherwise scenario_id never
+        contains "late40" and OOD is always empty.
+        """
+        scenarios = []
+        for h in ("low", "high"):
+            for l in ("low", "high"):
+                for s in ("hog_ttft", "late_ttft"):
+                    for seed in (20260820, 20260821, 20260822, 20260823):
+                        scen = _make_scenario(hog_count=h, late_pressure=l,
+                                              slo_emphasis=s, seed=seed)
+                        scenarios.append(scen)
+        sids = [s.scenario_id for s in scenarios]
+        assert len(sids) == 32
+        split = assign_family_b_v2_splits(sids)
+        assert_no_split_leakage(split)
+
+        assert len(split.train) == 16
+        assert len(split.val) == 8
+        assert len(split.test) == 4
+        assert len(split.ood) == 4
+
+        ood_set = set(split.ood)
+        assert ood_set.isdisjoint(split.train)
+        assert ood_set.isdisjoint(split.val)
+        assert ood_set.isdisjoint(split.test)
+        for sid in split.ood:
+            assert "s20260823" in sid
+            assert "late40" in sid
+
+        all_assigned = split.train + split.val + split.test + split.ood
+        assert sorted(all_assigned) == sorted(sids)
+        assert len(all_assigned) == len(set(all_assigned)) == 32
+
+    def test_fitting_functions_have_no_ood_parameter(self):
+        """Guard: selector-fitting entry points must never accept OOD data."""
+        import inspect
+        from llmserveopt.composition.prefill_control_policy import (
+            fit_prefill_top1_selector,
+            fit_alpha_model,
+            select_prefill_model_on_val,
+        )
+        for fn in (fit_prefill_top1_selector, fit_alpha_model, select_prefill_model_on_val):
+            for name in inspect.signature(fn).parameters:
+                assert "ood" not in name.lower(), (
+                    f"{fn.__name__} accepts OOD-named parameter {name!r}"
+                )
+
 
 class TestLeakageProtection:
     """No generator labels leak into features or policy decisions."""
@@ -456,6 +511,43 @@ class TestAnalysisIntegrity:
         # The real guarantee: p7_runner produces at most one row per (sid, policy)
         # in the actual runner; this test just checks the synthetic helper.
         assert len(unique_pairs) > 0
+
+
+class TestFittedSelectorIntegration:
+    """analyse() must use real fitted contextual_top1 rows when present,
+    not the hindsight-oracle placeholder (p7_runner.py Step 4c writes these
+    rows from a selector fit on TRAIN/picked on VAL)."""
+
+    def test_uses_fitted_selector_rows_when_present(self):
+        rows = _make_result_rows()
+        test_rows = [r for r in rows if r["split"] == "test" and r["status"] == "success"]
+        test_sids = sorted({r["scenario_id"] for r in test_rows})
+        assert test_sids, "fixture must produce at least one test scenario"
+
+        # Inject a fitted-selector score deliberately BELOW the oracle max
+        # for every test scenario, so it's distinguishable from the oracle
+        # fallback (which would equal the parent envelope).
+        injected_value = 0.111
+        for sid in test_sids:
+            rows.append({
+                "scenario_id": sid,
+                "policy_name": "contextual_top1",
+                "split": "test",
+                "arrival_normalized_weighted_goodput": str(injected_value),
+                "status": "success",
+            })
+
+        analysis = p5.analyse(rows)
+        assert analysis["test_results"]["mean_selector"] == pytest.approx(injected_value)
+
+    def test_falls_back_to_oracle_when_no_fitted_rows(self):
+        rows = _make_result_rows()
+        analysis = p5.analyse(rows)
+        # No contextual_top1 rows in the base fixture -> oracle fallback ->
+        # selector mean equals the parent-envelope (oracle) mean exactly.
+        tr = analysis["test_results"]
+        assert tr["mean_selector"] == pytest.approx(tr["mean_oracle"])
+        assert tr["select_oracle_delta"] == pytest.approx(0.0, abs=1e-9)
 
 
 class TestVerdictLogic:

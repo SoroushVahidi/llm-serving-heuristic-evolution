@@ -636,11 +636,14 @@ class Simulator:
 
     def _advance_decode(self, action: Action) -> List[CompletedRequest]:
         """Advance every GPU by one step, respecting `action.hold_decode`
-        (see Action's docstring and docs/slai_faithful_scheduler_reference.md).
-        A no-op lookup whenever action.hold_decode is empty -- true for
-        every policy except slai_faithful, so behavior is completely
-        unchanged for them (GPUState.step's held_decode_ids defaults to an
-        empty frozenset, identical to calling it with no argument at all)."""
+        (see Action's docstring and docs/slai_faithful_scheduler_reference.md)
+        and `action.prefill_chunk_override` (see Action's docstring and
+        ``llmserveopt.composition.prefill_control_policy.PrefillControlChildPolicy``).
+        A no-op lookup whenever both are empty -- true for every policy
+        except slai_faithful and the Family B v2 PrefillControl composition
+        child, so behavior is completely unchanged for them (GPUState.step's
+        held_decode_ids/prefill_chunk_override default to an empty
+        frozenset/None, identical to calling it with no argument at all)."""
         completed: List[CompletedRequest] = []
         step_end_time = (self._step + 1) * self.config.service_model.step_size
         for g in self._gpus:
@@ -650,6 +653,7 @@ class Simulator:
                     current_time=step_end_time,
                     service_model=self.config.service_model,
                     held_decode_ids=frozenset(held_ids) if held_ids else frozenset(),
+                    prefill_chunk_override=action.prefill_chunk_override.get(g.gpu_id),
                 )
             )
         return completed

@@ -169,6 +169,60 @@ Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issu
 
 **Bug fix in this session:** `prefill_control_splits.py` — line 107 tried to unpack plain strings as tuples in the degenerate split case; fixed with type guard.
 
+### Bug fixes + pipeline completion (continuation session, 2026-08-17)
+
+- **OOD=0 launch blocker (root cause, category C — implementation bug):**
+  `p7_runner.py`'s `build_scenarios_from_config` was passing
+  `runner.max_active_sequences` (a simulator capacity setting) as BOTH
+  `n_hog` and `n_late` to `case_prefill_decode_ttft_contention`, overriding
+  the intended `HOG_COUNT[hog_count]` / `LATE_PRESSURE[late_pressure]`
+  derivation. This collapsed the `hog_count`/`late_pressure` sweep factors
+  to a single fixed value (`hog512.late512` regardless of grid label) and
+  broke the OOD split predicate (`"late40" in scenario_id`), which never
+  matched. Fixed by removing the override; `n_hog`/`n_late` now derive from
+  the grid labels as designed. Full 32-scenario grid now produces the
+  preregistered train=16/val=8/test=4/ood=4 split. Two test-helper files
+  (`p8_test_runner.py`, `tests/test_prefill_control_composition_v2.py`) had
+  the same masking bug in their `_make_scenario` fixtures (hardcoded
+  `n_hog=6, n_late=6`) and were fixed the same way, with new regression
+  tests proving OOD is non-empty, disjoint, and exactly matches the
+  preregistered split sizes.
+- **Smoke-check `p3` NameError:** an ad hoc validation snippet referenced
+  `p3.PRIMARY` without importing `p3_chunk_control as p3` in that scope.
+  Replaced with `scripts/smoke_prefill_control_composition_v2.py`, a
+  reusable launch-gate script that imports `PRIMARY` directly.
+- **Pipeline completion — dynamic composition + real selector wiring:**
+  `p7_runner.py` previously only evaluated the two parents and the three
+  fixed-intermediate chunks; `prefill_control_child` (the actual
+  falsification target) was never simulated, and `p5_analysis_chunk_comp.py`
+  compared against a hindsight-oracle placeholder instead of a genuinely
+  fitted selector. Closed both gaps:
+  - `Action.prefill_chunk_override` (new, sixth narrowly-scoped Action verb,
+    same opt-in pattern as `hold_decode`/`swap`/`migrate`): lets a policy
+    set `ServiceModel.max_prefill_chunk_tokens` per-GPU, per-step, without
+    mutating the frozen `ServiceModel`. Threaded through
+    `GPUState.step`/`_step_phase15`/`_advance_decode_protected`/
+    `_advance_shared_contention` and `Simulator._advance_decode`. Defaults
+    to empty — zero behavior change for every pre-existing policy (see 456
+    passing simulator/gpu/action/contention regression tests).
+  - `PrefillControlChildPolicy.select_action` now makes a genuine per-step
+    decision via `default_step_level_chunk_rule` (pre-specified, not
+    data-fit — same H3/decode-protection mechanism theory as
+    `hard_conditional_rule`) and attaches it as `prefill_chunk_override`.
+    Wired into `p7_runner.py` Step 4b, evaluated on test+ood like the fixed
+    intermediates.
+  - `p7_runner.py` Step 4c fits a real top-1 selector + alpha model on
+    TRAIN, picks model type on VAL (`select_prefill_model_on_val`), and
+    writes `contextual_top1`/`hard_conditional`/`contextual_alpha` rows for
+    test+ood computed analytically from already-simulated parent scores
+    (per p2_config.yaml: "composite baselines computed at analysis time,
+    not re-run") — TEST/OOD never enter fitting or model selection.
+  - `p5_analysis_chunk_comp.py`'s `analyse()` now uses real `contextual_top1`
+    rows when present (falls back to the hindsight oracle only for older
+    result sets that predate this wiring). Also fixed a latent bug in the
+    oracle-fallback path itself (`get_oracle_scores` was looking up
+    `full_scores` by policy-name string instead of `scenario_id`).
+
 ### Preregistered verdict criteria
 
 | Verdict | Conditions |
@@ -179,19 +233,21 @@ Issue [#6](https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/issu
 
 ### Current status
 
-- **Composition falsification NOT YET EXECUTED.** No verdict exists until the experiment completes.
+- **Composition falsification launching this session** via `p7_runner.py --config p2_config.yaml` (full 32-scenario preregistered grid). No verdict exists until the experiment completes and is analyzed with `p5_analysis_chunk_comp.py` — do not infer a verdict from partial/in-progress output.
 - Broad synthesis/QD work (MAP-Elites, GP, LLM-guided synthesis, symbolic distillation) remains **gated** on this result.
-- All tests pass (104 total: 53 pre-existing + 51 new).
+- All tests pass (120 total in `p8_test_runner.py` + `tests/test_prefill_control_composition_v2.py`; 456 simulator/gpu/action/contention regression tests unaffected; full project suite 3857+ passed).
 
 ### Launch gate
 
 - ✅ `p3_chunk_control.py` uses `templates_prefill_decode_v2` (Family B v2), not Family A v2
 - ✅ No generator-label leakage into features (35-column forbidlist verified)
 - ✅ Family B v2 classes: `tenant_prefill` / `tenant_late` (no `.hog` suffix assumptions)
-- ✅ Composition endpoints exactly reproduce parents (chunk=64 → `chunked_prefill_small`, chunk=65536 → `full_prefill`)
-- ✅ Split integrity: disjoint, covered, held-out seed=20260823
+- ✅ Composition endpoints exactly reproduce parents (chunk=64 → `chunked_prefill_small`, chunk=65536 → `full_prefill`), including the dynamic `prefill_chunk_override` path (forced single-chunk grid reproduces the fixed-chunk endpoint exactly)
+- ✅ Split integrity: disjoint, covered, held-out seed=20260823, OOD non-empty (train=16/val=8/test=4/ood=4 on the full grid)
 - ✅ Deterministic eval IDs: sha256(scenario_id|method|config_hash)[:16]
 - ✅ Canonical metric: `arrival_normalized_weighted_goodput`
-- ✅ All 104 tests pass
+- ✅ TEST/OOD never enter selector fitting or model selection (guarded by a dedicated test asserting the fitting functions' signatures carry no OOD parameter)
+- ✅ `prefill_control_child` (the falsification target) and the real fitted top-1/hard-conditional/alpha selector are now genuinely wired into the runner and analysis, not a hindsight-oracle placeholder
+- ✅ All 120 focused composition tests + 456 simulator/gpu/action regression tests pass
 
 > **Verdict will be determined after experiment completion, not before.**

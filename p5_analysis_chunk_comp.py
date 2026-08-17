@@ -344,25 +344,39 @@ def analyse(
     ood_env = compute_envelope(full_scores, small_scores, ood_sids)
     all_env = compute_envelope(full_scores, small_scores, scenario_ids)
 
-    # ---- Contextual top-1 (oracle version for analysis) ----
+    # ---- Contextual top-1 selector ----
+    # p7_runner.py fits a real top-1 selector on TRAIN, picks the model type
+    # on VAL, and writes its TEST/OOD predictions as "contextual_top1" rows
+    # (see p7_runner.py Step 4c). When those rows are present, use them --
+    # this is the actual preregistered selector-vs-composition comparison.
+    # Fall back to a hindsight oracle (best-per-parent-per-scenario, using
+    # the scenario's own held-out scores directly) only when no fitted
+    # selector rows exist, e.g. for older/synthetic result sets that predate
+    # this wiring -- in that fallback the selector-vs-oracle gap is
+    # trivially 0 by construction, which is why it's a fallback, not the
+    # preferred path.
     def oracle_selector(sid, sc):
         s_full = sc.get("full_prefill", {}).get(sid, 0.0)
         s_small = sc.get("chunked_prefill_small", {}).get(sid, 0.0)
         return "full_prefill" if s_full >= s_small else "chunked_prefill_small"
 
     def get_oracle_scores(sc, sids):
-        return {sid: full_scores.get(oracle_selector(sid, sc), 0.0)
+        return {sid: full_scores.get(sid, 0.0)
                 if oracle_selector(sid, sc) == "full_prefill" else small_scores.get(sid, 0.0)
                 for sid in sids}
 
-    test_sel_scores = get_oracle_scores(all_scores, test_sids)
-    ood_sel_scores = get_oracle_scores(all_scores, ood_sids)
+    fitted_selector_scores = all_scores.get("contextual_top1", {})
+    if fitted_selector_scores:
+        test_sel_scores = {sid: fitted_selector_scores.get(sid, 0.0) for sid in test_sids}
+        ood_sel_scores = {sid: fitted_selector_scores.get(sid, 0.0) for sid in ood_sids}
+    else:
+        test_sel_scores = get_oracle_scores(all_scores, test_sids)
+        ood_sel_scores = get_oracle_scores(all_scores, ood_sids)
 
-    # Compute selector-oracle gaps
+    # Selector-vs-oracle gap: how much a genuinely fitted selector loses
+    # relative to hindsight-oracle parent selection on the same split.
     test_oracle = get_oracle_scores(all_scores, test_sids)
     ood_oracle = get_oracle_scores(all_scores, ood_sids)
-    # For our case, oracle = best-per-parent-per-scenario (same as sel_scores)
-    # So gap should be 0. But if we had a fitted selector, gap > 0 would exist.
 
     # ---- Best fixed parent per split ----
     test_bfp = best_fixed_parent_score(full_scores, small_scores, test_sids)
@@ -528,7 +542,10 @@ def analyse(
             "mean_envelope_gain_raw": top_eg.get("mean_envelope_gain", 0.0),
             "median_envelope_gain": top_eg.get("median_envelope_gain", 0.0),
             "envelope_gain_bootstrap_ci": top_cis,
-            "select_oracle_delta": 0.0,  # oracle selector matches env
+            # mean_oracle is the per-scenario best-parent envelope (`env`),
+            # so this is exactly (fitted or oracle) selector mean minus the
+            # hindsight-oracle mean -- 0.0 only in the oracle-fallback path.
+            "select_oracle_delta": mean_sel - mean_oracle,
             "fraction_beat_parent_full": pct_beat_full,
             "fraction_beat_parent_small": pct_beat_small,
             "child_beats_both_eps_0": top_beats.get("eps_0", 0),

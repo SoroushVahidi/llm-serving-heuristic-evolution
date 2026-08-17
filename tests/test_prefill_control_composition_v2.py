@@ -71,7 +71,9 @@ from llmserveopt.composition.prefill_control_policy import (
     PrefillControlChildPolicy,
     FittedPrefillSelector,
     select_prefill_model_on_val,
+    default_step_level_chunk_rule,
 )
+from llmserveopt.core.action import Action
 from llmserveopt.composition.prefill_control_splits import (
     assign_family_b_v2_splits,
     assert_no_split_leakage,
@@ -88,8 +90,12 @@ def _make_scenario(**overrides) -> object:
         late_pressure="low",
         slo_emphasis="hog_ttft",
         seed=42,
-        n_hog=6,
-        n_late=6,
+        # n_hog/n_late intentionally omitted: they must derive from
+        # hog_count/late_pressure (HOG_COUNT / LATE_PRESSURE) so tests that
+        # vary these factors (e.g. split-integrity tests) exercise the same
+        # scenario_id encoding the production runner produces. Pass explicit
+        # n_hog=/n_late= overrides only for callers that don't care about
+        # factor variation and want a smaller/faster scenario.
         allow_synthetic_tokens=True,
     )
     args.update(overrides)
@@ -292,6 +298,77 @@ class TestSplitIntegrity:
         )
         with pytest.raises(AssertionError):
             assert_no_split_leakage(bad)
+
+    def test_full_grid_ood_non_empty_and_matches_p2_config(self):
+        """Full Family B v2 grid (32 scenarios, per p2_config.yaml) must produce
+        the preregistered split sizes train=16/val=8/test=4/ood=4 -- OOD must
+        NOT be empty. Regression test for a bug where n_hog/n_late were
+        incorrectly overridden with max_active_sequences, collapsing the
+        hog_count/late_pressure factors and making the OOD split predicate
+        ("late40" in scenario_id) never match.
+        """
+        scenarios = []
+        for h in ("low", "high"):
+            for l in ("low", "high"):
+                for s in ("hog_ttft", "late_ttft"):
+                    for seed in (20260820, 20260821, 20260822, 20260823):
+                        scen = _make_scenario(hog_count=h, late_pressure=l,
+                                              slo_emphasis=s, seed=seed)
+                        scenarios.append(scen)
+        sids = [s.scenario_id for s in scenarios]
+        assert len(sids) == 32
+        assert len(set(sids)) == 32
+
+        split = assign_family_b_v2_splits(sids)
+        assert_no_split_leakage(split)
+
+        # Preregistered sizes (p2_config.yaml splits: train=16, val=8, test=4, ood=4)
+        assert len(split.train) == 16
+        assert len(split.val) == 8
+        assert len(split.test) == 4
+        assert len(split.ood) == 4, (
+            "OOD split is empty or wrong size -- see p2_config.yaml `splits.ood` "
+            "(seed=20260823, late_pressure=high)"
+        )
+
+        # OOD disjoint from every other split
+        ood_set = set(split.ood)
+        assert ood_set.isdisjoint(split.train)
+        assert ood_set.isdisjoint(split.val)
+        assert ood_set.isdisjoint(split.test)
+
+        # OOD only contains held-out seed, high late_pressure (n_late=40)
+        for sid in split.ood:
+            assert "s20260823" in sid
+            assert "late40" in sid
+        # TEST only contains held-out seed, low late_pressure (n_late=12)
+        for sid in split.test:
+            assert "s20260823" in sid
+            assert "late12" in sid
+
+        # Every scenario assigned exactly once across the four splits
+        all_assigned = split.train + split.val + split.test + split.ood
+        assert sorted(all_assigned) == sorted(sids)
+        assert len(all_assigned) == len(set(all_assigned)) == 32
+
+    def test_fitting_functions_have_no_ood_parameter(self):
+        """Selector-fitting entry points must not accept OOD data at all --
+        OOD is evaluation-only. Guards against future regressions that
+        would let OOD leak into fitting/model selection.
+        """
+        import inspect
+        from llmserveopt.composition.prefill_control_policy import (
+            fit_prefill_top1_selector,
+            fit_alpha_model,
+            select_prefill_model_on_val,
+        )
+        for fn in (fit_prefill_top1_selector, fit_alpha_model, select_prefill_model_on_val):
+            params = inspect.signature(fn).parameters
+            for name in params:
+                assert "ood" not in name.lower(), (
+                    f"{fn.__name__} accepts OOD-named parameter {name!r} -- "
+                    "OOD must never be used for fitting or model selection"
+                )
 
 
 # ===================================================================
@@ -634,3 +711,147 @@ class TestReproducibility:
         f1 = scenario_observable_features(list(s1.requests))
         f2 = scenario_observable_features(list(s2.requests))
         assert f1 == f2
+
+
+# ===================================================================
+# Dynamic composition mechanism (Action.prefill_chunk_override)
+# ===================================================================
+
+_CHUNK_OPTIONS = (64, 96, 128, 192, 256, 65536)
+
+
+class TestActionPrefillChunkOverride:
+    """Action.prefill_chunk_override defaults to empty (no behavior change)."""
+
+    def test_default_empty(self):
+        a = Action(admit={0: []})
+        assert a.prefill_chunk_override == {}
+        assert a.is_empty()
+
+    def test_non_empty_breaks_is_empty(self):
+        a = Action(admit={0: []}, prefill_chunk_override={0: 64})
+        assert not a.is_empty()
+
+
+class TestStepLevelChunkRule:
+    """default_step_level_chunk_rule: pre-specified, not data-fit."""
+
+    def test_urgent_low_decode_pressure_picks_largest(self):
+        feats = {"fraction_urgent": 0.5, "min_slo_slack": 2.0,
+                  "n_decoding_active": 1.0, "n_prefilling_active": 10.0}
+        idx = default_step_level_chunk_rule(feats, _CHUNK_OPTIONS)
+        assert _CHUNK_OPTIONS[idx] == 65536
+
+    def test_not_urgent_high_decode_pressure_picks_smallest(self):
+        feats = {"fraction_urgent": 0.0, "min_slo_slack": 2.0,
+                  "n_decoding_active": 9.0, "n_prefilling_active": 1.0}
+        idx = default_step_level_chunk_rule(feats, _CHUNK_OPTIONS)
+        assert _CHUNK_OPTIONS[idx] == 64
+
+    def test_neutral_picks_middle(self):
+        feats = {"fraction_urgent": 0.0, "min_slo_slack": 2.0,
+                  "n_decoding_active": 0.0, "n_prefilling_active": 0.0}
+        idx = default_step_level_chunk_rule(feats, _CHUNK_OPTIONS)
+        assert _CHUNK_OPTIONS[idx] == 128
+
+    def test_rule_is_genuinely_dynamic_across_decode_pressure(self):
+        """Sanity: the rule is not a disguised constant."""
+        outs = set()
+        for ndec in (0, 2, 4, 6, 8, 10):
+            feats = {"fraction_urgent": 0.0, "min_slo_slack": 2.0,
+                      "n_decoding_active": float(ndec),
+                      "n_prefilling_active": float(10 - ndec)}
+            outs.add(default_step_level_chunk_rule(feats, _CHUNK_OPTIONS))
+        assert len(outs) > 1
+
+    def test_idx_always_in_range(self):
+        for ndec in range(0, 20):
+            for urgent in (0.0, 1.0):
+                feats = {"fraction_urgent": urgent, "min_slo_slack": 0.05,
+                          "n_decoding_active": float(ndec), "n_prefilling_active": 3.0}
+                idx = default_step_level_chunk_rule(feats, _CHUNK_OPTIONS)
+                assert 0 <= idx < len(_CHUNK_OPTIONS)
+
+
+class TestDynamicChunkOverrideEndpointIdentity:
+    """A constant per-step override must reproduce the equivalent fixed-chunk run exactly."""
+
+    def test_constant_override_matches_fixed_chunk_run(self):
+        scen = _make_scenario(n_hog=6, n_late=6)
+        merged = dict(scen.service_model_kwargs)
+        merged["max_prefill_chunk_tokens"] = 64
+        merged["decode_first"] = False
+        sm = ServiceModel(**merged)
+
+        sim_fixed = Simulator(SimulatorConfig(
+            gpu_configs=list(scen.gpu_configs), service_model=sm,
+        ))
+        sim_fixed.load_trace(list(scen.requests))
+        policy_fixed = GreedyArrivalPrefillControlPolicy()
+        policy_fixed.name = "fixed"
+        m_fixed = sim_fixed.run(policy_fixed, workload_tag="fixed", seed=42)
+
+        class _OverridePolicy(GreedyArrivalPrefillControlPolicy):
+            def select_action(self, state):
+                action = super().select_action(state)
+                action.prefill_chunk_override = {g.gpu_id: 64 for g in state.gpu_states}
+                return action
+
+        sim_dyn = Simulator(SimulatorConfig(
+            gpu_configs=list(scen.gpu_configs), service_model=sm,
+        ))
+        sim_dyn.load_trace(list(scen.requests))
+        policy_dyn = _OverridePolicy()
+        policy_dyn.name = "dyn"
+        m_dyn = sim_dyn.run(policy_dyn, workload_tag="dyn", seed=42)
+
+        assert m_dyn.arrival_normalized_weighted_goodput == pytest.approx(
+            m_fixed.arrival_normalized_weighted_goodput
+        )
+        assert m_dyn.completion_fraction == pytest.approx(m_fixed.completion_fraction)
+
+
+class TestPrefillControlChildPolicyDynamic:
+    """PrefillControlChildPolicy genuinely runs through the simulator with
+    per-step overrides -- not a scenario-level-fixed-chunk stand-in."""
+
+    def test_runs_end_to_end_and_finite(self):
+        scen = _make_scenario(hog_count="high", late_pressure="high",
+                              slo_emphasis="late_ttft", seed=42)
+        merged = dict(scen.service_model_kwargs)
+        merged["max_prefill_chunk_tokens"] = 128
+        merged["decode_first"] = False
+        sim = Simulator(SimulatorConfig(
+            gpu_configs=list(scen.gpu_configs), service_model=ServiceModel(**merged),
+        ))
+        sim.load_trace(list(scen.requests))
+        policy = PrefillControlChildPolicy()
+        m = sim.run(policy, workload_tag="child", seed=42)
+        assert np.isfinite(m.arrival_normalized_weighted_goodput)
+        assert len(policy.decision_log) > 0
+        for d in policy.decision_log:
+            assert d["chunk_size"] in policy.CHUNK_OPTIONS
+
+    def test_endpoint_identity_forced_small(self):
+        """Forcing the rule's chunk grid down to a single value reproduces
+        the equivalent fixed-chunk endpoint exactly."""
+        scen = _make_scenario(n_hog=6, n_late=6)
+        merged = dict(scen.service_model_kwargs)
+        merged["max_prefill_chunk_tokens"] = 64
+        merged["decode_first"] = False
+        sm = ServiceModel(**merged)
+
+        sim_fixed = Simulator(SimulatorConfig(gpu_configs=list(scen.gpu_configs), service_model=sm))
+        sim_fixed.load_trace(list(scen.requests))
+        p_fixed = GreedyArrivalPrefillControlPolicy()
+        p_fixed.name = "fixed"
+        m_fixed = sim_fixed.run(p_fixed, workload_tag="fixed", seed=7)
+
+        sim_child = Simulator(SimulatorConfig(gpu_configs=list(scen.gpu_configs), service_model=sm))
+        sim_child.load_trace(list(scen.requests))
+        p_child = PrefillControlChildPolicy(chunk_grid=(64,))
+        m_child = sim_child.run(p_child, workload_tag="child", seed=7)
+
+        assert m_child.arrival_normalized_weighted_goodput == pytest.approx(
+            m_fixed.arrival_normalized_weighted_goodput
+        )

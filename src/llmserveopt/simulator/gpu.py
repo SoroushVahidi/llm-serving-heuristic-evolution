@@ -217,6 +217,7 @@ class GPUState:
         current_time: float,
         service_model: Optional[ServiceModel] = None,
         held_decode_ids: FrozenSet[int] = frozenset(),
+        prefill_chunk_override: Optional[int] = None,
     ) -> List[CompletedRequest]:
         """Advance one simulation step.  Returns newly completed requests.
 
@@ -234,10 +235,19 @@ class GPUState:
         empty frozenset, identical to omitting the argument entirely, so
         every pre-existing caller (which never passes this) is completely
         unaffected.
+
+        `prefill_chunk_override` (added for the Family B v2 PrefillControl
+        composition child; see Action's docstring): when not None, used in
+        place of `service_model.max_prefill_chunk_tokens` for THIS step's
+        prefill budget on this GPU only -- the frozen ServiceModel itself is
+        never mutated. Defaults to None, identical to omitting the argument,
+        so every pre-existing caller is completely unaffected.
         """
         if service_model is None or not service_model.enable_prefill_modeling:
             return self._step_phase1(current_time, held_decode_ids)
-        return self._step_phase15(current_time, service_model, held_decode_ids)
+        return self._step_phase15(
+            current_time, service_model, held_decode_ids, prefill_chunk_override
+        )
 
     # ------------------------------------------------------------------ #
     # Internal step implementations
@@ -282,6 +292,7 @@ class GPUState:
         current_time: float,
         service_model: ServiceModel,
         held_decode_ids: FrozenSet[int] = frozenset(),
+        prefill_chunk_override: Optional[int] = None,
     ) -> List[CompletedRequest]:
         """Phase 1.5 step: separate prefill / decode phases with token budget.
 
@@ -323,11 +334,13 @@ class GPUState:
 
         if service_model.enable_decode_prefill_contention and not service_model.decode_first:
             completed, to_remove, handoff_ids = self._advance_shared_contention(
-                current_time, service_model, prefilling, decoding_active
+                current_time, service_model, prefilling, decoding_active,
+                prefill_chunk_override,
             )
         else:
             completed, to_remove, handoff_ids = self._advance_decode_protected(
-                current_time, service_model, prefilling, decoding_active
+                current_time, service_model, prefilling, decoding_active,
+                prefill_chunk_override,
             )
 
         self._record_contention_diagnostics(
@@ -394,6 +407,7 @@ class GPUState:
         service_model: ServiceModel,
         prefilling: List[InternalRequest],
         decoding: List[InternalRequest],
+        prefill_chunk_override: Optional[int] = None,
     ) -> tuple:
         """Decode-protected execution (Sarathi-style stall-free principle):
         decode always receives its full budget first, unconditionally;
@@ -405,6 +419,10 @@ class GPUState:
         as-is (insertion/admission order into `self._active`), not
         re-sorted, to keep this path bit-identical to the pre-fix code for
         every existing caller.
+
+        `prefill_chunk_override` (see Action's docstring): when not None,
+        used in place of `service_model.max_prefill_chunk_tokens` for this
+        step's chunk cap. Defaults to None (no behavior change).
         """
         completed: List[CompletedRequest] = []
         to_remove: List[int] = []
@@ -412,6 +430,11 @@ class GPUState:
 
         budget = service_model.step_token_budget - len(decoding)
         prefill_budget = max(0, budget)
+        max_chunk = (
+            prefill_chunk_override
+            if prefill_chunk_override is not None
+            else service_model.max_prefill_chunk_tokens
+        )
 
         for req in decoding:
             done = req.advance_decode(current_time)
@@ -433,7 +456,7 @@ class GPUState:
             if prefill_budget <= 0:
                 break  # no budget left for prefill this step
             chunk = min(
-                service_model.max_prefill_chunk_tokens,
+                max_chunk,
                 req.prefill_remaining,
                 prefill_budget,
             )
@@ -464,6 +487,7 @@ class GPUState:
         service_model: ServiceModel,
         prefilling: List[InternalRequest],
         decoding: List[InternalRequest],
+        prefill_chunk_override: Optional[int] = None,
     ) -> tuple:
         """vLLM-v0.4.2-chunked-prefill-style shared execution: decode and
         prefill requests compete for ONE combined per-step token budget,
@@ -479,6 +503,10 @@ class GPUState:
 
         Only reached when `enable_decode_prefill_contention=True` and
         `decode_first=False`.
+
+        `prefill_chunk_override` (see Action's docstring): when not None,
+        used in place of `service_model.max_prefill_chunk_tokens` for this
+        step's chunk cap. Defaults to None (no behavior change).
         """
         completed: List[CompletedRequest] = []
         to_remove: List[int] = []
@@ -489,6 +517,11 @@ class GPUState:
             key=lambda r: (r.request.arrival_time, r.request_id),
         )
         budget = service_model.step_token_budget
+        max_chunk = (
+            prefill_chunk_override
+            if prefill_chunk_override is not None
+            else service_model.max_prefill_chunk_tokens
+        )
 
         for req in combined:
             if budget <= 0:
@@ -497,7 +530,7 @@ class GPUState:
                 num_new_tokens = 1
             else:
                 num_new_tokens = min(
-                    service_model.max_prefill_chunk_tokens,
+                    max_chunk,
                     req.prefill_remaining,
                     budget,
                 )

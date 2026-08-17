@@ -21,6 +21,7 @@ from ..policies.composition import deterministic_place
 from ..policies.prefill_control_variants import (
     DEFAULT_CHUNK_SMALL,
     UNLIMITED_PREFILL_CHUNK,
+    _arrival_rank,
 )
 
 from .prefill_control_features import (
@@ -347,14 +348,68 @@ def fit_alpha_model(
 # PrefillControl child policy — contextual chunk-size selection
 # ===================================================================
 
+def default_step_level_chunk_rule(
+    features: Mapping[str, float],
+    chunk_options: Tuple[int, ...],
+) -> int:
+    """Symbolic (not data-fit) per-step chunk-index rule, used when
+    ``PrefillControlChildPolicy`` has no ``chunk_model``.
+
+    Grounded in the same mechanism theory as ``hard_conditional_rule`` (H3:
+    tight SLO slack favors uninterrupted full prefill; loose slack favors
+    small chunks that protect decode) plus the decode-protection tradeoff
+    documented in ``ServiceModel``: a larger prefill chunk speeds up
+    waiting/urgent prefill requests at the cost of stalling concurrent
+    decode for longer; a smaller chunk protects decode TBT at the cost of
+    slower prefill throughput. This rule was fixed BEFORE any falsification
+    results existed and is not tuned to them -- it is a hand-specified
+    5-tier decision surface over two online-observable step-level signals:
+
+      urgent          = fraction_urgent >= 0.15 or min_slo_slack < 0.1
+                         (identical threshold to hard_conditional_rule)
+      decode_pressure = n_decoding_active / (n_decoding_active + n_prefilling_active)
+                         (0.0 when nothing is active)
+
+    Decision surface (index into ``chunk_options``, smallest..largest):
+      urgent AND decode_pressure <  0.3  -> largest  (clear the urgent request fast)
+      urgent AND decode_pressure >= 0.3  -> mid       (balance urgency vs decode protection)
+      not urgent AND decode_pressure >= 0.5 -> smallest (protect decode under heavy contention)
+      not urgent AND decode_pressure >= 0.3 -> 2nd-smallest
+      not urgent AND decode_pressure <  0.3 -> middle   (no urgency, no contention)
+    """
+    n = len(chunk_options)
+    urgent = (
+        float(features.get("fraction_urgent", 0.0)) >= 0.15
+        or float(features.get("min_slo_slack", 2.0)) < 0.1
+    )
+    n_decoding = float(features.get("n_decoding_active", 0.0))
+    n_prefilling = float(features.get("n_prefilling_active", 0.0))
+    denom = n_decoding + n_prefilling
+    decode_pressure = n_decoding / denom if denom > 0 else 0.0
+
+    if urgent and decode_pressure < 0.3:
+        idx = n - 1
+    elif urgent:
+        idx = n // 2
+    elif decode_pressure >= 0.5:
+        idx = 0
+    elif decode_pressure >= 0.3:
+        idx = min(1, n - 1)
+    else:
+        idx = min(2, n - 1)
+    return max(0, min(idx, n - 1))
+
+
 class PrefillControlChildPolicy(BasePolicy):
     """Contextual PrefillControl: selects a chunk-size budget from the
     expanded grid ({64, 96, 128, 192, 256, 65536}) based on
-    step-level observable features.
+    step-level observable features, re-decided every step.
 
-    At execution time the runner merges the selected chunk size into the
-    ServiceModel kwargs so the child behaviour is actual prefill-control
-    composition, not just a scheduling re-ordering.
+    The chosen chunk size is attached to the returned Action as
+    ``prefill_chunk_override`` (see Action's docstring), which the
+    simulator honours for that GPU on that step only -- this is genuine
+    per-step dynamic composition, not a single scenario-level decision
+    replaying a fixed-chunk baseline.
     """
 
     name = "prefill_control_child"
@@ -388,16 +443,13 @@ class PrefillControlChildPolicy(BasePolicy):
 
     def select_action(self, state: ObservableState) -> Action:
         feats = step_features(state)
+        assert_no_hidden_leakage(feats)
         if self.model is not None:
             x = feature_vector(feats).reshape(1, -1)
             idx = int(self.model.predict(x)[0])
+            idx = max(0, min(idx, len(self.CHUNK_OPTIONS) - 1))
         else:
-            # Default: mid-range heuristic (192)
-            idx = 3  # chunk_192
-        if idx < 0:
-            idx = 0
-        if idx >= len(self.CHUNK_OPTIONS):
-            idx = len(self.CHUNK_OPTIONS) - 1
+            idx = default_step_level_chunk_rule(feats, self.CHUNK_OPTIONS)
         chunk_size = self.CHUNK_OPTIONS[idx]
         self.alpha_history.append(idx)
         self.decision_log.append({
@@ -405,7 +457,10 @@ class PrefillControlChildPolicy(BasePolicy):
             "chunk_idx": idx,
             "chunk_size": chunk_size,
         })
-        return deterministic_place(state, list(state.waiting_queue))
+        ranked = sorted(state.waiting_queue, key=_arrival_rank)
+        action = deterministic_place(state, ranked)
+        action.prefill_chunk_override = {g.gpu_id: chunk_size for g in state.gpu_states}
+        return action
 
     @property
     def selected_chunk(self) -> int:
