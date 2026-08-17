@@ -82,8 +82,14 @@ current status, see `docs/current/RESUME_HERE.md` and
   preregistered gates pass
   (`docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`;
   design `docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`) — the
-  first of the three families studied to reach a `_READY` verdict. No
-  composition work has been started for this pair. Not MAP-Elites or
+  first of the three families studied to reach a `_READY` verdict. **Its
+  composition falsification has since run to completion:**
+  `KV_COMPOSITION_INCONCLUSIVE`
+  (`docs/audits/kv_composition_falsification_v1_20260817.md`; design
+  `docs/design/KV_COMPOSITION_FALSIFICATION_V1.md`) — real envelope-gain
+  signal, blocked by a composition-specific KV-safety gate failure (child
+  peak KV exceeds both parents' peaks on 6/36 held-out scenarios), not by
+  absence of signal; do not escalate to a more complex child. Not MAP-Elites or
   distillation from ESTF/WFS, PrefillControl, or KV-pressure.
 ## Datasets
 

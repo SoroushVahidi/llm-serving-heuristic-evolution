@@ -55,10 +55,33 @@ held-out-seed replication (G6) and within-scenario winner-flip evidence
 urgent-arrival timing) — the first of the three families studied to reach a
 `_READY` verdict. This is still a **pairwise-separation pilot only** — no
 selector was fit, no child policy was built, no composition work was
-started, per explicit task scope. Next on this thread: per the v2 audit's
-§T, the smallest scientifically justified next step is a two-parent
-composition falsification for this pair, structured like the Family B v2
-PrefillControl one — **not started**, pending explicit authorization.
+started, per explicit task scope.
+
+**KV-aware composition falsification v1 is now COMPLETE:**
+[`../audits/kv_composition_falsification_v1_20260817.md`](../audits/kv_composition_falsification_v1_20260817.md)
+(design: [`../design/KV_COMPOSITION_FALSIFICATION_V1.md`](../design/KV_COMPOSITION_FALSIFICATION_V1.md))
+**Verdict: `KV_COMPOSITION_INCONCLUSIVE`.** A minimal state-dependent child
+(`KVAdaptiveReserveChildPolicy`: delegates every step, unmodified, to one of
+the two frozen parents, chosen from a single online-observable trigger —
+count of currently-waiting urgent-classified requests) showed real signal:
+positive TEST envelope gain, 5/12 TEST scenarios beat both parents by >ε,
+24/36 held-out scenarios show genuine non-degenerate within-trajectory
+mode-switching, directionally-consistent OOD replication. But the frozen
+safety gate (G7) failed: child peak KV utilization exceeded
+`max(parent peaks)` on 6/36 (16.7%) held-out scenarios — a
+composition-specific risk (mode-switching history creates KV states neither
+pure parent alone reaches) no pairwise-separation pilot can surface. Per
+the frozen decision rule, G7 failing forces `INCONCLUSIVE` regardless of
+G1-G6. **Do not** escalate to a more complex child, MAP-Elites, selector
+retraining, symbolic distillation, or LLM synthesis from this result — the
+audit's §Z smallest next step (not started) is a narrowly-rescoped child
+adding a transition-aware admission cap, re-run through the identical
+frozen procedure. **Separately (not gated):** this task surfaced an
+unresolved reproducibility gap in the whole KV v1/v2 evidentiary chain — the
+current environment cannot reproduce the historical frozen KV v2 CSV
+bit-for-bit even via the original unmodified runner (99/144 mismatch,
+verified not caused by this task's new code). Root cause not identified;
+flagged for a dedicated follow-up, not resolved here.
 
 ESTF↔WFS composition falsification is COMPLETE:
 [`../audits/estf_wfs_composition_falsification_v1_20260816.md`](../audits/estf_wfs_composition_falsification_v1_20260816.md)  
@@ -76,7 +99,7 @@ Stop conditions for this thread:
 - Do not start symbolic distillation or Fireworks/Cloudrift LLM APIs yet.
 - Do not escalate composition model complexity to rescue ESTF/WFS or PrefillControl `SELECTION_SUFFICIENT_FOR_THIS_PAIR`.
 - Do not treat Family B v2 as a completed composition result on its own — the PrefillControl falsification (above) is the completed composition result for that family's anchor pair.
-- KV-pressure is now `KV_FAMILY_COMPOSITION_READY` (v2) — a composition falsification is scientifically justified but has **not** been started; do not start it, or MAP-Elites/selector retraining/symbolic distillation/LLM synthesis from any of the three pairs studied, without explicit authorization.
+- KV-pressure composition falsification is COMPLETE (`KV_COMPOSITION_INCONCLUSIVE`, blocked by a safety-gate failure, not absence of signal) — do not escalate to a more complex child, or MAP-Elites/selector retraining/symbolic distillation/LLM synthesis from any of the three pairs studied, without explicit authorization.
 
 ## P0 - Apt-Serve / module envelope (independent)
 

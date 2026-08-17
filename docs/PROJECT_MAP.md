@@ -97,7 +97,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
-| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 diagnostic only (Job 1182306). Family A v2 EXECUTED+ANALYZED (Job 1182377; `USEFUL_BUT_NEEDS_REFINEMENT`). ESTF↔WFS composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`) — selection matches/beats simple composition; no envelope expansion. Family B v1 prefill/decode chunk-control ANALYZED (`USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`). Family B v2 anchor pair `full_prefill`/`chunked_prefill_small` PrefillControl composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`) — fitted top-1 selector matches oracle exactly; genuinely per-step-dynamic child does not expand the envelope. Family C v1 KV-pressure reserve (`kv_constrained_online` vs `least_laxity_first`) pairwise-separation pilot: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; frozen, superseded by v2) — 5/6 gates pass, tie-rate gate did not clear. **Family C v2** (refined population/calibration/phase-levels/seeds) has since run to completion: **`KV_FAMILY_COMPOSITION_READY`**, all 10 preregistered gates pass, including held-out-seed replication and within-scenario winner-flip evidence (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`) — the first of three families studied to reach a `_READY` verdict. No composition work started for this pair. MAP-Elites / distillation / LLM synth not justified yet from any studied pair. Feeds WS-A and WS-F. |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 diagnostic only (Job 1182306). Family A v2 EXECUTED+ANALYZED (Job 1182377; `USEFUL_BUT_NEEDS_REFINEMENT`). ESTF↔WFS composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`) — selection matches/beats simple composition; no envelope expansion. Family B v1 prefill/decode chunk-control ANALYZED (`USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`). Family B v2 anchor pair `full_prefill`/`chunked_prefill_small` PrefillControl composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`) — fitted top-1 selector matches oracle exactly; genuinely per-step-dynamic child does not expand the envelope. Family C v1 KV-pressure reserve (`kv_constrained_online` vs `least_laxity_first`) pairwise-separation pilot: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; frozen, superseded by v2) — 5/6 gates pass, tie-rate gate did not clear. **Family C v2** (refined population/calibration/phase-levels/seeds) has since run to completion: **`KV_FAMILY_COMPOSITION_READY`**, all 10 preregistered gates pass, including held-out-seed replication and within-scenario winner-flip evidence (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`) — the first of three families studied to reach a `_READY` verdict. Its composition falsification has since run to completion: `KV_COMPOSITION_INCONCLUSIVE` (audit `docs/audits/kv_composition_falsification_v1_20260817.md`) — real envelope-gain signal (positive TEST gain, 5/12 beat-both, non-degenerate within-trajectory mode-switching), blocked by a composition-specific KV-safety gate failure (child peak KV exceeds both parents' peaks on 6/36 held-out scenarios), not by absence of signal. MAP-Elites / distillation / LLM synth not justified yet from any studied pair. Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
 
@@ -181,14 +181,30 @@ timing/pressure pattern replicates on 2 seeds never used in any calibration
 decision) and within-scenario winner-flip evidence (6/16 matched scenario
 cells show a different practical winner purely as a function of when urgent
 tenants arrive). This is the first of the three families studied to reach a
-`_READY` verdict. This remains a pairwise-separation pilot only — no
-selector fit, no child policy, no composition work started. Per the v2
-audit, the smallest scientifically justified next WS-P step is a two-parent
-composition falsification for this pair, structured like the Family B v2
-PrefillControl one — **not started in the v2 task**, and not MAP-Elites,
-selector retraining, symbolic distillation, or LLM synthesis from any of the
-three pairs studied so far. Typed DSL/module composition elsewhere in the
-repo does not substitute for this.
+`_READY` verdict. **Its composition falsification has since run to
+completion:** `docs/audits/kv_composition_falsification_v1_20260817.md`
+(design: `docs/design/KV_COMPOSITION_FALSIFICATION_V1.md`), verdict
+**`KV_COMPOSITION_INCONCLUSIVE`**. A minimal state-dependent child
+(delegates every step, unmodified, to one of the two frozen parents, chosen
+from an online-observable urgent-queue-depth trigger) showed real signal —
+positive TEST envelope gain, 5/12 TEST scenarios beating both parents by
+>ε, genuine non-degenerate within-trajectory mode-switching on 24/36
+held-out scenarios, directionally-consistent OOD replication — but the
+frozen safety gate failed: child peak KV utilization exceeded
+`max(parent peaks)` on 6/36 held-out scenarios, a composition-specific risk
+(mode-switching history creates KV states neither pure parent alone
+reaches) no pairwise-separation pilot can surface. Per the frozen decision
+rule this forces `INCONCLUSIVE` regardless of the otherwise-favorable
+results. **Do not** escalate to a more complex child, MAP-Elites, selector
+retraining, symbolic distillation, or LLM synthesis from this result — the
+only defensible next step (not started) is a narrowly-rescoped child adding
+a transition-aware admission cap, re-run through the identical frozen
+procedure. Separately, this falsification surfaced an unresolved
+reproducibility gap in the whole KV v1/v2 evidentiary chain (the current
+environment cannot reproduce the historical frozen KV v2 CSV bit-for-bit
+even via the original unmodified runner) — root cause not identified,
+flagged for a dedicated follow-up. Typed DSL/module composition elsewhere in
+the repo does not substitute for any of this.
 
 
 ## Stop Conditions

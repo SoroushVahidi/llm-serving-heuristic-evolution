@@ -81,7 +81,17 @@ characterization (WS-P).
 - **All 10 preregistered gates pass**, including two new ones beyond v1's set: G6 (the within-scenario timing pattern replicates on 2 held-out seeds never used in any calibration decision — it does, at comparable-or-larger magnitude) and G10 (6 of 16 matched scenario cells show a *different practical winner* depending purely on when urgent tenants arrive within the same scenario, holding everything else fixed).
 - **This is the first family, of the three studied, to reach `_COMPOSITION_READY`** — stronger motivating evidence for composition than ESTF/WFS or PrefillControl v2 produced, neither of which ever showed a within-scenario-timing dependency (both were already `SELECTION_SUFFICIENT_FOR_THIS_PAIR`, meaning a scenario-level selector was sufficient).
 - **Important precision (audit §S):** this shows the *scenario-level optimal parent choice* depends on within-trajectory timing, and that a scenario-level selector alone therefore has less headroom to be sufficient here than in the other two families — it does **not** yet prove a state-dependent child would beat *both* fixed parents on the *same* trajectory. That is exactly what a composition falsification would test.
-- **No composition work was started in this task**, per explicit scope. The audit states what the smallest next composition falsification would look like (§T) without running it.
+- **No composition work was started in that task**, per explicit scope. The audit stated what the smallest next composition falsification would look like without running it.
+
+**KV-aware composition falsification v1 is now COMPLETE — `KV_COMPOSITION_INCONCLUSIVE`.**
+
+- Design: [`../design/KV_COMPOSITION_FALSIFICATION_V1.md`](../design/KV_COMPOSITION_FALSIFICATION_V1.md)
+- Audit: [`../audits/kv_composition_falsification_v1_20260817.md`](../audits/kv_composition_falsification_v1_20260817.md)
+- Provenance: [`../../experiments/kv_composition_falsification_v1_20260817T172446Z/`](../../experiments/kv_composition_falsification_v1_20260817T172446Z/) (72 scenarios, 576/576 success)
+- The child (`KVAdaptiveReserveChildPolicy`) delegates every step, unmodified, to `kv_constrained_online` or `least_laxity_first`, chosen from a single online-observable trigger (count of currently-waiting urgent-classified requests ≥ a TRAIN/VAL-fit `tau_urgent`). No new admission logic.
+- **This is a qualitatively different outcome from ESTF/WFS and PrefillControl v2's `SELECTION_SUFFICIENT_FOR_THIS_PAIR` verdicts** — 6/8 gates pass with real signal (positive TEST envelope gain, 5/12 TEST scenarios beat both parents by >ε, genuine non-degenerate within-trajectory mode-switching on 24/36 held-out scenarios, directionally-consistent OOD replication), but **G7 (safety) fails**: on 6/36 (16.7%) held-out scenarios the child's peak KV utilization exceeds `max(parent peak utilizations)` by 0.013-0.033 — a composition-specific risk (mode-switching history creates KV states neither pure parent alone reaches) that a pairwise-separation pilot structurally cannot surface. Per the frozen decision rule, G7 failing forces `KV_COMPOSITION_INCONCLUSIVE` regardless of G1-G6.
+- **Independent, important finding surfaced during this task's cross-checks (not part of any gate):** re-running the original, unmodified KV v2 pilot runner in the current environment reproduces itself perfectly (0/144 mismatch across independent reruns) but does **not** reproduce the historical frozen KV v2 CSV (99/144 rows mismatch, up to 0.25 ANWG). Root cause not identified (no dataset checksum was recorded in original provenance). This falsification's own gates remain valid (all methods compared were computed from one internally-consistent run), but this is a standing, unresolved reproducibility gap in the whole KV v1/v2 evidentiary chain, flagged for a dedicated follow-up.
+- **Per task scope, this outcome does not license escalating to a more complex child, MAP-Elites, or synthesis.** The smallest defensible next step (not started) would be a narrowly-rescoped child adding a transition-aware admission cap, re-run through the identical frozen procedure.
 
 **ESTF↔WFS minimal composition falsification remains COMPLETE.**
 
@@ -144,7 +154,11 @@ Supported interpretation:
   Family C v2 KV-pressure reserve refinement = `KV_FAMILY_COMPOSITION_READY`
   ([`../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md));
   v1 pilot remains `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (frozen, superseded
-  by v2, not rewritten).
+  by v2, not rewritten). The KV-pressure composition falsification on that
+  pair is complete: `KV_COMPOSITION_INCONCLUSIVE`
+  ([`../audits/kv_composition_falsification_v1_20260817.md`](../audits/kv_composition_falsification_v1_20260817.md))
+  — real envelope-gain signal, blocked specifically by a composition-induced
+  KV-safety gate failure, not by absence of signal.
 
 ## Exact Next Tasks (two independent threads)
 
@@ -158,21 +172,35 @@ Supported interpretation:
    `SELECTION_SUFFICIENT_FOR_THIS_PAIR`
    ([`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)).
    **Family C v2 KV-pressure reserve** (`kv_constrained_online` vs
-   `least_laxity_first`) is now `KV_FAMILY_COMPOSITION_READY`
+   `least_laxity_first`) reached `KV_FAMILY_COMPOSITION_READY`
    ([`../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`](../audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md);
    design [`../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`](../design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md))
-   — all 10 preregistered gates pass, including held-out-seed replication
-   (G6) and within-scenario winner-flip evidence (G10) neither prior family
-   produced. **This is the first family, of the three studied, to justify a
-   composition falsification** — but that falsification was **not** run in
-   this task (explicit scope). The audit (§T) states what the smallest next
-   step should be: a two-parent composition falsification structured like
-   the Family B v2 PrefillControl one, with a genuinely state-dependent
-   KV-admission child compared against a TRAIN/VAL-fitted scenario-level
-   selector on held-out TEST/OOD. Do **not** start it, MAP-Elites, symbolic
-   distillation, or LLM synthesis without explicit authorization — a
-   `_COMPOSITION_READY` verdict recommends the next falsification, it does
-   not launch it.
+   — the first of the three families studied to justify a composition
+   falsification. **That falsification has since been run to completion:**
+   `KV_COMPOSITION_INCONCLUSIVE`
+   ([`../audits/kv_composition_falsification_v1_20260817.md`](../audits/kv_composition_falsification_v1_20260817.md);
+   design [`../design/KV_COMPOSITION_FALSIFICATION_V1.md`](../design/KV_COMPOSITION_FALSIFICATION_V1.md)).
+   A minimal state-dependent child (delegates every step, unmodified, to one
+   of the two frozen parents based on an online-observable urgent-queue-depth
+   trigger) showed real signal — positive TEST envelope gain, 5/12 TEST
+   scenarios beating both parents by >ε, genuine non-degenerate
+   within-trajectory mode-switching on 24/36 held-out scenarios,
+   directionally-consistent OOD replication — but the frozen safety gate
+   (G7) failed: on 6/36 held-out scenarios the child's peak KV utilization
+   exceeded `max(parent peak utilizations)`, a composition-specific risk
+   (mode-switching history creates KV states neither pure parent alone
+   reaches) that a pairwise-separation pilot cannot surface. Per the frozen
+   decision rule this forces `KV_COMPOSITION_INCONCLUSIVE` regardless of the
+   otherwise-favorable G1-G6 results. **Do not** escalate to a more complex
+   child, MAP-Elites, symbolic distillation, or LLM synthesis from this
+   result — per its own audit §Z, the only defensible next step (not
+   started) is a narrowly-rescoped child adding a transition-aware admission
+   cap, re-run through the identical frozen procedure. **Separately,** this
+   task surfaced an unresolved reproducibility gap in the whole KV v1/v2
+   evidentiary chain (audit §P) — the current environment cannot reproduce
+   the historical frozen KV v2 CSV bit-for-bit even by re-running the
+   original unmodified runner; root cause not identified, flagged for a
+   dedicated follow-up.
 2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
    decide the next module-decomposition/compositional-learning step.
 

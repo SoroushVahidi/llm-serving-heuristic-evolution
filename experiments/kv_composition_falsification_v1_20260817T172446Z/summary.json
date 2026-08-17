@@ -1,0 +1,31 @@
+{
+  "experiment": "kv_composition_falsification_v1",
+  "n_scenarios": 72,
+  "n_rows": 576,
+  "n_failed": 0,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "tau_urgent_frozen": 2,
+  "best_fixed_parent_name": "kv_constrained_online",
+  "selector_meta": {
+    "selector_model_type": "logreg",
+    "selector_val_accuracy": 1.0,
+    "candidates": [
+      {
+        "model_type": "logreg",
+        "val_accuracy": 1.0
+      },
+      {
+        "model_type": "tree",
+        "val_accuracy": 1.0
+      }
+    ]
+  },
+  "splits": {
+    "train": 24,
+    "val": 12,
+    "test": 12,
+    "ood": 24
+  },
+  "git_head": "5b593060ba5f995746e2cfcb0c950be5af23902c",
+  "git_branch": "contextual-compositional-heuristics-20260731"
+}
