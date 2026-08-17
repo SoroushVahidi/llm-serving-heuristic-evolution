@@ -11,7 +11,7 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | see `git rev-parse HEAD` (Family B v2 audit after `ecc0422`) |
+| Last reconciled SHA | see `git rev-parse HEAD` (MF-PSD v1 build after `dc5757b`) |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
 | Canonical roadmap | `docs/PROJECT_MAP.md` |
@@ -43,6 +43,45 @@ The current primary metric is `arrival_normalized_weighted_goodput` (ANWG).
 Typed DSL / module-composition infrastructure exists in-repo but is deferred; **within-scenario composition and synthesis have been demoted** as a central hypothesis.
  
  
+
+## Most Recently Completed Work (Structural Reassessment + MF-PSD)
+
+**The higher-level structural reassessment of the composition hypothesis is
+COMPLETE.**
+
+- Audit: [`../audits/reassessment_composition_hypothesis_20260817.md`](../audits/reassessment_composition_hypothesis_20260817.md)
+- Verdict: **`COMPOSITION_DEMOTED`**. Within-scenario composition/synthesis
+  is now exploratory future work, not the project's central hypothesis.
+- Revised roadmap: `policy-separating workloads -> complementary policy
+  library -> contextual selection (multi-family) -> mechanism attribution
+  -> bounded envelope`.
+
+**MF-PSD v1 (Multi-Family Policy Separation Dataset) — revised roadmap Step
+1 — is COMPLETE.**
+
+- Audit: [`../audits/multi_family_policy_separation_dataset_v1_20260817.md`](../audits/multi_family_policy_separation_dataset_v1_20260817.md)
+- Artifacts: `experiments/mf_psd_v1/` (`mf_psd_long_v1.csv`,
+  `mf_psd_scenarios_v1.csv`, `mf_psd_schema_v1.json`,
+  `mf_psd_provenance_v1.json`, `mf_psd_build_manifest_v1.json`); builder
+  `src/llmserveopt/policy_separation/mf_psd.py`; CLI
+  `scripts/build_mf_psd_v1.py`; tests `tests/test_mf_psd_v1.py` (31/31
+  passing).
+- Verdict: **`MF_PSD_READY`**. Unifies the three `_COMPOSITION_READY`-gate
+  sources (Family A v2 fairness/starvation, Family B v2 prefill/decode
+  contention, Family C/KV v2 admission control) into one canonical
+  long-form utility table (496 rows) and scenario-context table (176
+  scenarios), with an explicit machine-readable learnable-feature
+  allowlist/forbidden-field denylist, full source-row/scenario
+  conservation, zero duplicates, deterministic byte-for-byte rebuild, and
+  zero mutation of any frozen source artifact.
+- The six-anchor policy matrix is **sparse, not dense** (each family only
+  evaluated its own 2 anchors on its own scenarios) — the audit documents
+  exactly what Step 2 (unified six-policy utility-matrix evaluation) would
+  require to make it dense. **This task did not build the dense matrix,
+  train a selector, or run any composition/synthesis experiment** — data
+  unification only, per explicit task scope.
+- Next roadmap step (**not started**): Step 2, unified six-policy
+  utility-matrix evaluation (see audit §M/§Q for the exact evaluation list).
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 

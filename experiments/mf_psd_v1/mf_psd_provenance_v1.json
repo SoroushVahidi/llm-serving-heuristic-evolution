@@ -1,0 +1,75 @@
+{
+  "build_git_head_sha": "dc5757b4ea21373a0047744ca46559517dae1d5e",
+  "build_timestamp_utc": "2026-08-17T22:18:02Z",
+  "builder_version": "mf_psd_v1.0.0",
+  "output_files": {
+    "mf_psd_long_v1.csv": "7a1bbbd925d5bfc28fd66feaa9ecc110d28cb8a47748c6dc4aa4cfcaf76b4cb4",
+    "mf_psd_scenarios_v1.csv": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "mf_psd_schema_v1.json": "d8b213a9c9cf139b07ab6fb29617f9681e2d03ad12ddd029d108abb0db8e167e"
+  },
+  "sources": [
+    {
+      "audit_doc": "docs/audits/policy_separation_fairness_starvation_pilot_v2_20260816.md",
+      "canonical_anchor_policies": [
+        "estimated_service_time_first",
+        "weighted_fair_share"
+      ],
+      "design_doc": null,
+      "extra_policies": [
+        "fifo",
+        "aging_priority"
+      ],
+      "family_verdict": "USEFUL_BUT_NEEDS_REFINEMENT",
+      "launch_git_branch": "policy-separation-v1-wulver-20260809",
+      "launch_git_sha": "16ad5d3e5af2e02516dfc42cc0825fa8eb7cbf38",
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "notes": "Job 1182377, predecessor_failed_job_id=1182373 (git_state.txt). Executed on Wulver cluster worktree llm-serving-heuristic-evolution-policy-separation-v1, copied into this repo's experiments/ tree. Verdict is USEFUL_BUT_NEEDS_REFINEMENT, not literally *_COMPOSITION_READY, but the structural reassessment (docs/audits/reassessment_composition_hypothesis_20260817.md, section J/K) treats Family A v2 as one of the three sources with 'high-quality, verified, low-tie-rate scenario boundaries' sufficient for this unification step.",
+      "per_policy_results_path": "experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/per_policy_results.csv",
+      "per_policy_results_sha256": "45b01c602d3a35bb5acb8c5522209d0edf9d37b96394cee69ed912c631ff1089",
+      "run_dir": "experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377",
+      "scenario_features_path": "experiments/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377/scenario_features.csv",
+      "scenario_features_sha256": "d44dcd14d63da9ac903907649e74806dc58da3adcc9f96638cb36fa849c199bf",
+      "source_run_id": "policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377"
+    },
+    {
+      "audit_doc": "docs/audits/policy_separation_prefill_decode_pilot_v2_20260817.md",
+      "canonical_anchor_policies": [
+        "full_prefill",
+        "chunked_prefill_small"
+      ],
+      "design_doc": "docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md",
+      "extra_policies": [],
+      "family_verdict": "FAMILY_B_COMPOSITION_READY",
+      "launch_git_branch": "contextual-compositional-heuristics-20260731",
+      "launch_git_sha": "ecc0422286886c83d263e87655ed1123e62d2565",
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2",
+      "notes": "run_manifest.json git_head/git_branch read directly from the run directory.",
+      "per_policy_results_path": "experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/per_policy_results.csv",
+      "per_policy_results_sha256": "f9037c5a2ce1aed17f2e623bd03444b14a33d3685d983bbf8e064b3fca6b99b9",
+      "run_dir": "experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z",
+      "scenario_features_path": "experiments/policy_separation_prefill_decode_pilot_v2_20260817T024204Z/scenario_features.csv",
+      "scenario_features_sha256": "bfbee7a9c49484decab4af6e761ce82a0e40ab177406141ce9d32a2ccff40a47",
+      "source_run_id": "policy_separation_prefill_decode_pilot_v2_20260817T024204Z"
+    },
+    {
+      "audit_doc": "docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md",
+      "canonical_anchor_policies": [
+        "kv_constrained_online",
+        "least_laxity_first"
+      ],
+      "design_doc": "docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md",
+      "extra_policies": [],
+      "family_verdict": "KV_FAMILY_COMPOSITION_READY",
+      "launch_git_branch": "contextual-compositional-heuristics-20260731",
+      "launch_git_sha": "6be526ebffe4c3eba6428eab27f9adae1835d320",
+      "mechanism_family": "FAMILY_C_KV_PRESSURE_V2",
+      "notes": "This run predates the provenance guard added in a later commit (scripts/run_policy_separation_kv_pressure_pilot_v1.py _collect_provenance, commit c757d00); it has no run_manifest.json of its own. launch_git_sha is the launch commit 'feat: Family C v2 KV-pressure reserve refinement' (6be526e), identified from `git log --oneline -- configs/kv_pressure_pilot_v2.yaml docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md` and corroborated by docs/audits/kv_v2_reproducibility_forensic_20260817.md, which independently names 6be526e as the KV v2 launch commit. See that audit for the known (bounded, non-blocking for this task) reproducibility caveat on the historical KV v2 CSV.",
+      "per_policy_results_path": "experiments/kv_pressure_pilot_v2_20260817T165053Z/per_policy_results.csv",
+      "per_policy_results_sha256": "59ef1d3276b01427a20bb940504f47dcd460c106332267d8c5dcf4ed39267a7a",
+      "run_dir": "experiments/kv_pressure_pilot_v2_20260817T165053Z",
+      "scenario_features_path": null,
+      "scenario_features_sha256": null,
+      "source_run_id": "kv_pressure_pilot_v2_20260817T165053Z"
+    }
+  ]
+}

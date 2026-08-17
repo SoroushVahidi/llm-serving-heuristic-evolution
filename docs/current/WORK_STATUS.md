@@ -41,10 +41,25 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Family C v2 KV-pressure reserve refinement (`kv_constrained_online` vs `least_laxity_first`) | `COMPLETE`; `KV_FAMILY_COMPOSITION_READY` | Design `docs/design/POLICY_SEPARATION_FAMILY_KV_PRESSURE_V2.md`; audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`; run `experiments/kv_pressure_pilot_v2_20260817T165053Z/` (72 scenarios, 144/144) | **All 10 gates pass** — bidirectional (29-vs-4/48), tie rate 31.2% (v1: 59.4%), held-out-seed replication (G6), and within-scenario winner-flip evidence (G10, 6/16 matched cells show a different practical winner depending only on urgent-arrival timing) — the first family of three studied to reach a `_READY` verdict | Composition falsification run (below) |
 | KV-aware composition falsification v1 (`kv_constrained_online` vs `least_laxity_first`) | `COMPLETE`; `KV_COMPOSITION_INCONCLUSIVE` | Design `docs/design/KV_COMPOSITION_FALSIFICATION_V1.md`; audit `docs/audits/kv_composition_falsification_v1_20260817.md`; run `experiments/kv_composition_falsification_v1_20260817T172446Z/` (72 scenarios, 576/576) | 6/8 gates pass with real signal — positive TEST envelope gain (G2), 5/12 TEST scenarios beat both parents by >ε (G4), 24/36 held-out scenarios non-degenerate within-trajectory mode-switching (G1), directionally-consistent OOD replication (G6) — but **G7 (safety) fails**: child's peak KV utilization exceeds `max(parent peaks)` on 6/36 held-out scenarios, a composition-specific risk no pairwise pilot can surface. Frozen decision rule: G7 failing forces `INCONCLUSIVE` regardless of G1-G6. Also surfaced (not gated): the current environment cannot reproduce the historical KV v2 CSV bit-for-bit even via the original unmodified runner (99/144 mismatch) — forensic follow-up below | Do not escalate to a more complex child/MAP-Elites/synthesis; smallest defensible next step is a transition-aware admission-cap variant, not started |
 | KV v2 reproducibility forensic audit | `COMPLETE`; `REPRODUCIBILITY_GAP_BOUNDED` | Audit `docs/audits/kv_v2_reproducibility_forensic_20260817.md`; provenance guard `scripts/run_policy_separation_kv_pressure_pilot_v1.py` (`_collect_provenance`); tests `tests/test_kv_pressure_provenance.py` (14 new) | Root cause not demonstrated. Ruled out/narrowed: code drift (0 diff on the entire KV v2 execution path since launch commit `6be526e`), runtime/multiprocessing nondeterminism (current runs are byte-identical-SHA-256-reproducible), and both locally available BurstGPT files (neither reproduces history; their sampling pools are nearly but not exactly identical — 7335 vs 7337 filtered rows). Historical mismatch is material: 99/144 cells differ, 17/72 scenarios flip practical winner. Composition falsification's internal validity unaffected (all its methods share one current-environment run); only cross-run comparison to historical v2 numbers requires caution. No historical CSV/verdict rewritten | Future KV runs now record git SHA/dirty, config+dataset SHA-256, library versions, result-CSV SHA-256 automatically; no further action required unless root cause is later pursued |
+| Higher-level structural reassessment of the composition hypothesis | `COMPLETE`; `COMPOSITION_DEMOTED` | Audit `docs/audits/reassessment_composition_hypothesis_20260817.md` | Composition/synthesis demoted from central hypothesis to exploratory future work | Revised roadmap: policy-separating workloads -> complementary policy library -> contextual selection (multi-family) -> mechanism attribution -> bounded envelope; Step 1 = MF-PSD (below) |
+| MF-PSD v1 (Multi-Family Policy Separation Dataset, revised-roadmap Step 1) | `COMPLETE`; `MF_PSD_READY` | Audit `docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`; artifacts `experiments/mf_psd_v1/`; builder `src/llmserveopt/policy_separation/mf_psd.py`; CLI `scripts/build_mf_psd_v1.py`; tests `tests/test_mf_psd_v1.py` (31/31) | Unifies Family A v2 (288 rows/72 scenarios), Family B v2 (64 rows/32 scenarios), Family C/KV v2 (144 rows/72 scenarios) into one canonical long-form table (496 rows) + scenario-context table (176 scenarios); explicit learnable-feature allowlist (34 family-prefixed columns) vs forbidden/audit-only denylist; exact row/scenario conservation; 0 duplicates; deterministic byte-for-byte rebuild; 0 mutation of frozen sources (checksum-verified). Six-anchor policy matrix is sparse (each family only ran its own 2 anchors), not dense — documented, not fabricated | Data unification only; no selector trained, no composition run. Step 2 (unified six-policy utility-matrix evaluation, ~704 new policy-scenario evaluations) is next but NOT started |
 
 ## Current Blocker
 
-There is no active failed job to diagnose. On WS-P, Family A v2 is analyzed and
+There is no active failed job to diagnose. The higher-level structural
+reassessment (`docs/audits/reassessment_composition_hypothesis_20260817.md`)
+demoted composition/synthesis from the project's central hypothesis
+(`COMPOSITION_DEMOTED`) and set a revised roadmap. Its Step 1, the MF-PSD v1
+unified dataset (`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`,
+verdict `MF_PSD_READY`), is now complete. Step 2 (unified six-policy
+utility-matrix evaluation across all three families — see that audit's §M/§Q
+for the exact ~704 new policy-scenario evaluations required) has **not**
+been started and requires separate authorization, per that task's explicit
+stop condition.
+
+Historical context below (WS-P family-by-family pairwise-separation and
+composition-falsification work) remains valid evidence and is unchanged; it
+fed directly into the reassessment above. On WS-P, Family A v2 is analyzed and
 usable; ESTF/WFS composition did not unlock envelope gain beyond selection.
 Family B v1 is frozen (`USEFUL_BUT_NEEDS_REFINEMENT` /
 `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`). Family B v2 (the next mechanism family
@@ -69,14 +84,25 @@ Read:
 
 1. [`RESUME_HERE.md`](RESUME_HERE.md)
 2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md)
-3. [`../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md`](../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md)
-4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
-5. Family B v2 audit:
-   [`../audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md)
-6. PrefillControl composition falsification audit (COMPLETE, `SELECTION_SUFFICIENT_FOR_THIS_PAIR`):
-   [`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md)
+3. [`../audits/reassessment_composition_hypothesis_20260817.md`](../audits/reassessment_composition_hypothesis_20260817.md)
+   (`COMPOSITION_DEMOTED`, revised roadmap)
+4. [`../audits/multi_family_policy_separation_dataset_v1_20260817.md`](../audits/multi_family_policy_separation_dataset_v1_20260817.md)
+   (`MF_PSD_READY`)
+5. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
 
-Then: select the next mechanism family / parent pair per the roadmap
-(not GP/MAP-Elites/LLM synth — two independent pairs have now landed
-`SELECTION_SUFFICIENT_FOR_THIS_PAIR`, not `COMPOSITION_GO`); and/or
-(Apt-Serve thread) post-Phase-G module-envelope interpretation.
+Then, with explicit authorization: revised-roadmap **Step 2** — unified
+six-policy utility-matrix evaluation over the MF-PSD (run the 4 non-native
+canonical anchors on each family's own scenarios; see the MF-PSD audit §M/§Q
+for the exact evaluation list). Do not start selector training,
+hyperparameter tuning, pairwise-regret learning, mechanism attribution, or
+any composition/synthesis experiment before Step 2 is complete.
+
+Historical WS-P entrypoint (superseded as the "current next action" by the
+above, but still valid background):
+[`../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md`](../design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md),
+Family B v2 audit:
+[`../audits/policy_separation_prefill_decode_pilot_v2_20260817.md`](../audits/policy_separation_prefill_decode_pilot_v2_20260817.md),
+PrefillControl composition falsification audit (COMPLETE, `SELECTION_SUFFICIENT_FOR_THIS_PAIR`):
+[`../audits/family_b_v2_prefill_control_composition_falsification_20260817.md`](../audits/family_b_v2_prefill_control_composition_falsification_20260817.md).
+(Apt-Serve thread, independent) post-Phase-G module-envelope interpretation
+remains available as a parallel task.

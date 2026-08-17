@@ -5,8 +5,8 @@
 status, read [`docs/BASELINE_STATUS.md`](BASELINE_STATUS.md). Dated files in
 [`docs/audits/`](audits/) are historical evidence, not live status.
 
-Last reconciled: 2026-08-17, after commit
-`6be526ebffe4c3eba6428eab27f9adae1835d320`.
+Last reconciled: 2026-08-17, after MF-PSD v1 build (following commit
+`dc5757b`, the higher-level structural reassessment doc).
 
 ## Documentation Authority
 
@@ -81,7 +81,7 @@ only average policy rankings.
 | WS-C | Internal scheduler/policy library | Mature fixed-policy portfolio, including Policy Library V2 and SCORPIO-style/admission policies. |
 | WS-D | Faithful external scheduler integrations | vLLM-family, Sarathi, VTC, Llumnix, DistServe, PARS, and Apt-Serve have point-in-time status in `docs/BASELINE_STATUS.md`. |
 | WS-E | Typed heuristic DSL / AST / verification | Implemented through CC3; representative internal policies reconstruct through the DSL. |
-| WS-F | Contextual performance / utility learning | Block lifted; ready for multi-family selector training over unified MF-PSD. |
+| WS-F | Contextual performance / utility learning | Block lifted. MF-PSD v1 is now built and `MF_PSD_READY` (`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`, `experiments/mf_psd_v1/`) — data unification only. Multi-family selector training is Step 3 of the revised roadmap and requires Step 2 (dense six-policy matrix) first; not started. |
 | WS-G | Pairwise regret and complementarity | Ready for evaluation alongside direct utility prediction. |
 | WS-H | Module decomposition and compositional semantics | **COMPOSITION_DEMOTED**. Composition/synthesis is exploratory future work, deferred. |
 | WS-I | Parent selection / composition gate | Contextual selection is the primary focus; composition falsification failed or found selection sufficient for A, B, and C. |
@@ -91,7 +91,7 @@ only average policy rankings.
 | WS-M | Uncertainty / abstention / safe fallback | CC5 has a regime-specific fallback gate; generalization remains future work. |
 | WS-N | Real-system transfer and validation | Several pilots and Wulver validations exist; not yet a unified transfer package. |
 | WS-O | Publication-grade evaluation | Bootstrap/paired-CI patterns exist; they need consolidation into a final evaluation protocol. |
-| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 diagnostic only (Job 1182306). Family A v2 EXECUTED+ANALYZED (Job 1182377; `USEFUL_BUT_NEEDS_REFINEMENT`). ESTF↔WFS composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`) — selection matches/beats simple composition; no envelope expansion. Family B v1 prefill/decode chunk-control ANALYZED (`USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`). Family B v2 anchor pair `full_prefill`/`chunked_prefill_small` PrefillControl composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`) — fitted top-1 selector matches oracle exactly; genuinely per-step-dynamic child does not expand the envelope. Family C v1 KV-pressure reserve (`kv_constrained_online` vs `least_laxity_first`) pairwise-separation pilot: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; frozen, superseded by v2) — 5/6 gates pass, tie-rate gate did not clear. **Family C v2** (refined population/calibration/phase-levels/seeds) has since run to completion: **`KV_FAMILY_COMPOSITION_READY`**, all 10 preregistered gates pass, including held-out-seed replication and within-scenario winner-flip evidence (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`) — the first of three families studied to reach a `_READY` verdict. Its composition falsification has since run to completion: `KV_COMPOSITION_INCONCLUSIVE` (audit `docs/audits/kv_composition_falsification_v1_20260817.md`) — real envelope-gain signal (positive TEST gain, 5/12 beat-both, non-degenerate within-trajectory mode-switching), blocked by a composition-specific KV-safety gate failure (child peak KV exceeds both parents' peaks on 6/36 held-out scenarios), not by absence of signal. MAP-Elites / distillation / LLM synth not justified yet from any studied pair. Feeds WS-A and WS-F. |
+| WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 diagnostic only (Job 1182306). Family A v2 EXECUTED+ANALYZED (Job 1182377; `USEFUL_BUT_NEEDS_REFINEMENT`). ESTF↔WFS composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`) — selection matches/beats simple composition; no envelope expansion. Family B v1 prefill/decode chunk-control ANALYZED (`USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`). Family B v2 anchor pair `full_prefill`/`chunked_prefill_small` PrefillControl composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`) — fitted top-1 selector matches oracle exactly; genuinely per-step-dynamic child does not expand the envelope. Family C v1 KV-pressure reserve (`kv_constrained_online` vs `least_laxity_first`) pairwise-separation pilot: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; frozen, superseded by v2) — 5/6 gates pass, tie-rate gate did not clear. **Family C v2** (refined population/calibration/phase-levels/seeds) has since run to completion: **`KV_FAMILY_COMPOSITION_READY`**, all 10 preregistered gates pass, including held-out-seed replication and within-scenario winner-flip evidence (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`) — the first of three families studied to reach a `_READY` verdict. Its composition falsification has since run to completion: `KV_COMPOSITION_INCONCLUSIVE` (audit `docs/audits/kv_composition_falsification_v1_20260817.md`) — real envelope-gain signal (positive TEST gain, 5/12 beat-both, non-degenerate within-trajectory mode-switching), blocked by a composition-specific KV-safety gate failure (child peak KV exceeds both parents' peaks on 6/36 held-out scenarios), not by absence of signal. MAP-Elites / distillation / LLM synth not justified yet from any studied pair. **These three families' evidence fed the higher-level structural reassessment** (`docs/audits/reassessment_composition_hypothesis_20260817.md`, `COMPOSITION_DEMOTED`) and were then unified into **MF-PSD v1** (`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`, `MF_PSD_READY`, `experiments/mf_psd_v1/`) — 496-row long-form utility table + 176-scenario context table, sparse six-anchor coverage (not yet a dense matrix; Step 2, not started). Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
 
@@ -122,8 +122,27 @@ Apt-Serve interpretation:
 
 ## Canonical Next Action
 
-**Return from Apt-Serve-specific collection to broader library-envelope and
-module-decomposition work.**
+**Primary thread: the higher-level structural reassessment
+(`docs/audits/reassessment_composition_hypothesis_20260817.md`,
+`COMPOSITION_DEMOTED`) set a revised roadmap — policy-separating workloads
+-> complementary policy library -> contextual selection (multi-family) ->
+mechanism attribution -> bounded envelope. Its Step 1, MF-PSD v1
+(`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`,
+`MF_PSD_READY`, `experiments/mf_psd_v1/`), is complete: a 496-row canonical
+long-form utility table + 176-scenario context table unifying Family A v2 +
+Family B v2 + Family C/KV v2, with an explicit learnable-feature
+allowlist/denylist and full provenance. The six-anchor policy matrix is
+sparse, not dense. The next action, with explicit authorization, is Step 2
+— unified six-policy utility-matrix evaluation (see the MF-PSD audit's §M/§Q
+for the exact ~704 new policy-scenario evaluations required). Do not start
+selector training, hyperparameter tuning, pairwise-regret learning,
+mechanism attribution, or composition/synthesis before Step 2 is complete.**
+
+**Secondary/independent thread:** Return from Apt-Serve-specific collection to broader library-envelope and module-decomposition work
+(WS-H is now
+`COMPOSITION_DEMOTED` at the project level, so this thread's scope is
+narrower than before — module decomposition remains a legitimate exploratory
+input, not the central hypothesis).
 
 Concretely, the next task should review the completed Phase G analysis as input
 to WS-H/WS-K:

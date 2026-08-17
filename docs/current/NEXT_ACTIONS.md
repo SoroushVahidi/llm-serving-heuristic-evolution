@@ -4,7 +4,34 @@ This is the current prioritized action list. It must agree with
 [`../PROJECT_MAP.md`](../PROJECT_MAP.md), [`RESUME_HERE.md`](RESUME_HERE.md),
 [`WORK_STATUS.md`](WORK_STATUS.md), and [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 
-## P0 - Policy Separation (WS-P)
+## P0 - Structural Reassessment / MF-PSD (current)
+
+**The higher-level structural reassessment of the composition hypothesis is
+COMPLETE:** [`../audits/reassessment_composition_hypothesis_20260817.md`](../audits/reassessment_composition_hypothesis_20260817.md).
+**Verdict: `COMPOSITION_DEMOTED`.** Revised roadmap: policy-separating
+workloads -> complementary policy library -> contextual selection
+(multi-family) -> mechanism attribution -> bounded envelope.
+
+**MF-PSD v1 (revised roadmap Step 1, data unification only) is COMPLETE:**
+[`../audits/multi_family_policy_separation_dataset_v1_20260817.md`](../audits/multi_family_policy_separation_dataset_v1_20260817.md).
+**Verdict: `MF_PSD_READY`.** Unifies Family A v2 + Family B v2 + Family
+C/KV v2 into one canonical long-form utility table (496 rows) + scenario
+table (176 scenarios) at `experiments/mf_psd_v1/`, with an explicit
+learnable-feature allowlist/forbidden-field denylist, exact conservation,
+zero duplicates, deterministic rebuild, and zero mutation of any frozen
+source. The six-anchor policy matrix is **sparse** (each family only
+evaluated its own 2 anchors) — see the audit's §M/§Q for exactly what
+Step 2 requires to build the dense matrix (~704 new policy-scenario
+evaluations).
+
+**Next action, with explicit authorization: Step 2 — unified six-policy
+utility-matrix evaluation.** Do not start selector training,
+hyperparameter tuning, pairwise-regret learning, mechanism attribution, or
+any composition/synthesis experiment before Step 2 is complete (per the
+reassessment doc's own explicit deferred-items list, §P, and the MF-PSD
+task's own stop condition).
+
+## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
 **Family B v2 is composition-ready; the two-parent PrefillControl falsification is now COMPLETE (see below).**
 Family B (the next mechanism family after ESTF/WFS) v2 audit:
@@ -163,3 +190,11 @@ retain safe fallback outside that envelope.
   stronger.
 - Do not treat Job 1182306 as BurstGPT-anchored or as using canonical ANWG.
 - Do not treat Family A v1 as corpus-ready policy-separation evidence for QD.
+- Do not start Step 2 (unified six-policy utility-matrix evaluation) implicitly
+  from a broader task; it requires explicit authorization.
+- Do not train a contextual selector, tune selector hyperparameters, do
+  pairwise-regret learning, do mechanism attribution, or start any
+  composition/synthesis experiment from MF-PSD v1 before Step 2 is complete.
+- Do not modify `experiments/mf_psd_v1/` in place for Step 2 — produce a
+  clearly versioned successor (e.g. `experiments/mf_psd_v2/`) so v1 remains
+  available as a frozen sparse baseline.
