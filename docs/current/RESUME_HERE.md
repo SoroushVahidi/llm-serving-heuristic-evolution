@@ -118,9 +118,38 @@ the matrix is fully dense.** Three-part path:
   but Step 3's design must account for it.
 - **This task did not train a selector or run any composition/synthesis
   experiment** — data generation and audit only, per explicit task scope.
-- Next roadmap step (**not started, not authorized**): design the
-  preregistered multi-family contextual-selector experiment (Step 3),
-  using `experiments/unified_utility_matrix_v2/` as the frozen input.
+
+**Step 3 (preregistered multi-family contextual-selector experiment) is
+now COMPLETE — `MULTIFAMILY_SELECTOR_NO_GO`.**
+
+- Audit: [`../audits/multifamily_contextual_selector_v1_20260817.md`](../audits/multifamily_contextual_selector_v1_20260817.md)
+- Design: [`../design/MULTIFAMILY_CONTEXTUAL_SELECTOR_V1.md`](../design/MULTIFAMILY_CONTEXTUAL_SELECTOR_V1.md)
+- Artifacts: `experiments/multifamily_contextual_selector_v1/`; harness
+  `src/llmserveopt/selector/multifamily_contextual_selector_v1.py`; CLI
+  `scripts/run_multifamily_contextual_selector_v1.py`; tests
+  `tests/test_multifamily_contextual_selector_v1.py` (27/27 passing).
+- **All 5 preregistered verdict gates failed on the pooled (Regime B)
+  holdout** — no trained model beat best-fixed, or even the trivial
+  majority baseline. **But within-family (Regime A) selection is strong**
+  (near-perfect, 0 regret, on Family A/B holdouts) — the matrix has real
+  learnable structure; the failure is specifically in pooling and
+  cross-family transfer. Leave-one-family-out (Regime C): only 1/3
+  directions win, with a severe collapse (6.2× worse than fixed) when
+  Family A is held out.
+- **Root cause, directly diagnosed:** `mechanism_family` is predictable at
+  **100% accuracy** from the 33-column feature schema alone (every
+  feature is family-prefixed with structural missingness). A
+  shared-feature-only robustness check (A↔B, Family C has no analog) shows
+  the selector cannot beat best-fixed at all once family-identifying
+  feature blocks are removed — strong evidence the in-distribution gains
+  are driven by family identification, not mechanism understanding.
+- **Mechanism attribution (Step 4) remains blocked** — this verdict does
+  not justify it.
+- Next step (**not started, not authorized**): a separately-scoped
+  feature-schema redesign investigation — whether a genuinely
+  cross-family-shared feature representation could let a selector
+  demonstrate real mechanism-level transfer without depending on family
+  identification.
 
 ## Most Recently Completed Work (WS-P / Policy Separation)
 

@@ -61,13 +61,34 @@ with Family B vs. 55.6% without it), but **Step 3's design must account
 for it** — e.g. a leave-Family-B-out fold is expected to be uninformative
 beyond the `chunked_prefill_small` contrast.
 
-**Next action, with explicit authorization: design the preregistered
-multi-family contextual-selector experiment (Step 3)**, using
-`experiments/unified_utility_matrix_v2/` as the frozen input. Do not start
-selector training, hyperparameter tuning, pairwise-regret learning,
-mechanism attribution, or any composition/synthesis experiment before that
-design is reviewed (per the reassessment doc's own explicit
-deferred-items list, §P).
+**Step 3 (preregistered multi-family contextual-selector experiment) is
+now COMPLETE:**
+[`../audits/multifamily_contextual_selector_v1_20260817.md`](../audits/multifamily_contextual_selector_v1_20260817.md)
+(design: [`../design/MULTIFAMILY_CONTEXTUAL_SELECTOR_V1.md`](../design/MULTIFAMILY_CONTEXTUAL_SELECTOR_V1.md)).
+**Verdict: `MULTIFAMILY_SELECTOR_NO_GO`** (mechanical, all 5 frozen gates
+failed on the pooled Regime-B holdout). Key findings: within-family
+(Regime A) contextual selection is strong (near-perfect, 0 regret, on
+Family A/B holdouts) — the matrix contains real learnable structure — but
+pooled (Regime B) and leave-one-family-out (Regime C) generalization both
+fail: every trained model underperforms the trivial majority baseline on
+the pooled holdout, and LOFO wins only 1/3 directions, with a severe
+(6.2×-worse-than-fixed) collapse when Family A is held out. Root cause,
+directly diagnosed: `mechanism_family` is predictable at 100% accuracy
+from the feature schema alone (every learnable feature is family-prefixed
+with structural missingness), and a shared-feature-only robustness check
+(A↔B, Family C excluded — no 3-family-shared feature exists) shows the
+selector cannot beat best-fixed at all once family-identifying feature
+blocks are removed. **Mechanism attribution (Step 4) remains blocked** —
+this verdict does not justify it.
+
+**Next action, with explicit authorization (new, separately scoped task):
+a feature-schema redesign investigation** — whether a genuinely
+cross-family-shared feature representation (not family-prefixed raw sweep
+parameters) could let a selector demonstrate real mechanism-level transfer
+without depending on family identification. Not started. Do not start
+mechanism attribution, composition/synthesis work, or any further selector
+training/tuning building on this NO_GO result without that redesign (or
+an explicit decision to proceed differently) being authorized first.
 
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
