@@ -299,8 +299,8 @@ def main() -> int:
     delta_method = live_col - approx_col
     delta_fixed = live_col - best_fixed
     
-    ci_method = group_resampled_bootstrap_ci(delta_method, test_df["group_key"], n_resamples=5000, ci=0.90)
-    ci_fixed = group_resampled_bootstrap_ci(delta_fixed, test_df["group_key"], n_resamples=5000, ci=0.90)
+    ci_method = group_resampled_bootstrap_ci(test_df, live_col, approx_col, n_boot=5000, ci=0.90)
+    ci_fixed = group_resampled_bootstrap_ci(test_df, live_col, best_fixed, n_boot=5000, ci=0.90)
     
     dyn_mask = test_df["is_dynamic"]
     
