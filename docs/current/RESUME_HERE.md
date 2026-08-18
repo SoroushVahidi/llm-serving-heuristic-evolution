@@ -228,6 +228,38 @@ COMPLETE — `MECHANISM_TARGET_NO_GO`.**
   condition, a higher-level reassessment of whether cross-family policy
   transfer is well-posed at all, rather than a third target reformulation.
 
+**The higher-level reassessment named above is now
+COMPLETE — `CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`.**
+
+- Audit: [`../audits/cross_family_transfer_wellposedness_reassessment_20260817.md`](../audits/cross_family_transfer_wellposedness_reassessment_20260817.md)
+- Artifacts: `experiments/cross_family_transfer_wellposedness_reassessment_v1/`;
+  script `scripts/analyze_cross_family_task_separation_v1.py`.
+- Synthesized all three prior NO_GOs: each failed for a genuinely
+  **different** diagnosed reason (structural leakage → geometric
+  disjointness → target-contrast confound), which is itself convergent
+  evidence against a *universal* per-scenario selector (H1–H4 all
+  `SUPPORTED`), not merely three retries of the same problem.
+- **But within-family evidence remains strong** (each family's own
+  best-fixed-vs-oracle gap is small, 2.0–4.9pp) **and some real
+  cross-family structure exists**: `estimated_service_time_first` wins the
+  oracle in all three families; policy-ranking similarity is moderately
+  positive between A↔B/A↔C (ρ≈0.53–0.59, not significant at n=6 policies).
+  This is not enough for a per-scenario universal selector, but is enough
+  to motivate one more, qualitatively different attempt.
+- **"READY" means ready to be preregistered as the next falsification
+  experiment, not validated to work.** Two concrete, named open risks must
+  be gated explicitly: (1) Family B's `chunk` regime has no direct
+  online-observable proxy in SHARED_CORE_V1 (only an indirect,
+  unvalidated request-size-mix correlate) — the router would likely be
+  weakest exactly where a wrong decision is most costly (Family B has the
+  largest single-family oracle gap, 0.049); (2) every feature validated so
+  far is a whole-scenario retrospective aggregate, never tested on
+  genuinely online/partial-trajectory state.
+- Recommended next experimental question (**not started, not
+  authorized**): design (not launch) a hierarchical regime-router +
+  family-specific-selector experiment, with the audit's 9 GO/STOP gates
+  (§M) frozen in its design doc before any TRAIN/TEST data is touched.
+
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
 **Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**

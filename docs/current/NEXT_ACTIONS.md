@@ -121,16 +121,40 @@ regret and the largest population. Only `ranking` shows genuine
 non-confounded cross-family activation; `chunk` never activates outside
 Family B.
 
-**Next action, not started, not authorized:** per this task's own stop
-condition (two consecutive redesign attempts have now surfaced two
-independent, non-overlapping root causes — feature-space disjointness,
-then a contrast confound — rather than converging on one fixable issue), a
-**higher-level reassessment of whether cross-family policy transfer is
-well-posed at all**, rather than a third target reformulation. Do not
-start mechanism attribution, composition/synthesis work, retrain the
-existing 6-policy multi-family selector, or attempt another target
-reformulation building on any of the three NO_GO results above without
-further authorization.
+**The higher-level reassessment named above is now COMPLETE:**
+[`../audits/cross_family_transfer_wellposedness_reassessment_20260817.md`](../audits/cross_family_transfer_wellposedness_reassessment_20260817.md).
+**Project-level verdict: `CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`**
+(where "READY" means ready to be *preregistered as the next falsification
+experiment*, not validated to work). Synthesizing all three prior NO_GOs:
+each failed for a genuinely different diagnosed reason (structural
+leakage → geometric disjointness → target-contrast confound) — convergent
+evidence against a *universal* per-scenario selector specifically (H1–H4
+all `SUPPORTED` in the audit), not three retries of the same problem. But
+within-family evidence remains strong (each family's own best-fixed-vs-
+oracle gap is small, 2.0–4.9pp) and some real cross-family structure
+exists (`estimated_service_time_first` wins the oracle in all three
+families; moderate policy-ranking similarity A↔B/A↔C, ρ≈0.53–0.59) —
+enough to motivate one more, qualitatively different attempt rather than
+stopping selector work entirely or retreating straight to family-specific-
+only without testing regime routing first.
+
+**Recommended next experimental question, NOT started, NOT authorized:**
+design (not launch) a hierarchical regime-router + family-specific-
+selector experiment. Two concrete open risks must be gated explicitly in
+that design, not assumed resolved: (1) Family B's `chunk` regime has no
+direct online-observable proxy in SHARED_CORE_V1 (only an indirect,
+unvalidated request-size-mix correlate), and Family B has the largest
+single-family oracle gap (0.049) — the router would likely be weakest
+exactly where misrouting is most costly; (2) every validated feature so
+far is a whole-scenario retrospective aggregate, never tested on
+genuinely online/partial-trajectory state. The audit's §M lists 9
+preregistration gates (online-observability discipline, partial-trajectory
+validation, routing-accuracy bar, within-family-gain preservation,
+beat-global-fixed and approach-family-aware-oracle bars, interpretable
+errors, no family-label leakage) to freeze before any TRAIN/TEST data is
+touched. Do not start mechanism attribution, composition/synthesis work,
+a fourth target reformulation, or a fourth workload family without first
+completing this design and its gates.
 
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
