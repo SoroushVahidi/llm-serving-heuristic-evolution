@@ -101,14 +101,36 @@ block `READY`; the target-semantics finding alone is sufficient to force
 `NO_GO` per the frozen decision logic (not `NEEDS_MORE_DATA`), independent
 of the feature-overlap finding.
 
-**Next action, not started, not authorized:** a 3-way mechanism-choice
-reformulation of the selector target (fairness-ranking vs. chunk-control
-vs. KV-reserve), the most directly evidenced next step from the target-
-semantics finding above — with the explicit caveat that the independent
-feature-overlap problem may still block it. Do not start mechanism
-attribution, composition/synthesis work, or retrain the existing 6-policy
-multi-family selector building on either NO_GO result without further
-authorization.
+**The 3-way mechanism-choice target redesign named above is now COMPLETE:**
+[`../audits/mechanism_choice_target_feasibility_v1_20260817.md`](../audits/mechanism_choice_target_feasibility_v1_20260817.md).
+**Verdict: `MECHANISM_TARGET_NO_GO`.** The `kv` mechanism contrast
+(`|ANWG(kv_constrained_online) − ANWG(least_laxity_first)|`) is confounded:
+it is numerically *largest* on Family A, which has essentially no KV-memory
+pressure (SHARED_CORE_V1 `token_footprint_per_kv` ≈0.58, vs. ≈7.6 on
+Family C, KV's own native family) — a within-family dose-response check
+confirms `gain_kv` tracks real KV pressure on Family C (ρ=+0.54, p<1e-6)
+but not on Family A (ρ=−0.13, p=0.28, no relationship). The contrast is
+instead picking up `least_laxity_first`'s general weakness outside its
+native family. This corrupts the majority class (56.8% of scenarios argmax
+to `kv`); target-vs-native-family agreement is only 56.25% (well under the
+~95% bar for `MECHANISM_TARGET_FAMILY_PROXY_ONLY`, so this is a distinct,
+more specific failure). A hypothetical two-stage mechanism→policy pipeline
+retains zero net oracle-approximation advantage over one fixed global
+policy, with the confounded `kv` bucket carrying the worst per-bucket
+regret and the largest population. Only `ranking` shows genuine
+non-confounded cross-family activation; `chunk` never activates outside
+Family B.
+
+**Next action, not started, not authorized:** per this task's own stop
+condition (two consecutive redesign attempts have now surfaced two
+independent, non-overlapping root causes — feature-space disjointness,
+then a contrast confound — rather than converging on one fixable issue), a
+**higher-level reassessment of whether cross-family policy transfer is
+well-posed at all**, rather than a third target reformulation. Do not
+start mechanism attribution, composition/synthesis work, retrain the
+existing 6-policy multi-family selector, or attempt another target
+reformulation building on any of the three NO_GO results above without
+further authorization.
 
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 

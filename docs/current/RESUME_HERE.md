@@ -187,6 +187,47 @@ COMPLETE — `SHARED_FEATURE_SCHEMA_NO_GO`.**
   by the target-semantics finding above, though the feature-overlap
   problem is independent and may still block it.
 
+**The mechanism-choice target redesign named above is now
+COMPLETE — `MECHANISM_TARGET_NO_GO`.**
+
+- Audit: [`../audits/mechanism_choice_target_feasibility_v1_20260817.md`](../audits/mechanism_choice_target_feasibility_v1_20260817.md)
+- Artifacts: `experiments/mechanism_choice_target_feasibility_v1/`; module
+  `src/llmserveopt/policy_separation/mechanism_choice_target_v1.py`;
+  diagnostics script
+  `scripts/analyze_mechanism_choice_target_feasibility_v1.py`; tests
+  `tests/test_mechanism_choice_target_v1.py` (8/8 passing).
+- **The `kv` mechanism contrast (`|ANWG(kv_constrained_online) −
+  ANWG(least_laxity_first)|`) is confounded, not a genuine mechanism-
+  relevance signal.** It is *largest* on Family A, which has essentially no
+  KV-memory pressure (SHARED_CORE_V1's `token_footprint_per_kv` ≈0.58,
+  comfortably under capacity) — larger even than on Family C, KV's own
+  native family (footprint ≈7.6, genuine pressure). A within-family
+  dose-response check confirms this directly: on Family C, `gain_kv`
+  correlates with actual KV pressure (ρ=+0.54, p<1e-6); on Family A it does
+  not (ρ=−0.13, p=0.28, no relationship). The contrast instead reflects
+  `least_laxity_first`'s general weakness outside its native family.
+- This confound corrupts the majority class (56.8% of all 176 scenarios
+  argmax to `kv`) of the proposed 3-way target, and target-vs-native-family
+  agreement is only 56.25% — well below the ~95% bar that would indicate a
+  disguised family classifier, so this is a distinct, more specific failure
+  than `MECHANISM_TARGET_FAMILY_PROXY_ONLY`.
+- A hypothetical two-stage (mechanism-choice → within-mechanism policy)
+  pipeline retains **zero net oracle-approximation advantage** over a
+  single fixed global policy (mean regret 0.034 either way), with the
+  confounded `kv` bucket carrying the worst regret (0.055) and the largest
+  population.
+- Only `ranking` shows genuine, non-confounded cross-family activation
+  (real signal on both native Family A and non-native Family C); `chunk`
+  never activates outside Family B; `kv`'s cross-family reading is an
+  artifact.
+- Two consecutive redesign attempts (shared features, then mechanism-choice
+  target) surfaced two independent, non-overlapping root causes — feature-
+  space disjointness, then a contrast confound — rather than converging on
+  one fixable issue.
+- Next step (**not started, not authorized**): per this task's own stop
+  condition, a higher-level reassessment of whether cross-family policy
+  transfer is well-posed at all, rather than a third target reformulation.
+
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
 **Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**

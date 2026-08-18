@@ -1,0 +1,206 @@
+{
+  "confound_check_gain_kv": {
+    "interpretation": "If gain_kv on Family A were genuine KV-mechanism relevance, it should track actual KV-capacity pressure (token_footprint_per_kv) the way it does on Family C (native: rho=+0.54, p<1e-6, a real dose-response relationship). On Family A, where footprint is uniformly far below 1.0 (no real memory pressure) yet gain_kv is the largest of any family, the within-family correlation is small and NOT significant (rho=-0.13, p=0.28) -- no dose-response relationship at all, consistent with gain_kv there reflecting least_laxity_first's general weakness outside its native family, not genuine mechanism activation.",
+    "per_family": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "mean_anwg_kv_constrained_online": 0.6856130751964086,
+        "mean_anwg_least_laxity_first": 0.3612864758698092,
+        "mean_gain_kv": 0.33040123456790127,
+        "mean_token_footprint_per_kv": 0.577826875
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "mean_anwg_kv_constrained_online": 0.7327515691773505,
+        "mean_anwg_least_laxity_first": 0.7327515691773505,
+        "mean_gain_kv": 0.0,
+        "mean_token_footprint_per_kv": 0.012371929687500002
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "mean_anwg_kv_constrained_online": 0.8658496732026144,
+        "mean_anwg_least_laxity_first": 0.7430964052287581,
+        "mean_gain_kv": 0.12275326797385618,
+        "mean_token_footprint_per_kv": 7.64238888888889
+      }
+    },
+    "within_family_gain_kv_vs_kv_pressure_correlation": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "p_value": 0.27717157113489227,
+        "rho": -0.129797204460845
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "p_value": NaN,
+        "rho": NaN
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "p_value": 8.941305485616334e-07,
+        "rho": 0.5416759137211289
+      }
+    }
+  },
+  "cross_family_activation": {
+    "chunk": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "mean": 0.0,
+        "n": 72,
+        "n_above_eps": 0,
+        "n_nonzero": 0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "mean": 0.1309178018162393,
+        "n": 32,
+        "n_above_eps": 31,
+        "n_nonzero": 31
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "mean": 0.0,
+        "n": 72,
+        "n_above_eps": 0,
+        "n_nonzero": 0
+      }
+    },
+    "kv": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "mean": 0.33040123456790127,
+        "n": 72,
+        "n_above_eps": 71,
+        "n_nonzero": 72
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "mean": 0.0,
+        "n": 32,
+        "n_above_eps": 0,
+        "n_nonzero": 0
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "mean": 0.12275326797385618,
+        "n": 72,
+        "n_above_eps": 52,
+        "n_nonzero": 52
+      }
+    },
+    "ranking": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "mean": 0.05311798540965207,
+        "n": 72,
+        "n_above_eps": 55,
+        "n_nonzero": 57
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "mean": 0.0,
+        "n": 32,
+        "n_above_eps": 0,
+        "n_nonzero": 0
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "mean": 0.027165032679738556,
+        "n": 72,
+        "n_above_eps": 37,
+        "n_nonzero": 37
+      }
+    }
+  },
+  "n_scenarios": 176,
+  "oracle_information": {
+    "best_fixed_global_policy": "anwg__weighted_fair_share",
+    "note": "two_stage_regret = oracle_anwg - best ANWG among the 2 policies native to the argmax-chosen mechanism, i.e. the ceiling of a perfect Stage-1 (mechanism choice) + perfect Stage-2 (within-mechanism policy choice) pipeline.",
+    "overall_mean_regret_vs_single_best_fixed_policy": 0.03362418518146292,
+    "overall_mean_two_stage_regret": 0.0341038223140496,
+    "per_mechanism": {
+      "chunk": {
+        "mean_two_stage_regret": 0.0,
+        "n_scenarios_assigned": 31,
+        "oracle_mean_anwg": 0.7751585332230494
+      },
+      "kv": {
+        "mean_two_stage_regret": 0.05483467023172906,
+        "n_scenarios_assigned": 100,
+        "oracle_mean_anwg": 0.8432691622103387
+      },
+      "ranking": {
+        "mean_two_stage_regret": 0.011529015646662713,
+        "n_scenarios_assigned": 45,
+        "oracle_mean_anwg": 0.7857542747738825
+      }
+    }
+  },
+  "shared_feature_same_mechanism_overlap": {
+    "by_mechanism_mean_dist": {
+      "kv": 5.510231796638668,
+      "ranking": 5.697568085046352
+    },
+    "comparison_note": "compare against the raw (mechanism-agnostic) mean cross-family NN distance already reported in the SHARED_CORE_V1 audit (shared_core_v1_diagnostics.json, cross_family_nn_consistency).",
+    "mean_nn_dist_same_mechanism_diff_family": 5.56837064476519,
+    "n_scenarios_with_cross_family_same_mechanism_partner": 145
+  },
+  "stability": {
+    "exact_ties_top_vs_second": 20,
+    "fraction_no_clear_mechanism_top_gain_leq_eps": 0.09090909090909091,
+    "fraction_robust": 0.875,
+    "margin_summary": {
+      "max": 0.7893939393939392,
+      "mean": 0.19544740228020643,
+      "median": 0.12398989898989898,
+      "min": 0.0
+    },
+    "n_scenarios": 176,
+    "near_ties_margin_leq_eps": 22,
+    "robust_margin_gt_eps": 154
+  },
+  "target_vs_family": {
+    "agreement_rate_3way_target_eq_native_family_mechanism": 0.5625,
+    "agreement_rate_4way_target_eq_native_family_mechanism": 0.5625,
+    "class_distribution_3way": {
+      "chunk": 0.17613636363636365,
+      "kv": 0.5681818181818182,
+      "ranking": 0.2556818181818182
+    },
+    "class_distribution_4way": {
+      "chunk": 0.17613636363636365,
+      "kv": 0.5681818181818182,
+      "no_clear_mechanism": 0.09090909090909091,
+      "ranking": 0.16477272727272727
+    },
+    "confusion_matrix_3way": {
+      "chunk": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 0,
+        "FAMILY_B_PREFILL_DECODE_V2": 31,
+        "FAMILY_C_KV_PRESSURE_V2": 0
+      },
+      "kv": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 52,
+        "FAMILY_B_PREFILL_DECODE_V2": 0,
+        "FAMILY_C_KV_PRESSURE_V2": 48
+      },
+      "ranking": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 20,
+        "FAMILY_B_PREFILL_DECODE_V2": 1,
+        "FAMILY_C_KV_PRESSURE_V2": 24
+      }
+    },
+    "confusion_matrix_4way": {
+      "chunk": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 0,
+        "FAMILY_B_PREFILL_DECODE_V2": 31,
+        "FAMILY_C_KV_PRESSURE_V2": 0
+      },
+      "kv": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 52,
+        "FAMILY_B_PREFILL_DECODE_V2": 0,
+        "FAMILY_C_KV_PRESSURE_V2": 48
+      },
+      "no_clear_mechanism": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 0,
+        "FAMILY_B_PREFILL_DECODE_V2": 1,
+        "FAMILY_C_KV_PRESSURE_V2": 15
+      },
+      "ranking": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 20,
+        "FAMILY_B_PREFILL_DECODE_V2": 0,
+        "FAMILY_C_KV_PRESSURE_V2": 9
+      }
+    },
+    "entropy_3way_bits": 1.4077322212833145,
+    "entropy_4way_bits": 1.6478000648977225,
+    "max_entropy_3way_bits": 1.584962500721156,
+    "max_entropy_4way_bits": 2.0
+  }
+}
