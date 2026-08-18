@@ -81,14 +81,34 @@ selector cannot beat best-fixed at all once family-identifying feature
 blocks are removed. **Mechanism attribution (Step 4) remains blocked** —
 this verdict does not justify it.
 
-**Next action, with explicit authorization (new, separately scoped task):
-a feature-schema redesign investigation** — whether a genuinely
-cross-family-shared feature representation (not family-prefixed raw sweep
-parameters) could let a selector demonstrate real mechanism-level transfer
-without depending on family identification. Not started. Do not start
-mechanism attribution, composition/synthesis work, or any further selector
-training/tuning building on this NO_GO result without that redesign (or
-an explicit decision to proceed differently) being authorized first.
+**The feature-schema redesign investigation named above is now COMPLETE:**
+[`../audits/shared_cross_family_feature_schema_feasibility_v1_20260817.md`](../audits/shared_cross_family_feature_schema_feasibility_v1_20260817.md).
+**Verdict: `SHARED_FEATURE_SCHEMA_NO_GO`.** A genuinely shared,
+zero-missingness, replay-verified 17-feature schema (SHARED_CORE_V1,
+`experiments/shared_cross_family_features_v1/`) was successfully built for
+all 176/176 scenarios — the feature-*construction* half of the
+investigation succeeded. But two independent problems block a GO: (1)
+family remains 100% classifiable from SHARED_CORE_V1 alone, not from
+missingness (there is none) but because the three families' workloads
+occupy almost entirely disjoint regions of shared feature space
+(range-overlap ≈0 on 15/17 features), and cross-family nearest-neighbor
+scenarios are *not* more utility-consistent than random cross-family pairs;
+(2) the six-policy selector target itself is not cross-family coherent —
+`full_prefill`/`chunked_prefill_small` are bit-identical outside Family B,
+and the other four policies collapse to one identical value specifically on
+Family B, so no policy is globally meaningful. Either finding alone would
+block `READY`; the target-semantics finding alone is sufficient to force
+`NO_GO` per the frozen decision logic (not `NEEDS_MORE_DATA`), independent
+of the feature-overlap finding.
+
+**Next action, not started, not authorized:** a 3-way mechanism-choice
+reformulation of the selector target (fairness-ranking vs. chunk-control
+vs. KV-reserve), the most directly evidenced next step from the target-
+semantics finding above — with the explicit caveat that the independent
+feature-overlap problem may still block it. Do not start mechanism
+attribution, composition/synthesis work, or retrain the existing 6-policy
+multi-family selector building on either NO_GO result without further
+authorization.
 
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 

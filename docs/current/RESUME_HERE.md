@@ -151,6 +151,42 @@ now COMPLETE — `MULTIFAMILY_SELECTOR_NO_GO`.**
   demonstrate real mechanism-level transfer without depending on family
   identification.
 
+**The feature-schema redesign investigation named above is now
+COMPLETE — `SHARED_FEATURE_SCHEMA_NO_GO`.**
+
+- Audit: [`../audits/shared_cross_family_feature_schema_feasibility_v1_20260817.md`](../audits/shared_cross_family_feature_schema_feasibility_v1_20260817.md)
+- Artifacts: `experiments/shared_cross_family_features_v1/`; module
+  `src/llmserveopt/policy_separation/shared_context_features_v1.py`; build/
+  diagnostics scripts `scripts/build_shared_cross_family_features_v1.py`,
+  `scripts/analyze_shared_cross_family_features_v1.py`; tests
+  `tests/test_shared_cross_family_features_v1.py` (12/12 passing).
+- **A genuinely shared, zero-missingness, 17-feature schema
+  (SHARED_CORE_V1) was built and replay-verified for all 176/176
+  scenarios** (deterministic replay for Family A/B against the frozen
+  MF-PSD source, direct load for Family C from the frozen Reconstruction
+  v1 artifact) — the schema-construction half of the investigation
+  succeeded.
+- **But family remains 100% classifiable from SHARED_CORE_V1 alone** — not
+  from structural missingness (there is none left), but because the three
+  families' workloads occupy almost entirely disjoint regions of the
+  shared feature space (range-overlap ≈0 on 15/17 features), and
+  cross-family nearest-neighbor scenarios are *not* more utility-consistent
+  than random cross-family pairs (mean Spearman −0.038 vs. +0.197 random
+  baseline).
+- **Independently, the six-policy target itself is not cross-family
+  coherent**: `full_prefill`/`chunked_prefill_small` are bit-identical
+  outside Family B, and the other four policies collapse to one identical
+  value specifically on Family B — no policy is globally meaningful across
+  all three families.
+- Verdict is `NO_GO` (not `NEEDS_MORE_DATA`) because the target-semantics
+  failure alone is sufficient per the frozen decision logic, independent
+  of the feature-overlap finding.
+- Most defensible next step if pursued (**not started, not authorized**):
+  a 3-way mechanism-choice reformulation of the selector target
+  (fairness-ranking vs. chunk-control vs. KV-reserve) — directly motivated
+  by the target-semantics finding above, though the feature-overlap
+  problem is independent and may still block it.
+
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
 **Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**

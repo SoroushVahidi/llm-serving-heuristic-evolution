@@ -1,0 +1,27 @@
+{
+  "all_scenario_id_replay_matches": true,
+  "build_git_head_sha": "6c31443a6ad689d1844c3891dba64240515758be",
+  "build_timestamp_utc": "2026-08-18T01:21:06Z",
+  "n_scenarios_loaded_family_c_direct": 72,
+  "n_scenarios_replayed_family_a": 72,
+  "n_scenarios_replayed_family_b": 32,
+  "output_files": {
+    "shared_core_v1_scenarios.csv": "cd08b88d9e03fc903f1756ba94e03cd950d9d967e7f1792cdaed9f6f9dd25516",
+    "shared_core_v1_schema.json": "aed99898bc7aa2d70e8152e4fa4d7b3890e0f0ee15b86ac981c55788a08b7fb0"
+  },
+  "schema_version": "shared_core_v1.0.0",
+  "sources_read": {
+    "burstgpt_csv_used_for_replay": {
+      "path": ".local_data/burstgpt_v2/raw/BurstGPT_without_fails_1.csv",
+      "sha256": "a4d068a7113ec0290e74063a1b3447dc6001a30e4298eb313581b71006dda1f4"
+    },
+    "family_c_reconstruction_v1_scenarios.jsonl": {
+      "path": "experiments/family_c_reconstruction_v1/family_c_reconstruction_v1_scenarios.jsonl",
+      "sha256": "9e1acb9bb270eda73c19ac9f1d7673431fac2130f227eb0d342e814361761d20"
+    },
+    "mf_psd_long_v1.csv": {
+      "path": "experiments/mf_psd_v1/mf_psd_long_v1.csv",
+      "sha256": "7a1bbbd925d5bfc28fd66feaa9ecc110d28cb8a47748c6dc4aa4cfcaf76b4cb4"
+    }
+  }
+}

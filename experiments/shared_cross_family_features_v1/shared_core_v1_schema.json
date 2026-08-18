@@ -1,0 +1,64 @@
+{
+  "forbidden_audit_only_fields": [
+    "canonical_scenario_id",
+    "mechanism_family",
+    "source_scenario_id",
+    "replay_verified"
+  ],
+  "identity_audit_columns": [
+    "canonical_scenario_id",
+    "mechanism_family",
+    "source_scenario_id",
+    "replay_verified"
+  ],
+  "learnable_feature_allowlist": [
+    "n_requests",
+    "window_span_s",
+    "offered_rate_rps",
+    "mean_prompt_tokens",
+    "cv_prompt_tokens",
+    "mean_predicted_output_tokens",
+    "cv_predicted_output_tokens",
+    "mean_predicted_total_tokens",
+    "mean_slack_s",
+    "min_slack_s",
+    "frac_tight_slack",
+    "priority_cv",
+    "n_distinct_request_classes",
+    "max_active_sequences",
+    "max_kv_tokens",
+    "token_footprint_per_kv",
+    "concurrency_pressure"
+  ],
+  "n_scenarios": 176,
+  "n_scenarios_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 72,
+    "FAMILY_B_PREFILL_DECODE_V2": 32,
+    "FAMILY_C_KV_PRESSURE_V2": 72
+  },
+  "notes": "Every learnable column is present (non-empty, non-missing) for every scenario in every family -- no family-prefixed columns, no structural missingness, no mechanism_family or scenario ID in the learnable set. See the SHARED_CORE_V1 audit doc for the formula/units/provenance of each column.",
+  "output_columns": [
+    "canonical_scenario_id",
+    "mechanism_family",
+    "source_scenario_id",
+    "replay_verified",
+    "n_requests",
+    "window_span_s",
+    "offered_rate_rps",
+    "mean_prompt_tokens",
+    "cv_prompt_tokens",
+    "mean_predicted_output_tokens",
+    "cv_predicted_output_tokens",
+    "mean_predicted_total_tokens",
+    "mean_slack_s",
+    "min_slack_s",
+    "frac_tight_slack",
+    "priority_cv",
+    "n_distinct_request_classes",
+    "max_active_sequences",
+    "max_kv_tokens",
+    "token_footprint_per_kv",
+    "concurrency_pressure"
+  ],
+  "schema_version": "shared_core_v1.0.0"
+}

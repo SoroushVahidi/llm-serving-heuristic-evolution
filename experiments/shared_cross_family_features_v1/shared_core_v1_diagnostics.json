@@ -1,0 +1,943 @@
+{
+  "cross_family_nn_consistency": {
+    "n_scenarios": 176,
+    "nearest_neighbor": {
+      "mean_utility_vector_spearman": -0.03839574135930309,
+      "median_utility_vector_spearman": -0.13284223283101432,
+      "top1_agreement_rate": 0.16477272727272727
+    },
+    "per_scenario_sample": [
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.301000822281588,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.6642111641550715
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.3011216567976565,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260817",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.5393598899705937
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.553774691480123,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.30.s20260816",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.39852669849304295
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.474240080843996,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260910",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.30.s20260817",
+        "top1_agree": false,
+        "utility_vector_spearman": NaN
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.363493567164824,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00.s20260816",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.13284223283101432
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.243610865853987,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00.s20260817",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.13284223283101432
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.608685101154617,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260910",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.30.s20260816",
+        "top1_agree": false,
+        "utility_vector_spearman": NaN
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.375686739033437,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.30.s20260817",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.13284223283101432
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.842709735337101,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.00.s20260816",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.6642111641550715
+      },
+      {
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "nn_family": "FAMILY_C_KV_PRESSURE_V2",
+        "nn_feature_dist": 5.842819366858947,
+        "nn_scenario": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260911",
+        "scenario": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.00.s20260817",
+        "top1_agree": false,
+        "utility_vector_spearman": -0.6642111641550715
+      }
+    ],
+    "random_cross_family_pair_baseline": {
+      "mean_utility_vector_spearman": 0.19721790687205631,
+      "top1_agreement_rate": 0.2784090909090909
+    }
+  },
+  "distribution_overlap": {
+    "concurrency_pressure": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 120.0,
+        "mean": 120.0,
+        "median": 120.0,
+        "min": 120.0,
+        "q25": 120.0,
+        "q75": 120.0,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.125,
+        "mean": 0.0859375,
+        "median": 0.0859375,
+        "min": 0.046875,
+        "q25": 0.064453125,
+        "q75": 0.107421875,
+        "std": 0.029749113694780893
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 0.53125,
+        "mean": 0.421875,
+        "median": 0.421875,
+        "min": 0.3125,
+        "q25": 0.3125,
+        "q75": 0.53125,
+        "std": 0.109375
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 5700.475491359139,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 1546.1394846916137,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -4.191383537925782,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "cv_predicted_output_tokens": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 0.8360670634480165,
+        "mean": 0.746763560799715,
+        "median": 0.7270736835166265,
+        "min": 0.6891491825720791,
+        "q25": 0.7163184874483359,
+        "q75": 0.7679784380687822,
+        "std": 0.04976019364982322
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.4495211606561121,
+        "mean": 0.41919693060800006,
+        "median": 0.41995639651013594,
+        "min": 0.3752814035287962,
+        "q25": 0.410547099379911,
+        "q75": 0.43057999273096903,
+        "std": 0.018665480326346004
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 0.8536360648403081,
+        "mean": 0.6727291679757257,
+        "median": 0.6438393168648103,
+        "min": 0.5436312479414562,
+        "q25": 0.5986847403680022,
+        "q75": 0.7111861531088718,
+        "std": 0.09820988281706983
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 8.716570103981802,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 0.9509871966676872,
+          "range_overlap_fraction": 0.4739212840162856
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -3.5866385594448547,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "cv_prompt_tokens": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 0.9247161953863008,
+        "mean": 0.8893837902076913,
+        "median": 0.8876224537397724,
+        "min": 0.8575740579649195,
+        "q25": 0.8768866861554684,
+        "q75": 0.9001195577919954,
+        "std": 0.0239968331617001
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 1.6807552296558423,
+        "mean": 1.143503089075927,
+        "median": 1.1012560406454674,
+        "min": 0.695440887964723,
+        "q25": 0.8957674557730009,
+        "q75": 1.3447099303677539,
+        "std": 0.35946817262759917
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 0.3407209895021398,
+        "mean": 0.3029575388363716,
+        "median": 0.30444657191352076,
+        "min": 0.2540569177278188,
+        "q25": 0.27867711646054644,
+        "q75": 0.33080017244279286,
+        "std": 0.02731866612215051
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": -0.9975315741071246,
+          "range_overlap_fraction": 0.06814286018220703
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 22.807978834303217,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 3.2973515837196445,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "frac_tight_slack": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 0.5,
+        "mean": 0.5,
+        "median": 0.5,
+        "min": 0.5,
+        "q25": 0.5,
+        "q75": 0.5,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.5,
+        "mean": 0.2423878205128205,
+        "median": 0.282051282051282,
+        "min": 0.0,
+        "q25": 0.0,
+        "q75": 0.40625,
+        "std": 0.20462639880929687
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 0.2941176470588235,
+        "mean": 0.0770016339869281,
+        "median": 0.0,
+        "min": 0.0,
+        "q25": 0.0,
+        "q75": 0.14852941176470588,
+        "std": 0.1262541147715724
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 1.7804087849036079,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 4.738142809520841,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 0.9727584041706298,
+          "range_overlap_fraction": 0.588235294117647
+        }
+      }
+    },
+    "max_active_sequences": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "q25": 1.0,
+        "q75": 1.0,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 512.0,
+        "mean": 512.0,
+        "median": 512.0,
+        "min": 512.0,
+        "q25": 512.0,
+        "q75": 512.0,
+        "std": 0.0
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 64.0,
+        "mean": 64.0,
+        "median": 64.0,
+        "min": 64.0,
+        "q25": 64.0,
+        "q75": 64.0,
+        "std": 0.0
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "max_kv_tokens": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 200000.0,
+        "mean": 200000.0,
+        "median": 200000.0,
+        "min": 200000.0,
+        "q25": 200000.0,
+        "q75": 200000.0,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 8000000.0,
+        "mean": 8000000.0,
+        "median": 8000000.0,
+        "min": 8000000.0,
+        "q25": 8000000.0,
+        "q75": 8000000.0,
+        "std": 0.0
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 6000.0,
+        "mean": 6000.0,
+        "median": 6000.0,
+        "min": 6000.0,
+        "q25": 6000.0,
+        "q75": 6000.0,
+        "std": 0.0
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "mean_predicted_output_tokens": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 298.93333333333334,
+        "mean": 271.828125,
+        "median": 270.475,
+        "min": 256.09166666666664,
+        "q25": 260.45624999999995,
+        "q75": 277.79791666666665,
+        "std": 13.818305678758065
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 93.875,
+        "mean": 86.2786374866453,
+        "median": 85.23931623931624,
+        "min": 79.9375,
+        "q25": 82.99038461538461,
+        "q75": 89.53776041666667,
+        "std": 4.142972376271353
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 350.94117647058823,
+        "mean": 282.82279411764705,
+        "median": 287.70735294117645,
+        "min": 180.5,
+        "q25": 248.525,
+        "q75": 311.7698529411765,
+        "std": 47.12373944916428
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 18.1898241055199,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -0.3166250046780923,
+          "range_overlap_fraction": 0.25135749209088315
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -5.875751611285546,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "mean_predicted_total_tokens": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 1018.7916666666666,
+        "mean": 963.0447916666667,
+        "median": 956.7208333333334,
+        "min": 923.7416666666668,
+        "q25": 945.4770833333332,
+        "q75": 969.2854166666667,
+        "std": 30.313436393755538
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 3703.0,
+        "mean": 2418.040623330662,
+        "median": 2362.359375,
+        "min": 1285.576923076923,
+        "q25": 1841.6908052884614,
+        "q75": 2905.5625,
+        "std": 815.848594721356
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 1870.1470588235293,
+        "mean": 1680.8754901960783,
+        "median": 1682.8970588235293,
+        "min": 1546.9,
+        "q25": 1602.625,
+        "q75": 1739.3455882352941,
+        "std": 91.46868789663749
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": -2.520389153290948,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -10.5350384518085,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 1.269865559093087,
+          "range_overlap_fraction": 0.13371555103832367
+        }
+      }
+    },
+    "mean_prompt_tokens": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 743.2,
+        "mean": 691.2166666666666,
+        "median": 691.1708333333333,
+        "min": 639.325,
+        "q25": 671.475,
+        "q75": 710.9125,
+        "std": 37.270186085305944
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 3613.555555555556,
+        "mean": 2331.761985844017,
+        "median": 2275.5338541666665,
+        "min": 1200.9038461538462,
+        "q25": 1753.509014423077,
+        "q75": 2818.267361111111,
+        "std": 814.4035450803856
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 1533.1176470588234,
+        "mean": 1398.0526960784312,
+        "median": 1389.929411764706,
+        "min": 1296.75,
+        "q25": 1339.9595588235295,
+        "q75": 1442.579411764706,
+        "std": 73.36902904167243
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": -2.845832097301691,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -12.147099760471347,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 1.6148483773575417,
+          "range_overlap_fraction": 0.09797006593937173
+        }
+      }
+    },
+    "mean_slack_s": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 4.5,
+        "mean": 4.5,
+        "median": 4.5,
+        "min": 4.5,
+        "q25": 4.5,
+        "q75": 4.5,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 1.6346730769230768,
+        "mean": 1.1196320028712605,
+        "median": 1.1204999999999998,
+        "min": 0.6035384615384616,
+        "q25": 0.8573211805555555,
+        "q75": 1.37975390625,
+        "std": 0.3269540693505554
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 2.325,
+        "mean": 1.6996323529411763,
+        "median": 1.6867647058823532,
+        "min": 1.1,
+        "q25": 1.2698529411764703,
+        "q75": 2.116544117647059,
+        "std": 0.5026426433823208
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 14.621510222666139,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 7.878993074388077,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -1.3679318399211244,
+          "range_overlap_fraction": 0.31059251977300134
+        }
+      }
+    },
+    "min_slack_s": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 1.0,
+        "mean": 0.9999999999999988,
+        "median": 0.9999999999999992,
+        "min": 0.9999999999999982,
+        "q25": 0.9999999999999982,
+        "q75": 0.9999999999999996,
+        "std": 6.603260856647041e-16
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.128,
+        "mean": 0.11299999999999996,
+        "median": 0.11299999999999995,
+        "min": 0.0979999999999999,
+        "q25": 0.098,
+        "q75": 0.1279999999999999,
+        "std": 0.01499999999999998
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 1.65,
+        "mean": 1.0999999999999999,
+        "median": 1.0999999999999999,
+        "min": 0.5499999999999999,
+        "q25": 0.55,
+        "q75": 1.6499999999999997,
+        "std": 0.5499999999999998
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 83.62716198832902,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -0.25712973861329286,
+          "range_overlap_fraction": 1.6148698540002276e-15
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -2.536927210163349,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "n_distinct_request_classes": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 2.0,
+        "mean": 2.0,
+        "median": 2.0,
+        "min": 2.0,
+        "q25": 2.0,
+        "q75": 2.0,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 2.0,
+        "mean": 2.0,
+        "median": 2.0,
+        "min": 2.0,
+        "q25": 2.0,
+        "q75": 2.0,
+        "std": 0.0
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 2.0,
+        "mean": 2.0,
+        "median": 2.0,
+        "min": 2.0,
+        "q25": 2.0,
+        "q75": 2.0,
+        "std": 0.0
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 1.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 1.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 1.0
+        }
+      }
+    },
+    "n_requests": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 120.0,
+        "mean": 120.0,
+        "median": 120.0,
+        "min": 120.0,
+        "q25": 120.0,
+        "q75": 120.0,
+        "std": 0.0
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 64.0,
+        "mean": 44.0,
+        "median": 44.0,
+        "min": 24.0,
+        "q25": 33.0,
+        "q75": 55.0,
+        "std": 15.231546211727817
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 34.0,
+        "mean": 27.0,
+        "median": 27.0,
+        "min": 20.0,
+        "q25": 20.0,
+        "q75": 34.0,
+        "std": 7.0
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 7.056422850727971,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 18.78883732867112,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 1.4342034380726325,
+          "range_overlap_fraction": 0.22727272727272727
+        }
+      }
+    },
+    "offered_rate_rps": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 6.92935740650482,
+        "mean": 4.9856224653540275,
+        "median": 4.941782592446668,
+        "min": 3.467151727472193,
+        "q25": 4.37298517277649,
+        "q75": 5.54094014018345,
+        "std": 0.8730645220090778
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 508.87038479383887,
+        "mean": 400.3036111649517,
+        "median": 384.10169208737574,
+        "min": 283.1565679232436,
+        "q25": 346.85076768928093,
+        "q75": 477.4535508813955,
+        "std": 74.66058575103789
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 43.170046280552114,
+        "mean": 33.955975391152315,
+        "median": 28.849798062834438,
+        "min": 26.18506320953325,
+        "q25": 28.688926317893397,
+        "q75": 41.95165452873036,
+        "std": 6.399060580035099
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": -7.4875630146105525,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -6.34377183030115,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 6.913972846841381,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "priority_cv": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 0.8181818181818182,
+        "mean": 0.49494949494949503,
+        "median": 0.6666666666666666,
+        "min": 0.0,
+        "q25": 0.0,
+        "q75": 0.8181818181818182,
+        "std": 0.3554063047628117
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "q25": 0.0,
+        "q75": 0.0,
+        "std": 0.0
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "q25": 0.0,
+        "q75": 0.0,
+        "std": 0.0
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 1.9694762840924454,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 1.9694762840924454,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": NaN,
+          "range_overlap_fraction": 1.0
+        }
+      }
+    },
+    "token_footprint_per_kv": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 0.611275,
+        "mean": 0.577826875,
+        "median": 0.5740325,
+        "min": 0.554245,
+        "q25": 0.56728625,
+        "q75": 0.5815712500000001,
+        "std": 0.018188061836253353
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.01738375,
+        "mean": 0.012371929687500002,
+        "median": 0.0120913125,
+        "min": 0.00765525,
+        "q25": 0.0083245,
+        "q75": 0.016246781249999998,
+        "std": 0.0040182407572396765
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 10.5975,
+        "mean": 7.64238888888889,
+        "median": 7.616916666666667,
+        "min": 5.156333333333333,
+        "q25": 5.342083333333334,
+        "q75": 9.856291666666667,
+        "std": 2.2823739837159045
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 42.93173098446919,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -4.377232772606939,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -4.727733850399932,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    },
+    "window_span_s": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "max": 34.32212067822013,
+        "mean": 24.624161459085354,
+        "median": 24.09965129956486,
+        "min": 17.173309589759466,
+        "q25": 21.51228145744835,
+        "q75": 27.212650304004068,
+        "std": 4.405831239890132
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "max": 0.1840029958259259,
+        "mean": 0.11552463037190974,
+        "median": 0.10809103240463636,
+        "min": 0.048560523521904,
+        "q25": 0.06667754282578518,
+        "q75": 0.16583395184163902,
+        "std": 0.05418633314465749
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "max": 1.2514183227735225,
+        "mean": 0.8237247995901874,
+        "median": 0.9345693287707326,
+        "min": 0.4401199821868016,
+        "q25": 0.45290239456250747,
+        "q75": 1.149955635581983,
+        "std": 0.3360920891358659
+      },
+      "pairwise": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+          "cohens_d": 7.866353394145014,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": 7.6174938285198275,
+          "range_overlap_fraction": 0.0
+        },
+        "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+          "cohens_d": -2.941984986241563,
+          "range_overlap_fraction": 0.0
+        }
+      }
+    }
+  },
+  "family_leakage_diagnostic": {
+    "confusion_matrix": [
+      [
+        72,
+        0,
+        0
+      ],
+      [
+        0,
+        32,
+        0
+      ],
+      [
+        0,
+        0,
+        72
+      ]
+    ],
+    "confusion_matrix_labels": [
+      "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "FAMILY_B_PREFILL_DECODE_V2",
+      "FAMILY_C_KV_PRESSURE_V2"
+    ],
+    "fold_accuracies": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "majority_baseline_accuracy": 0.4090909090909091,
+    "mean_accuracy": 1.0,
+    "n_folds": 5
+  },
+  "feature_vs_oracle_correlation": {
+    "concurrency_pressure": {
+      "p_value": 0.000987367539706696,
+      "spearman_vs_oracle_anwg": -0.24622274554720444
+    },
+    "cv_predicted_output_tokens": {
+      "p_value": 0.0629452575020599,
+      "spearman_vs_oracle_anwg": 0.1404760688446987
+    },
+    "cv_prompt_tokens": {
+      "p_value": 0.1825042318352327,
+      "spearman_vs_oracle_anwg": -0.10094741790686722
+    },
+    "frac_tight_slack": {
+      "p_value": 5.371847985089269e-05,
+      "spearman_vs_oracle_anwg": -0.29955210749370353
+    },
+    "max_active_sequences": {
+      "p_value": 0.02482945253909031,
+      "spearman_vs_oracle_anwg": 0.1691359533088482
+    },
+    "max_kv_tokens": {
+      "p_value": 0.0003578650232553019,
+      "spearman_vs_oracle_anwg": -0.2660793824765656
+    },
+    "mean_predicted_output_tokens": {
+      "p_value": 0.0002129565705036725,
+      "spearman_vs_oracle_anwg": -0.2756698698850431
+    },
+    "mean_predicted_total_tokens": {
+      "p_value": 0.3716171401000569,
+      "spearman_vs_oracle_anwg": 0.06775154658721727
+    },
+    "mean_prompt_tokens": {
+      "p_value": 0.20209943263215907,
+      "spearman_vs_oracle_anwg": 0.09661477774330636
+    },
+    "mean_slack_s": {
+      "p_value": 0.29773597539321056,
+      "spearman_vs_oracle_anwg": -0.07893089739541223
+    },
+    "min_slack_s": {
+      "p_value": 9.394611627844098e-05,
+      "spearman_vs_oracle_anwg": 0.29011467276374825
+    },
+    "n_distinct_request_classes": {
+      "p_value": NaN,
+      "spearman_vs_oracle_anwg": NaN
+    },
+    "n_requests": {
+      "p_value": 2.556816159391906e-08,
+      "spearman_vs_oracle_anwg": -0.4045988456482364
+    },
+    "offered_rate_rps": {
+      "p_value": 0.01909922034091394,
+      "spearman_vs_oracle_anwg": 0.17652293758286905
+    },
+    "priority_cv": {
+      "p_value": 0.03297976731652741,
+      "spearman_vs_oracle_anwg": -0.16082857666449527
+    },
+    "token_footprint_per_kv": {
+      "p_value": 0.026140753674496957,
+      "spearman_vs_oracle_anwg": 0.16765511512787276
+    },
+    "window_span_s": {
+      "p_value": 0.006599310415760728,
+      "spearman_vs_oracle_anwg": -0.2040525896728074
+    }
+  }
+}
