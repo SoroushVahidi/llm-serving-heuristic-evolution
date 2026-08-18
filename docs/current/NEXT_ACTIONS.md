@@ -156,6 +156,40 @@ touched. Do not start mechanism attribution, composition/synthesis work,
 a fourth target reformulation, or a fourth workload family without first
 completing this design and its gates.
 
+**The online regime-signal feasibility study named above is now COMPLETE:**
+[`../audits/online_regime_signal_feasibility_v1_20260817.md`](../audits/online_regime_signal_feasibility_v1_20260817.md).
+**Verdict: `ONLINE_REGIME_SIGNALS_READY`.** Replayed all 176 frozen
+scenarios through the real simulator (FIFO, native to none of the three
+families) with a non-invasive `TelemetryRecordingPolicy` recording
+per-step `ObservableState` — the exact pre-decision snapshot every real
+policy already receives — reusing already-production `causal_context_features`/
+pressure helpers rather than inventing new ones. Both open risks named
+above are directly resolved: (1) a Family-B contention proxy DOES exist at
+the online per-step level (`contention_score_v2`, an active-fraction-
+normalized formula added after the first capacity-normalized formula was
+found to structurally never fire at Family B's small scale — AUROC 0.841,
+32/32 scenarios detected, zero false positives outside Family B); (2)
+every signal here is validated on genuinely online per-step state, not
+whole-scenario retrospective aggregates. All three activity signals
+(`a_active`/`b_active_v2`/`c_active`) achieve perfect precision (0
+cross-family false positives across 127,319 telemetry rows); `kv_pressure`
+is strongest (AUROC 0.993). Zero regime overlap was observed anywhere
+(no A+B/A+C/B+C/A+B+C rows) — supports a hard top-1 router, not a
+multi-label gate — with the explicit caveat that this may partly reflect
+how structurally distinct the three frozen scenario designs are rather
+than being proof about genuinely blended live traffic.
+
+**Next action, NOT started, NOT authorized:** design (still not launch) the
+hierarchical regime-router + family-specific-selector experiment named
+above — two of its 9 preregistration gates (online-observability,
+partial-trajectory validity) are now substantially de-risked by this
+study's evidence; the remaining gates (routing-accuracy bar,
+within-family-gain preservation, beat-global-fixed/approach-family-aware-
+oracle bars, interpretable errors, no label leakage) are still untested.
+Do not train the router or any family-specific selector, start mechanism
+attribution, restart universal-selector work, add a fourth family, or
+modify any frozen scientific result without first completing that design.
+
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
 **Family B v2 is composition-ready; the two-parent PrefillControl falsification is now COMPLETE (see below).**

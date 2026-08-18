@@ -1,0 +1,200 @@
+{
+  "diagnostic_performance": {
+    "a_active_precision_recall_vs_family_A": {
+      "fn": 51079,
+      "fp": 0,
+      "precision": 1.0,
+      "recall": 0.5579910177308953,
+      "tp": 64482
+    },
+    "b_active_v2_precision_recall_vs_family_B": {
+      "fn": 430,
+      "fp": 0,
+      "precision": 1.0,
+      "recall": 0.4342105263157895,
+      "tp": 330
+    },
+    "c_active_precision_recall_vs_family_C": {
+      "fn": 3512,
+      "fp": 0,
+      "precision": 1.0,
+      "recall": 0.6806692125841062,
+      "tp": 7486
+    },
+    "contention_score_product_auroc_vs_family_B": 0.8407894736842105,
+    "contention_score_v2_auroc_vs_family_B": 0.8407894736842105,
+    "kv_pressure_auroc_vs_family_C": 0.9934683540022178,
+    "priority_skew_auroc_vs_family_A": 0.7789955088654477
+  },
+  "falsification_cases": {
+    "decode_only_no_prefill_backlog": {
+      "mean_contention_score_v2": 0.0,
+      "n_rows": 210,
+      "n_scenarios_with_case": 32
+    },
+    "low_load_mixed": {
+      "mean_contention_score_v2": 0.08512658975747694,
+      "n_rows": 394,
+      "n_scenarios_with_case": 32
+    },
+    "prefill_only_no_decode": {
+      "mean_contention_score_v2": null,
+      "n_rows": 0,
+      "n_scenarios_with_case": 0
+    },
+    "separation_check": {
+      "mean_contention_score_v2_when_b_active": 0.2946260127156986,
+      "mean_contention_score_v2_when_not_b_active": 0.07986017759173468
+    },
+    "simultaneous_heavy_contention": {
+      "mean_contention_score_v2": 0.2946260127156986,
+      "n_rows": 330,
+      "n_scenarios_with_case": 32
+    }
+  },
+  "family_a_sanity": {
+    "mean_frac_a_active_control_skew_eq_1": 0.0,
+    "mean_frac_a_active_stress_skew_gt_1": 0.8360057506815006,
+    "n_scenarios": 72,
+    "p_value": 9.410991676665455e-13,
+    "spearman_frac_a_active_vs_tenant_weight_skew": 0.720769230988619
+  },
+  "family_c_sanity": {
+    "mean_frac_c_active_by_bulk_pressure": {
+      "high": 0.7164282679149818,
+      "low": 0.6054736892227379
+    },
+    "mean_peak_kv_pressure_by_bulk_pressure": {
+      "high": 1.1390740740740741,
+      "low": 1.0920925925925926
+    },
+    "n_scenarios": 72
+  },
+  "n_rows": 127319,
+  "overlap_distribution": {
+    "by_family": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": {
+        "A_only": 64482,
+        "none": 51079
+      },
+      "FAMILY_B_PREFILL_DECODE_V2": {
+        "B_only": 330,
+        "none": 430
+      },
+      "FAMILY_C_KV_PRESSURE_V2": {
+        "C_only": 7486,
+        "none": 3512
+      }
+    },
+    "overall": {
+      "A+B": {
+        "fraction": 0.0,
+        "n_rows": 0
+      },
+      "A+B+C": {
+        "fraction": 0.0,
+        "n_rows": 0
+      },
+      "A+C": {
+        "fraction": 0.0,
+        "n_rows": 0
+      },
+      "A_only": {
+        "fraction": 0.5064601512735727,
+        "n_rows": 64482
+      },
+      "B+C": {
+        "fraction": 0.0,
+        "n_rows": 0
+      },
+      "B_only": {
+        "fraction": 0.002591914796691774,
+        "n_rows": 330
+      },
+      "C_only": {
+        "fraction": 0.05879719444858976,
+        "n_rows": 7486
+      },
+      "none": {
+        "fraction": 0.4321507394811458,
+        "n_rows": 55021
+      }
+    }
+  },
+  "temporal_dynamics": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": {
+      "mean_transitions_per_scenario": {
+        "a_active": 5.444444444444445,
+        "b_active_v2": 0.0,
+        "c_active": 0.0
+      },
+      "n_scenarios": 72,
+      "n_scenarios_always_active": {
+        "a_active": 0,
+        "b_active_v2": 0,
+        "c_active": 0
+      },
+      "n_scenarios_never_active": {
+        "a_active": 24,
+        "b_active_v2": 72,
+        "c_active": 72
+      },
+      "total_label_transitions": {
+        "a_active": 392,
+        "b_active_v2": 0,
+        "c_active": 0
+      }
+    },
+    "FAMILY_B_PREFILL_DECODE_V2": {
+      "mean_transitions_per_scenario": {
+        "a_active": 0.0,
+        "b_active_v2": 10.125,
+        "c_active": 0.0
+      },
+      "n_scenarios": 32,
+      "n_scenarios_always_active": {
+        "a_active": 0,
+        "b_active_v2": 0,
+        "c_active": 0
+      },
+      "n_scenarios_never_active": {
+        "a_active": 32,
+        "b_active_v2": 0,
+        "c_active": 32
+      },
+      "total_label_transitions": {
+        "a_active": 0,
+        "b_active_v2": 324,
+        "c_active": 0
+      }
+    },
+    "FAMILY_C_KV_PRESSURE_V2": {
+      "mean_transitions_per_scenario": {
+        "a_active": 0.0,
+        "b_active_v2": 0.0,
+        "c_active": 39.44444444444444
+      },
+      "n_scenarios": 72,
+      "n_scenarios_always_active": {
+        "a_active": 0,
+        "b_active_v2": 0,
+        "c_active": 0
+      },
+      "n_scenarios_never_active": {
+        "a_active": 72,
+        "b_active_v2": 72,
+        "c_active": 0
+      },
+      "total_label_transitions": {
+        "a_active": 0,
+        "b_active_v2": 0,
+        "c_active": 2840
+      }
+    }
+  },
+  "temporal_leakage_spotcheck": {
+    "max_queue_length_at_first_recorded_step": 0.0,
+    "mean_queue_length_at_first_recorded_step": 0.0,
+    "n_scenarios_checked": 176
+  }
+}

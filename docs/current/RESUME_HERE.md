@@ -260,6 +260,47 @@ COMPLETE — `CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`.**
   family-specific-selector experiment, with the audit's 9 GO/STOP gates
   (§M) frozen in its design doc before any TRAIN/TEST data is touched.
 
+**The online regime-signal feasibility study named above is now
+COMPLETE — `ONLINE_REGIME_SIGNALS_READY`.**
+
+- Audit: [`../audits/online_regime_signal_feasibility_v1_20260817.md`](../audits/online_regime_signal_feasibility_v1_20260817.md)
+- Artifacts: `experiments/online_regime_signal_feasibility_v1/` (127,319-row
+  per-step telemetry, all 176 frozen scenarios replayed through FIFO —
+  native to none of the three families — with `TelemetryRecordingPolicy`);
+  module `src/llmserveopt/policy_separation/online_regime_signals_v1.py`;
+  build/diagnostics scripts `scripts/build_online_regime_telemetry_v1.py`,
+  `scripts/analyze_online_regime_telemetry_v1.py`; tests
+  `tests/test_online_regime_signals_v1.py` (15/15 passing).
+- **Directly resolves both open risks the reassessment named.** Every
+  signal is computed from `ObservableState` — the exact pre-decision
+  snapshot every real policy already receives before
+  `select_action` — reusing (not reimplementing) `causal_context_features`/
+  `_prefill_pressure`/`_decode_pressure`/`_kv_pressure`, which are already
+  load-bearing live inside real production policies elsewhere in the
+  codebase.
+- **Family-B contention (the primary gate) is detectable**, but only after
+  a documented correction: the first, capacity-normalized contention
+  formula (`prefill_pressure × decode_pressure`) never fired even on
+  Family B's own scenarios (max_active_sequences=512 is too generous a
+  denominator at Family B's ~24-request scale) — its AUROC was still 0.841,
+  showing real ranking signal despite the miscalibrated threshold. A
+  structurally different, active-fraction-normalized formula
+  (`contention_score_v2`) fires on 32/32 Family-B scenarios with **zero
+  false positives** anywhere outside Family B (AUROC 0.841, precision
+  1.0, recall 0.43).
+- **All three activity signals achieve perfect precision** (0 cross-family
+  false positives across 127,319 rows) with moderate recall; `kv_pressure`
+  is the strongest single feature (AUROC 0.993 for Family C).
+- **Zero regime overlap observed anywhere** (no A+B/A+C/B+C/A+B+C rows) —
+  supports a **hard top-1** router architecture, not the softer
+  multi-label variant — with an explicit caveat that this may partly
+  reflect how structurally distinct the three frozen scenario designs are,
+  not yet evidence about genuinely blended live traffic.
+- Next step (**not started, not authorized**): a separately authorized,
+  preregistered hierarchical-router experiment (Stage-1 regime classifier
+  on these validated signals + Stage-2 family-specific selectors), gated
+  by the reassessment's 9 GO/STOP criteria.
+
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
 **Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**
