@@ -301,6 +301,17 @@ COMPLETE — `ONLINE_REGIME_SIGNALS_READY`.**
   on these validated signals + Stage-2 family-specific selectors), gated
   by the reassessment's 9 GO/STOP criteria.
 
+**The hierarchical regime router named above has now been designed,
+implemented, AND evaluated on TEST — final verdict `HIERARCHICAL_ROUTER_NO_GO`.**
+
+- Design/preregistration (frozen, unmodified throughout): [`../design/HIERARCHICAL_REGIME_ROUTER_V1.md`](../design/HIERARCHICAL_REGIME_ROUTER_V1.md), `configs/hierarchical_regime_router_v1_gates.json` (commit `078f4f1`).
+- Implementation (`HIERARCHICAL_ROUTER_IMPLEMENTATION_COMPLETE`, commit `2923087`): `src/llmserveopt/policy_separation/hierarchical_regime_router_v1.py`, `hierarchical_router_evaluation_v1.py`, `hierarchical_router_gates_v1.py`, `src/llmserveopt/selector/hierarchical_stage2_selectors_v1.py`; 84 focused tests.
+- TEST evaluation audit: [`../audits/hierarchical_regime_router_v1_20260818.md`](../audits/hierarchical_regime_router_v1_20260818.md).
+- **G4 (Stage-2 preservation) and G5 (beat global fixed) both fail** — mechanically forces `NO_GO` (G4's `elif` branch fires first). Stage-1 (macro-F1 0.989, 0% catastrophic misrouting) and Stage-2 (0 regret standalone) are each individually excellent; the failure is diagnosed as an **integration/measurement-methodology artifact**, not a competence failure: the offline scenario-level majority-vote dispatch approximation used for this evaluation washes out regime activity that is a minority-of-steps phenomenon within a scenario (true for `KV_MEMORY_PRESSURE`), and on this particular TEST split, Stage-2's real headroom (`RANKING_FAIRNESS`'s `skew=1.0` control scenarios) happens to fall exactly on the scenarios Stage-1 correctly, non-leakily declines to route.
+- **Family B (`PREFILL_DECODE_CONTENTION`) got 0 TEST scenarios** on this split (8 groups, deterministic hash) — G4/Stage-2-B untested, not merely underpowered.
+- One genuine, first-ever `OVERLAP` observation surfaced in the B+C blended microcase (prior feasibility study: 0/127,319) — the router's fallback engaged safely (G9 passes).
+- Next step (**not started, not authorized**): build a genuine per-step live-simulation evaluation harness (the offline majority-vote approximation is the diagnosed root cause of the flat-zero result) before any re-evaluation; do not silently re-run under the same preregistration.
+
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
 **Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**

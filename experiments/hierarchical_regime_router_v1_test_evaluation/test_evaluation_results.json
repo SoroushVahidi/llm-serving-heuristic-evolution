@@ -1,0 +1,406 @@
+{
+  "baseline_table_mean_anwg": {
+    "A_best_global_fixed": 0.807479668003565,
+    "B_prior_flat_selector": 0.8273479278074866,
+    "C_oracle_regime_router_native_pair": 0.8244067513368983,
+    "D_learned_stage1_plus_stage2": 0.807479668003565,
+    "E_learned_stage1_plus_regime_fixed_best": 0.807479668003565,
+    "F_hidden_family_aware_selector": 0.8273479278074866,
+    "G_global_six_policy_oracle": 0.8506364193404634
+  },
+  "blended_microcase_results": {
+    "A_plus_B": {
+      "case": "A_plus_B",
+      "catastrophic_misroute_rate": 0.0,
+      "dwell_violation_count": 0,
+      "effective_regime_distribution_after_dwell": {
+        "NONE": 896,
+        "PREFILL_DECODE_CONTENTION": 13
+      },
+      "fallback_rate": 0.9856985698569857,
+      "independent_dwell_check": 0,
+      "n_active_pair_comparable_steps": 13,
+      "n_multi_active_ground_truth_steps": 0,
+      "n_overlap_ground_truth_steps": 0,
+      "n_steps": 909,
+      "router_raw_prediction_distribution": {
+        "NONE": 888,
+        "PREFILL_DECODE_CONTENTION": 20,
+        "RANKING_FAIRNESS": 1
+      },
+      "true_regime_distribution": {
+        "NONE": 888,
+        "PREFILL_DECODE_CONTENTION": 20,
+        "RANKING_FAIRNESS": 1
+      }
+    },
+    "A_plus_B_plus_C_optional": {
+      "case": "A_plus_B_plus_C_optional",
+      "catastrophic_misroute_rate": 0.0,
+      "dwell_violation_count": 0,
+      "effective_regime_distribution_after_dwell": {
+        "NONE": 856,
+        "PREFILL_DECODE_CONTENTION": 10
+      },
+      "fallback_rate": 0.9884526558891455,
+      "independent_dwell_check": 0,
+      "n_active_pair_comparable_steps": 10,
+      "n_multi_active_ground_truth_steps": 0,
+      "n_overlap_ground_truth_steps": 0,
+      "n_steps": 866,
+      "router_raw_prediction_distribution": {
+        "NONE": 853,
+        "PREFILL_DECODE_CONTENTION": 13
+      },
+      "true_regime_distribution": {
+        "NONE": 853,
+        "PREFILL_DECODE_CONTENTION": 13
+      }
+    },
+    "A_plus_C": {
+      "case": "A_plus_C",
+      "catastrophic_misroute_rate": 0.0,
+      "dwell_violation_count": 0,
+      "effective_regime_distribution_after_dwell": {
+        "NONE": 1071
+      },
+      "fallback_rate": 1.0,
+      "independent_dwell_check": 0,
+      "n_active_pair_comparable_steps": 0,
+      "n_multi_active_ground_truth_steps": 0,
+      "n_overlap_ground_truth_steps": 0,
+      "n_steps": 1071,
+      "router_raw_prediction_distribution": {
+        "NONE": 1071
+      },
+      "true_regime_distribution": {
+        "NONE": 1071
+      }
+    },
+    "B_plus_C": {
+      "case": "B_plus_C",
+      "catastrophic_misroute_rate": 0.0125,
+      "dwell_violation_count": 0,
+      "effective_regime_distribution_after_dwell": {
+        "KV_MEMORY_PRESSURE": 85,
+        "NONE": 9971
+      },
+      "fallback_rate": 0.9915473349244233,
+      "independent_dwell_check": 0,
+      "n_active_pair_comparable_steps": 80,
+      "n_multi_active_ground_truth_steps": 6,
+      "n_overlap_ground_truth_steps": 6,
+      "n_steps": 10056,
+      "router_raw_prediction_distribution": {
+        "KV_MEMORY_PRESSURE": 166,
+        "NONE": 9890
+      },
+      "true_regime_distribution": {
+        "KV_MEMORY_PRESSURE": 158,
+        "NONE": 9886,
+        "OVERLAP": 6,
+        "PREFILL_DECODE_CONTENTION": 6
+      }
+    }
+  },
+  "blended_microcase_summary": {
+    "n_active_pair_comparable_steps_total": 103,
+    "sample_too_small": false,
+    "sample_too_small_threshold": 30,
+    "weighted_catastrophic_misroute_rate": 0.009708737864077669
+  },
+  "end_to_end_test_metrics": {
+    "bootstrap_ci_90_D_minus_A": {
+      "lower": 0.0,
+      "n_test_groups": 16,
+      "upper": 0.0
+    },
+    "canonical_anwg_D": 0.807479668003565,
+    "delta_anwg_D_minus_A": 0.0,
+    "dwell_violation_count_on_test": 0,
+    "fallback_rate_on_test": 0.6648351648351648,
+    "macro_regime_anwg_D_present_regimes_only": 0.7659397281639928,
+    "multi_regime_benefit_count": 0,
+    "oracle_gap_closure_D_vs_C": 0.0,
+    "per_regime_delta_D_minus_A": {
+      "KV_MEMORY_PRESSURE": 0.0,
+      "RANKING_FAIRNESS": 0.0
+    },
+    "per_regime_mean_anwg_D": {
+      "KV_MEMORY_PRESSURE": 0.8490196078431372,
+      "RANKING_FAIRNESS": 0.6828598484848485
+    },
+    "regret_to_global_six_policy_oracle_D_vs_G": 0.04315675133689839,
+    "switching_rate_per_1000_steps_on_test": 16.543895664774787,
+    "switching_total_transitions_on_test": 274
+  },
+  "final_verdict": "HIERARCHICAL_ROUTER_NO_GO",
+  "fit_data_confirmation": {
+    "stage1_test_telemetry_rows": 16562,
+    "stage1_train_telemetry_rows": 94252,
+    "stage2_test_scenario_rows": 32,
+    "stage2_train_scenario_rows": 118,
+    "test_regime_ground_truth_distribution": {
+      "KV_MEMORY_PRESSURE": 24,
+      "RANKING_FAIRNESS": 8
+    }
+  },
+  "g4_stage2_preservation_by_regime": {
+    "KV_MEMORY_PRESSURE": {
+      "integrated_gain": -0.012499999999999997,
+      "reason": "standalone gain ~0 (division undefined)",
+      "standalone_gain": 0.0,
+      "status": "NOT_EVALUABLE"
+    },
+    "PREFILL_DECODE_CONTENTION": {
+      "reason": "0 TEST scenarios for this regime",
+      "status": "NOT_EVALUABLE"
+    },
+    "RANKING_FAIRNESS": {
+      "fraction_retained": 0.0,
+      "integrated_gain": 0.0,
+      "standalone_gain": 0.03020833333333331,
+      "status": "EVALUATED"
+    }
+  },
+  "g9a_family_c_held_out_delta_anwg": 0.0,
+  "gate_evaluation_notes": {
+    "G2_uses_present_classes_only": "TEST has 0 true PREFILL_DECODE_CONTENTION and 0 true OVERLAP telemetry rows (Family B's 8 groups happened to hash entirely into TRAIN/VAL) -- macro-F1 is computed over the classes actually present in TEST ground truth (['KV_MEMORY_PRESSURE', 'NONE', 'RANKING_FAIRNESS']), not all 5, to avoid an artifact of scoring an absent class. The all-5-class variant is also reported (macro_f1_all_5_classes_zero_division_0) for transparency.",
+    "G4_regime_B_not_evaluable": "Stage-2 Regime B (PREFILL_DECODE_CONTENTION) has 0 TEST scenarios for the same reason -- G4's per-regime fraction can only be computed for Regimes A and C on this TEST split; Regime B is reported as NOT_EVALUABLE, not silently dropped or assumed passing.",
+    "G5_ci_sample_size": "TEST has 16 unique group_key values; at/above the 5-group threshold used here to judge whether the group-resampled bootstrap CI is meaningful."
+  },
+  "gate_metrics_input": {
+    "blended_microcase_catastrophic_rate": 0.009708737864077669,
+    "bootstrap_ci_lower": 0.0,
+    "catastrophic_misroute_rate": 0.0,
+    "family_c_held_out_delta_anwg": 0.0,
+    "leakage_instance_count": 0,
+    "mean_delta_anwg": 0.0,
+    "multi_regime_benefit_count": 0,
+    "oracle_gap_closure": 0.0,
+    "qualitative_all_clusters_attributable": null,
+    "router_macro_f1": 0.9886585377383629,
+    "stage1_input_validity_fraction": 1.0,
+    "stage2_preservation_fraction_by_regime": {
+      "RANKING_FAIRNESS": 0.0
+    }
+  },
+  "gate_results": {
+    "G1": {
+      "critical": true,
+      "extra": {},
+      "id": "G1",
+      "name": "Online input validity",
+      "note": "",
+      "passed": true,
+      "threshold": 1.0,
+      "value": 1.0
+    },
+    "G2": {
+      "critical": true,
+      "extra": {},
+      "id": "G2",
+      "name": "Router quality",
+      "note": "",
+      "passed": true,
+      "threshold": 0.9,
+      "value": 0.9886585377383629
+    },
+    "G3": {
+      "critical": true,
+      "extra": {},
+      "id": "G3",
+      "name": "Catastrophic misrouting",
+      "note": "",
+      "passed": true,
+      "threshold": 0.05,
+      "value": 0.0
+    },
+    "G4": {
+      "critical": true,
+      "extra": {
+        "by_regime": {
+          "RANKING_FAIRNESS": 0.0
+        }
+      },
+      "id": "G4",
+      "name": "Stage-2 preservation",
+      "note": "binding regime=RANKING_FAIRNESS",
+      "passed": false,
+      "threshold": 0.9,
+      "value": 0.0
+    },
+    "G5": {
+      "critical": true,
+      "extra": {
+        "bootstrap_ci_lower": 0.0,
+        "ci_criterion_passed": false,
+        "mean_criterion_passed": false
+      },
+      "id": "G5",
+      "name": "Beat global fixed",
+      "note": "",
+      "passed": false,
+      "threshold": 0.01,
+      "value": 0.0
+    },
+    "G6": {
+      "critical": false,
+      "extra": {},
+      "id": "G6",
+      "name": "Oracle gap closure",
+      "note": "",
+      "passed": false,
+      "threshold": 0.75,
+      "value": 0.0
+    },
+    "G7": {
+      "critical": false,
+      "extra": {},
+      "id": "G7",
+      "name": "Multi-regime benefit",
+      "note": "",
+      "passed": false,
+      "threshold": 2,
+      "value": 0
+    },
+    "G8": {
+      "critical": true,
+      "extra": {
+        "a_leakage_count": 0,
+        "a_passed": true,
+        "b_passed": null
+      },
+      "id": "G8",
+      "name": "Interpretable / non-leaking errors",
+      "note": "qualitative (b) not yet reviewed",
+      "passed": false,
+      "threshold": 0,
+      "value": 0
+    },
+    "G9": {
+      "critical": false,
+      "extra": {
+        "a_passed": true,
+        "b_passed": true,
+        "blended_microcase_catastrophic_rate": 0.009708737864077669
+      },
+      "id": "G9",
+      "name": "Robustness",
+      "note": "",
+      "passed": true,
+      "threshold": 0,
+      "value": 0.0
+    }
+  },
+  "mode": "FIRST_AUTHORIZED_TEST_EVALUATION",
+  "preregistration_integrity": {
+    "design_doc_sha256": "c889e457e254183f16f79122967f253bccc756e971b55a2e2d91053ce8268f6e",
+    "gates_json_sha256": "b63265531a9687fa16bca5e990270427d11353fa42e00f2c5151ceb2cfc627ae",
+    "git_head_sha": "29230872c1a3ba82a6de7508dcffaaa8e3357021",
+    "git_tree_dirty": true,
+    "mf_psd_scenarios_sha256": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "telemetry_csv_sha256": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f"
+  },
+  "run_timestamp_utc": "2026-08-18T14:34:48Z",
+  "schema_version": "hierarchical_regime_router_v1_test_evaluation.1.0.0",
+  "split_counts": {
+    "test": 32,
+    "train": 118,
+    "val": 26
+  },
+  "stage1_test_metrics": {
+    "accuracy": 0.9921507064364207,
+    "catastrophic_misroute_rate": 0.0,
+    "confusion_matrix": {
+      "KV_MEMORY_PRESSURE": {
+        "KV_MEMORY_PRESSURE": 2356,
+        "NONE": 0,
+        "OVERLAP": 0,
+        "PREFILL_DECODE_CONTENTION": 0,
+        "RANKING_FAIRNESS": 0
+      },
+      "NONE": {
+        "KV_MEMORY_PRESSURE": 130,
+        "NONE": 8993,
+        "OVERLAP": 0,
+        "PREFILL_DECODE_CONTENTION": 0,
+        "RANKING_FAIRNESS": 0
+      },
+      "OVERLAP": {
+        "KV_MEMORY_PRESSURE": 0,
+        "NONE": 0,
+        "OVERLAP": 0,
+        "PREFILL_DECODE_CONTENTION": 0,
+        "RANKING_FAIRNESS": 0
+      },
+      "PREFILL_DECODE_CONTENTION": {
+        "KV_MEMORY_PRESSURE": 0,
+        "NONE": 0,
+        "OVERLAP": 0,
+        "PREFILL_DECODE_CONTENTION": 0,
+        "RANKING_FAIRNESS": 0
+      },
+      "RANKING_FAIRNESS": {
+        "KV_MEMORY_PRESSURE": 0,
+        "NONE": 0,
+        "OVERLAP": 0,
+        "PREFILL_DECODE_CONTENTION": 0,
+        "RANKING_FAIRNESS": 5083
+      }
+    },
+    "macro_f1_all_5_classes_zero_division_0": 0.5931951226430178,
+    "macro_f1_present_classes": [
+      "KV_MEMORY_PRESSURE",
+      "NONE",
+      "RANKING_FAIRNESS"
+    ],
+    "macro_f1_present_classes_only": 0.9886585377383629,
+    "n_test_rows": 16562,
+    "none_rate": 0.5429899770559111,
+    "overlap_rate": 0.0,
+    "predicted_label_distribution": {
+      "KV_MEMORY_PRESSURE": 2486,
+      "NONE": 8993,
+      "RANKING_FAIRNESS": 5083
+    },
+    "true_label_distribution": {
+      "KV_MEMORY_PRESSURE": 2356,
+      "NONE": 9123,
+      "RANKING_FAIRNESS": 5083
+    },
+    "true_none_rate": 0.5508392706194905,
+    "true_overlap_rate": 0.0
+  },
+  "stage2_test_metrics": {
+    "KV_MEMORY_PRESSURE": {
+      "best_fixed_mean_regret": 0.0,
+      "best_fixed_policy": "kv_constrained_online",
+      "epsilon_optimal_accuracy": 1.0,
+      "mean_regret": 0.0,
+      "n_test_rows": 24,
+      "predicted_policy_distribution": {
+        "kv_constrained_online": 24
+      },
+      "standalone_mean_regret_improvement_vs_fixed": 0.0,
+      "status": "EVALUATED"
+    },
+    "PREFILL_DECODE_CONTENTION": {
+      "reason": "0 TEST scenarios for this regime",
+      "status": "NOT_EVALUABLE"
+    },
+    "RANKING_FAIRNESS": {
+      "best_fixed_mean_regret": 0.03020833333333331,
+      "best_fixed_policy": "weighted_fair_share",
+      "epsilon_optimal_accuracy": 1.0,
+      "mean_regret": 0.0,
+      "n_test_rows": 8,
+      "predicted_policy_distribution": {
+        "estimated_service_time_first": 4,
+        "weighted_fair_share": 4
+      },
+      "standalone_mean_regret_improvement_vs_fixed": 0.03020833333333331,
+      "status": "EVALUATED"
+    }
+  }
+}

@@ -190,6 +190,21 @@ Do not train the router or any family-specific selector, start mechanism
 attribution, restart universal-selector work, add a fourth family, or
 modify any frozen scientific result without first completing that design.
 
+**The hierarchical router named above is now implemented AND
+TEST-evaluated — final verdict `HIERARCHICAL_ROUTER_NO_GO`:**
+[`../audits/hierarchical_regime_router_v1_20260818.md`](../audits/hierarchical_regime_router_v1_20260818.md)
+(implementation commit `2923087`). G4 (Stage-2 preservation) and G5 (beat
+global fixed) both fail on TEST; Stage-1/Stage-2 are each individually
+excellent in isolation (macro-F1 0.989, 0 regret standalone) — the
+failure is diagnosed as an offline scenario-level majority-vote dispatch
+approximation washing out minority-of-steps regime activity, not a
+competence failure of either stage. Family B got 0 TEST scenarios on
+this split (untested, not underpowered). **Next action, NOT started, NOT
+authorized:** build a genuine per-step live-simulation evaluation harness
+before any re-evaluation — do not silently re-run under the same
+preregistration, do not retune thresholds, do not start composition/
+synthesis or a fourth family from this result.
+
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
 **Family B v2 is composition-ready; the two-parent PrefillControl falsification is now COMPLETE (see below).**
