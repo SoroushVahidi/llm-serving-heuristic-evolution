@@ -1,10 +1,10 @@
 {
   "schema_version": "public_trace_corpus_v1.0.0",
   "design_doc": "docs/design/PUBLIC_TRACE_CORPUS_V1.md",
-  "git_head_sha": "9d8f997fb2c7d29891e5a5ef5da1558e364d3c7d",
-  "build_start_utc": "2026-08-19T18:28:36Z",
-  "build_end_utc": "2026-08-19T18:29:12Z",
-  "build_duration_seconds": 35.118,
+  "git_head_sha": "84fa31b8eb9de20030800f39a7b44d93a3aefba9",
+  "build_start_utc": "2026-08-19T18:30:17Z",
+  "build_end_utc": "2026-08-19T18:30:52Z",
+  "build_duration_seconds": 35.242,
   "sources": {
     "burstgpt": {
       "report": {
