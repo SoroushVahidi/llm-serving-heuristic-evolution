@@ -1,0 +1,87 @@
+{
+  "family_c_primary_held_out_seed": 20260914,
+  "family_counts": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 12,
+    "FAMILY_B_PREFILL_DECODE_V2": 12,
+    "FAMILY_C_KV_PRESSURE_V2": 12
+  },
+  "freeze_git_head_sha": "4cfdb6feaf72e3431cd535a13f7e5f47d990c9fb",
+  "freeze_timestamp_utc": "2026-08-19T04:22:33Z",
+  "primary_test_overlap_count_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 2,
+    "FAMILY_B_PREFILL_DECODE_V2": 0,
+    "FAMILY_C_KV_PRESSURE_V2": 12
+  },
+  "purpose": "Frozen 36-scenario (12/12/12) held-out replication set for the Family-B-Balanced Replication, completing design doc SS 10 of HIERARCHICAL_REGIME_ROUTER_LIVE_REEVAL_V1.md. Selection is purely metadata-driven (split assignment + canonical_scenario_id sort order); no ANWG/utility column was read to produce this selection.",
+  "scenario_ids_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": [
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.30.s20260816",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.30.s20260817",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.00.s20260816",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.00.s20260817",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew5.0000.favshort.noise0.00.s20260816",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew5.0000.favshort.noise0.00.s20260817",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260817",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.30.s20260816",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.30.s20260817",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew5.0000.favlong.noise0.00.s20260816",
+      "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew5.0000.favlong.noise0.00.s20260817"
+    ],
+    "FAMILY_B_PREFILL_DECODE_V2": [
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260820",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260821",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260822",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260823",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260820",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260821",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260822",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260823",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260820",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260821",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260822",
+      "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260823"
+    ],
+    "FAMILY_C_KV_PRESSURE_V2": [
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tightloose.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tighttight.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tighttight.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phasemiddle.tightloose.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phasemiddle.tighttight.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tightloose.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tighttight.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tightloose.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phasemiddle.tightloose.s20260914",
+      "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phasemiddle.tighttight.s20260914"
+    ]
+  },
+  "schema_version": "family_b_balanced_replication_v1.1.0.0",
+  "source_mf_psd_scenarios_sha256": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+  "split_provenance_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": [
+      [
+        "test",
+        2
+      ],
+      [
+        "val",
+        10
+      ]
+    ],
+    "FAMILY_B_PREFILL_DECODE_V2": [
+      [
+        "val",
+        12
+      ]
+    ],
+    "FAMILY_C_KV_PRESSURE_V2": [
+      [
+        "test",
+        12
+      ]
+    ]
+  },
+  "target_per_family": 12
+}
