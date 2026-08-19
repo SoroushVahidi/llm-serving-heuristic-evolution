@@ -1,5 +1,9 @@
 # Pause Provenance — 2026-07-23
 
+> **SUPERSEDED FOR CURRENT STATUS.**
+> See [`docs/current/RESUME_HERE.md`](RESUME_HERE.md) for authoritative current state.
+> This snapshot (2026-07-23) predates MF-PSD, all NO_GOs, hierarchical routing, live re-evaluation, and Family-B replication prep.
+
 Durable evidence record for the pause state established by
 `docs/current/PROJECT_HANDOFF_2026-07-23.md`. Written specifically because
 the handoff originally cited a session-scratch `/tmp` log path that will not

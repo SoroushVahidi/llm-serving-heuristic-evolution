@@ -1,5 +1,9 @@
 # Composition Experiment Design
 
+> **SUPERSEDED FOR CURRENT STATUS.**
+> See [`docs/current/RESUME_HERE.md`](RESUME_HERE.md) for authoritative current state.
+> Composition was subsequently formally `COMPOSITION_DEMOTED` (`docs/audits/reassessment_composition_hypothesis_20260817.md`, commit `dc5757b`).
+
 This document defines the decisive composition experiment to run after both upstream workflows finish:
 
 - `/mmfs1/project/ikoutis/sv96/llmserveopt-data/policy_frontier_cartography_20260721T154408Z`

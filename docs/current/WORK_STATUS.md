@@ -5,6 +5,9 @@ Detailed current status table. The roadmap authority is
 companion. Historical audit reports remain authoritative only for the time they
 were written.
 
+Last reconciled: 2026-08-19, current HEAD `179a6fe` (Public Trace Corpus v1
+manifest refresh). No active jobs; no concurrent writer.
+
 Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 `FOUNDATIONAL_CANDIDATE`, `EVALUATION_ONLY`, `IN_PROGRESS`,
 `IMPLEMENTED_NEEDS_VALIDATION`, `NOT_STARTED`, `BLOCKED`, `DEFERRED`,
@@ -43,19 +46,46 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | KV v2 reproducibility forensic audit | `COMPLETE`; `REPRODUCIBILITY_GAP_BOUNDED` | Audit `docs/audits/kv_v2_reproducibility_forensic_20260817.md`; provenance guard `scripts/run_policy_separation_kv_pressure_pilot_v1.py` (`_collect_provenance`); tests `tests/test_kv_pressure_provenance.py` (14 new) | Root cause not demonstrated. Ruled out/narrowed: code drift (0 diff on the entire KV v2 execution path since launch commit `6be526e`), runtime/multiprocessing nondeterminism (current runs are byte-identical-SHA-256-reproducible), and both locally available BurstGPT files (neither reproduces history; their sampling pools are nearly but not exactly identical — 7335 vs 7337 filtered rows). Historical mismatch is material: 99/144 cells differ, 17/72 scenarios flip practical winner. Composition falsification's internal validity unaffected (all its methods share one current-environment run); only cross-run comparison to historical v2 numbers requires caution. No historical CSV/verdict rewritten | Future KV runs now record git SHA/dirty, config+dataset SHA-256, library versions, result-CSV SHA-256 automatically; no further action required unless root cause is later pursued |
 | Higher-level structural reassessment of the composition hypothesis | `COMPLETE`; `COMPOSITION_DEMOTED` | Audit `docs/audits/reassessment_composition_hypothesis_20260817.md` | Composition/synthesis demoted from central hypothesis to exploratory future work | Revised roadmap: policy-separating workloads -> complementary policy library -> contextual selection (multi-family) -> mechanism attribution -> bounded envelope; Step 1 = MF-PSD (below) |
 | MF-PSD v1 (Multi-Family Policy Separation Dataset, revised-roadmap Step 1) | `COMPLETE`; `MF_PSD_READY` | Audit `docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`; artifacts `experiments/mf_psd_v1/`; builder `src/llmserveopt/policy_separation/mf_psd.py`; CLI `scripts/build_mf_psd_v1.py`; tests `tests/test_mf_psd_v1.py` (31/31) | Unifies Family A v2 (288 rows/72 scenarios), Family B v2 (64 rows/32 scenarios), Family C/KV v2 (144 rows/72 scenarios) into one canonical long-form table (496 rows) + scenario-context table (176 scenarios); explicit learnable-feature allowlist (34 family-prefixed columns) vs forbidden/audit-only denylist; exact row/scenario conservation; 0 duplicates; deterministic byte-for-byte rebuild; 0 mutation of frozen sources (checksum-verified). Six-anchor policy matrix is sparse (each family only ran its own 2 anchors), not dense — documented, not fabricated | Data unification only; no selector trained, no composition run. Step 2 (unified six-policy utility-matrix evaluation, ~704 new policy-scenario evaluations) is next but NOT started |
+| Unified Utility Matrix v2 (revised-roadmap Step 2) | `COMPLETE`; `UNIFIED_UTILITY_MATRIX_READY` | Artifacts `experiments/unified_utility_matrix_v2/`; audit `docs/audits/family_c_reconstruction_v1_and_unified_matrix_completion_20260817.md` | 176×6 = 1,056/1,056 cells populated; 54.0% unique-winner rate; positive oracle gain over best-fixed in every family. Missing a build manifest (v1 has one, v2 does not) — additive-only debt, not a content defect | Fed Step 3 (flat/pooled selector) |
+| Family C Reconstruction v1 | `COMPLETE`; `FAMILY_C_RECONSTRUCTION_BOUNDED` | Artifacts `experiments/family_c_reconstruction_v1/`; audit `docs/audits/family_c_step2_reconstruction_audit_20260817.md` | Historical KV v2 replay was structurally impossible (runner never serialized request data); resolved via a new versioned generate-once/serialize/replay layer, 432/432 cells | Fed Unified Utility Matrix v2 |
+| Flat/pooled multi-family selector (revised-roadmap Step 3) | `COMPLETE`; `MULTIFAMILY_SELECTOR_NO_GO` | Artifacts `experiments/multifamily_contextual_selector_v1/`; audit `docs/audits/multifamily_contextual_selector_v1_20260817.md` | All 5 preregistered gates failed on pooled Regime-B holdout; within-family (Regime A) selection strong. Root cause: `mechanism_family` is 100% classifiable from the feature schema alone (family-identifying leakage, not mechanism understanding) | Motivated the shared-feature-schema redesign |
+| Shared Cross-Family Feature Schema v1 | `COMPLETE`; `SHARED_FEATURE_SCHEMA_NO_GO` | Artifacts `experiments/shared_cross_family_features_v1/`; audit `docs/audits/shared_cross_family_feature_schema_feasibility_v1_20260817.md` | 17-feature zero-missingness schema built/replay-verified for 176/176 scenarios; family still 100% classifiable (disjoint feature-space regions, not missingness); cross-family nearest neighbors not more utility-consistent than random | Motivated the mechanism-choice-target redesign |
+| Mechanism-Choice Target Feasibility v1 | `COMPLETE`; `MECHANISM_TARGET_NO_GO` | Artifacts `experiments/mechanism_choice_target_feasibility_v1/`; audit `docs/audits/mechanism_choice_target_feasibility_v1_20260817.md` | `kv` mechanism contrast confounded (largest on Family A, which has no KV pressure); two-stage pipeline retains zero net advantage over a fixed global policy; only `ranking` shows genuine cross-family activation | Motivated the cross-family transfer well-posedness reassessment |
+| Cross-Family Transfer Well-Posedness Reassessment v1 | `COMPLETE`; `CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY` | Artifacts `experiments/cross_family_transfer_wellposedness_reassessment_v1/`; audit `docs/audits/cross_family_transfer_wellposedness_reassessment_20260817.md` | Three independent NO_GOs converge on genuinely different root causes; within-family evidence strong; cross-family structure exists but is insufficient for a universal per-scenario selector | Motivated hierarchical regime-router design |
+| Online Regime-Signal Feasibility v1 | `COMPLETE`; `ONLINE_REGIME_SIGNALS_READY` | Artifacts `experiments/online_regime_signal_feasibility_v1/` (127,319-row per-step telemetry CSV, ~29.9MB); audit `docs/audits/online_regime_signal_feasibility_v1_20260817.md` | Family-B contention detectable after a documented correction; all three activity signals achieve perfect precision; zero regime overlap observed | Fed hierarchical router Stage-1 |
+| Hierarchical Regime Router v1 (TEST, offline majority-vote) | `COMPLETE`; `HIERARCHICAL_ROUTER_NO_GO` | Artifacts `experiments/hierarchical_regime_router_v1_test_evaluation/`; impl commit `2923087`; audit `docs/audits/hierarchical_regime_router_v1_20260818.md` | G4 (Stage-2 preservation) and G5 (beat global fixed) fail on TEST; Stage-1/Stage-2 individually excellent but offline majority-vote integration washes out minority-of-steps activity; Family B got 0 TEST scenarios | Motivated the live per-step harness |
+| Hierarchical Router Live Harness v1 (smoke) | `COMPLETE`; `LIVE_HIERARCHICAL_HARNESS_READY` | Artifacts `experiments/hierarchical_router_live_harness_v1_smoke/`; commit `723a39c`; audit `docs/audits/hierarchical_router_live_harness_validation_v1_20260818.md` | 6/6 forced-parent equivalence checks bit-exact; causal-switch microcase confirms genuine per-step causal dispatch | Enabled the live re-evaluation |
+| Hierarchical Router Live Re-evaluation v1 | `COMPLETE` (formally gate-rescored); `HIERARCHICAL_ROUTER_NO_GO` | Artifacts `experiments/hierarchical_regime_router_live_reeval_v1/live_reeval_results.json`; run commit `9fde981`, fix `ed74276`; audit `docs/audits/hierarchical_regime_router_live_reeval_v1_20260818.md` | Live ANWG 0.8136 vs best-fixed 0.8075 (delta 0.00616, below the 0.01 bar); oracle-gap closure 0.143 (below the 0.75 bar); Family B again got 0 scenarios. Two current tracked-provenance-only diffs exist in `gate_rescoring_v1.json` (timestamp/HEAD-SHA, no metric change) | Motivated Family-B-specific live evaluation |
+| Family-B Balanced Replication v1 | `IN_PROGRESS`; `IMPLEMENTATION_READY`, scientific run `NOT_STARTED` | Design `docs/design/FAMILY_B_BALANCED_REPLICATION_V1.md`; artifacts `experiments/family_b_balanced_replication_v1/`; HEAD commit `9d8f997`; runner `scripts/run_family_b_balanced_replication_v1.py` | Only `--source smoke_train`/`smoke_synthetic` have been run. `--source replication` (the frozen 36-scenario scientific set) requires `--i-am-authorized` in addition and has **not** been invoked — no held-out scientific run exists | Requires separate, explicit scientific authorization before launching `--source replication` |
+| Public Trace Corpus v1 (workload-input layer, Layers 0-1) | `COMPLETE`; committed and pushed | Design `docs/design/PUBLIC_TRACE_CORPUS_V1.md`; artifacts `data/public_trace_corpus_v1/`; adapter `src/llmserveopt/workloads/public_trace_corpus.py`; builder `scripts/build_public_trace_corpus_v1.py`; tests `tests/test_public_trace_corpus_v1.py`; commits `84fa31b` + `179a6fe` | Ingests BurstGPT + Azure 2023 conv/code; classifies AgentPerfBench as `REAL_SYSTEM_VALIDATION_SOURCE` (not ingested); no policy outcomes, no oracle labels, no paid API use | Layer 2+ (policy replay across the completed policy library) is NOT started; requires authorization |
+| Decision-Criticality / Regime-Timescale TRAIN/VAL analysis | `IN_PROGRESS`; prepared-only, uncommitted | Design `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`; module `src/llmserveopt/analysis/decision_criticality_timescale_trainval_v1.py`; runner `scripts/run_decision_criticality_timescale_trainval_v1.py`; tests `tests/test_decision_criticality_timescale_trainval_v1.py` | Design/code/tests exist but are untracked; no `experiments/decision_criticality_timescale_trainval_v1/` output directory and no run log exist — the full 144-scenario TRAIN/VAL run has not produced output. Owned by a separate workstream; **do not modify, stage, or launch as part of documentation polish** | Belongs to its own workstream, not this one |
+| New-policy synthesis/evolution | `NOT_STARTED` (long-term goal) | n/a | Depends on Public Trace Corpus Layer 2+ (policy replay) and the decision-criticality/mechanism-attribution layer above | Not actionable until both upstream dependencies land |
 
 ## Current Blocker
 
-There is no active failed job to diagnose. The higher-level structural
-reassessment (`docs/audits/reassessment_composition_hypothesis_20260817.md`)
-demoted composition/synthesis from the project's central hypothesis
-(`COMPOSITION_DEMOTED`) and set a revised roadmap. Its Step 1, the MF-PSD v1
-unified dataset (`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`,
-verdict `MF_PSD_READY`), is now complete. Step 2 (unified six-policy
-utility-matrix evaluation across all three families — see that audit's §M/§Q
-for the exact ~704 new policy-scenario evaluations required) has **not**
-been started and requires separate authorization, per that task's explicit
-stop condition.
+There is no active failed job to diagnose and no active process/tmux session
+running anywhere for this repository as of 2026-08-19. The revised roadmap's
+Steps 1-3 (MF-PSD → Unified Utility Matrix → flat/pooled selector) are all
+complete; the flat/pooled selector, shared-feature-schema, and
+mechanism-choice-target redesigns each independently returned `NO_GO`,
+converging on `CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`.
+The hierarchical regime router that followed is also `HIERARCHICAL_ROUTER_NO_GO`
+at both TEST and live re-evaluation (Family B got 0 scenarios in both). The
+live blocker for a Family-B-specific verdict is the Family-B Balanced
+Replication scientific run, which is implementation-ready but **not yet
+authorized to launch**. A known, pre-existing environment limitation: 6
+`tests/test_unified_utility_matrix_v1.py` tests fail off-cluster because
+Family-A v2 "production mode" refuses a silent synthetic fallback when
+staged BurstGPT isn't present under the expected `/mmfs1/...` cluster path
+(or `LLM_SERVEOPT_BURSTGPT_CSV`) — this is expected locally, not a
+regression (see `logs/overnight_full_repo_validation_20260819.log`).
+
+Independently, the Public Trace Corpus v1 workload-input layer (Layers 0-1)
+is complete and committed (`84fa31b`/`179a6fe`); Layer 2+ (policy replay) is
+not started. A separate decision-criticality/regime-timescale analysis
+workstream has prepared its design/code/tests but produced no run output yet
+and is untracked — it belongs to a different task and should not be touched
+here.
 
 Historical context below (WS-P family-by-family pairwise-separation and
 composition-falsification work) remains valid evidence and is unchanged; it
@@ -84,18 +114,19 @@ Read:
 
 1. [`RESUME_HERE.md`](RESUME_HERE.md)
 2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md)
-3. [`../audits/reassessment_composition_hypothesis_20260817.md`](../audits/reassessment_composition_hypothesis_20260817.md)
-   (`COMPOSITION_DEMOTED`, revised roadmap)
-4. [`../audits/multi_family_policy_separation_dataset_v1_20260817.md`](../audits/multi_family_policy_separation_dataset_v1_20260817.md)
-   (`MF_PSD_READY`)
+3. [`../audits/cross_family_transfer_wellposedness_reassessment_20260817.md`](../audits/cross_family_transfer_wellposedness_reassessment_20260817.md)
+   (`CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`)
+4. [`../audits/hierarchical_regime_router_live_reeval_v1_20260818.md`](../audits/hierarchical_regime_router_live_reeval_v1_20260818.md)
+   (`HIERARCHICAL_ROUTER_NO_GO`, formal)
 5. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
 
-Then, with explicit authorization: revised-roadmap **Step 2** — unified
-six-policy utility-matrix evaluation over the MF-PSD (run the 4 non-native
-canonical anchors on each family's own scenarios; see the MF-PSD audit §M/§Q
-for the exact evaluation list). Do not start selector training,
-hyperparameter tuning, pairwise-regret learning, mechanism attribution, or
-any composition/synthesis experiment before Step 2 is complete.
+Three independent threads are queued, each requiring separate explicit
+authorization before launch: (1) the Family-B Balanced Replication
+scientific run (`--source replication --i-am-authorized`); (2) Public Trace
+Corpus v1 Layer 2+ policy replay; (3) the decision-criticality/timescale
+analysis's actual TRAIN/VAL run (owned by a different workstream). Do not
+start selector retraining, MAP-Elites, or new-policy synthesis before the
+decision-critical-state evidence these threads are meant to produce exists.
 
 Historical WS-P entrypoint (superseded as the "current next action" by the
 above, but still valid background):

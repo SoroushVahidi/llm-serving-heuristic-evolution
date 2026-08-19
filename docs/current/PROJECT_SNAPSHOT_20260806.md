@@ -1,5 +1,9 @@
 # Project Snapshot — 2026-08-06 (Query 2 Reconciliation)
 
+> **SUPERSEDED FOR CURRENT STATUS.**
+> See [`docs/current/RESUME_HERE.md`](RESUME_HERE.md) for authoritative current state.
+> This snapshot (2026-08-06) predates MF-PSD, all NO_GOs, hierarchical routing, live re-evaluation, and Family-B replication prep.
+
 **Status:** reconciled factual snapshot, produced by Query 2 of a four-query
 project-pause sequence. This is not yet the final resume document — Query 3
 will produce/refresh that. This file records what was true, and verified,

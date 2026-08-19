@@ -1,5 +1,9 @@
 # Composition Implementation Status
 
+> **SUPERSEDED FOR CURRENT STATUS.**
+> See [`docs/current/RESUME_HERE.md`](RESUME_HERE.md) for authoritative current state.
+> Composition was subsequently formally `COMPOSITION_DEMOTED` (`docs/audits/reassessment_composition_hypothesis_20260817.md`, commit `dc5757b`).
+
 > **Pause addendum 2026-07-25.** The repaired load-discrimination pilot (`PARTIALLY_READY`) does **not** justify reopening composition or synthesis work. Native composition pilot remains `NO_GO` with verified-readable artifacts; structural synthesis remains empirically `NOT_READY`. Prioritize simulator/load discrimination on natural evidence first.
 
 

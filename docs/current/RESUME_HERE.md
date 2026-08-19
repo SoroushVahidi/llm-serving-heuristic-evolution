@@ -11,7 +11,8 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | see `git rev-parse HEAD` (MF-PSD v1 build after `dc5757b`) |
+| Last reconciled SHA | `179a6fe0e46a32aac8045061f923e4500e85e352` |
+| Last reconciled date | 2026-08-19 |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
 | Canonical roadmap | `docs/PROJECT_MAP.md` |
@@ -520,7 +521,7 @@ Supported interpretation:
    decision rule this forces `KV_COMPOSITION_INCONCLUSIVE` regardless of the
    otherwise-favorable G1-G6 results. **Do not** escalate to a more complex
    child, MAP-Elites, symbolic distillation, or LLM synthesis from this
-   result — per its own audit §Z, the only defensible next step (not
+    result — per its own audit §Z, the only defensible next step (not
    started) is a narrowly-rescoped child adding a transition-aware admission
    cap, re-run through the identical frozen procedure. **Separately,** this
    task surfaced an unresolved reproducibility gap in the whole KV v1/v2
@@ -528,11 +529,48 @@ Supported interpretation:
    the historical frozen KV v2 CSV bit-for-bit even by re-running the
    original unmodified runner; root cause not identified, flagged for a
    dedicated follow-up.
-2. **Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and
-   decide the next module-decomposition/compositional-learning step.
+
+## Family-B Balanced Replication (IMPLEMENTATION_READY)
+
+- Design/artifacts: `experiments/family_b_balanced_replication_v1/` (commit `9d8f997`, which is also the HEAD commit as of this reconciliation).
+- The smoke-synthetic run infrastructure is prepared; the scientific replication across actual scenarios has not yet executed.
+- **Status: READY TO RUN — explicit authorization required before launching.** Family-B was the only regime never tested by the hierarchical router's TEST or live evaluations (0 scenarios in both).
+- Current provenance-timestamp diffs in `run_smoke_synthetic_results.json` are provenance-only; no scientific result was changed.
+
+## Public Trace Corpus v1 (IMPLEMENTED and KEPT)
+
+- Design: `docs/design/PUBLIC_TRACE_CORPUS_V1.md`
+- Schema: `data/public_trace_corpus_v1/schema.json`
+- Build script: `scripts/build_public_trace_corpus_v1.py`
+- Adapter module: `src/llmserveopt/workloads/public_trace_corpus.py`
+- Tests: `tests/test_public_trace_corpus_v1.py` (250 lines, 22 test functions)
+- Artifacts: `data/public_trace_corpus_v1/` (manifest, distribution stats, source coverage)
+- Commits `84fa31b` + `179a6fe` are **KEPT**: technically sound, aligned with project goals, no frozen scientific artifacts touched.
+- Scope: Workload-input layer only (Layers 0-1). Ingests BurstGPT, Azure 2023 conv+code; classifies AgentPerfBench as REAL_SYSTEM_VALIDATION_SOURCE. No policy outcomes, no oracle labels, no paid API use.
+- **Important note:** The prior forensic report incorrectly claimed a tracked `public_trace_corpus/` directory was deleted. This was uncommitted local work only. No git-tracked content was removed.
+- **Next step:** Layer 2+ (policy replay) is NOT started. Cohere/CloudRift belong only in real-LLM validation (Layer 6).
+
+## Decision-Criticality / Timescale Analysis (IN-FLIGHT UNCOMMITTED WORK)
+
+- Files: `src/llmserveopt/analysis/`, `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`, `scripts/run_decision_criticality_timescale_trainval_v1.py`, `tests/test_decision_criticality_timescale_trainval_v1.py`
+- Status: All untracked, owned by a separate concurrent workstream. Commit timestamps predate the Public Trace Corpus incident. Do not modify, stage, or commit these as part of Pass 2.
+- Mentioned here only so a resuming agent knows they exist and are not to be disturbed.
+
+## Exact Next Tasks (three independent threads)
+
+1. **Family-B replication:** Implementation-ready (commit `9d8f997`, HEAD). Scientific run NOT YET STARTED per task instructions. Requires explicit authorization.
+2. **Public Trace Corpus v1:** Implementation complete (commits 84fa31b/179a6fe). No further corpus development until Layer 2+ is explicitly authorized.
+3. **Decision-criticality analysis:** In-progress uncommitted parallel workstream. Do not modify.
+
+**The two independent main threads remain:**
+**WS-P:** Family B v2 analysis → PrefillControl composition → Family C v2 → KV composition falsification — all complete. Family-B balanced replication implementation-ready. See items 1-3 above for next actions.
+**Apt-Serve/CC:** Perform the post-Phase-G module-envelope interpretation and decide next module-decomposition/compositional-learning step.
 
 ## Do Not Do By Default
 
+- Do not launch Family-B scientific replication without explicit authorization.
+- Do not advance public-trace corpus beyond workload-input layer without authorization.
+- Do not modify, stage, or commit the decision-criticality uncommitted work.
 - Do not claim Apt-Serve globally beats the best fixed baseline.
 - Do not treat Apt-Serve as the project endpoint.
 - Do not start CC6 without explicit authorization.

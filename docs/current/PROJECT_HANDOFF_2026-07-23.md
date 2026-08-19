@@ -1,5 +1,10 @@
 # Project Handoff
 
+> **SUPERSEDED FOR CURRENT STATUS.**
+> See [`docs/current/RESUME_HERE.md`](RESUME_HERE.md) for authoritative current state.
+> This snapshot (2026-07-23) predates MF-PSD, all NO_GOs, hierarchical routing, live re-evaluation, and Family-B replication prep.
+>
+
 > **Pause addendum 2026-07-25.** Prefer
 > [`RESUME_HERE.md`](RESUME_HERE.md) and
 > [`pause_2026_07_25/PAUSE_HANDOFF.md`](pause_2026_07_25/PAUSE_HANDOFF.md)

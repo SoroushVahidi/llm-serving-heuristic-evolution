@@ -5,8 +5,9 @@
 status, read [`docs/BASELINE_STATUS.md`](BASELINE_STATUS.md). Dated files in
 [`docs/audits/`](audits/) are historical evidence, not live status.
 
-Last reconciled: 2026-08-17, after MF-PSD v1 build (following commit
-`dc5757b`, the higher-level structural reassessment doc).
+Last reconciled: 2026-08-19, after Family-B live replication prep (commit
+`9d8f997`), Public Trace Corpus v1 implementation (commits `84fa31b` + `179a6fe`),
+and decision-criticality analysis design (uncommitted parallel workstream).
 
 ## Documentation Authority
 
@@ -20,15 +21,114 @@ Last reconciled: 2026-08-17, after MF-PSD v1 build (following commit
 
 ## North Star
 
-The project aims to build a **verified contextual multi-family scheduler system for online LLM inference serving**.
+**As of 2026-08-19, this supersedes the pre-reassessment "zero-regret contextual selection"
+framing this doc used to lead with** (see `docs/audits/reassessment_composition_hypothesis_20260817.md`
+and the three selector/schema/mechanism NO_GOs below for why): the project's ultimate
+objective is **not** merely policy selection, composition, or contextual routing between a
+fixed policy library.
 
 It is not the same thing as:
 
 - choosing the single best fixed scheduler;
 - reproducing any one external paper for its own sake;
-- making Apt-Serve the final scheduler.
+- making Apt-Serve the final scheduler;
+- training a universal per-scenario selector or router as an end in itself.
 
-Those are inputs to the larger system. The durable objective is to build a multi-family heuristic library, rigorously separate their performance boundaries via targeted workloads, and use contextual selection to achieve zero-regret scheduling across diverse deployment contexts.
+Those are inputs to, or evidence-gathering stages for, the larger system, not its endpoint.
+A multi-family heuristic library and rigorous per-family performance-boundary separation are
+durable prerequisites; contextual selection/routing (flat/pooled selector, hierarchical
+router) has been tried and demoted at every tier tested so far (see the Current Checkpoint
+below) — the finding is that selection/routing alone is not the mechanism that will get the
+project to its objective, not that selection/routing was a wasted step.
+
+**Desired end state:**
+
+```text
+NEW WORKLOAD / INPUT / SERVING STATE
+  -> characterize context
+  -> identify where existing policies disagree/fail
+  -> identify decision-critical mechanisms
+  -> generate / evolve / construct a NEW scheduling policy tailored to that context
+  -> verify it against strong existing policies
+  -> validate selected results using real LLM serving
+```
+
+### Timelines
+
+**Short-term:** Build a strong policy-separating dataset (COMPLETE — MF-PSD v1 + unified utility matrix + three NO_GOs).
+
+**Mid-term:** Mechanism attribution + decision-critical state modeling (NOT STARTED — gated on public-trace corpus completion and policy replay).
+
+**Long-term:** New-policy synthesis/evolution (NOT STARTED — depends on Layers 2-5 of public-trace corpus + decision-criticality analysis).
+
+**Final validation:** Real LLM serving experiments (NOT STARTED — Cohere/CloudRift reserved for this stage only).
+
+### Dataset Layers
+
+Seven layers, each with its own scope, ownership, and gating dependency. This
+supersedes the earlier four-bucket (A-D) framing this doc briefly used —
+folded into one numbering here so the layer used in status tables
+(`WORK_STATUS.md`, `EXPERIMENT_INDEX.md`) and the layer used here always
+agree:
+
+- **Layer 0 — public trace provenance:** raw third-party dataset sources
+  (BurstGPT MIT, Azure 2023 conv/code CC-BY-4.0, AgentPerfBench classified
+  `REAL_SYSTEM_VALIDATION_SOURCE`), license/provenance tracked, not
+  redistributed beyond what each license permits. **COMPLETE**
+  (`data/raw/**`, commits `84fa31b`/`179a6fe`).
+- **Layer 1 — normalized real public workload inputs:** the canonical
+  schema-conformant corpus built from Layer 0. **COMPLETE**
+  (`data/public_trace_corpus_v1/`, `docs/design/PUBLIC_TRACE_CORPUS_V1.md`).
+- **Layer 2 — canonical replay scenarios:** Layer-1 traces turned into
+  concrete simulator scenarios (policy-agnostic). **NOT STARTED.**
+- **Layer 3 — same-scenario multi-policy outcomes:** each Layer-2 scenario
+  run under the full policy library; scenario-level utility/regret recorded.
+  **NOT STARTED for public-trace scenarios** — but this is exactly what
+  MF-PSD v1 + Unified Utility Matrix v2 already did for the synthetic Family
+  A/B/C scenario set (**COMPLETE** for that set; the public-trace corpus has
+  not yet gone through this step).
+- **Layer 4 — step-level actions/trajectories:** per-step action records
+  during Layer-3 replay, not just scenario-level aggregate utility.
+  **NOT STARTED.**
+- **Layer 5 — counterfactual decision-criticality/mechanism annotations:**
+  decision-critical-state identification, counterfactual action divergence,
+  mechanism attribution, built from Layer 4. **NOT STARTED** — this is the
+  layer the decision-criticality/timescale analysis workstream (currently
+  prepared-only, uncommitted, owned separately) is designed to eventually
+  produce evidence toward.
+- **Layer 6 — small real-LLM validation subset:** a small subset of
+  synthesized-policy results validated against real hosted LLM serving
+  (Cohere/CloudRift). **NOT STARTED. Only stage where Cohere/CloudRift
+  belong** — never for coding, literature search, dataset schema design, or
+  code review.
+
+### New-Policy Synthesis Path
+
+```
+PUBLIC TRACES
+    ↓
+Layer 0: PROVENANCE-TRACKED RAW TRACES (COMPLETE)
+    ↓
+Layer 1: CANONICAL WORKLOAD CORPUS (COMPLETE per commits 84fa31b/179a6fe)
+    ↓
+Layer 2: CANONICAL REPLAY SCENARIOS (NOT STARTED)
+    ↓
+Layer 3: SAME-SCENARIO MULTI-POLICY OUTCOMES (COMPLETE for MF-PSD's synthetic
+         scenario set via MF-PSD v1 + Unified Utility Matrix v2; NOT STARTED
+         for public-trace scenarios)
+    ↓
+Layer 4: STEP-LEVEL ACTIONS/TRAJECTORIES (NOT STARTED)
+    ↓
+Layer 5: DECISION-CRITICALITY / MECHANISM ATTRIBUTION (NOT STARTED)
+    ↓
+NEW POLICY SYNTHESIS / EVOLUTION (NOT STARTED — LONG-TERM GOAL)
+    ↓
+SIMULATOR VALIDATION
+    ↓
+Layer 6: REAL-LLM VALIDATION (Cohere/CloudRift only here)
+```
+
+Selector/router experiments are **evidence-gathering stages**, not the final goal. The flat/pooled selector NO_GO, shared-feature NO_GO, mechanism-choice target NO_GO, and cross-family demotion all converge on the same conclusion: a universal per-scenario selector is unlikely to work globally, but per-family/statedependent policy construction has real potential when grounded in decision-critical mechanism evidence rather than aggregate features.
 
 ## Architecture
 

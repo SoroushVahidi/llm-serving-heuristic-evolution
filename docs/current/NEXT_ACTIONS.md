@@ -4,7 +4,61 @@ This is the current prioritized action list. It must agree with
 [`../PROJECT_MAP.md`](../PROJECT_MAP.md), [`RESUME_HERE.md`](RESUME_HERE.md),
 [`WORK_STATUS.md`](WORK_STATUS.md), and [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
 
-## P0 - Structural Reassessment / MF-PSD (current)
+For the full operational narrative, read [`RESUME_HERE.md`](RESUME_HERE.md). This doc is a pointer + delta list.
+
+For historical P0 narrative (superseded as the active P0), see the section at end of this file.
+
+---
+
+## NOW
+
+1. **Decision-criticality/timescale analysis** — Uncommitted parallel workstream in progress. Owned by a separate session. Files: `src/llmserveopt/analysis/`, `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`, `scripts/run_decision_criticality_timescale_trainval_v1.py`, `tests/test_decision_criticality_timescale_trainval_v1.py`. Do not modify.
+
+2. **Pass-1/Pass-2 documentation reconciliation** — This file was updated on 2026-08-19 (commits in this pass). Check for consistency.
+
+## NEXT
+
+3. **Family-B balanced scientific replication** — Implementation-ready (commit `9d8f997`, HEAD). Smoke-synthetic infrastructure is prepared. The full scientific replication across actual scenarios is NOT YET STARTED. Requires explicit authorization — this was the only regime never tested by hierarchical router (0 scenarios in both TEST and live eval).
+
+4. **Public Trace Corpus v1 — Layer 2+** — Workload-input layer (Layers 0-1) is complete (commits 84fa31b/179a6fe). Next step: policy replay across multiple policies to produce derived policy-separation data (Layer 3). NOT STARTED. Requires authorization.
+
+5. **Provenance-only diffs** — `experiments/family_b_balanced_replication_v1/run_smoke_synthetic_results.json` and `experiments/hierarchical_regime_router_live_reeval_v1/gate_rescoring_v1.json` have only HEAD-SHA and timestamp updates. No scientific content changed. Leave untouched unless the owning session commits them.
+
+## AFTER THAT
+
+6. **Replay public workloads across policy library** — Using the completed Public Trace Corpus v1 as Layer 0-1, run Layer 2 policy replay (BurstGPT + Azure 2023 scenarios across 6+ policies). Produce the same-scenario-multi-policy dataset.
+
+7. **Enrich with state-level separation data** — Layer 4: decision-critical states, alternative actions, counterfactual trajectories. Depends on Layer 2 completion + decision-criticality analysis.
+
+8. **New-policy synthesis/evolution** — Layer 6+: generate or evolve new scheduling policy based on decision-critical mechanism evidence. LONG-TERM GOAL.
+
+## DEFERRED
+
+9. **Arbitrary router redesign** — Hierarchical routing has been evaluated (TEST + live re-eval, both `NO_GO`). No re-design without fresh authorization.
+
+10. **Composition resurrection** — Composition was `COMPOSITION_DEMOTED` per `dc5757b`. Do not revive without fresh justification.
+
+11. **GP / MAP-Elites / LLM-guided synthesis** — Do not start until dataset readiness gates exist (Layers 2-5 complete + decision-criticality analysis showing clear synthesis signal).
+
+## DO NOT START WITHOUT AUTHORIZATION
+
+12. **Family-B scientific replication** — Only after explicit task authorization, not after documentation reconciliation.
+
+13. **Public-trace Layer 2+ policy replay** — Only after explicit task authorization.
+
+14. **Cohere/CloudRift usage** — These belong ONLY to real-LLM validation (final stage D). Never use for coding, literature search, dataset schema design, or code review.
+
+15. **CC6 dynamic adaptation** — After P0-P2 completion only.
+
+16. **Add a fourth workload family** — Until existing three families are fully exhausted.
+
+---
+
+## Historical P0 Narrative (superseded as active P0)
+
+**See [`RESUME_HERE.md`](RESUME_HERE.md) for current operational status.** Below is preserved for historical continuity.
+
+### P0 - Structural Reassessment / MF-PSD (current)
 
 **The higher-level structural reassessment of the composition hypothesis is
 COMPLETE:** [`../audits/reassessment_composition_hypothesis_20260817.md`](../audits/reassessment_composition_hypothesis_20260817.md).

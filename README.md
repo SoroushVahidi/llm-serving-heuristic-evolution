@@ -53,6 +53,10 @@ secondary diagnostic.
 
 Current branch: `contextual-compositional-heuristics-20260731`.
 
+**For current operational state, always read [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md).**
+
+The apt_serve_phase_g_analysis_20260809.md section below is superseded by the current operational doc. Keep for historical context only:
+
 As of the latest reconciliation, the most recent major local experiment is
 **Apt-Serve Phase G**:
 
@@ -73,6 +77,10 @@ the whole project or proof that compositional synthesis works.
 The canonical next task is to reconcile the completed Phase G interpretation
 into the broader module-decomposition and library-envelope roadmap, then return
 to contextual composition work rather than launching another Apt-Serve sweep.
+
+> **Current checkpoint has moved beyond Apt-Serve.** The full current state
+> (Family-B replication prep, Public Trace Corpus v1, decision-criticality
+> analysis) is in [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md).
 
 ## Repository Layout
 
