@@ -205,6 +205,33 @@ before any re-evaluation — do not silently re-run under the same
 preregistration, do not retune thresholds, do not start composition/
 synthesis or a fourth family from this result.
 
+**The live-simulation evaluation harness named above is now COMPLETE
+(`723a39c`, verdict `LIVE_HIERARCHICAL_HARNESS_READY` — 6/6 forced-parent
+equivalence checks bit-exact, causal-switch microcase confirms genuine
+per-step causal dispatch, no majority vote), and the primary live
+re-evaluation it exists to enable has now been RUN and FORMALLY
+GATE-SCORED:**
+[`../audits/hierarchical_regime_router_live_reeval_v1_20260818.md`](../audits/hierarchical_regime_router_live_reeval_v1_20260818.md)
+(preregistration `6c9ec36`; the first launch attempt crashed pre-analysis
+on a malformed bootstrap-CI call, fixed in `ed74276`; the completed result
+is `experiments/hierarchical_regime_router_live_reeval_v1/live_reeval_results.json`).
+**Formal verdict (via the same frozen `evaluate_all_gates`/`compute_verdict`
+gate evaluator the TEST evaluation used, run through
+`scripts/rescore_hierarchical_regime_router_live_reeval_v1_gates.py` —
+not a hand-written substitute): `HIERARCHICAL_ROUTER_NO_GO`.** This agrees
+with the run script's own ad-hoc-computed `LIVE_REEVAL_CONFIRMS_NO_GO`.
+Live ANWG 0.8136 vs. best-global-fixed 0.8075 (`delta_fixed`=0.00616, 90%
+CI `[0.00055, 0.01140]` — excludes zero but below the 0.01 practical-
+significance gate); oracle-gap closure 0.143 (below the 0.75 gate). G4/G7/
+G9(a) are `NOT_EVALUABLE` (the persisted result lacks a per-regime ANWG
+breakdown needed to score them) — this does not change the verdict, since
+G5 alone already forces `NO_GO`. Family B again got 0 TEST scenarios on
+this split — the result confirms `NO_GO` for `RANKING_FAIRNESS` and
+`KV_MEMORY_PRESSURE` only, not a three-regime validation. **No new
+scientific experiment is currently running. Next action, NOT started, NOT
+authorized:** decide between a Family-B-specific live evaluation or a
+higher-level reassessment of the hierarchical-routing hypothesis itself.
+
 ## P0 - Policy Separation (WS-P) — historical, superseded as the active P0 by the above
 
 **Family B v2 is composition-ready; the two-parent PrefillControl falsification is now COMPLETE (see below).**

@@ -312,6 +312,56 @@ implemented, AND evaluated on TEST — final verdict `HIERARCHICAL_ROUTER_NO_GO`
 - One genuine, first-ever `OVERLAP` observation surfaced in the B+C blended microcase (prior feasibility study: 0/127,319) — the router's fallback engaged safely (G9 passes).
 - Next step (**not started, not authorized**): build a genuine per-step live-simulation evaluation harness (the offline majority-vote approximation is the diagnosed root cause of the flat-zero result) before any re-evaluation; do not silently re-run under the same preregistration.
 
+**The genuine per-step live-simulation evaluation harness named above is now
+COMPLETE, and the live re-evaluation it exists to enable has now been RUN
+and FORMALLY GATE-SCORED — final formal verdict `HIERARCHICAL_ROUTER_NO_GO`
+(agrees with the ad-hoc `LIVE_REEVAL_CONFIRMS_NO_GO` the run script printed).**
+
+- Harness: [`../audits/hierarchical_router_live_harness_validation_v1_20260818.md`](../audits/hierarchical_router_live_harness_validation_v1_20260818.md)
+  (implementation commit `723a39c`); readiness verdict
+  `LIVE_HIERARCHICAL_HARNESS_READY` — 6/6 forced-parent equivalence checks
+  bit-exact against standalone single-policy runs, and a causal-switch
+  microcase directly demonstrates the live trajectory diverging from a
+  fallback-only trajectory only after a real Stage-2 switch (i.e. genuinely
+  per-step causal, not a majority-vote re-approximation).
+- Live re-evaluation preregistration (`6c9ec36`) and run (`9fde981`, fixed in
+  `ed74276` — the run script's first launch crashed on a malformed
+  `group_resampled_bootstrap_ci` call before any analysis executed; no
+  results existed before the fix): [`../audits/hierarchical_regime_router_live_reeval_v1_20260818.md`](../audits/hierarchical_regime_router_live_reeval_v1_20260818.md).
+  Result artifact: `experiments/hierarchical_regime_router_live_reeval_v1/live_reeval_results.json`.
+- Primary numbers (32-scenario exact TEST split): live ANWG 0.8136 vs. best
+  global fixed 0.8075 (`delta_fixed` = 0.00616, 90% CI
+  `[0.00055, 0.01140]` — excludes zero but well under the G5 practical-
+  significance bar of 0.01) vs. six-policy oracle 0.8506 (oracle-gap
+  closure 0.143, well under G6's 0.75 bar). Stage-1 macro-F1 0.989,
+  catastrophic misroute 0.0.
+- **Formal gate-conformant rescoring (`scripts/rescore_hierarchical_regime_router_live_reeval_v1_gates.py`,
+  reusing the same frozen `evaluate_all_gates`/`compute_verdict` implementation
+  the TEST evaluation used, not a hand-written substitute): `FORMAL_GATE_VERDICT
+  = HIERARCHICAL_ROUTER_NO_GO`.** G5 (beat global fixed) fails outright on its
+  mean criterion; G6 (oracle gap closure) also fails. G4 (Stage-2
+  preservation), G7 (multi-regime benefit), and G9(a) (Family-C held-out
+  delta) could not be mechanically scored from the persisted result artifact
+  (it records only the TEST-aggregate live ANWG, not a per-regime
+  breakdown) and are reported `NOT_EVALUABLE`, not assumed passing — this
+  does not change the verdict, since G5 alone already forces `NO_GO`.
+- **Family B (`PREFILL_DECODE_CONTENTION`) again got 0 TEST scenarios** on
+  this exact split (same deterministic hash as the approximate evaluation)
+  — the live re-evaluation confirms `NO_GO` for two of the three regimes
+  (`RANKING_FAIRNESS`, `KV_MEMORY_PRESSURE`); it does **not** constitute a
+  three-regime validation. Do not cite it as such.
+- Known, transparently-documented provenance defects (not corrected in
+  place, to preserve historical evidence): the live-reeval
+  `launch_manifest.json`'s `git_sha` field does not resolve to a real git
+  object (short-SHA corruption, unrelated to the result's own correctly-
+  self-recorded provenance); `fitted_model_hashes.json` omits a
+  `KV_MEMORY_PRESSURE` model hash. See the finalized audit for detail.
+- **No new scientific experiment is currently running.** Next step (**not
+  started, not authorized**): decide whether to pursue a Family-B-specific
+  live evaluation (the one regime never TEST-evaluated in this entire
+  lineage) or a higher-level reassessment of the hierarchical-routing
+  hypothesis itself, analogous to the `dc5757b` composition reassessment.
+
 ## Most Recently Completed Work (WS-P / Policy Separation)
 
 **Family B v2 prefill/decode TTFT-contention refinement is COMPLETE.**

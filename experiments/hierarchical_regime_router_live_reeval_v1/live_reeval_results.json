@@ -1,0 +1,82 @@
+{
+  "dynamics": {
+    "dwell_violations": 0,
+    "fraction_A": 0.35412800171121916,
+    "fraction_B": 0.0,
+    "fraction_C": 0.11903668426118741,
+    "fraction_fallback": 0.5268353140275934,
+    "minority_regime_episodes": 11,
+    "switching_rate_per_1000_steps": 2.856226132581739,
+    "total_transitions": 908
+  },
+  "fit_data_confirmation": {
+    "stage1_test_telemetry_rows": 16562,
+    "stage1_train_telemetry_rows": 94252,
+    "stage2_test_scenarios": 32,
+    "stage2_train_scenarios": 118
+  },
+  "h_method_subgroup": {
+    "delta_method_dynamic": 0.005347593582887732,
+    "delta_method_non_dynamic": 0.0065826330532212885,
+    "dynamic_scenario_count": 11,
+    "non_dynamic_scenario_count": 21
+  },
+  "live_re_evaluation_verdict": "LIVE_REEVAL_CONFIRMS_NO_GO",
+  "mode": "PRIMARY_EXACT_SPLIT",
+  "preregistration_integrity": {
+    "design_doc_sha256": "f3c795f16b6ff11d0fcb8405a4cefe5c29e8e1a641543675ad97a317bf1acc3a",
+    "gates_json_sha256": "b63265531a9687fa16bca5e990270427d11353fa42e00f2c5151ceb2cfc627ae",
+    "git_head_sha": "ed742769a108547c6b08d06590c902dca1698ebf",
+    "git_tree_dirty": false,
+    "mf_psd_scenarios_sha256": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "telemetry_csv_sha256": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f"
+  },
+  "primary_metrics": {
+    "delta_fixed": 0.006158088235294129,
+    "delta_fixed_ci_90": [
+      0.0005514705882353164,
+      0.011397058823529423
+    ],
+    "delta_method": 0.006158088235294129,
+    "delta_method_ci_90": [
+      0.0005514705882353164,
+      0.011397058823529423
+    ],
+    "mean_anwg_approximate": 0.807479668003565,
+    "mean_anwg_best_global_fixed": 0.807479668003565,
+    "mean_anwg_global_six_policy_oracle": 0.8506364193404634,
+    "mean_anwg_live": 0.8136377562388593,
+    "oracle_gap_closure": 0.1426911907066834,
+    "regret_to_six_policy_oracle": 0.03699866310160427
+  },
+  "run_timestamp_utc": "2026-08-18T22:27:49Z",
+  "schema_version": "hierarchical_regime_router_live_reeval_v1.1.0.0",
+  "split_counts": {
+    "test": 32,
+    "train": 118,
+    "val": 26
+  },
+  "stage1_metrics": {
+    "accuracy": 0.9921507064364207,
+    "catastrophic_misroute_rate": 0.0,
+    "macro_f1_present_classes_only": 0.9886585377383629
+  },
+  "stage2_metrics": {
+    "KV_MEMORY_PRESSURE": {
+      "epsilon_optimal_accuracy": 1.0,
+      "mean_regret": 0.0,
+      "standalone_gain_vs_fixed": 0.0,
+      "status": "EVALUATED"
+    },
+    "PREFILL_DECODE_CONTENTION": {
+      "reason": "0 TEST scenarios for this regime",
+      "status": "NOT_EVALUABLE"
+    },
+    "RANKING_FAIRNESS": {
+      "epsilon_optimal_accuracy": 1.0,
+      "mean_regret": 0.0,
+      "standalone_gain_vs_fixed": 0.03020833333333331,
+      "status": "EVALUATED"
+    }
+  }
+}
