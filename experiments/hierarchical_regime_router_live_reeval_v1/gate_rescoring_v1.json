@@ -1,0 +1,138 @@
+{
+  "blended_microcase_sample_too_small": false,
+  "formal_gate_verdict": "HIERARCHICAL_ROUTER_NO_GO",
+  "gate_metrics_input": {
+    "blended_microcase_catastrophic_rate": 0.009708737864077669,
+    "bootstrap_ci_lower": 0.0005514705882353164,
+    "catastrophic_misroute_rate": 0.0,
+    "family_c_held_out_delta_anwg": null,
+    "leakage_instance_count": 0,
+    "mean_delta_anwg": 0.006158088235294129,
+    "multi_regime_benefit_count": null,
+    "oracle_gap_closure": 0.1426911907066834,
+    "qualitative_all_clusters_attributable": null,
+    "router_macro_f1": 0.9886585377383629,
+    "stage1_input_validity_fraction": 1.0,
+    "stage2_preservation_fraction_by_regime": null
+  },
+  "gate_metrics_input_notes": {
+    "G4_not_evaluable_reason": "live_reeval_results.json persists only TEST-aggregate mean_anwg_live (a single scalar over all 32 TEST scenarios), not a per-scenario or per-regime breakdown. G4 requires per-regime standalone-vs-integrated regret comparison, which cannot be recovered without re-executing the live harness. This is a distinct artifact-completeness gap from the already-known Family-B-has-0-TEST-scenarios limitation (Regime B would have been NOT_EVALUABLE either way; Regimes A and C are ALSO NOT_EVALUABLE here specifically because of this persistence gap, not because of a data-scarcity issue).",
+    "G5_metric_disambiguation": "Used primary_metrics.delta_fixed (hierarchy vs. best-global-fixed), matching the gate's own metric definition, NOT primary_metrics.delta_method (hierarchy vs. the old majority-vote approximation, a different, non-gate comparator that happens to be numerically identical to delta_fixed in this run -- see the audit for why).",
+    "G7_not_evaluable_reason": "Same persistence gap as G4 (needs per-regime live vs. fixed ANWG).",
+    "G9a_not_evaluable_reason": "Same persistence gap as G4/G7 (needs per-regime live ANWG restricted to KV_MEMORY_PRESSURE).",
+    "G9b_source": "REUSED from experiments/hierarchical_regime_router_v1_test_evaluation/test_evaluation_results.json (not recomputed here). Valid because blended microcases exercise only the frozen Stage-1 router via a synthetic FIFO probe simulator, independent of the live-vs-approximate Stage-2 evaluation contract, and the router implementation is byte-identical between the two evaluation runs (verified via git diff)."
+  },
+  "gate_results": {
+    "G1": {
+      "critical": true,
+      "extra": {},
+      "id": "G1",
+      "name": "Online input validity",
+      "note": "",
+      "passed": true,
+      "threshold": 1.0,
+      "value": 1.0
+    },
+    "G2": {
+      "critical": true,
+      "extra": {},
+      "id": "G2",
+      "name": "Router quality",
+      "note": "",
+      "passed": true,
+      "threshold": 0.9,
+      "value": 0.9886585377383629
+    },
+    "G3": {
+      "critical": true,
+      "extra": {},
+      "id": "G3",
+      "name": "Catastrophic misrouting",
+      "note": "",
+      "passed": true,
+      "threshold": 0.05,
+      "value": 0.0
+    },
+    "G4": {
+      "critical": true,
+      "extra": {},
+      "id": "G4",
+      "name": "Stage-2 preservation",
+      "note": "value not supplied",
+      "passed": null,
+      "threshold": 0.9,
+      "value": null
+    },
+    "G5": {
+      "critical": true,
+      "extra": {
+        "bootstrap_ci_lower": 0.0005514705882353164,
+        "ci_criterion_passed": true,
+        "mean_criterion_passed": false
+      },
+      "id": "G5",
+      "name": "Beat global fixed",
+      "note": "",
+      "passed": false,
+      "threshold": 0.01,
+      "value": 0.006158088235294129
+    },
+    "G6": {
+      "critical": false,
+      "extra": {},
+      "id": "G6",
+      "name": "Oracle gap closure",
+      "note": "",
+      "passed": false,
+      "threshold": 0.75,
+      "value": 0.1426911907066834
+    },
+    "G7": {
+      "critical": false,
+      "extra": {},
+      "id": "G7",
+      "name": "Multi-regime benefit",
+      "note": "value not supplied",
+      "passed": null,
+      "threshold": 2,
+      "value": null
+    },
+    "G8": {
+      "critical": true,
+      "extra": {
+        "a_leakage_count": 0,
+        "a_passed": true,
+        "b_passed": null
+      },
+      "id": "G8",
+      "name": "Interpretable / non-leaking errors",
+      "note": "qualitative (b) not yet reviewed",
+      "passed": false,
+      "threshold": 0,
+      "value": 0
+    },
+    "G9": {
+      "critical": false,
+      "extra": {},
+      "id": "G9",
+      "name": "Robustness",
+      "note": "value not supplied",
+      "passed": null,
+      "threshold": 0,
+      "value": null
+    }
+  },
+  "purpose": "Formal mechanical G1-G9 rescoring of the already-completed live closed-loop re-evaluation, via the canonical evaluate_all_gates/compute_verdict implementation. Does not rerun any simulation.",
+  "rescoring_provenance": {
+    "gates_json_sha256": "b63265531a9687fa16bca5e990270427d11353fa42e00f2c5151ceb2cfc627ae",
+    "git_head_sha": "ed742769a108547c6b08d06590c902dca1698ebf",
+    "git_tree_dirty": true,
+    "live_reeval_results_embedded_git_head_sha": "ed742769a108547c6b08d06590c902dca1698ebf",
+    "live_reeval_results_sha256": "6ff89399cc63b76309f234abb3df8620f11c9bcd98a5f56d23e1b85250043952",
+    "sibling_test_evaluation_results_sha256": "ce6fefcc4ef1cef1e1003e7705c98eabf5a2ebb03b9e93f997d2c1c672edd863"
+  },
+  "run_timestamp_utc": "2026-08-19T04:06:17Z",
+  "schema_version": "hierarchical_regime_router_live_reeval_v1_gate_rescoring.1.0.0",
+  "source_live_re_evaluation_verdict_ad_hoc": "LIVE_REEVAL_CONFIRMS_NO_GO",
+  "test_sample_insufficient_for_g5_ci": false
+}
