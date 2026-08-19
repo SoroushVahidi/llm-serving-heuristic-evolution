@@ -28,6 +28,11 @@ data/raw/*
 !data/raw/**/.gitkeep
 data/processed/*
 !data/processed/**/.gitkeep
+# Public Trace Corpus v1: keep manifest/schema/coverage/stats in git (small,
+# informative); exclude the bulky per-source normalized record tables and
+# any raw external-validation-metadata downloads (docs/design/PUBLIC_TRACE_CORPUS_V1.md).
+data/public_trace_corpus_v1/*/records.parquet
+data/public_trace_corpus_v1/external_validation_metadata/
 results/*
 !results/.gitkeep
 
