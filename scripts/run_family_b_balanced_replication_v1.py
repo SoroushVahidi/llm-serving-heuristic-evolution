@@ -243,6 +243,12 @@ def main() -> int:
         help="Required in addition to --source replication. Confirms explicit, separate scientific "
              "authorization to launch the held-out Family-B-Balanced Replication evaluation.",
     )
+    parser.add_argument(
+        "--out-dir", default=None,
+        help="Directory to write run_<source>_results.json/_trajectories.csv into. Defaults to "
+             "the canonical experiments/family_b_balanced_replication_v1/ directory. Tests should "
+             "pass a tmp_path here instead of mutating the tracked canonical outputs.",
+    )
     args = parser.parse_args()
 
     if args.source == "replication" and not args.i_am_authorized:
@@ -311,13 +317,14 @@ def main() -> int:
         "per_scenario_results": per_scenario,
     }
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"run_{run_tag}_results.json"
+    out_dir = Path(args.out_dir) if args.out_dir else OUTPUT_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"run_{run_tag}_results.json"
     with open(out_path, "w") as f:
         json.dump(report, f, indent=2, sort_keys=True, default=str)
         f.write("\n")
 
-    traj_path = OUTPUT_DIR / f"run_{run_tag}_trajectories.csv"
+    traj_path = out_dir / f"run_{run_tag}_trajectories.csv"
     pd.concat(trajectories, ignore_index=True).to_csv(traj_path, index=False)
 
     print(json.dumps({k: v for k, v in report.items() if k != "per_scenario_results"}, indent=2, sort_keys=True, default=str))

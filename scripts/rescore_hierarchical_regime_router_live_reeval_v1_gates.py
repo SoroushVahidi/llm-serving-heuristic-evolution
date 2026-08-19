@@ -171,7 +171,10 @@ def build_metrics(live: dict, sibling_test_eval: dict) -> tuple[dict, dict]:
     return metrics, notes
 
 
-def main() -> int:
+def main(output_path: Path | None = None) -> int:
+    """output_path overrides OUTPUT_PATH; tests should pass a tmp_path here
+    instead of mutating the tracked canonical gate_rescoring_v1.json."""
+    output_path = output_path or OUTPUT_PATH
     if not LIVE_REEVAL_RESULTS.exists():
         print(f"FATAL: {LIVE_REEVAL_RESULTS} does not exist.", file=sys.stderr)
         return 2
@@ -230,13 +233,13 @@ def main() -> int:
         "formal_gate_verdict": verdict,
     }
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_PATH, "w") as f:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w") as f:
         json.dump(report, f, indent=2, sort_keys=True, default=str)
         f.write("\n")
 
     print(json.dumps(report, indent=2, sort_keys=True, default=str))
-    print(f"\nWrote {OUTPUT_PATH}")
+    print(f"\nWrote {output_path}")
     print(f"\nFORMAL_GATE_VERDICT: {verdict}")
     print(f"source ad hoc verdict was: {live.get('live_re_evaluation_verdict')}")
     return 0

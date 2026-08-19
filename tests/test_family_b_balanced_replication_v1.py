@@ -223,12 +223,12 @@ def test_runner_source_argument_has_no_default_value():
 
 def test_smoke_synthetic_run_end_to_end(tmp_path):
     result = subprocess.run(
-        [sys.executable, str(RUNNER_SCRIPT), "--source", "smoke_synthetic"],
+        [sys.executable, str(RUNNER_SCRIPT), "--source", "smoke_synthetic", "--out-dir", str(tmp_path)],
         cwd=REPO_ROOT, capture_output=True, text=True, timeout=180,
     )
     assert result.returncode == 0, result.stderr
 
-    out_path = REPO_ROOT / "experiments/family_b_balanced_replication_v1/run_smoke_synthetic_results.json"
+    out_path = tmp_path / "run_smoke_synthetic_results.json"
     assert out_path.exists()
     report = json.loads(out_path.read_text())
 
@@ -248,7 +248,7 @@ def test_smoke_synthetic_run_end_to_end(tmp_path):
     assert "stage1_model_hash" in prov["reused_model_hashes"]
     assert set(prov["reused_model_hashes"]["stage2_model_hashes"]) == {REGIME_A, REGIME_B, REGIME_C}
 
-    traj_path = REPO_ROOT / "experiments/family_b_balanced_replication_v1/run_smoke_synthetic_trajectories.csv"
+    traj_path = tmp_path / "run_smoke_synthetic_trajectories.csv"
     assert traj_path.exists()
     traj = pd.read_csv(traj_path)
     assert (traj["effective_regime"] == REGIME_B).any(), "Family-B regime must activate in the smoke run"
@@ -256,20 +256,21 @@ def test_smoke_synthetic_run_end_to_end(tmp_path):
 
 
 def test_smoke_run_is_deterministic_bit_identical_anwg(tmp_path):
+    out_dir_1 = tmp_path / "run1"
     r1 = subprocess.run(
-        [sys.executable, str(RUNNER_SCRIPT), "--source", "smoke_synthetic"],
+        [sys.executable, str(RUNNER_SCRIPT), "--source", "smoke_synthetic", "--out-dir", str(out_dir_1)],
         cwd=REPO_ROOT, capture_output=True, text=True, timeout=180,
     )
     assert r1.returncode == 0, r1.stderr
-    out_path = REPO_ROOT / "experiments/family_b_balanced_replication_v1/run_smoke_synthetic_results.json"
-    first = json.loads(out_path.read_text())["per_scenario_results"]
+    first = json.loads((out_dir_1 / "run_smoke_synthetic_results.json").read_text())["per_scenario_results"]
 
+    out_dir_2 = tmp_path / "run2"
     r2 = subprocess.run(
-        [sys.executable, str(RUNNER_SCRIPT), "--source", "smoke_synthetic"],
+        [sys.executable, str(RUNNER_SCRIPT), "--source", "smoke_synthetic", "--out-dir", str(out_dir_2)],
         cwd=REPO_ROOT, capture_output=True, text=True, timeout=180,
     )
     assert r2.returncode == 0, r2.stderr
-    second = json.loads(out_path.read_text())["per_scenario_results"]
+    second = json.loads((out_dir_2 / "run_smoke_synthetic_results.json").read_text())["per_scenario_results"]
 
     first_anwg = [r["anwg_live"] for r in sorted(first, key=lambda r: r["canonical_scenario_id"])]
     second_anwg = [r["anwg_live"] for r in sorted(second, key=lambda r: r["canonical_scenario_id"])]

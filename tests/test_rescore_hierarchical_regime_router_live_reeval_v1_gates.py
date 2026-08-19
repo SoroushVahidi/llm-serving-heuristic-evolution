@@ -229,17 +229,20 @@ def test_formal_verdict_is_no_go_family_and_agrees_with_ad_hoc_verdict():
     assert live["live_re_evaluation_verdict"] == "LIVE_REEVAL_CONFIRMS_NO_GO"
 
 
-def test_running_main_leaves_source_result_artifacts_byte_identical():
+def test_running_main_leaves_source_result_artifacts_byte_identical(tmp_path):
     if not LIVE_REEVAL_RESULTS.exists():
         import pytest
         pytest.skip("live_reeval_results.json not present in this checkout")
+    module = _load_module()
     before_live = _sha256(LIVE_REEVAL_RESULTS)
     before_sibling = _sha256(TEST_EVAL_RESULTS) if TEST_EVAL_RESULTS.exists() else None
+    before_output = _sha256(module.OUTPUT_PATH) if module.OUTPUT_PATH.exists() else None
 
-    module = _load_module()
-    module.main()
+    module.main(output_path=tmp_path / "gate_rescoring_v1.json")
 
     after_live = _sha256(LIVE_REEVAL_RESULTS)
     after_sibling = _sha256(TEST_EVAL_RESULTS) if TEST_EVAL_RESULTS.exists() else None
+    after_output = _sha256(module.OUTPUT_PATH) if module.OUTPUT_PATH.exists() else None
     assert before_live == after_live, "rescoring must never modify the source live-reeval result"
     assert before_sibling == after_sibling, "rescoring must never modify the sibling TEST-evaluation result"
+    assert before_output == after_output, "rescoring must never modify the tracked canonical gate_rescoring_v1.json"
