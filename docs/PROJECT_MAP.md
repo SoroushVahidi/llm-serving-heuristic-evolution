@@ -181,10 +181,10 @@ only average policy rankings.
 | WS-C | Internal scheduler/policy library | Mature fixed-policy portfolio, including Policy Library V2 and SCORPIO-style/admission policies. |
 | WS-D | Faithful external scheduler integrations | vLLM-family, Sarathi, VTC, Llumnix, DistServe, PARS, and Apt-Serve have point-in-time status in `docs/BASELINE_STATUS.md`. |
 | WS-E | Typed heuristic DSL / AST / verification | Implemented through CC3; representative internal policies reconstruct through the DSL. |
-| WS-F | Contextual performance / utility learning | Block lifted. MF-PSD v1 is now built and `MF_PSD_READY` (`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`, `experiments/mf_psd_v1/`) — data unification only. Multi-family selector training is Step 3 of the revised roadmap and requires Step 2 (dense six-policy matrix) first; not started. |
+| WS-F | Contextual performance / utility learning | MF-PSD v1 (`MF_PSD_READY`) and the dense Unified Utility Matrix v2 (`UNIFIED_UTILITY_MATRIX_READY`) are both complete. The flat/pooled multi-family selector trained on them returned `MULTIFAMILY_SELECTOR_NO_GO`, followed by two further NO_GOs (shared-feature schema, mechanism-choice target) and a formal demotion (`CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`). A hierarchical regime router was then built and evaluated at both TEST and live per-step granularity; both returned `HIERARCHICAL_ROUTER_NO_GO`. See `docs/current/WORK_STATUS.md` for the full chain and current next actions. |
 | WS-G | Pairwise regret and complementarity | Ready for evaluation alongside direct utility prediction. |
 | WS-H | Module decomposition and compositional semantics | **COMPOSITION_DEMOTED**. Composition/synthesis is exploratory future work, deferred. |
-| WS-I | Parent selection / composition gate | Contextual selection is the primary focus; composition falsification failed or found selection sufficient for A, B, and C. |
+| WS-I | Parent selection / composition gate | Composition falsification found selection sufficient (not beaten by dynamic composition) for A, B, and C. Contextual selection/routing was subsequently tried at flat/pooled and hierarchical granularity and demoted at every tier tested (see WS-F) — see the North Star section above: selection/routing is evidence-gathering, not the project's final objective. |
 | WS-J | Structural crossover / symbolic synthesis | Explicitly deferred. Not supported by current heuristic evidence. |
 | WS-K | Quality-diversity archive / library-envelope expansion | Paused. Focus shifts to mapping multi-family boundaries. |
 | WS-L | Symbolic distillation / deployable children | Partial, mostly selector-oriented; not yet generic for composed policies. |
@@ -194,6 +194,13 @@ only average policy rankings.
 | WS-P | Policy Separation Dataset / decision-boundary characterization | Sobol Pilot v1 COMPLETE+ANALYZED (Job 1182183). Family A v1 diagnostic only (Job 1182306). Family A v2 EXECUTED+ANALYZED (Job 1182377; `USEFUL_BUT_NEEDS_REFINEMENT`). ESTF↔WFS composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/estf_wfs_composition_falsification_v1_20260816.md`) — selection matches/beats simple composition; no envelope expansion. Family B v1 prefill/decode chunk-control ANALYZED (`USEFUL_BUT_NEEDS_REFINEMENT`; `PREFILL_COMPOSITION_NOT_YET_JUSTIFIED`; audit `docs/audits/policy_separation_prefill_decode_pilot_v1_20260817.md`). Family B v2 anchor pair `full_prefill`/`chunked_prefill_small` PrefillControl composition falsification COMPLETE (`SELECTION_SUFFICIENT_FOR_THIS_PAIR`; audit `docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`) — fitted top-1 selector matches oracle exactly; genuinely per-step-dynamic child does not expand the envelope. Family C v1 KV-pressure reserve (`kv_constrained_online` vs `least_laxity_first`) pairwise-separation pilot: `KV_FAMILY_USEFUL_NEEDS_REFINEMENT` (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v1_20260817.md`; frozen, superseded by v2) — 5/6 gates pass, tie-rate gate did not clear. **Family C v2** (refined population/calibration/phase-levels/seeds) has since run to completion: **`KV_FAMILY_COMPOSITION_READY`**, all 10 preregistered gates pass, including held-out-seed replication and within-scenario winner-flip evidence (audit `docs/audits/family_c_kv_pressure_pairwise_separation_v2_20260817.md`) — the first of three families studied to reach a `_READY` verdict. Its composition falsification has since run to completion: `KV_COMPOSITION_INCONCLUSIVE` (audit `docs/audits/kv_composition_falsification_v1_20260817.md`) — real envelope-gain signal (positive TEST gain, 5/12 beat-both, non-degenerate within-trajectory mode-switching), blocked by a composition-specific KV-safety gate failure (child peak KV exceeds both parents' peaks on 6/36 held-out scenarios), not by absence of signal. MAP-Elites / distillation / LLM synth not justified yet from any studied pair. **These three families' evidence fed the higher-level structural reassessment** (`docs/audits/reassessment_composition_hypothesis_20260817.md`, `COMPOSITION_DEMOTED`) and were then unified into **MF-PSD v1** (`docs/audits/multi_family_policy_separation_dataset_v1_20260817.md`, `MF_PSD_READY`, `experiments/mf_psd_v1/`) — 496-row long-form utility table + 176-scenario context table, sparse six-anchor coverage (not yet a dense matrix; Step 2, not started). Feeds WS-A and WS-F. |
 
 ## Current Checkpoint
+
+**This section covers only the CC0-CC5/Apt-Serve Phase G checkpoint (through
+~2026-08-09) — it predates the entire MF-PSD → selector-NO_GOs →
+hierarchical-router → Family-B-replication lineage summarized above and in
+[`docs/current/WORK_STATUS.md`](current/WORK_STATUS.md). Kept as historical
+narrative for the CC/Apt-Serve thread specifically, not as the full current
+state.**
 
 Contextual composition:
 
@@ -222,7 +229,24 @@ Apt-Serve interpretation:
 
 ## Canonical Next Action
 
-**Primary thread: the higher-level structural reassessment
+**UPDATE (2026-08-19): Steps 2 and 3 below are now COMPLETE, and the
+revised roadmap they describe has itself been superseded by a further
+hierarchical-routing attempt and its own NO_GO. Read
+[`docs/current/WORK_STATUS.md`](current/WORK_STATUS.md) for the authoritative
+current state and next action; the paragraph below is kept as historical
+narrative for how the project reached Step 1, not as the live next action.**
+In one line: MF-PSD v1 (Step 1) → Unified Utility Matrix v2 (Step 2,
+`UNIFIED_UTILITY_MATRIX_READY`) → flat/pooled selector (Step 3,
+`MULTIFAMILY_SELECTOR_NO_GO`) → shared-feature-schema and mechanism-target
+redesigns (both NO_GO) → cross-family transfer reassessment
+(`CROSS_FAMILY_TRANSFER_DEMOTED_HIERARCHICAL_ROUTING_READY`) → hierarchical
+regime router, TEST and live re-evaluation (both `HIERARCHICAL_ROUTER_NO_GO`)
+→ Family-B balanced replication (implementation-ready, scientific run not
+yet authorized) and Public Trace Corpus v1 (workload-input layer complete)
+as the two currently queued independent threads — see
+[`docs/current/NEXT_ACTIONS.md`](current/NEXT_ACTIONS.md) for the exact list.
+
+**Primary thread (historical narrative): the higher-level structural reassessment
 (`docs/audits/reassessment_composition_hypothesis_20260817.md`,
 `COMPOSITION_DEMOTED`) set a revised roadmap — policy-separating workloads
 -> complementary policy library -> contextual selection (multi-family) ->

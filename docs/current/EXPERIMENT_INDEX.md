@@ -1,8 +1,11 @@
 # Experiment Index
 
 Generated during Query 1 cleanup audit on 2026-07-21, refreshed after the
-2026-07-22 Wulver data/simulator-discriminative workflows, and extended on
-2026-07-25 for Tier 1 staging, real-window construction, and repaired pilots.
+2026-07-22 Wulver data/simulator-discriminative workflows, extended on
+2026-07-25 for Tier 1 staging, real-window construction, and repaired pilots,
+and extended again on 2026-08-19 (Pass 2/3 documentation reconciliation) for
+everything from MF-PSD v1 through Family-B live replication prep and Public
+Trace Corpus v1 — see the "Missing Entries Added in Pass 2" table below.
 Compact Git-safe summaries: `docs/current/pause_2026_07_25/`.
 
 This index points to durable experiment artifacts. Large data, logs, shards, and model outputs remain outside Git.
