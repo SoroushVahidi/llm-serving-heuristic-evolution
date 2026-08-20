@@ -50,11 +50,14 @@ rather than hand-editing if a defect is ever found.
 | All `docs/audits/**` | Immutable point-in-time audit trail; never edited after the fact |
 | All `docs/design/**` once committed | Frozen preregistrations |
 
-## Current Local/Uncommitted Protected (separate, concurrent workstream)
+## Decision-Criticality / Timescale Analysis — Committed, Experiment Not Yet Run
 
-Untracked as of 2026-08-19; belongs to a decision-criticality/timescale
-analysis task that is not part of documentation polish. Do not modify,
-stage, commit, or launch:
+Design, implementation, and tests are complete, tracked, and pushed (commit
+`4dac220`, "feat: preregister decision-criticality train-val study") — they
+are no longer local/uncommitted. The protection here is scoped narrowly: do
+not launch the actual TRAIN/VAL experiment without separate explicit
+authorization (no `experiments/decision_criticality_timescale_trainval_v1/`
+output exists yet), and do not casually edit this frozen preregistration:
 
 - `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`
 - `scripts/run_decision_criticality_timescale_trainval_v1.py`

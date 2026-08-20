@@ -5,8 +5,8 @@ Detailed current status table. The roadmap authority is
 companion. Historical audit reports remain authoritative only for the time they
 were written.
 
-Last reconciled: 2026-08-19, current HEAD `179a6fe` (Public Trace Corpus v1
-manifest refresh). No active jobs; no concurrent writer.
+Last reconciled: 2026-08-19, current HEAD `4dac220` (preregister
+decision-criticality train-val study). No active jobs; no concurrent writer.
 
 Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 `FOUNDATIONAL_CANDIDATE`, `EVALUATION_ONLY`, `IN_PROGRESS`,
@@ -56,9 +56,9 @@ Status vocabulary: `COMPLETE`, `COMPLETE_REGIME_SPECIFIC`,
 | Hierarchical Regime Router v1 (TEST, offline majority-vote) | `COMPLETE`; `HIERARCHICAL_ROUTER_NO_GO` | Artifacts `experiments/hierarchical_regime_router_v1_test_evaluation/`; impl commit `2923087`; audit `docs/audits/hierarchical_regime_router_v1_20260818.md` | G4 (Stage-2 preservation) and G5 (beat global fixed) fail on TEST; Stage-1/Stage-2 individually excellent but offline majority-vote integration washes out minority-of-steps activity; Family B got 0 TEST scenarios | Motivated the live per-step harness |
 | Hierarchical Router Live Harness v1 (smoke) | `COMPLETE`; `LIVE_HIERARCHICAL_HARNESS_READY` | Artifacts `experiments/hierarchical_router_live_harness_v1_smoke/`; commit `723a39c`; audit `docs/audits/hierarchical_router_live_harness_validation_v1_20260818.md` | 6/6 forced-parent equivalence checks bit-exact; causal-switch microcase confirms genuine per-step causal dispatch | Enabled the live re-evaluation |
 | Hierarchical Router Live Re-evaluation v1 | `COMPLETE` (formally gate-rescored); `HIERARCHICAL_ROUTER_NO_GO` | Artifacts `experiments/hierarchical_regime_router_live_reeval_v1/live_reeval_results.json`; run commit `9fde981`, fix `ed74276`; audit `docs/audits/hierarchical_regime_router_live_reeval_v1_20260818.md` | Live ANWG 0.8136 vs best-fixed 0.8075 (delta 0.00616, below the 0.01 bar); oracle-gap closure 0.143 (below the 0.75 bar); Family B again got 0 scenarios. Two current tracked-provenance-only diffs exist in `gate_rescoring_v1.json` (timestamp/HEAD-SHA, no metric change) | Motivated Family-B-specific live evaluation |
-| Family-B Balanced Replication v1 | `IN_PROGRESS`; `IMPLEMENTATION_READY`, scientific run `NOT_STARTED` | Design `docs/design/FAMILY_B_BALANCED_REPLICATION_V1.md`; artifacts `experiments/family_b_balanced_replication_v1/`; HEAD commit `9d8f997`; runner `scripts/run_family_b_balanced_replication_v1.py` | Only `--source smoke_train`/`smoke_synthetic` have been run. `--source replication` (the frozen 36-scenario scientific set) requires `--i-am-authorized` in addition and has **not** been invoked — no held-out scientific run exists | Requires separate, explicit scientific authorization before launching `--source replication` |
+| Family-B Balanced Replication v1 | `IMPLEMENTATION_READY`, scientific run `NOT_STARTED` | Design `docs/design/FAMILY_B_BALANCED_REPLICATION_V1.md`; artifacts `experiments/family_b_balanced_replication_v1/`; added in commit `9d8f997`; runner `scripts/run_family_b_balanced_replication_v1.py` | Only `--source smoke_train`/`smoke_synthetic` have been run. `--source replication` (the frozen 36-scenario scientific set) requires `--i-am-authorized` in addition and has **not** been invoked — no held-out scientific run exists | Requires separate, explicit scientific authorization before launching `--source replication` |
 | Public Trace Corpus v1 (workload-input layer, Layers 0-1) | `COMPLETE`; committed and pushed | Design `docs/design/PUBLIC_TRACE_CORPUS_V1.md`; artifacts `data/public_trace_corpus_v1/`; adapter `src/llmserveopt/workloads/public_trace_corpus.py`; builder `scripts/build_public_trace_corpus_v1.py`; tests `tests/test_public_trace_corpus_v1.py`; commits `84fa31b` + `179a6fe` | Ingests BurstGPT + Azure 2023 conv/code; classifies AgentPerfBench as `REAL_SYSTEM_VALIDATION_SOURCE` (not ingested); no policy outcomes, no oracle labels, no paid API use | Layer 2+ (policy replay across the completed policy library) is NOT started; requires authorization |
-| Decision-Criticality / Regime-Timescale TRAIN/VAL analysis | `IN_PROGRESS`; prepared-only, uncommitted | Design `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`; module `src/llmserveopt/analysis/decision_criticality_timescale_trainval_v1.py`; runner `scripts/run_decision_criticality_timescale_trainval_v1.py`; tests `tests/test_decision_criticality_timescale_trainval_v1.py` | Design/code/tests exist but are untracked; no `experiments/decision_criticality_timescale_trainval_v1/` output directory and no run log exist — the full 144-scenario TRAIN/VAL run has not produced output. Owned by a separate workstream; **do not modify, stage, or launch as part of documentation polish** | Belongs to its own workstream, not this one |
+| Decision-Criticality / Regime-Timescale TRAIN/VAL analysis | `IMPLEMENTED`; committed and pushed; scientific run `NOT_STARTED` | Design `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`; module `src/llmserveopt/analysis/decision_criticality_timescale_trainval_v1.py`; runner `scripts/run_decision_criticality_timescale_trainval_v1.py`; tests `tests/test_decision_criticality_timescale_trainval_v1.py` (40/40 pass); committed in `4dac220` | Design/code/tests are complete and tracked; no `experiments/decision_criticality_timescale_trainval_v1/` output directory and no run log exist — the full 144-scenario TRAIN/VAL run has not been executed and produced no scientific conclusion. Must not import or use the Family-B held-out replication as evidence (guarded) | Requires separate, explicit authorization before launching |
 | New-policy synthesis/evolution | `NOT_STARTED` (long-term goal) | n/a | Depends on Public Trace Corpus Layer 2+ (policy replay) and the decision-criticality/mechanism-attribution layer above | Not actionable until both upstream dependencies land |
 
 ## Current Blocker
@@ -82,10 +82,11 @@ regression (see `logs/overnight_full_repo_validation_20260819.log`).
 
 Independently, the Public Trace Corpus v1 workload-input layer (Layers 0-1)
 is complete and committed (`84fa31b`/`179a6fe`); Layer 2+ (policy replay) is
-not started. A separate decision-criticality/regime-timescale analysis
-workstream has prepared its design/code/tests but produced no run output yet
-and is untracked — it belongs to a different task and should not be touched
-here.
+not started. The decision-criticality/regime-timescale analysis's design,
+implementation, and tests are complete, committed, and pushed (`4dac220`),
+but the actual TRAIN/VAL run has not been executed and produced no run
+output or scientific conclusion — it must not be launched without separate
+explicit authorization.
 
 Historical context below (WS-P family-by-family pairwise-separation and
 composition-falsification work) remains valid evidence and is unchanged; it
@@ -124,9 +125,10 @@ Three independent threads are queued, each requiring separate explicit
 authorization before launch: (1) the Family-B Balanced Replication
 scientific run (`--source replication --i-am-authorized`); (2) Public Trace
 Corpus v1 Layer 2+ policy replay; (3) the decision-criticality/timescale
-analysis's actual TRAIN/VAL run (owned by a different workstream). Do not
-start selector retraining, MAP-Elites, or new-policy synthesis before the
-decision-critical-state evidence these threads are meant to produce exists.
+analysis's actual TRAIN/VAL run (design/code/tests committed in `4dac220`;
+the run itself is not yet launched). Do not start selector retraining,
+MAP-Elites, or new-policy synthesis before the decision-critical-state
+evidence these threads are meant to produce exists.
 
 Historical WS-P entrypoint (superseded as the "current next action" by the
 above, but still valid background):

@@ -5,9 +5,11 @@
 status, read [`docs/BASELINE_STATUS.md`](BASELINE_STATUS.md). Dated files in
 [`docs/audits/`](audits/) are historical evidence, not live status.
 
-Last reconciled: 2026-08-19, after Family-B live replication prep (commit
-`9d8f997`), Public Trace Corpus v1 implementation (commits `84fa31b` + `179a6fe`),
-and decision-criticality analysis design (uncommitted parallel workstream).
+Last reconciled: 2026-08-19, current HEAD `4dac220` — after Family-B live
+replication prep (commit `9d8f997`), Public Trace Corpus v1 implementation
+(commits `84fa31b` + `179a6fe`), and the decision-criticality/timescale
+analysis design+implementation+tests (commit `4dac220`; committed, not yet
+run).
 
 ## Documentation Authority
 
@@ -93,9 +95,10 @@ agree:
 - **Layer 5 — counterfactual decision-criticality/mechanism annotations:**
   decision-critical-state identification, counterfactual action divergence,
   mechanism attribution, built from Layer 4. **NOT STARTED** — this is the
-  layer the decision-criticality/timescale analysis workstream (currently
-  prepared-only, uncommitted, owned separately) is designed to eventually
-  produce evidence toward.
+  layer the decision-criticality/timescale analysis workstream (design,
+  implementation, and tests committed in `4dac220`; the actual TRAIN/VAL run
+  itself not yet launched) is designed to eventually produce evidence
+  toward.
 - **Layer 6 — small real-LLM validation subset:** a small subset of
   synthesized-policy results validated against real hosted LLM serving
   (Cohere/CloudRift). **NOT STARTED. Only stage where Cohere/CloudRift

@@ -11,7 +11,7 @@
 |---|---|
 | Repository | `llm-serving-heuristic-evolution` |
 | Branch | `contextual-compositional-heuristics-20260731` |
-| Last reconciled SHA | `179a6fe0e46a32aac8045061f923e4500e85e352` |
+| Last reconciled SHA | `4dac2201d3b4b08cfbdca61285cd2cda59cb5b31` |
 | Last reconciled date | 2026-08-19 |
 | Remote | `origin/contextual-compositional-heuristics-20260731` |
 | Expected Git state | clean, 0 ahead / 0 behind after `git fetch --prune origin` |
@@ -532,7 +532,7 @@ Supported interpretation:
 
 ## Family-B Balanced Replication (IMPLEMENTATION_READY)
 
-- Design/artifacts: `experiments/family_b_balanced_replication_v1/` (commit `9d8f997`, which is also the HEAD commit as of this reconciliation).
+- Design/artifacts: `experiments/family_b_balanced_replication_v1/` (added in commit `9d8f997`).
 - The smoke-synthetic run infrastructure is prepared; the scientific replication across actual scenarios has not yet executed.
 - **Status: READY TO RUN — explicit authorization required before launching.** Family-B was the only regime never tested by the hierarchical router's TEST or live evaluations (0 scenarios in both).
 - Current provenance-timestamp diffs in `run_smoke_synthetic_results.json` are provenance-only; no scientific result was changed.
@@ -550,17 +550,17 @@ Supported interpretation:
 - **Important note:** The prior forensic report incorrectly claimed a tracked `public_trace_corpus/` directory was deleted. This was uncommitted local work only. No git-tracked content was removed.
 - **Next step:** Layer 2+ (policy replay) is NOT started. Cohere/CloudRift belong only in real-LLM validation (Layer 6).
 
-## Decision-Criticality / Timescale Analysis (IN-FLIGHT UNCOMMITTED WORK)
+## Decision-Criticality / Timescale Analysis (PREREGISTERED + IMPLEMENTED, EXPERIMENT NOT RUN)
 
-- Files: `src/llmserveopt/analysis/`, `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`, `scripts/run_decision_criticality_timescale_trainval_v1.py`, `tests/test_decision_criticality_timescale_trainval_v1.py`
-- Status: All untracked, owned by a separate concurrent workstream. Commit timestamps predate the Public Trace Corpus incident. Do not modify, stage, or commit these as part of Pass 2.
-- Mentioned here only so a resuming agent knows they exist and are not to be disturbed.
+- Files: `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`, `src/llmserveopt/analysis/decision_criticality_timescale_trainval_v1.py`, `scripts/run_decision_criticality_timescale_trainval_v1.py`, `tests/test_decision_criticality_timescale_trainval_v1.py`
+- Status: design, implementation, and 40 tests are **committed and pushed** (commit `4dac220`, "feat: preregister decision-criticality train-val study"). (At the time of the earlier pass-1/pass-2 audits on 2026-08-19, these files were still untracked, owned by a separate concurrent workstream — that is no longer the case.)
+- The actual 144-scenario TRAIN/VAL execution has **not** been run: no `experiments/decision_criticality_timescale_trainval_v1/` output directory or run log exists, and no scientific conclusion has been drawn. Launching it requires separate, explicit authorization, same as Family-B replication. It must not import or use the Family-B held-out replication as evidence (enforced by a runtime + source-text guard against importing `family_b_balanced_replication_v1`).
 
 ## Exact Next Tasks (three independent threads)
 
-1. **Family-B replication:** Implementation-ready (commit `9d8f997`, HEAD). Scientific run NOT YET STARTED per task instructions. Requires explicit authorization.
+1. **Family-B replication:** Implementation-ready (added in commit `9d8f997`). Scientific run NOT YET STARTED per task instructions. Requires explicit authorization.
 2. **Public Trace Corpus v1:** Implementation complete (commits 84fa31b/179a6fe). No further corpus development until Layer 2+ is explicitly authorized.
-3. **Decision-criticality analysis:** In-progress uncommitted parallel workstream. Do not modify.
+3. **Decision-criticality analysis:** Design/implementation/tests committed and pushed (commit `4dac220`). Scientific TRAIN/VAL execution NOT YET STARTED. Requires explicit authorization.
 
 **The two independent main threads remain:**
 **WS-P:** Family B v2 analysis → PrefillControl composition → Family C v2 → KV composition falsification — all complete. Family-B balanced replication implementation-ready. See items 1-3 above for next actions.
@@ -570,7 +570,7 @@ Supported interpretation:
 
 - Do not launch Family-B scientific replication without explicit authorization.
 - Do not advance public-trace corpus beyond workload-input layer without authorization.
-- Do not modify, stage, or commit the decision-criticality uncommitted work.
+- Do not launch the decision-criticality TRAIN/VAL run without explicit authorization.
 - Do not claim Apt-Serve globally beats the best fixed baseline.
 - Do not treat Apt-Serve as the project endpoint.
 - Do not start CC6 without explicit authorization.

@@ -12,17 +12,17 @@ For historical P0 narrative (superseded as the active P0), see the section at en
 
 ## NOW
 
-1. **Decision-criticality/timescale analysis** — Uncommitted parallel workstream in progress. Owned by a separate session. Files: `src/llmserveopt/analysis/`, `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`, `scripts/run_decision_criticality_timescale_trainval_v1.py`, `tests/test_decision_criticality_timescale_trainval_v1.py`. Do not modify.
+1. **Decision-criticality/timescale analysis** — Design, implementation, and tests are committed and pushed (commit `4dac220`, "feat: preregister decision-criticality train-val study"). Files: `src/llmserveopt/analysis/`, `docs/design/DECISION_CRITICALITY_TIMESCALE_TRAINVAL_V1.md`, `scripts/run_decision_criticality_timescale_trainval_v1.py`, `tests/test_decision_criticality_timescale_trainval_v1.py`. The actual TRAIN/VAL experiment has NOT been run (no output artifact exists). Do not launch without explicit authorization.
 
 2. **Pass-1/Pass-2 documentation reconciliation** — This file was updated on 2026-08-19 (commits in this pass). Check for consistency.
 
 ## NEXT
 
-3. **Family-B balanced scientific replication** — Implementation-ready (commit `9d8f997`, HEAD). Smoke-synthetic infrastructure is prepared. The full scientific replication across actual scenarios is NOT YET STARTED. Requires explicit authorization — this was the only regime never tested by hierarchical router (0 scenarios in both TEST and live eval).
+3. **Family-B balanced scientific replication** — Implementation-ready (added in commit `9d8f997`). Smoke-synthetic infrastructure is prepared. The full scientific replication across actual scenarios is NOT YET STARTED. Requires explicit authorization — this was the only regime never tested by hierarchical router (0 scenarios in both TEST and live eval).
 
 4. **Public Trace Corpus v1 — Layer 2+** — Workload-input layer (Layers 0-1) is complete (commits 84fa31b/179a6fe). Next step: policy replay across multiple policies to produce derived policy-separation data (Layer 3). NOT STARTED. Requires authorization.
 
-5. **Provenance-only diffs** — `experiments/family_b_balanced_replication_v1/run_smoke_synthetic_results.json` and `experiments/hierarchical_regime_router_live_reeval_v1/gate_rescoring_v1.json` have only HEAD-SHA and timestamp updates. No scientific content changed. Leave untouched unless the owning session commits them.
+5. **Provenance-only diffs (resolved)** — `experiments/family_b_balanced_replication_v1/run_smoke_synthetic_results.json` and `experiments/hierarchical_regime_router_live_reeval_v1/gate_rescoring_v1.json` previously drifted (HEAD-SHA/timestamp only, no scientific content) whenever their tests ran, because the tests wrote to the tracked canonical path. Fixed in commit `eec98c2` ("fix: isolate test-generated provenance artifacts") — both scripts now accept an out-dir/output-path override and the tests use `tmp_path`; no live diff currently exists on either file.
 
 ## AFTER THAT
 
