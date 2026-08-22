@@ -135,6 +135,18 @@ def test_no_d0_horizon_verdict_from_empty_results():
     assert result not in forbidden_verdicts
 
 
+def test_margin_bin_label_accepts_scalar_values():
+    """Regression: summary generation must not call pd.cut on a scalar."""
+    from scripts.horizon_stability_v1 import margin_bin_label
+
+    assert margin_bin_label(0.0) == "exact_zero"
+    assert margin_bin_label(1e-9) == "0_to_1e-6"
+    assert margin_bin_label(0.05) == "1e-6_to_0.1"
+    assert margin_bin_label(0.5) == "0.1_to_1.0"
+    assert margin_bin_label(5.0) == "1.0_to_10.0"
+    assert margin_bin_label(11.0) == "gt_10.0"
+
+
 # ======================================================================
 # 4. Deterministic sample reuse
 # ======================================================================

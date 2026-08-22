@@ -783,6 +783,22 @@ def classify_horizon_certified(
     return "HORIZON_UNRESOLVED"
 
 
+def margin_bin_label(delta_j: float) -> str:
+    """Return a stable scalar margin bin for stratified horizon summaries."""
+    margin = abs(float(delta_j))
+    if margin == 0.0:
+        return "exact_zero"
+    if margin <= 1e-6:
+        return "0_to_1e-6"
+    if margin <= 0.1:
+        return "1e-6_to_0.1"
+    if margin <= 1.0:
+        return "0.1_to_1.0"
+    if margin <= 10.0:
+        return "1.0_to_10.0"
+    return "gt_10.0"
+
+
 def decide_d0_horizon(
     results: list[HorizonResult],
     certified_count: int,
@@ -1138,7 +1154,7 @@ def main() -> None:
         if len(orig) == 0:
             continue
         orig = orig.iloc[0]
-        key = f"label={orig['oracle_label']},margin_bin={pd.cut(abs(orig['delta_J_whole']), bins=[-np.inf, 0, 1e-6, 0.1, 1.0, 10.0, np.inf]).astype(str)}"
+        key = f"label={orig['oracle_label']},margin_bin={margin_bin_label(orig['delta_J_whole'])}"
         if key not in stratified:
             stratified[key] = {"total": 0, "flips": 0}
         stratified[key]["total"] += 1
