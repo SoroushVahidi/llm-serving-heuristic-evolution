@@ -11,6 +11,8 @@ from __future__ import annotations
 import ast
 import copy
 import inspect
+import subprocess
+import sys
 
 import numpy as np
 import pandas as pd
@@ -134,10 +136,72 @@ def test_module_never_imports_the_family_b_replication_module():
     assert not any("family_b_balanced_replication_v1" in name for name in imported)
 
 
+def _run_replication_safeguard_in_subprocess(*, preimport_forbidden_module: bool) -> subprocess.CompletedProcess:
+    """Runs `assert_no_replication_module_imported()` in a fresh interpreter,
+    isolated from this pytest process's own `sys.modules`.
+
+    The invariant this safeguard enforces is "the decision-criticality
+    module's own import graph must never pull in the Family-B replication
+    module" -- not "no process anywhere may ever have loaded it for any
+    reason". `assert_no_replication_module_imported()` itself scans
+    process-global `sys.modules` (by design: it is also called for real
+    inside the runner's own `main()`, which always runs as its own fresh
+    `python3 scripts/run_decision_criticality_timescale_trainval_v1.py`
+    process, where that scan is exactly correct). The only place that scan
+    is the wrong granularity is a shared pytest process that has *also*
+    collected unrelated tests (e.g. `test_family_b_balanced_replication_v1.py`)
+    which legitimately import the forbidden module for their own testing --
+    so the test, not the safeguard itself, is what needs isolating.
+    """
+    code = (
+        "import sys; sys.path.insert(0, 'src'); "
+        + ("import llmserveopt.policy_separation.family_b_balanced_replication_v1; " if preimport_forbidden_module else "")
+        + "from llmserveopt.analysis import decision_criticality_timescale_trainval_v1 as dcm; "
+        + "dcm.assert_no_replication_module_imported(); "
+        + "print('SAFEGUARD_PASSED')"
+    )
+    return subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, timeout=30,
+    )
+
+
 def test_assert_no_replication_module_imported_self_check():
-    # In a clean test process this module has not imported the replication
-    # module, so the runtime self-check must pass silently.
-    dcm.assert_no_replication_module_imported()
+    # Isolated subprocess: a clean interpreter that has only ever imported
+    # the decision-criticality module itself has not imported the
+    # replication module, so the runtime self-check must pass silently.
+    result = _run_replication_safeguard_in_subprocess(preimport_forbidden_module=False)
+    assert result.returncode == 0, result.stderr
+    assert "SAFEGUARD_PASSED" in result.stdout
+
+
+def test_replication_safeguard_immune_to_other_process_wide_imports():
+    """Regression test for the order-dependent false positive: importing the
+    (legitimate) Family-B replication module in *this* pytest process first
+    -- exactly what test_family_b_balanced_replication_v1.py's own tests do
+    when collected in the same session -- must not affect the safeguard,
+    because it is evaluated in its own fresh subprocess, not this process."""
+    import llmserveopt.policy_separation.family_b_balanced_replication_v1  # noqa: F401
+
+    assert any(
+        name.endswith("family_b_balanced_replication_v1") for name in sys.modules
+    ), "test setup failed: forbidden module was not actually imported into this process"
+
+    result = _run_replication_safeguard_in_subprocess(preimport_forbidden_module=False)
+    assert result.returncode == 0, (
+        "safeguard must still pass in its isolated subprocess even though this "
+        f"process itself has the forbidden module loaded; got: {result.stderr}"
+    )
+    assert "SAFEGUARD_PASSED" in result.stdout
+
+
+def test_replication_safeguard_still_detects_a_real_forbidden_import():
+    """Negative control: the safeguard is not vacuous -- when the forbidden
+    module genuinely is imported inside the same process being checked, the
+    check must still fail exactly as before."""
+    result = _run_replication_safeguard_in_subprocess(preimport_forbidden_module=True)
+    assert result.returncode != 0
+    assert "forbidden module" in result.stderr
+    assert "family_b_balanced_replication_v1" in result.stderr
 
 
 # ---------------------------------------------------------------------------
