@@ -72,37 +72,32 @@ as iteration-level scheduling, PagedAttention, and chunked
 prefill~\cite{orca2022,vllm2023,sarathi2024}, together with disaggregated and
 fairness-oriented serving ideas~\cite{distserve2024,vtc2024}.
 The portfolio spans full and chunked prefill, estimated-service ordering,
-weighted fair sharing, least-laxity urgency, and KV-aware admission. We evaluate
-complementarity on controlled Families A/B/C, a joint 240-scenario workload,
-and local vLLM, then test contextual selection, hierarchical routing, a
-same-distribution joint-240 exploitability comparison, a causal terminal-utility
-fork analysis, support expansion, guarded composition, and typed synthesis
-under preregistered splits. Except where noted, results are interpreted across
+weighted fair sharing, least-laxity urgency, and KV-aware admission. We
+evaluate complementarity across controlled and joint workloads and local
+vLLM, then test adaptive exploitation, terminal-criticality analysis, and
+constructive alternatives under preregistered splits, detailed in the four
+contributions below. Except where noted, results are interpreted across
 separately scoped settings (Section~\ref{sec:metrics}); they do not constitute
 one shared numeric decomposition of joint-workload headroom.
 
 This paper makes four contributions:
 \begin{enumerate}
   \item We show workload-dependent complementarity and positive \vbs{} headroom
-  for a six-policy LLM-serving portfolio, including under jointly varying
-  synthetic pressures and after expanding the joint-workload envelope with
-  independently motivated external baselines.
-  \item On the same 240-scenario joint workload used to measure that headroom,
-  we directly compare \sbs{}, \vbs{}, a scenario-level causal selector, and a
-  live causal router: both adaptive methods fall below \sbs{}, with bootstrap
-  confidence intervals excluding zero improvement, showing that measured
-  portfolio opportunity is not automatically exploitable by the tested
-  same-distribution architectures.
+  for a six-policy portfolio, under jointly varying pressures and after
+  expanding the envelope with independently motivated external baselines.
+  \item On the same joint workload used to measure that headroom, we compare
+  \sbs{}, \vbs{}, a scenario-level causal selector, and a live causal router:
+  both adaptive methods fall below \sbs{}, with CIs excluding zero
+  improvement, so measured opportunity is not automatically exploitable by
+  the tested architectures.
   \item Using a causal terminal-utility fork-and-continue methodology, we show
-  that consequential scheduling decisions are sparse and highly concentrated,
-  and that native policy disagreement and an earlier short-horizon completion
-  proxy are both unreliable predictors of them---one explanation for why the
-  tested adaptive methods underperform.
+  consequential scheduling decisions are sparse and concentrated, and that
+  native disagreement and an earlier short-horizon proxy both fail to predict
+  them---one explanation for the underperformance above.
   \item We test constructive exploitation beyond selection (support expansion,
   guarded composition, typed synthesis) and validate a simulator-derived
-  mechanism against native vLLM; all remain bounded negative under the tested
-  formulations, or reveal a semantic mismatch and a native scheduler-token-budget
-  tradeoff.
+  mechanism against native vLLM; results remain bounded negative, or reveal a
+  semantic mismatch and a native token-budget tradeoff.
 \end{enumerate}
 
 \section{Portfolio, Workloads, and Metrics}
@@ -138,6 +133,7 @@ Online state is restricted to quantities observable during serving; future
 actual output length is never an input.}
 \label{tab:policy-matrix}
 \setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{0.9}
 \begin{tabular}{@{}p{0.20\textwidth}p{0.42\textwidth}p{0.28\textwidth}@{}}
 \toprule
 Policy & Mechanism & Key online state \\
@@ -150,6 +146,7 @@ LLF & Least-laxity urgency under deadlines & Deadline, current time, predicted s
 KV constrained & KV-reserve admission/scheduling with urgent bypass & KV capacity, estimated KV demand, laxity \\
 \bottomrule
 \end{tabular}
+\renewcommand{\arraystretch}{1}
 \end{table}
 
 These are repository-specific baselines, not full reproductions.
@@ -171,14 +168,14 @@ baseline using BurstGPT and Azure 2023 LLM-inference traces
 retaining source order, relative timestamps, and prompt/output token counts;
 predicted lengths, deadlines, priorities, and classes are deterministic
 overlays, and actual future output length is hidden from online policies.
-This tested replay configuration motivates stress workloads but does not show
-that public traces are generally uninformative.
+This configuration motivates stress workloads but does not show public traces
+are generally uninformative.
 
 Second, controlled Families A/B/C isolate mechanisms. Family A stresses
 fairness, completion, and SLO conflict; Family B stresses prefill/decode
-contention; and Family C stresses KV pressure and urgency. These families form
-the original controlled evidence for policy complementarity and the later
-selector, router, support-expansion, and synthesis tests.
+contention; and Family C stresses KV pressure and urgency. These families are
+the original controlled evidence for complementarity and later
+selector/router/synthesis tests.
 
 Third, the joint multi-mechanism workload broadens the evidence beyond
 concatenated stress families. It contains 240 scenarios drawn from one common
@@ -315,18 +312,16 @@ scenarios, \policy{kv_constrained_online} 50, full prefill 46, ESTF 45, WFS
 59.6\%, nontrivial policy spread appears in 91.7\% of scenarios, and the mean
 policy range is 0.111658 \anwg{}.
 
-\begin{figure}
+\begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/joint_complementarity.pdf}
-\caption{Joint 240-scenario multi-mechanism workload under the canonical
-six-policy portfolio $P_6$ (this figure does not include the external expansion
-in Section~\ref{sec:external-portfolio}).
-(a)~Per-scenario \vbs{} winner counts (Full, Chunked, ESTF, WFS, LLF, KV).
-(b)~Distribution of per-scenario \vbs{} gain over the \sbs{} (ANWG); solid line
-is mean headroom, dashed line is $0.01$.
-(c)~Elevated mechanism pressures per scenario (threshold $0.60$); shaded region
+\caption{Joint 240-scenario multi-mechanism workload under $P_6$ (excludes the
+external expansion, Section~\ref{sec:external-portfolio}).
+(a)~Per-scenario \vbs{} winner counts.
+(b)~Per-scenario \vbs{} gain over \sbs{} (ANWG); solid = mean, dashed = $0.01$.
+(c)~Elevated mechanism pressures per scenario (threshold $0.60$); shading
 marks $\geq 2$ pressures.
-Winner diversity and positive \vbs{} headroom persist under jointly varying
+Winner diversity and positive headroom persist under jointly varying
 pressures.}
 \label{fig:joint-complementarity}
 \end{figure}
@@ -427,11 +422,12 @@ state distribution under which specialized policies were valuable.
 criteria. Each row uses its own evaluation scope and is not comparable as a
 shared-dataset leaderboard.}
 \label{tab:adaptive-criteria}
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.19\textwidth}
-  >{\raggedright\arraybackslash}p{0.13\textwidth}
-  >{\raggedright\arraybackslash}p{0.28\textwidth}
-  >{\raggedright\arraybackslash}p{0.30\textwidth}@{}}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{0.85}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}
+  >{\raggedright\arraybackslash}p{0.155\textwidth}
+  >{\raggedright\arraybackslash}p{0.275\textwidth}
+  >{\raggedright\arraybackslash}p{0.285\textwidth}@{}}
 \toprule
 Method & Scope & Intermediate signal & Result \\
 \midrule
@@ -444,7 +440,7 @@ Live &
 Macro-F1 0.9887; 0 catastrophic &
 +0.00616 \anwg{} ($<$\,0.01); GapClosure 0.143 \\
 Terminal-\anwg{} fork &
-TRAIN/VAL A/B/C (144) &
+TRAIN/VAL (144) &
 27/734 (3.7\%) nonzero; disagr.\ AUROC 0.513 &
 Top-1\% mass 48.3\%; H10-proxy Spearman 0.005 \\
 Support expansion &
@@ -453,7 +449,7 @@ Family-A &
 1/104 closer; p90\,$=$\,0; 0/8 criteria \\
 Guarded composition &
 Family-A &
-Best WFS regret $-$3.11\% &
+WFS regret reduction 3.11\% &
 $<$\,10\% min.; quadrant order fail \\
 Typed crossover &
 24 TRAIN &
@@ -461,6 +457,7 @@ Exact parents; 4{,}320 evals &
 Best marginal gain 0.0; no promotion \\
 \bottomrule
 \end{tabular}
+\renewcommand{\arraystretch}{1}
 \end{table}
 
 Table~\ref{tab:adaptive-criteria} summarizes bounded negative evidence across
@@ -476,9 +473,9 @@ test whether it is recoverable by causal adaptive methods evaluated on the
 cross-fitting (seed 20260825). We restrict to $P_6$ and test two causal
 architectures: a scenario-level selector ($A_{\text{scen}}$, logistic
 regression on 17 pre-policy features, scored via a frozen utility lookup) and
-a live 6-way dwell router ($A_{\text{live}}$, retrained online features,
-dwell $=20$, scored by closed-loop simulation); live-vs-matrix agreement was
-verified to $4\times10^{-7}$.
+a live 6-way router ($A_{\text{live}}$, retrained online features, dwell
+$\geq20$ steps per policy before switching, scored by closed-loop
+simulation); live-vs-matrix agreement was verified to $4\times10^{-7}$.
 
 \begin{table}
 \centering
@@ -490,6 +487,7 @@ a negative GapClosure means $R_A<R_{\mathrm{\sbs{}}}$, i.e.\ added regret, not
 partial recovery.}
 \label{tab:samedist}
 \setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.9}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 Method & \anwg{} & Gain [95\% CI] & GapClosure & Catastrophic \\
@@ -501,12 +499,13 @@ $A_{\text{scen}}$ & 0.3059 & $-0.008$ [$-0.013,-0.003$] & $-0.43$ & 67/240 \\
 $A_{\text{live}}$ & 0.2840 & $-0.030$ [$-0.038,-0.023$] & $-1.58$ & 118/240 \\
 \bottomrule
 \end{tabular}
+\renewcommand{\arraystretch}{1}
 \end{table}
 
-Both adaptive methods perform \emph{below} \sbs{}, not merely below \vbs{}:
-gain is negative for both, with 95\% CIs excluding zero improvement, and
-catastrophic regressions ($R_A<R_{\mathrm{\sbs{}}}-0.01$) affect 28\% of
-scenarios for $A_{\text{scen}}$ and 49\% for $A_{\text{live}}$.
+Both methods perform \emph{below} \sbs{}, not merely below \vbs{}: gain is
+negative for both (95\% CIs exclude zero), and catastrophic regressions
+($R_A<R_{\mathrm{\sbs{}}}-0.01$) affect 28\% of $A_{\text{scen}}$ scenarios
+and 49\% of $A_{\text{live}}$'s.
 $A_{\text{scen}}$'s winner classification is modestly above chance (accuracy
 29.6\%, macro-F1 0.267 vs.\ 16.7\% chance), but mean regret is 0 when correct
 and 0.0386 when not: modest classification accuracy is insufficient because
@@ -520,7 +519,7 @@ To help explain Section~\ref{sec:same-dist}, we ran a separate causal
 counterfactual study on the TRAIN/VAL controlled corpus (Families A/B/C, 144
 scenarios, distinct from joint-240). At up to 5 disagreement and 3
 agreement-control points per scenario (734 evaluated states, 124 scenarios),
-we forked the live simulator, forced one alternative native-pair action,
+we forked the live simulator, forced one alternative $P_6$ policy's action,
 continued via a cloned live router to natural termination, and measured the
 terminal effect $C_t=\mathrm{\anwg{}}_{\mathrm{CF}}-\mathrm{\anwg{}}_{\mathrm{ref}}$;
 124/124 reference-replays matched the untouched trajectory to $10^{-12}$.
@@ -550,17 +549,19 @@ state-level criticality there.
 
 We next test stronger exploitation mechanisms beyond parent selection, each
 under pre-specified criteria (Table~\ref{tab:adaptive-criteria}). Target-free
-\textbf{support expansion} added 24,314 behavioral fingerprints and 156
-training-side domains without using held-out Family-A states as targets, but
-moved only 1/104 held-out states closer under the primary nearest-neighbor
-metric (p90 improvement 0), rejecting insufficient training-side support as a
-sufficient explanation in this formulation. Family A showed ESTF/WFS
+\textbf{support expansion} added 24,314 behavioral fingerprints (encoded
+state-action traces) spanning 156 training-side domains (state-space regions)
+without using held-out Family-A states as targets, but moved only 1/104
+held-out states closer under the primary nearest-neighbor metric (p90
+improvement 0), rejecting insufficient training-side support as a sufficient
+explanation in this formulation. Family A showed ESTF/WFS
 complementarity, so we tested \textbf{guarded semantic composition}: the best
 WFS-default composite rule with explicit ESTF release guards reduced WFS
 regret by only 3.11\% (below the 10\% minimum-effect criterion) and violated
 the required completion-versus-SLO quadrant ordering. Finally, a
-\textbf{typed program synthesis} screen with exact parent reproduction ran
-random search, mutation-only search, and portfolio-seeded structural crossover
+\textbf{typed program synthesis} screen with exact parent reproduction
+compared random search, mutation-only search, and portfolio-seeded structural
+crossover
 (24 training scenarios, 60 candidates/treatment, 4,320 evals); best mean
 marginal gains were 0.011295 (random), 0.002551 (mutation), and 0.0
 (crossover), with no candidate meeting promotion criteria.
@@ -568,9 +569,9 @@ marginal gains were 0.011295 (random), 0.002551 (mutation), and 0.0
 \section{Real-System Validation}
 \label{sec:real}
 
-We validated prefill/decode contention on local vLLM 0.27.1 serving
-Qwen2.5-0.5B on an RTX 5060 Ti to test qualitative mechanism transfer, not
-exact magnitude matching.
+On this local probe (Section~\ref{sec:methods}) we validated prefill/decode
+contention, testing qualitative mechanism transfer, not exact magnitude
+matching.
 
 \subsection{Direct Family-B analogue}
 
@@ -596,15 +597,15 @@ native token budget (512 vs.\ 4096) produced repeatable workload-dependent
 latency effects (Figure~\ref{fig:vllm-semantics}): two regimes, 20 measured
 regime-runs, 150/150 successful requests, ABBA ordering.
 
-\begin{figure}
+\begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/vllm_semantic_validation.pdf}
 \caption{Simulator-to-native vLLM validation on the local probe.
-(a)~Simulator Family-B-style treatment: shared 512-token step budget; only
-prefill chunk size varies (FULL vs.\ SMALL).
+(a)~Simulator treatment: shared 512-token step budget, only prefill chunk
+size varies.
 (b)~Initial native analogue: chunking and token budget change together
-(bundled; not a single-factor contrast).
-(c)~Controlled native experiment with chunked prefill fixed; plotted points are
+(bundled, not single-factor).
+(c)~Controlled native experiment, chunked prefill fixed; points are
 T4096$-$T512 latency differences with 95\% bootstrap CIs.
 Negative late-request TTFT favors T4096; positive prompt-heavy E2E favors T512.}
 \label{fig:vllm-semantics}
@@ -621,31 +622,39 @@ tested configuration, not a Family-B reproduction~\cite{vllm2023,sarathi2024,dis
 \label{sec:discussion}
 
 \paragraph{Related work.}
-Prior LLM-serving systems primarily propose or optimize \emph{individual}
-scheduling mechanisms: continuous batching and memory management in Orca and
-vLLM~\cite{orca2022,vllm2023}; chunked prefill and prefill/decode isolation in
-Sarathi-Serve, DistServe, Splitwise, and TetriInfer~\cite{sarathi2024,distserve2024,splitwise2024,tetriinfer2024};
-dynamic request placement in Llumnix~\cite{llumnix2024}; KV-centric serving in
-Mooncake~\cite{mooncake2025}; fairness via virtual tokens in VTC~\cite{vtc2024};
-state-aware or multi-SLO scheduling in SOLA and SLOs-Serve~\cite{sola2025,slosserve2025};
-iteration-level preemption in FastServe~\cite{fastserve2026}; queueing control in
-QLM~\cite{qlm2024}; learning-to-rank request ordering~\cite{llmltr2024}; and
-SLA/goodput-oriented or phase-aware schedulers such as Past-Future and
-PASCAL~\cite{pastfuture2025,pascal2026}. Online KV-constrained formulations
-likewise optimize a single scheduling object under capacity limits~\cite{kvscheduling2025,wait2025}.
-Our question is complementary: given a heterogeneous \emph{portfolio} of such
-mechanisms, how much offline opportunity remains exploitable by causal
-adaptive selectors under closed-loop execution?
+Many LLM-serving systems already adapt online: migration
+(Llumnix~\cite{llumnix2024}), queueing control (QLM~\cite{qlm2024}),
+state-aware/multi-SLO scheduling (SOLA, SLOs-Serve~\cite{sola2025,slosserve2025}),
+hierarchical multi-timescale routing (H-MAS~\cite{hmas2026}), flexible request
+partitioning (Libra~\cite{libra2026}), and online policy self-evolution
+(Autopoiesis~\cite{autopoiesis2026}). Others target one mechanism:
+batching/memory (Orca, vLLM~\cite{orca2022,vllm2023}); chunked prefill and
+prefill/decode isolation (Sarathi-Serve, DistServe, Splitwise,
+TetriInfer~\cite{sarathi2024,distserve2024,splitwise2024,tetriinfer2024});
+KV-centric serving (Mooncake~\cite{mooncake2025}); fairness via virtual
+tokens (VTC~\cite{vtc2024}); preemption (FastServe~\cite{fastserve2026});
+rank ordering~\cite{llmltr2024}; goodput/phase-aware scheduling (Past-Future,
+PASCAL~\cite{pastfuture2025,pascal2026}); and KV-constrained
+formulations~\cite{kvscheduling2025,wait2025}. To our knowledge, none jointly
+quantifies \sbs{}/\vbs{} portfolio headroom, evaluates causal adaptive
+selectors against that opportunity on the same workload distribution, and
+analyzes terminal counterfactual scheduling criticality---our focus. H-MAS is
+closest for hierarchical adaptive routing but omits portfolio opportunity and
+terminal criticality; Autopoiesis is closest for online policy synthesis,
+more ambitious than our bounded screen (Section~\ref{sec:constructive}), but
+likewise omits this formulation.
 
 Methodologically, \sbs{}/\vbs{} envelopes follow classical algorithm selection
 and portfolios~\cite{rice1976algorithmselection,gomes2001portfolios,satzilla2008}
 as specialized in SATzilla, AutoFolio, and Hydra~\cite{autofolio2015,hydra2010};
-we claim no novelty for those concepts, nor for decision-critical/consequential-state
-and counterfactual action-value notions long studied in reinforcement learning
-and sequential decision-making~\cite{ross2011dagger}. Serving differs because
-scheduling actions change future queue and resource state, so scenario-level
-regime accuracy need not imply utility-critical action accuracy---a closed-loop
-covariate-shift motif familiar from imitation learning. Our contribution is a
+we claim no novelty for those concepts, nor for decision-critical
+states~\cite{karino2020criticalstates} or counterfactual action-value
+estimation~\cite{mesnard2021counterfactual} in sequential decision-making
+generally, neither of which targets LLM-serving scheduling. Serving differs:
+actions change future queue and
+resource state, so regime accuracy need not imply action accuracy---a
+closed-loop covariate-shift motif familiar from imitation
+learning~\cite{ross2011dagger}. Our contribution is a
 causal terminal-utility (counterfactual-\anwg{}) characterization of such
 consequential decisions specifically within LLM-serving scheduler portfolios,
 showing that native disagreement and a short-horizon completion proxy are
@@ -659,10 +668,12 @@ evolutionary search~\cite{funsearch2024,autopoiesis2026}.
 Workloads are synthetic; one public replay saturates under our objective, and
 even a stressed public construction did not separate $P_6$/VTC rankings under
 the tested setup. The six policies plus disclosed external proxies are
-mechanism-diverse baselines rather than exhaustive reproductions of modern
-serving stacks; $P_{\mathrm{ext}}$ was not used to retrain frozen adaptive
-experiments. Real-system evidence uses one vLLM version, one small model, one
-GPU, and one mechanism family. The terminal-\anwg{} study
+mechanism-diverse baselines, not an exhaustive SOTA leaderboard; closely
+related systems (H-MAS, Libra, SOLA, SLOs-Serve, Autopoiesis) are discussed
+but not reproduced, since integrating them exceeds adding one $P_6$ policy,
+and $P_{\mathrm{ext}}$ was not used to retrain frozen adaptive experiments.
+Real-system evidence uses a single vLLM version, model, GPU, and mechanism
+family. The terminal-\anwg{} study
 (Section~\ref{sec:terminal-crit}) is scoped to TRAIN/VAL A/B/C, not joint-240,
 with only 734 acquired branches (27 nonzero) under fixed caps and family
 imbalance, so scenario-level concentration estimates carry wide bootstrap
@@ -695,10 +706,11 @@ Borum for lifetime access to Secure ShellFish supporting the research workflow,
 and the author's mother for continued support.
 
 \subsubsection{Data and Code Availability}
-Code, workload generators, configurations, and derived artifacts are available
-at \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}.
-Simulator results use project-generated synthetic workloads and, for
-public-trace replay, derived windows from BurstGPT and Azure 2023 traces
+Code, workload generators, configurations, and derived artifacts will be made
+publicly available at
+\url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution} upon
+publication. Simulator results use project-generated synthetic workloads and,
+for public-trace replay, derived windows from BurstGPT and Azure 2023 traces
 ~\cite{burstgpt2025,azurepublicdataset2023,splitwise2024}.
 
 \subsubsection{Generative AI Use}

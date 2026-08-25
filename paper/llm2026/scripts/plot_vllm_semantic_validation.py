@@ -32,6 +32,8 @@ def _style() -> None:
             "font.family": "serif",
             "font.size": 9,
             "axes.labelsize": 10,
+            "axes.titlesize": 10,
+            "axes.titleweight": "bold",
             "xtick.labelsize": 9,
             "ytick.labelsize": 9,
             "text.color": "0.1",
@@ -45,8 +47,8 @@ def _box(
     text: str,
     *,
     highlight: bool = False,
-    width: float = 0.42,
-    height: float = 0.55,
+    width: float = 0.40,
+    height: float = 0.42,
     fontsize: float = 9.0,
 ) -> None:
     face = "0.95" if not highlight else "0.88"
@@ -55,7 +57,7 @@ def _box(
         xy,
         width,
         height,
-        boxstyle="round,pad=0.012,rounding_size=0.015",
+        boxstyle="round,pad=0.02,rounding_size=0.02",
         transform=ax.transAxes,
         linewidth=0.9,
         edgecolor=edge,
@@ -71,7 +73,7 @@ def _box(
         ha="center",
         va="center",
         fontsize=fontsize,
-        linespacing=1.25,
+        linespacing=1.35,
         zorder=3,
     )
 
@@ -80,29 +82,20 @@ def _panel_simulator(ax: plt.Axes) -> None:
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
-    ax.text(
-        0.0,
-        0.98,
-        "(a) Simulator treatment",
-        transform=ax.transAxes,
-        ha="left",
-        va="top",
-        fontsize=10,
-        fontweight="bold",
-    )
-    _box(ax, (0.04, 0.32), "FULL\nmax chunk 65536", height=0.48, width=0.40)
-    _box(ax, (0.56, 0.32), "SMALL\nchunk 64", height=0.48, width=0.40)
+    ax.set_title("(a) Simulator treatment", loc="left", pad=8.0, fontsize=10)
+    _box(ax, (0.05, 0.40), "FULL\nchunk = 65,536", height=0.42, width=0.38)
+    _box(ax, (0.57, 0.40), "SMALL\nchunk = 64", height=0.42, width=0.38)
     ax.annotate(
         "",
-        xy=(0.56, 0.22),
-        xytext=(0.44, 0.22),
+        xy=(0.57, 0.30),
+        xytext=(0.43, 0.30),
         xycoords=ax.transAxes,
         arrowprops=dict(arrowstyle="<->", color="0.45", lw=0.9),
     )
     ax.text(
         0.5,
-        0.08,
-        "Shared budget 512; chunk size only",
+        0.10,
+        "shared step budget = 512",
         transform=ax.transAxes,
         ha="center",
         va="center",
@@ -115,38 +108,29 @@ def _panel_native_analogue(ax: plt.Axes) -> None:
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
-    ax.text(
-        0.0,
-        0.98,
-        "(b) Initial native analogue (bundled)",
-        transform=ax.transAxes,
-        ha="left",
-        va="top",
-        fontsize=10,
-        fontweight="bold",
+    ax.set_title("(b) Initial native analogue", loc="left", pad=8.0, fontsize=10)
+    _box(
+        ax,
+        (0.05, 0.40),
+        "FULL\nchunking off\nbudget = 4096",
+        height=0.42,
+        width=0.38,
+        highlight=True,
+        fontsize=8.0,
     )
     _box(
         ax,
-        (0.04, 0.32),
-        "FULL\nchunking off\nbudget 4096",
-        height=0.48,
-        width=0.40,
+        (0.57, 0.40),
+        "CHUNKED\nchunking on\nbudget = 512",
+        height=0.42,
+        width=0.38,
         highlight=True,
-        fontsize=8.5,
-    )
-    _box(
-        ax,
-        (0.56, 0.32),
-        "CHUNKED\nchunking on\nbudget 512",
-        height=0.48,
-        width=0.40,
-        highlight=True,
-        fontsize=8.5,
+        fontsize=8.0,
     )
     ax.text(
         0.5,
-        0.08,
-        "Bundled: chunking + budget change",
+        0.10,
+        "bundled change: chunking + budget",
         transform=ax.transAxes,
         ha="center",
         va="center",
@@ -164,28 +148,28 @@ def _load_effects_ms() -> list[tuple[str, float, float, float, str]]:
     # Top-to-bottom: TTFT then E2E within each regime pair for readability.
     rows = [
         (
-            "Low-late late TTFT",
+            "Low-late: late TTFT",
             ll["late_ttft_T4096_minus_T512_s_mean"] * 1000.0,
             ll["late_ttft_T4096_minus_T512_s_ci95"][0] * 1000.0,
             ll["late_ttft_T4096_minus_T512_s_ci95"][1] * 1000.0,
             "o",
         ),
         (
-            "High-late late TTFT",
+            "High-late: late TTFT",
             hl["late_ttft_T4096_minus_T512_s_mean"] * 1000.0,
             hl["late_ttft_T4096_minus_T512_s_ci95"][0] * 1000.0,
             hl["late_ttft_T4096_minus_T512_s_ci95"][1] * 1000.0,
             "o",
         ),
         (
-            "Low-late prompt-heavy E2E",
+            "Low-late: prompt-heavy E2E",
             ll["hog_e2e_T4096_minus_T512_s_mean"] * 1000.0,
             ll["hog_e2e_T4096_minus_T512_s_ci95"][0] * 1000.0,
             ll["hog_e2e_T4096_minus_T512_s_ci95"][1] * 1000.0,
             "s",
         ),
         (
-            "High-late prompt-heavy E2E",
+            "High-late: prompt-heavy E2E",
             hl["hog_e2e_T4096_minus_T512_s_mean"] * 1000.0,
             hl["hog_e2e_T4096_minus_T512_s_ci95"][0] * 1000.0,
             hl["hog_e2e_T4096_minus_T512_s_ci95"][1] * 1000.0,
@@ -218,57 +202,36 @@ def _panel_effects(ax: plt.Axes) -> None:
         )
     ax.set_yticks(y)
     ax.set_yticklabels([r[0] for r in rows])
+    ax.set_ylim(-0.7, max(y) + 0.7)
     ax.set_xlabel(r"Latency difference, T4096 $-$ T512 (ms)")
     ax.grid(axis="x", color="0.88", linewidth=0.6, zorder=0)
-    ax.text(
-        0.0,
-        1.08,
-        "(c) Controlled native budget effect (chunked prefill fixed)",
-        transform=ax.transAxes,
-        ha="left",
-        va="top",
-        fontsize=10,
-        fontweight="bold",
-        clip_on=False,
+    # Title sits clearly above the top spine (generous pad); the
+    # "(chunked prefill fixed)" qualifier moved to the caption to keep the
+    # title short and avoid crowding the border.
+    ax.set_title(
+        "(c) Controlled native token-budget effect", loc="left", pad=10.0, fontsize=10
     )
     xmin = min(r[2] for r in rows) - 5
     xmax = max(r[3] for r in rows) + 5
     ax.set_xlim(xmin, xmax)
-    # Sign-convention note inside axes, away from points.
-    ax.text(
-        0.98,
-        0.08,
-        "neg. TTFT $\\rightarrow$ T4096 better\npos. E2E $\\rightarrow$ T512 better",
-        transform=ax.transAxes,
-        ha="right",
-        va="bottom",
-        fontsize=7.5,
-        color="0.35",
-        linespacing=1.2,
-    )
+    # Sign-convention explanation lives in the caption only now, so the
+    # data region (points, CIs, zero line, grid) is left uncluttered.
 
 
-def main() -> None:
-    _style()
-    OUT.mkdir(parents=True, exist_ok=True)
+def plot_figure() -> plt.Figure:
+    fig = plt.figure(figsize=(6.75, 3.75))
 
-    # Vertical stack: schematics on top row, forest plot full-width below
-    # so y-labels never collide with panel (b).
-    fig = plt.figure(figsize=(6.75, 4.2))
-    gs = fig.add_gridspec(
-        2,
-        2,
-        height_ratios=[1.0, 1.35],
-        hspace=0.58,
-        wspace=0.28,
-    )
-    ax_a = fig.add_subplot(gs[0, 0])
-    ax_b = fig.add_subplot(gs[0, 1])
-    ax_c = fig.add_subplot(gs[1, :])
+    # Explicit axes rectangles (figure-fraction [left, bottom, width,
+    # height]) rather than a uniform gridspec: panels (a)/(b) need no
+    # y-axis-label margin, while panel (c) does, so a single shared left
+    # margin either wastes space above or compresses labels below.
+    ax_a = fig.add_axes([0.06, 0.685, 0.42, 0.275])
+    ax_b = fig.add_axes([0.54, 0.685, 0.42, 0.275])
+    ax_c = fig.add_axes([0.31, 0.115, 0.65, 0.475])
+
     _panel_simulator(ax_a)
     _panel_native_analogue(ax_b)
     _panel_effects(ax_c)
-    fig.subplots_adjust(left=0.22, right=0.98, top=0.95, bottom=0.10)
 
     pdf_path = OUT / "vllm_semantic_validation.pdf"
     png_path = OUT / "vllm_semantic_validation.png"
@@ -278,6 +241,13 @@ def main() -> None:
     print(f"wrote {pdf_path}")
     print(f"wrote {png_path}")
     print(f"figsize={fig.get_size_inches()}")
+    return fig
+
+
+def main() -> None:
+    _style()
+    OUT.mkdir(parents=True, exist_ok=True)
+    plot_figure()
 
 
 if __name__ == "__main__":

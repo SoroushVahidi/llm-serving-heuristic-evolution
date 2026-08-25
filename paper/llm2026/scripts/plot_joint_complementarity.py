@@ -11,6 +11,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -47,9 +48,10 @@ def _style() -> None:
             "font.size": 9,
             "axes.labelsize": 10,
             "axes.titlesize": 10,
+            "axes.titleweight": "bold",
             "xtick.labelsize": 9,
             "ytick.labelsize": 9,
-            "legend.fontsize": 8,
+            "legend.fontsize": 7.5,
             "axes.linewidth": 0.8,
             "axes.edgecolor": "0.15",
             "axes.labelcolor": "0.1",
@@ -71,17 +73,10 @@ def load_data() -> tuple[dict, pd.DataFrame, dict, dict]:
     return winner_summary, wide, coverage_summary, oracle_summary
 
 
-def _panel_label(ax: plt.Axes, text: str) -> None:
-    ax.text(
-        0.02,
-        0.98,
-        text,
-        transform=ax.transAxes,
-        ha="left",
-        va="top",
-        fontsize=11,
-        fontweight="bold",
-    )
+def _panel_title(ax: plt.Axes, text: str) -> None:
+    # Title sits ABOVE the axes box (outside the data rectangle) with
+    # generous padding, never over bars/lines/grid.
+    ax.set_title(text, loc="left", pad=7.0)
 
 
 def _panel_winner(ax: plt.Axes, winner_summary: dict) -> None:
@@ -94,19 +89,19 @@ def _panel_winner(ax: plt.Axes, winner_summary: dict) -> None:
         color="0.75",
         edgecolor="0.2",
         linewidth=0.8,
-        height=0.68,
+        height=0.62,
         zorder=2,
     )
     ax.set_yticks(y)
     ax.set_yticklabels(POLICY_LABELS)
     ax.invert_yaxis()
     ax.set_xlabel("Scenarios won")
-    ax.set_xlim(0, 65)
+    ax.set_xlim(0, 70)
     ax.set_xticks([0, 20, 40, 60])
     ax.grid(axis="x", color="0.85", linewidth=0.6, zorder=0)
     for yi, c in zip(y, counts):
-        ax.text(c + 1.2, yi, str(c), va="center", ha="left", fontsize=8, color="0.25")
-    _panel_label(ax, "(a)")
+        ax.text(c + 1.5, yi, str(c), va="center", ha="left", fontsize=8, color="0.25")
+    _panel_title(ax, "(a)")
 
 
 def _panel_gain(ax: plt.Axes, wide: pd.DataFrame, oracle_summary: dict) -> None:
@@ -122,22 +117,36 @@ def _panel_gain(ax: plt.Axes, wide: pd.DataFrame, oracle_summary: dict) -> None:
         linewidth=0.6,
         zorder=2,
     )
-    ax.axvline(mean_gain, color="0.1", linewidth=1.3, linestyle="-", zorder=3)
-    ax.axvline(0.01, color="0.45", linewidth=1.1, linestyle=(0, (4, 3)), zorder=3)
-    ymax = ax.get_ylim()[1]
-    ax.text(mean_gain + 0.003, ymax * 0.90, "mean", fontsize=8, color="0.1", va="top")
-    ax.text(0.012, ymax * 0.68, "0.01", fontsize=8, color="0.45", va="top")
+    line_mean = ax.axvline(mean_gain, color="0.1", linewidth=1.3, linestyle="-", zorder=3)
+    line_thresh = ax.axvline(
+        0.01, color="0.45", linewidth=1.1, linestyle=(0, (4, 3)), zorder=3
+    )
     ax.set_xlabel("VBS gain over SBS (ANWG)")
     ax.set_ylabel("Scenarios")
+    ax.set_ylim(0, ax.get_ylim()[1] * 1.12)
     ax.grid(axis="y", color="0.85", linewidth=0.6, zorder=0)
-    _panel_label(ax, "(b)")
+    # Compact legend outside the data (upper right, where bar heights are
+    # low) instead of printing "mean"/"0.01" text on top of the histogram.
+    ax.legend(
+        [line_mean, line_thresh],
+        [f"mean = {mean_gain:.4f}", "0.01 threshold"],
+        loc="upper right",
+        frameon=True,
+        framealpha=0.9,
+        edgecolor="0.7",
+        borderpad=0.4,
+        handlelength=1.6,
+        handletextpad=0.5,
+        labelspacing=0.35,
+    )
+    _panel_title(ax, "(b)")
 
 
 def _panel_pressure(ax: plt.Axes, coverage_summary: dict) -> None:
     counts = coverage_summary["mechanism_pressure_counts"]
     xs = np.array(sorted(int(k) for k in counts))
     ys = np.array([counts[str(x)] for x in xs])
-    ymax = max(ys) * 1.18
+    ymax = max(ys) * 1.30
     ax.add_patch(
         Rectangle(
             (1.5, 0),
@@ -160,22 +169,28 @@ def _panel_pressure(ax: plt.Axes, coverage_summary: dict) -> None:
     )
     ge2 = int(coverage_summary["multi_mechanism_scenarios_ge2"])
     frac = float(coverage_summary["multi_mechanism_fraction_ge2"])
-    ax.text(
-        3.9,
-        ymax * 0.90,
-        rf"$\geq 2$: {ge2}/{coverage_summary['n_scenarios']} ({100 * frac:.1f}%)",
-        ha="center",
-        va="top",
-        fontsize=8,
-        color="0.3",
-    )
+    n_scen = coverage_summary["n_scenarios"]
     ax.set_xlabel("Elevated mechanism pressures per scenario")
     ax.set_ylabel("Scenarios")
     ax.set_xticks(xs)
     ax.set_ylim(0, ymax)
     ax.set_yticks([0, 25, 50, 75, 100])
     ax.grid(axis="y", color="0.85", linewidth=0.6, zorder=0)
-    _panel_label(ax, "(c)")
+    # Panel title on the left, shading-explainer annotation on the right,
+    # both placed ABOVE the axes (outside the data rectangle) so neither
+    # competes with the bars.
+    _panel_title(ax, "(c)")
+    ax.text(
+        1.0,
+        1.04,
+        rf"shaded $\geq$2 pressures: {ge2}/{n_scen} ({100 * frac:.1f}%)",
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=8,
+        color="0.3",
+        clip_on=False,
+    )
 
 
 def plot_figure(
@@ -184,13 +199,15 @@ def plot_figure(
     coverage_summary: dict,
     oracle_summary: dict,
 ) -> plt.Figure:
-    # Two-row LNCS layout: (a)|(b) on top, (c) full width below.
+    # Two-row LNCS layout: (a)|(b) on top, (c) full width below. Extra
+    # height and hspace vs. the original draft reserve room for
+    # above-axes titles/annotations so nothing sits inside the data area.
     fig = plt.figure(figsize=(6.75, 3.55))
     gs = fig.add_gridspec(
         2,
         2,
-        height_ratios=[1.15, 1.0],
-        hspace=0.42,
+        height_ratios=[1.05, 1.0],
+        hspace=0.62,
         wspace=0.32,
     )
     ax_a = fig.add_subplot(gs[0, 0])
@@ -199,7 +216,7 @@ def plot_figure(
     _panel_winner(ax_a, winner_summary)
     _panel_gain(ax_b, wide, oracle_summary)
     _panel_pressure(ax_c, coverage_summary)
-    fig.subplots_adjust(left=0.10, right=0.99, top=0.97, bottom=0.11)
+    fig.subplots_adjust(left=0.10, right=0.99, top=0.92, bottom=0.105)
     return fig
 
 
