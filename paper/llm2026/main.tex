@@ -13,7 +13,7 @@
 \title{The Exploitability Gap in LLM-Serving Scheduler Portfolios}
 \titlerunning{The Exploitability Gap in LLM-Serving Scheduler Portfolios}
 
-\author{Soroush Vahidi\inst{1}}
+\author{Soroush Vahidi\inst{1}\thanks{Corresponding author.}}
 \authorrunning{S. Vahidi}
 \institute{New Jersey Institute of Technology, Newark, NJ, USA\\
 \email{sv96@njit.edu}}
@@ -29,13 +29,15 @@
 LLM-serving schedulers have complementary strengths, motivating portfolios. On
 a 240-scenario joint workload, per-scenario best-policy choice improves
 arrival-normalized weighted goodput (ANWG) by 0.0190 over the best fixed
-policy (SBS). Lightweight online adapters fall below SBS, and a stronger
-nonlinear cost-sensitive utility selector reaches near-SBS ANWG but recovers
-only $\approx$2.5\% of SBS$\rightarrow$VBS headroom (gain CI includes zero).
-On the same joint-240 scenarios, terminal one-step counterfactuals are sparse
-and concentrated; native disagreement predicts them only moderately.
-Real-vLLM validation separately shows simulator--engine semantic mismatch and
-a native token-budget tradeoff.
+policy (\sbs{}). Lightweight online adapters fall below \sbs{}, while a
+stronger nonlinear cost-sensitive utility selector reaches near-\sbs{} ANWG but
+recovers only approximately 2.5\% of \sbs{}$\rightarrow$\vbs{} headroom (gain
+CI includes zero). On the same joint-240 scenarios, terminal one-step
+counterfactuals are sparse and concentrated, and native disagreement predicts
+them only moderately. Continuation-policy analysis shows that exact
+critical-state identity is not invariant. Real-vLLM validation separately
+reveals simulator--engine semantic mismatch and a native token-budget
+tradeoff.
 
 \keywords{LLM serving \and scheduling \and portfolios \and vLLM}
 \end{abstract}

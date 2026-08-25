@@ -8,8 +8,8 @@ Total staged release files: 1180
 
 ## Hashes (key artifacts)
 
-- `paper/llm2026/main.tex`: `39bfa54b51b2c27a5c90ee141edc00959168799035cd4521cffd85125df2f857`
-- `paper/llm2026/main.pdf`: `a48c824bcea566ed080a1e2658dea7a2c0acaa15e193cf99b52e57df0a5efdf1`
+- `paper/llm2026/main.tex`: `94a3af01d050585023b14a56caba28bf36464ac9b34eccafe2d7f4395205192c`
+- `paper/llm2026/main.pdf`: `b94ecd4362829ce79975b2e04a0165ec02725fac1de6470ca54ba7b1e450170e`
 - `paper/llm2026/references.bib`: `10d6538dccdc1647e0b00b56642d624b9bbf7b99ad616fd804966d90569f6c71`
 - `paper/llm2026/figures/joint_complementarity.pdf`: `d59e34776c452d97af43c51956e983a4b8464dd75ee61442c54956051c7b068d`
 - `paper/llm2026/figures/vllm_semantic_validation.pdf`: `970afe4f2997ecb5ca30932d5a7b8eb87c4fc52ffa9af41a710855545a5f819f`
