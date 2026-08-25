@@ -1,0 +1,46 @@
+{
+  "contract_written_before_dev_computation": true,
+  "dev_set_verified": {
+    "dev_group_count": 4,
+    "dev_groups": [
+      "util1.1000.skew5.0000.favlong.noise0.30.n120.maxseq1",
+      "util1.1000.skew5.0000.favshort.noise0.00.n120.maxseq1",
+      "util1.3000.skew10.0000.favshort.noise0.00.n120.maxseq1",
+      "util1.3000.skew10.0000.favshort.noise0.30.n120.maxseq1"
+    ],
+    "dev_rows": 104,
+    "favored_long_rows": 66,
+    "favored_short_rows": 38,
+    "group_counts": {
+      "util1.1000.skew5.0000.favlong.noise0.30.n120.maxseq1": 66,
+      "util1.1000.skew5.0000.favshort.noise0.00.n120.maxseq1": 23,
+      "util1.3000.skew10.0000.favshort.noise0.00.n120.maxseq1": 7,
+      "util1.3000.skew10.0000.favshort.noise0.30.n120.maxseq1": 8
+    },
+    "no_final_rows": true,
+    "no_test_rows": true
+  },
+  "distance_monotonicity": "PASS: no DEV nearest-neighbor distance increased under set expansion",
+  "merged_checksums_match": true,
+  "no_final": true,
+  "no_git_mutation_commands_used": true,
+  "no_gpu": true,
+  "no_new_simulations": true,
+  "no_oracle_labels_acquired": true,
+  "no_retraining": true,
+  "no_test": true,
+  "software_failure": false,
+  "status": "PASS",
+  "support_counts": {
+    "baseline_a_v2_train_rows": 748,
+    "baseline_b_unique_fingerprints": 998,
+    "baseline_b_v2_train_plus_d1_rows": 998,
+    "expanded_support_rows": 25312,
+    "expanded_support_unique_fingerprints": 25312,
+    "wulver_duplicate_fingerprints": 5725,
+    "wulver_raw_candidate_rows": 30039,
+    "wulver_unique_duplicates_of_baseline": 0,
+    "wulver_unique_fingerprints_total": 24314,
+    "wulver_unique_new_rows_added": 24314
+  }
+}

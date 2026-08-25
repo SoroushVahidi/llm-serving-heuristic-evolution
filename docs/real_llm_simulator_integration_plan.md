@@ -147,7 +147,14 @@ numbers exist. It never calls Cohere, Gemini, OpenAI, or Azure — its only
 network target is a vLLM server (local subprocess or an already-running one
 at `--server-url`, e.g. on an HPC node).
 
-**Status: not yet run against real vLLM.** This repo's environment doesn't
+**Status: not yet run against real vLLM, AS OF THIS DOCUMENT'S OWN WRITING.**
+(Update, added 2026-08-04: a real vLLM server WAS later successfully run
+in a separate effort — see `docs/vllm_real_serving_scaled_comparison_corrected.md`
+and `docs/BASELINE_STATUS.md` — this specific script/plan's own
+"not yet run" status below refers only to *this document's* code paths,
+which were not the ones later used for that successful run; left otherwise
+unmodified as a historical record of this document's own status at the
+time it was written.) This repo's environment doesn't
 have vLLM installed (CUDA 13.0 / PyTorch 2.12.0 is too new for vLLM's
 prebuilt wheels — the same constraint `configs/gpu_calibration/
 online_validation.yaml` already documents for GPU calibration). The

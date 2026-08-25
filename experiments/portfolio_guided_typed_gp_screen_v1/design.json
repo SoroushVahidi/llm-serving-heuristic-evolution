@@ -1,0 +1,43 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "current_scientific_state": {
+    "active_objective": "PORTFOLIO_POLICY_SYNTHESIS",
+    "guarded_estf_wfs_composite": "MECHANISM_COMPOSITE_STATIC_NO_GO",
+    "immediate_hypothesis_H1": "Structural recombination of complementary mechanisms from existing LLM-serving schedulers can produce a compact, state-adaptive symbolic scheduler that expands the current six-policy performance envelope more effectively than random GP or mutation-only search.",
+    "null_H0": "Evolved offspring collapse behaviorally to existing parents or fail to provide meaningful marginal envelope gain.",
+    "selector_line": "SELECTOR_HYPOTHESIS_FALSIFIED"
+  },
+  "six_policy_portfolio": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online"
+  ],
+  "source_artifacts_read": [
+    "experiments/portfolio_policy_synthesis_design_v1/",
+    "docs/current/portfolio_policy_synthesis_design_v1_analysis_20260824.md",
+    "experiments/family_a_mechanism_composite_rule_static_feasibility_v1/",
+    "experiments/family_a_selector_closure_and_pivot_v1/",
+    "experiments/family_a_wulver_dev_support_eval_v1/",
+    "experiments/family_a_wulver_medium_sweep_v1/",
+    "experiments/decision_criticality_timescale_trainval_v1/",
+    "experiments/mf_psd_v1/",
+    "experiments/unified_utility_matrix_v2/",
+    "src/llmserveopt/heuristics/",
+    "src/llmserveopt/policies/genome.py",
+    "src/llmserveopt/policies/structural_synthesis.py",
+    "src/llmserveopt/policies/primitives.py"
+  ],
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

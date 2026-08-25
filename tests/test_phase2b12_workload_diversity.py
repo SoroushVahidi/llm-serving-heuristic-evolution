@@ -20,12 +20,18 @@ from pathlib import Path
 
 import pytest
 
+
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 CFG_PATH = ROOT / "configs" / "phase2b12_workload_diversity_selector_labels.yaml"
 RUNNER_PATH = ROOT / "scripts" / "run_phase2b12_workload_diversity_selector_labels.py"
+
+
+def _require_local_generated_artifact(path: Path) -> None:
+    if not path.exists():
+        pytest.skip(f"Generated local artifact is not present in this checkout: {path}")
 
 
 # ---------------------------------------------------------------------------
@@ -383,4 +389,5 @@ class TestPhase2B12SelectorIntegration:
         for w in cfg["workloads"]:
             if w.get("source") == "extended_jsonl":
                 trace_path = ROOT / w["trace_path"]
+                _require_local_generated_artifact(trace_path)
                 assert trace_path.exists(), f"BurstGPT file not found: {trace_path}"

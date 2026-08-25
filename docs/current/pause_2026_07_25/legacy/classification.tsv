@@ -1,0 +1,38 @@
+path	status_in_legacy	classification	bytes	notes
+docs/current/README.md	modified	older_superseded_draft	3430	integration tip newer/larger
+src/llmserveopt/policies/__init__.py	modified	already_preserved_identical	1120	-
+src/llmserveopt/policies/registry.py	modified	already_preserved_identical	7758	-
+docs/current/ACTIVE_EXPERIMENT_PROTECTED_PATHS.md	untracked	older_superseded_draft	3348	outdated active-job table
+docs/current/COMPOSITION_EXPERIMENT_DESIGN.md	untracked	already_preserved_identical	6289	-
+docs/current/COMPOSITION_IMPLEMENTATION_STATUS.md	untracked	older_superseded_draft	3009	pre-final status
+docs/current/EXPERIMENT_INDEX.md	untracked	older_superseded_draft	5072	subset of current index
+docs/current/POLICY_COMPOSITION_READINESS.md	untracked	older_superseded_draft	12153	outdated next-action
+docs/current/STRUCTURAL_SYNTHESIS_READINESS.md	untracked	older_superseded_draft	5548	outdated next-action
+docs/current/WULVER_BRANCH_LINEAGE_AUDIT.md	untracked	older_superseded_draft	3398	pre-integration recommendation
+docs/current/WULVER_UNPUSHED_WORK_AUDIT.md	untracked	older_superseded_draft	4935	historical caution
+docs/current/composable_primitives.json	untracked	already_preserved_identical	10436	-
+docs/current/composition_experiment_schema.json	untracked	already_preserved_identical	3660	-
+docs/current/composition_hypotheses.json	untracked	already_preserved_identical	2395	-
+docs/current/composition_operators.json	untracked	already_preserved_identical	8985	-
+docs/current/policy_complementarity.json	untracked	already_preserved_identical	6578	-
+docs/current/policy_component_matrix.json	untracked	already_preserved_identical	15604	-
+docs/current/scheduler_genome_v1.schema.json	untracked	already_preserved_identical	5608	-
+docs/current/structural_synthesis_experiment_design.md	untracked	already_preserved_identical	2769	-
+docs/policy_library_v2.md	untracked	already_preserved_identical	3038	-
+src/llmserveopt/policies/adaptive_chunked_prefill.py	untracked	already_preserved_identical	2458	-
+src/llmserveopt/policies/aging_priority.py	untracked	already_preserved_identical	1487	-
+src/llmserveopt/policies/composition.py	untracked	older_superseded_draft	32751	tip larger with later operators
+src/llmserveopt/policies/flow_control_stability.py	untracked	already_preserved_identical	2276	-
+src/llmserveopt/policies/genome.py	untracked	already_preserved_identical	12055	-
+src/llmserveopt/policies/kv_constrained_online.py	untracked	already_preserved_identical	2214	-
+src/llmserveopt/policies/policy_library_v2_helpers.py	untracked	already_preserved_identical	4000	-
+src/llmserveopt/policies/slai_style_phase_aware.py	untracked	already_preserved_identical	2103	-
+src/llmserveopt/policies/sola_style_state_aware.py	untracked	already_preserved_identical	1931	-
+src/llmserveopt/policies/structural_synthesis.py	untracked	older_superseded_draft	11853	tip much larger
+src/llmserveopt/policies/weighted_fair_share.py	untracked	already_preserved_identical	1960	-
+src/llmserveopt/selector/composition_experiment.py	untracked	already_preserved_identical	3997	-
+src/llmserveopt/selector/parent_selection.py	untracked	already_preserved_identical	4046	-
+tests/test_policy_composition.py	untracked	already_preserved_identical	8669	-
+tests/test_policy_library_v2.py	untracked	already_preserved_identical	6353	-
+tests/test_structural_synthesis.py	untracked	already_preserved_identical	7522	-
+tools/*	untracked	already_preserved_identical	n/a	all listed tools identical to tip

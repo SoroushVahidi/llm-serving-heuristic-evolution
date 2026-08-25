@@ -1,0 +1,171 @@
+{
+  "dwell_fsm_smoke": {
+    "active_regime_observed_on_train_val_scenarios": {
+      "KV_MEMORY_PRESSURE": true,
+      "PREFILL_DECODE_CONTENTION": true,
+      "RANKING_FAIRNESS": true
+    },
+    "fallback_observed_on_train_val_scenarios": true,
+    "independent_check_all_zero": true,
+    "total_dwell_violations": 0
+  },
+  "gate_evaluator_smoke": {
+    "gates": {
+      "G1": {
+        "critical": true,
+        "extra": {},
+        "id": "G1",
+        "name": "Online input validity",
+        "note": "",
+        "passed": true,
+        "threshold": 1.0,
+        "value": 1.0
+      },
+      "G2": {
+        "critical": true,
+        "extra": {},
+        "id": "G2",
+        "name": "Router quality",
+        "note": "",
+        "passed": true,
+        "threshold": 0.9,
+        "value": 0.9269908386187456
+      },
+      "G3": {
+        "critical": true,
+        "extra": {},
+        "id": "G3",
+        "name": "Catastrophic misrouting",
+        "note": "",
+        "passed": true,
+        "threshold": 0.05,
+        "value": 0.0
+      },
+      "G4": {
+        "critical": true,
+        "extra": {},
+        "id": "G4",
+        "name": "Stage-2 preservation",
+        "note": "value not supplied",
+        "passed": null,
+        "threshold": 0.9,
+        "value": null
+      },
+      "G5": {
+        "critical": true,
+        "extra": {},
+        "id": "G5",
+        "name": "Beat global fixed",
+        "note": "value not supplied",
+        "passed": null,
+        "threshold": 0.01,
+        "value": null
+      },
+      "G6": {
+        "critical": false,
+        "extra": {},
+        "id": "G6",
+        "name": "Oracle gap closure",
+        "note": "value not supplied",
+        "passed": null,
+        "threshold": 0.75,
+        "value": null
+      },
+      "G7": {
+        "critical": false,
+        "extra": {},
+        "id": "G7",
+        "name": "Multi-regime benefit",
+        "note": "value not supplied",
+        "passed": null,
+        "threshold": 2,
+        "value": null
+      },
+      "G8": {
+        "critical": true,
+        "extra": {
+          "a_leakage_count": 0,
+          "a_passed": true,
+          "b_passed": null
+        },
+        "id": "G8",
+        "name": "Interpretable / non-leaking errors",
+        "note": "qualitative (b) not yet reviewed",
+        "passed": false,
+        "threshold": 0,
+        "value": 0
+      },
+      "G9": {
+        "critical": false,
+        "extra": {},
+        "id": "G9",
+        "name": "Robustness",
+        "note": "value not supplied",
+        "passed": null,
+        "threshold": 0,
+        "value": null
+      }
+    },
+    "note": "VAL-split numbers fed through the gate evaluator to prove it runs end-to-end; NOT a scientific verdict (G4-G9 not computed here; INCONCLUSIVE forced by construction).",
+    "verdict": "HIERARCHICAL_ROUTER_INCONCLUSIVE"
+  },
+  "git_head_sha": "078f4f17aadb81176f5a8de8bf055f7a49a7807e",
+  "mode": "TRAIN_VAL_SMOKE_ONLY",
+  "run_timestamp_utc": "2026-08-18T14:20:34Z",
+  "scenario_level_train_rows": 118,
+  "scenario_level_val_rows": 26,
+  "schema_version": "hierarchical_regime_router_v1_smoke.1.0.0",
+  "source_checksums": {
+    "mf_psd_scenarios_v1.csv": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "online_regime_telemetry_v1.csv": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f"
+  },
+  "split_counts": {
+    "test": 32,
+    "train": 118,
+    "val": 26
+  },
+  "stage1_input_validity_fraction": 1.0,
+  "stage1_train_rows": 94252,
+  "stage1_val_catastrophic_misroute_rate": 0.0,
+  "stage1_val_macro_f1": 0.9269908386187456,
+  "stage1_val_rows": 16505,
+  "stage2_reachability_on_val": {
+    "KV_MEMORY_PRESSURE": "no_val_rows",
+    "PREFILL_DECODE_CONTENTION": {
+      "both_candidates_reachable": true,
+      "n_val_rows": 16,
+      "predicted_policies_observed": [
+        "chunked_prefill_small",
+        "full_prefill"
+      ]
+    },
+    "RANKING_FAIRNESS": {
+      "both_candidates_reachable": true,
+      "n_val_rows": 10,
+      "predicted_policies_observed": [
+        "estimated_service_time_first",
+        "weighted_fair_share"
+      ]
+    }
+  },
+  "stage2_regimes_fit": [
+    "KV_MEMORY_PRESSURE",
+    "PREFILL_DECODE_CONTENTION",
+    "RANKING_FAIRNESS"
+  ],
+  "val_metrics_smoke": {
+    "catastrophic_misroute_rate_scenario_level": 0.0,
+    "mean_anwg_A_best_global_fixed": 0.7378608570916264,
+    "mean_anwg_C_oracle_regime_router": 0.7633786085709162,
+    "mean_anwg_D_learned_hierarchy": 0.7383950451258143,
+    "mean_anwg_G_global_six_policy_oracle": 0.7635922837845914,
+    "mean_delta_anwg_D_minus_A": 0.0005341880341880281,
+    "mean_delta_anwg_E_minus_A": 0.0,
+    "multi_regime_benefit_count": 1,
+    "per_regime_delta_D_minus_A": {
+      "PREFILL_DECODE_CONTENTION": 0.0,
+      "RANKING_FAIRNESS": 0.001388888888888884
+    }
+  },
+  "val_scenarios_missing_stage1_prediction": 0
+}

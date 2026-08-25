@@ -29,11 +29,11 @@ import logging
 import os
 import sys
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from itertools import product
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Sequence
+from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
@@ -666,7 +666,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"  No API calls were made.")
         print(f"")
         print(f"  To run live pilot:")
-        print(f"  {live_command.replace(chr(10), ' ').replace('\\  ', ' ')}")
+        live_command_one_line = live_command.replace(chr(10), " ").replace("\\  ", " ")
+        print(f"  {live_command_one_line}")
 
         if not args.allow_live_api:
             return 0

@@ -1,0 +1,22 @@
+{
+  "builder_version": "unified_utility_matrix_v1.0.0",
+  "build_timestamp_utc": "2026-08-17T23:10:10.901215+00:00",
+  "build_git_head_sha": "bda07552abbfd5e1de60ed5d1f081618422fdc9c",
+  "build_git_dirty": true,
+  "command_line": "scripts/build_unified_utility_matrix_v1.py --out-dir experiments/unified_utility_matrix_v1 --workers 8",
+  "smoke": false,
+  "workers": 8,
+  "mf_psd_provenance_sha256": "576ca484c0e3d17288d035c42bff02ae55899b261623dd3ee98a3df8b15bd379",
+  "mf_psd_scenarios_sha256": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+  "mf_psd_long_sha256": "7a1bbbd925d5bfc28fd66feaa9ecc110d28cb8a47748c6dc4aa4cfcaf76b4cb4",
+  "config_sha256": {
+    "policy_separation_fairness_starvation_pilot_v2.yaml": "5c6e4ba827f6634d9528b9eb1e399773608e1567b151900869848b830e1fa3d7",
+    "policy_separation_prefill_decode_pilot_v2.yaml": "b48d3769d67cc64b9dbcad3b43cfd021631394828291f99489f4b6647431e039"
+  },
+  "expected_real_cells": 416,
+  "expected_unsupported_cells": 288,
+  "this_invocation_success": 416,
+  "this_invocation_failed": 0,
+  "this_invocation_unsupported_written": 288,
+  "total_rows_in_output_after_this_run": 704
+}

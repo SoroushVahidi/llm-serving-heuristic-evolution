@@ -1,5 +1,10 @@
 # Dataset and Workload Planning
 
+> **Status: Superseded.** This planning document has been superseded by
+> [`docs/dataset_workload_decision.md`](dataset_workload_decision.md), the
+> decisive Phase 2B.9 specification. It is retained here for historical
+> context only.
+
 **Branch:** phase2b5-external-baselines  
 **Date:** 2026-06-25  
 **Phase:** 2B.5 — External Baseline Coverage

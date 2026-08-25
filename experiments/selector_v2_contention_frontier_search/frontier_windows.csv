@@ -1,0 +1,901 @@
+budget,budget_saturation_fraction,chunk,classification,decode_stalled_steps,max_waiting_queue,n_requests,param_arrival_gap,param_budget,param_chunk,param_hog_prompt,param_hog_sizes,param_n_hogs,param_n_runners,param_runner_output,param_shape,param_size_disparity,param_staggered,prefill_stalled_steps,primary_objective_best_policy,primary_objective_classification,primary_objective_max_min_spread,shape,window_idx
+800,0.05,512,UNDERLOADED,0,2,2,0.0,800,512,,"[2000, 39178]",2,0,0,admission_reorder,19.59,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,0
+512,0.8125,512,SATURATED,0,4,7,0.002,512,512,,"[7035, 4386, 2000]",3,4,5,admission_reorder,3.52,,26,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,1
+1536,0.039,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[38898, 37975, 2000]",3,0,0,admission_reorder,19.45,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,2
+1024,0.5893,512,SATURATED,0,4,7,0.001,1024,512,,"[47095, 34088, 51038, 4000]",4,3,10,admission_reorder,12.76,,99,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,3
+800,0.2059,512,CONTENTION_VISIBLE,0,6,8,0.005,800,512,,"[34143, 4000]",2,6,5,admission_reorder,8.54,,9,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,4
+1536,0.0,512,UNDERLOADED,0,5,8,0.001,1536,512,,"[3361, 7286, 500]",3,5,20,admission_reorder,14.57,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,5
+2048,0.0833,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[4000, 32308, 42454, 15837]",4,0,0,admission_reorder,10.61,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,6
+512,0.931,512,SATURATED,0,4,4,0.0,512,512,,"[1331, 6141, 1000, 5611]",4,0,0,admission_reorder,6.14,,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,7
+800,0.0727,512,UNDERLOADED,0,2,2,0.0,800,512,,"[2000, 26402]",2,0,0,admission_reorder,13.2,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,8
+600,0.7438,512,SATURATED,0,4,8,0.002,600,512,,"[37044, 6004, 32065, 4000]",4,4,40,admission_reorder,9.26,,119,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,9
+600,0.4286,512,CONTENTION_VISIBLE,0,7,10,0.002,600,512,,"[5528, 1000, 7830]",3,7,5,admission_reorder,7.83,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,10
+2048,0.0,512,UNDERLOADED,0,6,8,0.002,2048,512,,"[8962, 2000]",2,6,40,admission_reorder,4.48,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,11
+2048,0.0,512,UNDERLOADED,0,2,2,0.0,2048,512,,"[2000, 39214]",2,0,0,admission_reorder,19.61,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,12
+512,0.7143,512,SATURATED,0,3,3,0.0,512,512,,"[1092, 500, 1060]",3,0,0,admission_reorder,2.18,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,13
+1024,0.6667,512,SATURATED,0,3,3,0.0,1024,512,,"[41218, 66702, 4000]",3,0,0,admission_reorder,16.68,,79,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,14
+1024,0.1867,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[7668, 2000, 35393]",3,0,0,admission_reorder,17.7,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,15
+300,0.9636,512,SATURATED,0,2,2,0.0,300,512,,"[11950, 4000]",2,0,0,admission_reorder,2.99,,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,16
+1024,0.193,512,CONTENTION_VISIBLE,0,3,6,0.001,1024,512,,"[3644, 28510, 2000]",3,3,10,admission_reorder,14.26,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,17
+1024,0.8,512,SATURATED,0,3,3,0.0,1024,512,,"[6329, 5958, 1000]",3,0,0,admission_reorder,6.33,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,18
+2048,0.0,512,UNDERLOADED,0,2,2,0.0,2048,512,,"[8778, 500]",2,0,0,admission_reorder,17.56,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,19
+400,0.9429,512,SATURATED,0,2,2,0.0,400,512,,"[12565, 1000]",2,0,0,admission_reorder,12.57,,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,20
+512,0.6525,512,SATURATED,0,3,5,0.001,512,512,,"[37619, 2000]",2,3,40,admission_reorder,18.81,,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,21
+1024,0.2264,512,CONTENTION_VISIBLE,0,5,9,0.001,1024,512,,"[1000, 1734, 5201, 4432]",4,5,40,admission_reorder,5.2,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,22
+1024,0.3651,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[2000, 31575, 10246]",3,0,0,admission_reorder,15.79,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,23
+800,0.6434,512,SATURATED,0,7,11,0.005,800,512,,"[4000, 22714, 67410, 75421]",4,7,10,admission_reorder,18.86,,157,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,24
+512,0.9818,512,SATURATED,0,5,9,0.002,512,512,,"[60708, 57922, 42803, 4000]",4,5,5,admission_reorder,15.18,,323,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,25
+512,0.6552,512,SATURATED,0,5,8,0.005,512,512,,"[4070, 5035, 500]",3,5,10,admission_reorder,10.07,,18,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,26
+800,0.0845,512,UNDERLOADED,0,2,2,0.0,800,512,,"[35452, 2000]",2,0,0,admission_reorder,17.73,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,27
+1024,0.7895,512,SATURATED,0,4,6,0.001,1024,512,,"[9421, 4000, 34065, 21367]",4,2,10,admission_reorder,8.52,,60,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,28
+1024,0.8571,512,SATURATED,0,3,3,0.0,1024,512,,"[2000, 6642, 4331]",3,0,0,admission_reorder,3.32,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,29
+2048,0.0,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[3347, 2397, 500, 902]",4,0,0,admission_reorder,6.7,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,30
+300,0.9875,512,SATURATED,0,4,4,0.0,300,512,,"[28903, 13820, 2000, 2842]",4,0,0,admission_reorder,14.45,,149,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,31
+600,0.8372,512,SATURATED,0,4,4,0.0,600,512,,"[15525, 23680, 2000, 8138]",4,0,0,admission_reorder,11.84,,53,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,32
+400,0.6379,512,SATURATED,0,7,11,0.001,400,512,,"[5963, 3709, 4249, 1000]",4,7,20,admission_reorder,5.96,,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,33
+800,0.7857,512,SATURATED,0,5,9,0.001,800,512,,"[9434, 7225, 500, 1696]",4,5,5,admission_reorder,18.87,,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,34
+300,0.96,512,SATURATED,0,2,2,0.0,300,512,,"[12453, 2000]",2,0,0,admission_reorder,6.23,,41,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,35
+300,0.9524,512,SATURATED,0,4,4,0.0,300,512,,"[5293, 2386, 1000, 3531]",4,0,0,admission_reorder,5.29,,28,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,36
+1536,0.0,512,UNDERLOADED,0,7,10,0.002,1536,512,,"[2794, 500, 7672]",3,7,5,admission_reorder,15.34,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,37
+512,0.9512,512,SATURATED,0,2,2,0.0,512,512,,"[19399, 1000]",2,0,0,admission_reorder,19.4,,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,38
+600,0.6389,512,SATURATED,0,3,5,0.002,600,512,,"[23245, 35362, 2000]",3,2,10,admission_reorder,17.68,,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,39
+512,0.9692,512,SATURATED,0,2,2,0.0,512,512,,"[2000, 30611]",2,0,0,admission_reorder,15.31,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,40
+1536,0.3333,512,CONTENTION_VISIBLE,0,4,4,0.0,1536,512,,"[7460, 9809, 3397, 500]",4,0,0,admission_reorder,19.62,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,41
+400,0.9759,512,SATURATED,0,2,2,0.0,400,512,,"[2000, 30757]",2,0,0,admission_reorder,15.38,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,42
+800,0.1154,512,CONTENTION_VISIBLE,0,8,11,0.005,800,512,,"[1439, 500, 1965]",3,8,20,admission_reorder,3.93,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,43
+2048,0.0,512,UNDERLOADED,0,5,7,0.001,2048,512,,"[1000, 15084]",2,5,40,admission_reorder,15.08,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,44
+800,0.5625,512,SATURATED,0,4,4,0.0,800,512,,"[32280, 12877, 2000, 27643]",4,0,0,admission_reorder,16.14,,51,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,45
+512,0.6333,512,SATURATED,0,3,5,0.002,512,512,,"[7069, 2266, 500]",3,2,10,admission_reorder,14.14,,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,46
+300,0.8,512,SATURATED,0,2,2,0.0,300,512,,"[2057, 500]",2,0,0,admission_reorder,4.11,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,47
+512,0.8182,512,SATURATED,0,2,2,0.0,512,512,,"[4028, 1000]",2,0,0,admission_reorder,4.03,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,48
+2048,0.125,512,CONTENTION_VISIBLE,0,4,6,0.002,2048,512,,"[3593, 2000, 3292, 4099]",4,2,20,admission_reorder,2.05,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,49
+600,0.7327,512,SATURATED,0,4,4,0.0,600,512,,"[2000, 7129, 30310, 17959]",4,0,0,admission_reorder,15.16,,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,50
+800,0.0741,512,UNDERLOADED,0,2,2,0.0,800,512,,"[1000, 12767]",2,0,0,admission_reorder,12.77,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,51
+1536,0.0,512,UNDERLOADED,0,7,9,0.001,1536,512,,"[2000, 29002]",2,7,20,admission_reorder,14.5,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,52
+1536,0.0,512,UNDERLOADED,0,5,7,0.002,1536,512,,"[2000, 8638]",2,5,20,admission_reorder,4.32,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,53
+1536,0.1429,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[19170, 24324, 4000]",3,0,0,admission_reorder,6.08,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,54
+512,0.8571,512,SATURATED,0,3,3,0.0,512,512,,"[500, 1422, 4549]",3,0,0,admission_reorder,9.1,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,55
+1536,0.0,512,UNDERLOADED,0,8,10,0.001,1536,512,,"[26649, 4000]",2,8,40,admission_reorder,6.66,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,56
+300,0.9043,512,SATURATED,0,2,4,0.001,300,512,,"[27205, 4000]",2,2,10,admission_reorder,6.8,,104,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,57
+1024,0.1,512,CONTENTION_VISIBLE,0,3,6,0.001,1024,512,,"[926, 9509, 500]",3,3,10,admission_reorder,19.02,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,58
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[3598, 12035, 1000]",3,0,0,admission_reorder,12.04,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,59
+512,0.9259,512,SATURATED,0,4,4,0.0,512,512,,"[3408, 3224, 4276, 2000]",4,0,0,admission_reorder,2.14,,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,60
+400,0.9167,512,SATURATED,0,2,2,0.0,400,512,,"[500, 8474]",2,0,0,admission_reorder,16.95,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,61
+400,0.8962,512,SATURATED,0,6,10,0.002,400,512,,"[4000, 8887, 9017, 16255]",4,6,10,admission_reorder,4.06,,95,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,62
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[30002, 4000, 65335]",3,0,0,admission_reorder,16.33,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,63
+800,0.5,512,SATURATED,0,3,3,0.0,800,512,,"[500, 4321, 5980]",3,0,0,admission_reorder,11.96,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,64
+2048,0.0,512,UNDERLOADED,0,2,2,0.0,2048,512,,"[2000, 33337]",2,0,0,admission_reorder,16.67,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,65
+1024,0.8,512,SATURATED,0,4,4,0.0,1024,512,,"[6432, 18700, 18528, 2000]",4,0,0,admission_reorder,9.35,,36,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,66
+300,0.3788,512,CONTENTION_VISIBLE,0,4,7,0.001,300,512,,"[3575, 3507, 500]",3,4,40,admission_reorder,7.15,,25,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,67
+400,0.9444,512,SATURATED,0,4,4,0.0,400,512,,"[3917, 8627, 500, 748]",4,0,0,admission_reorder,17.25,,32,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,68
+400,0.5926,512,SATURATED,0,4,7,0.001,400,512,,"[1000, 2644, 3072]",3,4,10,admission_reorder,3.07,,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,69
+600,0.7097,512,SATURATED,0,2,2,0.0,600,512,,"[15353, 2000]",2,0,0,admission_reorder,7.68,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,70
+400,0.5714,512,SATURATED,0,3,5,0.002,400,512,,"[2753, 500]",2,3,5,admission_reorder,5.51,,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,71
+400,0.9048,512,SATURATED,0,2,2,0.0,400,512,,"[7315, 500]",2,0,0,admission_reorder,14.63,,18,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,72
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[9569, 1000, 8302]",3,0,0,admission_reorder,9.57,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,73
+1024,0.6239,512,SATURATED,0,3,6,0.001,1024,512,,"[4000, 37617, 54936]",3,3,10,admission_reorder,13.73,,73,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,74
+512,0.7778,512,SATURATED,0,2,2,0.0,512,512,,"[3174, 500]",2,0,0,admission_reorder,6.35,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,75
+1536,0.0,512,UNDERLOADED,0,7,9,0.001,1536,512,,"[2000, 32946]",2,7,40,admission_reorder,16.47,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,76
+1536,0.0423,512,UNDERLOADED,0,7,10,0.005,1536,512,,"[35720, 2000, 10988]",3,7,10,admission_reorder,17.86,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,77
+800,0.45,512,CONTENTION_VISIBLE,0,3,3,0.0,800,512,,"[500, 9105, 2366]",3,0,0,admission_reorder,18.21,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,78
+400,0.506,512,SATURATED,0,8,11,0.001,400,512,,"[1000, 13250, 2415]",3,8,40,admission_reorder,13.25,,42,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,79
+300,0.9866,512,SATURATED,0,3,3,0.0,300,512,,"[19047, 21080, 4000]",3,0,0,admission_reorder,5.27,,133,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,80
+1536,0.0769,512,UNDERLOADED,0,6,9,0.005,1536,512,,"[4850, 5935, 1000]",3,6,5,admission_reorder,5.94,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,81
+600,0.9091,512,SATURATED,0,4,4,0.0,600,512,,"[6157, 500, 4590, 815]",4,0,0,admission_reorder,12.32,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,82
+512,0.9873,512,SATURATED,0,2,2,0.0,512,512,,"[75380, 4000]",2,0,0,admission_reorder,18.85,,147,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,83
+1024,0.3125,512,CONTENTION_VISIBLE,0,4,7,0.001,1024,512,,"[2843, 500, 3007]",3,4,10,admission_reorder,6.02,,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,84
+1024,0.9595,512,SATURATED,0,3,3,0.0,1024,512,,"[37350, 2000, 34567]",3,0,0,admission_reorder,18.68,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,85
+512,0.7143,512,SATURATED,0,4,7,0.001,512,512,,"[2432, 2234, 1000, 2265]",4,3,5,admission_reorder,2.43,,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,86
+1024,0.125,512,UNDERLOADED,0,3,3,0.0,1024,512,,"[500, 7621, 782]",3,0,0,admission_reorder,15.24,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,87
+600,0.861,512,SATURATED,0,7,10,0.001,600,512,,"[38722, 42476, 44974, 4000]",4,6,20,admission_reorder,11.24,,192,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,88
+300,0.5638,512,SATURATED,0,6,8,0.005,300,512,,"[14839, 1000]",2,6,40,admission_reorder,14.84,,53,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,89
+400,0.8205,512,SATURATED,0,4,7,0.002,400,512,,"[4000, 21017, 8532, 4839]",4,3,20,admission_reorder,5.25,,96,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,90
+2048,0.1667,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[1244, 1000, 2440, 2277]",4,0,0,admission_reorder,2.44,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,91
+1536,0.8608,512,SATURATED,0,4,6,0.001,1536,512,,"[2000, 39571, 35984, 33009]",4,2,5,admission_reorder,19.79,,68,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,92
+2048,0.0,512,UNDERLOADED,0,4,6,0.001,2048,512,,"[55766, 64530, 4000]",3,3,10,admission_reorder,16.13,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,93
+1536,0.1579,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[8736, 2000, 6432]",3,0,0,admission_reorder,4.37,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,94
+1536,0.6111,512,SATURATED,0,4,4,0.0,1536,512,,"[5813, 6046, 2000, 6226]",4,0,0,admission_reorder,3.11,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,95
+600,0.7407,512,SATURATED,0,8,11,0.001,600,512,,"[21622, 11575, 4000]",3,8,20,admission_reorder,5.41,,59,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,96
+1024,0.36,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[2000, 37602, 12290]",3,0,0,admission_reorder,18.8,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,97
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[2000, 21893, 20975]",3,0,0,admission_reorder,10.95,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,98
+512,0.9714,512,SATURATED,0,2,2,0.0,512,512,,"[32838, 2000]",2,0,0,admission_reorder,16.42,,64,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,99
+400,0.7588,512,SATURATED,0,7,11,0.005,400,512,,"[11746, 17854, 2000, 20092]",4,7,40,admission_reorder,10.05,,129,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,100
+600,0.7097,512,SATURATED,0,2,2,0.0,600,512,,"[15194, 2000]",2,0,0,admission_reorder,7.6,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,101
+300,0.8084,512,SATURATED,0,6,10,0.001,300,512,,"[25364, 8618, 2000, 15881]",4,6,40,admission_reorder,12.68,,173,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,102
+800,0.0952,512,UNDERLOADED,0,6,8,0.002,800,512,,"[1000, 9530]",2,6,10,admission_reorder,9.53,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,103
+800,0.1538,512,UNDERLOADED,0,2,2,0.0,800,512,,"[1000, 5293]",2,0,0,admission_reorder,5.29,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,104
+600,0.7297,512,SATURATED,0,4,8,0.001,600,512,,"[35462, 25496, 2000, 10606]",4,4,40,admission_reorder,17.73,,107,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,105
+800,0.0526,512,UNDERLOADED,0,2,2,0.0,800,512,,"[8741, 500]",2,0,0,admission_reorder,17.48,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,106
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[2224, 1000, 10864]",3,0,0,admission_reorder,10.86,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,107
+1024,0.3971,512,CONTENTION_VISIBLE,0,4,6,0.002,1024,512,,"[8580, 12303, 22526, 2000]",4,2,40,admission_reorder,11.26,,27,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,108
+400,0.9259,512,SATURATED,0,3,3,0.0,400,512,,"[3807, 4265, 2000]",3,0,0,admission_reorder,2.13,,20,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,109
+300,0.8675,512,SATURATED,0,6,10,0.002,300,512,,"[3253, 16095, 1000, 1428]",4,6,10,admission_reorder,16.1,,72,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,110
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[16037, 1000]",2,0,0,admission_reorder,16.04,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,111
+1024,0.58,512,SATURATED,0,3,3,0.0,1024,512,,"[15249, 4000, 20968]",3,0,0,admission_reorder,5.24,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,112
+2048,0.1154,512,UNDERLOADED,0,4,8,0.005,2048,512,,"[6692, 5558, 2000, 7624]",4,4,20,admission_reorder,3.81,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,113
+400,0.9829,512,SATURATED,0,4,4,0.0,400,512,,"[2705, 17490, 23968, 2000]",4,0,0,admission_reorder,11.98,,110,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,114
+512,0.9661,512,SATURATED,0,3,3,0.0,512,512,,"[1000, 14989, 13309]",3,0,0,admission_reorder,14.99,,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,115
+1536,0.0256,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[17600, 19451, 1000]",3,0,0,admission_reorder,19.45,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,116
+512,0.8125,512,SATURATED,0,5,9,0.001,512,512,,"[4231, 2867, 2000, 4169]",4,5,5,admission_reorder,2.12,,26,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,117
+800,0.5595,512,SATURATED,0,3,5,0.002,800,512,,"[47946, 4000, 60241]",3,2,20,admission_reorder,15.06,,94,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,118
+1536,0.3333,512,CONTENTION_VISIBLE,0,8,12,0.002,1536,512,,"[37415, 10765, 15459, 2000]",4,8,40,admission_reorder,18.71,,25,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,119
+300,0.6435,512,SATURATED,0,8,10,0.005,300,512,,"[20027, 2000]",2,8,40,admission_reorder,10.01,,74,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,120
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[55132, 4000, 65999]",3,0,0,admission_reorder,16.5,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,121
+300,0.9955,512,SATURATED,0,4,4,0.0,300,512,,"[4000, 30000, 51814, 45879]",4,0,0,admission_reorder,12.95,,286,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,122
+2048,0.0,512,UNDERLOADED,0,3,6,0.001,2048,512,,"[5114, 500, 2623]",3,3,10,admission_reorder,10.23,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,123
+1536,0.0889,512,CONTENTION_VISIBLE,0,8,11,0.001,1536,512,,"[4000, 43932, 45502]",3,8,10,admission_reorder,11.38,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,124
+600,0.5369,512,SATURATED,0,4,6,0.005,600,512,,"[13806, 55575, 4000, 62148]",4,2,40,admission_reorder,15.54,,131,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,125
+800,0.25,512,CONTENTION_VISIBLE,0,8,10,0.001,800,512,,"[2800, 500]",2,8,5,admission_reorder,5.6,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,126
+512,0.9375,512,SATURATED,0,4,4,0.0,512,512,,"[8554, 2000, 2428, 2594]",4,0,0,admission_reorder,4.28,,25,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,127
+1536,0.2679,512,CONTENTION_VISIBLE,0,8,12,0.005,1536,512,,"[1000, 7744, 8287, 14228]",4,8,40,admission_reorder,14.23,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,128
+1536,0.0,512,UNDERLOADED,0,8,10,0.002,1536,512,,"[6176, 1000]",2,8,5,admission_reorder,6.18,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,129
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[26484, 10344, 4000]",3,0,0,admission_reorder,6.62,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,130
+300,0.9667,512,SATURATED,0,2,2,0.0,300,512,,"[16414, 1000]",2,0,0,admission_reorder,16.41,,54,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,131
+1024,0.7105,512,SATURATED,0,7,10,0.001,1024,512,,"[12748, 17716, 1000]",3,7,10,admission_reorder,17.72,,27,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,132
+1024,0.5583,512,SATURATED,0,4,4,0.0,1024,512,,"[30694, 14261, 46660, 4000]",4,0,0,admission_reorder,11.67,,59,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,133
+512,0.92,512,SATURATED,0,4,4,0.0,512,512,,"[3964, 500, 1740, 5670]",4,0,0,admission_reorder,11.34,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,134
+600,0.7692,512,SATURATED,0,8,11,0.001,600,512,,"[9319, 2580, 500]",3,8,5,admission_reorder,18.64,,20,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,135
+512,0.6207,512,SATURATED,0,7,9,0.002,512,512,,"[8325, 1000]",2,7,10,admission_reorder,8.33,,18,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,136
+400,0.9615,512,SATURATED,0,2,2,0.0,400,512,,"[18378, 2000]",2,0,0,admission_reorder,9.19,,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,137
+400,0.7338,512,SATURATED,0,3,5,0.001,400,512,,"[14307, 2000, 29108]",3,2,40,admission_reorder,14.55,,113,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,138
+800,0.7692,512,SATURATED,0,4,4,0.0,800,512,,"[619, 500, 5458, 2369]",4,0,0,admission_reorder,10.92,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,139
+400,0.7879,512,SATURATED,0,6,8,0.001,400,512,,"[2000, 29204]",2,6,20,admission_reorder,14.6,,78,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,140
+300,0.92,512,SATURATED,0,2,2,0.0,300,512,,"[500, 6447]",2,0,0,admission_reorder,12.9,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,141
+512,0.971,512,SATURATED,0,3,3,0.0,512,512,,"[19267, 14189, 1000]",3,0,0,admission_reorder,19.27,,65,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,142
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[500, 4562, 3257]",3,0,0,admission_reorder,9.12,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,143
+1536,0.0385,512,UNDERLOADED,0,6,9,0.005,1536,512,,"[11025, 5418, 1000]",3,6,20,admission_reorder,11.03,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,144
+600,0.7091,512,SATURATED,0,3,3,0.0,600,512,,"[2000, 18029, 10542]",3,0,0,admission_reorder,9.01,,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,145
+300,0.9636,512,SATURATED,0,3,3,0.0,300,512,,"[1981, 13089, 1000]",3,0,0,admission_reorder,13.09,,50,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,146
+2048,0.0,512,UNDERLOADED,0,6,9,0.001,2048,512,,"[4187, 2000, 6628]",3,6,20,admission_reorder,3.31,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,147
+400,0.6168,512,SATURATED,0,8,11,0.005,400,512,,"[2000, 6102, 18500]",3,8,40,admission_reorder,9.25,,66,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,148
+600,0.6,512,SATURATED,0,2,2,0.0,600,512,,"[1742, 500]",2,0,0,admission_reorder,3.48,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,149
+400,0.9655,512,SATURATED,0,4,4,0.0,400,512,,"[5693, 9094, 1000, 6842]",4,0,0,admission_reorder,9.09,,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,150
+800,0.0625,512,UNDERLOADED,0,2,2,0.0,800,512,,"[1000, 15279]",2,0,0,admission_reorder,15.28,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,151
+1536,0.0476,512,UNDERLOADED,0,4,4,0.0,1536,512,,"[645, 500, 5136, 9607]",4,0,0,admission_reorder,19.21,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,152
+800,0.5714,512,SATURATED,0,5,8,0.002,800,512,,"[3799, 2063, 1000]",3,5,5,admission_reorder,3.8,,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,153
+1024,0.8472,512,SATURATED,0,4,6,0.005,1024,512,,"[4000, 6888, 27279, 26971]",4,2,10,admission_reorder,6.82,,61,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,154
+1024,0.4706,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[8178, 2000, 2366]",3,0,0,admission_reorder,4.09,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,155
+600,0.8136,512,SATURATED,0,3,3,0.0,600,512,,"[12856, 18680, 2000]",3,0,0,admission_reorder,9.34,,25,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,156
+512,0.8,512,SATURATED,0,3,3,0.0,512,512,,"[500, 1301, 2632]",3,0,0,admission_reorder,5.27,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,157
+1536,0.25,512,CONTENTION_VISIBLE,0,4,8,0.005,1536,512,,"[8421, 500, 3687, 7671]",4,4,20,admission_reorder,16.84,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,158
+2048,0.0,512,UNDERLOADED,0,4,6,0.005,2048,512,,"[4000, 35039]",2,4,40,admission_reorder,8.76,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,159
+1024,0.5156,512,SATURATED,0,3,3,0.0,1024,512,,"[17058, 4000, 27889]",3,0,0,admission_reorder,6.97,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,160
+512,0.7657,512,SATURATED,0,4,7,0.005,512,512,,"[21192, 22430, 21156, 4000]",4,3,40,admission_reorder,5.61,,134,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,161
+600,0.2857,512,UNDERLOADED,0,2,2,0.0,600,512,,"[4000, 10282]",2,0,0,admission_reorder,2.57,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,162
+600,0.7391,512,SATURATED,0,6,8,0.002,600,512,,"[8495, 2000]",2,6,5,admission_reorder,4.25,,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,163
+600,0.2264,512,CONTENTION_VISIBLE,0,7,9,0.005,600,512,,"[8331, 1000]",2,7,40,admission_reorder,8.33,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,164
+800,0.5686,512,SATURATED,0,6,10,0.002,800,512,,"[4000, 12911, 6215, 10322]",4,6,5,admission_reorder,3.23,,29,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,165
+400,0.6963,512,SATURATED,0,4,7,0.001,400,512,,"[15382, 1000, 8721, 12605]",4,3,40,admission_reorder,15.38,,94,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,166
+800,0.3692,512,CONTENTION_VISIBLE,0,8,12,0.005,800,512,,"[5754, 2000, 7689, 5179]",4,8,40,admission_reorder,3.84,,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,167
+300,0.9726,512,SATURATED,0,4,4,0.0,300,512,,"[9990, 7264, 1000, 3177]",4,0,0,admission_reorder,9.99,,60,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,168
+2048,0.0,512,UNDERLOADED,0,2,2,0.0,2048,512,,"[1000, 11963]",2,0,0,admission_reorder,11.96,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,169
+512,0.6525,512,SATURATED,0,2,4,0.002,512,512,,"[37427, 2000]",2,2,40,admission_reorder,18.71,,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,170
+600,0.6207,512,SATURATED,0,3,5,0.001,600,512,,"[9232, 4000]",2,3,10,admission_reorder,2.31,,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,171
+300,0.9811,512,SATURATED,0,2,2,0.0,300,512,,"[27206, 4000]",2,0,0,admission_reorder,6.8,,90,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,172
+400,0.92,512,SATURATED,0,5,8,0.002,400,512,,"[7232, 1000, 19512]",3,5,5,admission_reorder,19.51,,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,173
+512,0.9262,512,SATURATED,0,5,7,0.002,512,512,,"[66809, 4000]",2,5,10,admission_reorder,16.7,,138,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,174
+400,0.9643,512,SATURATED,0,3,3,0.0,400,512,,"[12660, 2000, 7213]",3,0,0,admission_reorder,6.33,,36,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,175
+600,0.8065,512,SATURATED,0,4,4,0.0,600,512,,"[7408, 3988, 5423, 500]",4,0,0,admission_reorder,14.82,,20,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,176
+1536,0.4444,512,CONTENTION_VISIBLE,0,4,4,0.0,1536,512,,"[2427, 1000, 2151, 2602]",4,0,0,admission_reorder,2.6,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,177
+512,0.9469,512,SATURATED,0,6,10,0.002,512,512,,"[4000, 4298, 19651, 27151]",4,6,5,admission_reorder,6.79,,107,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,178
+600,0.939,512,SATURATED,0,3,3,0.0,600,512,,"[39360, 4000, 4806]",3,0,0,admission_reorder,9.84,,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,179
+1536,0.0,512,UNDERLOADED,0,5,8,0.001,1536,512,,"[500, 9336, 4584]",3,5,20,admission_reorder,18.67,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,180
+1536,0.2105,512,CONTENTION_VISIBLE,0,4,4,0.0,1536,512,,"[2368, 1000, 8968, 1797]",4,0,0,admission_reorder,8.97,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,181
+300,0.945,512,SATURATED,0,6,10,0.001,300,512,,"[16706, 18898, 19976, 1000]",4,6,10,admission_reorder,19.98,,189,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,182
+1024,0.5,512,SATURATED,0,6,9,0.001,1024,512,,"[5610, 2000, 6528]",3,6,10,admission_reorder,3.26,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,183
+1024,0.75,512,SATURATED,0,4,4,0.0,1024,512,,"[3059, 1000, 5421, 4453]",4,0,0,admission_reorder,5.42,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,184
+300,0.9185,512,SATURATED,0,8,12,0.001,300,512,,"[1000, 17238, 14270, 4558]",4,8,10,admission_reorder,17.24,,124,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,185
+512,0.9899,512,SATURATED,0,3,3,0.0,512,512,,"[4000, 55752, 41315]",3,0,0,admission_reorder,13.94,,116,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,186
+600,0.093,512,UNDERLOADED,0,2,2,0.0,600,512,,"[4000, 39932]",2,0,0,admission_reorder,9.98,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,187
+300,0.913,512,SATURATED,0,4,7,0.001,300,512,,"[1000, 13100, 4940]",3,4,5,admission_reorder,13.1,,63,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,188
+600,0.3929,512,CONTENTION_VISIBLE,0,4,4,0.0,600,512,,"[5238, 500, 857, 8125]",4,0,0,admission_reorder,16.25,,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,189
+400,0.9831,512,SATURATED,0,8,12,0.001,400,512,,"[42979, 4000, 40904, 51292]",4,8,5,admission_reorder,12.82,,348,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,190
+400,0.9331,512,SATURATED,0,3,6,0.005,400,512,,"[4000, 52832, 60282]",3,3,20,admission_reorder,15.07,,292,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,191
+512,0.4384,512,CONTENTION_VISIBLE,0,7,11,0.005,512,512,,"[3225, 500, 4976, 7674]",4,7,40,admission_reorder,15.35,,32,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,192
+2048,0.0476,512,UNDERLOADED,0,4,7,0.005,2048,512,,"[7814, 31308, 2000, 16482]",4,3,40,admission_reorder,15.65,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,193
+1536,0.3889,512,CONTENTION_VISIBLE,0,3,6,0.001,1536,512,,"[8047, 4829, 4000]",3,3,10,admission_reorder,2.01,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,194
+2048,0.0,512,UNDERLOADED,0,5,8,0.005,2048,512,,"[4000, 63818, 77266]",3,5,40,admission_reorder,19.32,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,195
+800,0.7857,512,SATURATED,0,3,3,0.0,800,512,,"[5766, 500, 3675]",3,0,0,admission_reorder,11.53,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,196
+400,0.3529,512,CONTENTION_VISIBLE,0,2,4,0.001,400,512,,"[500, 2175]",2,2,10,admission_reorder,4.35,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,197
+800,0.0435,512,UNDERLOADED,0,4,6,0.002,800,512,,"[8237, 500]",2,4,20,admission_reorder,16.48,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,198
+512,0.9845,512,SATURATED,0,2,2,0.0,512,512,,"[61367, 4000]",2,0,0,admission_reorder,15.34,,119,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,199
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[35263, 4000, 63375]",3,0,0,admission_reorder,15.84,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,200
+600,0.3056,512,UNDERLOADED,0,2,2,0.0,600,512,,"[17811, 1000]",2,0,0,admission_reorder,17.81,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,201
+600,0.087,512,UNDERLOADED,0,2,2,0.0,600,512,,"[4000, 42869]",2,0,0,admission_reorder,10.72,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,202
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[5292, 500]",2,0,0,admission_reorder,10.58,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,203
+400,0.9898,512,SATURATED,0,4,4,0.0,400,512,,"[4000, 15302, 4775, 54173]",4,0,0,admission_reorder,13.54,,60,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,204
+1536,0.2222,512,CONTENTION_VISIBLE,0,8,12,0.002,1536,512,,"[1000, 9069, 3980, 16745]",4,8,20,admission_reorder,16.75,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,205
+1024,0.9143,512,SATURATED,0,4,4,0.0,1024,512,,"[4000, 34106, 67067, 31781]",4,0,0,admission_reorder,16.77,,66,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,206
+800,0.6316,512,SATURATED,0,7,11,0.005,800,512,,"[2000, 12089, 11573, 12605]",4,7,20,admission_reorder,6.3,,36,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,207
+2048,0.0233,512,UNDERLOADED,0,4,8,0.002,2048,512,,"[10956, 2520, 1000, 4067]",4,4,40,admission_reorder,10.96,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,208
+600,0.8774,512,SATURATED,0,3,3,0.0,600,512,,"[36168, 23640, 2000]",3,0,0,admission_reorder,18.08,,71,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,209
+600,0.6667,512,SATURATED,0,2,2,0.0,600,512,,"[15887, 2000]",2,0,0,admission_reorder,7.94,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,210
+600,0.3684,512,CONTENTION_VISIBLE,0,7,9,0.005,600,512,,"[9014, 500]",2,7,5,admission_reorder,18.03,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,211
+2048,0.0,512,UNDERLOADED,0,5,8,0.001,2048,512,,"[8686, 2000, 4506]",3,5,10,admission_reorder,4.34,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,212
+400,0.6562,512,SATURATED,0,6,9,0.001,400,512,,"[500, 807, 7051]",3,6,10,admission_reorder,14.1,,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,213
+600,0.5854,512,SATURATED,0,3,5,0.002,600,512,,"[38197, 72851, 4000]",3,2,5,admission_reorder,18.21,,119,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,214
+2048,0.0,512,UNDERLOADED,0,4,7,0.002,2048,512,,"[3695, 6078, 500, 4662]",4,3,10,admission_reorder,12.16,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,215
+512,0.8397,512,SATURATED,0,5,8,0.002,512,512,,"[37258, 15280, 4000]",3,5,20,admission_reorder,9.31,,110,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,216
+400,0.8636,512,SATURATED,0,7,11,0.005,400,512,,"[3809, 2000, 25065, 22278]",4,7,20,admission_reorder,12.53,,133,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,217
+1536,0.4474,512,CONTENTION_VISIBLE,0,4,7,0.002,1536,512,,"[9091, 1000, 12301, 10133]",4,3,20,admission_reorder,12.3,,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,218
+400,0.5217,512,SATURATED,0,4,7,0.002,400,512,,"[500, 2492, 2087]",3,4,10,admission_reorder,4.98,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,219
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[2108, 1000, 1143]",3,0,0,admission_reorder,2.11,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,220
+600,0.2264,512,CONTENTION_VISIBLE,0,6,8,0.002,600,512,,"[10511, 1000]",2,6,40,admission_reorder,10.51,,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,221
+1024,0.0233,512,UNDERLOADED,0,3,5,0.002,1024,512,,"[14527, 1000]",2,3,40,admission_reorder,14.53,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,222
+1024,0.0,512,UNDERLOADED,0,2,2,0.0,1024,512,,"[500, 9235]",2,0,0,admission_reorder,18.47,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,223
+600,0.9375,512,SATURATED,0,4,4,0.0,600,512,,"[9263, 5514, 2843, 500]",4,0,0,admission_reorder,18.53,,26,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,224
+1536,0.3182,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[10599, 4293, 4000]",3,0,0,admission_reorder,2.65,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,225
+1536,0.0,512,UNDERLOADED,0,3,5,0.005,1536,512,,"[4000, 19063]",2,3,40,admission_reorder,4.77,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,226
+1536,0.0,512,UNDERLOADED,0,4,6,0.002,1536,512,,"[500, 1155]",2,4,20,admission_reorder,2.31,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,227
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[4000, 27370]",2,0,0,admission_reorder,6.84,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,228
+300,0.9667,512,SATURATED,0,3,3,0.0,300,512,,"[8390, 500, 8789]",3,0,0,admission_reorder,17.58,,29,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,229
+400,0.8397,512,SATURATED,0,3,6,0.005,400,512,,"[5204, 2000, 37091]",3,3,20,admission_reorder,18.55,,110,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,230
+512,0.3636,512,CONTENTION_VISIBLE,0,7,10,0.001,512,512,,"[500, 3884, 2003]",3,7,20,admission_reorder,7.77,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,231
+1024,0.6333,512,SATURATED,0,6,9,0.005,1024,512,,"[9870, 9659, 500]",3,6,10,admission_reorder,19.74,,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,232
+1536,0.5909,512,SATURATED,0,4,4,0.0,1536,512,,"[2000, 10673, 9740, 4748]",4,0,0,admission_reorder,5.34,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,233
+2048,0.0,512,UNDERLOADED,0,4,7,0.005,2048,512,,"[5003, 9496, 8738, 500]",4,3,5,admission_reorder,18.99,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,234
+800,0.7708,512,SATURATED,0,4,4,0.0,800,512,,"[9993, 19432, 1000, 4105]",4,0,0,admission_reorder,19.43,,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,235
+2048,0.0,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[4776, 857, 500, 2067]",4,0,0,admission_reorder,9.55,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,236
+800,0.0899,512,UNDERLOADED,0,2,2,0.0,800,512,,"[4000, 43000]",2,0,0,admission_reorder,10.75,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,237
+600,0.4741,512,CONTENTION_VISIBLE,0,4,4,0.0,600,512,,"[11938, 18036, 2000, 31355]",4,0,0,admission_reorder,15.68,,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,238
+1024,0.6452,512,SATURATED,0,4,4,0.0,1024,512,,"[26625, 41314, 4000, 32149]",4,0,0,admission_reorder,10.33,,59,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,239
+600,0.6571,512,SATURATED,0,4,6,0.005,600,512,,"[16960, 2000]",2,4,5,admission_reorder,8.48,,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,240
+800,0.2222,512,CONTENTION_VISIBLE,0,7,11,0.001,800,512,,"[3206, 948, 500, 855]",4,7,20,admission_reorder,6.41,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,241
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[6378, 4000, 16268]",3,0,0,admission_reorder,4.07,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,242
+600,0.9456,512,SATURATED,0,3,3,0.0,600,512,,"[4000, 71394, 11562]",3,0,0,admission_reorder,17.85,,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,243
+800,0.3889,512,CONTENTION_VISIBLE,0,4,4,0.0,800,512,,"[500, 3124, 1487, 5361]",4,0,0,admission_reorder,10.72,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,244
+512,0.9742,512,SATURATED,0,7,10,0.002,512,512,,"[61816, 71425, 4000, 75703]",4,6,10,admission_reorder,18.93,,416,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,245
+1024,0.125,512,CONTENTION_VISIBLE,0,4,6,0.001,1024,512,,"[848, 500, 3927, 775]",4,2,20,admission_reorder,7.86,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,246
+800,0.4225,512,CONTENTION_VISIBLE,0,5,8,0.001,800,512,,"[2000, 22999, 7451]",3,5,40,admission_reorder,11.5,,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,247
+1536,0.0,512,UNDERLOADED,0,7,9,0.002,1536,512,,"[500, 8118]",2,7,40,admission_reorder,16.24,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,248
+512,0.9818,512,SATURATED,0,4,6,0.005,512,512,,"[73615, 64984, 4000, 23654]",4,2,5,admission_reorder,18.4,,324,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,249
+400,0.6719,512,SATURATED,0,4,7,0.002,400,512,,"[3598, 5100, 8005, 500]",4,3,20,admission_reorder,16.01,,43,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,250
+1024,0.6164,512,SATURATED,0,6,9,0.002,1024,512,,"[2000, 36567, 21119]",3,6,10,admission_reorder,18.28,,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,251
+300,0.2679,512,CONTENTION_VISIBLE,0,5,8,0.002,300,512,,"[1023, 500, 2990]",3,5,40,admission_reorder,5.98,,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,252
+600,0.7391,512,SATURATED,0,4,6,0.001,600,512,,"[4312, 1000, 4004, 2697]",4,2,5,admission_reorder,4.31,,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,253
+300,0.5435,512,SATURATED,0,7,9,0.002,300,512,,"[7106, 500]",2,7,20,admission_reorder,14.21,,25,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,254
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[1000, 12018]",2,0,0,admission_reorder,12.02,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,255
+600,0.3383,512,UNDERLOADED,0,2,2,0.0,600,512,,"[67316, 4000]",2,0,0,admission_reorder,16.83,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,256
+400,0.9286,512,SATURATED,0,3,3,0.0,400,512,,"[4704, 5267, 500]",3,0,0,admission_reorder,10.53,,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,257
+1536,0.0769,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[11521, 19435, 2000]",3,0,0,admission_reorder,9.72,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,258
+2048,0.0,512,UNDERLOADED,0,2,2,0.0,2048,512,,"[53198, 4000]",2,0,0,admission_reorder,13.3,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,259
+2048,0.0857,512,UNDERLOADED,0,6,10,0.005,2048,512,,"[2000, 15272, 16900, 2287]",4,6,5,admission_reorder,8.45,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,260
+800,0.0959,512,CONTENTION_VISIBLE,0,7,9,0.002,800,512,,"[36593, 2000]",2,7,40,admission_reorder,18.3,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,261
+2048,0.0,512,UNDERLOADED,0,4,6,0.001,2048,512,,"[3738, 500]",2,4,20,admission_reorder,7.48,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,262
+300,0.8521,512,SATURATED,0,3,5,0.005,300,512,,"[34302, 2000]",2,3,20,admission_reorder,17.15,,121,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,263
+400,0.8481,512,SATURATED,0,3,5,0.001,400,512,,"[4000, 32637, 55292]",3,2,40,admission_reorder,13.82,,229,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,264
+600,0.8889,512,SATURATED,0,4,6,0.001,600,512,,"[17537, 21056, 12352, 2000]",4,2,10,admission_reorder,10.53,,88,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,265
+1024,0.0,512,UNDERLOADED,0,8,10,0.005,1024,512,,"[500, 7863]",2,8,20,admission_reorder,15.73,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,266
+300,0.8158,512,SATURATED,0,4,7,0.001,300,512,,"[6586, 9047, 1000, 11358]",4,3,20,admission_reorder,11.36,,93,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,267
+600,0.9298,512,SATURATED,0,3,3,0.0,600,512,,"[25487, 5768, 2000]",3,0,0,admission_reorder,12.74,,50,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,268
+300,0.9921,512,SATURATED,0,3,3,0.0,300,512,,"[4000, 45052, 26629]",3,0,0,admission_reorder,11.26,,163,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,269
+400,0.8,512,SATURATED,0,3,3,0.0,400,512,,"[1897, 927, 500]",3,0,0,admission_reorder,3.8,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,270
+800,0.7333,512,SATURATED,0,3,3,0.0,800,512,,"[15286, 15555, 1000]",3,0,0,admission_reorder,15.56,,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,271
+512,0.2115,512,CONTENTION_VISIBLE,0,4,6,0.001,512,512,,"[4757, 1000]",2,4,40,admission_reorder,4.76,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,272
+400,0.5287,512,SATURATED,0,4,7,0.005,400,512,,"[15093, 1000, 2479]",3,4,40,admission_reorder,15.09,,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,273
+1024,0.2162,512,CONTENTION_VISIBLE,0,6,9,0.005,1024,512,,"[4000, 4074, 14218]",3,6,20,admission_reorder,3.55,,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,274
+600,0.0567,512,UNDERLOADED,0,2,2,0.0,600,512,,"[4000, 68193]",2,0,0,admission_reorder,17.05,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,275
+400,0.2807,512,CONTENTION_VISIBLE,0,2,4,0.005,400,512,,"[6274, 500]",2,2,40,admission_reorder,12.55,,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,276
+1024,0.1379,512,CONTENTION_VISIBLE,0,7,9,0.002,1024,512,,"[4000, 28729]",2,7,10,admission_reorder,7.18,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,277
+1024,0.5,512,SATURATED,0,4,4,0.0,1024,512,,"[500, 968, 1687, 2534]",4,0,0,admission_reorder,5.07,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,278
+400,0.6471,512,SATURATED,0,3,5,0.005,400,512,,"[3915, 500]",2,3,5,admission_reorder,7.83,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,279
+300,0.875,512,SATURATED,0,7,11,0.005,300,512,,"[4715, 4873, 500, 2404]",4,7,5,admission_reorder,9.75,,42,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,280
+400,0.9741,512,SATURATED,0,4,8,0.002,400,512,,"[23131, 2000, 27873, 37511]",4,4,5,admission_reorder,18.76,,226,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,281
+300,0.5769,512,SATURATED,0,7,9,0.002,300,512,,"[500, 3973]",2,7,10,admission_reorder,7.95,,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,282
+300,0.9439,512,SATURATED,0,8,12,0.005,300,512,,"[1000, 4031, 19002, 6239]",4,8,5,admission_reorder,19.0,,101,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,283
+1536,0.1458,512,CONTENTION_VISIBLE,0,4,7,0.002,1536,512,,"[11774, 4000, 20182]",3,4,40,admission_reorder,5.05,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,284
+600,0.1176,512,UNDERLOADED,0,2,2,0.0,600,512,,"[4000, 30551]",2,0,0,admission_reorder,7.64,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,285
+600,0.3,512,CONTENTION_VISIBLE,0,6,10,0.001,600,512,,"[2327, 500, 1851, 670]",4,6,20,admission_reorder,4.66,,9,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,286
+600,0.7647,512,SATURATED,0,3,3,0.0,600,512,,"[7535, 10657, 1000]",3,0,0,admission_reorder,10.66,,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,287
+1024,0.869,512,SATURATED,0,6,8,0.001,1024,512,,"[73652, 60653, 4000]",3,5,5,admission_reorder,18.41,,125,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,288
+800,0.6667,512,SATURATED,0,4,4,0.0,800,512,,"[19641, 27103, 31152, 2000]",4,0,0,admission_reorder,15.58,,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,289
+1024,0.2429,512,CONTENTION_VISIBLE,0,3,6,0.001,1024,512,,"[2000, 8661, 33014]",3,3,5,admission_reorder,16.51,,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,290
+1024,0.72,512,SATURATED,0,5,9,0.001,1024,512,,"[37752, 5595, 18197, 4000]",4,5,10,admission_reorder,9.44,,54,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,291
+800,0.1379,512,UNDERLOADED,0,2,2,0.0,800,512,,"[4000, 27299]",2,0,0,admission_reorder,6.82,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,292
+1536,0.0909,512,UNDERLOADED,0,4,6,0.001,1536,512,,"[500, 744, 4136, 4556]",4,2,5,admission_reorder,9.11,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,293
+800,0.58,512,SATURATED,0,6,9,0.002,800,512,,"[14196, 8814, 1000]",3,6,20,admission_reorder,14.2,,29,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,294
+400,0.9035,512,SATURATED,0,7,9,0.005,400,512,,"[39126, 2000]",2,7,10,admission_reorder,19.56,,103,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,295
+300,0.9792,512,SATURATED,0,4,4,0.0,300,512,,"[2000, 4449, 7204, 14564]",4,0,0,admission_reorder,7.28,,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,296
+400,0.9794,512,SATURATED,0,2,2,0.0,400,512,,"[4000, 34001]",2,0,0,admission_reorder,8.5,,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,297
+1024,0.125,512,UNDERLOADED,0,7,9,0.005,1024,512,,"[11761, 2000]",2,7,5,admission_reorder,5.88,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,298
+400,0.9,512,SATURATED,0,2,2,0.0,400,512,,"[2000, 5409]",2,0,0,admission_reorder,2.7,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,299
+1536,0.0,512,UNDERLOADED,0,8,10,0.001,1536,512,,"[1000, 6949]",2,8,40,admission_reorder,6.95,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,300
+300,0.9923,512,SATURATED,0,4,4,0.0,300,512,,"[20663, 23813, 2000, 31160]",4,0,0,admission_reorder,15.58,,154,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,301
+400,0.8158,512,SATURATED,0,7,10,0.002,400,512,,"[17737, 1000, 18452]",3,7,20,admission_reorder,18.45,,93,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,302
+300,0.9907,512,SATURATED,0,3,3,0.0,300,512,,"[30212, 32082, 2000]",3,0,0,admission_reorder,16.04,,207,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,303
+1536,0.0455,512,UNDERLOADED,0,3,5,0.005,1536,512,,"[8445, 10450, 1000]",3,2,5,admission_reorder,10.45,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,304
+1024,0.1061,512,CONTENTION_VISIBLE,0,2,4,0.005,1024,512,,"[4000, 33192]",2,2,40,admission_reorder,8.3,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,305
+1024,0.5655,512,SATURATED,0,4,4,0.0,1024,512,,"[32004, 4000, 44996, 53200]",4,0,0,admission_reorder,13.3,,62,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,306
+600,0.2857,512,CONTENTION_VISIBLE,0,3,3,0.0,600,512,,"[706, 500, 1872]",3,0,0,admission_reorder,3.75,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,307
+512,0.96,512,SATURATED,0,3,3,0.0,512,512,,"[1000, 10146, 13586]",3,0,0,admission_reorder,13.59,,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,308
+2048,0.0,512,UNDERLOADED,0,6,10,0.002,2048,512,,"[8138, 8343, 5462, 500]",4,6,20,admission_reorder,16.69,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,309
+300,0.9423,512,SATURATED,0,4,7,0.005,300,512,,"[4000, 15470, 35091, 48319]",4,3,20,admission_reorder,12.08,,343,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,310
+800,0.0889,512,CONTENTION_VISIBLE,0,5,7,0.002,800,512,,"[2000, 21032]",2,5,40,admission_reorder,10.52,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,311
+1024,0.9528,512,SATURATED,0,4,4,0.0,1024,512,,"[4000, 49658, 58278, 14749]",4,0,0,admission_reorder,14.57,,96,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,312
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[2000, 17556, 26050]",3,0,0,admission_reorder,13.03,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,313
+1024,0.0,512,UNDERLOADED,0,2,2,0.0,1024,512,,"[5105, 500]",2,0,0,admission_reorder,10.21,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,314
+800,0.9118,512,SATURATED,0,4,4,0.0,800,512,,"[6849, 9545, 7159, 2000]",4,0,0,admission_reorder,4.77,,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,315
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[2000, 20326]",2,0,0,admission_reorder,10.16,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,316
+1024,0.0625,512,UNDERLOADED,0,2,2,0.0,1024,512,,"[1000, 7676]",2,0,0,admission_reorder,7.68,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,317
+400,0.5962,512,SATURATED,0,6,9,0.002,400,512,,"[4217, 500, 7789]",3,6,20,admission_reorder,15.58,,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,318
+1024,0.4091,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[7482, 21925, 2000]",3,0,0,admission_reorder,10.96,,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,319
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[2000, 8488, 4312]",3,0,0,admission_reorder,4.24,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,320
+2048,0.0,512,UNDERLOADED,0,5,8,0.005,2048,512,,"[15923, 54714, 4000]",3,5,5,admission_reorder,13.68,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,321
+512,0.9893,512,SATURATED,0,3,3,0.0,512,512,,"[26901, 63861, 4000]",3,0,0,admission_reorder,15.97,,177,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,322
+800,0.197,512,CONTENTION_VISIBLE,0,2,4,0.005,800,512,,"[33076, 4000]",2,2,40,admission_reorder,8.27,,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,323
+2048,0.0,512,UNDERLOADED,0,4,6,0.005,2048,512,,"[1000, 18108]",2,4,20,admission_reorder,18.11,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,324
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[500, 6832, 9761]",3,0,0,admission_reorder,19.52,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,325
+512,0.3692,512,CONTENTION_VISIBLE,0,5,8,0.001,512,512,,"[5759, 5538, 1000]",3,5,40,admission_reorder,5.76,,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,326
+1536,0.0,512,UNDERLOADED,0,6,8,0.001,1536,512,,"[6611, 500]",2,6,20,admission_reorder,13.22,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,327
+1024,0.6471,512,SATURATED,0,4,6,0.001,1024,512,,"[2874, 5739, 500, 2556]",4,2,5,admission_reorder,11.48,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,328
+1536,0.0769,512,CONTENTION_VISIBLE,0,4,4,0.0,1536,512,,"[45008, 4000, 5221, 61599]",4,0,0,admission_reorder,15.4,,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,329
+800,0.25,512,CONTENTION_VISIBLE,0,3,3,0.0,800,512,,"[15614, 1000, 1413]",3,0,0,admission_reorder,15.61,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,330
+800,0.05,512,UNDERLOADED,0,2,2,0.0,800,512,,"[9435, 500]",2,0,0,admission_reorder,18.87,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,331
+800,0.1176,512,UNDERLOADED,0,8,10,0.002,800,512,,"[1000, 7663]",2,8,10,admission_reorder,7.66,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,332
+800,0.1304,512,UNDERLOADED,0,2,2,0.0,800,512,,"[10805, 1000]",2,0,0,admission_reorder,10.81,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,333
+600,0.425,512,CONTENTION_VISIBLE,0,8,11,0.001,600,512,,"[1000, 7171, 13065]",3,8,5,admission_reorder,13.07,,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,334
+300,0.4324,512,CONTENTION_VISIBLE,0,4,7,0.002,300,512,,"[2359, 1588, 500, 567]",4,3,20,admission_reorder,4.72,,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,335
+2048,0.0,512,UNDERLOADED,0,2,4,0.002,2048,512,,"[6805, 500]",2,2,5,admission_reorder,13.61,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,336
+400,0.8,512,SATURATED,0,3,5,0.005,400,512,,"[4989, 500, 4330]",3,2,5,admission_reorder,9.98,,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,337
+2048,0.1077,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[23781, 32276, 14525, 4000]",4,0,0,admission_reorder,8.07,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,338
+512,0.9355,512,SATURATED,0,4,4,0.0,512,512,,"[3524, 3024, 7929, 500]",4,0,0,admission_reorder,15.86,,28,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,339
+1024,0.0,512,UNDERLOADED,0,2,2,0.0,1024,512,,"[3397, 500]",2,0,0,admission_reorder,6.79,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,340
+1024,0.6765,512,SATURATED,0,3,3,0.0,1024,512,,"[2000, 12041, 14495]",3,0,0,admission_reorder,7.25,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,341
+400,0.9861,512,SATURATED,0,4,4,0.0,400,512,,"[19360, 17890, 18562, 1000]",4,0,0,admission_reorder,19.36,,139,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,342
+400,0.4744,512,CONTENTION_VISIBLE,0,4,6,0.001,400,512,,"[1434, 3894, 1000, 8465]",4,2,40,admission_reorder,8.47,,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,343
+400,0.982,512,SATURATED,0,3,3,0.0,400,512,,"[2000, 15223, 26500]",3,0,0,admission_reorder,13.25,,43,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,344
+800,0.8961,512,SATURATED,0,4,4,0.0,800,512,,"[28372, 19701, 8473, 2000]",4,0,0,admission_reorder,14.19,,62,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,345
+800,0.1429,512,UNDERLOADED,0,2,2,0.0,800,512,,"[2581, 500]",2,0,0,admission_reorder,5.16,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,346
+400,0.4615,512,CONTENTION_VISIBLE,0,8,10,0.001,400,512,,"[1000, 6246]",2,8,20,admission_reorder,6.25,,18,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,347
+1024,0.3492,512,CONTENTION_VISIBLE,0,4,8,0.005,1024,512,,"[11507, 8880, 2000, 13921]",4,4,40,admission_reorder,6.96,,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,348
+2048,0.0,512,UNDERLOADED,0,2,2,0.0,2048,512,,"[1000, 8270]",2,0,0,admission_reorder,8.27,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,349
+600,0.3387,512,CONTENTION_VISIBLE,0,7,11,0.005,600,512,,"[4407, 1000, 5286, 3485]",4,7,40,admission_reorder,5.29,,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,350
+300,0.2222,512,CONTENTION_VISIBLE,0,4,6,0.002,300,512,,"[1342, 500]",2,4,20,admission_reorder,2.69,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,351
+512,0.9815,512,SATURATED,0,3,3,0.0,512,512,,"[2000, 39693, 12691]",3,0,0,admission_reorder,19.85,,81,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,352
+300,0.971,512,SATURATED,0,3,3,0.0,300,512,,"[1000, 8882, 10421]",3,0,0,admission_reorder,10.42,,32,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,353
+1536,0.0761,512,CONTENTION_VISIBLE,0,3,5,0.001,1536,512,,"[25392, 46246, 4000]",3,2,20,admission_reorder,11.56,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,354
+2048,0.0,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[1892, 500, 4008, 3671]",4,0,0,admission_reorder,8.02,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,355
+800,0.0602,512,UNDERLOADED,0,2,2,0.0,800,512,,"[4000, 65784]",2,0,0,admission_reorder,16.45,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,356
+1536,0.0493,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[67796, 71907, 4000]",3,0,0,admission_reorder,17.98,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,357
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[65175, 4000, 67328]",3,0,0,admission_reorder,16.83,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,358
+300,0.7442,512,SATURATED,0,5,7,0.005,300,512,,"[8538, 1000]",2,5,10,admission_reorder,8.54,,32,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,359
+300,0.8093,512,SATURATED,0,4,7,0.002,300,512,,"[18846, 16446, 13091, 4000]",4,3,40,admission_reorder,4.71,,174,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,360
+512,0.875,512,SATURATED,0,3,3,0.0,512,512,,"[4680, 1604, 1000]",3,0,0,admission_reorder,4.68,,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,361
+1536,0.3333,512,CONTENTION_VISIBLE,0,4,6,0.002,1536,512,,"[9776, 1000, 6441, 2912]",4,2,5,admission_reorder,9.78,,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,362
+1024,0.4533,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[2000, 17596, 35495]",3,0,0,admission_reorder,17.75,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,363
+800,0.5,512,SATURATED,0,4,4,0.0,800,512,,"[500, 1090, 922, 886]",4,0,0,admission_reorder,2.18,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,364
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[500, 2904, 720]",3,0,0,admission_reorder,5.81,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,365
+1536,0.0,512,UNDERLOADED,0,8,11,0.002,1536,512,,"[500, 8263, 995]",3,8,40,admission_reorder,16.53,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,366
+800,0.0808,512,UNDERLOADED,0,2,2,0.0,800,512,,"[4000, 48226]",2,0,0,admission_reorder,12.06,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,367
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[4000, 54725, 56566]",3,0,0,admission_reorder,14.14,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,368
+400,0.6466,512,SATURATED,0,6,8,0.001,400,512,,"[26159, 4000]",2,6,40,admission_reorder,6.54,,75,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,369
+600,0.5714,512,SATURATED,0,4,4,0.0,600,512,,"[2069, 500, 1785, 2612]",4,0,0,admission_reorder,5.23,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,370
+600,0.4607,512,CONTENTION_VISIBLE,0,4,4,0.0,600,512,,"[16765, 2000, 4822, 25075]",4,0,0,admission_reorder,12.54,,33,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,371
+512,0.913,512,SATURATED,0,6,9,0.001,512,512,,"[8365, 2000, 21780]",3,6,5,admission_reorder,10.89,,62,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,372
+2048,0.1556,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[9503, 4000, 8543, 22075]",4,0,0,admission_reorder,5.52,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,373
+1024,0.0652,512,UNDERLOADED,0,6,8,0.005,1024,512,,"[6270, 2000]",2,6,40,admission_reorder,3.14,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,374
+600,0.95,512,SATURATED,0,4,4,0.0,600,512,,"[47459, 33649, 9237, 4000]",4,0,0,admission_reorder,11.86,,143,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,375
+600,0.2667,512,CONTENTION_VISIBLE,0,3,3,0.0,600,512,,"[1948, 500, 4775]",3,0,0,admission_reorder,9.55,,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,376
+512,0.7755,512,SATURATED,0,3,5,0.005,512,512,,"[1000, 18780]",2,3,10,admission_reorder,18.78,,34,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,377
+600,0.0952,512,CONTENTION_VISIBLE,0,8,10,0.001,600,512,,"[500, 9429]",2,8,5,admission_reorder,18.86,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,378
+600,0.75,512,SATURATED,0,4,7,0.005,600,512,,"[4691, 4430, 1281, 500]",4,3,5,admission_reorder,9.38,,18,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,379
+800,0.7368,512,SATURATED,0,3,3,0.0,800,512,,"[500, 8668, 3800]",3,0,0,admission_reorder,17.34,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,380
+512,0.8667,512,SATURATED,0,2,2,0.0,512,512,,"[1000, 5675]",2,0,0,admission_reorder,5.68,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,381
+1536,0.0,512,UNDERLOADED,0,4,6,0.001,1536,512,,"[4000, 13886]",2,4,40,admission_reorder,3.47,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,382
+300,0.8669,512,SATURATED,0,3,5,0.005,300,512,,"[76274, 4000]",2,3,40,admission_reorder,19.07,,267,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,383
+512,0.4459,512,CONTENTION_VISIBLE,0,5,9,0.005,512,512,,"[6019, 6791, 3460, 500]",4,5,40,admission_reorder,13.58,,32,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,384
+1024,0.3684,512,UNDERLOADED,0,2,2,0.0,1024,512,,"[4000, 8742]",2,0,0,admission_reorder,2.19,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,385
+512,0.9474,512,SATURATED,0,4,6,0.005,512,512,,"[16490, 1000, 19756, 18305]",4,2,5,admission_reorder,19.76,,108,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,386
+800,0.08,512,UNDERLOADED,0,2,2,0.0,800,512,,"[1000, 11593]",2,0,0,admission_reorder,11.59,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,387
+512,0.9429,512,SATURATED,0,4,4,0.0,512,512,,"[1000, 3882, 11219, 1269]",4,0,0,admission_reorder,11.22,,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,388
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[500, 9713]",2,0,0,admission_reorder,19.43,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,389
+600,0.3279,512,CONTENTION_VISIBLE,0,4,6,0.002,600,512,,"[500, 4984, 5475, 2003]",4,2,40,admission_reorder,10.95,,20,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,390
+600,0.6949,512,SATURATED,0,4,4,0.0,600,512,,"[4000, 10599, 8566, 10120]",4,0,0,admission_reorder,2.65,,27,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,391
+600,0.8246,512,SATURATED,0,4,6,0.001,600,512,,"[1000, 12933, 12149, 6240]",4,2,5,admission_reorder,12.93,,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,392
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[11245, 11160, 1000]",3,0,0,admission_reorder,11.25,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,393
+1536,0.0455,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[10437, 1000, 1086]",3,0,0,admission_reorder,10.44,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,394
+1024,0.0455,512,UNDERLOADED,0,2,2,0.0,1024,512,,"[10512, 1000]",2,0,0,admission_reorder,10.51,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,395
+1024,0.56,512,SATURATED,0,3,6,0.001,1024,512,,"[8941, 2000, 5280]",3,3,10,admission_reorder,4.47,,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,396
+1024,0.129,512,CONTENTION_VISIBLE,0,8,10,0.002,1024,512,,"[14887, 2000]",2,8,20,admission_reorder,7.44,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,397
+800,0.3889,512,CONTENTION_VISIBLE,0,4,6,0.005,800,512,,"[3653, 500, 630, 3757]",4,2,10,admission_reorder,7.51,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,398
+600,0.7708,512,SATURATED,0,3,6,0.005,600,512,,"[8807, 11345, 2000]",3,3,10,admission_reorder,5.67,,36,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,399
+800,0.3333,512,CONTENTION_VISIBLE,0,3,3,0.0,800,512,,"[14835, 1000, 1908]",3,0,0,admission_reorder,14.84,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,400
+512,0.8462,512,SATURATED,0,3,3,0.0,512,512,,"[3201, 2194, 500]",3,0,0,admission_reorder,6.4,,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,401
+300,0.481,512,CONTENTION_VISIBLE,0,4,7,0.001,300,512,,"[7291, 3622, 500]",3,4,40,admission_reorder,14.58,,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,402
+1536,0.0,512,UNDERLOADED,0,2,2,0.0,1536,512,,"[2000, 12899]",2,0,0,admission_reorder,6.45,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,403
+600,0.7115,512,SATURATED,0,4,4,0.0,600,512,,"[13480, 4000, 4060, 7428]",4,0,0,admission_reorder,3.37,,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,404
+2048,0.0,512,UNDERLOADED,0,6,9,0.001,2048,512,,"[15441, 7136, 1000]",3,6,5,admission_reorder,15.44,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,405
+1024,0.3947,512,CONTENTION_VISIBLE,0,8,11,0.005,1024,512,,"[38307, 13207, 2000]",3,8,20,admission_reorder,19.15,,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,406
+1536,0.1556,512,UNDERLOADED,0,3,3,0.0,1536,512,,"[22246, 4000, 9524]",3,0,0,admission_reorder,5.56,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,407
+512,0.8182,512,SATURATED,0,2,2,0.0,512,512,,"[500, 4482]",2,0,0,admission_reorder,8.97,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,408
+400,0.9948,512,SATURATED,0,4,4,0.0,400,512,,"[4000, 55361, 47232, 45943]",4,0,0,admission_reorder,13.84,,266,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,409
+1024,0.6211,512,SATURATED,0,4,4,0.0,1024,512,,"[2000, 30255, 15976, 30088]",4,0,0,admission_reorder,15.13,,35,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,410
+600,0.782,512,SATURATED,0,3,3,0.0,600,512,,"[52921, 4000, 19538]",3,0,0,admission_reorder,13.23,,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,411
+1536,0.0,512,UNDERLOADED,0,8,10,0.001,1536,512,,"[1000, 13051]",2,8,40,admission_reorder,13.05,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,412
+300,0.9897,512,SATURATED,0,3,3,0.0,300,512,,"[2000, 17579, 38223]",3,0,0,admission_reorder,19.11,,65,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,413
+2048,0.0606,512,CONTENTION_VISIBLE,0,4,7,0.001,2048,512,,"[1000, 7788, 16255, 11318]",4,3,20,admission_reorder,16.26,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,414
+1536,0.2353,512,CONTENTION_VISIBLE,0,4,4,0.0,1536,512,,"[1000, 7812, 6465, 1439]",4,0,0,admission_reorder,7.81,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,415
+1536,0.0,512,UNDERLOADED,0,3,5,0.005,1536,512,,"[3873, 1000]",2,3,40,admission_reorder,3.87,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,416
+800,0.1842,512,CONTENTION_VISIBLE,0,6,8,0.001,800,512,,"[38342, 4000]",2,6,40,admission_reorder,9.59,,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,417
+1536,0.0652,512,CONTENTION_VISIBLE,0,5,9,0.005,1536,512,,"[2929, 1000, 1535, 3438]",4,5,40,admission_reorder,3.44,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,418
+300,0.9583,512,SATURATED,0,3,3,0.0,300,512,,"[1000, 9871, 3077]",3,0,0,admission_reorder,9.87,,36,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,419
+300,0.8359,512,SATURATED,0,4,7,0.005,300,512,,"[2000, 17927, 12198]",3,4,20,admission_reorder,8.96,,107,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,420
+400,0.9767,512,SATURATED,0,4,4,0.0,400,512,,"[1000, 10684, 18424, 3503]",4,0,0,admission_reorder,18.42,,75,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,421
+400,0.8462,512,SATURATED,0,2,2,0.0,400,512,,"[500, 4265]",2,0,0,admission_reorder,8.53,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,422
+1024,0.7424,512,SATURATED,0,4,4,0.0,1024,512,,"[4000, 32806, 15275, 5976]",4,0,0,admission_reorder,8.2,,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,423
+512,0.9649,512,SATURATED,0,3,3,0.0,512,512,,"[20299, 2000, 6153]",3,0,0,admission_reorder,10.15,,43,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,424
+800,0.1217,512,CONTENTION_VISIBLE,0,7,9,0.005,800,512,,"[58227, 4000]",2,7,20,admission_reorder,14.56,,9,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,425
+800,0.3333,512,UNDERLOADED,0,2,2,0.0,800,512,,"[2000, 4454]",2,0,0,admission_reorder,2.23,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,426
+2048,0.0,512,UNDERLOADED,0,3,3,0.0,2048,512,,"[4938, 2000, 5162]",3,0,0,admission_reorder,2.58,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,427
+600,0.25,512,CONTENTION_VISIBLE,0,3,3,0.0,600,512,,"[2742, 500, 8645]",3,0,0,admission_reorder,17.29,,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,428
+512,0.9048,512,SATURATED,0,3,3,0.0,512,512,,"[3270, 4647, 2000]",3,0,0,admission_reorder,2.32,,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,429
+800,0.0968,512,UNDERLOADED,0,2,2,0.0,800,512,,"[15111, 1000]",2,0,0,admission_reorder,15.11,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,430
+2048,0.0,512,UNDERLOADED,0,3,6,0.002,2048,512,,"[8241, 500, 8064]",3,3,5,admission_reorder,16.48,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,431
+1024,0.6622,512,SATURATED,0,5,9,0.002,1024,512,,"[4000, 29451, 46324, 45530]",4,5,5,admission_reorder,11.58,,98,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,432
+1024,0.3889,512,CONTENTION_VISIBLE,0,3,3,0.0,1024,512,,"[8402, 1000, 2695]",3,0,0,admission_reorder,8.4,,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,433
+800,0.8387,512,SATURATED,0,4,4,0.0,800,512,,"[4000, 15393, 30299, 19751]",4,0,0,admission_reorder,7.57,,33,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,434
+800,0.2679,512,CONTENTION_VISIBLE,0,4,7,0.005,800,512,,"[7439, 500, 2083, 4420]",4,3,40,admission_reorder,14.88,,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,435
+600,0.9222,512,SATURATED,0,3,3,0.0,600,512,,"[35182, 13247, 4000]",3,0,0,admission_reorder,8.8,,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,436
+300,0.6857,512,SATURATED,0,4,6,0.002,300,512,,"[1000, 3520, 1418, 1381]",4,2,10,admission_reorder,3.52,,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,437
+600,0.15,512,CONTENTION_VISIBLE,0,4,7,0.002,600,512,,"[500, 982, 8211]",3,4,5,admission_reorder,16.42,,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,438
+1024,0.4545,512,CONTENTION_VISIBLE,0,4,4,0.0,1024,512,,"[2454, 1880, 500, 2344]",4,0,0,admission_reorder,4.91,,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,439
+800,0.1538,512,UNDERLOADED,0,2,2,0.0,800,512,,"[1000, 5672]",2,0,0,admission_reorder,5.67,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,440
+1536,0.5294,512,SATURATED,0,4,4,0.0,1536,512,,"[5669, 500, 8092, 4123]",4,0,0,admission_reorder,16.19,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,441
+1536,0.0,512,UNDERLOADED,0,3,5,0.001,1536,512,,"[4000, 13588]",2,3,10,admission_reorder,3.4,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,442
+2048,0.0473,512,UNDERLOADED,0,4,4,0.0,2048,512,,"[32167, 4000, 51332, 74889]",4,0,0,admission_reorder,18.72,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,443
+1024,0.5172,512,SATURATED,0,3,3,0.0,1024,512,,"[5844, 14226, 2000]",3,0,0,admission_reorder,7.11,,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,444
+512,0.3167,512,CONTENTION_VISIBLE,0,5,9,0.001,512,512,,"[4393, 2690, 1832, 1000]",4,5,40,admission_reorder,4.39,,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,445
+2048,0.0,512,UNDERLOADED,0,5,7,0.001,2048,512,,"[19824, 2000]",2,5,40,admission_reorder,9.91,,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,446
+1024,0.1633,512,CONTENTION_VISIBLE,0,7,11,0.001,1024,512,,"[1808, 5488, 500, 2125]",4,7,40,admission_reorder,10.98,,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,447
+512,0.9259,512,SATURATED,0,2,2,0.0,512,512,,"[2000, 11102]",2,0,0,admission_reorder,5.55,,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,448
+512,0.85,512,SATURATED,0,6,9,0.002,512,512,,"[1000, 7641, 9028]",3,6,5,admission_reorder,9.03,,34,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,admission_reorder,449
+544,0.7317,512,SATURATED,0,2,23,,544,512,8000,,2,21,10,hog_runner_staggered,,True,29,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,450
+528,0.7,512,SATURATED,0,1,38,,528,512,20000,,1,37,10,hog_runner_staggered,,True,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,451
+517,0.475,512,CONTENTION_VISIBLE,0,1,15,,517,512,20000,,1,14,40,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,452
+520,0.8764,512,SATURATED,0,13,29,,520,512,20000,,2,27,10,hog_runner_staggered,,False,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,453
+514,0.18,512,CONTENTION_VISIBLE,0,11,32,,514,512,2000,,2,30,40,hog_runner_staggered,,False,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,454
+515,0.1875,512,CONTENTION_VISIBLE,0,4,10,,515,512,2000,,1,9,10,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,455
+517,0.8764,512,SATURATED,0,2,35,,517,512,20000,,2,33,10,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,456
+514,0.8378,512,SATURATED,0,2,6,,514,512,8000,,2,4,5,hog_runner_staggered,,True,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,457
+576,0.0,512,UNDERLOADED,0,1,17,,576,512,12000,,1,16,5,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,458
+576,0.6129,512,SATURATED,0,6,14,,576,512,8000,,2,12,5,hog_runner_staggered,,False,18,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,459
+514,0.7717,512,SATURATED,0,3,34,,514,512,12000,,3,31,20,hog_runner_staggered,,True,71,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,460
+528,0.0,512,UNDERLOADED,0,1,26,,528,512,2000,,1,25,80,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,461
+528,0.0471,512,CONTENTION_VISIBLE,0,2,4,,528,512,2000,,2,2,80,hog_runner_staggered,,True,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,462
+517,0.6306,512,SATURATED,0,3,14,,517,512,12000,,3,11,40,hog_runner_staggered,,True,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,463
+528,0.5227,512,SATURATED,0,11,33,,528,512,4000,,3,30,20,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,464
+520,0.6912,512,SATURATED,0,3,21,,520,512,8000,,3,18,20,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,465
+520,0.4906,512,CONTENTION_VISIBLE,0,2,32,,520,512,20000,,2,30,80,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,466
+513,0.7692,512,SATURATED,0,3,9,,513,512,12000,,3,6,20,hog_runner_staggered,,False,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,467
+515,0.1121,512,CONTENTION_VISIBLE,0,3,29,,515,512,2000,,3,26,80,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,468
+576,0.7556,512,SATURATED,0,8,16,,576,512,8000,,3,13,10,hog_runner_staggered,,False,33,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,469
+515,0.5962,512,SATURATED,0,2,10,,515,512,8000,,2,8,20,hog_runner_staggered,,True,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,470
+517,0.8764,512,SATURATED,0,2,35,,517,512,20000,,2,33,10,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,471
+576,0.4875,512,CONTENTION_VISIBLE,0,3,26,,576,512,8000,,3,23,40,hog_runner_staggered,,True,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,472
+514,0.0889,512,CONTENTION_VISIBLE,0,11,27,,514,512,4000,,1,26,80,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,473
+576,0.4173,512,CONTENTION_VISIBLE,0,2,39,,576,512,20000,,2,37,80,hog_runner_staggered,,True,56,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,474
+513,0.475,512,CONTENTION_VISIBLE,0,1,13,,513,512,20000,,1,12,40,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,475
+515,0.5341,512,SATURATED,0,2,19,,515,512,12000,,2,17,40,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,476
+544,0.875,512,SATURATED,0,8,23,,544,512,12000,,2,21,5,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,477
+514,0.9211,512,SATURATED,0,8,20,,514,512,12000,,3,17,5,hog_runner_staggered,,False,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,478
+513,0.5287,512,SATURATED,0,3,5,,513,512,8000,,3,2,40,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,479
+544,0.3279,512,CONTENTION_VISIBLE,0,3,8,,544,512,8000,,2,6,40,hog_runner_staggered,,False,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,480
+515,0.6306,512,SATURATED,0,3,27,,515,512,12000,,3,24,40,hog_runner_staggered,,True,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,481
+544,0.625,512,SATURATED,0,3,7,,544,512,8000,,2,5,10,hog_runner_staggered,,False,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,482
+520,0.7389,512,SATURATED,0,11,29,,520,512,20000,,3,26,40,hog_runner_staggered,,False,116,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,483
+576,0.6,512,SATURATED,0,16,39,,576,512,12000,,1,38,10,hog_runner_staggered,,False,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,484
+576,0.789,512,SATURATED,0,3,42,,576,512,20000,,3,39,5,hog_runner_staggered,,True,85,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,485
+528,0.6111,512,SATURATED,0,2,8,,528,512,12000,,2,6,20,hog_runner_staggered,,True,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,486
+515,0.9211,512,SATURATED,0,9,21,,515,512,12000,,3,18,5,hog_runner_staggered,,False,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,487
+544,0.8,512,SATURATED,0,8,21,,544,512,8000,,3,18,10,hog_runner_staggered,,False,43,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,488
+520,0.3889,512,CONTENTION_VISIBLE,0,3,8,,520,512,2000,,2,6,10,hog_runner_staggered,,False,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,489
+544,0.5116,512,SATURATED,0,3,14,,544,512,4000,,3,11,20,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,490
+576,0.0,512,UNDERLOADED,0,2,6,,576,512,20000,,1,5,5,hog_runner_staggered,,False,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,491
+576,0.4255,512,CONTENTION_VISIBLE,0,3,37,,576,512,12000,,3,34,80,hog_runner_staggered,,True,59,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,492
+514,0.8868,512,SATURATED,0,2,16,,514,512,12000,,2,14,5,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,493
+528,0.4839,512,CONTENTION_VISIBLE,0,2,22,,528,512,4000,,2,20,10,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,494
+528,0.0244,512,UNDERLOADED,0,1,31,,528,512,2000,,1,30,10,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,495
+544,0.1176,512,CONTENTION_VISIBLE,0,1,19,,544,512,12000,,1,18,80,hog_runner_staggered,,True,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,496
+517,0.3672,512,CONTENTION_VISIBLE,0,2,38,,517,512,12000,,2,36,80,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,497
+528,0.4286,512,CONTENTION_VISIBLE,0,1,12,,528,512,12000,,1,11,20,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,498
+515,0.7717,512,SATURATED,0,17,34,,515,512,12000,,3,31,20,hog_runner_staggered,,False,71,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,499
+528,0.88,512,SATURATED,0,3,12,,528,512,8000,,3,9,5,hog_runner_staggered,,True,42,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,500
+515,0.25,512,CONTENTION_VISIBLE,0,1,11,,515,512,8000,,1,10,40,hog_runner_staggered,,True,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,501
+528,0.2115,512,CONTENTION_VISIBLE,0,3,9,,528,512,2000,,3,6,40,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,502
+544,0.7391,512,SATURATED,0,3,12,,544,512,12000,,3,9,5,hog_runner_staggered,,True,51,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,503
+528,0.9504,512,SATURATED,0,3,29,,528,512,20000,,3,26,5,hog_runner_staggered,,True,114,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,504
+528,0.1935,512,CONTENTION_VISIBLE,0,1,11,,528,512,4000,,1,10,20,hog_runner_staggered,,True,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,505
+514,0.5962,512,SATURATED,0,2,7,,514,512,8000,,2,5,20,hog_runner_staggered,,True,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,506
+576,0.0667,512,CONTENTION_VISIBLE,0,2,36,,576,512,2000,,2,34,40,hog_runner_staggered,,True,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,507
+514,0.0349,512,CONTENTION_VISIBLE,0,12,24,,514,512,2000,,1,23,80,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,508
+515,0.211,512,CONTENTION_VISIBLE,0,1,29,,515,512,12000,,1,28,80,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,509
+513,0.9141,512,SATURATED,0,3,23,,513,512,20000,,3,20,10,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,510
+515,0.3684,512,CONTENTION_VISIBLE,0,14,29,,515,512,4000,,1,28,10,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,511
+513,0.0465,512,CONTENTION_VISIBLE,0,17,41,,513,512,2000,,1,40,80,hog_runner_staggered,,False,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,512
+517,0.2069,512,CONTENTION_VISIBLE,0,3,40,,517,512,2000,,3,37,20,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,513
+513,0.7931,512,SATURATED,0,3,14,,513,512,4000,,3,11,5,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,514
+528,0.3659,512,CONTENTION_VISIBLE,0,1,16,,528,512,20000,,1,15,5,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,515
+515,0.6912,512,SATURATED,0,3,17,,515,512,8000,,3,14,20,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,516
+517,0.9141,512,SATURATED,0,3,30,,517,512,20000,,3,27,10,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,517
+520,0.7692,512,SATURATED,0,3,37,,520,512,12000,,3,34,20,hog_runner_staggered,,True,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,518
+513,0.186,512,CONTENTION_VISIBLE,0,2,39,,513,512,2000,,2,37,5,hog_runner_staggered,,True,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,519
+576,0.0,512,UNDERLOADED,0,1,36,,576,512,8000,,1,35,80,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,520
+514,0.2807,512,CONTENTION_VISIBLE,0,11,25,,514,512,4000,,2,23,40,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,521
+517,0.1786,512,CONTENTION_VISIBLE,0,2,5,,517,512,4000,,1,4,20,hog_runner_staggered,,False,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,522
+528,0.12,512,CONTENTION_VISIBLE,0,1,40,,528,512,4000,,1,39,10,hog_runner_staggered,,True,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,523
+513,0.7381,512,SATURATED,0,5,11,,513,512,8000,,2,9,10,hog_runner_staggered,,False,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,524
+514,0.6842,512,SATURATED,0,13,38,,514,512,2000,,3,35,5,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,525
+514,0.4167,512,CONTENTION_VISIBLE,0,2,9,,514,512,4000,,2,7,20,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,526
+513,0.6555,512,SATURATED,0,2,12,,513,512,20000,,2,10,40,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,527
+576,0.65,512,SATURATED,0,12,32,,576,512,8000,,1,31,5,hog_runner_staggered,,False,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,528
+544,0.0323,512,UNDERLOADED,0,1,12,,544,512,8000,,1,11,80,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,529
+515,0.4324,512,CONTENTION_VISIBLE,0,7,14,,515,512,4000,,2,12,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,530
+513,0.24,512,CONTENTION_VISIBLE,0,3,32,,513,512,2000,,3,29,20,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,531
+576,0.6912,512,SATURATED,0,3,12,,576,512,12000,,3,9,20,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,532
+544,0.5,512,SATURATED,0,3,10,,544,512,4000,,3,7,20,hog_runner_staggered,,False,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,533
+544,0.5,512,SATURATED,0,1,40,,544,512,20000,,1,39,10,hog_runner_staggered,,True,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,534
+517,0.4324,512,CONTENTION_VISIBLE,0,8,19,,517,512,4000,,2,17,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,535
+544,0.3636,512,CONTENTION_VISIBLE,0,12,39,,544,512,2000,,3,36,20,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,536
+513,0.6957,512,SATURATED,0,15,41,,513,512,8000,,1,40,5,hog_runner_staggered,,False,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,537
+517,0.8868,512,SATURATED,0,3,37,,517,512,8000,,3,34,5,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,538
+513,0.9211,512,SATURATED,0,7,18,,513,512,12000,,3,15,5,hog_runner_staggered,,False,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,539
+528,0.4595,512,CONTENTION_VISIBLE,0,2,4,,528,512,8000,,2,2,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,540
+513,0.3672,512,CONTENTION_VISIBLE,0,2,8,,513,512,12000,,2,6,80,hog_runner_staggered,,True,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,541
+528,0.9504,512,SATURATED,0,3,42,,528,512,20000,,3,39,5,hog_runner_staggered,,True,115,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,542
+517,0.6667,512,SATURATED,0,1,5,,517,512,8000,,1,4,5,hog_runner_staggered,,True,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,543
+514,0.2593,512,CONTENTION_VISIBLE,0,1,22,,514,512,4000,,1,21,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,544
+515,0.4571,512,CONTENTION_VISIBLE,0,2,26,,515,512,4000,,2,24,10,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,545
+513,0.3538,512,CONTENTION_VISIBLE,0,7,17,,513,512,12000,,1,16,40,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,546
+528,0.0455,512,CONTENTION_VISIBLE,0,1,3,,528,512,2000,,1,2,40,hog_runner_staggered,,False,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,547
+544,0.0172,512,UNDERLOADED,0,1,36,,544,512,2000,,1,35,80,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,548
+520,0.475,512,CONTENTION_VISIBLE,0,1,31,,520,512,20000,,1,30,40,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,549
+520,0.8103,512,SATURATED,0,3,28,,520,512,8000,,3,25,10,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,550
+544,0.6306,512,SATURATED,0,12,29,,544,512,20000,,2,27,40,hog_runner_staggered,,False,68,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,551
+528,0.5227,512,SATURATED,0,3,9,,528,512,4000,,3,6,20,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,552
+517,0.9512,512,SATURATED,0,3,34,,517,512,20000,,3,31,5,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,553
+513,0.6306,512,SATURATED,0,3,13,,513,512,12000,,3,10,40,hog_runner_staggered,,True,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,554
+514,0.7059,512,SATURATED,0,14,35,,514,512,8000,,3,32,20,hog_runner_staggered,,False,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,555
+528,0.3167,512,CONTENTION_VISIBLE,0,11,33,,528,512,20000,,1,32,80,hog_runner_staggered,,False,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,556
+513,0.1383,512,CONTENTION_VISIBLE,0,12,38,,513,512,2000,,3,35,80,hog_runner_staggered,,False,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,557
+513,0.2414,512,CONTENTION_VISIBLE,0,7,13,,513,512,4000,,1,12,20,hog_runner_staggered,,False,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,558
+520,0.4182,512,CONTENTION_VISIBLE,0,3,37,,520,512,4000,,3,34,20,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,559
+528,0.6389,512,SATURATED,0,3,33,,528,512,4000,,3,30,5,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,560
+514,0.5,512,SATURATED,0,5,12,,514,512,4000,,1,11,5,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,561
+520,0.46,512,CONTENTION_VISIBLE,0,6,18,,520,512,12000,,3,15,80,hog_runner_staggered,,False,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,562
+544,0.4211,512,CONTENTION_VISIBLE,0,10,21,,544,512,2000,,2,19,10,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,563
+544,0.6207,512,SATURATED,0,3,6,,544,512,4000,,3,3,10,hog_runner_staggered,,True,17,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,564
+517,0.1562,512,CONTENTION_VISIBLE,0,5,13,,517,512,4000,,2,11,80,hog_runner_staggered,,False,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,565
+528,0.95,512,SATURATED,0,3,31,,528,512,20000,,3,28,5,hog_runner_staggered,,True,114,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,566
+515,0.1111,512,CONTENTION_VISIBLE,0,1,7,,515,512,2000,,1,6,20,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,567
+517,0.8,512,SATURATED,0,3,22,,517,512,4000,,3,19,5,hog_runner_staggered,,True,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,568
+520,0.7931,512,SATURATED,0,3,10,,520,512,4000,,3,7,5,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,569
+520,0.807,512,SATURATED,0,9,24,,520,512,8000,,3,21,10,hog_runner_staggered,,False,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,570
+517,0.25,512,CONTENTION_VISIBLE,0,2,28,,517,512,2000,,2,26,5,hog_runner_staggered,,True,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,571
+528,0.6765,512,SATURATED,0,6,15,,528,512,4000,,3,12,10,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,572
+517,0.066,512,CONTENTION_VISIBLE,0,2,27,,517,512,2000,,2,25,80,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,573
+544,0.3622,512,CONTENTION_VISIBLE,0,2,38,,544,512,12000,,2,36,80,hog_runner_staggered,,True,44,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,574
+544,0.0976,512,UNDERLOADED,0,1,11,,544,512,20000,,1,10,20,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,575
+517,0.4054,512,CONTENTION_VISIBLE,0,9,24,,517,512,8000,,1,23,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,576
+576,0.58,512,SATURATED,0,6,17,,576,512,12000,,2,15,20,hog_runner_staggered,,False,28,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,577
+514,0.6818,512,SATURATED,0,14,34,,514,512,8000,,1,33,5,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,578
+528,0.5116,512,SATURATED,0,3,9,,528,512,4000,,3,6,20,hog_runner_staggered,,False,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,579
+520,0.5287,512,SATURATED,0,6,13,,520,512,12000,,2,11,40,hog_runner_staggered,,False,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,580
+517,0.3167,512,CONTENTION_VISIBLE,0,1,14,,517,512,20000,,1,13,80,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,581
+515,0.475,512,CONTENTION_VISIBLE,0,5,9,,515,512,20000,,1,8,40,hog_runner_staggered,,False,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,582
+528,0.2727,512,UNDERLOADED,0,1,5,,528,512,4000,,1,4,5,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,583
+513,0.2212,512,CONTENTION_VISIBLE,0,3,7,,513,512,4000,,3,4,80,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,584
+520,0.6912,512,SATURATED,0,2,34,,520,512,12000,,2,32,20,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,585
+544,0.4167,512,CONTENTION_VISIBLE,0,2,17,,544,512,4000,,2,15,20,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,586
+528,0.5227,512,SATURATED,0,7,19,,528,512,4000,,3,16,20,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,587
+514,0.2188,512,CONTENTION_VISIBLE,0,1,27,,514,512,4000,,1,26,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,588
+544,0.1944,512,CONTENTION_VISIBLE,0,2,27,,544,512,2000,,2,25,10,hog_runner_staggered,,True,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,589
+544,0.1111,512,UNDERLOADED,0,4,6,,544,512,2000,,1,5,5,hog_runner_staggered,,False,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,590
+528,0.6525,512,SATURATED,0,2,21,,528,512,20000,,2,19,40,hog_runner_staggered,,True,76,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,591
+576,0.5227,512,SATURATED,0,8,24,,576,512,8000,,2,22,20,hog_runner_staggered,,False,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,592
+514,0.3721,512,CONTENTION_VISIBLE,0,13,37,,514,512,12000,,2,35,80,hog_runner_staggered,,False,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,593
+513,0.4306,512,CONTENTION_VISIBLE,0,4,10,,513,512,8000,,2,8,40,hog_runner_staggered,,False,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,594
+576,0.0,512,UNDERLOADED,0,1,6,,576,512,12000,,1,5,80,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,595
+528,0.1538,512,CONTENTION_VISIBLE,0,1,6,,528,512,8000,,1,5,20,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,596
+513,0.6555,512,SATURATED,0,2,12,,513,512,20000,,2,10,40,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,597
+544,0.7931,512,SATURATED,0,14,39,,544,512,4000,,3,36,5,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,598
+514,0.3622,512,CONTENTION_VISIBLE,0,4,9,,514,512,8000,,3,6,80,hog_runner_staggered,,False,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,599
+528,0.2,512,CONTENTION_VISIBLE,0,2,31,,528,512,2000,,2,29,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,600
+515,0.4615,512,CONTENTION_VISIBLE,0,1,4,,515,512,4000,,1,3,5,hog_runner_staggered,,True,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,601
+517,0.8642,512,SATURATED,0,8,22,,517,512,12000,,3,19,10,hog_runner_staggered,,False,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,602
+517,0.1649,512,CONTENTION_VISIBLE,0,4,13,,517,512,4000,,2,11,80,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,603
+520,0.0536,512,CONTENTION_VISIBLE,0,1,32,,520,512,4000,,1,31,80,hog_runner_staggered,,True,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,604
+528,0.7692,512,SATURATED,0,3,41,,528,512,12000,,3,38,20,hog_runner_staggered,,True,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,605
+513,0.1509,512,CONTENTION_VISIBLE,0,2,27,,513,512,4000,,2,25,80,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,606
+576,0.0,512,UNDERLOADED,0,1,22,,576,512,12000,,1,21,10,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,607
+528,0.5116,512,SATURATED,0,3,9,,528,512,4000,,3,6,20,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,608
+513,0.3485,512,CONTENTION_VISIBLE,0,1,26,,513,512,12000,,1,25,40,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,609
+517,0.2286,512,CONTENTION_VISIBLE,0,3,27,,517,512,4000,,3,24,80,hog_runner_staggered,,True,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,610
+576,0.6881,512,SATURATED,0,3,7,,576,512,20000,,3,4,5,hog_runner_staggered,,True,75,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,611
+520,0.8103,512,SATURATED,0,2,39,,520,512,12000,,2,37,10,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,612
+544,0.0755,512,UNDERLOADED,0,1,13,,544,512,4000,,1,12,40,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,613
+514,0.3438,512,CONTENTION_VISIBLE,0,1,5,,514,512,12000,,1,4,40,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,614
+528,0.2059,512,CONTENTION_VISIBLE,0,2,25,,528,512,2000,,2,23,10,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,615
+520,0.1842,512,CONTENTION_VISIBLE,0,2,29,,520,512,2000,,2,27,10,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,616
+528,0.7372,512,SATURATED,0,3,34,,528,512,20000,,3,31,40,hog_runner_staggered,,True,115,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,617
+520,0.1875,512,CONTENTION_VISIBLE,0,14,38,,520,512,2000,,1,37,10,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,618
+576,0.1818,512,CONTENTION_VISIBLE,0,4,13,,576,512,2000,,1,12,5,hog_runner_staggered,,False,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,619
+513,0.7667,512,SATURATED,0,9,21,,513,512,12000,,1,20,5,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,620
+576,0.5778,512,SATURATED,0,5,12,,576,512,12000,,2,10,5,hog_runner_staggered,,False,25,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,621
+513,0.3223,512,CONTENTION_VISIBLE,0,15,40,,513,512,20000,,1,39,80,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,622
+515,0.4938,512,CONTENTION_VISIBLE,0,2,37,,515,512,20000,,2,35,80,hog_runner_staggered,,True,78,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,623
+520,0.1546,512,CONTENTION_VISIBLE,0,13,37,,520,512,8000,,1,36,80,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,624
+576,0.2273,512,CONTENTION_VISIBLE,0,3,26,,576,512,2000,,3,23,20,hog_runner_staggered,,True,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,625
+544,0.7719,512,SATURATED,0,6,19,,544,512,20000,,3,16,5,hog_runner_staggered,,False,87,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,626
+517,0.3684,512,CONTENTION_VISIBLE,0,2,10,,517,512,2000,,2,8,10,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,627
+513,0.9294,512,SATURATED,0,2,37,,513,512,20000,,2,35,5,hog_runner_staggered,,True,78,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,628
+576,0.129,512,CONTENTION_VISIBLE,0,7,18,,576,512,4000,,2,16,80,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,629
+513,0.7405,512,SATURATED,0,3,20,,513,512,20000,,3,17,40,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,630
+514,0.3636,512,CONTENTION_VISIBLE,0,3,30,,514,512,2000,,3,27,5,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,631
+576,0.0,512,UNDERLOADED,0,1,22,,576,512,2000,,1,21,20,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,632
+514,0.1154,512,CONTENTION_VISIBLE,0,14,29,,514,512,2000,,1,28,20,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,633
+576,0.3,512,CONTENTION_VISIBLE,0,3,32,,576,512,4000,,3,29,40,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,634
+515,0.8378,512,SATURATED,0,4,13,,515,512,8000,,2,11,5,hog_runner_staggered,,False,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,635
+515,0.5556,512,SATURATED,0,10,24,,515,512,8000,,1,23,10,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,636
+520,0.6765,512,SATURATED,0,3,6,,520,512,4000,,3,3,10,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,637
+576,0.0,512,UNDERLOADED,0,1,18,,576,512,4000,,1,17,20,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,638
+513,0.7931,512,SATURATED,0,3,18,,513,512,4000,,3,15,5,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,639
+528,0.6471,512,SATURATED,0,4,8,,528,512,2000,,3,5,5,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,640
+576,0.0,512,UNDERLOADED,0,1,39,,576,512,8000,,1,38,20,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,641
+576,0.5333,512,SATURATED,0,3,7,,576,512,20000,,2,5,5,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,642
+528,0.6866,512,SATURATED,0,9,21,,528,512,12000,,2,19,20,hog_runner_staggered,,False,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,643
+528,0.6857,512,SATURATED,0,3,5,,528,512,12000,,3,2,20,hog_runner_staggered,,False,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,644
+517,0.5,512,SATURATED,0,3,6,,517,512,2000,,3,3,10,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,645
+544,0.4211,512,CONTENTION_VISIBLE,0,13,32,,544,512,2000,,2,30,10,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,646
+528,0.1196,512,CONTENTION_VISIBLE,0,3,6,,528,512,2000,,3,3,80,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,647
+520,0.2051,512,CONTENTION_VISIBLE,0,2,35,,520,512,2000,,2,33,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,648
+517,0.4286,512,CONTENTION_VISIBLE,0,3,20,,517,512,2000,,3,17,10,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,649
+544,0.2957,512,CONTENTION_VISIBLE,0,3,10,,544,512,8000,,3,7,80,hog_runner_staggered,,False,34,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,650
+544,0.6204,512,SATURATED,0,3,37,,544,512,12000,,3,34,40,hog_runner_staggered,,True,67,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,651
+520,0.0682,512,CONTENTION_VISIBLE,0,1,6,,520,512,4000,,1,5,80,hog_runner_staggered,,True,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,652
+544,0.2333,512,CONTENTION_VISIBLE,0,5,12,,544,512,12000,,1,11,20,hog_runner_staggered,,False,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,653
+520,0.6667,512,SATURATED,0,1,8,,520,512,8000,,1,7,5,hog_runner_staggered,,True,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,654
+513,0.8478,512,SATURATED,0,15,40,,513,512,20000,,1,39,5,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,655
+520,0.0625,512,UNDERLOADED,0,1,27,,520,512,2000,,1,26,5,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,656
+517,0.1111,512,CONTENTION_VISIBLE,0,1,17,,517,512,2000,,1,16,10,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,657
+576,0.0,512,UNDERLOADED,0,1,32,,576,512,2000,,1,31,10,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,658
+513,0.0455,512,CONTENTION_VISIBLE,0,1,39,,513,512,2000,,1,38,5,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,659
+515,0.5341,512,SATURATED,0,3,25,,515,512,8000,,3,22,40,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,660
+517,0.1196,512,CONTENTION_VISIBLE,0,3,9,,517,512,2000,,3,6,80,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,661
+515,0.5287,512,SATURATED,0,3,7,,515,512,12000,,2,5,40,hog_runner_staggered,,False,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,662
+544,0.0385,512,CONTENTION_VISIBLE,0,4,10,,544,512,2000,,1,9,20,hog_runner_staggered,,False,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,663
+544,0.0233,512,CONTENTION_VISIBLE,0,7,15,,544,512,2000,,1,14,80,hog_runner_staggered,,False,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,664
+517,0.8846,512,SATURATED,0,2,11,,517,512,12000,,2,9,5,hog_runner_staggered,,True,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,665
+513,0.5227,512,SATURATED,0,3,6,,513,512,4000,,3,3,20,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,666
+544,0.2115,512,CONTENTION_VISIBLE,0,3,7,,544,512,4000,,2,5,40,hog_runner_staggered,,False,8,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,667
+520,0.6667,512,SATURATED,0,9,24,,520,512,2000,,3,21,5,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,668
+544,0.1562,512,CONTENTION_VISIBLE,0,2,14,,544,512,4000,,2,12,80,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,669
+528,0.7317,512,SATURATED,0,7,16,,528,512,8000,,2,14,10,hog_runner_staggered,,False,29,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,670
+513,0.129,512,CONTENTION_VISIBLE,0,2,23,,513,512,2000,,2,21,40,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,671
+544,0.0729,512,CONTENTION_VISIBLE,0,2,17,,544,512,2000,,2,15,80,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,672
+515,0.2832,512,CONTENTION_VISIBLE,0,12,31,,515,512,8000,,2,29,80,hog_runner_staggered,,False,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,673
+514,0.4324,512,CONTENTION_VISIBLE,0,9,22,,514,512,4000,,2,20,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,674
+515,0.74,512,SATURATED,0,1,21,,515,512,20000,,1,20,10,hog_runner_staggered,,True,36,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,675
+576,0.3889,512,CONTENTION_VISIBLE,0,5,15,,576,512,2000,,2,13,10,hog_runner_staggered,,False,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,676
+513,0.5217,512,SATURATED,0,8,23,,513,512,2000,,3,20,10,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,677
+517,0.76,512,SATURATED,0,1,27,,517,512,20000,,1,26,10,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,678
+528,0.0116,512,UNDERLOADED,0,2,5,,528,512,2000,,1,4,80,hog_runner_staggered,,False,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,679
+515,0.1416,512,CONTENTION_VISIBLE,0,2,34,,515,512,4000,,2,32,80,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,680
+528,0.0,512,UNDERLOADED,0,1,34,,528,512,2000,,1,33,40,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,681
+515,0.45,512,CONTENTION_VISIBLE,0,12,32,,515,512,2000,,2,30,10,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,682
+517,0.92,512,SATURATED,0,3,10,,517,512,12000,,3,7,5,hog_runner_staggered,,True,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,683
+514,0.6912,512,SATURATED,0,3,15,,514,512,8000,,3,12,20,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,684
+517,0.1531,512,CONTENTION_VISIBLE,0,1,18,,517,512,8000,,1,17,80,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,685
+517,0.5909,512,SATURATED,0,3,33,,517,512,20000,,3,30,80,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,686
+515,0.5962,512,SATURATED,0,10,24,,515,512,8000,,2,22,20,hog_runner_staggered,,False,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,687
+576,0.08,512,CONTENTION_VISIBLE,0,2,11,,576,512,2000,,2,9,40,hog_runner_staggered,,True,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,688
+520,0.5111,512,SATURATED,0,1,22,,520,512,12000,,1,21,20,hog_runner_staggered,,True,20,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,689
+528,0.6983,512,SATURATED,0,3,7,,528,512,20000,,3,4,20,hog_runner_staggered,,True,81,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,690
+514,0.8136,512,SATURATED,0,2,41,,514,512,12000,,2,39,10,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,691
+544,0.6471,512,SATURATED,0,5,15,,544,512,2000,,3,12,5,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,692
+528,0.5513,512,SATURATED,0,2,4,,528,512,20000,,2,2,20,hog_runner_staggered,,True,41,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,693
+576,0.475,512,CONTENTION_VISIBLE,0,4,14,,576,512,4000,,3,11,20,hog_runner_staggered,,False,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,694
+528,0.1458,512,CONTENTION_VISIBLE,0,2,5,,528,512,2000,,2,3,40,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,695
+515,0.5909,512,SATURATED,0,13,32,,515,512,20000,,3,29,80,hog_runner_staggered,,False,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,696
+520,0.8846,512,SATURATED,0,3,16,,520,512,8000,,3,13,5,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,697
+520,0.0455,512,CONTENTION_VISIBLE,0,1,34,,520,512,2000,,1,33,10,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,698
+513,0.5962,512,SATURATED,0,2,5,,513,512,8000,,2,3,20,hog_runner_staggered,,True,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,699
+514,0.4054,512,CONTENTION_VISIBLE,0,14,36,,514,512,8000,,1,35,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,700
+520,0.1458,512,CONTENTION_VISIBLE,0,1,8,,520,512,8000,,1,7,80,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,701
+576,0.7523,512,SATURATED,0,3,28,,576,512,20000,,3,25,5,hog_runner_staggered,,True,81,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,702
+514,0.6912,512,SATURATED,0,2,25,,514,512,12000,,2,23,20,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,703
+576,0.7843,512,SATURATED,0,12,30,,576,512,8000,,3,27,10,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,704
+517,0.141,512,CONTENTION_VISIBLE,0,3,40,,517,512,2000,,3,37,40,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,705
+576,0.413,512,CONTENTION_VISIBLE,0,3,34,,576,512,12000,,3,31,80,hog_runner_staggered,,True,56,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,706
+515,0.5385,512,SATURATED,0,1,9,,515,512,8000,,1,8,10,hog_runner_staggered,,True,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,707
+513,0.76,512,SATURATED,0,1,5,,513,512,20000,,1,4,10,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,708
+517,0.219,512,CONTENTION_VISIBLE,0,15,41,,517,512,12000,,1,40,80,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,709
+528,0.95,512,SATURATED,0,10,28,,528,512,20000,,3,25,5,hog_runner_staggered,,False,114,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,710
+517,0.8467,512,SATURATED,0,3,9,,517,512,20000,,3,6,20,hog_runner_staggered,,False,110,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,711
+576,0.0,512,UNDERLOADED,0,1,4,,576,512,20000,,1,3,40,hog_runner_staggered,,False,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,712
+513,0.12,512,CONTENTION_VISIBLE,0,3,22,,513,512,2000,,3,19,80,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,713
+517,0.2632,512,CONTENTION_VISIBLE,0,18,41,,517,512,8000,,1,40,40,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,714
+576,0.3361,512,CONTENTION_VISIBLE,0,2,35,,576,512,12000,,2,33,80,hog_runner_staggered,,True,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,715
+517,0.2727,512,CONTENTION_VISIBLE,0,13,32,,517,512,2000,,1,31,5,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,716
+520,0.5556,512,SATURATED,0,8,18,,520,512,8000,,1,17,10,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,717
+515,0.3594,512,CONTENTION_VISIBLE,0,4,11,,515,512,4000,,3,8,40,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,718
+544,0.8824,512,SATURATED,0,3,35,,544,512,8000,,3,32,5,hog_runner_staggered,,True,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,719
+528,0.3438,512,CONTENTION_VISIBLE,0,9,22,,528,512,12000,,1,21,40,hog_runner_staggered,,False,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,720
+513,0.05,512,CONTENTION_VISIBLE,0,1,40,,513,512,2000,,1,39,20,hog_runner_staggered,,True,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,721
+517,0.5926,512,SATURATED,0,16,38,,517,512,4000,,2,36,10,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,722
+576,0.28,512,CONTENTION_VISIBLE,0,3,37,,576,512,4000,,3,34,40,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,723
+515,0.2051,512,CONTENTION_VISIBLE,0,2,35,,515,512,2000,,2,33,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,724
+515,0.4211,512,CONTENTION_VISIBLE,0,12,33,,515,512,8000,,1,32,20,hog_runner_staggered,,False,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,725
+544,0.3571,512,CONTENTION_VISIBLE,0,2,35,,544,512,12000,,2,33,80,hog_runner_staggered,,True,44,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,726
+528,0.5287,512,SATURATED,0,3,32,,528,512,8000,,3,29,40,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,727
+528,0.3056,512,CONTENTION_VISIBLE,0,1,12,,528,512,8000,,1,11,20,hog_runner_staggered,,True,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,728
+544,0.0924,512,CONTENTION_VISIBLE,0,3,41,,544,512,2000,,3,38,80,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,729
+528,0.1154,512,CONTENTION_VISIBLE,0,11,33,,528,512,2000,,1,32,20,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,730
+514,0.8478,512,SATURATED,0,1,34,,514,512,20000,,1,33,5,hog_runner_staggered,,True,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,731
+544,0.5233,512,SATURATED,0,10,24,,544,512,12000,,2,22,40,hog_runner_staggered,,False,44,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,732
+514,0.6471,512,SATURATED,0,1,5,,514,512,12000,,1,4,10,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,733
+514,0.5393,512,SATURATED,0,2,38,,514,512,12000,,2,36,40,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,734
+515,0.5341,512,SATURATED,0,2,33,,515,512,12000,,2,31,40,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,735
+520,0.5341,512,SATURATED,0,3,34,,520,512,8000,,3,31,40,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,736
+520,0.4667,512,CONTENTION_VISIBLE,0,1,25,,520,512,8000,,1,24,5,hog_runner_staggered,,True,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,737
+544,0.7857,512,SATURATED,0,3,18,,544,512,4000,,3,15,5,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,738
+514,0.6571,512,SATURATED,0,12,25,,514,512,12000,,1,24,10,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,739
+528,0.3622,512,CONTENTION_VISIBLE,0,8,26,,528,512,12000,,2,24,80,hog_runner_staggered,,False,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,740
+520,0.7746,512,SATURATED,0,3,6,,520,512,12000,,3,3,5,hog_runner_staggered,,True,53,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,741
+514,0.4938,512,CONTENTION_VISIBLE,0,12,32,,514,512,20000,,2,30,80,hog_runner_staggered,,False,78,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,742
+515,0.3672,512,CONTENTION_VISIBLE,0,7,12,,515,512,8000,,3,9,80,hog_runner_staggered,,False,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,743
+517,0.4636,512,CONTENTION_VISIBLE,0,3,25,,517,512,12000,,3,22,80,hog_runner_staggered,,True,70,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,744
+514,0.1951,512,CONTENTION_VISIBLE,0,2,32,,514,512,2000,,2,30,10,hog_runner_staggered,,True,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,745
+528,0.7292,512,SATURATED,0,2,8,,528,512,12000,,2,6,10,hog_runner_staggered,,True,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,746
+515,0.6393,512,SATURATED,0,14,31,,515,512,20000,,1,30,20,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,747
+544,0.3167,512,CONTENTION_VISIBLE,0,13,33,,544,512,20000,,1,32,80,hog_runner_staggered,,False,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,748
+514,0.9516,512,SATURATED,0,3,35,,514,512,20000,,3,32,5,hog_runner_staggered,,True,118,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,749
+515,0.3672,512,CONTENTION_VISIBLE,0,10,23,,515,512,8000,,3,20,80,hog_runner_staggered,,False,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,750
+520,0.2222,512,CONTENTION_VISIBLE,0,2,5,,520,512,12000,,1,4,20,hog_runner_staggered,,False,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,751
+517,0.0583,512,CONTENTION_VISIBLE,0,1,23,,517,512,4000,,1,22,80,hog_runner_staggered,,True,4,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,752
+576,0.7778,512,SATURATED,0,9,23,,576,512,8000,,3,20,5,hog_runner_staggered,,False,35,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,753
+528,0.4,512,CONTENTION_VISIBLE,0,2,10,,528,512,20000,,2,8,80,hog_runner_staggered,,True,50,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,754
+515,0.0682,512,CONTENTION_VISIBLE,0,1,3,,515,512,8000,,1,2,80,hog_runner_staggered,,True,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,755
+514,0.1456,512,CONTENTION_VISIBLE,0,1,23,,514,512,8000,,1,22,80,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,756
+576,0.3279,512,CONTENTION_VISIBLE,0,7,16,,576,512,8000,,2,14,40,hog_runner_staggered,,False,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,757
+520,0.3692,512,CONTENTION_VISIBLE,0,3,25,,520,512,4000,,3,22,40,hog_runner_staggered,,True,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,758
+528,0.4167,512,CONTENTION_VISIBLE,0,1,5,,528,512,4000,,1,4,5,hog_runner_staggered,,True,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,759
+517,0.4035,512,CONTENTION_VISIBLE,0,1,37,,517,512,12000,,1,36,20,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,760
+520,0.5909,512,SATURATED,0,3,38,,520,512,20000,,3,35,80,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,761
+528,0.5287,512,SATURATED,0,3,15,,528,512,8000,,3,12,40,hog_runner_staggered,,True,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,762
+576,0.04,512,UNDERLOADED,0,2,5,,576,512,12000,,1,4,5,hog_runner_staggered,,False,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,763
+513,0.2807,512,CONTENTION_VISIBLE,0,2,35,,513,512,8000,,2,33,80,hog_runner_staggered,,True,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,764
+513,0.5341,512,SATURATED,0,3,8,,513,512,8000,,3,5,40,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,765
+517,0.2414,512,CONTENTION_VISIBLE,0,10,21,,517,512,4000,,1,20,20,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,766
+576,0.8696,512,SATURATED,0,16,42,,576,512,12000,,2,40,5,hog_runner_staggered,,False,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,767
+514,0.6555,512,SATURATED,0,10,23,,514,512,20000,,2,21,40,hog_runner_staggered,,False,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,768
+544,0.3947,512,CONTENTION_VISIBLE,0,2,19,,544,512,4000,,2,17,20,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,769
+514,0.6571,512,SATURATED,0,1,20,,514,512,12000,,1,19,10,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,770
+520,0.4706,512,CONTENTION_VISIBLE,0,3,33,,520,512,4000,,3,30,20,hog_runner_staggered,,True,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,771
+517,0.4211,512,CONTENTION_VISIBLE,0,12,33,,517,512,2000,,2,31,10,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,772
+514,0.1154,512,CONTENTION_VISIBLE,0,19,38,,514,512,2000,,1,37,20,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,773
+513,0.2258,512,CONTENTION_VISIBLE,0,1,11,,513,512,4000,,1,10,20,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,774
+515,0.2407,512,CONTENTION_VISIBLE,0,12,37,,515,512,2000,,3,34,40,hog_runner_staggered,,False,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,775
+576,0.7179,512,SATURATED,0,14,34,,576,512,8000,,2,32,10,hog_runner_staggered,,False,27,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,776
+544,0.0769,512,UNDERLOADED,0,1,16,,544,512,4000,,1,15,10,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,777
+517,0.5333,512,SATURATED,0,2,26,,517,512,4000,,2,24,5,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,778
+515,0.4324,512,CONTENTION_VISIBLE,0,2,14,,515,512,4000,,2,12,20,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,779
+514,0.129,512,CONTENTION_VISIBLE,0,7,23,,514,512,2000,,3,20,80,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,780
+517,0.129,512,CONTENTION_VISIBLE,0,10,25,,517,512,2000,,3,22,80,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,781
+520,0.5357,512,SATURATED,0,2,24,,520,512,4000,,2,22,5,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,782
+544,0.6818,512,SATURATED,0,3,37,,544,512,8000,,3,34,20,hog_runner_staggered,,True,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,783
+576,0.78,512,SATURATED,0,13,27,,576,512,8000,,3,24,10,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,784
+513,0.2264,512,CONTENTION_VISIBLE,0,3,13,,513,512,2000,,3,10,40,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,785
+514,0.5,512,SATURATED,0,4,13,,514,512,2000,,3,10,10,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,786
+528,0.3889,512,CONTENTION_VISIBLE,0,5,12,,528,512,2000,,2,10,10,hog_runner_staggered,,False,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,787
+513,0.7381,512,SATURATED,0,2,5,,513,512,8000,,2,3,10,hog_runner_staggered,,True,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,788
+544,0.45,512,CONTENTION_VISIBLE,0,3,9,,544,512,2000,,3,6,10,hog_runner_staggered,,True,9,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,789
+576,0.5,512,SATURATED,0,10,28,,576,512,4000,,3,25,20,hog_runner_staggered,,False,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,790
+528,0.2414,512,CONTENTION_VISIBLE,0,2,25,,528,512,2000,,2,23,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,791
+517,0.1078,512,CONTENTION_VISIBLE,0,3,24,,517,512,2000,,3,21,80,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,792
+513,0.9512,512,SATURATED,0,6,16,,513,512,20000,,3,13,5,hog_runner_staggered,,False,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,793
+517,0.5,512,SATURATED,0,1,12,,517,512,12000,,1,11,20,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,794
+576,0.19,512,CONTENTION_VISIBLE,0,3,16,,576,512,4000,,3,13,80,hog_runner_staggered,,True,19,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,795
+576,0.0,512,UNDERLOADED,0,1,31,,576,512,8000,,1,30,40,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,796
+544,0.1158,512,CONTENTION_VISIBLE,0,3,17,,544,512,2000,,3,14,80,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,797
+517,0.2768,512,CONTENTION_VISIBLE,0,8,16,,517,512,8000,,2,14,80,hog_runner_staggered,,False,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,798
+517,0.1649,512,CONTENTION_VISIBLE,0,9,24,,517,512,4000,,2,22,80,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,799
+517,0.0842,512,CONTENTION_VISIBLE,0,2,16,,517,512,2000,,2,14,80,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,800
+520,0.0571,512,CONTENTION_VISIBLE,0,1,25,,520,512,2000,,1,24,10,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,801
+514,0.593,512,SATURATED,0,13,41,,514,512,20000,,3,38,80,hog_runner_staggered,,False,118,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,802
+544,0.2136,512,CONTENTION_VISIBLE,0,12,24,,544,512,4000,,3,21,80,hog_runner_staggered,,False,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,803
+576,0.7273,512,SATURATED,0,5,15,,576,512,12000,,3,12,5,hog_runner_staggered,,False,48,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,804
+514,0.475,512,CONTENTION_VISIBLE,0,12,22,,514,512,20000,,1,21,40,hog_runner_staggered,,False,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,805
+528,0.3056,512,CONTENTION_VISIBLE,0,1,12,,528,512,8000,,1,11,20,hog_runner_staggered,,True,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,806
+576,0.7333,512,SATURATED,0,2,38,,576,512,20000,,2,36,10,hog_runner_staggered,,True,54,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,807
+514,0.0625,512,CONTENTION_VISIBLE,0,1,38,,514,512,2000,,1,37,10,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,808
+576,0.0,512,UNDERLOADED,0,1,28,,576,512,2000,,1,27,40,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,809
+513,0.7667,512,SATURATED,0,11,24,,513,512,12000,,1,23,5,hog_runner_staggered,,False,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,810
+528,0.3636,512,CONTENTION_VISIBLE,0,11,23,,528,512,2000,,3,20,20,hog_runner_staggered,,False,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,811
+514,0.8103,512,SATURATED,0,3,17,,514,512,8000,,3,14,10,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,812
+515,0.0938,512,CONTENTION_VISIBLE,0,1,27,,515,512,2000,,1,26,5,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,813
+513,0.8103,512,SATURATED,0,9,24,,513,512,8000,,3,21,10,hog_runner_staggered,,False,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,814
+517,0.0652,512,CONTENTION_VISIBLE,0,6,18,,517,512,2000,,1,17,40,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,815
+528,0.2059,512,CONTENTION_VISIBLE,0,2,30,,528,512,2000,,2,28,5,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,816
+517,0.375,512,CONTENTION_VISIBLE,0,1,20,,517,512,8000,,1,19,20,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,817
+528,0.0227,512,UNDERLOADED,0,1,4,,528,512,2000,,1,3,40,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,818
+528,0.92,512,SATURATED,0,16,41,,528,512,12000,,3,38,5,hog_runner_staggered,,False,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,819
+576,0.4474,512,CONTENTION_VISIBLE,0,2,8,,576,512,8000,,2,6,20,hog_runner_staggered,,True,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,820
+514,0.8478,512,SATURATED,0,4,11,,514,512,20000,,3,8,20,hog_runner_staggered,,False,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,821
+515,0.9286,512,SATURATED,0,2,22,,515,512,20000,,2,20,5,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,822
+528,0.5,512,SATURATED,0,3,9,,528,512,2000,,3,6,10,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,823
+514,0.4054,512,CONTENTION_VISIBLE,0,13,30,,514,512,8000,,1,29,20,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,824
+528,0.4167,512,CONTENTION_VISIBLE,0,5,11,,528,512,4000,,2,9,20,hog_runner_staggered,,False,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,825
+576,0.2569,512,CONTENTION_VISIBLE,0,6,15,,576,512,12000,,2,13,80,hog_runner_staggered,,False,27,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,826
+514,0.8103,512,SATURATED,0,8,19,,514,512,12000,,2,17,10,hog_runner_staggered,,False,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,827
+528,0.2,512,UNDERLOADED,0,1,4,,528,512,4000,,1,3,10,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,828
+520,0.5161,512,SATURATED,0,2,22,,520,512,4000,,2,20,10,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,829
+528,0.3622,512,CONTENTION_VISIBLE,0,3,35,,528,512,8000,,3,32,80,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,830
+513,0.8444,512,SATURATED,0,1,15,,513,512,20000,,1,14,5,hog_runner_staggered,,True,37,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,831
+517,0.125,512,CONTENTION_VISIBLE,0,1,5,,517,512,4000,,1,4,40,hog_runner_staggered,,True,5,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,832
+520,0.807,512,SATURATED,0,6,9,,520,512,12000,,2,7,10,hog_runner_staggered,,False,43,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,833
+544,0.3571,512,CONTENTION_VISIBLE,0,3,34,,544,512,8000,,3,31,80,hog_runner_staggered,,True,45,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,834
+576,0.098,512,CONTENTION_VISIBLE,0,3,24,,576,512,2000,,3,21,80,hog_runner_staggered,,True,10,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,835
+544,0.3333,512,CONTENTION_VISIBLE,0,1,20,,544,512,8000,,1,19,10,hog_runner_staggered,,True,2,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,836
+544,0.7692,512,SATURATED,0,6,10,,544,512,4000,,3,7,5,hog_runner_staggered,,False,20,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,837
+517,0.5333,512,SATURATED,0,16,35,,517,512,4000,,3,32,20,hog_runner_staggered,,False,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,838
+515,0.3594,512,CONTENTION_VISIBLE,0,3,10,,515,512,4000,,3,7,40,hog_runner_staggered,,True,23,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,839
+515,0.5909,512,SATURATED,0,3,35,,515,512,20000,,3,32,80,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,840
+517,0.9286,512,SATURATED,0,2,41,,517,512,20000,,2,39,5,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,841
+515,0.6555,512,SATURATED,0,10,26,,515,512,20000,,2,24,40,hog_runner_staggered,,False,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,842
+520,0.6555,512,SATURATED,0,2,37,,520,512,20000,,2,35,40,hog_runner_staggered,,True,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,843
+514,0.3223,512,CONTENTION_VISIBLE,0,11,30,,514,512,20000,,1,29,80,hog_runner_staggered,,False,39,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,844
+513,0.1818,512,CONTENTION_VISIBLE,0,2,40,,513,512,2000,,2,38,5,hog_runner_staggered,,True,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,845
+514,0.6555,512,SATURATED,0,11,28,,514,512,20000,,2,26,40,hog_runner_staggered,,False,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,846
+514,0.1196,512,CONTENTION_VISIBLE,0,3,10,,514,512,2000,,3,7,80,hog_runner_staggered,,True,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,847
+520,0.5287,512,SATURATED,0,3,18,,520,512,8000,,3,15,40,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,848
+576,0.7431,512,SATURATED,0,11,25,,576,512,20000,,3,22,10,hog_runner_staggered,,False,80,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,849
+528,0.9324,512,SATURATED,0,10,23,,528,512,12000,,3,20,5,hog_runner_staggered,,False,68,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,850
+520,0.3684,512,CONTENTION_VISIBLE,0,8,23,,520,512,4000,,1,22,10,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,851
+576,0.4744,512,CONTENTION_VISIBLE,0,2,33,,576,512,12000,,2,31,40,hog_runner_staggered,,True,35,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,852
+520,0.7389,512,SATURATED,0,7,19,,520,512,20000,,3,16,40,hog_runner_staggered,,False,116,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,853
+513,0.3672,512,CONTENTION_VISIBLE,0,3,26,,513,512,8000,,3,23,80,hog_runner_staggered,,True,47,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,854
+576,0.7042,512,SATURATED,0,3,22,,576,512,12000,,3,19,20,hog_runner_staggered,,True,50,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,855
+515,0.2115,512,CONTENTION_VISIBLE,0,9,16,,515,512,12000,,1,15,80,hog_runner_staggered,,False,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,856
+515,0.2115,512,CONTENTION_VISIBLE,0,4,13,,515,512,2000,,3,10,40,hog_runner_staggered,,False,11,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,857
+520,0.6379,512,SATURATED,0,3,5,,520,512,8000,,3,2,20,hog_runner_staggered,,True,32,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,858
+544,0.8642,512,SATURATED,0,2,39,,544,512,20000,,2,37,10,hog_runner_staggered,,True,69,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,859
+528,0.6176,512,SATURATED,0,1,15,,528,512,12000,,1,14,10,hog_runner_staggered,,True,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,860
+544,0.5556,512,SATURATED,0,14,31,,544,512,8000,,1,30,10,hog_runner_staggered,,False,15,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,861
+515,0.1875,512,CONTENTION_VISIBLE,0,7,19,,515,512,2000,,1,18,10,hog_runner_staggered,,False,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,862
+517,0.8444,512,SATURATED,0,4,8,,517,512,20000,,1,7,5,hog_runner_staggered,,False,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,863
+528,0.1429,512,CONTENTION_VISIBLE,0,9,26,,528,512,4000,,1,25,40,hog_runner_staggered,,False,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,864
+514,0.7111,512,SATURATED,0,2,36,,514,512,8000,,2,34,10,hog_runner_staggered,,True,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,865
+520,0.4167,512,CONTENTION_VISIBLE,0,4,10,,520,512,4000,,2,8,20,hog_runner_staggered,,False,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,866
+514,0.5385,512,SATURATED,0,4,7,,514,512,8000,,1,6,10,hog_runner_staggered,,False,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,867
+515,0.3692,512,CONTENTION_VISIBLE,0,13,28,,515,512,4000,,3,25,40,hog_runner_staggered,,False,24,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,868
+513,0.1148,512,CONTENTION_VISIBLE,0,1,41,,513,512,4000,,1,40,20,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,869
+513,0.0488,512,CONTENTION_VISIBLE,0,1,31,,513,512,2000,,1,30,10,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,870
+520,0.4459,512,CONTENTION_VISIBLE,0,2,6,,520,512,12000,,2,4,40,hog_runner_staggered,,True,31,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,871
+515,0.6471,512,SATURATED,0,1,8,,515,512,12000,,1,7,10,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,872
+515,0.822,512,SATURATED,0,3,5,,515,512,20000,,3,2,10,hog_runner_staggered,,True,80,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,873
+528,0.9068,512,SATURATED,0,3,21,,528,512,20000,,3,18,10,hog_runner_staggered,,True,106,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,874
+544,0.2083,512,CONTENTION_VISIBLE,0,2,33,,544,512,4000,,2,31,40,hog_runner_staggered,,True,14,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,875
+576,0.4225,512,CONTENTION_VISIBLE,0,3,7,,576,512,8000,,3,4,40,hog_runner_staggered,,False,30,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,876
+544,0.1163,512,UNDERLOADED,0,1,33,,544,512,8000,,1,32,10,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,877
+544,0.0,512,UNDERLOADED,0,1,28,,544,512,2000,,1,27,5,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,878
+515,0.2963,512,CONTENTION_VISIBLE,0,2,18,,515,512,2000,,2,16,10,hog_runner_staggered,,True,6,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,879
+514,0.7421,512,SATURATED,0,3,42,,514,512,20000,,3,39,40,hog_runner_staggered,,True,118,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,880
+515,0.6555,512,SATURATED,0,14,36,,515,512,20000,,2,34,40,hog_runner_staggered,,False,77,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,881
+520,0.3672,512,CONTENTION_VISIBLE,0,15,40,,520,512,12000,,2,38,80,hog_runner_staggered,,False,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,882
+544,0.6812,512,SATURATED,0,3,6,,544,512,12000,,3,3,5,hog_runner_staggered,,True,46,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,883
+515,0.5217,512,SATURATED,0,3,14,,515,512,2000,,3,11,10,hog_runner_staggered,,True,12,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,884
+515,0.9512,512,SATURATED,0,3,24,,515,512,20000,,3,21,5,hog_runner_staggered,,True,117,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,885
+517,0.434,512,CONTENTION_VISIBLE,0,1,33,,517,512,12000,,1,32,20,hog_runner_staggered,,True,22,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,886
+576,0.0568,512,CONTENTION_VISIBLE,0,2,9,,576,512,2000,,2,7,80,hog_runner_staggered,,True,3,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,887
+544,0.7391,512,SATURATED,0,5,11,,544,512,12000,,3,8,5,hog_runner_staggered,,False,50,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,888
+576,0.4605,512,CONTENTION_VISIBLE,0,3,18,,576,512,8000,,3,15,40,hog_runner_staggered,,True,34,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,889
+576,0.4324,512,CONTENTION_VISIBLE,0,3,8,,576,512,4000,,3,5,20,hog_runner_staggered,,False,16,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,890
+544,0.6122,512,SATURATED,0,2,40,,544,512,8000,,2,38,10,hog_runner_staggered,,True,29,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,891
+515,0.3438,512,CONTENTION_VISIBLE,0,1,5,,515,512,12000,,1,4,40,hog_runner_staggered,,True,21,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,892
+517,0.0196,512,CONTENTION_VISIBLE,0,1,22,,517,512,2000,,1,21,80,hog_runner_staggered,,True,1,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,893
+520,0.557,512,SATURATED,0,2,4,,520,512,20000,,2,2,10,hog_runner_staggered,,False,38,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,894
+520,0.3415,512,CONTENTION_VISIBLE,0,1,5,,520,512,20000,,1,4,5,hog_runner_staggered,,True,7,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,895
+514,0.4671,512,CONTENTION_VISIBLE,0,10,28,,514,512,12000,,3,25,80,hog_runner_staggered,,False,71,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,896
+515,0.3889,512,CONTENTION_VISIBLE,0,1,8,,515,512,8000,,1,7,20,hog_runner_staggered,,True,13,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,897
+514,0.7717,512,SATURATED,0,3,43,,514,512,12000,,3,40,20,hog_runner_staggered,,True,71,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,898
+528,0.04,512,UNDERLOADED,0,1,20,,528,512,2000,,1,19,5,hog_runner_staggered,,True,0,vllm_faithful,ALL_COMPLETE_OR_EFFECTIVELY_TIED,0.0,hog_runner_staggered,899

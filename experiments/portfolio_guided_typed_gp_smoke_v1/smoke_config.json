@@ -1,0 +1,13 @@
+{
+  "candidates_per_treatment": 4,
+  "mode": "smoke",
+  "non_scientific_smoke_calibration": true,
+  "scenario_limit": 3,
+  "schema": "portfolio_guided_typed_gp_smoke_v1_config",
+  "seed": 20260824,
+  "treatments": [
+    "A_RANDOM_GRAMMAR_GP",
+    "B_PARENT_SEEDED_MUTATION_ONLY",
+    "C_PORTFOLIO_STRUCTURAL_CROSSOVER"
+  ]
+}

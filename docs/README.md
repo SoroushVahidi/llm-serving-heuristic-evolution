@@ -1,183 +1,80 @@
 # Documentation Index
 
-This directory contains design documents, milestone reports, and safe-claim
-guidance for the LLM Serving Heuristic Evolution project.
+This is an index, not a roadmap. Current status authority is intentionally
+limited to the files listed below.
 
----
+## Start Here
 
-## 1. Project overview
+- [`../README.md`](../README.md) - public overview.
+- [`PROJECT_MAP.md`](PROJECT_MAP.md) - canonical research roadmap.
+- [`current/RESUME_HERE.md`](current/RESUME_HERE.md) - shortest operational handoff.
+- [`current/WORK_STATUS.md`](current/WORK_STATUS.md) - detailed current status.
+- [`current/NEXT_ACTIONS.md`](current/NEXT_ACTIONS.md) - prioritized next actions.
+- [`BASELINE_STATUS.md`](BASELINE_STATUS.md) - external-baseline status index.
 
-See the repository [README.md](../README.md) for a quick-start guide and
-motivation summary.
+## Architecture / Design
 
-Core design decisions are recorded in:
-- [problem_formulation.md](problem_formulation.md) — mathematical problem statement, constraints, objectives
-- [simulator_design.md](simulator_design.md) — iteration-level simulator design, timing model, step semantics
-- [roadmap.md](roadmap.md) — phase-by-phase research roadmap
+- [`current/PROJECT_MAP.md`](current/PROJECT_MAP.md) - repository/code navigation map.
+- [`architecture/contextual_composition_primitives.md`](architecture/contextual_composition_primitives.md)
+- [`architecture/contextual_composition_dsl.md`](architecture/contextual_composition_dsl.md)
+- [`llm_heuristic_dsl.md`](llm_heuristic_dsl.md)
+- [`simulator_design.md`](simulator_design.md)
+- [`external_baseline_integration.md`](external_baseline_integration.md)
 
----
+## Current Status
 
-## 2. Simulator and service model
+- [`PROJECT_MAP.md`](PROJECT_MAP.md)
+- [`current/RESUME_HERE.md`](current/RESUME_HERE.md)
+- [`current/WORK_STATUS.md`](current/WORK_STATUS.md)
+- [`current/NEXT_ACTIONS.md`](current/NEXT_ACTIONS.md)
+- [`current/SCIENTIFIC_DECISIONS.md`](current/SCIENTIFIC_DECISIONS.md)
 
-- [simulator_design.md](simulator_design.md) — deterministic discrete-event simulator
-- [calibrated_service_model.md](calibrated_service_model.md) — GPU-calibrated prefill/decode timing model
-- [calibration_backend_decision.md](calibration_backend_decision.md) — why HF Transformers, not vLLM, for calibration
+## Baselines
 
----
+- [`BASELINE_STATUS.md`](BASELINE_STATUS.md)
+- [`baselines.md`](baselines.md)
+- [`external_baseline_decision.md`](external_baseline_decision.md)
+- [`audits/apt_serve_phase_g_analysis_20260809.md`](audits/apt_serve_phase_g_analysis_20260809.md)
 
-## 3. Workloads and traces
+## Experiments
 
-- [workload_realism.md](workload_realism.md) — synthetic workload realism assessment
-- [data_field_provenance.md](data_field_provenance.md) — which fields are real vs. synthetically augmented
-- [real_trace_replay.md](real_trace_replay.md) — BurstGPT and ShareGPT replay pipeline
+- [`experiments/cc1_composition_opportunity_spec.md`](experiments/cc1_composition_opportunity_spec.md)
+- [`experiment_tracking.md`](experiment_tracking.md)
+- [`current/EXPERIMENTS_AND_RESULTS.md`](current/EXPERIMENTS_AND_RESULTS.md) - historical/supporting.
+- Local generated results: `results/` (gitignored; check audit docs before rerunning).
+- Committed curated artifacts: `experiments/`.
 
----
+## Audits
 
-## 4. GPU calibration (Phase 1.7B)
+Point-in-time technical and scientific audit trail:
 
-- [gpu_calibration.md](gpu_calibration.md) — measurement procedure, curve fitting, MAPE
-- [gpu_environment.md](gpu_environment.md) — hardware spec, CUDA version, driver
-- [gpu_validation_claims.md](gpu_validation_claims.md) — safe and unsafe claims for GPU calibration results
+- [`audits/`](audits/)
 
----
+Important recent audits:
 
-## 5. Real-trace replay (Phase 1.7C)
+- [`audits/apt_serve_phase_g_analysis_20260809.md`](audits/apt_serve_phase_g_analysis_20260809.md)
+- [`audits/apt_serve_phase_g_ss15_incident_20260807.md`](audits/apt_serve_phase_g_ss15_incident_20260807.md)
+- [`audits/llumnix_first_comparative_evaluation_20260806.md`](audits/llumnix_first_comparative_evaluation_20260806.md)
+- [`audits/distserve_first_comparative_evaluation_20260806.md`](audits/distserve_first_comparative_evaluation_20260806.md)
+- [`audits/contextual_composition_cc5_final_operating_envelope_20260803.md`](audits/contextual_composition_cc5_final_operating_envelope_20260803.md)
 
-- [milestones/phase1_7c_calibrated_real_trace.md](milestones/phase1_7c_calibrated_real_trace.md) — full Phase 1.7C results, 7 experiments, noise sensitivity, calibrated vs. synthetic comparison
+## Historical / Superseded
 
----
+These retain scientific provenance but are not live status authorities:
 
-## 6. Baselines
+- [`roadmap.md`](roadmap.md)
+- [`contextual_composition_roadmap.md`](contextual_composition_roadmap.md)
+- [`current/PROJECT_STATUS.md`](current/PROJECT_STATUS.md)
+- [`current/NEXT_STEPS.md`](current/NEXT_STEPS.md)
+- [`current/RESEARCH_ROADMAP.md`](current/RESEARCH_ROADMAP.md)
+- [`current/ROADMAP_GAP_ANALYSIS.md`](current/ROADMAP_GAP_ANALYSIS.md)
+- [`current/pause_2026_07_25/`](current/pause_2026_07_25/)
 
-- [baselines.md](baselines.md) — all 20 registered policies + non-deployable oracle, safe/unsafe labels, provenance table
+## Reproducibility
 
----
-
-## 7. Industry-realism specification (local planning doc)
-
-Full report: `results/industry_realism_spec/industry_realism_spec.md`
-
-Five canonical industry scenarios (Interactive Chat, Code Completion, Long-Context
-Document, Agentic/RAG, Batch/Offline) mapped to existing simulator configs.
-See [planning_specs.md](planning_specs.md) for a summary.
-
----
-
-## 8. Selector-design specification (local planning doc)
-
-Full report: `results/selector_design_spec/selector_design_spec.md`
-
-Design for a supervised classifier that selects the best online scheduling policy
-per workload window (Phase 2A). See [planning_specs.md](planning_specs.md).
-
----
-
-## 9. LLM heuristic DSL specification (local planning doc)
-
-Full report: `results/llm_heuristic_dsl_spec/llm_heuristic_dsl_spec.md`
-
-Design for a two-level JSON DSL for LLM-generated scheduling heuristics with a
-recursive verifier (Phase 2B). See [planning_specs.md](planning_specs.md).
-
----
-
-## 10. API-provider setup
-
-- [api_provider_setup.md](api_provider_setup.md) — CloudRift, Cohere, HuggingFace, Mistral setup; credential policy
-- [cohere_smoke_test.md](cohere_smoke_test.md) — Cohere API connectivity/latency/TTFT smoke test (`scripts/smoke_test_cohere_api.py`)
-- [cohere_api_calibration.md](cohere_api_calibration.md) — Cohere real-LLM latency/TTFT calibration pilot: dry-run/live/resume, hard caps, tmux instructions (`scripts/run_cohere_api_calibration.py`)
-- [real_llm_multi_provider_plan.md](real_llm_multi_provider_plan.md) — Multi-provider rollout plan (Cohere done; Gemini/Vertex, Azure OpenAI, Fireworks dry-run/mock skeletons only); shared schema via `src/llmserveopt/real_llm/calibration_common.py`
-- [real_llm_cohere_gemini_comparison.md](real_llm_cohere_gemini_comparison.md) — Cohere vs. Gemini pilot comparison: TTFT/latency/cost, RPM-wait artifact caveat, safe/unsafe claims
-- [real_llm_v2_workload_proposal.md](real_llm_v2_workload_proposal.md) — Proposed (not run) v2 workload with length-targeted prompts, to fix v1's output-length-scaling gap
-
----
-
-## 11. Milestones
-
-| Milestone | File | Status |
-|---|---|---|
-| Phase 1.5 — serving-style baselines | [milestones/phase1_5_frozen.md](milestones/phase1_5_frozen.md) | COMPLETE |
-| Phase 1.7A — real trace ingestion | [milestones/phase1_7a_real_traces.md](milestones/phase1_7a_real_traces.md) | COMPLETE |
-| Phase 1.7B — GPU calibration | [milestones/phase1_7b_gpu_calibration.md](milestones/phase1_7b_gpu_calibration.md) | COMPLETE |
-| Phase 1.7C — calibrated real-trace replay | [milestones/phase1_7c_calibrated_real_trace.md](milestones/phase1_7c_calibrated_real_trace.md) | COMPLETE |
-| Phase 2B.2 — offline LLM generation loop | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
-| Phase 2A.4/2B.4 — final evaluation hardening | [llm_generation_loop.md](llm_generation_loop.md) | COMPLETE |
-| Phase 2B.14 — metric audit (ANWG), SCORPIO ablation | [audits/phase2b14_metric_definition_audit.md](audits/phase2b14_metric_definition_audit.md) | COMPLETE |
-| Phase 2B.16 — fresh corrected-objective validation | [audits/phase2b16_fresh_corrected_objective_validation_summary.md](audits/phase2b16_fresh_corrected_objective_validation_summary.md) | COMPLETE |
-| Phase 2C.1 — Azure 2023 + BurstGPT real-trace validation | [audits/phase2c1_evaluation_validity_audit.md](audits/phase2c1_evaluation_validity_audit.md) | COMPLETE |
-| Phase 2C.2 — causal selector retraining | [audits/phase2c2_causal_selector_retraining.md](audits/phase2c2_causal_selector_retraining.md) | COMPLETE |
-| Phase 2C.3 — external-aware analysis (negative finding) | [audits/phase2c3_labeled_dataset_and_api_calibration.md](audits/phase2c3_labeled_dataset_and_api_calibration.md) | COMPLETE |
-| **PAUSE CHECKPOINT** | [audits/phase2c_project_pause_checkpoint.md](audits/phase2c_project_pause_checkpoint.md) | **2026-06-27** |
-
----
-
-## 12. LLM generation loop
-
-- [llm_generation_loop.md](llm_generation_loop.md) — offline LLM heuristic generation, Phase 2B.2 + 2B.3
-- [api_provider_setup.md](api_provider_setup.md) — CloudRift, Cohere, Mistral credential policy
-
-Phase 2B.3 adds:
-- **Design targets** (7 named emphases): `slo_urgency`, `kv_pressure`, `throughput_oriented`, `prefill_heavy`, `mixed_slo`, `noisy_prediction_robust`, `balanced`
-- **Candidate deduplication** by canonical SHA256
-- **Multi-regime evaluation** across 4 train + 3 validation synthetic regimes
-- **Search ranking** by validation `priority_weighted_slo_goodput` with overfitting detection
-
-Safe wording: "Phase 2B.3 performs offline LLM-based heuristic search. Candidates are generated
-by an LLM, verified by the DSL verifier, and evaluated deterministically in the simulator using
-priority-weighted SLO goodput."
-
----
-
-## 13. Safe manuscript claims
-
-- [result_claims.md](result_claims.md) — comprehensive safe/unsafe claim table
-- [gpu_validation_claims.md](gpu_validation_claims.md) — GPU-specific claim guidance
-
-Key safe phrasings:
-- "We replay real BurstGPT arrival timestamps and token counts."
-- "SLOs, priorities, and predicted output lengths are synthetically augmented."
-- "The simulator uses service curves calibrated on an RTX 5060 Ti running Qwen2.5-0.5B."
-- "Serving-style baselines are original implementations inspired by, not reproductions of, the cited systems."
-
----
-
-## 14. Historical Phase 2A.4/2B.4 results summary
-
-This section is historical context only. For current canonical Phase 2C status and
-safe wording, use:
-- [audits/phase2c_project_pause_checkpoint.md](audits/phase2c_project_pause_checkpoint.md)
-- [result_claims.md](result_claims.md)
-- [audits/phase2c3_labeled_dataset_and_api_calibration.md](audits/phase2c3_labeled_dataset_and_api_calibration.md)
-
-Phase 2A.4 scaled the selector to the then-current 18-policy portfolio (52 windows total). RF and DT selectors achieved +3.0 pp over best fixed on held-out test. Phase 2B.4 froze a 7-heuristic shortlist on train+val and evaluated once on 3 held-out test regimes.
-
-Key results:
-- **Selector (RF/DT)**: +3.0 pp over best fixed on selector test split (WG=0.828 vs 0.798)
-- **Best LLM heuristic** (`slo_kv_balance_heuristic`): mean WG=0.9595 on final test regimes (+9.9 pp vs best fixed); 95% CI [0.00, 0.27] — exploratory
-- **6/7 shortlisted heuristics** regress vs best fixed on hardest test regimes
-- **oracle_srtf**: WG=0.855 on test; non-deployable and not optimal for this metric
-
-See [result_claims.md](result_claims.md) for safe/unsafe claim guidance.
-
-## 15. Phase 2C audit docs
-
-- [audits/phase2c1_evaluation_validity_audit.md](audits/phase2c1_evaluation_validity_audit.md) — real-trace replay validity
-- [audits/phase2c2_causal_selector_retraining.md](audits/phase2c2_causal_selector_retraining.md) — causal selector retraining results
-- [audits/phase2c3_labeled_dataset_and_api_calibration.md](audits/phase2c3_labeled_dataset_and_api_calibration.md) — Phase 2C.3 negative finding, labeled dataset, Gemini dry-run
-- [audits/phase2c_project_pause_checkpoint.md](audits/phase2c_project_pause_checkpoint.md) — **pause checkpoint** (resume here)
-
-Key facts for Phase 2C:
-- Best learned selector ANWG = 0.8021 (native_non_oracle_dt on 325 eval windows).
-- External-style envelope = 0.8297; learned selector does **not** beat it.
-- orca_style wins on 212/611 labeled windows vs scorpio but is not a good fixed choice.
-- azure_2023_conv is the main failure workload (long-prompt + mixed-SLO regime).
-- **No live API call was made.** Gemini calibration is dry-run only.
-- Labeled dataset has 611 rows with simulator-derived ANWG labels (no API ground-truth).
-- Safe-for-training labels: `label_best_native_non_oracle_policy`, all `is_*` regime flags.
-- Unsafe to claim: learned selector beats external envelope; orca recovery; Gemini-validated results.
-
----
-
-## 16. Future phases
-
-See [roadmap.md](roadmap.md).
+- [`current/REPRODUCIBILITY.md`](current/REPRODUCIBILITY.md)
+- [`current/LOCAL_ARTIFACT_RETENTION.md`](current/LOCAL_ARTIFACT_RETENTION.md)
+- [`COMPUTE_POLICY.md`](COMPUTE_POLICY.md)
+- [`../scripts/README.md`](../scripts/README.md)
+- [`../configs/README.md`](../configs/README.md)
+- [`../data/README.md`](../data/README.md)

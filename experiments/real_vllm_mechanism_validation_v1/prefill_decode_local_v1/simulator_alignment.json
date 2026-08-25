@@ -1,0 +1,30 @@
+[
+  {
+    "agreement": false,
+    "expected_direction": "FULL lowers hog E2E/completion",
+    "observed_direction": "CHUNKED lower/equal",
+    "real_vllm_analogue": "hog_tight_low_late",
+    "simulator_regime_mechanism": "hog_tight_low_late"
+  },
+  {
+    "agreement": false,
+    "expected_direction": "CHUNKED lowers late TTFT",
+    "observed_direction": "FULL lower/equal",
+    "real_vllm_analogue": "late_tight_low_late",
+    "simulator_regime_mechanism": "late_tight_low_late"
+  },
+  {
+    "agreement": false,
+    "expected_direction": "FULL lowers hog E2E/completion",
+    "observed_direction": "CHUNKED lower/equal",
+    "real_vllm_analogue": "hog_tight_high_late",
+    "simulator_regime_mechanism": "hog_tight_high_late"
+  },
+  {
+    "agreement": false,
+    "expected_direction": "CHUNKED lowers late TTFT",
+    "observed_direction": "FULL lower/equal",
+    "real_vllm_analogue": "late_tight_high_late",
+    "simulator_regime_mechanism": "late_tight_high_late"
+  }
+]

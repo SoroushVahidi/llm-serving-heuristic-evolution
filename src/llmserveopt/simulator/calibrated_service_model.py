@@ -16,7 +16,6 @@ Usage in YAML config:
 from __future__ import annotations
 
 import math
-import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Union
@@ -54,6 +53,20 @@ class CalibratedServiceModel:
     max_prefill_chunk_tokens: int = 512   # tokens processed per prefill chunk per step
     step_token_budget: int = 8192         # total token budget per GPU per step
     decode_first: bool = False            # guarantee decode budget before prefill
+    # Opt-in decode/prefill execution-contention model (see
+    # docs/decode_prefill_contention_execution_model.md and
+    # ServiceModel's own field of the same name). Default False preserves
+    # historical behavior exactly.
+    enable_decode_prefill_contention: bool = False
+    # Disaggregated prefill/decode fields (opt-in; see
+    # docs/distserve_faithful_scheduler_reference.md). Defaults match
+    # ServiceModel's own defaults (disaggregation off).
+    enable_disaggregation: bool = False
+    migration_transfer_delay: float = 0.0
+    # Live cross-instance relocation field (opt-in; see
+    # docs/llumnix_faithful_scheduler_reference.md). Default matches
+    # ServiceModel's own default (migration off).
+    llumnix_migration_delay: float = 0.0
 
     # These are populated on first use via _load_curves()
     _curves: Optional[object] = None

@@ -1,0 +1,29 @@
+{
+  "split_counts": {
+    "TRAIN": 125,
+    "OOD_TEST": 31,
+    "VALIDATION": 51,
+    "ID_TEST": 43
+  },
+  "n_groups": 202,
+  "n_ood_forced_groups": 15,
+  "ood_forced_groups": [
+    "real_trace__azure_2023_code__burst_kv__ood_reserved",
+    "real_trace__azure_2023_code__compressed_tight__ood_reserved",
+    "real_trace__azure_2023_code__noise_underpredict__ood_reserved",
+    "real_trace__azure_2023_conv__burst_kv__ood_reserved",
+    "real_trace__azure_2023_conv__compressed_tight__ood_reserved",
+    "real_trace__azure_2023_conv__noise_underpredict__ood_reserved",
+    "real_trace__azure_2023_conv__representative__ood_reserved",
+    "real_trace__burstgpt_scaled_high__burst_kv__ood_reserved",
+    "real_trace__burstgpt_scaled_high__compressed_tight__ood_reserved",
+    "real_trace__burstgpt_scaled_high__noise_underpredict__ood_reserved",
+    "real_trace__burstgpt_scaled_high__representative__ood_reserved",
+    "real_trace__burstgpt_scaled_moderate__burst_kv__ood_reserved",
+    "real_trace__burstgpt_scaled_moderate__compressed_tight__ood_reserved",
+    "real_trace__burstgpt_scaled_moderate__noise_underpredict__ood_reserved",
+    "real_trace__burstgpt_scaled_moderate__representative__ood_reserved"
+  ],
+  "train_frac": 0.6,
+  "val_frac": 0.2
+}

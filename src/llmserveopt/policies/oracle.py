@@ -19,7 +19,7 @@ from __future__ import annotations
 import warnings
 
 from ..core.action import Action
-from ..core.types import ObservableRequest, ObservableState, Request
+from ..core.types import ObservableState
 from .base import BasePolicy
 
 

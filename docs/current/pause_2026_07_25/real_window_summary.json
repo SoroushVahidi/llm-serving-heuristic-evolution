@@ -1,0 +1,57 @@
+{
+  "approximate_size_bytes": 237468995,
+  "azure_2024_164_inversion_corrected": true,
+  "datasets": {
+    "azure_llm_2023": {
+      "n_windows": 110,
+      "validation_ok": true
+    },
+    "azure_llm_2024": {
+      "n_windows": 140,
+      "validation_ok": true
+    },
+    "bailian_qwen": {
+      "n_windows": 190,
+      "validation_ok": true
+    },
+    "burstgpt_v2": {
+      "n_windows": 168,
+      "validation_ok": true
+    },
+    "mooncake": {
+      "n_windows": 108,
+      "validation_ok": true
+    }
+  },
+  "families": [
+    "natural_replay",
+    "natural_busy_period",
+    "trace_derived_time_scaled",
+    "trace_calibrated_synthetic"
+  ],
+  "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+  "job_ids": {
+    "dependency": "afterok:1143271:1143272:1143273:1143274:1143275",
+    "git_sha": "4dd97eadd16aa65512db61af07f7750596c08d14",
+    "jobs": {
+      "azure2023": "1143272",
+      "azure2024": "1143273",
+      "bailian": "1143274",
+      "burstgpt": "1143271",
+      "mooncake": "1143275",
+      "morning": "1143277",
+      "pilot": "1143276"
+    },
+    "submit_utc": "2026-07-25T03:54:08Z"
+  },
+  "mooncake_real_only_enforced": true,
+  "note": "Do not commit the window collection into Git; reconstruct from staged datasets + construction scripts.",
+  "overnight_status": "ALL_COMPLETE_VALID",
+  "run_root_at_pause": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z",
+  "scale_factors": [
+    2,
+    4,
+    8
+  ],
+  "schema_version": "pause_real_window_summary_v1"
+}

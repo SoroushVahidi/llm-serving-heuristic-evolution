@@ -1,0 +1,4 @@
+# Convenience install file matching pyproject.toml's ``selector`` optional
+# extra. Prefer ``pip install -e ".[selector]"`` when using editable installs.
+scikit-learn>=1.3
+joblib>=1.2

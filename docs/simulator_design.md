@@ -64,6 +64,18 @@ remaining budget → chunked prefill for each prefilling request
 When `decode_first=True`, decode requests are guaranteed their tokens first; prefill
 only gets what remains.  This matches the stall-free principle from Sarathi-Serve.
 
+> **Current-status note (added post Phase 1.5, not yet reconciled into the text above):**
+> the description above predates the opt-in decode/prefill contention model added later.
+> Under the *default* execution path (`ServiceModel.enable_decode_prefill_contention=False`,
+> still the default), `decode_first` was found to be a **dead parameter** — decode is
+> unconditionally protected regardless of its value, for every Phase-1.5 policy. This is
+> preserved intentionally for backward compatibility with existing configs, not a bug fix
+> pending. A second, opt-in execution path (`enable_decode_prefill_contention=True`) now
+> implements genuine shared-budget contention (vLLM-v0.4.2-chunked-prefill-style FCFS
+> budget sharing) where `decode_first` **does** have an effect. See
+> `docs/decode_prefill_contention_execution_model.md` for the full current semantics of
+> both paths; treat this subsection as historical/Phase-1.5-era otherwise.
+
 ### TTFT and TPOT metrics
 
 Phase 1.5 introduces two new request-level metrics:

@@ -1,0 +1,25 @@
+{
+  "behavioral_parent_overlap_1_count": 78,
+  "behavioral_parent_overlap_1_rate": 0.43333333333333335,
+  "candidate_status_counts": {
+    "evaluated": 180,
+    "rejected": 5
+  },
+  "duplicate_rate": 0.0,
+  "equal_evaluated_candidate_budget": true,
+  "evaluated_candidates_per_treatment": {
+    "A_RANDOM_GRAMMAR_GP": 60,
+    "B_PARENT_SEEDED_MUTATION_ONLY": 60,
+    "C_PORTFOLIO_STRUCTURAL_CROSSOVER": 60
+  },
+  "invalid_candidate_rate": 0.02702702702702703,
+  "mutation_only_all_single_parent": true,
+  "non_scientific_smoke_calibration": true,
+  "random_grammar_parent_seeded_count": 0,
+  "schema": "portfolio_guided_typed_gp_smoke_v1_readiness_summary",
+  "screen_ready_recommendation": true,
+  "screen_ready_recommendation_reason": "Smoke plumbing passed equal-budget, generation, execution, fingerprint, MG, and timing gates. This is not scientific evidence.",
+  "smoke_completed": true,
+  "structural_crossover_valid_child_count": 60,
+  "structural_parent_collapse_count": 0
+}

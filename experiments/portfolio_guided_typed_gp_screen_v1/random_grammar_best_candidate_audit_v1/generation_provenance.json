@@ -1,0 +1,26 @@
+{
+  "allowed_generic_parent_derived_primitives": [
+    "ranking.arrival_order",
+    "ranking.estf_service_time",
+    "ranking.llf_laxity",
+    "ranking.wfs_deficit_priority_service",
+    "ranking.kv_urgent_kv_cost",
+    "placement.default_gpu_pressure",
+    "placement.round_robin_scan",
+    "placement.kv_low_post_util",
+    "prefill.full",
+    "prefill.chunked_small",
+    "kv_guard.target_util_or_urgent_laxity"
+  ],
+  "candidate_is_genetically_descended_from_parent": false,
+  "candidate_uses_primitives_also_found_in_parents": [
+    "ranking.wfs_deficit_priority_service",
+    "prefill.chunked_small"
+  ],
+  "dev_test_final_used": false,
+  "hidden_parent_reward_results_used_in_generation": false,
+  "mutation_lineage_from_parent_used": false,
+  "operator": "random_grammar_initialization",
+  "parent_seeded": false,
+  "structural_crossover_used": false
+}

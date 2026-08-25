@@ -35,9 +35,8 @@ import logging
 import math
 import sys
 import time
-from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd

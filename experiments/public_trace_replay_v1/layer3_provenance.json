@@ -1,0 +1,22 @@
+{
+  "builder_module_sha256": "6b34c9c649088946bd2254e05b8e6ed74b87794020e217071dce2c450499fe07",
+  "design_doc_sha256": "78f24221052fc276d69366e6c9c53c41921d7fd4ead77a4f944d38d0a2462bc3",
+  "exact_command": "python3 scripts/run_public_trace_replay_v1.py",
+  "git_head_sha": "8e1223beb58fd4d296061b6b48e3ba493714108f",
+  "git_tree_dirty": true,
+  "layer1_manifest_sha256": "33e7b1cda30f1bf3a3f46bf2b7311b9faecdcf90a75889452990f9508c69e08b",
+  "layer2_manifest_sha256": "e7165550f11322a9ff90f6ddacc14dee48f9210fc8c43ebfbeef2c9c2563f265",
+  "numpy_version": "2.4.4",
+  "pandas_version": "3.0.2",
+  "prediction_noise_sigma": 0.3,
+  "python_executable": "/home/soroush/modal-venv/bin/python3",
+  "python_version": "3.12.3",
+  "run_timestamp_utc_end": "2026-08-20T04:17:46Z",
+  "run_timestamp_utc_start": "2026-08-20T04:14:30Z",
+  "runner_sha256": "4e96a1c46c480f2de9cbef219ddf241acc987c2d5c8877b24b534f409ceff3f4",
+  "schema_version": "public_trace_replay_v1_layer3_provenance.1.0.0",
+  "seed": 20260820,
+  "slack_multiplier": 1.0,
+  "window_size": 200,
+  "windows_per_source": 20
+}

@@ -7,7 +7,7 @@ admission; invalid admissions are silently dropped with a warning.
 """
 from __future__ import annotations
 
-from typing import List, Sequence
+from typing import List
 
 from ..core.types import GPUConfig
 from .request import InternalRequest
@@ -32,7 +32,7 @@ def check_admission(
     # Evaluate cumulative state after all candidates admitted
     new_count = len(current_active) + len(candidates)
     new_kv = (
-        sum(r.kv_tokens for r in current_active)
+        sum(r.kv_tokens for r in current_active if getattr(r, "current_tier", "kv") == "kv")
         + sum(c.request.prompt_tokens for c in candidates)  # initial KV for new reqs
     )
     # In Phase 1, batch_tokens = total active requests (1 decode token each per step)
@@ -62,7 +62,7 @@ def incremental_feasible(
     """Return True if adding one more request is feasible given current state."""
     new_count = len(current_active) + 1
     new_kv = (
-        sum(r.kv_tokens for r in current_active)
+        sum(r.kv_tokens for r in current_active if getattr(r, "current_tier", "kv") == "kv")
         + candidate.request.prompt_tokens
     )
     new_batch_tokens = new_count

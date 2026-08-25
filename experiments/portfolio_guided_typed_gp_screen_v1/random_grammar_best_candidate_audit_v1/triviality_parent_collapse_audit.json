@@ -1,0 +1,9 @@
+{
+  "looks_like_single_existing_parent": false,
+  "probe_parent_overlap_max": 0.0,
+  "reward_correlation_max": 0.9484239608915721,
+  "simple_parent_selector": false,
+  "structural_parent_matches": [],
+  "trajectory_parent_overlap_max": 0.0,
+  "trivial_reduction": "Candidate is a compact composition of WFS-like class-deficit/service ranking with non-parent coefficients (alpha=0.25,beta=1.25), round-robin placement, and chunked prefill cap 128. It is not structurally identical to any parent, but it is close to a WFS/chunked-prefill mechanism variant rather than a deeply novel program."
+}

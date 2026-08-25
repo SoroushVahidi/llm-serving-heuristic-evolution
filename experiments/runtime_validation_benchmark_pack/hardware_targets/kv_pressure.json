@@ -1,0 +1,82 @@
+{
+  "canonical_scenario_id": "kv_pressure",
+  "metrics": {
+    "ttft_s": {
+      "sarathi": {
+        "n": 5,
+        "mean": 1.181513907464493,
+        "median": 1.17906704407748,
+        "stdev": 0.008692949225258354,
+        "p50": 1.17906704407748,
+        "p95": 1.1932058356818744
+      },
+      "vllm": {
+        "n": 5,
+        "mean": 1.0549181654011286,
+        "median": 1.0546297452431947,
+        "stdev": 0.003179438395366333,
+        "p50": 1.0546297452431947,
+        "p95": 1.0581046578251214
+      },
+      "sarathi_over_vllm_ratio_of_means": 1.120005272650914
+    },
+    "tpot_s": {
+      "sarathi": {
+        "n": 5,
+        "mean": 0.017277828811262955,
+        "median": 0.017303367307042867,
+        "stdev": 8.97487838159952e-05,
+        "p50": 0.017303367307042867,
+        "p95": 0.017361240753565033
+      },
+      "vllm": {
+        "n": 5,
+        "mean": 0.01721955991985589,
+        "median": 0.01721923212719976,
+        "stdev": 9.598365807395951e-06,
+        "p50": 0.01721923212719976,
+        "p95": 0.01723098331829777
+      },
+      "sarathi_over_vllm_ratio_of_means": 1.0033838780827304
+    },
+    "e2e_s": {
+      "sarathi": {
+        "n": 5,
+        "mean": 12.709731685164538,
+        "median": 12.727179020332793,
+        "stdev": 0.06569051594113341,
+        "p50": 12.727179020332793,
+        "p95": 12.774323421678856
+      },
+      "vllm": {
+        "n": 5,
+        "mean": 13.545754165554536,
+        "median": 13.527085827760553,
+        "stdev": 0.033978902289053876,
+        "p50": 13.527085827760553,
+        "p95": 13.584029452011842
+      },
+      "sarathi_over_vllm_ratio_of_means": 0.9382815847554714
+    }
+  },
+  "winner_identity_e2e": "sarathi",
+  "winner_frequency_e2e": "5/5",
+  "sarathi_e2e_win_count": 5,
+  "vllm_e2e_win_count": 0,
+  "n_trials": 5,
+  "e2e_bootstrap_95ci_vllm_minus_sarathi": [
+    0.7692514853920634,
+    0.9027934753879286
+  ],
+  "e2e_mean_diff_vllm_minus_sarathi": 0.836022480389996,
+  "robustness_classification": "ROBUST",
+  "positive_target": true,
+  "negative_control": false,
+  "provenance": {
+    "sarathi_array_job": 1111988,
+    "vllm_array_job": 1111989,
+    "postprocess_job": 1111990,
+    "single_run_sarathi_job": 1111723,
+    "single_run_vllm_job": 1111706
+  }
+}

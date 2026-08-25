@@ -1,0 +1,95 @@
+{
+  "health": "",
+  "metrics_after_excerpt": "# HELP python_gc_objects_collected_total Objects collected during gc\n# TYPE python_gc_objects_collected_total counter\npython_gc_objects_collected_total{generation=\"0\"} 12780.0\npython_gc_objects_collected_total{generation=\"1\"} 2892.0\npython_gc_objects_collected_total{generation=\"2\"} 476.0\n# HELP python_gc_objects_uncollectable_total Uncollectable objects found during GC\n# TYPE python_gc_objects_uncollectable_total counter\npython_gc_objects_uncollectable_total{generation=\"0\"} 0.0\npython_gc_objects_uncollectable_total{generation=\"1\"} 0.0\npython_gc_objects_uncollectable_total{generation=\"2\"} 0.0\n# HELP python_gc_collections_total Number of times this generation was collected\n# TYPE python_gc_collections_total counter\npython_gc_collections_total{generation=\"0\"} 1977.0\npython_gc_collections_total{generation=\"1\"} 180.0\npython_gc_collections_total{generation=\"2\"} 10.0\n# HELP python_info Python platform information\n# TYPE python_info gauge\npython_info{implementation=\"CPython\",major=\"3\",minor=\"12\",patchlevel=\"3\",version=\"3.12.3\"} 1.0\n# HELP process_virtual_memory_bytes Virtual memory size in bytes.\n# TYPE process_virtual_memory_bytes gauge\nprocess_virtual_memory_bytes 1.0084032512e+10\n# HELP process_resident_memory_bytes Resident memory size in bytes.\n# TYPE process_resident_memory_bytes gauge\nprocess_resident_memory_bytes 1.43847424e+09\n# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.\n# TYPE process_start_time_seconds gauge\nprocess_start_time_seconds 1.78759234247e+09\n# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.\n# TYPE process_cpu_seconds_total counter\nprocess_cpu_seconds_total 9.6\n# HELP process_open_fds Number of open file descriptors.\n# TYPE process_open_fds gauge\nprocess_open_fds 45.0\n# HELP process_max_fds Maximum number of open file descriptors.\n# TYPE process_max_fds gauge\nprocess_max_fds 1.048576e+06\n# HELP vllm:estimated_flops_per_gpu_total Estimated number of floating point operations per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_flops_per_gpu_total counter\nvllm:estimated_flops_per_gpu_total{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:estimated_flops_per_gpu_created Estimated number of floating point operations per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_flops_per_gpu_created gauge\nvllm:estimated_flops_per_gpu_created{engine=\"0\",model_name=\"qwen05b-local\"} 1.7875923789264576e+09\n# HELP vllm:estimated_read_bytes_per_gpu_total Estimated number of bytes read from memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_read_bytes_per_gpu_total counter\nvllm:estimated_read_bytes_per_gpu_total{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:estimated_read_bytes_per_gpu_created Estimated number of bytes read from memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_read_bytes_per_gpu_created gauge\nvllm:estimated_read_bytes_per_gpu_created{engine=\"0\",model_name=\"qwen05b-local\"} 1.7875923789264772e+09\n# HELP vllm:estimated_write_bytes_per_gpu_total Estimated number of bytes written to memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_write_bytes_per_gpu_total counter\nvllm:estimated_write_bytes_per_gpu_total{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:estimated_write_bytes_per_gpu_created Estimated number of bytes written to memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_write_bytes_per_gpu_created gauge\nvllm:estimated_write_bytes_per_gpu_created{engine=\"0\",model_name=\"qwen05b-local\"} 1.7875923789264898e+09\n# HELP vllm:num_requests_running Number of requests in model execution batches.\n# TYPE vllm:num_requests_running gauge\nvllm:num_requests_running{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:num_requests_waiting Number of requests waiting to be processed.\n# TYPE vllm:num_requests_waiting gauge\nvllm:num_requests_waiting{engine=\"0\",model_name=\"qwen05",
+  "metrics_before_excerpt": "# HELP python_gc_objects_collected_total Objects collected during gc\n# TYPE python_gc_objects_collected_total counter\npython_gc_objects_collected_total{generation=\"0\"} 12780.0\npython_gc_objects_collected_total{generation=\"1\"} 2892.0\npython_gc_objects_collected_total{generation=\"2\"} 476.0\n# HELP python_gc_objects_uncollectable_total Uncollectable objects found during GC\n# TYPE python_gc_objects_uncollectable_total counter\npython_gc_objects_uncollectable_total{generation=\"0\"} 0.0\npython_gc_objects_uncollectable_total{generation=\"1\"} 0.0\npython_gc_objects_uncollectable_total{generation=\"2\"} 0.0\n# HELP python_gc_collections_total Number of times this generation was collected\n# TYPE python_gc_collections_total counter\npython_gc_collections_total{generation=\"0\"} 1975.0\npython_gc_collections_total{generation=\"1\"} 180.0\npython_gc_collections_total{generation=\"2\"} 10.0\n# HELP python_info Python platform information\n# TYPE python_info gauge\npython_info{implementation=\"CPython\",major=\"3\",minor=\"12\",patchlevel=\"3\",version=\"3.12.3\"} 1.0\n# HELP process_virtual_memory_bytes Virtual memory size in bytes.\n# TYPE process_virtual_memory_bytes gauge\nprocess_virtual_memory_bytes 1.000851456e+10\n# HELP process_resident_memory_bytes Resident memory size in bytes.\n# TYPE process_resident_memory_bytes gauge\nprocess_resident_memory_bytes 1.4374912e+09\n# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.\n# TYPE process_start_time_seconds gauge\nprocess_start_time_seconds 1.78759234247e+09\n# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.\n# TYPE process_cpu_seconds_total counter\nprocess_cpu_seconds_total 9.51\n# HELP process_open_fds Number of open file descriptors.\n# TYPE process_open_fds gauge\nprocess_open_fds 45.0\n# HELP process_max_fds Maximum number of open file descriptors.\n# TYPE process_max_fds gauge\nprocess_max_fds 1.048576e+06\n# HELP vllm:estimated_flops_per_gpu_total Estimated number of floating point operations per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_flops_per_gpu_total counter\nvllm:estimated_flops_per_gpu_total{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:estimated_flops_per_gpu_created Estimated number of floating point operations per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_flops_per_gpu_created gauge\nvllm:estimated_flops_per_gpu_created{engine=\"0\",model_name=\"qwen05b-local\"} 1.7875923789264576e+09\n# HELP vllm:estimated_read_bytes_per_gpu_total Estimated number of bytes read from memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_read_bytes_per_gpu_total counter\nvllm:estimated_read_bytes_per_gpu_total{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:estimated_read_bytes_per_gpu_created Estimated number of bytes read from memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_read_bytes_per_gpu_created gauge\nvllm:estimated_read_bytes_per_gpu_created{engine=\"0\",model_name=\"qwen05b-local\"} 1.7875923789264772e+09\n# HELP vllm:estimated_write_bytes_per_gpu_total Estimated number of bytes written to memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_write_bytes_per_gpu_total counter\nvllm:estimated_write_bytes_per_gpu_total{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:estimated_write_bytes_per_gpu_created Estimated number of bytes written to memory per GPU (for Model Flops Utilization calculations).\n# TYPE vllm:estimated_write_bytes_per_gpu_created gauge\nvllm:estimated_write_bytes_per_gpu_created{engine=\"0\",model_name=\"qwen05b-local\"} 1.7875923789264898e+09\n# HELP vllm:num_requests_running Number of requests in model execution batches.\n# TYPE vllm:num_requests_running gauge\nvllm:num_requests_running{engine=\"0\",model_name=\"qwen05b-local\"} 0.0\n# HELP vllm:num_requests_waiting Number of requests waiting to be processed.\n# TYPE vllm:num_requests_waiting gauge\nvllm:num_requests_waiting{engine=\"0\",model_name=\"qwen05b",
+  "mode": "chunked_prefill_disabled",
+  "models": "{\"object\":\"list\",\"data\":[{\"id\":\"qwen05b-local\",\"object\":\"model\",\"created\":1787592430,\"owned_by\":\"vllm\",\"root\":\"/home/soroush/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775\",\"parent\":null,\"max_model_len\":4096,\"permission\":[{\"id\":\"modelperm-b1963dc82ad54588\",\"object\":\"model_permission\",\"created\":1787592430,\"allow_create_engine\":false,\"allow_sampling\":true,\"allow_logprobs\":true,\"allow_search_indices\":false,\"allow_view\":true,\"allow_fine_tuning\":false,\"organization\":\"*\",\"group\":null,\"is_blocking\":false}]}]}",
+  "requests": [
+    {
+      "chars": 110,
+      "chunks_with_text": 16,
+      "e2e_latency_s": 51.707996339013334,
+      "error": null,
+      "finish_reason": "length",
+      "max_tokens": 16,
+      "prompt_chars": 5999,
+      "request_id": "disabled_medium_1",
+      "send_wall_time": 1787592430.761394,
+      "ttft_s": 51.611533175979275,
+      "usage": {
+        "completion_tokens": 16,
+        "prompt_tokens": 880,
+        "total_tokens": 896
+      }
+    },
+    {
+      "chars": 110,
+      "chunks_with_text": 16,
+      "e2e_latency_s": 0.10628861200530082,
+      "error": null,
+      "finish_reason": "length",
+      "max_tokens": 16,
+      "prompt_chars": 5999,
+      "request_id": "disabled_medium_2",
+      "send_wall_time": 1787592482.4089172,
+      "ttft_s": 0.02489911299198866,
+      "usage": {
+        "completion_tokens": 16,
+        "prompt_tokens": 880,
+        "total_tokens": 896
+      }
+    },
+    {
+      "chars": 28,
+      "chunks_with_text": 7,
+      "e2e_latency_s": 51.65483602095628,
+      "error": null,
+      "finish_reason": "length",
+      "max_tokens": 8,
+      "prompt_chars": 32,
+      "request_id": "disabled_short_1",
+      "send_wall_time": 1787592430.7604575,
+      "ttft_s": 51.61259563296335,
+      "usage": {
+        "completion_tokens": 8,
+        "prompt_tokens": 7,
+        "total_tokens": 15
+      }
+    },
+    {
+      "chars": 28,
+      "chunks_with_text": 7,
+      "e2e_latency_s": 51.647995147970505,
+      "error": null,
+      "finish_reason": "length",
+      "max_tokens": 8,
+      "prompt_chars": 32,
+      "request_id": "disabled_short_2",
+      "send_wall_time": 1787592430.7608087,
+      "ttft_s": 0.04317607096163556,
+      "usage": {
+        "completion_tokens": 8,
+        "prompt_tokens": 7,
+        "total_tokens": 15
+      }
+    },
+    {
+      "chars": 28,
+      "chunks_with_text": 7,
+      "e2e_latency_s": 0.06560884101781994,
+      "error": null,
+      "finish_reason": "length",
+      "max_tokens": 8,
+      "prompt_chars": 32,
+      "request_id": "disabled_short_3",
+      "send_wall_time": 1787592482.4153519,
+      "ttft_s": 0.024469700001645833,
+      "usage": {
+        "completion_tokens": 8,
+        "prompt_tokens": 7,
+        "total_tokens": 15
+      }
+    }
+  ],
+  "total_probe_runtime_s": 51.756163613987155
+}

@@ -1,0 +1,24 @@
+{
+  "verdict": "FAMILY_B_COMPOSITION_READY",
+  "gate": {
+    "G1": true,
+    "G2": true,
+    "G3": true,
+    "G4": true,
+    "G5": true,
+    "G6": true,
+    "G7": true,
+    "G8": true,
+    "G9": true,
+    "G10": true
+  },
+  "pairwise": {
+    "full_beats_small_eps_0.01": 16,
+    "small_beats_full_eps_0.01": 15,
+    "near_ties_eps_0.01": 1,
+    "exact_ties": 1,
+    "bidirectional": true,
+    "mean_abs_delta": 0.1309178018162393,
+    "mean_delta_full_minus_small": 0.03205128205128205
+  }
+}

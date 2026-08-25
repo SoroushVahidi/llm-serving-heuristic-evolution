@@ -11,9 +11,8 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-from ..heuristics.verifier import verify_heuristic
 from .candidate_io import (
     CandidateRecord,
     _git_commit,
@@ -23,7 +22,7 @@ from .candidate_io import (
     save_repair_attempt,
     update_index,
 )
-from .diversity import DEFAULT_TARGET_CYCLE, build_targeted_messages, deduplicate_candidates
+from .diversity import DEFAULT_TARGET_CYCLE, build_targeted_messages
 from .prompt_templates import build_repair_messages
 from .providers import build_providers
 from .repair import extract_json, run_repair_loop, verify_and_collect_errors

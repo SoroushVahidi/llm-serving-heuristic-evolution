@@ -1,0 +1,32 @@
+# Policy Separation Dataset v1 -- three-case diagnostic (FIRST compute
+# experiment). See docs/design/POLICY_SEPARATION_DATASET_V1.md for the
+# broader v1 design; this config drives only the three narrow mechanisms
+# named by this task (scripts/run_policy_separation_three_case.py), not the
+# full 5-family/25-template corpus.
+#
+# Scale check (before seed replication): 3*3*2*2 (case1) + 2*2*5 (case2) +
+# 4*4*2 (case3) = 36 + 20 + 32 = 88 distinct workload parameter cells,
+# within the task's 50-200 target. With 10 seeds and this policy roster,
+# total policy evaluations = (36*10*4) + (20*10*5) + (32*10*5) = 4040,
+# consistent with "a few thousand" being appropriate for this diagnostic.
+
+version: 1
+
+seeds: [20260809, 20260810, 20260811, 20260812, 20260813, 20260814, 20260815, 20260816, 20260817, 20260818]
+
+case1_fcfs_convoy:
+  policies: [fifo, estimated_service_time_first, weighted_shortest_processing, shortest_output_first]
+  ratios: [8, 32, 128]
+  short_counts: [8, 32, 64]
+  offsets: [0.0, 0.05]
+
+case2_sjf_inversion:
+  policies: [fifo, estimated_service_time_first, weighted_shortest_processing, shortest_output_first, aging_priority]
+  inversion_fractions: [0.0, 0.25, 0.5, 0.75, 1.0]
+  heterogeneity: [moderate, strong]
+  load: [moderate, high]
+
+case3_edf_overload:
+  policies: [fifo, edf, least_laxity_first, scorpio_style_slo_guard, admission_control]
+  overload_factors: [0.8, 1.0, 1.2, 1.5]
+  fraction_impossible: [0.0, 0.2, 0.4, 0.6]

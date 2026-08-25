@@ -1,0 +1,43 @@
+name: long_output_tail
+purpose: >
+  Heavy-tailed (Pareto) output-length distribution under tight
+  concurrency: most requests are short, but a rare very-long request can
+  occupy a scarce slot for a disproportionate amount of simulated time --
+  admitting it early (FIFO, if it happens to arrive first) vs. late
+  (SRTF/SOF, deferring it behind many short jobs) has a large effect on
+  aggregate completion/SLO outcomes, unlike the WildChat control's
+  lognormal-ish spread (CV=0.881, real but not this extreme).
+expected_divergent_policies: [fifo, shortest_output_first, oracle_srtf]
+scientific_purpose: >
+  Isolates tail-heaviness itself (as opposed to family 1's staggered
+  arrival-order framing) as the source of ordering headroom -- a policy
+  that always defers the heavy-tailed long job should show a measurably
+  different completion/SLO profile than one that admits in raw arrival
+  order.
+workload:
+  arrival_process: poisson
+  arrival_rate: 14.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 80.0
+  prompt_sigma: 0.5
+  prompt_low: 16
+  prompt_high: 300
+  output_dist: pareto
+  output_mean: 60.0
+  output_low: 8
+  output_high: 3000
+  prediction_noise_rel: 0.1
+  slo_classes:
+    - {class_id: medium, slo_slack: 0.15, priority: 1.0, weight: 1.0}
+gpu:
+  max_active_sequences: 2
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

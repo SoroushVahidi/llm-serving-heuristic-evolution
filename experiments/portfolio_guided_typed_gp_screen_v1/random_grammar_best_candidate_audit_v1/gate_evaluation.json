@@ -1,0 +1,68 @@
+{
+  "all_gate_pass": false,
+  "critical_failures": [
+    "no group regression >0.030 ANWG",
+    "top-one scenario MG share <=0.40",
+    "top-one family MG share <=0.70"
+  ],
+  "gate": {
+    ">=3 unique wins at epsilon 0.005": {
+      "observed": 6,
+      "pass": true,
+      "threshold": 3
+    },
+    "max parent decision overlap <=95%": {
+      "observed": 0.0,
+      "pass": true,
+      "threshold": 0.95
+    },
+    "max parent reward correlation <=0.985": {
+      "observed": 0.9484239608915721,
+      "pass": true,
+      "threshold": 0.985
+    },
+    "mean_MG >= 0.005 ANWG": {
+      "observed": 0.011294934640522872,
+      "pass": true,
+      "threshold": 0.005
+    },
+    "mechanism behavior coherent": {
+      "observed": true,
+      "pass": true,
+      "threshold": true
+    },
+    "no group regression >0.030 ANWG": {
+      "observed": 0.044971955128205135,
+      "observed_worst_group_mean": 0.125,
+      "pass": false,
+      "threshold": 0.03
+    },
+    "parent reproduction gates remain PASS": {
+      "observed": {
+        "chunked_prefill_small": "PARENT_REPRODUCTION_PASS",
+        "estimated_service_time_first": "PARENT_REPRODUCTION_PASS",
+        "full_prefill": "PARENT_REPRODUCTION_PASS",
+        "kv_constrained_online": "PARENT_REPRODUCTION_PASS",
+        "least_laxity_first": "PARENT_REPRODUCTION_PASS",
+        "weighted_fair_share": "PARENT_REPRODUCTION_PASS"
+      },
+      "pass": true,
+      "threshold": "all PASS"
+    },
+    "top-one family MG share <=0.70": {
+      "observed": 0.891500904159132,
+      "pass": false,
+      "threshold": 0.7
+    },
+    "top-one scenario MG share <=0.40": {
+      "observed": 0.41361170475094516,
+      "pass": false,
+      "threshold": 0.4
+    },
+    "wins across >=2 regions": {
+      "observed": 2,
+      "pass": true,
+      "threshold": 2
+    }
+  }
+}

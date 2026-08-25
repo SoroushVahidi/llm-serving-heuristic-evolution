@@ -1,0 +1,313 @@
+{
+  "pilot_dir": "experiments/selector_v2_calibrated_pilot_20260720T163235Z",
+  "n_total_windows": 250,
+  "n_real_trace_windows": 79,
+  "n_real_trace_historical_windows": 48,
+  "cross_split_row_overlap_pairs": 19,
+  "distinct_windows_involved": [
+    "26",
+    "35",
+    "49",
+    "61",
+    "62",
+    "64",
+    "81",
+    "87",
+    "89",
+    "93",
+    "98",
+    "100",
+    "136",
+    "145",
+    "146",
+    "150",
+    "155",
+    "169",
+    "188",
+    "192",
+    "193",
+    "194",
+    "195",
+    "200",
+    "203",
+    "205",
+    "208"
+  ],
+  "n_distinct_windows_involved": 27,
+  "split_pair_breakdown": {
+    "TRAIN-VALIDATION": 8,
+    "ID_TEST-TRAIN": 9,
+    "ID_TEST-VALIDATION": 2
+  },
+  "ood_test_involved": false,
+  "historical_ood_pool_violations": 0,
+  "conclusion": "CONFIRMED: cross-transform row-range reuse across non-OOD splits (TRAIN/VALIDATION/ID_TEST). OOD_TEST is unaffected -- zero overlap pairs involve OOD_TEST, and zero historical<->ood_reserved pool violations were found, so the OOD reservation's row-disjointness holds. The pipeline's own no_leakage gate does not catch this because it checks group-level (not cross-group row-range) assignment. VALIDATION and ID_TEST results should not be treated as clean held-out evaluation until this is fixed; OOD_TEST's separately weak result is not explained by this mechanism.",
+  "detail_pairs": [
+    {
+      "ancestor": "real_trace__burstgpt_scaled_moderate",
+      "a_window": "49",
+      "a_split": "TRAIN",
+      "a_group": "real_trace__burstgpt_scaled_moderate__representative__historical",
+      "b_window": "61",
+      "b_split": "VALIDATION",
+      "b_group": "real_trace__burstgpt_scaled_moderate__compressed_tight__historical",
+      "row_range": [
+        217,
+        361
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__burstgpt_scaled_moderate",
+      "a_window": "61",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__burstgpt_scaled_moderate__compressed_tight__historical",
+      "b_window": "62",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__burstgpt_scaled_moderate__burst_kv__historical",
+      "row_range": [
+        217,
+        361
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__burstgpt_scaled_moderate",
+      "a_window": "61",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__burstgpt_scaled_moderate__compressed_tight__historical",
+      "b_window": "64",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__burstgpt_scaled_moderate__noise_underpredict__historical",
+      "row_range": [
+        217,
+        361
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__burstgpt_scaled_moderate",
+      "a_window": "203",
+      "a_split": "TRAIN",
+      "a_group": "real_trace__burstgpt_scaled_moderate__representative__historical",
+      "b_window": "205",
+      "b_split": "VALIDATION",
+      "b_group": "real_trace__burstgpt_scaled_moderate__compressed_tight__historical",
+      "row_range": [
+        868,
+        1012
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__burstgpt_scaled_moderate",
+      "a_window": "205",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__burstgpt_scaled_moderate__compressed_tight__historical",
+      "b_window": "208",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__burstgpt_scaled_moderate__noise_underpredict__historical",
+      "row_range": [
+        868,
+        1012
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "26",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__representative__historical",
+      "b_window": "35",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        0,
+        144
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "81",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__representative__historical",
+      "b_window": "89",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        566,
+        710
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "87",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__burst_kv__historical",
+      "b_window": "89",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        566,
+        710
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "136",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__representative__historical",
+      "b_window": "150",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        1132,
+        1276
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "145",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__compressed_tight__historical",
+      "b_window": "150",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        1132,
+        1276
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "146",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__burst_kv__historical",
+      "b_window": "150",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        1132,
+        1276
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "188",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__representative__historical",
+      "b_window": "193",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        1698,
+        1842
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_code",
+      "a_window": "192",
+      "a_split": "ID_TEST",
+      "a_group": "real_trace__azure_2023_code__burst_kv__historical",
+      "b_window": "193",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_code__noise_underpredict__historical",
+      "row_range": [
+        1698,
+        1842
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_conv",
+      "a_window": "93",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__azure_2023_conv__compressed_tight__historical",
+      "b_window": "98",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_conv__burst_kv__historical",
+      "row_range": [
+        7919,
+        8063
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_conv",
+      "a_window": "93",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__azure_2023_conv__compressed_tight__historical",
+      "b_window": "100",
+      "b_split": "ID_TEST",
+      "b_group": "real_trace__azure_2023_conv__noise_underpredict__historical",
+      "row_range": [
+        7919,
+        8063
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_conv",
+      "a_window": "98",
+      "a_split": "TRAIN",
+      "a_group": "real_trace__azure_2023_conv__burst_kv__historical",
+      "b_window": "100",
+      "b_split": "ID_TEST",
+      "b_group": "real_trace__azure_2023_conv__noise_underpredict__historical",
+      "row_range": [
+        7919,
+        8063
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_conv",
+      "a_window": "155",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__azure_2023_conv__compressed_tight__historical",
+      "b_window": "169",
+      "b_split": "ID_TEST",
+      "b_group": "real_trace__azure_2023_conv__noise_underpredict__historical",
+      "row_range": [
+        15838,
+        15982
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_conv",
+      "a_window": "194",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__azure_2023_conv__representative__historical",
+      "b_window": "200",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_conv__burst_kv__historical",
+      "row_range": [
+        7439,
+        7583
+      ],
+      "overlap_rows": 144
+    },
+    {
+      "ancestor": "real_trace__azure_2023_conv",
+      "a_window": "195",
+      "a_split": "VALIDATION",
+      "a_group": "real_trace__azure_2023_conv__compressed_tight__historical",
+      "b_window": "200",
+      "b_split": "TRAIN",
+      "b_group": "real_trace__azure_2023_conv__burst_kv__historical",
+      "row_range": [
+        7439,
+        7583
+      ],
+      "overlap_rows": 144
+    }
+  ]
+}

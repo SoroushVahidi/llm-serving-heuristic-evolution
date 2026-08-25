@@ -1,5 +1,4 @@
 """Tests for the feature-based RuleBasedSelector (Phase 2B.5 + Phase 2B.8 + Phase 2B.11)."""
-import pytest
 
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.models import RuleBasedSelector

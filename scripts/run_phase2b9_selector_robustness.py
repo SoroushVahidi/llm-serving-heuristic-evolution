@@ -50,7 +50,7 @@ import sys
 import time
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import numpy as np
 import yaml
@@ -60,7 +60,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from llmserveopt.core.types import GPUConfig
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.dataset import DatasetConfig, build_selector_dataset
-from llmserveopt.selector.features import FeatureMode, FEATURE_NAMES
+from llmserveopt.selector.features import FeatureMode
 from llmserveopt.selector.models import (
     RuleBasedSelector,
     RandomForestSelector,
@@ -68,7 +68,7 @@ from llmserveopt.selector.models import (
 )
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
-from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, generate_workload
+from llmserveopt.workloads.synthetic import WorkloadConfig, generate_workload
 
 
 # ---------------------------------------------------------------------------
@@ -252,7 +252,6 @@ def apply_selectors_to_rows(rows: List[Dict], models: Dict) -> List[Dict]:
                     if k.startswith("feat_") and v not in ("", None)}
 
         best_policy = row.get("best_policy", "")
-        best_wg = float(row.get("best_weighted_goodput", 0.0) or 0.0)
 
         for sel_name, model in models.items():
             if hasattr(model, "predict_one"):
@@ -312,7 +311,6 @@ def summarize_group(rows: List[Dict], group_name: str, models: Dict) -> Dict:
     per_window_best_wgs = [float(r.get("best_weighted_goodput", 0.0) or 0.0) for r in rows]
     oracle_mean_wg = float(np.mean(per_window_best_wgs))
 
-    fixed_wgs = compute_fixed_baseline_wgs(rows)
     best_fixed_name, best_fixed_wg = best_fixed_policy(rows)
 
     summary = {

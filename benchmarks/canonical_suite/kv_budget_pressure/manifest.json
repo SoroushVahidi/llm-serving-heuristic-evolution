@@ -1,0 +1,227 @@
+{
+  "name": "kv_budget_pressure",
+  "suite_version": "1.0",
+  "target_phenomenon": "KV-capacity feasibility as distinct from sequence-count feasibility",
+  "hypothesis": "max_active_sequences is left generous (8, matching the WildChat control) but max_kv_tokens is tightened relative to typical prompt size, so KV capacity -- not sequence count -- is the binding admission constraint. NOTE (confirmed finding, see the design doc): with a UNIFORMLY large prompt distribution this family's own headroom check FAILED (0% FIFO/SRTF disagreement despite 99% queue contention) -- admission order didn't matter because at most ~1-2 large requests ever fit regardless of order. Retained in the suite as a documented, informative rejection (see docs), not silently dropped.",
+  "expected_divergent_policies": [
+    "fifo",
+    "shortest_output_first",
+    "oracle_srtf"
+  ],
+  "expected_winner": "unresolved -- see rejection note above",
+  "workload_config": {
+    "arrival_process": "poisson",
+    "arrival_rate": 14.0,
+    "duration": 15.0,
+    "prompt_dist": "lognormal",
+    "prompt_mean": 800.0,
+    "prompt_sigma": 0.5,
+    "prompt_low": 64,
+    "prompt_high": 2500,
+    "output_dist": "lognormal",
+    "output_mean": 80.0,
+    "output_sigma": 0.6,
+    "output_low": 8,
+    "output_high": 500,
+    "prediction_noise_rel": 0.1,
+    "slo_classes": [
+      {
+        "class_id": "medium",
+        "slo_slack": 0.15,
+        "priority": 1.0,
+        "weight": 1.0
+      }
+    ],
+    "burst_factor": 5.0,
+    "burst_fraction": 0.2,
+    "tag": "kv_budget_pressure"
+  },
+  "gpu": {
+    "max_active_sequences": 8,
+    "max_batch_tokens": 4096,
+    "max_kv_tokens": 2048
+  },
+  "service_model": {
+    "step_size": 0.001,
+    "enable_prefill_modeling": true,
+    "prefill_cost_per_token": 1.0,
+    "max_prefill_chunk_tokens": 512,
+    "step_token_budget": 8192,
+    "decode_first": false
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_sha256_by_seed": {
+    "0": "63c3f0a81d2352d020995f6a488c94380054476fe6d9610c04e741d4f6388907",
+    "1": "e226feba0967eb0767d9ae641f89ed4daba76dcb540bf84891faac2c69a96b3e",
+    "2": "9549f78580d3684b366977a6efc23fa461fca30c1a9160dba80adb4a6680d36f"
+  },
+  "validation": {
+    "family": "kv_budget_pressure",
+    "target_phenomenon": "KV-capacity feasibility as distinct from sequence-count feasibility",
+    "hypothesis": "max_active_sequences is left generous (8, matching the WildChat control) but max_kv_tokens is tightened relative to typical prompt size, so KV capacity -- not sequence count -- is the binding admission constraint. NOTE (confirmed finding, see the design doc): with a UNIFORMLY large prompt distribution this family's own headroom check FAILED (0% FIFO/SRTF disagreement despite 99% queue contention) -- admission order didn't matter because at most ~1-2 large requests ever fit regardless of order. Retained in the suite as a documented, informative rejection (see docs), not silently dropped.",
+    "expected_divergent_policies": [
+      "fifo",
+      "shortest_output_first",
+      "oracle_srtf"
+    ],
+    "expected_winner": "unresolved -- see rejection note above",
+    "per_seed": [
+      {
+        "seed": 0,
+        "metrics": {
+          "n_requests": 216,
+          "n_decision_steps_with_nonempty_queue": 214606,
+          "queue_contention_fraction": 0.9917290290113044,
+          "fifo_srtf_decision_disagreement_fraction": 1.3979105896386867e-05,
+          "service_time_cv": 0.5848422662313912,
+          "deadline_slack_cv": 1.3053781408898273e-15,
+          "prompt_predicted_output_correlation": 0.0181755796856083,
+          "priority_distribution": {
+            "1.0": 216
+          },
+          "anwg": {
+            "fifo": 0.8101851851851852,
+            "estimated_service_time_first": 0.8055555555555556,
+            "shortest_output_first": 0.8101851851851852,
+            "oracle_srtf": 0.8101851851851852
+          },
+          "fifo_srtf_anwg_gap": 0.0,
+          "completion_fraction": {
+            "fifo": 0.9814814814814815,
+            "oracle_srtf": 0.9814814814814815
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.17452830188679244,
+            "oracle_srtf": 0.17452830188679244
+          },
+          "fifo_srtf_slo_violation_gap": 0.0,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.7945322043240368,
+          "n_ranked_decisions": 192,
+          "max_entropy_bits": 2.807354922057604,
+          "normalized_entropy": 0.6392252686770237
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": false,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": false
+        },
+        "headroom_score": 0.40780846995156395
+      },
+      {
+        "seed": 1,
+        "metrics": {
+          "n_requests": 210,
+          "n_decision_steps_with_nonempty_queue": 210534,
+          "queue_contention_fraction": 0.012045560337047697,
+          "fifo_srtf_decision_disagreement_fraction": 2.3749133156639783e-05,
+          "service_time_cv": 0.6450103905492328,
+          "deadline_slack_cv": 1.2322366835138053e-15,
+          "prompt_predicted_output_correlation": -0.07201647388045505,
+          "priority_distribution": {
+            "1.0": 210
+          },
+          "anwg": {
+            "fifo": 0.8047619047619048,
+            "estimated_service_time_first": 0.8047619047619048,
+            "shortest_output_first": 0.8095238095238095,
+            "oracle_srtf": 0.8095238095238095
+          },
+          "fifo_srtf_anwg_gap": 0.004761904761904745,
+          "completion_fraction": {
+            "fifo": 0.9952380952380953,
+            "oracle_srtf": 0.9952380952380953
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.19138755980861244,
+            "oracle_srtf": 0.18660287081339713
+          },
+          "fifo_srtf_slo_violation_gap": 0.004784688995215308,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.3515316245853188,
+          "n_ranked_decisions": 142,
+          "max_entropy_bits": 2.0,
+          "normalized_entropy": 0.6757658122926594
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": false,
+            "queue_contention_sufficient": false,
+            "not_degenerate_tie": true
+          },
+          "passed": false
+        },
+        "headroom_score": 0.18397635072797183
+      },
+      {
+        "seed": 2,
+        "metrics": {
+          "n_requests": 199,
+          "n_decision_steps_with_nonempty_queue": 213260,
+          "queue_contention_fraction": 0.9954750070336679,
+          "fifo_srtf_decision_disagreement_fraction": 2.8134671293257058e-05,
+          "service_time_cv": 0.7434052224346753,
+          "deadline_slack_cv": 1.2204392040085333e-15,
+          "prompt_predicted_output_correlation": 0.010437599269669275,
+          "priority_distribution": {
+            "1.0": 199
+          },
+          "anwg": {
+            "fifo": 0.8291457286432161,
+            "estimated_service_time_first": 0.8341708542713567,
+            "shortest_output_first": 0.8391959798994975,
+            "oracle_srtf": 0.8341708542713567
+          },
+          "fifo_srtf_anwg_gap": 0.005025125628140614,
+          "completion_fraction": {
+            "fifo": 0.9798994974874372,
+            "oracle_srtf": 0.9798994974874372
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.15384615384615385,
+            "oracle_srtf": 0.14871794871794872
+          },
+          "fifo_srtf_slo_violation_gap": 0.005128205128205138,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.9246972463681857,
+          "n_ranked_decisions": 171,
+          "max_entropy_bits": 2.584962500721156,
+          "normalized_entropy": 0.7445745328341248
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": false,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": false
+        },
+        "headroom_score": 0.447715872393766
+      }
+    ],
+    "mean_fifo_srtf_anwg_gap": 0.003262343463348453,
+    "mean_fifo_srtf_decision_disagreement_fraction": 2.1954303448761236e-05,
+    "mean_queue_contention_fraction": 0.66641653212734,
+    "mean_headroom_score": 0.3465002310244339,
+    "accepted": false
+  }
+}

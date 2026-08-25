@@ -3,12 +3,10 @@ Basic simulator correctness tests.
 """
 import warnings
 
-import pytest
 
 from llmserveopt.core.types import GPUConfig, Request
 from llmserveopt.evaluation.run_policy import run_policy
 from llmserveopt.policies.fifo import FIFOPolicy
-from llmserveopt.policies.edf import EDFPolicy
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.simulator import Simulator, SimulatorConfig
 
@@ -143,7 +141,6 @@ def test_no_double_admission():
 def test_invalid_gpu_id_skipped():
     """An action referencing a non-existent GPU ID must be skipped with a warning."""
     from llmserveopt.core.action import Action
-    from llmserveopt.core.types import ObservableState
     from llmserveopt.policies.base import BasePolicy
 
     class BadGPUPolicy(BasePolicy):
@@ -180,7 +177,7 @@ def test_invalid_request_id_skipped():
 
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
-        metrics = run_policy(BadReqPolicy(), requests, gpu_configs, ServiceModel())
+        run_policy(BadReqPolicy(), requests, gpu_configs, ServiceModel())
 
     req_warn = [x for x in w if "99999" in str(x.message)]
     assert len(req_warn) > 0, "Expected warning for invalid request ID"

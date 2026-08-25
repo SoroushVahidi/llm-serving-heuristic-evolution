@@ -1,0 +1,9 @@
+{
+  "frac_hgb_better_anwg_than_scen": 0.2916666666666667,
+  "frac_hgb_worse_anwg_than_scen": 0.15416666666666667,
+  "hgb_regret_mean": 0.018565035226599975,
+  "hgb_regret_median": 0.009303639102418257,
+  "hgb_regret_p90": 0.05298871988183219,
+  "scen_regret_mean": 0.02715895175940768,
+  "scen_regret_median": 0.013433013119897051
+}

@@ -4,7 +4,7 @@ Matplotlib figures for baseline comparison results.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend

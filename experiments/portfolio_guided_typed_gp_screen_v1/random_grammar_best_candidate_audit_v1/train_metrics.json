@@ -1,0 +1,1058 @@
+{
+  "epsilon_unique_wins": [
+    {
+      "E6": 0.44393939393939397,
+      "MG": 0.11212121212121207,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.11212121212121207,
+      "candidate_reward": 0.556060606060606,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816",
+      "scenario_index": 8,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.75,
+      "MG": 0.08333333333333337,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.08333333333333337,
+      "candidate_reward": 0.8333333333333334,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+      "scenario_index": 0,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.8235294117647058,
+      "MG": 0.02941176470588236,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": 0.02941176470588236,
+      "candidate_reward": 0.8529411764705882,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight.s20260910",
+      "scenario_index": 23,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 0.7333333333333333,
+      "MG": 0.025000000000000022,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": 0.025000000000000022,
+      "candidate_reward": 0.7583333333333333,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30.s20260816",
+      "scenario_index": 6,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.7696969696969697,
+      "MG": 0.015151515151515138,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.015151515151515138,
+      "candidate_reward": 0.7848484848484848,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30.s20260816",
+      "scenario_index": 4,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.9515151515151515,
+      "MG": 0.006060606060605989,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": 0.006060606060605989,
+      "candidate_reward": 0.9575757575757575,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00.s20260816",
+      "scenario_index": 9,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "10.0"
+      }
+    }
+  ],
+  "metrics": {
+    "family_mean_regression_vs_E6": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 0.020454545454545447,
+      "FAMILY_B_PREFILL_DECODE_V2": 0.044971955128205135,
+      "FAMILY_C_KV_PRESSURE_V2": 0.019852941176470573
+    },
+    "family_positive_MG": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 0.24166666666666659,
+      "FAMILY_B_PREFILL_DECODE_V2": 0.0,
+      "FAMILY_C_KV_PRESSURE_V2": 0.02941176470588236
+    },
+    "max_parent_probe_decision_overlap": 0.0,
+    "max_parent_reward_correlation": 0.9484239608915721,
+    "mean_MG": 0.011294934640522872,
+    "median_MG": 0.0,
+    "parent_probe_decision_overlap": {
+      "chunked_prefill_small": 0.0,
+      "estimated_service_time_first": 0.0,
+      "full_prefill": 0.0,
+      "kv_constrained_online": 0.0,
+      "least_laxity_first": 0.0,
+      "weighted_fair_share": 0.0
+    },
+    "parent_reward_correlations": {
+      "chunked_prefill_small": 0.5809958199855528,
+      "estimated_service_time_first": 0.9207817209792756,
+      "full_prefill": 0.48553503682818094,
+      "kv_constrained_online": 0.8739539337808722,
+      "least_laxity_first": 0.4303586058677701,
+      "weighted_fair_share": 0.9484239608915721
+    },
+    "positive_MG_families": [
+      "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "FAMILY_C_KV_PRESSURE_V2"
+    ],
+    "positive_MG_region_count": 2,
+    "positive_MG_scenarios": 6,
+    "top_one_family_positive_MG_share": 0.891500904159132,
+    "top_one_scenario_positive_MG_share": 0.41361170475094516,
+    "total_MG": 0.27107843137254894,
+    "unique_wins_eps_0.005": 6,
+    "worst_family_mean_regression_vs_E6": 0.044971955128205135,
+    "worst_group_mean_regression_vs_E6": 0.125,
+    "worst_scenario_regression_vs_E6": 0.125
+  },
+  "per_scenario": [
+    {
+      "E6": 0.75,
+      "MG": 0.08333333333333337,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.08333333333333337,
+      "candidate_reward": 0.8333333333333334,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+      "scenario_index": 0,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.7916666666666666,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.125,
+      "candidate_reward": 0.6666666666666666,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260820",
+      "scenario_index": 1,
+      "strata": {
+        "hog_count": "low",
+        "late_pressure": "low",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 1.0,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.0,
+      "candidate_reward": 1.0,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tightloose",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tightloose.s20260910",
+      "scenario_index": 2,
+      "strata": {
+        "bulk_pressure": "low",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "loose"
+      }
+    },
+    {
+      "E6": 0.975,
+      "MG": 0.0,
+      "best_original_parent": [
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.07499999999999996,
+      "candidate_reward": 0.9,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00.s20260816",
+      "scenario_index": 3,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.7696969696969697,
+      "MG": 0.015151515151515138,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.015151515151515138,
+      "candidate_reward": 0.7848484848484848,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30.s20260816",
+      "scenario_index": 4,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.9787878787878788,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.046969696969696995,
+      "candidate_reward": 0.9318181818181818,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favshort.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favshort.noise0.30.s20260816",
+      "scenario_index": 5,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.7333333333333333,
+      "MG": 0.025000000000000022,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": 0.025000000000000022,
+      "candidate_reward": 0.7583333333333333,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30.s20260816",
+      "scenario_index": 6,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.8083333333333333,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": -0.04166666666666663,
+      "candidate_reward": 0.7666666666666667,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favshort.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favshort.noise0.30.s20260816",
+      "scenario_index": 7,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.44393939393939397,
+      "MG": 0.11212121212121207,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.11212121212121207,
+      "candidate_reward": 0.556060606060606,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816",
+      "scenario_index": 8,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.9515151515151515,
+      "MG": 0.006060606060605989,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": 0.006060606060605989,
+      "candidate_reward": 0.9575757575757575,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00.s20260816",
+      "scenario_index": 9,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 1.0,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.0,
+      "candidate_reward": 1.0,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slolate_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slolate_ttft.s20260820",
+      "scenario_index": 10,
+      "strata": {
+        "hog_count": "low",
+        "late_pressure": "low",
+        "slo_emphasis": "late_ttft"
+      }
+    },
+    {
+      "E6": 0.9038461538461539,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.05769230769230771,
+      "candidate_reward": 0.8461538461538461,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260820",
+      "scenario_index": 11,
+      "strata": {
+        "hog_count": "low",
+        "late_pressure": "high",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 1.0,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small"
+      ],
+      "candidate_minus_best_parent": 0.0,
+      "candidate_reward": 1.0,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260820",
+      "scenario_index": 12,
+      "strata": {
+        "hog_count": "low",
+        "late_pressure": "high",
+        "slo_emphasis": "late_ttft"
+      }
+    },
+    {
+      "E6": 0.5277777777777778,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.08333333333333337,
+      "candidate_reward": 0.4444444444444444,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260820",
+      "scenario_index": 13,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "low",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 0.8888888888888888,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small"
+      ],
+      "candidate_minus_best_parent": 0.0,
+      "candidate_reward": 0.8888888888888888,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slolate_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slolate_ttft.s20260820",
+      "scenario_index": 14,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "low",
+        "slo_emphasis": "late_ttft"
+      }
+    },
+    {
+      "E6": 0.734375,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.046875,
+      "candidate_reward": 0.6875,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slohog_ttft.s20260820",
+      "scenario_index": 15,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "high",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 0.5,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small"
+      ],
+      "candidate_minus_best_parent": -0.046875,
+      "candidate_reward": 0.453125,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft.s20260820",
+      "scenario_index": 16,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "high",
+        "slo_emphasis": "late_ttft"
+      }
+    },
+    {
+      "E6": 1.0,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.050000000000000044,
+      "candidate_reward": 0.95,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tighttight.s20260910",
+      "scenario_index": 17,
+      "strata": {
+        "bulk_pressure": "low",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 1.0,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.0,
+      "candidate_reward": 1.0,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260910",
+      "scenario_index": 18,
+      "strata": {
+        "bulk_pressure": "low",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "loose"
+      }
+    },
+    {
+      "E6": 0.95,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.04999999999999993,
+      "candidate_reward": 0.9,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tighttight.s20260910",
+      "scenario_index": 19,
+      "strata": {
+        "bulk_pressure": "low",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 0.9117647058823529,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.02941176470588236,
+      "candidate_reward": 0.8823529411764706,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tightloose",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tightloose.s20260910",
+      "scenario_index": 20,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "loose"
+      }
+    },
+    {
+      "E6": 0.7647058823529411,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.02941176470588225,
+      "candidate_reward": 0.7352941176470589,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tighttight.s20260910",
+      "scenario_index": 21,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 0.9117647058823529,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "full_prefill",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": 0.0,
+      "candidate_reward": 0.9117647058823529,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tightloose",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tightloose.s20260910",
+      "scenario_index": 22,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "loose"
+      }
+    },
+    {
+      "E6": 0.8235294117647058,
+      "MG": 0.02941176470588236,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": 0.02941176470588236,
+      "candidate_reward": 0.8529411764705882,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight.s20260910",
+      "scenario_index": 23,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "tight"
+      }
+    }
+  ],
+  "positive_MG_scenarios": [
+    {
+      "E6": 0.44393939393939397,
+      "MG": 0.11212121212121207,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.11212121212121207,
+      "candidate_reward": 0.556060606060606,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816",
+      "scenario_index": 8,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.75,
+      "MG": 0.08333333333333337,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.08333333333333337,
+      "candidate_reward": 0.8333333333333334,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+      "scenario_index": 0,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.8235294117647058,
+      "MG": 0.02941176470588236,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": 0.02941176470588236,
+      "candidate_reward": 0.8529411764705882,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight.s20260910",
+      "scenario_index": 23,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 0.7333333333333333,
+      "MG": 0.025000000000000022,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": 0.025000000000000022,
+      "candidate_reward": 0.7583333333333333,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30.s20260816",
+      "scenario_index": 6,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.7696969696969697,
+      "MG": 0.015151515151515138,
+      "best_original_parent": [
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": 0.015151515151515138,
+      "candidate_reward": 0.7848484848484848,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30.s20260816",
+      "scenario_index": 4,
+      "strata": {
+        "favored_tenant_size": "long",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.9515151515151515,
+      "MG": 0.006060606060605989,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": 0.006060606060605989,
+      "candidate_reward": 0.9575757575757575,
+      "epsilon_unique_win": true,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00.s20260816",
+      "scenario_index": 9,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "10.0"
+      }
+    }
+  ],
+  "regressions_vs_E6": [
+    {
+      "E6": 0.7916666666666666,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.125,
+      "candidate_reward": 0.6666666666666666,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260820",
+      "scenario_index": 1,
+      "strata": {
+        "hog_count": "low",
+        "late_pressure": "low",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 0.5277777777777778,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.08333333333333337,
+      "candidate_reward": 0.4444444444444444,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260820",
+      "scenario_index": 13,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "low",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 0.975,
+      "MG": 0.0,
+      "best_original_parent": [
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.07499999999999996,
+      "candidate_reward": 0.9,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00.s20260816",
+      "scenario_index": 3,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.0",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.9038461538461539,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.05769230769230771,
+      "candidate_reward": 0.8461538461538461,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260820",
+      "scenario_index": 11,
+      "strata": {
+        "hog_count": "low",
+        "late_pressure": "high",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 1.0,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.050000000000000044,
+      "candidate_reward": 0.95,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tighttight.s20260910",
+      "scenario_index": 17,
+      "strata": {
+        "bulk_pressure": "low",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 0.95,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.04999999999999993,
+      "candidate_reward": 0.9,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tighttight.s20260910",
+      "scenario_index": 19,
+      "strata": {
+        "bulk_pressure": "low",
+        "urgent_arrival_phase": "late",
+        "urgent_tightness": "tight"
+      }
+    },
+    {
+      "E6": 0.9787878787878788,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.046969696969696995,
+      "candidate_reward": 0.9318181818181818,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favshort.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favshort.noise0.30.s20260816",
+      "scenario_index": 5,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.1",
+        "tenant_weight_skew": "10.0"
+      }
+    },
+    {
+      "E6": 0.734375,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online",
+        "least_laxity_first",
+        "weighted_fair_share"
+      ],
+      "candidate_minus_best_parent": -0.046875,
+      "candidate_reward": 0.6875,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slohog_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slohog_ttft.s20260820",
+      "scenario_index": 15,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "high",
+        "slo_emphasis": "hog_ttft"
+      }
+    },
+    {
+      "E6": 0.5,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small"
+      ],
+      "candidate_minus_best_parent": -0.046875,
+      "candidate_reward": 0.453125,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft",
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft.s20260820",
+      "scenario_index": 16,
+      "strata": {
+        "hog_count": "high",
+        "late_pressure": "high",
+        "slo_emphasis": "late_ttft"
+      }
+    },
+    {
+      "E6": 0.8083333333333333,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first"
+      ],
+      "candidate_minus_best_parent": -0.04166666666666663,
+      "candidate_reward": 0.7666666666666667,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "group_key": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favshort.noise0.30",
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favshort.noise0.30.s20260816",
+      "scenario_index": 7,
+      "strata": {
+        "favored_tenant_size": "short",
+        "prediction_noise_sigma": "0.3",
+        "target_utilization": "1.5",
+        "tenant_weight_skew": "1.0"
+      }
+    },
+    {
+      "E6": 0.9117647058823529,
+      "MG": 0.0,
+      "best_original_parent": [
+        "estimated_service_time_first",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.02941176470588236,
+      "candidate_reward": 0.8823529411764706,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tightloose",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tightloose.s20260910",
+      "scenario_index": 20,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "loose"
+      }
+    },
+    {
+      "E6": 0.7647058823529411,
+      "MG": 0.0,
+      "best_original_parent": [
+        "chunked_prefill_small",
+        "estimated_service_time_first",
+        "full_prefill",
+        "kv_constrained_online"
+      ],
+      "candidate_minus_best_parent": -0.02941176470588225,
+      "candidate_reward": 0.7352941176470589,
+      "epsilon_unique_win": false,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "group_key": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tighttight",
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tighttight.s20260910",
+      "scenario_index": 21,
+      "strata": {
+        "bulk_pressure": "high",
+        "urgent_arrival_phase": "early",
+        "urgent_tightness": "tight"
+      }
+    }
+  ]
+}

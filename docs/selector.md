@@ -4,7 +4,7 @@ The selector is a supervised portfolio policy that maps online-observable worklo
 
 ## What the selector is
 
-The selector does **not** create new heuristics.  It chooses, at the granularity of a request window (W = 200 requests by default), which of the 18 registered deployable policies to use next.  This is a supervised classification problem: label = argmax policy by priority-weighted SLO goodput (internal name: `weighted_goodput`) on that window.
+The selector does **not** create new heuristics.  It chooses, at the granularity of a request window (W = 200 requests by default), which of the 20 registered deployable policies to use next.  This is a supervised classification problem: label = argmax policy by priority-weighted SLO goodput (internal name: `weighted_goodput`) on that window.
 
 ## What the selector is not
 

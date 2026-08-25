@@ -1,0 +1,225 @@
+{
+  "name": "burst_arrivals_isolated",
+  "suite_version": "1.0",
+  "target_phenomenon": "burstiness alone (arrival-process shape), isolated from length heterogeneity",
+  "hypothesis": "Bursty Poisson arrivals (burst_factor=8) with a comparatively narrow, near-uniform output-length distribution isolate arrival-process burstiness as the sole driver of transient queue buildup -- distinct from family 2 (burst_independent_lengths), which combines burstiness with deliberate prompt/output-length independence. A pure-burst regime should still create real admission contention purely from clustered arrivals, even without heterogeneous lengths.",
+  "expected_divergent_policies": [
+    "fifo",
+    "oracle_srtf"
+  ],
+  "expected_winner": "oracle_srtf",
+  "workload_config": {
+    "arrival_process": "bursty",
+    "arrival_rate": 10.0,
+    "duration": 15.0,
+    "prompt_dist": "lognormal",
+    "prompt_mean": 80.0,
+    "prompt_sigma": 0.4,
+    "prompt_low": 16,
+    "prompt_high": 300,
+    "output_dist": "lognormal",
+    "output_mean": 80.0,
+    "output_sigma": 0.5,
+    "output_low": 16,
+    "output_high": 400,
+    "prediction_noise_rel": 0.1,
+    "slo_classes": [
+      {
+        "class_id": "medium",
+        "slo_slack": 0.15,
+        "priority": 1.0,
+        "weight": 1.0
+      }
+    ],
+    "burst_factor": 8.0,
+    "burst_fraction": 0.2,
+    "tag": "burst_arrivals_isolated"
+  },
+  "gpu": {
+    "max_active_sequences": 2,
+    "max_batch_tokens": 4096,
+    "max_kv_tokens": 65536
+  },
+  "service_model": {
+    "step_size": 0.001,
+    "enable_prefill_modeling": true,
+    "prefill_cost_per_token": 1.0,
+    "max_prefill_chunk_tokens": 512,
+    "step_token_budget": 8192,
+    "decode_first": false
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_sha256_by_seed": {
+    "0": "7c89d4da712171362d2161aab090264881407f1a7ca72037c3ac338f7cf907dd",
+    "1": "6c8fd87c6d616b319c272610bb9c789cb8576f27d5b8b70f1f84e2749933d887",
+    "2": "99e066b9db19fbb9758ab4ce381e435434c57a0c4af7b1a740b6fea4c7a0edf8"
+  },
+  "validation": {
+    "family": "burst_arrivals_isolated",
+    "target_phenomenon": "burstiness alone (arrival-process shape), isolated from length heterogeneity",
+    "hypothesis": "Bursty Poisson arrivals (burst_factor=8) with a comparatively narrow, near-uniform output-length distribution isolate arrival-process burstiness as the sole driver of transient queue buildup -- distinct from family 2 (burst_independent_lengths), which combines burstiness with deliberate prompt/output-length independence. A pure-burst regime should still create real admission contention purely from clustered arrivals, even without heterogeneous lengths.",
+    "expected_divergent_policies": [
+      "fifo",
+      "oracle_srtf"
+    ],
+    "expected_winner": "oracle_srtf",
+    "per_seed": [
+      {
+        "seed": 0,
+        "metrics": {
+          "n_requests": 344,
+          "n_decision_steps_with_nonempty_queue": 13141,
+          "queue_contention_fraction": 0.9964995053648885,
+          "fifo_srtf_decision_disagreement_fraction": 0.02457956015523933,
+          "service_time_cv": 0.5324003236345028,
+          "deadline_slack_cv": 2.2574323200756813e-16,
+          "prompt_predicted_output_correlation": -0.06874072967453505,
+          "priority_distribution": {
+            "1.0": 344
+          },
+          "anwg": {
+            "fifo": 0.00872093023255814,
+            "estimated_service_time_first": 0.38953488372093026,
+            "shortest_output_first": 0.4127906976744186,
+            "oracle_srtf": 0.4069767441860465
+          },
+          "fifo_srtf_anwg_gap": 0.39825581395348836,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.9912790697674418,
+            "oracle_srtf": 0.5930232558139535
+          },
+          "fifo_srtf_slo_violation_gap": 0.3982558139534883,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 5.8863710335864186,
+          "n_ranked_decisions": 337,
+          "max_entropy_bits": 6.6293566200796095,
+          "normalized_entropy": 0.8879249331311024
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.8440039104001944
+      },
+      {
+        "seed": 1,
+        "metrics": {
+          "n_requests": 318,
+          "n_decision_steps_with_nonempty_queue": 12424,
+          "queue_contention_fraction": 0.9857533805537669,
+          "fifo_srtf_decision_disagreement_fraction": 0.02350289761751449,
+          "service_time_cv": 0.5517783910453748,
+          "deadline_slack_cv": 1.443695697506642e-15,
+          "prompt_predicted_output_correlation": 0.0019072172760206507,
+          "priority_distribution": {
+            "1.0": 318
+          },
+          "anwg": {
+            "fifo": 0.03773584905660377,
+            "estimated_service_time_first": 0.36477987421383645,
+            "shortest_output_first": 0.37735849056603776,
+            "oracle_srtf": 0.4088050314465409
+          },
+          "fifo_srtf_anwg_gap": 0.37106918238993714,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.9622641509433962,
+            "oracle_srtf": 0.5911949685534591
+          },
+          "fifo_srtf_slo_violation_gap": 0.37106918238993714,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 5.81440403000932,
+          "n_ranked_decisions": 311,
+          "max_entropy_bits": 6.870364719583405,
+          "normalized_entropy": 0.8463020912755684
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.8255283560449064
+      },
+      {
+        "seed": 2,
+        "metrics": {
+          "n_requests": 344,
+          "n_decision_steps_with_nonempty_queue": 13749,
+          "queue_contention_fraction": 0.995345116008437,
+          "fifo_srtf_decision_disagreement_fraction": 0.023565350207287804,
+          "service_time_cv": 0.5536726055529428,
+          "deadline_slack_cv": 1.3823893282631546e-15,
+          "prompt_predicted_output_correlation": -0.0654602754385169,
+          "priority_distribution": {
+            "1.0": 344
+          },
+          "anwg": {
+            "fifo": 0.014534883720930232,
+            "estimated_service_time_first": 0.3430232558139535,
+            "shortest_output_first": 0.37790697674418605,
+            "oracle_srtf": 0.38953488372093026
+          },
+          "fifo_srtf_anwg_gap": 0.375,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.9854651162790697,
+            "oracle_srtf": 0.6104651162790697
+          },
+          "fifo_srtf_slo_violation_gap": 0.375,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 5.687889022129185,
+          "n_ranked_decisions": 337,
+          "max_entropy_bits": 6.523561956057013,
+          "normalized_entropy": 0.8718992876043861
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.8346378519396448
+      }
+    ],
+    "mean_fifo_srtf_anwg_gap": 0.3814416654478085,
+    "mean_fifo_srtf_decision_disagreement_fraction": 0.02388260266001387,
+    "mean_queue_contention_fraction": 0.9925326673090309,
+    "mean_headroom_score": 0.8347233727949153,
+    "accepted": true
+  }
+}

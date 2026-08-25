@@ -1,0 +1,54 @@
+{
+  "available": true,
+  "families": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": {
+      "best_fixed_mean": 0.7405618686868688,
+      "best_fixed_policy": "weighted_fair_share",
+      "n_scenarios": 72,
+      "oracle_gain_p90": 0.06333333333333332,
+      "oracle_headroom": 0.021741722783389372,
+      "oracle_mean": 0.7623035914702582,
+      "winner_counts": {
+        "chunked_prefill_small": 0,
+        "estimated_service_time_first": 37,
+        "full_prefill": 0,
+        "kv_constrained_online": 12,
+        "least_laxity_first": 0,
+        "weighted_fair_share": 23
+      }
+    },
+    "FAMILY_B_PREFILL_DECODE_V2": {
+      "best_fixed_mean": 0.7327515691773505,
+      "best_fixed_policy": "full_prefill",
+      "n_scenarios": 32,
+      "oracle_gain_p90": 0.11538461538461542,
+      "oracle_headroom": 0.0494332598824786,
+      "oracle_mean": 0.7821848290598291,
+      "winner_counts": {
+        "chunked_prefill_small": 15,
+        "estimated_service_time_first": 0,
+        "full_prefill": 17,
+        "kv_constrained_online": 0,
+        "least_laxity_first": 0,
+        "weighted_fair_share": 0
+      }
+    },
+    "FAMILY_C_KV_PRESSURE_V2": {
+      "best_fixed_mean": 0.8658496732026144,
+      "best_fixed_policy": "kv_constrained_online",
+      "n_scenarios": 72,
+      "oracle_gain_p90": 0.08529411764705881,
+      "oracle_headroom": 0.02026143790849666,
+      "oracle_mean": 0.8861111111111111,
+      "winner_counts": {
+        "chunked_prefill_small": 0,
+        "estimated_service_time_first": 17,
+        "full_prefill": 32,
+        "kv_constrained_online": 16,
+        "least_laxity_first": 2,
+        "weighted_fair_share": 5
+      }
+    }
+  },
+  "source": "experiments/unified_utility_matrix_v2/unified_utility_matrix_wide_v2.csv"
+}

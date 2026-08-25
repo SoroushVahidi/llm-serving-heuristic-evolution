@@ -1,0 +1,20 @@
+{
+  "name": "placement_score_composition",
+  "description": "Ranks requests by laxity urgency (RANKING family) but places each admitted request on the GPU with the smallest composite (projected_gpu_load, kv_pressure, gpu_id) placement key.",
+  "tie_breaker": "earliest_deadline",
+  "placement": {
+    "keys": [
+      {
+        "name": "projected_gpu_load"
+      },
+      {
+        "name": "kv_pressure"
+      }
+    ]
+  },
+  "default": {
+    "request_score": {
+      "primitive": "laxity_urgency"
+    }
+  }
+}

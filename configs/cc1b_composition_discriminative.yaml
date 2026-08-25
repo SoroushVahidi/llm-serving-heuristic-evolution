@@ -1,0 +1,273 @@
+schema_version: 1
+mode: cc1b
+seed: 20260731
+policy_subset:
+  - weighted_shortest_processing
+  - scorpio_style_slo_guard
+  - edf
+  - estimated_service_time_first
+  - fifo
+composition:
+  operator: weighted_borda_rank_aggregation
+  implementation: StaticRankEnsemblePolicy
+  method: borda
+  normalization: per_state_normalized_rank
+  top_k: 2
+  weight_grid_step: 0.25
+metrics:
+  primary: arrival_normalized_weighted_goodput
+  completion_fraction_tolerance: 0.005
+thresholds:
+  aggregate_anwg_gain: 0.005
+  regime_specific_gain: 0.01
+  stop_non_near_tie_gap: 0.002
+near_tie_primary_threshold: 0.005
+near_tie_thresholds: [0.001, 0.005, 0.01]
+development_splits: [TRAIN, VALIDATION, ROBUST_DEV]
+evaluation_splits: [ID_TEST, OOD_TEST]
+discriminativeness:
+  min_fixed_policy_spread: 0.03
+  min_fixed_top2_margin: 0.005
+  min_evaluation_windows_with_spread: 3
+safeguards:
+  max_runs: 500
+  require_clean_git_for_full: true
+  forbid_live_api: true
+  forbid_gpu: true
+  forbid_real_vllm: true
+outputs:
+  root: results/cc1b_composition_discriminative
+  decision_traces: false
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 128
+  step_token_budget: 128
+  enable_decode_prefill_contention: true
+  decode_first: false
+simulator:
+  drain_steps: 2500
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 4
+    max_batch_tokens: 64
+    max_kv_tokens: 1200
+slo_classes_tight: &slo_classes_tight
+  - {class_id: tight, slo_slack: 0.08, priority: 3.0, weight: 0.45}
+  - {class_id: medium, slo_slack: 0.16, priority: 2.0, weight: 0.35}
+  - {class_id: loose, slo_slack: 0.35, priority: 1.0, weight: 0.20}
+slo_classes_priority: &slo_classes_priority
+  - {class_id: tight_hi, slo_slack: 0.07, priority: 5.0, weight: 0.25}
+  - {class_id: tight_low, slo_slack: 0.09, priority: 1.0, weight: 0.35}
+  - {class_id: medium_hi, slo_slack: 0.20, priority: 4.0, weight: 0.20}
+  - {class_id: loose_low, slo_slack: 0.40, priority: 1.0, weight: 0.20}
+workloads:
+  - tag: cc1b_overload_train
+    kind: synthetic
+    split: TRAIN
+    regime: overload_tight_slo
+    seed: 300
+    max_requests: 90
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 1.0
+    prompt_mean: 96.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 128.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.2
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_long_prompt_train
+    kind: synthetic
+    split: TRAIN
+    regime: long_prompt_mixed_tight_slo
+    seed: 300
+    max_requests: 70
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 1.2
+    prompt_mean: 768.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1500
+    output_mean: 96.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.25
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_burst_train
+    kind: synthetic
+    split: TRAIN
+    regime: burst_transition
+    seed: 300
+    max_requests: 90
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 1.2
+    burst_factor: 8.0
+    burst_fraction: 0.3
+    prompt_mean: 256.0
+    prompt_sigma: 0.8
+    prompt_low: 32
+    prompt_high: 1024
+    output_mean: 160.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.3
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_overload_validation
+    kind: synthetic
+    split: VALIDATION
+    regime: overload_tight_slo
+    seed: 303
+    max_requests: 90
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 1.0
+    prompt_mean: 96.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 128.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.2
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_long_prompt_validation
+    kind: synthetic
+    split: VALIDATION
+    regime: long_prompt_mixed_tight_slo
+    seed: 301
+    max_requests: 70
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 1.2
+    prompt_mean: 768.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1500
+    output_mean: 96.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.25
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_kv_robust_dev
+    kind: synthetic
+    split: ROBUST_DEV
+    regime: kv_pressure
+    seed: 304
+    max_requests: 80
+    arrival_process: bursty
+    arrival_rate: 80.0
+    duration: 1.2
+    burst_factor: 10.0
+    burst_fraction: 0.35
+    prompt_mean: 700.0
+    prompt_sigma: 0.6
+    prompt_low: 250
+    prompt_high: 1400
+    output_mean: 160.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.3
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_priority_robust_dev
+    kind: synthetic
+    split: ROBUST_DEV
+    regime: selective_admission_priority_conflict
+    seed: 305
+    max_requests: 90
+    arrival_process: poisson
+    arrival_rate: 70.0
+    duration: 1.0
+    prompt_mean: 300.0
+    prompt_sigma: 0.9
+    prompt_low: 16
+    prompt_high: 1200
+    output_mean: 200.0
+    output_sigma: 0.9
+    output_low: 16
+    output_high: 700
+    prediction_noise_rel: 0.4
+    slo_classes: *slo_classes_priority
+  - tag: cc1b_overload_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: overload_tight_slo
+    seed: 302
+    max_requests: 90
+    arrival_process: poisson
+    arrival_rate: 80.0
+    duration: 1.0
+    prompt_mean: 96.0
+    prompt_sigma: 0.8
+    prompt_low: 16
+    prompt_high: 512
+    output_mean: 128.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.2
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_long_prompt_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: long_prompt_mixed_tight_slo
+    seed: 303
+    max_requests: 70
+    arrival_process: poisson
+    arrival_rate: 50.0
+    duration: 1.2
+    prompt_mean: 768.0
+    prompt_sigma: 0.6
+    prompt_low: 128
+    prompt_high: 1500
+    output_mean: 96.0
+    output_sigma: 0.6
+    output_low: 16
+    output_high: 384
+    prediction_noise_rel: 0.25
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_burst_id_test
+    kind: synthetic
+    split: ID_TEST
+    regime: burst_transition
+    seed: 301
+    max_requests: 90
+    arrival_process: bursty
+    arrival_rate: 60.0
+    duration: 1.2
+    burst_factor: 8.0
+    burst_fraction: 0.3
+    prompt_mean: 256.0
+    prompt_sigma: 0.8
+    prompt_low: 32
+    prompt_high: 1024
+    output_mean: 160.0
+    output_sigma: 0.8
+    output_low: 16
+    output_high: 512
+    prediction_noise_rel: 0.3
+    slo_classes: *slo_classes_tight
+  - tag: cc1b_azure_conv_ood_test
+    kind: real_trace
+    split: OOD_TEST
+    regime: azure_conversation_like_tight_slo
+    seed: 3102
+    max_requests: 80
+    path: data/processed/azure/azure_llm_2023_conv.jsonl
+    request_transform:
+      arrival_time_scale: 0.05
+      slo_slack_scale: 0.02
+      slo_slack_cap: 0.20
+      slo_slack_floor: 0.02

@@ -1,0 +1,671 @@
+{
+  "per_workload": {
+    "staggered_heterogeneous": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.7153820664844203,
+        "edf": 0.7153820664844203,
+        "estimated_service_time_first": 0.7790469935267038,
+        "shortest_output_first": 0.7832126247026663,
+        "weighted_shortest_processing": 0.7790469935267038,
+        "scorpio_style_slo_guard": 0.8156579507934817,
+        "oracle_srtf": 0.7818576111525307
+      },
+      "ranking_best_to_worst": [
+        "scorpio_style_slo_guard",
+        "shortest_output_first",
+        "oracle_srtf",
+        "estimated_service_time_first",
+        "weighted_shortest_processing",
+        "fifo",
+        "edf"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.06647554466811045,
+        "edf": 0.06647554466811045,
+        "estimated_service_time_first": 0.0028106176258269056,
+        "shortest_output_first": -0.0013550135501355642,
+        "weighted_shortest_processing": 0.0028106176258269056,
+        "scorpio_style_slo_guard": -0.03380033964095097
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "edf": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "estimated_service_time_first": {
+          "wins": 6,
+          "ties": 5,
+          "losses": 7
+        },
+        "shortest_output_first": {
+          "wins": 12,
+          "ties": 4,
+          "losses": 2
+        },
+        "weighted_shortest_processing": {
+          "wins": 6,
+          "ties": 5,
+          "losses": 7
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 16,
+          "ties": 1,
+          "losses": 1
+        },
+        "oracle_srtf": {
+          "wins": 10,
+          "ties": 5,
+          "losses": 3
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 1,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 2,
+        "oracle_srtf": 0
+      }
+    },
+    "burst_independent_lengths": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.17539798570500323,
+        "edf": 0.17539798570500323,
+        "estimated_service_time_first": 0.6331627680311891,
+        "shortest_output_first": 0.7057545484080573,
+        "weighted_shortest_processing": 0.6331627680311891,
+        "scorpio_style_slo_guard": 0.6672352176738142,
+        "oracle_srtf": 0.7011249187784276
+      },
+      "ranking_best_to_worst": [
+        "shortest_output_first",
+        "oracle_srtf",
+        "scorpio_style_slo_guard",
+        "estimated_service_time_first",
+        "weighted_shortest_processing",
+        "fifo",
+        "edf"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.5257269330734244,
+        "edf": 0.5257269330734244,
+        "estimated_service_time_first": 0.06796215074723855,
+        "shortest_output_first": -0.00462962962962965,
+        "weighted_shortest_processing": 0.06796215074723855,
+        "scorpio_style_slo_guard": 0.03388970110461342
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "edf": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "estimated_service_time_first": {
+          "wins": 7,
+          "ties": 3,
+          "losses": 8
+        },
+        "shortest_output_first": {
+          "wins": 16,
+          "ties": 2,
+          "losses": 0
+        },
+        "weighted_shortest_processing": {
+          "wins": 7,
+          "ties": 3,
+          "losses": 8
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 11,
+          "ties": 0,
+          "losses": 7
+        },
+        "oracle_srtf": {
+          "wins": 14,
+          "ties": 2,
+          "losses": 2
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 1,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 0,
+        "oracle_srtf": 0
+      }
+    },
+    "mixed_tight_deadlines": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.544624664365371,
+        "edf": 0.5445439850877111,
+        "estimated_service_time_first": 0.5643154329569957,
+        "shortest_output_first": 0.559305842220133,
+        "weighted_shortest_processing": 0.5600087660864225,
+        "scorpio_style_slo_guard": 0.4668621257604428,
+        "oracle_srtf": 0.5620675552247455
+      },
+      "ranking_best_to_worst": [
+        "estimated_service_time_first",
+        "oracle_srtf",
+        "weighted_shortest_processing",
+        "shortest_output_first",
+        "fifo",
+        "edf",
+        "scorpio_style_slo_guard"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.01744289085937445,
+        "edf": 0.017523570137034428,
+        "estimated_service_time_first": -0.002247877732250214,
+        "shortest_output_first": 0.002761713004612476,
+        "weighted_shortest_processing": 0.002058789138323025,
+        "scorpio_style_slo_guard": 0.09520542946430272
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 5,
+          "ties": 0,
+          "losses": 13
+        },
+        "edf": {
+          "wins": 6,
+          "ties": 0,
+          "losses": 12
+        },
+        "estimated_service_time_first": {
+          "wins": 16,
+          "ties": 0,
+          "losses": 2
+        },
+        "shortest_output_first": {
+          "wins": 10,
+          "ties": 1,
+          "losses": 7
+        },
+        "weighted_shortest_processing": {
+          "wins": 12,
+          "ties": 0,
+          "losses": 6
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 0,
+          "ties": 0,
+          "losses": 18
+        },
+        "oracle_srtf": {
+          "wins": 13,
+          "ties": 1,
+          "losses": 4
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 1,
+        "shortest_output_first": 0,
+        "weighted_shortest_processing": 1,
+        "scorpio_style_slo_guard": 0,
+        "oracle_srtf": 1
+      }
+    },
+    "priority_vs_service_time_conflict": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.6546930426218774,
+        "edf": 0.6546930426218774,
+        "estimated_service_time_first": 0.7256496440679507,
+        "shortest_output_first": 0.7224748597464022,
+        "weighted_shortest_processing": 0.7267943415322676,
+        "scorpio_style_slo_guard": 0.8019857476082045,
+        "oracle_srtf": 0.7230679795566041
+      },
+      "ranking_best_to_worst": [
+        "scorpio_style_slo_guard",
+        "weighted_shortest_processing",
+        "estimated_service_time_first",
+        "oracle_srtf",
+        "shortest_output_first",
+        "fifo",
+        "edf"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.06837493693472663,
+        "edf": 0.06837493693472663,
+        "estimated_service_time_first": -0.0025816645113466707,
+        "shortest_output_first": 0.0005931198102018254,
+        "weighted_shortest_processing": -0.0037263619756635613,
+        "scorpio_style_slo_guard": -0.07891776805160045
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "edf": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "estimated_service_time_first": {
+          "wins": 11,
+          "ties": 0,
+          "losses": 7
+        },
+        "shortest_output_first": {
+          "wins": 8,
+          "ties": 2,
+          "losses": 8
+        },
+        "weighted_shortest_processing": {
+          "wins": 12,
+          "ties": 0,
+          "losses": 6
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 18,
+          "ties": 0,
+          "losses": 0
+        },
+        "oracle_srtf": {
+          "wins": 9,
+          "ties": 2,
+          "losses": 7
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 0,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 3,
+        "oracle_srtf": 0
+      }
+    },
+    "prediction_noise_regime": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.7594701541993585,
+        "edf": 0.7594701541993585,
+        "estimated_service_time_first": 0.7864933551082235,
+        "shortest_output_first": 0.794859528289606,
+        "weighted_shortest_processing": 0.7864933551082235,
+        "scorpio_style_slo_guard": 0.7169783493686466,
+        "oracle_srtf": 0.7948923681376553
+      },
+      "ranking_best_to_worst": [
+        "oracle_srtf",
+        "shortest_output_first",
+        "estimated_service_time_first",
+        "weighted_shortest_processing",
+        "fifo",
+        "edf",
+        "scorpio_style_slo_guard"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.03542221393829681,
+        "edf": 0.03542221393829681,
+        "estimated_service_time_first": 0.008399013029431801,
+        "shortest_output_first": 3.2839848049248666e-05,
+        "weighted_shortest_processing": 0.008399013029431801,
+        "scorpio_style_slo_guard": 0.07791401876900872
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 4,
+          "ties": 4,
+          "losses": 10
+        },
+        "edf": {
+          "wins": 4,
+          "ties": 4,
+          "losses": 10
+        },
+        "estimated_service_time_first": {
+          "wins": 7,
+          "ties": 3,
+          "losses": 8
+        },
+        "shortest_output_first": {
+          "wins": 14,
+          "ties": 2,
+          "losses": 2
+        },
+        "weighted_shortest_processing": {
+          "wins": 7,
+          "ties": 3,
+          "losses": 8
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 2,
+          "ties": 0,
+          "losses": 16
+        },
+        "oracle_srtf": {
+          "wins": 17,
+          "ties": 0,
+          "losses": 1
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 1,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 0,
+        "oracle_srtf": 2
+      }
+    },
+    "long_output_tail": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.1154312124998892,
+        "edf": 0.1154312124998892,
+        "estimated_service_time_first": 0.3706083326686342,
+        "shortest_output_first": 0.3739597458190423,
+        "weighted_shortest_processing": 0.3706083326686342,
+        "scorpio_style_slo_guard": 0.5675442911205055,
+        "oracle_srtf": 0.39618019551017875
+      },
+      "ranking_best_to_worst": [
+        "scorpio_style_slo_guard",
+        "oracle_srtf",
+        "shortest_output_first",
+        "estimated_service_time_first",
+        "weighted_shortest_processing",
+        "fifo",
+        "edf"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.28074898301028955,
+        "edf": 0.28074898301028955,
+        "estimated_service_time_first": 0.025571862841544557,
+        "shortest_output_first": 0.022220449691136457,
+        "weighted_shortest_processing": 0.025571862841544557,
+        "scorpio_style_slo_guard": -0.17136409561032678
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "edf": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "estimated_service_time_first": {
+          "wins": 8,
+          "ties": 3,
+          "losses": 7
+        },
+        "shortest_output_first": {
+          "wins": 8,
+          "ties": 0,
+          "losses": 10
+        },
+        "weighted_shortest_processing": {
+          "wins": 8,
+          "ties": 3,
+          "losses": 7
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 18,
+          "ties": 0,
+          "losses": 0
+        },
+        "oracle_srtf": {
+          "wins": 15,
+          "ties": 0,
+          "losses": 3
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 0,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 3,
+        "oracle_srtf": 0
+      }
+    },
+    "burst_arrivals_isolated": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.020330554336697382,
+        "edf": 0.020330554336697382,
+        "estimated_service_time_first": 0.36577933791624,
+        "shortest_output_first": 0.3893520549948808,
+        "weighted_shortest_processing": 0.36577933791624,
+        "scorpio_style_slo_guard": 0.42275486324411293,
+        "oracle_srtf": 0.4017722197845059
+      },
+      "ranking_best_to_worst": [
+        "scorpio_style_slo_guard",
+        "oracle_srtf",
+        "shortest_output_first",
+        "estimated_service_time_first",
+        "weighted_shortest_processing",
+        "fifo",
+        "edf"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.3814416654478085,
+        "edf": 0.3814416654478085,
+        "estimated_service_time_first": 0.03599288186826588,
+        "shortest_output_first": 0.012420164789625099,
+        "weighted_shortest_processing": 0.03599288186826588,
+        "scorpio_style_slo_guard": -0.020982643459607042
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "edf": {
+          "wins": 0,
+          "ties": 3,
+          "losses": 15
+        },
+        "estimated_service_time_first": {
+          "wins": 6,
+          "ties": 3,
+          "losses": 9
+        },
+        "shortest_output_first": {
+          "wins": 13,
+          "ties": 0,
+          "losses": 5
+        },
+        "weighted_shortest_processing": {
+          "wins": 6,
+          "ties": 3,
+          "losses": 9
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 18,
+          "ties": 0,
+          "losses": 0
+        },
+        "oracle_srtf": {
+          "wins": 14,
+          "ties": 0,
+          "losses": 4
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 0,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 3,
+        "oracle_srtf": 0
+      }
+    },
+    "wildchat_control": {
+      "anwg_mean_by_policy": {
+        "fifo": 0.9957158201524644,
+        "edf": 0.9957158201524644,
+        "estimated_service_time_first": 0.9957158201524644,
+        "shortest_output_first": 0.9957158201524644,
+        "weighted_shortest_processing": 0.9957158201524644,
+        "scorpio_style_slo_guard": 0.9742848751866321,
+        "oracle_srtf": 0.9957158201524644
+      },
+      "ranking_best_to_worst": [
+        "fifo",
+        "edf",
+        "estimated_service_time_first",
+        "shortest_output_first",
+        "weighted_shortest_processing",
+        "oracle_srtf",
+        "scorpio_style_slo_guard"
+      ],
+      "regret_vs_oracle": {
+        "fifo": 0.0,
+        "edf": 0.0,
+        "estimated_service_time_first": 0.0,
+        "shortest_output_first": 0.0,
+        "weighted_shortest_processing": 0.0,
+        "scorpio_style_slo_guard": 0.02143094496583231
+      },
+      "pairwise_win_tie_loss": {
+        "fifo": {
+          "wins": 3,
+          "ties": 15,
+          "losses": 0
+        },
+        "edf": {
+          "wins": 3,
+          "ties": 15,
+          "losses": 0
+        },
+        "estimated_service_time_first": {
+          "wins": 3,
+          "ties": 15,
+          "losses": 0
+        },
+        "shortest_output_first": {
+          "wins": 3,
+          "ties": 15,
+          "losses": 0
+        },
+        "weighted_shortest_processing": {
+          "wins": 3,
+          "ties": 15,
+          "losses": 0
+        },
+        "scorpio_style_slo_guard": {
+          "wins": 0,
+          "ties": 0,
+          "losses": 18
+        },
+        "oracle_srtf": {
+          "wins": 3,
+          "ties": 15,
+          "losses": 0
+        }
+      },
+      "unique_wins_by_seed": {
+        "fifo": 0,
+        "edf": 0,
+        "estimated_service_time_first": 0,
+        "shortest_output_first": 0,
+        "weighted_shortest_processing": 0,
+        "scorpio_style_slo_guard": 0,
+        "oracle_srtf": 0
+      }
+    }
+  },
+  "behavioral_similarity_matrix_pearson": {
+    "fifo": {
+      "fifo": 1.0,
+      "edf": 0.9999999967311969,
+      "estimated_service_time_first": 0.9227662410386169,
+      "shortest_output_first": 0.8731248703269823,
+      "weighted_shortest_processing": 0.9213914190388248,
+      "scorpio_style_slo_guard": 0.7897417297830891,
+      "oracle_srtf": 0.8771609468273023
+    },
+    "edf": {
+      "fifo": 0.999999996731197,
+      "edf": 1.0,
+      "estimated_service_time_first": 0.9227836306866298,
+      "shortest_output_first": 0.8731450168909002,
+      "weighted_shortest_processing": 0.9214093746959803,
+      "scorpio_style_slo_guard": 0.7897822525495263,
+      "oracle_srtf": 0.8771818632358906
+    },
+    "estimated_service_time_first": {
+      "fifo": 0.9227662410386168,
+      "edf": 0.9227836306866298,
+      "estimated_service_time_first": 0.9999999999999999,
+      "shortest_output_first": 0.9929579671125057,
+      "weighted_shortest_processing": 0.9999726272780142,
+      "scorpio_style_slo_guard": 0.9052521340987474,
+      "oracle_srtf": 0.9942048436207405
+    },
+    "shortest_output_first": {
+      "fifo": 0.8731248703269823,
+      "edf": 0.8731450168909001,
+      "estimated_service_time_first": 0.9929579671125056,
+      "shortest_output_first": 0.9999999999999999,
+      "weighted_shortest_processing": 0.9931457021317732,
+      "scorpio_style_slo_guard": 0.8987733757916754,
+      "oracle_srtf": 0.9996587251243899
+    },
+    "weighted_shortest_processing": {
+      "fifo": 0.9213914190388248,
+      "edf": 0.9214093746959803,
+      "estimated_service_time_first": 0.9999726272780142,
+      "shortest_output_first": 0.9931457021317732,
+      "weighted_shortest_processing": 1.0,
+      "scorpio_style_slo_guard": 0.9076618752255028,
+      "oracle_srtf": 0.994450466147246
+    },
+    "scorpio_style_slo_guard": {
+      "fifo": 0.7897417297830891,
+      "edf": 0.7897822525495264,
+      "estimated_service_time_first": 0.9052521340987474,
+      "shortest_output_first": 0.8987733757916754,
+      "weighted_shortest_processing": 0.9076618752255028,
+      "scorpio_style_slo_guard": 1.0,
+      "oracle_srtf": 0.9059121629522722
+    },
+    "oracle_srtf": {
+      "fifo": 0.8771609468273023,
+      "edf": 0.8771818632358905,
+      "estimated_service_time_first": 0.9942048436207405,
+      "shortest_output_first": 0.9996587251243898,
+      "weighted_shortest_processing": 0.994450466147246,
+      "scorpio_style_slo_guard": 0.9059121629522723,
+      "oracle_srtf": 1.0
+    }
+  },
+  "workload_order": [
+    "burst_arrivals_isolated",
+    "burst_independent_lengths",
+    "long_output_tail",
+    "mixed_tight_deadlines",
+    "prediction_noise_regime",
+    "priority_vs_service_time_conflict",
+    "staggered_heterogeneous",
+    "wildchat_control"
+  ]
+}

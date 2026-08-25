@@ -78,9 +78,7 @@ from llmserveopt.selector.models import (
 from run_phase2b9_selector_robustness import (
     apply_selectors_to_rows,
     build_gpu_configs,
-    compute_fixed_baseline_wgs,
     load_config,
-    load_or_generate_trace,
     write_per_window_csv,
 )
 from run_phase2b12_workload_diversity_selector_labels import build_rows_for_group
@@ -95,8 +93,6 @@ from run_phase2b15_corrected_objective_selector_retraining import (
     WSP,
     _anwg,
     _comp_frac,
-    _cond_wg,
-    _cp_wg,
     compute_all_metrics,
     compute_anwg_regret_weights,
     filter_meaningful,
@@ -534,7 +530,6 @@ def build_failure_cases(
     rf_stats = stats.get("rf_anwg", {})
     rf_gap = rf_stats.get("mean_gap_vs_scorpio", float("nan"))
     rf_ci = rf_stats.get("ci95_vs_scorpio", [float("nan"), float("nan")])
-    sf_gap = stats.get("safe_fallback_wsp_margin0.001", {}).get("mean_gap_vs_scorpio", float("nan"))
 
     if not np.isnan(rf_gap) and rf_gap <= 0.0:
         cases.append({

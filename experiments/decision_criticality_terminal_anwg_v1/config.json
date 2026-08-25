@@ -1,0 +1,15 @@
+{
+  "schema_version": "decision_criticality_terminal_anwg_v1.0.0",
+  "max_disagreement_per_scenario": 5,
+  "max_agreement_control_per_scenario": 3,
+  "control_seed": 20260824,
+  "bootstrap_seed": 20260825,
+  "n_bootstrap": 1000,
+  "design_doc": "docs/design/DECISION_CRITICALITY_TERMINAL_ANWG_V1.md",
+  "design_sha256": "947ff0586a28a12b50e341bf6a20a69353d5cdb249e3b704b47d9888c409bd60",
+  "n_scenarios": 144,
+  "git_head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "git_dirty": true,
+  "python": "/home/soroush/modal-venv/bin/python3",
+  "python_version": "3.12.3"
+}

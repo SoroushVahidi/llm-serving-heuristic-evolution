@@ -25,7 +25,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from llmserveopt.workloads.trace_io_extended import load_extended_jsonl
 from llmserveopt.workloads.burstgpt import load_burstgpt_trace
-from llmserveopt.core.types import Request
 
 
 def load_trace(path: Path):

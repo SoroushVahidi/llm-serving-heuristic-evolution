@@ -1,0 +1,30 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "calibration_before_launch": {
+    "method": "time a tiny local dry-run on 3 representative scenarios and 6 existing parents plus 3 decoded parent genomes; adjust candidate_evaluations_per_treatment downward only if needed to maintain <=10 minute wall-clock, recording the adjustment before the screen starts",
+    "not_performed_in_this_task": true,
+    "required": true
+  },
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "no_gpu": true,
+  "no_heavy_simulation_in_design_task": true,
+  "no_wulver": true,
+  "planned_budget": {
+    "candidate_evaluations_per_treatment": 60,
+    "parent_envelope_reuse": "reuse unified_utility_matrix_v2 anchor values for E6 where valid; do not rerun parents unless regression/fingerprint calibration requires it",
+    "scenario_count": 24,
+    "total_candidate_policy_evaluations": 180,
+    "total_candidate_scenario_policy_runs": 4320,
+    "treatments": 3
+  },
+  "status": "DESIGNED_NOT_RUN",
+  "target_runtime": "local CPU, ideally <=10 minutes for first screen after implementation and calibration",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

@@ -3,7 +3,7 @@ Compare multiple policies on the same set of traces across multiple seeds.
 """
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional
 
 from ..core.metrics import RunMetrics
 from ..core.types import GPUConfig, Request

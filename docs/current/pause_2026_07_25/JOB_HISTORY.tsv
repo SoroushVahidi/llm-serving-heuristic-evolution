@@ -1,0 +1,25 @@
+job_id	job_name	state_at_part2	action	reason	output_status
+1143392	rwc_repaired_pilot	COMPLETED	preserve	authoritative repaired pilot	reports+manifests present
+1143271	rwc_burstgpt_windows	COMPLETED	preserve	window pipeline	catalog+validation
+1143272	rwc_azure2023_windows	COMPLETED	preserve	window pipeline	catalog+validation
+1143273	rwc_azure2024_windows	COMPLETED	preserve	window pipeline	catalog+validation
+1143274	rwc_bailian_windows	COMPLETED	preserve	window pipeline	catalog+validation
+1143275	rwc_mooncake_real_windows	COMPLETED	preserve	window pipeline internal OOD	catalog+validation
+1143276	rwc_load_pilot	COMPLETED	preserve	flawed pilot negative evidence	pilot root present
+1143277	rwc_morning_status	COMPLETED	preserve	overnight status	OVERNIGHT_STATUS.md
+1127600	swissai_v2_report	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127943	slo_aug_smoke	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127944	slo_aug_eval	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127945	slo_aug_combine	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127946	slo_aug_boundary	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127947	slo_aug_balance	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127948	slo_aug_selector_diag	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127949	slo_aug_sensitivity	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127950	slo_aug_report	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127958	slo_aug_eval	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127959	slo_aug_combine	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127960	slo_aug_boundary	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127961	slo_aug_balance	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127962	slo_aug_selector_diag	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127963	slo_aug_sensitivity	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved
+1127964	slo_aug_report	CANCELLED	cancel	obsolete Dependency/DependencyNeverSatisfied; superseded successful workflow artifacts preserved	successor reports preserved

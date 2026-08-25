@@ -1,0 +1,45 @@
+{
+  "exact_command": "python3 scripts/run_public_replay_load_scaling_v1.py --task-index 52",
+  "expected_n_cells": 3840,
+  "git_head_sha": "unknown",
+  "git_tree_dirty": true,
+  "hostname": "n0010",
+  "load_factors": [
+    1.0,
+    2.0,
+    4.0,
+    8.0,
+    16.0,
+    32.0,
+    64.0,
+    128.0
+  ],
+  "mode": "task_index",
+  "numpy_version": "2.3.5",
+  "pandas_version": "2.3.3",
+  "pext_policies": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online",
+    "official_vtc_joint_token_budget_remap",
+    "vllm_style_continuous_batching"
+  ],
+  "python_executable": "/home/sv96/.conda/envs/feedback-weighted-maximization/bin/python",
+  "python_version": "3.11.14",
+  "result": {
+    "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w4563::augmented",
+    "cells_path": "/mmfs1/scratch/ikoutis/sv96/llm-serving-heuristic-evolution/public_replay_load_scaling_v1/experiments/public_replay_load_scaling_v1/cells_window_4563_burstgpt.jsonl",
+    "elapsed_s": 75.591477394104,
+    "n_fail": 0,
+    "n_ok": 64,
+    "source_dataset": "burstgpt",
+    "window_index": 4563
+  },
+  "run_timestamp_utc_end": "2026-08-25T18:33:24Z",
+  "run_timestamp_utc_start": "2026-08-25T18:32:08Z",
+  "schema_version": "public_replay_load_scaling_v1_provenance.1.0.0",
+  "task_index": 52
+}

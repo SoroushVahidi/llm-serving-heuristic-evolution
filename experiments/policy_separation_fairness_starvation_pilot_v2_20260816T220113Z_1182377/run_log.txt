@@ -1,0 +1,17 @@
+[2026-08-16T18:01:26] BurstGPT resolved: /mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2/raw/BurstGPT_without_fails_1.csv
+[2026-08-16T18:01:26] Starting Family A v2 (dry_run=False, allow_synthetic_tokens=False)
+[2026-08-16T18:01:27] Generated 72 scenarios.
+[2026-08-16T18:01:27] Total tasks to run: 288
+[2026-08-16T18:01:33] Completed 25/288 tasks.
+[2026-08-16T18:01:39] Completed 50/288 tasks.
+[2026-08-16T18:01:43] Completed 75/288 tasks.
+[2026-08-16T18:01:49] Completed 100/288 tasks.
+[2026-08-16T18:01:55] Completed 125/288 tasks.
+[2026-08-16T18:02:00] Completed 150/288 tasks.
+[2026-08-16T18:02:05] Completed 175/288 tasks.
+[2026-08-16T18:02:12] Completed 200/288 tasks.
+[2026-08-16T18:02:18] Completed 225/288 tasks.
+[2026-08-16T18:02:24] Completed 250/288 tasks.
+[2026-08-16T18:02:30] Completed 275/288 tasks.
+[2026-08-16T18:02:37] Successes=288 Failures=0 elapsed=70.22s
+[2026-08-16T18:02:37] Completed Family A v2 pilot execution.

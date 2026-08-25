@@ -9,8 +9,18 @@ from .synthetic import (
     DEFAULT_SLO_CLASSES,
 )
 from .trace_io import save_jsonl, load_jsonl, save_csv, load_csv
+from .apt_serve_stress import (
+    generate_apt_serve_target_workload,
+    generate_apt_serve_counter_workload,
+    generate_apt_serve_regime_workload,
+)
 from . import augmentation
+from . import azure
+from . import bailian
 from . import burstgpt
+from . import canonical_schema
+from . import mooncake
+from . import prompt_corpora
 from . import sharegpt
 from . import trace_io_extended
 
@@ -27,8 +37,16 @@ __all__ = [
     "load_jsonl",
     "save_csv",
     "load_csv",
+    "generate_apt_serve_target_workload",
+    "generate_apt_serve_counter_workload",
+    "generate_apt_serve_regime_workload",
     "augmentation",
+    "azure",
+    "bailian",
     "burstgpt",
+    "canonical_schema",
+    "mooncake",
+    "prompt_corpora",
     "sharegpt",
     "trace_io_extended",
 ]

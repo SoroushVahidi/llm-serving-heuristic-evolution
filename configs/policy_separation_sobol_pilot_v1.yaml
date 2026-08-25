@@ -1,0 +1,81 @@
+# Policy Separation Sobol Pilot v1 -- landscape-characterization design,
+# NOT the eventual 8K-12K MAP-Elites-ready dataset. Built strictly from
+# dimensions validated by jobs 1170116 and 1171116; see
+# docs/design/POLICY_SEPARATION_SOBOL_PILOT_V1.md for the full
+# architecture rationale and docs/audits/policy_separation_boundary_refinement_v1_20260810.md
+# for the evidence this design is built on.
+#
+# THIS CONFIG DRIVES A DESIGN/VALIDATION-ONLY PIPELINE. The scientific
+# sweep has NOT been submitted to Slurm as of this config's authorship --
+# see scripts/slurm/run_policy_separation_sobol_pilot_v1.sbatch's
+# "REVIEWED DESIGN REQUIRED BEFORE SBATCH" comment.
+#
+# Scale check:
+#   Family B: 2**7=128 Sobol points * 2 heterogeneity * 4 seeds = 1024 scenarios * 4 policies = 4096 evals
+#   Family C: 2**7=128 Sobol points * 4 seeds = 512 scenarios * 5 policies = 2560 evals
+#   FCFS add-on: (2 ratios*3 short_counts*5 seeds*2 roles) + (1*1*2 offsets*5 seeds*2 roles) = 60+20 = 80 scenarios * 4 policies = 320 evals
+#   TOTAL: 1616 scenarios, 6976 policy evaluations -- within the "1,000-1,800
+#   scenarios / ~7,000-12,000 evaluations" pilot target, well under the
+#   eventual 8K-12K dataset's own evaluation count, and far below the
+#   50,000+ that would indicate scope creep.
+#
+# Expected runtime: jobs 1170116 (4040 evals/68s) and 1171116 (15660
+# evals/297s) both ran ~50-60 (scenario,policy) tasks/s with 8 CPU
+# workers on pure-Python/numpy simulator code (no GPU/vLLM/torch). At the
+# same throughput, 6976 evals should take roughly 6976/55 =~ 127s (~2min)
+# of execution phase.
+
+version: 1
+
+sobol:
+  # Fixed, documented scramble seeds -- deterministic and reproducible.
+  # Family B and Family C use DIFFERENT scramble seeds deliberately, so
+  # the two independent subspaces' point sequences are not correlated by
+  # sharing a seed.
+  family_b_scramble_seed: 20260810
+  family_c_scramble_seed: 20260812
+  # log2(number of base points); scipy.stats.qmc.Sobol.random_base2(m=...).
+  family_b_m: 7   # 128 points
+  family_c_m: 7   # 128 points
+
+family_b_prediction_sensitive:
+  # target_utilization in [0.50, 1.10]: skips the proven-uninformative
+  # <0.50 underloaded control region (job 1171116: util=0.30 gave FIFO
+  # wins in 319/330 cells, CI including 0 everywhere) -- that region is
+  # already validated as a control, not worth re-sampling here.
+  # inversion_fraction in [0.00, 1.00]: the full validated range.
+  policies: [fifo, estimated_service_time_first, shortest_output_first, aging_priority]
+  heterogeneity: [moderate, strong]
+  seeds: [20260809, 20260810, 20260811, 20260812]
+
+family_c_deadline_admission:
+  # overload_factor in [0.85, 1.40], fraction_impossible in [0.00, 0.80]:
+  # identical ranges to job 1171116's own hand-picked grid bounds, now
+  # continuously sampled instead of a 5x6 Cartesian product. role="stress"
+  # only -- see sobol_pilot.py's generate_family_c_sobol_scenarios
+  # docstring for why controls are not re-sampled here.
+  policies: [fifo, edf, least_laxity_first, scorpio_style_slo_guard, admission_control]
+  seeds: [20260809, 20260810, 20260811, 20260812]
+
+fcfs_categorical_add_on:
+  # NOT Sobol -- arrival_offset is a proven discontinuous mechanism
+  # switch (job 1171116), not a smooth axis. Template A1 = the proven
+  # genuine-choice regime (mas=1, offset=0.0); Template A2 = the proven
+  # general-convoy regime (mas=4, positive offset).
+  policies: [fifo, estimated_service_time_first, shortest_output_first, aging_priority]
+  a1_ratios: [32, 128]
+  a1_short_counts: [16, 32, 64]
+  a1_seeds: [20260809, 20260810, 20260811, 20260812, 20260813]
+  a2_ratio: 32
+  a2_short_count: 32
+  a2_offsets: [0.001, 0.01]
+  a2_max_active_sequences: 4
+  a2_seeds: [20260809, 20260810, 20260811, 20260812, 20260813]
+
+# Dropped from this pilot's roster: weighted_shortest_processing (proven
+# 100% ANWG-identical to estimated_service_time_first in this corpus,
+# job 1171116 -- see docs/audits/policy_separation_boundary_refinement_v1_20260810.md's
+# equivalence section; would waste evaluation budget). admission_control
+# is KEPT in Family C despite being 94% identical to edf, because that
+# residual 6% divergence is a real (if small) finding worth confirming
+# outside the handcrafted grid, not pure redundancy.

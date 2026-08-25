@@ -1,0 +1,76 @@
+{
+  "chosen_multiplier": 2.0,
+  "reason": "avoids universal success/failure; maximizes ANWG-discriminative fraction among the multipliers that do so -- never selected by which policy wins at that value",
+  "all_rows": [
+    {
+      "multiplier": 0.8,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 1.0,
+      "anwg_discriminative_fraction": 0.0,
+      "n_distinct_winners": 1,
+      "best_fixed_policy": "vllm_faithful",
+      "best_fixed_mean_anwg": 0.0
+    },
+    {
+      "multiplier": 0.9,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 1.0,
+      "anwg_discriminative_fraction": 0.0,
+      "n_distinct_winners": 1,
+      "best_fixed_policy": "vllm_faithful",
+      "best_fixed_mean_anwg": 0.0
+    },
+    {
+      "multiplier": 1.0,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 0.125,
+      "anwg_discriminative_fraction": 0.85,
+      "n_distinct_winners": 5,
+      "best_fixed_policy": "weighted_shortest_processing",
+      "best_fixed_mean_anwg": 0.2827
+    },
+    {
+      "multiplier": 1.1,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 0.105,
+      "anwg_discriminative_fraction": 0.875,
+      "n_distinct_winners": 5,
+      "best_fixed_policy": "weighted_shortest_processing",
+      "best_fixed_mean_anwg": 0.378
+    },
+    {
+      "multiplier": 1.25,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 0.065,
+      "anwg_discriminative_fraction": 0.925,
+      "n_distinct_winners": 5,
+      "best_fixed_policy": "weighted_shortest_processing",
+      "best_fixed_mean_anwg": 0.4979
+    },
+    {
+      "multiplier": 1.5,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 0.015,
+      "anwg_discriminative_fraction": 0.985,
+      "n_distinct_winners": 4,
+      "best_fixed_policy": "weighted_shortest_processing",
+      "best_fixed_mean_anwg": 0.6136
+    },
+    {
+      "multiplier": 2.0,
+      "n_scored": 200,
+      "all_success_fraction": 0.0,
+      "all_fail_fraction": 0.0,
+      "anwg_discriminative_fraction": 0.995,
+      "n_distinct_winners": 4,
+      "best_fixed_policy": "edf",
+      "best_fixed_mean_anwg": 0.761
+    }
+  ]
+}

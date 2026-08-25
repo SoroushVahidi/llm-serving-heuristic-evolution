@@ -1,0 +1,68 @@
+{
+  "entry_id": "sarathi_counter_mixed_prompt_lengths",
+  "seed": 1,
+  "smoke": true,
+  "n_requests": 6,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "short"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.0,
+      "prompt_tokens": 512,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "medium"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "long"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.0,
+      "prompt_tokens": 100,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "short"
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.0,
+      "prompt_tokens": 512,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "medium"
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "long"
+    }
+  ]
+}

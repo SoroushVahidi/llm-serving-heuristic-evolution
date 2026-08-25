@@ -1,5 +1,4 @@
 """Tests for selector feature extraction."""
-import math
 import pytest
 import numpy as np
 

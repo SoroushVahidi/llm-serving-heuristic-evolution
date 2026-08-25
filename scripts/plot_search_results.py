@@ -199,7 +199,6 @@ def main() -> None:
     # Load data
     overall_rows = _read_csv(eval_dir / "ranking_overall.csv")
     by_regime_rows = _read_csv(eval_dir / "candidate_metrics_by_regime.csv")
-    index_rows = _read_csv(candidates_dir / "index.csv")
 
     # Detect regime names from by_regime columns
     regime_names = [c for c in (by_regime_rows[0].keys() if by_regime_rows else [])

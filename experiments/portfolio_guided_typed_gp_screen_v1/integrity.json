@@ -1,0 +1,45 @@
+{
+  "artifact_checksums_sha256": {
+    "compute_budget.json": "4f4416fbd89354dfe844ba5648c3125c095c1c0dbe858ac63b1eae1e05279ade",
+    "design.json": "d87c445536cbeafb62889b943dc5e34d702954a63e5ad61c4f55c1f429d6275f",
+    "fitness_contract.json": "7583bb44cffbfb25a02ceb27af9bdbcd5eff70b9aabcdc843c2cab1985121c1b",
+    "grammar.json": "1fc77d2d5e3fe86ac71a8902445b84436e898fac05c3d10899b4646671e8ae54",
+    "implementation_readiness.json": "6671124825dc43f0d7c41cfa796016e371cd8bbfb0250cc0f18086d2dfca0d2e",
+    "nonredundancy_contract.json": "55991f0161d90d8deb171f63d121a2d974405226ab550463dfee6801013e890d",
+    "parent_genome_registry.json": "937bd43524eb9da7ec67c304b9c35f7167b5e426b194a7aa07ac6401ab9034af",
+    "parent_module_map.json": "76dfe5d4c05e34747531e3552f2d77cbca1d44830413e702d2ad380c13c3c9dd",
+    "parent_reproduction_results.json": "9429523c75a2fbb18d52aa1d86c7f06b638cc2e7d4564c07d09cc76a2f58f521",
+    "train_subset_manifest.json": "46b642cf6b6099bbb23bfd8113d68587f390db742dcc263b04ea2beaa89eaedf",
+    "treatments.json": "32ae3e216fab2cfc56bfea9ae3a8337d8aeff60e078e92a16c3ebf7c35ae075e"
+  },
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "implementation_update": "portfolio_gp exact-parent representation added; screen not run",
+  "json_files_validated": [
+    "compute_budget.json",
+    "design.json",
+    "fitness_contract.json",
+    "grammar.json",
+    "implementation_readiness.json",
+    "integrity.json",
+    "nonredundancy_contract.json",
+    "parent_genome_registry.json",
+    "parent_module_map.json",
+    "parent_reproduction_results.json",
+    "train_subset_manifest.json",
+    "treatments.json"
+  ],
+  "no_experiment_launched": true,
+  "no_test_final_used": true,
+  "no_wulver_gpu_api_jobs": true,
+  "smoke_update": "portfolio_guided_typed_gp_smoke_v1 completed; implementation_readiness screen_ready true; full screen not run",
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

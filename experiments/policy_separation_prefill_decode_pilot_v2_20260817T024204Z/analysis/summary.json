@@ -1,0 +1,186 @@
+{
+  "thresholds": {
+    "practical_eps": 0.01,
+    "h1_unique_wins": 8,
+    "h1_seeds_with_win": 3,
+    "h2_unique_wins": 8,
+    "h3_observable_accuracy": 0.8,
+    "h4_seeds_with_reverse": 2,
+    "h4_sign_agree": 0.75,
+    "h5_exact_tie_max": 0.25,
+    "h5_near_tie_max": 0.35,
+    "h6_mechanism_frac": 0.8,
+    "h8_heldout_sign_match": 0.75,
+    "h9_min_losses": 4,
+    "g1_min_each_direction": 8,
+    "g3_seed_agree": 0.75,
+    "g4_near_tie_max": 0.35,
+    "g5_mean_abs_delta": 0.02,
+    "g9_exact_match_max": 0.1
+  },
+  "integrity": {
+    "n_result_rows": 64,
+    "n_success": 64,
+    "n_failed": 0,
+    "n_scenarios": 32,
+    "duplicate_pairs": 0,
+    "nan_primary": 0,
+    "policies": [
+      "chunked_prefill_small",
+      "full_prefill"
+    ]
+  },
+  "n_comparable_cells": 32,
+  "family_b_verdict": "FAMILY_B_COMPOSITION_READY",
+  "composition_gate": {
+    "G1": true,
+    "G2": true,
+    "G3": true,
+    "G4": true,
+    "G5": true,
+    "G6": true,
+    "G7": true,
+    "G8": true,
+    "G9": true,
+    "G10": true
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "verdict": "CONFIRM",
+      "detail": {
+        "unique_wins_full": 16,
+        "seeds_with_full_win": [
+          20260820,
+          20260821,
+          20260822,
+          20260823
+        ]
+      }
+    },
+    {
+      "id": "H2",
+      "verdict": "CONFIRM",
+      "detail": {
+        "unique_wins_small": 15,
+        "seeds_with_small_win": [
+          20260820,
+          20260821,
+          20260822,
+          20260823
+        ]
+      }
+    },
+    {
+      "id": "H3",
+      "verdict": "CONFIRM",
+      "detail": {
+        "accuracy": 1.0,
+        "n_non_neartie": 31
+      }
+    },
+    {
+      "id": "H4",
+      "verdict": "CONFIRM",
+      "detail": {
+        "seeds_with_reverse": [
+          20260820,
+          20260821,
+          20260822,
+          20260823
+        ],
+        "sign_agree": 0.875
+      }
+    },
+    {
+      "id": "H5",
+      "verdict": "CONFIRM",
+      "detail": {
+        "exact_tie_rate": 0.03125,
+        "near_tie_rate": 0.03125
+      }
+    },
+    {
+      "id": "H6",
+      "verdict": "CONFIRM",
+      "detail": {
+        "frac_full_win_hog_ttft_lower": 1.0,
+        "frac_small_win_late_ttft_lower": 1.0,
+        "n_full_win": 16,
+        "n_small_win": 15
+      }
+    },
+    {
+      "id": "H7",
+      "verdict": "NOT_APPLICABLE",
+      "detail": "third decode-priority policy not retained"
+    },
+    {
+      "id": "H8",
+      "verdict": "CONFIRM",
+      "detail": {
+        "held_out_seed": 20260823,
+        "held_full_wins": 4,
+        "held_small_wins": 4,
+        "sign_match_frac": 1.0
+      }
+    },
+    {
+      "id": "H9",
+      "verdict": "CONFIRM",
+      "detail": {
+        "full_unique_wins": 16,
+        "small_unique_wins": 15
+      }
+    },
+    {
+      "id": "H10",
+      "verdict": "CONFIRM",
+      "detail": {
+        "G1": true,
+        "G2": true,
+        "G3": true,
+        "G4": true,
+        "G5": true,
+        "G6": true,
+        "G7": true,
+        "G8": true,
+        "G9": true,
+        "G10": true
+      }
+    }
+  ],
+  "unique_wins_eps_0.01": {
+    "full_prefill": 16,
+    "chunked_prefill_small": 15
+  },
+  "exact_tie_rate": 0.03125,
+  "near_tie_rate_eps_0.01": 0.03125,
+  "exact_match_rate": 0.03125,
+  "seed_winner_set_agree": 0.875,
+  "seed_sign_agree": 0.875,
+  "pairwise": {
+    "full_beats_small_eps_0.01": 16,
+    "small_beats_full_eps_0.01": 15,
+    "near_ties_eps_0.01": 1,
+    "exact_ties": 1,
+    "bidirectional": true,
+    "mean_abs_delta": 0.1309178018162393,
+    "mean_delta_full_minus_small": 0.03205128205128205
+  },
+  "decode_stalled_steps_identically_zero": true,
+  "smoke": {
+    "n_comparable_cells": 32,
+    "full_practical_wins": 16,
+    "small_practical_wins": 15,
+    "policies_seen": [
+      "chunked_prefill_small",
+      "full_prefill"
+    ],
+    "S2_full_win": true,
+    "S3_small_win": true,
+    "S4_two_anchors_only": true,
+    "verdict": "SMOKE_GO"
+  },
+  "confound": false
+}

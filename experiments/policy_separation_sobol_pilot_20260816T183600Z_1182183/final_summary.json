@@ -1,0 +1,17 @@
+{
+  "run_dir": "/mmfs1/scratch/ikoutis/sv96/policy_separation_sobol_pilot_20260816T183600Z_1182183",
+  "n_scenarios": 1616,
+  "n_tasks": 6976,
+  "n_completed": 6976,
+  "n_failed": 0,
+  "n_validity_warnings": 0,
+  "generator_families": [
+    "sobol_family_b_prediction_sensitive",
+    "sobol_family_c_deadline_admission",
+    "fcfs_categorical_add_on"
+  ],
+  "finished_at": "2026-08-16T14:38:50",
+  "git_head": "b1181c6380029254080397c161d5dd281bbd6d89",
+  "dry_run": false,
+  "scientific_result": true
+}

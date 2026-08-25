@@ -1,0 +1,12 @@
+{
+  "baseline": "vllm_style_continuous_batching",
+  "cells_path": "experiments/external_baseline_comparison_v1/results/family_c_vllm_style/cells.jsonl",
+  "elapsed_s": 14.681200504302979,
+  "family": "FAMILY_C_KV_PRESSURE_V2",
+  "finished_utc": "2026-08-25T00:17:38.317247+00:00",
+  "n_failed": 0,
+  "n_scenarios": 72,
+  "n_success": 72,
+  "scenario_csv": "/home/soroush/llm-serving-heuristic-evolution/experiments/mf_psd_v1/mf_psd_scenarios_v1.csv",
+  "started_utc": "2026-08-25T00:17:23.636029+00:00"
+}

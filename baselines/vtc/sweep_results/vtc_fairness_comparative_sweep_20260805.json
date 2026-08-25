@@ -1,0 +1,4664 @@
+[
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 0,
+    "policy": "official_vtc",
+    "n_requests": 611,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.078844652615146,
+    "num_completed": 611,
+    "num_total": 611,
+    "jains_index_at_checkpoint": 0.9913256138780077,
+    "max_service_disparity_at_checkpoint": 7614,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 155,
+        "p95_queuing_delay": 1.5632851892778845,
+        "p99_queuing_delay": 1.828135585311351,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 127,
+        "p95_queuing_delay": 0.5457619246172314,
+        "p99_queuing_delay": 0.6737478299444781,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 167,
+        "p95_queuing_delay": 2.6475577575997953,
+        "p99_queuing_delay": 3.0224651921365826,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.8744147326074554,
+        "p99_queuing_delay": 2.0851468461653724,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.7719999999999994,
+      "tenant_1": 1.5100000000000002,
+      "tenant_2": 1.186,
+      "tenant_3": 0.7269999999999985
+    },
+    "reservation_bind_rate": 0.016028159275904334,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.01351866762724075
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 0,
+    "policy": "matched_admission_fifo",
+    "n_requests": 611,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.110471662704867,
+    "num_completed": 611,
+    "num_total": 611,
+    "jains_index_at_checkpoint": 0.9885980867136254,
+    "max_service_disparity_at_checkpoint": 8654,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 155,
+        "p95_queuing_delay": 1.7146066848050658,
+        "p99_queuing_delay": 1.8849398367131016,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 127,
+        "p95_queuing_delay": 1.3458681781422577,
+        "p99_queuing_delay": 1.8439594322891963,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 167,
+        "p95_queuing_delay": 1.190459434128634,
+        "p99_queuing_delay": 1.704641422047466,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.7798840371802669,
+        "p99_queuing_delay": 1.9635997522710582,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.8889999999999993,
+      "tenant_1": 1.4429999999999998,
+      "tenant_2": 1.186,
+      "tenant_3": 0.9060000000000024
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 0,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 611,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.078844652615146,
+    "num_completed": 611,
+    "num_total": 611,
+    "jains_index_at_checkpoint": 0.9913256138780077,
+    "max_service_disparity_at_checkpoint": 7614,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 155,
+        "p95_queuing_delay": 1.5632851892778845,
+        "p99_queuing_delay": 1.828135585311351,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 127,
+        "p95_queuing_delay": 0.5457619246172314,
+        "p99_queuing_delay": 0.6737478299444781,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 167,
+        "p95_queuing_delay": 2.6475577575997953,
+        "p99_queuing_delay": 3.0224651921365826,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.8744147326074554,
+        "p99_queuing_delay": 2.0851468461653724,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.7719999999999994,
+      "tenant_1": 1.5100000000000002,
+      "tenant_2": 1.186,
+      "tenant_3": 0.7269999999999985
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 0,
+    "policy": "fifo",
+    "n_requests": 611,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.110471662704867,
+    "num_completed": 611,
+    "num_total": 611,
+    "jains_index_at_checkpoint": 0.9885980867136254,
+    "max_service_disparity_at_checkpoint": 8654,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 155,
+        "p95_queuing_delay": 1.7146066848050658,
+        "p99_queuing_delay": 1.8849398367131016,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 127,
+        "p95_queuing_delay": 1.3458681781422577,
+        "p99_queuing_delay": 1.8439594322891963,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 167,
+        "p95_queuing_delay": 1.190459434128634,
+        "p99_queuing_delay": 1.704641422047466,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.7798840371802669,
+        "p99_queuing_delay": 1.9635997522710582,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.8889999999999993,
+      "tenant_1": 1.4429999999999998,
+      "tenant_2": 1.186,
+      "tenant_3": 0.9060000000000024
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 0,
+    "policy": "shortest_prompt_first",
+    "n_requests": 611,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.115852704689797,
+    "num_completed": 611,
+    "num_total": 611,
+    "jains_index_at_checkpoint": 0.9892451566902816,
+    "max_service_disparity_at_checkpoint": 8117,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 155,
+        "p95_queuing_delay": 2.5373634079639764,
+        "p99_queuing_delay": 12.252221711965515,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 127,
+        "p95_queuing_delay": 1.186910944107428,
+        "p99_queuing_delay": 8.768292003060733,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 167,
+        "p95_queuing_delay": 1.5156582501839182,
+        "p99_queuing_delay": 3.915250088497146,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 162,
+        "p95_queuing_delay": 2.930464244546478,
+        "p99_queuing_delay": 11.09464196605406,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.8240000000000016,
+      "tenant_1": 1.2200000000000002,
+      "tenant_2": 1.186,
+      "tenant_3": 0.9429999999999996
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 0,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 611,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.02952535193721,
+    "num_completed": 611,
+    "num_total": 611,
+    "jains_index_at_checkpoint": 0.9909307490669332,
+    "max_service_disparity_at_checkpoint": 7563,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 155,
+        "p95_queuing_delay": 1.3153146527725,
+        "p99_queuing_delay": 4.095095206495916,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 127,
+        "p95_queuing_delay": 0.6910469464735485,
+        "p99_queuing_delay": 0.9159102677774165,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 167,
+        "p95_queuing_delay": 1.4526414220474635,
+        "p99_queuing_delay": 8.1634068604702,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.2194094423305408,
+        "p99_queuing_delay": 3.859272869595774,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.8019999999999996,
+      "tenant_1": 1.4429999999999998,
+      "tenant_2": 1.186,
+      "tenant_3": 0.8790000000000013
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 1,
+    "policy": "official_vtc",
+    "n_requests": 594,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.41176470588235,
+    "num_completed": 594,
+    "num_total": 594,
+    "jains_index_at_checkpoint": 0.9962631788468541,
+    "max_service_disparity_at_checkpoint": 5205,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 151,
+        "p95_queuing_delay": 1.1205435032639883,
+        "p99_queuing_delay": 1.3002787336794235,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.1894484836624626,
+        "p99_queuing_delay": 1.2795638371464655,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 138,
+        "p95_queuing_delay": 1.2494591471886416,
+        "p99_queuing_delay": 1.323063076944191,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 143,
+        "p95_queuing_delay": 1.098242161384137,
+        "p99_queuing_delay": 1.4852577455762557,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.7679999999999999,
+      "tenant_1": 0.7989999999999995,
+      "tenant_2": 0.8780000000000001,
+      "tenant_3": 1.1700000000000017
+    },
+    "reservation_bind_rate": 0.017946030914330627,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.012445666307537987
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 1,
+    "policy": "matched_admission_fifo",
+    "n_requests": 594,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.425095653880113,
+    "num_completed": 594,
+    "num_total": 594,
+    "jains_index_at_checkpoint": 0.9958002318303553,
+    "max_service_disparity_at_checkpoint": 5458,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 151,
+        "p95_queuing_delay": 0.9442787336794218,
+        "p99_queuing_delay": 1.1883425308845652,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 162,
+        "p95_queuing_delay": 0.875682661011834,
+        "p99_queuing_delay": 0.9231834277763831,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 138,
+        "p95_queuing_delay": 0.9092351558041161,
+        "p99_queuing_delay": 1.2047458062674465,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 143,
+        "p95_queuing_delay": 0.8791463023537922,
+        "p99_queuing_delay": 1.026257745576256,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 1.2080000000000002,
+      "tenant_1": 0.9920000000000009,
+      "tenant_2": 1.2700000000000031,
+      "tenant_3": 1.2900000000000027
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 1,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 594,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.41176470588235,
+    "num_completed": 594,
+    "num_total": 594,
+    "jains_index_at_checkpoint": 0.9962631788468541,
+    "max_service_disparity_at_checkpoint": 5205,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 151,
+        "p95_queuing_delay": 1.1205435032639883,
+        "p99_queuing_delay": 1.3002787336794235,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.1894484836624626,
+        "p99_queuing_delay": 1.2795638371464655,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 138,
+        "p95_queuing_delay": 1.2494591471886416,
+        "p99_queuing_delay": 1.323063076944191,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 143,
+        "p95_queuing_delay": 1.098242161384137,
+        "p99_queuing_delay": 1.4852577455762557,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.7679999999999999,
+      "tenant_1": 0.7989999999999995,
+      "tenant_2": 0.8780000000000001,
+      "tenant_3": 1.1700000000000017
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 1,
+    "policy": "fifo",
+    "n_requests": 594,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.425095653880113,
+    "num_completed": 594,
+    "num_total": 594,
+    "jains_index_at_checkpoint": 0.9958002318303553,
+    "max_service_disparity_at_checkpoint": 5458,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 151,
+        "p95_queuing_delay": 0.9442787336794218,
+        "p99_queuing_delay": 1.1883425308845652,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 162,
+        "p95_queuing_delay": 0.875682661011834,
+        "p99_queuing_delay": 0.9231834277763831,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 138,
+        "p95_queuing_delay": 0.9092351558041161,
+        "p99_queuing_delay": 1.2047458062674465,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 143,
+        "p95_queuing_delay": 0.8791463023537922,
+        "p99_queuing_delay": 1.026257745576256,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 1.2080000000000002,
+      "tenant_1": 0.9920000000000009,
+      "tenant_2": 1.2700000000000031,
+      "tenant_3": 1.2900000000000027
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 1,
+    "policy": "shortest_prompt_first",
+    "n_requests": 594,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.444171658646763,
+    "num_completed": 594,
+    "num_total": 594,
+    "jains_index_at_checkpoint": 0.9960007210772615,
+    "max_service_disparity_at_checkpoint": 5371,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 151,
+        "p95_queuing_delay": 2.4318818690757826,
+        "p99_queuing_delay": 5.29109098849084,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 162,
+        "p95_queuing_delay": 2.777035230669421,
+        "p99_queuing_delay": 8.416575516589877,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 138,
+        "p95_queuing_delay": 2.396307333051702,
+        "p99_queuing_delay": 8.147382772639963,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 143,
+        "p95_queuing_delay": 1.7125806149294336,
+        "p99_queuing_delay": 4.941381415733532,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.819,
+      "tenant_1": 1.2449999999999974,
+      "tenant_2": 1.1729999999999983,
+      "tenant_3": 1.1700000000000017
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 1,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 594,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.44353518821604,
+    "num_completed": 594,
+    "num_total": 594,
+    "jains_index_at_checkpoint": 0.9965558898108042,
+    "max_service_disparity_at_checkpoint": 4958,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 151,
+        "p95_queuing_delay": 1.2740950014911432,
+        "p99_queuing_delay": 2.273746570668763,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 162,
+        "p95_queuing_delay": 1.1679092752302047,
+        "p99_queuing_delay": 2.1993185937487834,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 138,
+        "p95_queuing_delay": 1.3507879087669643,
+        "p99_queuing_delay": 2.0233734364691065,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 143,
+        "p95_queuing_delay": 0.9051061040885919,
+        "p99_queuing_delay": 2.496709248587937,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.8320000000000007,
+      "tenant_1": 0.8410000000000011,
+      "tenant_2": 1.3860000000000028,
+      "tenant_3": 1.2900000000000027
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 2,
+    "policy": "official_vtc",
+    "n_requests": 623,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.5493912388603,
+    "num_completed": 623,
+    "num_total": 623,
+    "jains_index_at_checkpoint": 0.9977280411729199,
+    "max_service_disparity_at_checkpoint": 3472,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 153,
+        "p95_queuing_delay": 2.7974299286702617,
+        "p99_queuing_delay": 3.0209487760845235,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 166,
+        "p95_queuing_delay": 3.598489316304743,
+        "p99_queuing_delay": 3.7888488761086947,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 140,
+        "p95_queuing_delay": 1.9360728432852028,
+        "p99_queuing_delay": 2.143285742295088,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 164,
+        "p95_queuing_delay": 2.714438066860879,
+        "p99_queuing_delay": 2.941146332969204,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.6460000000000008,
+      "tenant_1": 0.742,
+      "tenant_2": 1.0160000000000002,
+      "tenant_3": 0.774
+    },
+    "reservation_bind_rate": 0.018324029394140094,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.013474360316961637
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 2,
+    "policy": "matched_admission_fifo",
+    "n_requests": 623,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.537129954841944,
+    "num_completed": 623,
+    "num_total": 623,
+    "jains_index_at_checkpoint": 0.9949644504503506,
+    "max_service_disparity_at_checkpoint": 5727,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 153,
+        "p95_queuing_delay": 2.5073859117190054,
+        "p99_queuing_delay": 2.6013407520712413,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 166,
+        "p95_queuing_delay": 2.5411125175666314,
+        "p99_queuing_delay": 2.622489316304744,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 140,
+        "p95_queuing_delay": 2.499205922339989,
+        "p99_queuing_delay": 2.647115575215423,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 164,
+        "p95_queuing_delay": 2.5028409622071095,
+        "p99_queuing_delay": 2.6557643480681428,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 1.0789999999999988,
+      "tenant_1": 0.742,
+      "tenant_2": 1.0600000000000003,
+      "tenant_3": 0.8469999999999978
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 2,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 623,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.5493912388603,
+    "num_completed": 623,
+    "num_total": 623,
+    "jains_index_at_checkpoint": 0.9977280411729199,
+    "max_service_disparity_at_checkpoint": 3472,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 153,
+        "p95_queuing_delay": 2.7974299286702617,
+        "p99_queuing_delay": 3.0209487760845235,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 166,
+        "p95_queuing_delay": 3.598489316304743,
+        "p99_queuing_delay": 3.7888488761086947,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 140,
+        "p95_queuing_delay": 1.9360728432852028,
+        "p99_queuing_delay": 2.143285742295088,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 164,
+        "p95_queuing_delay": 2.714438066860879,
+        "p99_queuing_delay": 2.941146332969204,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.6460000000000008,
+      "tenant_1": 0.742,
+      "tenant_2": 1.0160000000000002,
+      "tenant_3": 0.774
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 2,
+    "policy": "fifo",
+    "n_requests": 623,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.537129954841944,
+    "num_completed": 623,
+    "num_total": 623,
+    "jains_index_at_checkpoint": 0.9949644504503506,
+    "max_service_disparity_at_checkpoint": 5727,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 153,
+        "p95_queuing_delay": 2.5073859117190054,
+        "p99_queuing_delay": 2.6013407520712413,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 166,
+        "p95_queuing_delay": 2.5411125175666314,
+        "p99_queuing_delay": 2.622489316304744,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 140,
+        "p95_queuing_delay": 2.499205922339989,
+        "p99_queuing_delay": 2.647115575215423,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 164,
+        "p95_queuing_delay": 2.5028409622071095,
+        "p99_queuing_delay": 2.6557643480681428,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 1.0789999999999988,
+      "tenant_1": 0.742,
+      "tenant_2": 1.0600000000000003,
+      "tenant_3": 0.8469999999999978
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 2,
+    "policy": "shortest_prompt_first",
+    "n_requests": 623,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.555527653964468,
+    "num_completed": 623,
+    "num_total": 623,
+    "jains_index_at_checkpoint": 0.995923679763353,
+    "max_service_disparity_at_checkpoint": 4673,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 153,
+        "p95_queuing_delay": 8.140879582924349,
+        "p99_queuing_delay": 17.378071555869646,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 166,
+        "p95_queuing_delay": 7.6403462091512715,
+        "p99_queuing_delay": 18.999996965690674,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 140,
+        "p95_queuing_delay": 9.60970497745408,
+        "p99_queuing_delay": 18.598508871314788,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 164,
+        "p95_queuing_delay": 10.344265265322106,
+        "p99_queuing_delay": 18.06185140118206,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.8870000000000005,
+      "tenant_1": 0.8329999999999984,
+      "tenant_2": 1.065999999999999,
+      "tenant_3": 1.061
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "balanced_tenants",
+    "seed_offset": 2,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 623,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.538355391080724,
+    "num_completed": 623,
+    "num_total": 623,
+    "jains_index_at_checkpoint": 0.9957837764904418,
+    "max_service_disparity_at_checkpoint": 5146,
+    "per_tenant": {
+      "tenant_0": {
+        "n_completed": 153,
+        "p95_queuing_delay": 1.675939311851229,
+        "p99_queuing_delay": 8.958578493639212,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_1": {
+        "n_completed": 166,
+        "p95_queuing_delay": 2.2633159797609324,
+        "p99_queuing_delay": 12.583557364626897,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_2": {
+        "n_completed": 140,
+        "p95_queuing_delay": 3.1347344512285957,
+        "p99_queuing_delay": 16.597076482350122,
+        "slo_violation_rate": 0.0
+      },
+      "tenant_3": {
+        "n_completed": 164,
+        "p95_queuing_delay": 6.054959984440913,
+        "p99_queuing_delay": 15.720851401182058,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "tenant_0": 0.9450000000000003,
+      "tenant_1": 0.7420000000000009,
+      "tenant_2": 1.0600000000000003,
+      "tenant_3": 0.8170000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 0,
+    "policy": "official_vtc",
+    "n_requests": 680,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.785271611044838,
+    "num_completed": 680,
+    "num_total": 680,
+    "jains_index_at_checkpoint": 0.5041430688493127,
+    "max_service_disparity_at_checkpoint": 63408,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 451,
+        "p95_queuing_delay": 5.862531958809292,
+        "p99_queuing_delay": 5.918923504991778,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 47,
+        "p95_queuing_delay": 0.11837226022440639,
+        "p99_queuing_delay": 0.136192346644739,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 63,
+        "p95_queuing_delay": 0.1830871170487498,
+        "p99_queuing_delay": 0.40191826637063954,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 59,
+        "p95_queuing_delay": 0.20767154808443777,
+        "p99_queuing_delay": 0.28227716039181416,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 0.13075655883540271,
+        "p99_queuing_delay": 0.1919419343671862,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.354000000000001,
+      "light_0": 2.035,
+      "light_1": 2.12,
+      "light_2": 2.678000000000001,
+      "light_3": 1.7690000000000001
+    },
+    "reservation_bind_rate": 0.01916066376972207,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.021186846898667434
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 0,
+    "policy": "matched_admission_fifo",
+    "n_requests": 680,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.774914938785006,
+    "num_completed": 680,
+    "num_total": 680,
+    "jains_index_at_checkpoint": 0.42591115704970745,
+    "max_service_disparity_at_checkpoint": 73629,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 451,
+        "p95_queuing_delay": 4.3303007314073625,
+        "p99_queuing_delay": 4.4890148455803,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 47,
+        "p95_queuing_delay": 4.089656099819006,
+        "p99_queuing_delay": 4.386758076057703,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 63,
+        "p95_queuing_delay": 4.032977697333042,
+        "p99_queuing_delay": 4.346996784358954,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 59,
+        "p95_queuing_delay": 4.2729285563289,
+        "p99_queuing_delay": 4.345604262412465,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 4.300593504015399,
+        "p99_queuing_delay": 4.468395810816709,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.3520000000000003,
+      "light_0": 2.6389999999999993,
+      "light_1": 2.4639999999999986,
+      "light_2": 2.5410000000000004,
+      "light_3": 2.064
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 0,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 680,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.785271611044838,
+    "num_completed": 680,
+    "num_total": 680,
+    "jains_index_at_checkpoint": 0.5041430688493127,
+    "max_service_disparity_at_checkpoint": 63408,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 451,
+        "p95_queuing_delay": 5.862531958809292,
+        "p99_queuing_delay": 5.918923504991778,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 47,
+        "p95_queuing_delay": 0.11837226022440639,
+        "p99_queuing_delay": 0.136192346644739,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 63,
+        "p95_queuing_delay": 0.1830871170487498,
+        "p99_queuing_delay": 0.40191826637063954,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 59,
+        "p95_queuing_delay": 0.20767154808443777,
+        "p99_queuing_delay": 0.28227716039181416,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 0.13075655883540271,
+        "p99_queuing_delay": 0.1919419343671862,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.354000000000001,
+      "light_0": 2.035,
+      "light_1": 2.12,
+      "light_2": 2.678000000000001,
+      "light_3": 1.7690000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 0,
+    "policy": "fifo",
+    "n_requests": 680,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.774914938785006,
+    "num_completed": 680,
+    "num_total": 680,
+    "jains_index_at_checkpoint": 0.42591115704970745,
+    "max_service_disparity_at_checkpoint": 73629,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 451,
+        "p95_queuing_delay": 4.3303007314073625,
+        "p99_queuing_delay": 4.4890148455803,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 47,
+        "p95_queuing_delay": 4.089656099819006,
+        "p99_queuing_delay": 4.386758076057703,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 63,
+        "p95_queuing_delay": 4.032977697333042,
+        "p99_queuing_delay": 4.346996784358954,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 59,
+        "p95_queuing_delay": 4.2729285563289,
+        "p99_queuing_delay": 4.345604262412465,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 4.300593504015399,
+        "p99_queuing_delay": 4.468395810816709,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.3520000000000003,
+      "light_0": 2.6389999999999993,
+      "light_1": 2.4639999999999986,
+      "light_2": 2.5410000000000004,
+      "light_3": 2.064
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 0,
+    "policy": "shortest_prompt_first",
+    "n_requests": 680,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.736460207813316,
+    "num_completed": 680,
+    "num_total": 680,
+    "jains_index_at_checkpoint": 0.43965184739719776,
+    "max_service_disparity_at_checkpoint": 65107,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 451,
+        "p95_queuing_delay": 16.826307077893873,
+        "p99_queuing_delay": 25.333808126030238,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 47,
+        "p95_queuing_delay": 8.967372260224405,
+        "p99_queuing_delay": 21.06449322390358,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 63,
+        "p95_queuing_delay": 13.979299856974205,
+        "p99_queuing_delay": 27.699803441551992,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 59,
+        "p95_queuing_delay": 15.688508001030474,
+        "p99_queuing_delay": 19.121139160820256,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 12.209522555019849,
+        "p99_queuing_delay": 20.025403809004498,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.34699999999999953,
+      "light_0": 2.0090000000000003,
+      "light_1": 2.194,
+      "light_2": 3.0619999999999976,
+      "light_3": 2.497
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 0,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 680,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.75882609327328,
+    "num_completed": 680,
+    "num_total": 680,
+    "jains_index_at_checkpoint": 0.42918657322410375,
+    "max_service_disparity_at_checkpoint": 76788,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 451,
+        "p95_queuing_delay": 8.864307077893871,
+        "p99_queuing_delay": 19.324117656378867,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 47,
+        "p95_queuing_delay": 0.6201861306918985,
+        "p99_queuing_delay": 15.21519234664474,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 63,
+        "p95_queuing_delay": 8.359786708768755,
+        "p99_queuing_delay": 17.316239850837352,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 59,
+        "p95_queuing_delay": 11.469159437177655,
+        "p99_queuing_delay": 19.527681380064244,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 6.015437977819204,
+        "p99_queuing_delay": 14.969525673567162,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.3300000000000054,
+      "light_0": 2.604999999999997,
+      "light_1": 2.275,
+      "light_2": 2.5589999999999993,
+      "light_3": 2.112
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 1,
+    "policy": "official_vtc",
+    "n_requests": 686,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.619058513985014,
+    "num_completed": 686,
+    "num_total": 686,
+    "jains_index_at_checkpoint": 0.49930356415148347,
+    "max_service_disparity_at_checkpoint": 61371,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 457,
+        "p95_queuing_delay": 6.580532643225766,
+        "p99_queuing_delay": 6.789153404457473,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 59,
+        "p95_queuing_delay": 0.12025816470351103,
+        "p99_queuing_delay": 0.1297031110057194,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 70,
+        "p95_queuing_delay": 0.1705513791424167,
+        "p99_queuing_delay": 0.44169011358869104,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 49,
+        "p95_queuing_delay": 0.21545082072266908,
+        "p99_queuing_delay": 0.23815549961505056,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 51,
+        "p95_queuing_delay": 0.2472506735207034,
+        "p99_queuing_delay": 0.31512757323369733,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.40600000000000236,
+      "light_0": 1.8910000000000018,
+      "light_1": 2.2619999999999996,
+      "light_2": 3.3580000000000005,
+      "light_3": 2.3729999999999976
+    },
+    "reservation_bind_rate": 0.019251122743785577,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.019272886552781428
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 1,
+    "policy": "matched_admission_fifo",
+    "n_requests": 686,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.65559726082347,
+    "num_completed": 686,
+    "num_total": 686,
+    "jains_index_at_checkpoint": 0.41046328258633835,
+    "max_service_disparity_at_checkpoint": 72134,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 457,
+        "p95_queuing_delay": 4.731071378338054,
+        "p99_queuing_delay": 4.911171403061214,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 59,
+        "p95_queuing_delay": 4.6457118691438914,
+        "p99_queuing_delay": 4.8440148259208975,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 70,
+        "p95_queuing_delay": 4.576060542451664,
+        "p99_queuing_delay": 4.775057463889812,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 49,
+        "p95_queuing_delay": 4.667873838451282,
+        "p99_queuing_delay": 4.927175872274571,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 51,
+        "p95_queuing_delay": 4.5328028195968955,
+        "p99_queuing_delay": 4.8192468087891385,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.40700000000000003,
+      "light_0": 2.076999999999998,
+      "light_1": 2.2619999999999996,
+      "light_2": 3.585000000000001,
+      "light_3": 2.634999999999998
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 1,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 686,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.619058513985014,
+    "num_completed": 686,
+    "num_total": 686,
+    "jains_index_at_checkpoint": 0.49930356415148347,
+    "max_service_disparity_at_checkpoint": 61371,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 457,
+        "p95_queuing_delay": 6.580532643225766,
+        "p99_queuing_delay": 6.789153404457473,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 59,
+        "p95_queuing_delay": 0.12025816470351103,
+        "p99_queuing_delay": 0.1297031110057194,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 70,
+        "p95_queuing_delay": 0.1705513791424167,
+        "p99_queuing_delay": 0.44169011358869104,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 49,
+        "p95_queuing_delay": 0.21545082072266908,
+        "p99_queuing_delay": 0.23815549961505056,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 51,
+        "p95_queuing_delay": 0.2472506735207034,
+        "p99_queuing_delay": 0.31512757323369733,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.40600000000000236,
+      "light_0": 1.8910000000000018,
+      "light_1": 2.2619999999999996,
+      "light_2": 3.3580000000000005,
+      "light_3": 2.3729999999999976
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 1,
+    "policy": "fifo",
+    "n_requests": 686,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.65559726082347,
+    "num_completed": 686,
+    "num_total": 686,
+    "jains_index_at_checkpoint": 0.41046328258633835,
+    "max_service_disparity_at_checkpoint": 72134,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 457,
+        "p95_queuing_delay": 4.731071378338054,
+        "p99_queuing_delay": 4.911171403061214,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 59,
+        "p95_queuing_delay": 4.6457118691438914,
+        "p99_queuing_delay": 4.8440148259208975,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 70,
+        "p95_queuing_delay": 4.576060542451664,
+        "p99_queuing_delay": 4.775057463889812,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 49,
+        "p95_queuing_delay": 4.667873838451282,
+        "p99_queuing_delay": 4.927175872274571,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 51,
+        "p95_queuing_delay": 4.5328028195968955,
+        "p99_queuing_delay": 4.8192468087891385,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.40700000000000003,
+      "light_0": 2.076999999999998,
+      "light_1": 2.2619999999999996,
+      "light_2": 3.585000000000001,
+      "light_3": 2.634999999999998
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 1,
+    "policy": "shortest_prompt_first",
+    "n_requests": 686,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.633657698912423,
+    "num_completed": 686,
+    "num_total": 686,
+    "jains_index_at_checkpoint": 0.4606880800700719,
+    "max_service_disparity_at_checkpoint": 60033,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 457,
+        "p95_queuing_delay": 21.092974636900927,
+        "p99_queuing_delay": 30.87142144313447,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 59,
+        "p95_queuing_delay": 18.305881915948003,
+        "p99_queuing_delay": 21.23489176119405,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 70,
+        "p95_queuing_delay": 7.69872479827875,
+        "p99_queuing_delay": 28.577659555072806,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 49,
+        "p95_queuing_delay": 20.20640519364449,
+        "p99_queuing_delay": 27.152006814134413,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 51,
+        "p95_queuing_delay": 3.8377430593397186,
+        "p99_queuing_delay": 11.439226029605955,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.41900000000000004,
+      "light_0": 2.0519999999999996,
+      "light_1": 2.478999999999999,
+      "light_2": 3.1330000000000027,
+      "light_3": 3.7029999999999994
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 1,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 686,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.616814412353445,
+    "num_completed": 686,
+    "num_total": 686,
+    "jains_index_at_checkpoint": 0.4191316533660245,
+    "max_service_disparity_at_checkpoint": 76899,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 457,
+        "p95_queuing_delay": 10.758132968977584,
+        "p99_queuing_delay": 21.568860609855236,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 59,
+        "p95_queuing_delay": 3.3256850059883387,
+        "p99_queuing_delay": 20.864881915948004,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 70,
+        "p95_queuing_delay": 1.6812065752676641,
+        "p99_queuing_delay": 13.271715388012947,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 49,
+        "p95_queuing_delay": 10.812930223417712,
+        "p99_queuing_delay": 21.195052884267724,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 51,
+        "p95_queuing_delay": 17.18300191404773,
+        "p99_queuing_delay": 28.344648217978644,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.5739999999999981,
+      "light_0": 1.926000000000002,
+      "light_1": 3.934000000000001,
+      "light_2": 3.2300000000000004,
+      "light_3": 2.710000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 2,
+    "policy": "official_vtc",
+    "n_requests": 714,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 20.345358180885622,
+    "num_completed": 714,
+    "num_total": 714,
+    "jains_index_at_checkpoint": 0.5606862251661168,
+    "max_service_disparity_at_checkpoint": 56985,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 445,
+        "p95_queuing_delay": 5.807402150283448,
+        "p99_queuing_delay": 6.020712524167205,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 73,
+        "p95_queuing_delay": 0.15633601895578764,
+        "p99_queuing_delay": 0.20255178223281334,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 69,
+        "p95_queuing_delay": 0.15225709270185916,
+        "p99_queuing_delay": 0.32433642000986396,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 67,
+        "p95_queuing_delay": 0.1476469951821624,
+        "p99_queuing_delay": 0.17113342537283938,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 0.18317664724910188,
+        "p99_queuing_delay": 0.2061376672523032,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.393,
+      "light_0": 1.3250000000000028,
+      "light_1": 1.8230000000000004,
+      "light_2": 2.2449999999999974,
+      "light_3": 1.6780000000000008
+    },
+    "reservation_bind_rate": 0.019895108881541442,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.02130081300813008
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 2,
+    "policy": "matched_admission_fifo",
+    "n_requests": 714,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 20.341300817640523,
+    "num_completed": 714,
+    "num_total": 714,
+    "jains_index_at_checkpoint": 0.5083432578959061,
+    "max_service_disparity_at_checkpoint": 63631,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 445,
+        "p95_queuing_delay": 4.56040481420246,
+        "p99_queuing_delay": 4.90960367668421,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 73,
+        "p95_queuing_delay": 4.415361629691763,
+        "p99_queuing_delay": 4.57162742353599,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 69,
+        "p95_queuing_delay": 4.326075061404367,
+        "p99_queuing_delay": 4.866257092701861,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 67,
+        "p95_queuing_delay": 4.541483910693557,
+        "p99_queuing_delay": 4.8937256643098195,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 4.458005658969558,
+        "p99_queuing_delay": 4.663165057190707,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.393,
+      "light_0": 1.774000000000001,
+      "light_1": 2.1679999999999993,
+      "light_2": 2.165000000000001,
+      "light_3": 2.436
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 2,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 714,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 20.345358180885622,
+    "num_completed": 714,
+    "num_total": 714,
+    "jains_index_at_checkpoint": 0.5606862251661168,
+    "max_service_disparity_at_checkpoint": 56985,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 445,
+        "p95_queuing_delay": 5.807402150283448,
+        "p99_queuing_delay": 6.020712524167205,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 73,
+        "p95_queuing_delay": 0.15633601895578764,
+        "p99_queuing_delay": 0.20255178223281334,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 69,
+        "p95_queuing_delay": 0.15225709270185916,
+        "p99_queuing_delay": 0.32433642000986396,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 67,
+        "p95_queuing_delay": 0.1476469951821624,
+        "p99_queuing_delay": 0.17113342537283938,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 0.18317664724910188,
+        "p99_queuing_delay": 0.2061376672523032,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.393,
+      "light_0": 1.3250000000000028,
+      "light_1": 1.8230000000000004,
+      "light_2": 2.2449999999999974,
+      "light_3": 1.6780000000000008
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 2,
+    "policy": "fifo",
+    "n_requests": 714,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 20.341300817640523,
+    "num_completed": 714,
+    "num_total": 714,
+    "jains_index_at_checkpoint": 0.5083432578959061,
+    "max_service_disparity_at_checkpoint": 63631,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 445,
+        "p95_queuing_delay": 4.56040481420246,
+        "p99_queuing_delay": 4.90960367668421,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 73,
+        "p95_queuing_delay": 4.415361629691763,
+        "p99_queuing_delay": 4.57162742353599,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 69,
+        "p95_queuing_delay": 4.326075061404367,
+        "p99_queuing_delay": 4.866257092701861,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 67,
+        "p95_queuing_delay": 4.541483910693557,
+        "p99_queuing_delay": 4.8937256643098195,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 4.458005658969558,
+        "p99_queuing_delay": 4.663165057190707,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.393,
+      "light_0": 1.774000000000001,
+      "light_1": 2.1679999999999993,
+      "light_2": 2.165000000000001,
+      "light_3": 2.436
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 2,
+    "policy": "shortest_prompt_first",
+    "n_requests": 714,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 20.342459899142423,
+    "num_completed": 714,
+    "num_total": 714,
+    "jains_index_at_checkpoint": 0.5018144237724287,
+    "max_service_disparity_at_checkpoint": 59507,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 445,
+        "p95_queuing_delay": 15.860257134524435,
+        "p99_queuing_delay": 21.88961338585644,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 73,
+        "p95_queuing_delay": 13.767656681239103,
+        "p99_queuing_delay": 21.14542506209731,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 69,
+        "p95_queuing_delay": 10.892547037622254,
+        "p99_queuing_delay": 18.439760518967873,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 67,
+        "p95_queuing_delay": 5.2221334253728395,
+        "p99_queuing_delay": 22.490327021294007,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 6.356589017982891,
+        "p99_queuing_delay": 17.03249410679238,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.38400000000000034,
+      "light_0": 1.4669999999999987,
+      "light_1": 2.437999999999999,
+      "light_2": 2.222000000000005,
+      "light_3": 1.889000000000003
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "one_heavy_hitter",
+    "seed_offset": 2,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 714,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 20.32393043181236,
+    "num_completed": 714,
+    "num_total": 714,
+    "jains_index_at_checkpoint": 0.489752551275972,
+    "max_service_disparity_at_checkpoint": 68651,
+    "per_tenant": {
+      "heavy": {
+        "n_completed": 445,
+        "p95_queuing_delay": 8.556123653108159,
+        "p99_queuing_delay": 17.91018732493449,
+        "slo_violation_rate": 0.0
+      },
+      "light_0": {
+        "n_completed": 73,
+        "p95_queuing_delay": 4.078068757933838,
+        "p99_queuing_delay": 11.019428513265552,
+        "slo_violation_rate": 0.0
+      },
+      "light_1": {
+        "n_completed": 69,
+        "p95_queuing_delay": 1.211135328626181,
+        "p99_queuing_delay": 17.21697211548178,
+        "slo_violation_rate": 0.0
+      },
+      "light_2": {
+        "n_completed": 67,
+        "p95_queuing_delay": 1.148700164393313,
+        "p99_queuing_delay": 6.927730764143586,
+        "slo_violation_rate": 0.0
+      },
+      "light_3": {
+        "n_completed": 60,
+        "p95_queuing_delay": 15.346542291289008,
+        "p99_queuing_delay": 21.71882912822487,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "heavy": 0.393,
+      "light_0": 2.604999999999997,
+      "light_1": 1.9770000000000003,
+      "light_2": 1.5489999999999995,
+      "light_3": 1.9889999999999999
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 0,
+    "policy": "official_vtc",
+    "n_requests": 630,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.584683767015465,
+    "num_completed": 630,
+    "num_total": 630,
+    "jains_index_at_checkpoint": 0.7826689283160818,
+    "max_service_disparity_at_checkpoint": 47189,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 141,
+        "p95_queuing_delay": 0.36216152546529656,
+        "p99_queuing_delay": 0.4184639334471356,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 152,
+        "p95_queuing_delay": 11.165831636277073,
+        "p99_queuing_delay": 11.723124275516493,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 170,
+        "p95_queuing_delay": 0.2909452526718894,
+        "p99_queuing_delay": 0.33211223210605567,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 167,
+        "p95_queuing_delay": 13.734991964580956,
+        "p99_queuing_delay": 13.88046530653229,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9730000000000025,
+      "long_prompts": 0.667,
+      "short_outputs": 0.9540000000000006,
+      "long_outputs": 0.9480000000000004
+    },
+    "reservation_bind_rate": 0.014327112553610757,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.011093153100205701
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 0,
+    "policy": "matched_admission_fifo",
+    "n_requests": 630,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.671634839310666,
+    "num_completed": 630,
+    "num_total": 630,
+    "jains_index_at_checkpoint": 0.7032927332868577,
+    "max_service_disparity_at_checkpoint": 46872,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 141,
+        "p95_queuing_delay": 12.532991937952264,
+        "p99_queuing_delay": 12.707636908843313,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 152,
+        "p95_queuing_delay": 12.54683740485245,
+        "p99_queuing_delay": 12.77683163627707,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 170,
+        "p95_queuing_delay": 12.589066861849261,
+        "p99_queuing_delay": 12.770620645740284,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 167,
+        "p95_queuing_delay": 12.438186892329504,
+        "p99_queuing_delay": 12.692881345067448,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 2.114,
+      "long_prompts": 1.2940000000000005,
+      "short_outputs": 1.4540000000000006,
+      "long_outputs": 0.8439999999999994
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 0,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 630,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.584683767015465,
+    "num_completed": 630,
+    "num_total": 630,
+    "jains_index_at_checkpoint": 0.7826689283160818,
+    "max_service_disparity_at_checkpoint": 47189,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 141,
+        "p95_queuing_delay": 0.36216152546529656,
+        "p99_queuing_delay": 0.4184639334471356,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 152,
+        "p95_queuing_delay": 11.165831636277073,
+        "p99_queuing_delay": 11.723124275516493,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 170,
+        "p95_queuing_delay": 0.2909452526718894,
+        "p99_queuing_delay": 0.33211223210605567,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 167,
+        "p95_queuing_delay": 13.734991964580956,
+        "p99_queuing_delay": 13.88046530653229,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9730000000000025,
+      "long_prompts": 0.667,
+      "short_outputs": 0.9540000000000006,
+      "long_outputs": 0.9480000000000004
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 0,
+    "policy": "fifo",
+    "n_requests": 630,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.671634839310666,
+    "num_completed": 630,
+    "num_total": 630,
+    "jains_index_at_checkpoint": 0.7032927332868577,
+    "max_service_disparity_at_checkpoint": 46872,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 141,
+        "p95_queuing_delay": 12.532991937952264,
+        "p99_queuing_delay": 12.707636908843313,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 152,
+        "p95_queuing_delay": 12.54683740485245,
+        "p99_queuing_delay": 12.77683163627707,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 170,
+        "p95_queuing_delay": 12.589066861849261,
+        "p99_queuing_delay": 12.770620645740284,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 167,
+        "p95_queuing_delay": 12.438186892329504,
+        "p99_queuing_delay": 12.692881345067448,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 2.114,
+      "long_prompts": 1.2940000000000005,
+      "short_outputs": 1.4540000000000006,
+      "long_outputs": 0.8439999999999994
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 0,
+    "policy": "shortest_prompt_first",
+    "n_requests": 630,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.664804469273744,
+    "num_completed": 630,
+    "num_total": 630,
+    "jains_index_at_checkpoint": 0.5491475051326036,
+    "max_service_disparity_at_checkpoint": 51600,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 141,
+        "p95_queuing_delay": 0.373169245611793,
+        "p99_queuing_delay": 0.48050057354105746,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 152,
+        "p95_queuing_delay": 37.98442440982368,
+        "p99_queuing_delay": 39.48814684730875,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 170,
+        "p95_queuing_delay": 15.009875577944829,
+        "p99_queuing_delay": 28.171240629335212,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 167,
+        "p95_queuing_delay": 21.897640444620414,
+        "p99_queuing_delay": 32.31338633862281,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9519999999999982,
+      "long_prompts": 33.77,
+      "short_outputs": 2.2869999999999995,
+      "long_outputs": 0.6349999999999998
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 0,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 630,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.604631754642186,
+    "num_completed": 630,
+    "num_total": 630,
+    "jains_index_at_checkpoint": 0.6882644673519767,
+    "max_service_disparity_at_checkpoint": 69532,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 141,
+        "p95_queuing_delay": 0.5704480320375112,
+        "p99_queuing_delay": 0.6685655279521008,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 152,
+        "p95_queuing_delay": 0.5773902569283589,
+        "p99_queuing_delay": 0.8852625422748988,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 170,
+        "p95_queuing_delay": 0.20282474097963998,
+        "p99_queuing_delay": 0.33900570454254364,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 167,
+        "p95_queuing_delay": 31.731100221261322,
+        "p99_queuing_delay": 36.555029386055665,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.8079999999999998,
+      "long_prompts": 1.0050000000000008,
+      "short_outputs": 0.9510000000000005,
+      "long_outputs": 1.3739999999999988
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 1,
+    "policy": "official_vtc",
+    "n_requests": 588,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.509203967823124,
+    "num_completed": 588,
+    "num_total": 588,
+    "jains_index_at_checkpoint": 0.7732761972304992,
+    "max_service_disparity_at_checkpoint": 46556,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 146,
+        "p95_queuing_delay": 0.4107254301894301,
+        "p99_queuing_delay": 0.6225433022244093,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 145,
+        "p95_queuing_delay": 11.207558220485659,
+        "p99_queuing_delay": 11.461820873223473,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 145,
+        "p95_queuing_delay": 0.4220764679335858,
+        "p99_queuing_delay": 0.5076049135047143,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 152,
+        "p95_queuing_delay": 9.589126269593848,
+        "p99_queuing_delay": 9.992769809879324,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.8829999999999991,
+      "long_prompts": 0.828000000000003,
+      "short_outputs": 1.1350000000000016,
+      "long_outputs": 0.9599999999999991
+    },
+    "reservation_bind_rate": 0.014359151796747566,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.011030346159711279
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 1,
+    "policy": "matched_admission_fifo",
+    "n_requests": 588,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.521386940630249,
+    "num_completed": 588,
+    "num_total": 588,
+    "jains_index_at_checkpoint": 0.6639857461175015,
+    "max_service_disparity_at_checkpoint": 61176,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 146,
+        "p95_queuing_delay": 8.783456410052139,
+        "p99_queuing_delay": 9.968006674931754,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 145,
+        "p95_queuing_delay": 8.553997904787213,
+        "p99_queuing_delay": 9.993385009563877,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 145,
+        "p95_queuing_delay": 8.85480013079604,
+        "p99_queuing_delay": 9.98176083162231,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 152,
+        "p95_queuing_delay": 9.421126269593849,
+        "p99_queuing_delay": 9.839023272558354,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 1.629999999999999,
+      "long_prompts": 2.296000000000003,
+      "short_outputs": 1.6779999999999973,
+      "long_outputs": 0.968
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 1,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 588,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.502047057662901,
+    "num_completed": 588,
+    "num_total": 588,
+    "jains_index_at_checkpoint": 0.7732761972304992,
+    "max_service_disparity_at_checkpoint": 46556,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 146,
+        "p95_queuing_delay": 0.4107254301894301,
+        "p99_queuing_delay": 0.6225433022244093,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 145,
+        "p95_queuing_delay": 11.19755822048566,
+        "p99_queuing_delay": 11.459820873223471,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 145,
+        "p95_queuing_delay": 0.4220764679335858,
+        "p99_queuing_delay": 0.5101993036344084,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 152,
+        "p95_queuing_delay": 9.549126269593849,
+        "p99_queuing_delay": 10.104270093670063,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.8290000000000002,
+      "long_prompts": 0.828000000000003,
+      "short_outputs": 0.8580000000000005,
+      "long_outputs": 0.9599999999999991
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 1,
+    "policy": "fifo",
+    "n_requests": 588,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.521386940630249,
+    "num_completed": 588,
+    "num_total": 588,
+    "jains_index_at_checkpoint": 0.6639857461175015,
+    "max_service_disparity_at_checkpoint": 61176,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 146,
+        "p95_queuing_delay": 8.783456410052139,
+        "p99_queuing_delay": 9.968006674931754,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 145,
+        "p95_queuing_delay": 8.553997904787213,
+        "p99_queuing_delay": 9.993385009563877,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 145,
+        "p95_queuing_delay": 8.85480013079604,
+        "p99_queuing_delay": 9.98176083162231,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 152,
+        "p95_queuing_delay": 9.421126269593849,
+        "p99_queuing_delay": 9.839023272558354,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 1.629999999999999,
+      "long_prompts": 2.296000000000003,
+      "short_outputs": 1.6779999999999973,
+      "long_outputs": 0.968
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 1,
+    "policy": "shortest_prompt_first",
+    "n_requests": 588,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.539699809599169,
+    "num_completed": 588,
+    "num_total": 588,
+    "jains_index_at_checkpoint": 0.6959692810003328,
+    "max_service_disparity_at_checkpoint": 38286,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 146,
+        "p95_queuing_delay": 0.32329154330922627,
+        "p99_queuing_delay": 0.5217725891269858,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 145,
+        "p95_queuing_delay": 36.16634988870295,
+        "p99_queuing_delay": 38.10366673403313,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 145,
+        "p95_queuing_delay": 6.690256759968767,
+        "p99_queuing_delay": 15.870658623579764,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 152,
+        "p95_queuing_delay": 9.993371044490612,
+        "p99_queuing_delay": 15.339070472797603,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 1.0900000000000003,
+      "long_prompts": 16.514,
+      "short_outputs": 1.5009999999999977,
+      "long_outputs": 2.8759999999999977
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 1,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 588,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.475627769571641,
+    "num_completed": 588,
+    "num_total": 588,
+    "jains_index_at_checkpoint": 0.6116493481223609,
+    "max_service_disparity_at_checkpoint": 82412,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 146,
+        "p95_queuing_delay": 0.6437643363330139,
+        "p99_queuing_delay": 1.225142810611228,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 145,
+        "p95_queuing_delay": 0.8241459761765826,
+        "p99_queuing_delay": 1.041233223670493,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 145,
+        "p95_queuing_delay": 0.2695968955255985,
+        "p99_queuing_delay": 0.3614366089122978,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 152,
+        "p95_queuing_delay": 25.945279656546823,
+        "p99_queuing_delay": 29.968525783811444,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9699999999999989,
+      "long_prompts": 1.5090000000000003,
+      "short_outputs": 1.0429999999999997,
+      "long_outputs": 1.609
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 2,
+    "policy": "official_vtc",
+    "n_requests": 593,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.692765113974232,
+    "num_completed": 593,
+    "num_total": 593,
+    "jains_index_at_checkpoint": 0.7704081921226944,
+    "max_service_disparity_at_checkpoint": 45511,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 156,
+        "p95_queuing_delay": 0.4556053562964344,
+        "p99_queuing_delay": 0.6595137055750904,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 142,
+        "p95_queuing_delay": 9.762656699451405,
+        "p99_queuing_delay": 10.03765667110613,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 151,
+        "p95_queuing_delay": 0.32821377054007783,
+        "p99_queuing_delay": 0.4093334244140969,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 144,
+        "p95_queuing_delay": 12.37496179328603,
+        "p99_queuing_delay": 12.719749339751285,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9629999999999992,
+      "long_prompts": 0.7620000000000005,
+      "short_outputs": 1.6439999999999997,
+      "long_outputs": 0.9720000000000002
+    },
+    "reservation_bind_rate": 0.01419566188514419,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.01107690688557371
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 2,
+    "policy": "matched_admission_fifo",
+    "n_requests": 593,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.666237973932184,
+    "num_completed": 593,
+    "num_total": 593,
+    "jains_index_at_checkpoint": 0.6968001424582665,
+    "max_service_disparity_at_checkpoint": 52330,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 156,
+        "p95_queuing_delay": 10.155584805228191,
+        "p99_queuing_delay": 10.248393499637384,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 142,
+        "p95_queuing_delay": 10.024415623764888,
+        "p99_queuing_delay": 10.194656699451407,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 151,
+        "p95_queuing_delay": 10.170568487855782,
+        "p99_queuing_delay": 10.198064218537805,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 144,
+        "p95_queuing_delay": 9.964810360492358,
+        "p99_queuing_delay": 10.097800599400998,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 1.4199999999999982,
+      "long_prompts": 1.9469999999999992,
+      "short_outputs": 1.6780000000000008,
+      "long_outputs": 0.9720000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 2,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 593,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.692765113974232,
+    "num_completed": 593,
+    "num_total": 593,
+    "jains_index_at_checkpoint": 0.7704081921226944,
+    "max_service_disparity_at_checkpoint": 45511,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 156,
+        "p95_queuing_delay": 0.4556053562964344,
+        "p99_queuing_delay": 0.6595137055750904,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 142,
+        "p95_queuing_delay": 9.762656699451405,
+        "p99_queuing_delay": 10.03765667110613,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 151,
+        "p95_queuing_delay": 0.32821377054007783,
+        "p99_queuing_delay": 0.4093334244140969,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 144,
+        "p95_queuing_delay": 12.37496179328603,
+        "p99_queuing_delay": 12.719749339751285,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9629999999999992,
+      "long_prompts": 0.7620000000000005,
+      "short_outputs": 1.6439999999999997,
+      "long_outputs": 0.9720000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 2,
+    "policy": "fifo",
+    "n_requests": 593,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.666237973932184,
+    "num_completed": 593,
+    "num_total": 593,
+    "jains_index_at_checkpoint": 0.6968001424582665,
+    "max_service_disparity_at_checkpoint": 52330,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 156,
+        "p95_queuing_delay": 10.155584805228191,
+        "p99_queuing_delay": 10.248393499637384,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 142,
+        "p95_queuing_delay": 10.024415623764888,
+        "p99_queuing_delay": 10.194656699451407,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 151,
+        "p95_queuing_delay": 10.170568487855782,
+        "p99_queuing_delay": 10.198064218537805,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 144,
+        "p95_queuing_delay": 9.964810360492358,
+        "p99_queuing_delay": 10.097800599400998,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 1.4199999999999982,
+      "long_prompts": 1.9469999999999992,
+      "short_outputs": 1.6780000000000008,
+      "long_outputs": 0.9720000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 2,
+    "policy": "shortest_prompt_first",
+    "n_requests": 593,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.753445787928545,
+    "num_completed": 593,
+    "num_total": 593,
+    "jains_index_at_checkpoint": 0.6636735627571911,
+    "max_service_disparity_at_checkpoint": 37051,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 156,
+        "p95_queuing_delay": 0.3616053562964332,
+        "p99_queuing_delay": 0.44555104057971207,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 142,
+        "p95_queuing_delay": 33.497204632930064,
+        "p99_queuing_delay": 37.017068179967865,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 151,
+        "p95_queuing_delay": 15.232642947899736,
+        "p99_queuing_delay": 24.602937157782755,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 144,
+        "p95_queuing_delay": 16.96322889387877,
+        "p99_queuing_delay": 24.197316280698132,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 0.9890000000000008,
+      "long_prompts": 30.499,
+      "short_outputs": 2.324,
+      "long_outputs": 0.9720000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "heterogeneous_token_sizes",
+    "seed_offset": 2,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 593,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 14.628971778172488,
+    "num_completed": 593,
+    "num_total": 593,
+    "jains_index_at_checkpoint": 0.6709909804070718,
+    "max_service_disparity_at_checkpoint": 66976,
+    "per_tenant": {
+      "short_prompts": {
+        "n_completed": 156,
+        "p95_queuing_delay": 0.6222589501282236,
+        "p99_queuing_delay": 0.9637707730296903,
+        "slo_violation_rate": 0.0
+      },
+      "long_prompts": {
+        "n_completed": 142,
+        "p95_queuing_delay": 0.46754342635890556,
+        "p99_queuing_delay": 0.833201621776845,
+        "slo_violation_rate": 0.0
+      },
+      "short_outputs": {
+        "n_completed": 151,
+        "p95_queuing_delay": 0.2917179214652066,
+        "p99_queuing_delay": 0.41685388690791747,
+        "slo_violation_rate": 0.0
+      },
+      "long_outputs": {
+        "n_completed": 144,
+        "p95_queuing_delay": 27.143512742767115,
+        "p99_queuing_delay": 30.58351194720667,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "short_prompts": 1.0340000000000007,
+      "long_prompts": 1.3099999999999987,
+      "short_outputs": 1.645,
+      "long_outputs": 1.4450000000000003
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 0,
+    "policy": "official_vtc",
+    "n_requests": 602,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 16.4588801399825,
+    "num_completed": 602,
+    "num_total": 602,
+    "jains_index_at_checkpoint": 0.9708141102451902,
+    "max_service_disparity_at_checkpoint": 13763,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 382,
+        "p95_queuing_delay": 8.7510054220566,
+        "p99_queuing_delay": 9.035941716873122,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 220,
+        "p95_queuing_delay": 0.4565682993043261,
+        "p99_queuing_delay": 0.6319417852860809,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 10.280999999999999,
+      "steady": 0.7959999999999994
+    },
+    "reservation_bind_rate": 0.015478945628324968,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.014294926913155632
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 0,
+    "policy": "matched_admission_fifo",
+    "n_requests": 602,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 16.452582672861435,
+    "num_completed": 602,
+    "num_total": 602,
+    "jains_index_at_checkpoint": 0.9708141102451902,
+    "max_service_disparity_at_checkpoint": 13763,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 382,
+        "p95_queuing_delay": 7.146754234415752,
+        "p99_queuing_delay": 7.574107484410593,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 220,
+        "p95_queuing_delay": 7.317955119069808,
+        "p99_queuing_delay": 7.744493221843712,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 11.889999999999999,
+      "steady": 2.181000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 0,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 602,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 16.4588801399825,
+    "num_completed": 602,
+    "num_total": 602,
+    "jains_index_at_checkpoint": 0.9708141102451902,
+    "max_service_disparity_at_checkpoint": 13763,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 382,
+        "p95_queuing_delay": 8.7510054220566,
+        "p99_queuing_delay": 9.035941716873122,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 220,
+        "p95_queuing_delay": 0.4565682993043261,
+        "p99_queuing_delay": 0.6319417852860809,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 10.280999999999999,
+      "steady": 0.7959999999999994
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 0,
+    "policy": "fifo",
+    "n_requests": 602,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 16.452582672861435,
+    "num_completed": 602,
+    "num_total": 602,
+    "jains_index_at_checkpoint": 0.9708141102451902,
+    "max_service_disparity_at_checkpoint": 13763,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 382,
+        "p95_queuing_delay": 7.146754234415752,
+        "p99_queuing_delay": 7.574107484410593,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 220,
+        "p95_queuing_delay": 7.317955119069808,
+        "p99_queuing_delay": 7.744493221843712,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 11.889999999999999,
+      "steady": 2.181000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 0,
+    "policy": "shortest_prompt_first",
+    "n_requests": 602,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 16.427889207258833,
+    "num_completed": 602,
+    "num_total": 602,
+    "jains_index_at_checkpoint": 0.9736578313924641,
+    "max_service_disparity_at_checkpoint": 12997,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 382,
+        "p95_queuing_delay": 15.378669146051472,
+        "p99_queuing_delay": 17.365293775157916,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 220,
+        "p95_queuing_delay": 9.021439273007264,
+        "p99_queuing_delay": 15.47444657438717,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 10.298,
+      "steady": 1.2190000000000012
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 0,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 602,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 16.42744092124652,
+    "num_completed": 602,
+    "num_total": 602,
+    "jains_index_at_checkpoint": 0.9708141102451902,
+    "max_service_disparity_at_checkpoint": 13763,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 382,
+        "p95_queuing_delay": 8.6567252223049,
+        "p99_queuing_delay": 17.008146306852083,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 220,
+        "p95_queuing_delay": 6.103804309524339,
+        "p99_queuing_delay": 12.562620059145594,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 11.004,
+      "steady": 1.2419999999999973
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 1,
+    "policy": "official_vtc",
+    "n_requests": 821,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.755522402425527,
+    "num_completed": 821,
+    "num_total": 821,
+    "jains_index_at_checkpoint": 0.9710985176422896,
+    "max_service_disparity_at_checkpoint": 19747,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 607,
+        "p95_queuing_delay": 12.410458672723884,
+        "p99_queuing_delay": 12.860843395290008,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 214,
+        "p95_queuing_delay": 0.5194273572888823,
+        "p99_queuing_delay": 0.9493071810701794,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 2.9899999999999998,
+      "steady": 1.3900000000000006
+    },
+    "reservation_bind_rate": 0.019129672897196262,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.012114796518466243
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 1,
+    "policy": "matched_admission_fifo",
+    "n_requests": 821,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.765986132511557,
+    "num_completed": 821,
+    "num_total": 821,
+    "jains_index_at_checkpoint": 0.8655648589777875,
+    "max_service_disparity_at_checkpoint": 45169,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 607,
+        "p95_queuing_delay": 11.753169515054097,
+        "p99_queuing_delay": 12.35684339529001,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 214,
+        "p95_queuing_delay": 11.32023491441672,
+        "p99_queuing_delay": 12.24766952188439,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 3.3859999999999997,
+      "steady": 1.726
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 1,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 821,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.755522402425527,
+    "num_completed": 821,
+    "num_total": 821,
+    "jains_index_at_checkpoint": 0.9710985176422896,
+    "max_service_disparity_at_checkpoint": 19747,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 607,
+        "p95_queuing_delay": 12.410458672723884,
+        "p99_queuing_delay": 12.860843395290008,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 214,
+        "p95_queuing_delay": 0.5194273572888823,
+        "p99_queuing_delay": 0.9493071810701794,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 2.9899999999999998,
+      "steady": 1.3900000000000006
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 1,
+    "policy": "fifo",
+    "n_requests": 821,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.765986132511557,
+    "num_completed": 821,
+    "num_total": 821,
+    "jains_index_at_checkpoint": 0.8655648589777875,
+    "max_service_disparity_at_checkpoint": 45169,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 607,
+        "p95_queuing_delay": 11.753169515054097,
+        "p99_queuing_delay": 12.35684339529001,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 214,
+        "p95_queuing_delay": 11.32023491441672,
+        "p99_queuing_delay": 12.24766952188439,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 3.3859999999999997,
+      "steady": 1.726
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 1,
+    "policy": "shortest_prompt_first",
+    "n_requests": 821,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.7669379303703,
+    "num_completed": 821,
+    "num_total": 821,
+    "jains_index_at_checkpoint": 0.9111600172133877,
+    "max_service_disparity_at_checkpoint": 30682,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 607,
+        "p95_queuing_delay": 29.65828658726919,
+        "p99_queuing_delay": 33.8927507840594,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 214,
+        "p95_queuing_delay": 24.924651104633647,
+        "p99_queuing_delay": 30.070347428781332,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 3.018,
+      "steady": 1.105999999999998
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 1,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 821,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 19.742695683539736,
+    "num_completed": 821,
+    "num_total": 821,
+    "jains_index_at_checkpoint": 0.8431142458315838,
+    "max_service_disparity_at_checkpoint": 53711,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 607,
+        "p95_queuing_delay": 17.308921468271148,
+        "p99_queuing_delay": 29.595852501883932,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 214,
+        "p95_queuing_delay": 24.849711744237535,
+        "p99_queuing_delay": 29.582188254027233,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 3.2859999999999996,
+      "steady": 0.9650000000000034
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 2,
+    "policy": "official_vtc",
+    "n_requests": 558,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 15.908766928011403,
+    "num_completed": 558,
+    "num_total": 558,
+    "jains_index_at_checkpoint": 0.843777019015838,
+    "max_service_disparity_at_checkpoint": 32670,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 326,
+        "p95_queuing_delay": 7.629769363525472,
+        "p99_queuing_delay": 8.261059457079895,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 232,
+        "p95_queuing_delay": 0.5418578890858461,
+        "p99_queuing_delay": 0.6841818848102754,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 8.907,
+      "steady": 0.8010000000000002
+    },
+    "reservation_bind_rate": 0.014044767697034296,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.013317892298784018
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 2,
+    "policy": "matched_admission_fifo",
+    "n_requests": 558,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 15.912850054183538,
+    "num_completed": 558,
+    "num_total": 558,
+    "jains_index_at_checkpoint": 0.9676405568939422,
+    "max_service_disparity_at_checkpoint": 13998,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 326,
+        "p95_queuing_delay": 5.363769363525474,
+        "p99_queuing_delay": 5.678059457079893,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 232,
+        "p95_queuing_delay": 4.847034799442742,
+        "p99_queuing_delay": 5.412018591134796,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 8.86,
+      "steady": 2.266000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 2,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 558,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 15.908766928011403,
+    "num_completed": 558,
+    "num_total": 558,
+    "jains_index_at_checkpoint": 0.843777019015838,
+    "max_service_disparity_at_checkpoint": 32670,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 326,
+        "p95_queuing_delay": 7.629769363525472,
+        "p99_queuing_delay": 8.261059457079895,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 232,
+        "p95_queuing_delay": 0.5418578890858461,
+        "p99_queuing_delay": 0.6841818848102754,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 8.907,
+      "steady": 0.8010000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 2,
+    "policy": "fifo",
+    "n_requests": 558,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 15.912850054183538,
+    "num_completed": 558,
+    "num_total": 558,
+    "jains_index_at_checkpoint": 0.9676405568939422,
+    "max_service_disparity_at_checkpoint": 13998,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 326,
+        "p95_queuing_delay": 5.363769363525474,
+        "p99_queuing_delay": 5.678059457079893,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 232,
+        "p95_queuing_delay": 4.847034799442742,
+        "p99_queuing_delay": 5.412018591134796,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 8.86,
+      "steady": 2.266000000000002
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 2,
+    "policy": "shortest_prompt_first",
+    "n_requests": 558,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 15.907859851184538,
+    "num_completed": 558,
+    "num_total": 558,
+    "jains_index_at_checkpoint": 0.9109150939005475,
+    "max_service_disparity_at_checkpoint": 21508,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 326,
+        "p95_queuing_delay": 9.067989474889497,
+        "p99_queuing_delay": 12.796764941231238,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 232,
+        "p95_queuing_delay": 6.049128628884148,
+        "p99_queuing_delay": 10.22834630476224,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 8.352,
+      "steady": 1.7040000000000006
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "bursty_tenant",
+    "seed_offset": 2,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 558,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 15.848670756646218,
+    "num_completed": 558,
+    "num_total": 558,
+    "jains_index_at_checkpoint": 0.9624499333964874,
+    "max_service_disparity_at_checkpoint": 15785,
+    "per_tenant": {
+      "bursty": {
+        "n_completed": 326,
+        "p95_queuing_delay": 7.535906668551714,
+        "p99_queuing_delay": 9.20980104588254,
+        "slo_violation_rate": 0.0
+      },
+      "steady": {
+        "n_completed": 232,
+        "p95_queuing_delay": 4.941782920913363,
+        "p99_queuing_delay": 7.901909973470069,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "bursty": 8.675,
+      "steady": 1.0679999999999978
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 0,
+    "policy": "official_vtc",
+    "n_requests": 751,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.483585165976828,
+    "num_completed": 751,
+    "num_total": 751,
+    "jains_index_at_checkpoint": 0.9814939429772759,
+    "max_service_disparity_at_checkpoint": 23262,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 302,
+        "p95_queuing_delay": 2.653364324337966,
+        "p99_queuing_delay": 3.0709343966735734,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 449,
+        "p95_queuing_delay": 0.23722545824887575,
+        "p99_queuing_delay": 0.3305071211131789,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 32.946,
+      "continuous": 1.0379999999999967
+    },
+    "reservation_bind_rate": 0.008651483553922075,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.01308460790381045
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 0,
+    "policy": "matched_admission_fifo",
+    "n_requests": 751,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.483585165976828,
+    "num_completed": 751,
+    "num_total": 751,
+    "jains_index_at_checkpoint": 0.9814939429772759,
+    "max_service_disparity_at_checkpoint": 23262,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.8163643243379664,
+        "p99_queuing_delay": 1.9910090250956856,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 449,
+        "p95_queuing_delay": 1.2692860464928675,
+        "p99_queuing_delay": 1.8658510826131813,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 34.17400000000001,
+      "continuous": 0.9249999999999972
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 0,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 751,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.483585165976828,
+    "num_completed": 751,
+    "num_total": 751,
+    "jains_index_at_checkpoint": 0.9814939429772759,
+    "max_service_disparity_at_checkpoint": 23262,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 302,
+        "p95_queuing_delay": 2.653364324337966,
+        "p99_queuing_delay": 3.0709343966735734,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 449,
+        "p95_queuing_delay": 0.23722545824887575,
+        "p99_queuing_delay": 0.3305071211131789,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 32.946,
+      "continuous": 1.0379999999999967
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 0,
+    "policy": "fifo",
+    "n_requests": 751,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.483585165976828,
+    "num_completed": 751,
+    "num_total": 751,
+    "jains_index_at_checkpoint": 0.9814939429772759,
+    "max_service_disparity_at_checkpoint": 23262,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.8163643243379664,
+        "p99_queuing_delay": 1.9910090250956856,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 449,
+        "p95_queuing_delay": 1.2692860464928675,
+        "p99_queuing_delay": 1.8658510826131813,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 34.17400000000001,
+      "continuous": 0.9249999999999972
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 0,
+    "policy": "shortest_prompt_first",
+    "n_requests": 751,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.483585165976828,
+    "num_completed": 751,
+    "num_total": 751,
+    "jains_index_at_checkpoint": 0.9814939429772759,
+    "max_service_disparity_at_checkpoint": 23262,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.9613743657498688,
+        "p99_queuing_delay": 9.516694966828284,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 449,
+        "p95_queuing_delay": 0.9591423674406201,
+        "p99_queuing_delay": 6.207077453796753,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 32.834,
+      "continuous": 0.8119999999999994
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 0,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 751,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.483585165976828,
+    "num_completed": 751,
+    "num_total": 751,
+    "jains_index_at_checkpoint": 0.9814939429772759,
+    "max_service_disparity_at_checkpoint": 23262,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.7491787469965914,
+        "p99_queuing_delay": 4.9646901921578,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 449,
+        "p95_queuing_delay": 0.6019153077027379,
+        "p99_queuing_delay": 2.3142891650332302,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 33.44800000000001,
+      "continuous": 0.9249999999999972
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 1,
+    "policy": "official_vtc",
+    "n_requests": 763,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.549342105263158,
+    "num_completed": 763,
+    "num_total": 763,
+    "jains_index_at_checkpoint": 0.9236727151061775,
+    "max_service_disparity_at_checkpoint": 47903,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 274,
+        "p95_queuing_delay": 1.3577561385056427,
+        "p99_queuing_delay": 1.957972201621672,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 489,
+        "p95_queuing_delay": 0.27577952144414297,
+        "p99_queuing_delay": 0.45091399234841134,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 35.760000000000005,
+      "continuous": 0.7429999999999986
+    },
+    "reservation_bind_rate": 0.008293792400298027,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.012376041253470844
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 1,
+    "policy": "matched_admission_fifo",
+    "n_requests": 763,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.544802867383511,
+    "num_completed": 763,
+    "num_total": 763,
+    "jains_index_at_checkpoint": 0.9236727151061775,
+    "max_service_disparity_at_checkpoint": 47903,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 274,
+        "p95_queuing_delay": 0.8032996544449915,
+        "p99_queuing_delay": 1.2846965649101065,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 489,
+        "p95_queuing_delay": 0.650286657665152,
+        "p99_queuing_delay": 1.292677120187406,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 35.839000000000006,
+      "continuous": 0.7429999999999986
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 1,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 763,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.549342105263158,
+    "num_completed": 763,
+    "num_total": 763,
+    "jains_index_at_checkpoint": 0.9236727151061775,
+    "max_service_disparity_at_checkpoint": 47903,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 274,
+        "p95_queuing_delay": 1.3577561385056427,
+        "p99_queuing_delay": 1.957972201621672,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 489,
+        "p95_queuing_delay": 0.27577952144414297,
+        "p99_queuing_delay": 0.45091399234841134,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 35.760000000000005,
+      "continuous": 0.7429999999999986
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 1,
+    "policy": "fifo",
+    "n_requests": 763,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.544802867383511,
+    "num_completed": 763,
+    "num_total": 763,
+    "jains_index_at_checkpoint": 0.9236727151061775,
+    "max_service_disparity_at_checkpoint": 47903,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 274,
+        "p95_queuing_delay": 0.8032996544449915,
+        "p99_queuing_delay": 1.2846965649101065,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 489,
+        "p95_queuing_delay": 0.650286657665152,
+        "p99_queuing_delay": 1.292677120187406,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 35.839000000000006,
+      "continuous": 0.7429999999999986
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 1,
+    "policy": "shortest_prompt_first",
+    "n_requests": 763,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.535528282977639,
+    "num_completed": 763,
+    "num_total": 763,
+    "jains_index_at_checkpoint": 0.9236727151061775,
+    "max_service_disparity_at_checkpoint": 47903,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 274,
+        "p95_queuing_delay": 2.201460031746862,
+        "p99_queuing_delay": 5.58472714273308,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 489,
+        "p95_queuing_delay": 0.4175726546051095,
+        "p99_queuing_delay": 1.5627374444833464,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 35.722,
+      "continuous": 0.7429999999999986
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 1,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 763,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 12.544184134812987,
+    "num_completed": 763,
+    "num_total": 763,
+    "jains_index_at_checkpoint": 0.9236727151061775,
+    "max_service_disparity_at_checkpoint": 47903,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 274,
+        "p95_queuing_delay": 0.9972981689816862,
+        "p99_queuing_delay": 2.1502928164464734,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 489,
+        "p95_queuing_delay": 0.6064140520440873,
+        "p99_queuing_delay": 1.2653939733629826,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 35.835,
+      "continuous": 0.7429999999999986
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 2,
+    "policy": "official_vtc",
+    "n_requests": 706,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 11.756477719309931,
+    "num_completed": 706,
+    "num_total": 706,
+    "jains_index_at_checkpoint": 0.975417367797877,
+    "max_service_disparity_at_checkpoint": 24564,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 277,
+        "p95_queuing_delay": 1.0613760199606328,
+        "p99_queuing_delay": 1.254132273501655,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 429,
+        "p95_queuing_delay": 0.3602035025019106,
+        "p99_queuing_delay": 0.6834823246336856,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 36.175,
+      "continuous": 0.8549999999999995
+    },
+    "reservation_bind_rate": 0.0071557099217475,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.011683773749727015
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 2,
+    "policy": "matched_admission_fifo",
+    "n_requests": 706,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 11.756477719309931,
+    "num_completed": 706,
+    "num_total": 706,
+    "jains_index_at_checkpoint": 0.975417367797877,
+    "max_service_disparity_at_checkpoint": 24564,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 277,
+        "p95_queuing_delay": 0.7820358847418123,
+        "p99_queuing_delay": 0.8545265479353574,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 429,
+        "p95_queuing_delay": 0.6619016413109644,
+        "p99_queuing_delay": 0.816264875946616,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 36.175,
+      "continuous": 0.838000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 2,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 706,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 11.756477719309931,
+    "num_completed": 706,
+    "num_total": 706,
+    "jains_index_at_checkpoint": 0.975417367797877,
+    "max_service_disparity_at_checkpoint": 24564,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 277,
+        "p95_queuing_delay": 1.0613760199606328,
+        "p99_queuing_delay": 1.254132273501655,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 429,
+        "p95_queuing_delay": 0.3602035025019106,
+        "p99_queuing_delay": 0.6834823246336856,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 36.175,
+      "continuous": 0.8549999999999995
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 2,
+    "policy": "fifo",
+    "n_requests": 706,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 11.756477719309931,
+    "num_completed": 706,
+    "num_total": 706,
+    "jains_index_at_checkpoint": 0.975417367797877,
+    "max_service_disparity_at_checkpoint": 24564,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 277,
+        "p95_queuing_delay": 0.7820358847418123,
+        "p99_queuing_delay": 0.8545265479353574,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 429,
+        "p95_queuing_delay": 0.6619016413109644,
+        "p99_queuing_delay": 0.816264875946616,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 36.175,
+      "continuous": 0.838000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 2,
+    "policy": "shortest_prompt_first",
+    "n_requests": 706,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 11.756477719309931,
+    "num_completed": 706,
+    "num_total": 706,
+    "jains_index_at_checkpoint": 0.975417367797877,
+    "max_service_disparity_at_checkpoint": 24564,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 277,
+        "p95_queuing_delay": 1.6724103209528138,
+        "p99_queuing_delay": 5.101832249078004,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 429,
+        "p95_queuing_delay": 0.43188608190442634,
+        "p99_queuing_delay": 2.8089016413109644,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 36.205,
+      "continuous": 0.838000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "returning_inactive_tenant",
+    "seed_offset": 2,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 706,
+    "anwg": 1.0,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 11.756477719309931,
+    "num_completed": 706,
+    "num_total": 706,
+    "jains_index_at_checkpoint": 0.975417367797877,
+    "max_service_disparity_at_checkpoint": 24564,
+    "per_tenant": {
+      "returning": {
+        "n_completed": 277,
+        "p95_queuing_delay": 0.8513252606462531,
+        "p99_queuing_delay": 1.6828058287111562,
+        "slo_violation_rate": 0.0
+      },
+      "continuous": {
+        "n_completed": 429,
+        "p95_queuing_delay": 0.35782067384340266,
+        "p99_queuing_delay": 1.511346829258723,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "returning": 36.175,
+      "continuous": 0.838000000000001
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 0,
+    "policy": "official_vtc",
+    "n_requests": 619,
+    "anwg": 0.3958664546899841,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.3683360258481422,
+    "request_throughput": 19.513886699662685,
+    "num_completed": 619,
+    "num_total": 619,
+    "jains_index_at_checkpoint": 0.9998513493250958,
+    "max_service_disparity_at_checkpoint": 1504,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 317,
+        "p95_queuing_delay": 2.6528198215225345,
+        "p99_queuing_delay": 2.87485338930885,
+        "slo_violation_rate": 0.7192429022082019
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.461995062917385,
+        "p99_queuing_delay": 1.623079993911519,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.31799999999999784,
+      "low_priority_loose_slo": 0.32999999999999996
+    },
+    "reservation_bind_rate": 0.019166509047348842,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.009636767976278725
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 0,
+    "policy": "matched_admission_fifo",
+    "n_requests": 619,
+    "anwg": 0.4939056703762586,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.308562197092084,
+    "request_throughput": 19.510811321944146,
+    "num_completed": 619,
+    "num_total": 619,
+    "jains_index_at_checkpoint": 0.9949292414395687,
+    "max_service_disparity_at_checkpoint": 8838,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 317,
+        "p95_queuing_delay": 1.9144754000237043,
+        "p99_queuing_delay": 2.0874988061937714,
+        "slo_violation_rate": 0.6025236593059937
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.7763165141553312,
+        "p99_queuing_delay": 2.0232376913845247,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.5700000000000003,
+      "low_priority_loose_slo": 0.7199999999999989
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 0,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 619,
+    "anwg": 0.3958664546899841,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.3683360258481422,
+    "request_throughput": 19.513886699662685,
+    "num_completed": 619,
+    "num_total": 619,
+    "jains_index_at_checkpoint": 0.9998513493250958,
+    "max_service_disparity_at_checkpoint": 1504,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 317,
+        "p95_queuing_delay": 2.6528198215225345,
+        "p99_queuing_delay": 2.87485338930885,
+        "slo_violation_rate": 0.7192429022082019
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.461995062917385,
+        "p99_queuing_delay": 1.623079993911519,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.31799999999999784,
+      "low_priority_loose_slo": 0.32999999999999996
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 0,
+    "policy": "fifo",
+    "n_requests": 619,
+    "anwg": 0.4939056703762586,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.308562197092084,
+    "request_throughput": 19.510811321944146,
+    "num_completed": 619,
+    "num_total": 619,
+    "jains_index_at_checkpoint": 0.9949292414395687,
+    "max_service_disparity_at_checkpoint": 8838,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 317,
+        "p95_queuing_delay": 1.9144754000237043,
+        "p99_queuing_delay": 2.0874988061937714,
+        "slo_violation_rate": 0.6025236593059937
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 302,
+        "p95_queuing_delay": 1.7763165141553312,
+        "p99_queuing_delay": 2.0232376913845247,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.5700000000000003,
+      "low_priority_loose_slo": 0.7199999999999989
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 0,
+    "policy": "shortest_prompt_first",
+    "n_requests": 619,
+    "anwg": 0.8277689454160042,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.1050080775444265,
+    "request_throughput": 19.563224929679844,
+    "num_completed": 619,
+    "num_total": 619,
+    "jains_index_at_checkpoint": 0.9941791098222165,
+    "max_service_disparity_at_checkpoint": 8917,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 317,
+        "p95_queuing_delay": 6.330738880700293,
+        "p99_queuing_delay": 12.94623088994281,
+        "slo_violation_rate": 0.20504731861198738
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 302,
+        "p95_queuing_delay": 4.791891209746865,
+        "p99_queuing_delay": 12.897823841613995,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.4369999999999994,
+      "low_priority_loose_slo": 0.5389999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 0,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 619,
+    "anwg": 0.9708532061473238,
+    "completion_fraction": 0.9822294022617124,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 7.6019004751187795,
+    "num_completed": 608,
+    "num_total": 619,
+    "jains_index_at_checkpoint": 0.9937270734387965,
+    "max_service_disparity_at_checkpoint": 9935,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 306,
+        "p95_queuing_delay": 0.5945886447635225,
+        "p99_queuing_delay": 0.6665432882462685,
+        "slo_violation_rate": 0.0
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 302,
+        "p95_queuing_delay": 3.251829704786882,
+        "p99_queuing_delay": 8.358428300623206,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.7259999999999991,
+      "low_priority_loose_slo": 0.4480000000000004
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 1,
+    "policy": "official_vtc",
+    "n_requests": 580,
+    "anwg": 0.9188701923076923,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.04655172413793104,
+    "request_throughput": 18.91653892567105,
+    "num_completed": 580,
+    "num_total": 580,
+    "jains_index_at_checkpoint": 0.9996342522460212,
+    "max_service_disparity_at_checkpoint": 2159,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 271,
+        "p95_queuing_delay": 0.9072802171113672,
+        "p99_queuing_delay": 1.0286526007329755,
+        "slo_violation_rate": 0.0996309963099631
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 309,
+        "p95_queuing_delay": 0.8788538221366098,
+        "p99_queuing_delay": 1.029130902849186,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.6599999999999984,
+      "low_priority_loose_slo": 0.5549999999999997
+    },
+    "reservation_bind_rate": 0.01724421087206438,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.010289861729983004
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 1,
+    "policy": "matched_admission_fifo",
+    "n_requests": 580,
+    "anwg": 0.9699519230769231,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.017241379310344827,
+    "request_throughput": 18.977194647122335,
+    "num_completed": 580,
+    "num_total": 580,
+    "jains_index_at_checkpoint": 0.9997866374829733,
+    "max_service_disparity_at_checkpoint": 1650,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 271,
+        "p95_queuing_delay": 0.7976062306886353,
+        "p99_queuing_delay": 0.913446205225215,
+        "slo_violation_rate": 0.03690036900369004
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 309,
+        "p95_queuing_delay": 0.7894804652709855,
+        "p99_queuing_delay": 0.8691533010458183,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.6849999999999987,
+      "low_priority_loose_slo": 0.5549999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 1,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 580,
+    "anwg": 0.9188701923076923,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.04655172413793104,
+    "request_throughput": 18.91653892567105,
+    "num_completed": 580,
+    "num_total": 580,
+    "jains_index_at_checkpoint": 0.9996342522460212,
+    "max_service_disparity_at_checkpoint": 2159,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 271,
+        "p95_queuing_delay": 0.9072802171113672,
+        "p99_queuing_delay": 1.0286526007329755,
+        "slo_violation_rate": 0.0996309963099631
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 309,
+        "p95_queuing_delay": 0.8788538221366098,
+        "p99_queuing_delay": 1.029130902849186,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.6599999999999984,
+      "low_priority_loose_slo": 0.5549999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 1,
+    "policy": "fifo",
+    "n_requests": 580,
+    "anwg": 0.9699519230769231,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.017241379310344827,
+    "request_throughput": 18.977194647122335,
+    "num_completed": 580,
+    "num_total": 580,
+    "jains_index_at_checkpoint": 0.9997866374829733,
+    "max_service_disparity_at_checkpoint": 1650,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 271,
+        "p95_queuing_delay": 0.7976062306886353,
+        "p99_queuing_delay": 0.913446205225215,
+        "slo_violation_rate": 0.03690036900369004
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 309,
+        "p95_queuing_delay": 0.7894804652709855,
+        "p99_queuing_delay": 0.8691533010458183,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.6849999999999987,
+      "low_priority_loose_slo": 0.5549999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 1,
+    "policy": "shortest_prompt_first",
+    "n_requests": 580,
+    "anwg": 0.9068509615384616,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.05344827586206897,
+    "request_throughput": 18.90297558908842,
+    "num_completed": 580,
+    "num_total": 580,
+    "jains_index_at_checkpoint": 0.9994605267325782,
+    "max_service_disparity_at_checkpoint": 2586,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 271,
+        "p95_queuing_delay": 2.340154412711014,
+        "p99_queuing_delay": 5.888358058768654,
+        "slo_violation_rate": 0.11439114391143912
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 309,
+        "p95_queuing_delay": 2.2503898579243797,
+        "p99_queuing_delay": 3.7852300050418037,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.6850000000000023,
+      "low_priority_loose_slo": 0.5549999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 1,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 580,
+    "anwg": 0.9879807692307693,
+    "completion_fraction": 0.993103448275862,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 7.206576000600547,
+    "num_completed": 576,
+    "num_total": 580,
+    "jains_index_at_checkpoint": 0.9989707438664645,
+    "max_service_disparity_at_checkpoint": 3596,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 267,
+        "p95_queuing_delay": 0.41370373736065424,
+        "p99_queuing_delay": 0.6302613298191897,
+        "slo_violation_rate": 0.0
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 309,
+        "p95_queuing_delay": 1.5786454247175463,
+        "p99_queuing_delay": 2.445734697320372,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.8369999999999997,
+      "low_priority_loose_slo": 0.5549999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 2,
+    "policy": "official_vtc",
+    "n_requests": 586,
+    "anwg": 0.7240437158469946,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.17235494880546076,
+    "request_throughput": 18.914208249951585,
+    "num_completed": 586,
+    "num_total": 586,
+    "jains_index_at_checkpoint": 0.9990289183262067,
+    "max_service_disparity_at_checkpoint": 3499,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 311,
+        "p95_queuing_delay": 1.9545984261141776,
+        "p99_queuing_delay": 2.3504068539413687,
+        "slo_violation_rate": 0.3247588424437299
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 275,
+        "p95_queuing_delay": 1.2591578232931262,
+        "p99_queuing_delay": 1.4122136339447238,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.45599999999999996,
+      "low_priority_loose_slo": 0.37599999999999945
+    },
+    "reservation_bind_rate": 0.015162407685772171,
+    "budget_bind_rate": 0.0,
+    "decision_disagreement_rate": 0.009416512527324701
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 2,
+    "policy": "matched_admission_fifo",
+    "n_requests": 586,
+    "anwg": 0.680327868852459,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.19965870307167236,
+    "request_throughput": 18.93682339634836,
+    "num_completed": 586,
+    "num_total": 586,
+    "jains_index_at_checkpoint": 0.9990289183262067,
+    "max_service_disparity_at_checkpoint": 3499,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 311,
+        "p95_queuing_delay": 1.3833964702291226,
+        "p99_queuing_delay": 1.6083742081449515,
+        "slo_violation_rate": 0.3762057877813505
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 275,
+        "p95_queuing_delay": 1.4345610779864337,
+        "p99_queuing_delay": 1.6215282794919403,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.484,
+      "low_priority_loose_slo": 0.4139999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 2,
+    "policy": "fairness_isolation_vtc",
+    "n_requests": 586,
+    "anwg": 0.7240437158469946,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.17235494880546076,
+    "request_throughput": 18.914208249951585,
+    "num_completed": 586,
+    "num_total": 586,
+    "jains_index_at_checkpoint": 0.9990289183262067,
+    "max_service_disparity_at_checkpoint": 3499,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 311,
+        "p95_queuing_delay": 1.9545984261141776,
+        "p99_queuing_delay": 2.3504068539413687,
+        "slo_violation_rate": 0.3247588424437299
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 275,
+        "p95_queuing_delay": 1.2591578232931262,
+        "p99_queuing_delay": 1.4122136339447238,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.45599999999999996,
+      "low_priority_loose_slo": 0.37599999999999945
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 2,
+    "policy": "fifo",
+    "n_requests": 586,
+    "anwg": 0.680327868852459,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.19965870307167236,
+    "request_throughput": 18.93682339634836,
+    "num_completed": 586,
+    "num_total": 586,
+    "jains_index_at_checkpoint": 0.9990289183262067,
+    "max_service_disparity_at_checkpoint": 3499,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 311,
+        "p95_queuing_delay": 1.3833964702291226,
+        "p99_queuing_delay": 1.6083742081449515,
+        "slo_violation_rate": 0.3762057877813505
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 275,
+        "p95_queuing_delay": 1.4345610779864337,
+        "p99_queuing_delay": 1.6215282794919403,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.484,
+      "low_priority_loose_slo": 0.4139999999999997
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 2,
+    "policy": "shortest_prompt_first",
+    "n_requests": 586,
+    "anwg": 0.9180327868852459,
+    "completion_fraction": 1.0,
+    "slo_violation_rate": 0.051194539249146756,
+    "request_throughput": 18.953360501972963,
+    "num_completed": 586,
+    "num_total": 586,
+    "jains_index_at_checkpoint": 0.9991452495857879,
+    "max_service_disparity_at_checkpoint": 3285,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 311,
+        "p95_queuing_delay": 2.348433066530479,
+        "p99_queuing_delay": 4.775031755180734,
+        "slo_violation_rate": 0.09646302250803858
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 275,
+        "p95_queuing_delay": 2.3580752587871405,
+        "p99_queuing_delay": 9.040403022991072,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.5350000000000001,
+      "low_priority_loose_slo": 0.4009999999999998
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  },
+  {
+    "family": "priority_fairness_conflict",
+    "seed_offset": 2,
+    "policy": "scorpio_style_slo_guard",
+    "n_requests": 586,
+    "anwg": 0.9918032786885246,
+    "completion_fraction": 0.9948805460750854,
+    "slo_violation_rate": 0.0,
+    "request_throughput": 7.301646940948087,
+    "num_completed": 583,
+    "num_total": 586,
+    "jains_index_at_checkpoint": 0.9986497242190674,
+    "max_service_disparity_at_checkpoint": 4125,
+    "per_tenant": {
+      "high_priority_tight_slo": {
+        "n_completed": 308,
+        "p95_queuing_delay": 0.5011165800987456,
+        "p99_queuing_delay": 0.6163742081449541,
+        "slo_violation_rate": 0.0
+      },
+      "low_priority_loose_slo": {
+        "n_completed": 275,
+        "p95_queuing_delay": 2.6637703360094775,
+        "p99_queuing_delay": 8.865998243347608,
+        "slo_violation_rate": 0.0
+      }
+    },
+    "starvation_intervals": {
+      "high_priority_tight_slo": 0.569,
+      "low_priority_loose_slo": 0.44599999999999795
+    },
+    "reservation_bind_rate": null,
+    "budget_bind_rate": null,
+    "decision_disagreement_rate": null
+  }
+]

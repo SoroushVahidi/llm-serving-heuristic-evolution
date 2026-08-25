@@ -28,12 +28,59 @@ data/raw/*
 !data/raw/**/.gitkeep
 data/processed/*
 !data/processed/**/.gitkeep
+# Public Trace Corpus v1: keep manifest/schema/coverage/stats in git (small,
+# informative); exclude the bulky per-source normalized record tables and
+# any raw external-validation-metadata downloads (docs/design/PUBLIC_TRACE_CORPUS_V1.md).
+data/public_trace_corpus_v1/*/records.parquet
+data/public_trace_corpus_v1/external_validation_metadata/
 results/*
 !results/.gitkeep
+
+# Apt-Serve Strategy C Wulver probe -- compact, machine-generated
+# evidence artifacts (JSON reports, hashes, pip freeze, job manifests,
+# README), selectively committed per the convention above. Raw
+# per-job logs/env_create.log/pip_install.log stay Wulver-local under
+# /mmfs1/scratch/ikoutis/sv96/apt_serve_strategy_c_probe_<jobid>/, never
+# here -- see results/provenance/apt_serve_strategy_probe/README.md.
+!results/provenance/
+!results/provenance/apt_serve_strategy_probe/
+!results/provenance/apt_serve_strategy_probe/**
 traces/
+llmserveopt-data/
+hf_cache/
+hf_datasets_cache/
+hf_home/
+dataset_staging/
 
 # Experiment logs (runtime output; not source code)
 logs/
+*.out
+*.err
+*.log
+tmux_command.txt
+tmux_*command*.txt
+*_wrapper_meta.txt
+
+# Raw GPU/server runtime logs under experiments/ -- these are verbose,
+# regeneratable raw stdout, not the canonical result. The small structured
+# artifacts alongside them (summary.md, summary.json, scenario_results.json,
+# manifest.json, etc.) are committed normally; only the raw server.log is
+# excluded here.
+#
+# Pre-existing exception (already tracked before this pattern was added;
+# new gitignore patterns do not untrack already-committed files, and these
+# are intentionally kept -- do not `git rm --cached` them):
+#   experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log
+#   experiments/real_llm/vllm_baseline_comparison_pilot_20260703T165438Z/server.log
+experiments/**/server.log
+
+# Selector v2 calibrated-pilot large raw CSVs -- regeneratable from
+# scripts/build_selector_dataset_v2_calibrated_targeted_pilot.py, local-only
+# by design (see docs/current/PROJECT_STATUS.md and
+# docs/current/WULVER_HANDOFF.md). The pilot's small provenance/summary/
+# manifest/audit files alongside them are committed normally.
+experiments/selector_v2_calibrated_pilot_*/full_policy_vectors.csv
+experiments/selector_v2_calibrated_pilot_*/window_features.csv
 
 # Large binary / model artifacts
 *.bin
@@ -42,6 +89,12 @@ logs/
 *.ckpt
 *.parquet
 *.cache
+*.duckdb
+*.sqlite
+*.sqlite3
+*.jsonl
+*.jsonl.gz
+*.csv.gz
 
 # Tool caches
 .pytest_cache/
@@ -63,3 +116,24 @@ Thumbs.db
 
 # Claude Code project memory (local only)
 .claude/
+
+# --- Part 2 pause hygiene (2026-07-25) ---
+# Slurm job streams (also covered by *.out/*.err above)
+rwc_*.out
+rwc_*.err
+*_repaired_pilot_*.out
+*_repaired_pilot_*.err
+
+# Local dataset / window / pilot run roots accidentally created inside the repo
+llmserveopt-data/
+**/real_window_construction_*/windows/
+**/pilot_repaired_*/results/
+**/pilot_repaired_*/per_window/
+**/*.partial
+**/*.tmp.jsonl
+
+# Local env
+.env
+.env.*
+!.env.example
+.local_data/

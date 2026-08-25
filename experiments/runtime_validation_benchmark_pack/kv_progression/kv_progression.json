@@ -1,0 +1,42 @@
+{
+  "canonical_id": "kv_progression",
+  "purpose": "Structural KV-pressure/preemption regression target: peak KV utilization, running/waiting counts, and preemption events should stay directionally consistent (not exact-timing consistent) with this progression for the same model/GPU/config triple. Preemption was 0 in all three jobs despite headroom dropping from ~45x to ~1.2x -- treat this as a structural fact to check for (queueing-over-eviction admission-control behavior), not a timing target.",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "kv_pool_tokens_provenance": "Recorded from each job's server.log (vLLM's own 'GPU KV cache size' startup log line) at run time; server.log is not committed (raw log). Reproduced here from the already-committed docs/wulver_vllm_kv_pressure_results.md, section reporting these exact figures.",
+  "jobs": [
+    {
+      "job_id": 1111541,
+      "server_command": "/mmfs1/project/ikoutis/sv96/conda_env/vllm-kv-pressure/bin/vllm serve Qwen/Qwen2.5-7B-Instruct --port 8003 --revision main --gpu-memory-utilization 0.82 --max-model-len 16384 --max-num-seqs 8 --max-num-batched-tokens 2048 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching",
+      "max_observed_kv_cache_usage": 0.022173063961426154,
+      "max_observed_vllm_running": 8.0,
+      "num_requests": 108,
+      "num_success": 108,
+      "preemption_events": 0.0,
+      "kv_pool_tokens": 925824,
+      "headroom_ratio_1_over_max_kv_usage": 45.1
+    },
+    {
+      "job_id": 1111545,
+      "server_command": "/mmfs1/project/ikoutis/sv96/conda_env/vllm-kv-pressure/bin/vllm serve Qwen/Qwen2.5-7B-Instruct --port 8010 --revision main --gpu-memory-utilization 0.35 --max-model-len 16384 --max-num-seqs 32 --max-num-batched-tokens 4096 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching",
+      "max_observed_kv_cache_usage": 0.13959390862944165,
+      "max_observed_vllm_running": 24.0,
+      "num_requests": 108,
+      "num_success": 108,
+      "preemption_events": 0.0,
+      "kv_pool_tokens": 226960,
+      "headroom_ratio_1_over_max_kv_usage": 7.16
+    },
+    {
+      "job_id": 1111572,
+      "server_command": "/mmfs1/project/ikoutis/sv96/conda_env/vllm-kv-pressure/bin/vllm serve Qwen/Qwen2.5-7B-Instruct --port 8020 --revision main --gpu-memory-utilization 0.35 --max-model-len 16384 --max-num-seqs 32 --max-num-batched-tokens 4096 --block-size 16 --enable-chunked-prefill --no-enable-prefix-caching",
+      "max_observed_kv_cache_usage": 0.8366727383120826,
+      "max_observed_vllm_running": 18.0,
+      "num_requests": 40,
+      "num_success": 40,
+      "preemption_events": 0.0,
+      "kv_pool_tokens": 237184,
+      "headroom_ratio_1_over_max_kv_usage": 1.195
+    }
+  ]
+}

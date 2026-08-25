@@ -1,0 +1,65 @@
+{
+  "decision_disagreement_metric": "Closed-loop action-set overlap proxy from transparent policy wrappers. Because trajectories can diverge, this is diagnostic only, not a selector target.",
+  "experiment": "joint_multimechanism_generalization_v1",
+  "hypotheses": {
+    "H1_COMPLEMENTARITY": "meaningful six-policy complementarity persists",
+    "H2_ORACLE_HEADROOM": "six-policy oracle retains positive practical headroom over best fixed",
+    "H3_MULTI_MECHANISM": "some oracle gain occurs with >=2 elevated mechanism pressures",
+    "H4_NON_CONCENTRATION": "oracle gain is not dominated by a tiny scenario subset"
+  },
+  "n_scenarios": 240,
+  "policies": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online"
+  ],
+  "policy_outcome_independence": "All distributions and interpretation thresholds are fixed before policy evaluation; no selector/model/search is run.",
+  "practical_epsilon": 0.01,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "runtime_feasibility_adjustment": {
+    "final_count": 240,
+    "original_target": "approximately 300 scenarios",
+    "reason": "Initial CPU execution attempt showed trace/storage and per-cell runtime cost too high before any utility result was written. The count was reduced within the preregistered 200-400 range using runtime feasibility only."
+  },
+  "sampling": {
+    "burstiness": "uniform[0,1], controls cluster strength and arrival compression",
+    "class_share_skew": "uniform[0.25,0.75]",
+    "kv_pressure_target": "uniform[0.35,1.35], converted to max_kv_tokens with feasibility floor",
+    "late_phase": "uniform[0.10,0.72] of early span",
+    "late_pressure": "uniform[0,1], controls fraction and density of late wave",
+    "long_fraction": "uniform[0.15,0.85]",
+    "max_active_sequences": "integer sampled from {4,8,16,32}",
+    "offered_load": "uniform[0.75,1.35]",
+    "output_heterogeneity_sigma": "uniform[0.25,0.9]",
+    "output_scale": "log-uniform median tokens [32,256]",
+    "prediction_noise_sigma": "uniform[0,0.45]",
+    "prompt_heterogeneity_sigma": "uniform[0.25,0.95]",
+    "prompt_scale": "log-uniform median tokens [128,2048]",
+    "slo_tightness": "uniform[0.65,2.4] multiplier on estimated isolated service",
+    "step_token_budget": "integer sampled from {256,512,1024}",
+    "tenant_weight_skew": "log-uniform [1,5]"
+  },
+  "scenario_schema": "single joint synthetic TRAIN-compatible workload schema",
+  "seed": 20260824,
+  "service_model": {
+    "allow_chunked_prefill": true,
+    "base_max_prefill_chunk_tokens": 512,
+    "decode_first": false,
+    "enable_decode_prefill_contention": true,
+    "enable_prefill_modeling": true,
+    "prefill_cost_per_token": 1.0,
+    "step_size": 0.001
+  },
+  "verdict_thresholds": {
+    "partial_min_headroom_anwg": 0.003,
+    "strong_max_top10_gain_share": 0.5,
+    "strong_min_gain_share_in_multi_pressure": 0.3,
+    "strong_min_headroom_anwg": 0.01,
+    "strong_min_nontrivial_spread_fraction": 0.25,
+    "strong_min_unique_winner_fraction": 0.1
+  },
+  "version": "joint_multimechanism_generator_v1.0.0"
+}

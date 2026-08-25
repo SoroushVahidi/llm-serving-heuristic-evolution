@@ -1,0 +1,227 @@
+{
+  "name": "burst_independent_lengths",
+  "suite_version": "1.0",
+  "target_phenomenon": "EST-vs-SOF ranking disagreement translating into an outcome difference",
+  "hypothesis": "Bursty arrivals with prompt and output lengths drawn from independent distributions let EST (prompt+output-weighted) and SOF (output-only) rank requests differently; under tight concurrency this should also change WHICH requests complete, not just their relative rank.",
+  "expected_divergent_policies": [
+    "estimated_service_time_first",
+    "shortest_output_first",
+    "oracle_srtf"
+  ],
+  "expected_winner": "oracle_srtf",
+  "workload_config": {
+    "arrival_process": "bursty",
+    "arrival_rate": 10.0,
+    "duration": 20.0,
+    "prompt_dist": "lognormal",
+    "prompt_mean": 150.0,
+    "prompt_sigma": 1.0,
+    "prompt_low": 16,
+    "prompt_high": 2000,
+    "output_dist": "lognormal",
+    "output_mean": 80.0,
+    "output_sigma": 1.0,
+    "output_low": 8,
+    "output_high": 1500,
+    "prediction_noise_rel": 0.1,
+    "slo_classes": [
+      {
+        "class_id": "medium",
+        "slo_slack": 0.2,
+        "priority": 1.0,
+        "weight": 1.0
+      }
+    ],
+    "burst_factor": 6.0,
+    "burst_fraction": 0.25,
+    "tag": "burst_independent_lengths"
+  },
+  "gpu": {
+    "max_active_sequences": 2,
+    "max_batch_tokens": 4096,
+    "max_kv_tokens": 65536
+  },
+  "service_model": {
+    "step_size": 0.001,
+    "enable_prefill_modeling": true,
+    "prefill_cost_per_token": 1.0,
+    "max_prefill_chunk_tokens": 512,
+    "step_token_budget": 8192,
+    "decode_first": false
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_sha256_by_seed": {
+    "0": "21171f90db52e9717c1a9bd01774b30adf48f8218213dbef97bc948f5fabebba",
+    "1": "fbab8a0bd995bfb3bd266bdb6cfb483dd8bf6c0ef1b7d47b08bc7ef6be28af6c",
+    "2": "859db43a608fb36d784d5acbaeb8bb3ad2cce16363a8e4ad061ded26c61c1c2e"
+  },
+  "validation": {
+    "family": "burst_independent_lengths",
+    "target_phenomenon": "EST-vs-SOF ranking disagreement translating into an outcome difference",
+    "hypothesis": "Bursty arrivals with prompt and output lengths drawn from independent distributions let EST (prompt+output-weighted) and SOF (output-only) rank requests differently; under tight concurrency this should also change WHICH requests complete, not just their relative rank.",
+    "expected_divergent_policies": [
+      "estimated_service_time_first",
+      "shortest_output_first",
+      "oracle_srtf"
+    ],
+    "expected_winner": "oracle_srtf",
+    "per_seed": [
+      {
+        "seed": 0,
+        "metrics": {
+          "n_requests": 288,
+          "n_decision_steps_with_nonempty_queue": 9256,
+          "queue_contention_fraction": 0.941875540190147,
+          "fifo_srtf_decision_disagreement_fraction": 0.022687986171132237,
+          "service_time_cv": 1.1634690138204298,
+          "deadline_slack_cv": 1.772401120376435e-15,
+          "prompt_predicted_output_correlation": -0.07120890027286317,
+          "priority_distribution": {
+            "1.0": 288
+          },
+          "anwg": {
+            "fifo": 0.2569444444444444,
+            "estimated_service_time_first": 0.6666666666666666,
+            "shortest_output_first": 0.7604166666666666,
+            "oracle_srtf": 0.7604166666666666
+          },
+          "fifo_srtf_anwg_gap": 0.5034722222222222,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.7430555555555556,
+            "oracle_srtf": 0.23958333333333334
+          },
+          "fifo_srtf_slo_violation_gap": 0.5034722222222222,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 4.382905879212164,
+          "n_ranked_decisions": 251,
+          "max_entropy_bits": 5.321928094887363,
+          "normalized_entropy": 0.823556012232241
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.8047978189612581
+      },
+      {
+        "seed": 1,
+        "metrics": {
+          "n_requests": 304,
+          "n_decision_steps_with_nonempty_queue": 11652,
+          "queue_contention_fraction": 0.9808616546515619,
+          "fifo_srtf_decision_disagreement_fraction": 0.02257123240645383,
+          "service_time_cv": 1.4883432192483979,
+          "deadline_slack_cv": 2.148050904381962e-15,
+          "prompt_predicted_output_correlation": -0.00520030995575288,
+          "priority_distribution": {
+            "1.0": 304
+          },
+          "anwg": {
+            "fifo": 0.1118421052631579,
+            "estimated_service_time_first": 0.6217105263157895,
+            "shortest_output_first": 0.680921052631579,
+            "oracle_srtf": 0.680921052631579
+          },
+          "fifo_srtf_anwg_gap": 0.5690789473684211,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.8881578947368421,
+            "oracle_srtf": 0.3190789473684211
+          },
+          "fifo_srtf_slo_violation_gap": 0.569078947368421,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 5.045995001230615,
+          "n_ranked_decisions": 289,
+          "max_entropy_bits": 5.882643049361842,
+          "normalized_entropy": 0.857776846034881
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.8225157872038799
+      },
+      {
+        "seed": 2,
+        "metrics": {
+          "n_requests": 216,
+          "n_decision_steps_with_nonempty_queue": 8063,
+          "queue_contention_fraction": 0.9578320724296168,
+          "fifo_srtf_decision_disagreement_fraction": 0.020835917152424655,
+          "service_time_cv": 1.2856954556450737,
+          "deadline_slack_cv": 1.7190789695514883e-15,
+          "prompt_predicted_output_correlation": -0.03672298779894883,
+          "priority_distribution": {
+            "1.0": 216
+          },
+          "anwg": {
+            "fifo": 0.1574074074074074,
+            "estimated_service_time_first": 0.6111111111111112,
+            "shortest_output_first": 0.6759259259259259,
+            "oracle_srtf": 0.6620370370370371
+          },
+          "fifo_srtf_anwg_gap": 0.5046296296296297,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.8425925925925926,
+            "oracle_srtf": 0.33796296296296297
+          },
+          "fifo_srtf_slo_violation_gap": 0.5046296296296295,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 4.6291895044463995,
+          "n_ranked_decisions": 195,
+          "max_entropy_bits": 5.754887502163468,
+          "normalized_entropy": 0.804392701457
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.7947357792337775
+      }
+    ],
+    "mean_fifo_srtf_anwg_gap": 0.5257269330734243,
+    "mean_fifo_srtf_decision_disagreement_fraction": 0.02203171191000357,
+    "mean_queue_contention_fraction": 0.9601897557571085,
+    "mean_headroom_score": 0.8073497951329719,
+    "accepted": true
+  }
+}

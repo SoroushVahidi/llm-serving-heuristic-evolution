@@ -1,0 +1,10 @@
+{
+  "phase3_search_gates": {
+    "at_least_3_policies_win": false,
+    "no_policy_dominates_strong_wins_gt_85pct": true,
+    "oracle_headroom_gte_0.01": false,
+    "discriminative_oracle_headroom_gte_0.03": false,
+    "all_equivalent_fraction_lt_0.40": false
+  },
+  "proceed_to_selector_training": false
+}

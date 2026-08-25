@@ -18,7 +18,6 @@ or the standard synthetic workload format.
 """
 import argparse
 import datetime
-import json
 import sys
 from pathlib import Path
 
@@ -37,7 +36,6 @@ from llmserveopt.evaluation.compare import compare_policies, generate_traces_for
 from llmserveopt.plotting.figures import plot_all
 from llmserveopt.plotting.tables import to_latex, to_markdown
 from llmserveopt.policies.registry import make_policy
-from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, DEFAULT_SLO_CLASSES
 from llmserveopt.workloads.trace_io_extended import load_extended_jsonl

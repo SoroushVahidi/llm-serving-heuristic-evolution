@@ -14,7 +14,6 @@ python scripts/run_phase2b10_scorpio_slo_guard.py \\
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import logging
 import sys

@@ -1,0 +1,7 @@
+{
+  "run_dir": "/mmfs1/scratch/ikoutis/sv96/policy_separation_fairness_starvation_pilot_v2_20260816T220113Z_1182377",
+  "config": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-policy-separation-v1/configs/policy_separation_fairness_starvation_pilot_v2.yaml",
+  "git_head": "16ad5d3e5af2e02516dfc42cc0825fa8eb7cbf38",
+  "git_branch": "policy-separation-v1-wulver-20260809",
+  "burstgpt_path": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets/burstgpt_v2/raw/BurstGPT_without_fails_1.csv"
+}

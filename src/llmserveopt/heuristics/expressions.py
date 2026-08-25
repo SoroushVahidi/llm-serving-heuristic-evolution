@@ -22,6 +22,18 @@ Expression node shapes
 {"op": "log1p_safe",   "args": [e1]}               # log1p(max(0, e1))
 {"op": "weighted_sum", "terms": [[e1, w1], ...]}   # sum(evaluate(e) * w)
 {"op": "if_then_else", "cond": e1, "then": e2, "else": e3}  # e1>0 → e2 else e3
+{"op": "topk_mixture", "k": K, "terms": [[e1, w1], ...]}  # sum of the K terms
+    # with the largest |weight| (ties broken by ascending term index),
+    # each contributing evaluate(e) * w.
+{"op": "bool_and", "args": [e1, e2, ...]}   # 1.0 iff every arg > 0.0, else 0.0
+{"op": "bool_or",  "args": [e1, e2, ...]}   # 1.0 iff any arg > 0.0, else 0.0
+{"op": "bool_not", "args": [e1]}            # 1.0 iff e1 <= 0.0, else 0.0
+
+Leaf nodes {"primitive": ...}, {"primitive_gate": ...}, and {"param": ...}
+(CC3 primitive/parameter references) are never seen by this evaluator --
+compile_heuristic() lowers them into ordinary {"var": "<reserved name>"}
+nodes before evaluation, so this module stays fully decoupled from
+policies/primitives.py.
 """
 from __future__ import annotations
 
@@ -121,6 +133,52 @@ def evaluate_expression(
     if op == "if_then_else":
         cond = _eval(expr["cond"])
         return _eval(expr["then"]) if cond > 0.0 else _eval(expr["else"])
+
+    if op == "topk_mixture":
+        terms = expr.get("terms", [])
+        if not isinstance(terms, list):
+            raise ExpressionError("topk_mixture.terms must be a list")
+        k = expr.get("k")
+        if not isinstance(k, int) or isinstance(k, bool):
+            raise ExpressionError("topk_mixture.k must be an int")
+        if k < 1 or k > len(terms) or not terms:
+            raise ExpressionError(f"topk_mixture.k={k} invalid for {len(terms)} term(s)")
+        evaluated = []
+        for idx, item in enumerate(terms):
+            if not (isinstance(item, (list, tuple)) and len(item) == 2):
+                raise ExpressionError("Each topk_mixture term must be [expr, weight]")
+            w = item[1]
+            if not isinstance(w, (int, float)):
+                raise ExpressionError(f"topk_mixture weight must be numeric, got {type(w).__name__}")
+            w = float(w)
+            if not math.isfinite(w):
+                raise ExpressionError(f"topk_mixture weight is non-finite: {w}")
+            evaluated.append((idx, item[0], w))
+        # Deterministic selection: largest |weight| first, ties broken by
+        # ascending original term index.
+        selected = sorted(evaluated, key=lambda t: (-abs(t[2]), t[0]))[:k]
+        total = 0.0
+        for _, e, w in selected:
+            total += _eval(e) * w
+        return _check_finite(total, "topk_mixture")
+
+    if op == "bool_not":
+        args = expr.get("args", [])
+        if not isinstance(args, list) or len(args) != 1:
+            raise ExpressionError("bool_not requires exactly 1 arg")
+        return 1.0 if _eval(args[0]) <= 0.0 else 0.0
+
+    if op == "bool_and":
+        args = expr.get("args", [])
+        if not isinstance(args, list) or len(args) < 2:
+            raise ExpressionError("bool_and requires at least 2 args")
+        return 1.0 if all(_eval(a) > 0.0 for a in args) else 0.0
+
+    if op == "bool_or":
+        args = expr.get("args", [])
+        if not isinstance(args, list) or len(args) < 2:
+            raise ExpressionError("bool_or requires at least 2 args")
+        return 1.0 if any(_eval(a) > 0.0 for a in args) else 0.0
 
     args = expr.get("args", [])
     if not isinstance(args, list):

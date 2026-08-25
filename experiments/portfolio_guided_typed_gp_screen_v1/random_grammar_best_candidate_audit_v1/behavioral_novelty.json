@@ -1,0 +1,637 @@
+{
+  "candidate_trajectory_parent_decision_overlap": {
+    "chunked_prefill_small": 0.0,
+    "estimated_service_time_first": 0.0,
+    "full_prefill": 0.0,
+    "kv_constrained_online": 0.0,
+    "least_laxity_first": 0.0,
+    "weighted_fair_share": 0.0
+  },
+  "candidate_trajectory_parent_decision_overlap_by_family": {
+    "chunked_prefill_small::FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+    "chunked_prefill_small::FAMILY_B_PREFILL_DECODE_V2": 0.0,
+    "chunked_prefill_small::FAMILY_C_KV_PRESSURE_V2": 0.0,
+    "estimated_service_time_first::FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+    "estimated_service_time_first::FAMILY_B_PREFILL_DECODE_V2": 0.0,
+    "estimated_service_time_first::FAMILY_C_KV_PRESSURE_V2": 0.0,
+    "full_prefill::FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+    "full_prefill::FAMILY_B_PREFILL_DECODE_V2": 0.0,
+    "full_prefill::FAMILY_C_KV_PRESSURE_V2": 0.0,
+    "kv_constrained_online::FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+    "kv_constrained_online::FAMILY_B_PREFILL_DECODE_V2": 0.0,
+    "kv_constrained_online::FAMILY_C_KV_PRESSURE_V2": 0.0,
+    "least_laxity_first::FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+    "least_laxity_first::FAMILY_B_PREFILL_DECODE_V2": 0.0,
+    "least_laxity_first::FAMILY_C_KV_PRESSURE_V2": 0.0,
+    "weighted_fair_share::FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+    "weighted_fair_share::FAMILY_B_PREFILL_DECODE_V2": 0.0,
+    "weighted_fair_share::FAMILY_C_KV_PRESSURE_V2": 0.0
+  },
+  "classification": "GENUINELY_DIFFERENT_WITHIN_SCENARIO_DECISIONS_BUT_COMPACT_PARENT_PRIMITIVE_COMPOSITION",
+  "diff_examples_on_candidate_trajectory": [
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "estimated_service_time_first",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {},
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "estimated_service_time_first",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {},
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "estimated_service_time_first",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {},
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "estimated_service_time_first",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {},
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "estimated_service_time_first",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {},
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "estimated_service_time_first",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {},
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "full_prefill",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 65536
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    },
+    {
+      "candidate_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 128
+        },
+        "swap": {}
+      },
+      "parent": "chunked_prefill_small",
+      "parent_action": {
+        "admit": {
+          "0": []
+        },
+        "hold_decode": {},
+        "migrate": {},
+        "preempt": {},
+        "prefill_chunk_override": {
+          "0": 64
+        },
+        "swap": {}
+      },
+      "step": 0,
+      "time": 0.0,
+      "waiting_ids": []
+    }
+  ],
+  "probe_parent_decision_overlap": {
+    "chunked_prefill_small": 0.0,
+    "estimated_service_time_first": 0.0,
+    "full_prefill": 0.0,
+    "kv_constrained_online": 0.0,
+    "least_laxity_first": 0.0,
+    "weighted_fair_share": 0.0
+  },
+  "reward_correlation": {
+    "chunked_prefill_small": 0.5809958199855528,
+    "estimated_service_time_first": 0.9207817209792756,
+    "full_prefill": 0.48553503682818094,
+    "kv_constrained_online": 0.8739539337808722,
+    "least_laxity_first": 0.4303586058677701,
+    "weighted_fair_share": 0.9484239608915721
+  }
+}

@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import json
 import sys
-from collections import Counter
 from pathlib import Path
 from typing import Dict, List
 
@@ -525,7 +524,7 @@ class TestTopEpsilonAccuracy:
 
     def test_wrong_selector_can_still_be_epsilon_accurate(self):
         from run_phase2b16_fresh_corrected_objective_validation import top_epsilon_accuracy
-        from run_phase2b15_corrected_objective_selector_retraining import relabel_rows, _anwg
+        from run_phase2b15_corrected_objective_selector_retraining import relabel_rows
         rows = relabel_rows([_make_scorpio_dominant_row() for _ in range(10)])
         # Predict WSP instead of SCORPIO
         preds = [WSP] * len(rows)
@@ -655,10 +654,6 @@ class TestSelectorFreezeContract:
 
     def test_b15_selectors_importable(self):
         """Phase 2B.15 selector classes must be importable."""
-        from run_phase2b15_corrected_objective_selector_retraining import (
-            SafeFallbackWspSelector, KNNAnwgSelector, PerPolicyRegressionAnwgSelector,
-            AlwaysWSPSelector, AlwaysScorpioSelector,
-        )
 
     def test_safe_fallback_wsp_needs_full_rows(self):
         """SafeFallbackWspSelector must be called with full rows (not features only)."""
@@ -713,7 +708,6 @@ class TestStatisticalAnalysis:
         from run_phase2b16_fresh_corrected_objective_validation import statistical_analysis
         rows = self._make_applied_rows()
         stats = statistical_analysis(rows, ["always_scorpio"], n_bootstrap=100)
-        gap = stats.get("always_scorpio", {}).get("mean_gap_vs_scorpio", None)
         # always_scorpio gap vs itself is listed in the baselines section, not sel section
         # Check baseline entry
         assert "always_scorpio" in stats
@@ -909,7 +903,6 @@ class TestSafetyRules:
         assert "hf_" not in src, "Runner must not hard-code HuggingFace tokens"
 
     def test_config_has_no_api_keys(self):
-        import yaml
         cfg_path = ROOT / "configs" / "phase2b16_fresh_corrected_objective_validation.yaml"
         with open(cfg_path) as f:
             content = f.read()

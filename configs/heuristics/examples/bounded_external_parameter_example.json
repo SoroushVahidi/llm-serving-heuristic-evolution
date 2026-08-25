@@ -1,0 +1,42 @@
+{
+  "name": "bounded_external_parameter_example",
+  "description": "Declares a bounded 'kv_weight' parameter (default 0.5) used as the KV-utilization regime-switch threshold; CC3 only supports declaration + default/override resolution, not learned adaptation.",
+  "tie_breaker": "earliest_deadline",
+  "parameters": [
+    {
+      "name": "kv_weight",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.5
+    }
+  ],
+  "regimes": [
+    {
+      "condition": {
+        "op": "sub",
+        "args": [
+          {
+            "var": "sys.kv_utilization"
+          },
+          {
+            "param": "kv_weight"
+          }
+        ]
+      },
+      "request_score": {
+        "op": "neg",
+        "args": [
+          {
+            "primitive": "prompt_length"
+          }
+        ]
+      }
+    }
+  ],
+  "default": {
+    "request_score": {
+      "primitive": "laxity_urgency"
+    }
+  }
+}

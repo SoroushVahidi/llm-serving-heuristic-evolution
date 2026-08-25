@@ -1,6 +1,5 @@
 """Tests for multi-regime candidate evaluation."""
 import math
-import pytest
 from llmserveopt.llm_generation.multi_regime_evaluation import (
     TRAIN_REGIMES,
     VALIDATION_REGIMES,

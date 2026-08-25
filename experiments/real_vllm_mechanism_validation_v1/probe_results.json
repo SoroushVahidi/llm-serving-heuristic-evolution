@@ -1,0 +1,41 @@
+{
+  "all_request_errors": [],
+  "classification": "NON_SCIENTIFIC_RUNTIME_FEASIBILITY_PROBE",
+  "disabled_mode": {
+    "e2e_max_s": 51.707996339013334,
+    "e2e_median_s": 51.647995147970505,
+    "e2e_min_s": 0.06560884101781994,
+    "n_errors": 0,
+    "n_requests": 5,
+    "total_probe_runtime_s": 51.756163613987155,
+    "ttft_max_s": 51.61259563296335,
+    "ttft_median_s": 0.04317607096163556,
+    "ttft_min_s": 0.024469700001645833
+  },
+  "enabled_mode": {
+    "e2e_max_s": 0.2135729839792475,
+    "e2e_median_s": 0.15172276401426643,
+    "e2e_min_s": 0.06180142500670627,
+    "n_errors": 0,
+    "n_requests": 5,
+    "total_probe_runtime_s": 0.2605484929517843,
+    "ttft_max_s": 0.12227646296378225,
+    "ttft_median_s": 0.039478019985836,
+    "ttft_min_s": 0.02127548400312662
+  },
+  "enabled_queue_probe": {
+    "e2e_max_s": 0.5666560230311006,
+    "e2e_median_s": 0.40810773096745834,
+    "e2e_min_s": 0.3617764179944061,
+    "max_kv_cache_usage_perc": 0.015693632990745887,
+    "max_running": 4.0,
+    "max_waiting": 3.0,
+    "n_errors": 0,
+    "n_requests": 5,
+    "preemptions_total_end": 0.0,
+    "total_probe_runtime_s": 0.568416180962231,
+    "ttft_max_s": 0.39717065304284915,
+    "ttft_median_s": 0.1931336639681831,
+    "ttft_min_s": 0.12379723298363388
+  }
+}

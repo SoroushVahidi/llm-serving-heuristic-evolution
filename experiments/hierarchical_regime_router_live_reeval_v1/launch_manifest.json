@@ -1,0 +1,21 @@
+{
+  "git_sha": "6c9ec364dcc7b1373570258169e6b72648fb7cd1",
+  "dirty_tree": false,
+  "branch": "contextual-compositional-heuristics-20260731",
+  "exact_command": "tmux new-session -d -s hierarchical-live-reeval \\\"cd /home/soroush/llm-serving-heuristic-evolution && PYTHONUNBUFFERED=1 /home/soroush/modal-venv/bin/python scripts/run_hierarchical_regime_router_live_reeval_v1.py > run.log 2>&1\\\"",
+  "design_sha256": "f3c795f16b6ff11d0fcb8405a4cefe5c29e8e1a641543675ad97a317bf1acc3a",
+  "gates_config_sha256": "b63265531a9687fa16bca5e990270427d11353fa42e00f2c5151ceb2cfc627ae",
+  "live_harness_source_sha256": "f38bcb74db238a0437305644260099f718f841ac80733619a8835e569702dfea",
+  "stage1_implementation_sha256": "572ea08c900f406e2340f6b030f80b68e926000e9468ecf259f0991529013699",
+  "stage2_implementation_sha256": "aea71cb6cd972c6b4fa61d22d29ae2fccd4494b7d8befefd32afd14977258a95",
+  "scenario_data_checksums": {
+    "online_regime_telemetry_v1.csv": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f",
+    "mf_psd_scenarios_v1.csv": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e"
+  },
+  "expected_scenario_count": 32,
+  "expected_family_a_count": 8,
+  "expected_family_b_count": 0,
+  "expected_family_c_count": 24,
+  "python_version": "3.12.3",
+  "utc_launch_timestamp": "2026-08-18T14:08:00Z"
+}

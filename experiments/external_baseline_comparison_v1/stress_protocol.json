@@ -1,0 +1,136 @@
+{
+  "calibration": {
+    "forbidden_signals": [
+      "anwg_winner",
+      "vbs",
+      "p6_relative",
+      "external_relative"
+    ],
+    "policy": "fifo",
+    "policy_blind": true,
+    "selection_criterion": {
+      "mean_completion_fraction_min": 0.5,
+      "mean_frac_steps_queue_positive_min": 0.1,
+      "mean_max_kv_utilization_max": 0.95,
+      "mean_p99_active_min_or_max_active": {
+        "combiner": "or",
+        "max_active": 24,
+        "p99_active": 16
+      },
+      "pick": "smallest_M_satisfying_all"
+    },
+    "subset_windows_per_source": 4
+  },
+  "calibration_result_path": "experiments/external_baseline_comparison_v1/stress_calibration/calibration_summary.json",
+  "capacity_lever": {
+    "preserves_request_contents": true,
+    "type": "max_active_sequences_and_max_batch_tokens",
+    "value": 32
+  },
+  "corpus_root": "data/public_trace_corpus_v1",
+  "created_utc": "2026-08-24T23:45:00Z",
+  "expected_result_paths": {
+    "calibration_dir": "experiments/external_baseline_comparison_v1/stress_calibration",
+    "logs_dir": "experiments/external_baseline_comparison_v1/logs/stress_calibration"
+  },
+  "gpu_config": {
+    "max_active_sequences": 32,
+    "max_batch_tokens": 32,
+    "max_kv_tokens": 8000000
+  },
+  "immutable_freeze": {
+    "C": 32,
+    "M": 16,
+    "frozen_utc": "2026-08-25T00:09:01.682256+00:00",
+    "layer2_manifest": "experiments/public_trace_replay_v1/layer2_scenario_manifest.json",
+    "layer2_seed": 20260820,
+    "n_augmented_eval_windows": 60,
+    "no_recalibration_after_external_utility": true,
+    "pass": 3,
+    "selected_calibration_measurements": {
+      "active_util_max": 0.669,
+      "active_util_p99": 0.648,
+      "completion_fraction": 0.9317,
+      "frac_steps_queue_positive": 0.1238
+    },
+    "selection_gates": {
+      "active_util_max_min": 0.25,
+      "active_util_p99_min": 0.2,
+      "completion_min": 0.8,
+      "pick": "smallest_M_then_largest_C",
+      "queue_pos_min": 0.1
+    },
+    "sources": [
+      "burstgpt",
+      "azure_2023_conv",
+      "azure_2023_code"
+    ],
+    "status": "FROZEN_PUBLIC_TRACE_STRESS_V1",
+    "window_size": 200,
+    "windows_per_source": 20,
+    "winner_blind_confirmation": true
+  },
+  "multiplier_grid": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "overlays": {
+    "evidence_class": "PUBLIC_TRACE_DERIVED_WITH_CONTROLLED_ANNOTATIONS",
+    "prediction_noise_sigma": 0.3,
+    "priority": "uniform_as_public_trace_replay_v1",
+    "slack_multiplier": 1.0,
+    "tenant_class": "source_dataset_as_class_id"
+  },
+  "pass2_MxC_calibration": {
+    "gates": {
+      "active_util_max_min": 0.25,
+      "active_util_p99_min": 0.2,
+      "completion_min": 0.8,
+      "pick": "smallest_M_then_largest_C",
+      "queue_pos_min": 0.1
+    },
+    "result_path": "experiments/external_baseline_comparison_v1/stress_calibration/pass2_MxC/calibration_summary.json",
+    "selected_primary": {
+      "C": 32,
+      "M": 16
+    },
+    "selected_reason": "lowest_stress_M_then_largest_C_satisfying_all_predeclared_gates"
+  },
+  "random_seed": 20260824,
+  "schema_version": "external_baseline_stress_protocol.v1",
+  "selected_primary_C": 32,
+  "selected_primary_M": 16,
+  "selected_reason": "lowest_stress_M_then_largest_C_satisfying_all_predeclared_gates",
+  "status": "FROZEN_PUBLIC_TRACE_STRESS_V1",
+  "trace_sources": [
+    "burstgpt",
+    "azure_2023_conv",
+    "azure_2023_code"
+  ],
+  "transformation": {
+    "forbids": [
+      "size_sorting",
+      "policy_dependent_window_picks",
+      "output_token_mutation"
+    ],
+    "formula": "relative_arrival_time_prime = relative_arrival_time / M",
+    "preserves": [
+      "within_window_order",
+      "prompt_tokens",
+      "output_tokens",
+      "source_identity"
+    ],
+    "type": "deterministic_time_compression"
+  },
+  "window_selection": {
+    "inherits": "public_trace_replay_v1 Layer-2 indices",
+    "seed": 20260820,
+    "window_size": 200,
+    "windows_per_source": 20
+  },
+  "workload_name": "public_trace_stress_v1"
+}

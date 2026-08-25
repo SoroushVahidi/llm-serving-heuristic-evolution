@@ -5,7 +5,10 @@ Variable binding
 ----------------
 req.* variables are bound per-request from ObservableRequest fields.
 sys.* variables are bound from aggregate queue/GPU state.
-batch.* variables are updated incrementally as requests are added to the batch.
+batch.* variables are rebound after each greedy admission for
+*admission_condition* checks. request_score currently sees empty-batch
+batch.* values (scores are not recomputed as the batch grows). See
+docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md.
 
 Tie-breaking (when scores are equal within floating-point tolerance)
 -------------------
@@ -19,13 +22,14 @@ Tie-breaking (when scores are equal within floating-point tolerance)
 """
 from __future__ import annotations
 
-import time
 from collections import deque
 from typing import Any, Deque, Dict, List, Optional, Tuple
 
 from ..core.action import Action
 from ..core.types import ObservableGPUState, ObservableRequest, ObservableState
 from ..policies.base import BasePolicy
+from ..policies.primitives import AdmissionCreditBudget
+from . import primitive_bridge as bridge
 from .compiler import CompiledHeuristic, compile_heuristic
 
 _SCORE_EQ_TOL = 1e-9
@@ -168,9 +172,10 @@ class HeuristicPolicy(BasePolicy):
 
     For each scheduling step:
     1. Build sys_vars from queue + GPU state.
-    2. Score each feasible candidate request using the active regime's request_score.
+    2. Score each feasible candidate request using the active regime's request_score
+       (batch_vars are empty at score time — not rescored as the batch grows).
     3. Sort by (−score, tie_breaker_key) and greedily admit feasible requests.
-    4. Update batch_vars after each admission (for incremental scoring if needed).
+    4. Rebuild batch_vars after each admission for admission_condition checks only.
     """
 
     def __init__(
@@ -185,48 +190,66 @@ class HeuristicPolicy(BasePolicy):
         self._recent_violations: Deque[bool] = deque(maxlen=recent_window)
         self.name = f"heuristic:{heuristic.name}"
 
+        # CC3: primitive/parameter resolution is the same for every request
+        # this heuristic ever scores, so precompute the (kind, name, params)
+        # list once instead of re-walking the raw DSL tree every step.
+        self._primitive_refs = heuristic.primitive_refs
+        self._resolved_params = heuristic.resolved_params
+
+        # CC3: optional composite placement key (None preserves the exact
+        # pre-CC3 first-feasible-GPU behavior).
+        self._placement_key_fn = (
+            bridge.build_composite_placement_key(heuristic.placement_keys) if heuristic.placement_keys else None
+        )
+
+        # CC3: optional stateful admission-rate limiter.
+        self._admission_budget: Optional[AdmissionCreditBudget] = None
+        if heuristic.admission_budget_spec is not None:
+            _, bound_params = heuristic.admission_budget_spec
+            self._admission_budget = AdmissionCreditBudget(**bound_params)
+
+        # CC3: optional nested policy for "on_no_admits": "safe_fallback".
+        self._fallback_policy: Optional["HeuristicPolicy"] = None
+        if heuristic.fallback is not None:
+            self._fallback_policy = HeuristicPolicy(
+                heuristic.fallback, max_candidates=max_candidates, recent_window=recent_window
+            )
+
+        self.last_trace: Optional[Dict[str, Any]] = None
+
     def reset(self) -> None:
         self._recent_violations.clear()
+        if self._admission_budget is not None:
+            self._admission_budget.reset()
+        if self._fallback_policy is not None:
+            self._fallback_policy.reset()
 
     def record_completion(self, violated_slo: bool) -> None:
         self._recent_violations.append(violated_slo)
 
-    def select_action(self, state: ObservableState) -> Action:
-        if not state.waiting_queue:
-            return Action(admit={g.gpu_id: [] for g in state.gpu_states})
+    def _req_vars_with_primitives(self, req: ObservableRequest, now: float, state: ObservableState) -> Dict[str, float]:
+        req_vars = _build_req_vars(req, now)
+        if self._primitive_refs or self._resolved_params:
+            req_vars.update(bridge.build_runtime_context(self._primitive_refs, self._resolved_params, req, state))
+        return req_vars
 
+    def _run_admission(
+        self,
+        ranked: List[ObservableRequest],
+        state: ObservableState,
+        sys_vars: Dict[str, float],
+        req_scores: Dict[int, float],
+        *,
+        ignore_admission_condition: bool = False,
+    ) -> Tuple[Dict[int, List[int]], List[ObservableRequest]]:
         now = state.time
-        sys_vars = _build_sys_vars(state, self._recent_violations)
-
-        # Score each candidate (up to max_candidates)
-        candidates = list(state.waiting_queue)[: self._max_candidates]
-        req_scores: Dict[int, float] = {}
-        batch_vars = _build_batch_vars([], {})
-
-        for req in candidates:
-            req_vars = _build_req_vars(req, now)
-            score = self._heuristic.score_request(req_vars, sys_vars, batch_vars)
-            req_scores[req.request_id] = score
-
-        # Sort by score descending, then by tie-breaker
-        tb = self._heuristic.tie_breaker
-        ranked = sorted(
-            candidates,
-            key=lambda r: (-req_scores[r.request_id], _tie_key(r, tb)),
-        )
-
-        # Greedy admission
         admit: Dict[int, List[int]] = {g.gpu_id: [] for g in state.gpu_states}
         admitted: List[ObservableRequest] = []
-        # Track per-GPU running state for feasibility checks
         gpu_kv: Dict[int, int] = {g.gpu_id: g.current_kv_tokens for g in state.gpu_states}
         gpu_active: Dict[int, int] = {g.gpu_id: len(g.active_request_ids) for g in state.gpu_states}
 
-        # Build a quick lookup for GPU objects
-        gpu_map = {g.gpu_id: g for g in state.gpu_states}
-
         for req in ranked:
-            placed = False
+            feasible: List[ObservableGPUState] = []
             for gpu in state.gpu_states:
                 gid = gpu.gpu_id
                 new_active = gpu_active[gid] + 1
@@ -237,17 +260,82 @@ class HeuristicPolicy(BasePolicy):
                     and new_kv <= gpu.max_kv_tokens
                     and new_batch <= gpu.max_batch_tokens
                 ):
-                    # Check admission_condition if defined
-                    req_vars = _build_req_vars(req, now)
-                    batch_vars_for_check = _build_batch_vars(admitted, req_scores)
-                    if self._heuristic.check_admission(req_vars, sys_vars, batch_vars_for_check):
-                        admit[gid].append(req.request_id)
-                        admitted.append(req)
-                        gpu_active[gid] = new_active
-                        gpu_kv[gid] = new_kv
-                        placed = True
-                        break
-            # (If no GPU can take the request, skip it)
+                    feasible.append(gpu)
+            if not feasible:
+                continue
+            target_gpu = (
+                min(feasible, key=lambda g: self._placement_key_fn(g, req))
+                if self._placement_key_fn is not None
+                else feasible[0]
+            )
+            gid = target_gpu.gpu_id
+
+            if not ignore_admission_condition:
+                req_vars = self._req_vars_with_primitives(req, now, state)
+                batch_vars_for_check = _build_batch_vars(admitted, req_scores)
+                if not self._heuristic.check_admission(req_vars, sys_vars, batch_vars_for_check):
+                    continue
+
+            admit[gid].append(req.request_id)
+            admitted.append(req)
+            gpu_active[gid] += 1
+            gpu_kv[gid] += req.prompt_tokens
+
+        return admit, admitted
+
+    def select_action(self, state: ObservableState) -> Action:
+        if not state.waiting_queue:
+            return Action(admit={g.gpu_id: [] for g in state.gpu_states})
+
+        now = state.time
+        sys_vars = _build_sys_vars(state, self._recent_violations)
+        if self._primitive_refs:
+            # Regime "condition" expressions are only ever evaluated against
+            # sys_vars/batch_vars (never req_vars) -- system-level primitive
+            # references (e.g. system_kv_pressure) must be resolved into
+            # sys_vars once per step for conditions to ever see them.
+            sys_vars = {**sys_vars, **bridge.build_system_context(self._primitive_refs, state)}
+
+        # Score each candidate (up to max_candidates)
+        candidates = list(state.waiting_queue)[: self._max_candidates]
+        req_scores: Dict[int, float] = {}
+        batch_vars = _build_batch_vars([], {})
+
+        trace: Optional[Dict[str, Any]] = {} if self._heuristic.primitive_refs else None
+        for req in candidates:
+            req_vars = self._req_vars_with_primitives(req, now, state)
+            score = self._heuristic.score_request(req_vars, sys_vars, batch_vars, trace=trace)
+            req_scores[req.request_id] = score
+        self.last_trace = trace
+
+        # Sort by score descending, then by tie-breaker
+        tb = self._heuristic.tie_breaker
+        ranked = sorted(
+            candidates,
+            key=lambda r: (-req_scores[r.request_id], _tie_key(r, tb)),
+        )
+
+        admit, admitted = self._run_admission(ranked, state, sys_vars, req_scores)
+
+        # CC3: explicit behavior when admission_condition rejects everyone.
+        total_admits = sum(len(v) for v in admit.values())
+        if total_admits == 0 and state.waiting_queue and self._heuristic.on_no_admits is not None:
+            if self._heuristic.on_no_admits == "safe_fallback" and self._fallback_policy is not None:
+                return self._fallback_policy.select_action(state)
+            if self._heuristic.on_no_admits == "admit_best_effort":
+                admit, admitted = self._run_admission(
+                    ranked, state, sys_vars, req_scores, ignore_admission_condition=True
+                )
+
+        # CC3: stateful admission-rate limiter (token-bucket cap on this step's admits).
+        if self._admission_budget is not None:
+            self._admission_budget.refill()
+            budget_n = self._admission_budget.max_admits()
+            if len(admitted) > budget_n:
+                keep_ids = {r.request_id for r in admitted[:budget_n]}
+                admit = {gid: [rid for rid in ids if rid in keep_ids] for gid, ids in admit.items()}
+                admitted = admitted[:budget_n]
+            self._admission_budget.consume(len(admitted))
 
         return Action(admit=admit)
 

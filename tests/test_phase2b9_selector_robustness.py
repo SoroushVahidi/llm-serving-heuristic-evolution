@@ -14,7 +14,6 @@ Tests:
 from __future__ import annotations
 
 import csv
-import json
 from pathlib import Path
 
 import pytest
@@ -51,7 +50,6 @@ def test_selector_label_function_excludes_oracle():
 
     # Any policy returned by a labeling function must be in SELECTOR_CANDIDATES
     # (and therefore not an oracle). This tests the invariant at the API level.
-    from llmserveopt.selector.labels import WindowLabel
     # WindowLabel best_policy field is documented to be from SELECTOR_CANDIDATES
     # We verify by checking that ORACLE_POLICY_NAMES ∩ SELECTOR_CANDIDATES == ∅
     overlap = set(ORACLE_POLICY_NAMES) & set(SELECTOR_CANDIDATES)

@@ -1,0 +1,43 @@
+{
+  "equal_evaluated_candidates": true,
+  "evaluated_by_treatment": {
+    "A_RANDOM_GRAMMAR_GP": 4,
+    "B_PARENT_SEEDED_MUTATION_ONLY": 4,
+    "C_PORTFOLIO_STRUCTURAL_CROSSOVER": 4
+  },
+  "treatments": [
+    {
+      "complete": true,
+      "duplicate_candidates": 0,
+      "evaluated_candidates": 4,
+      "proposed_candidates": 5,
+      "rejected_candidates": 1,
+      "target_evaluated_candidates": 4,
+      "treatment_id": "A_RANDOM_GRAMMAR_GP",
+      "unique_candidates": 4,
+      "valid_candidates": 4
+    },
+    {
+      "complete": true,
+      "duplicate_candidates": 0,
+      "evaluated_candidates": 4,
+      "proposed_candidates": 4,
+      "rejected_candidates": 0,
+      "target_evaluated_candidates": 4,
+      "treatment_id": "B_PARENT_SEEDED_MUTATION_ONLY",
+      "unique_candidates": 4,
+      "valid_candidates": 4
+    },
+    {
+      "complete": true,
+      "duplicate_candidates": 0,
+      "evaluated_candidates": 4,
+      "proposed_candidates": 5,
+      "rejected_candidates": 1,
+      "target_evaluated_candidates": 4,
+      "treatment_id": "C_PORTFOLIO_STRUCTURAL_CROSSOVER",
+      "unique_candidates": 4,
+      "valid_candidates": 4
+    }
+  ]
+}

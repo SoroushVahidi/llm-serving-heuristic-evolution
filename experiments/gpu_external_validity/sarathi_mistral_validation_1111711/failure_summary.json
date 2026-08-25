@@ -1,0 +1,21 @@
+{
+  "job_id": 1111711,
+  "model": "mistralai/Mistral-7B-Instruct-v0.1",
+  "outcome": "FAILED",
+  "phase_reached": "smoke_test_engine_step (forward pass)",
+  "error_type": "ValueError",
+  "error_message": "The dtype of q torch.bfloat16 does not match the q_data_type torch.float16 specified in plan function.",
+  "call_path": [
+    "run_sarathi_gpu_smoke_and_validation.py:run_smoke -> engine.step()",
+    "sarathi/model_executor/models/mistral.py:MistralModel.forward -> MistralDecoderLayer.forward -> MistralAttention.forward",
+    "sarathi/model_executor/attention/flashinfer_attention_wrapper.py:FlashInferAttentionWrapper.forward -> self.prefill_wrapper.forward",
+    "flashinfer/prefill.py:run -> _check_cached_qkv_data_type",
+    "flashinfer/utils.py:_check_cached_qkv_data_type (raises)"
+  ],
+  "root_cause_hypothesis": "This vendored sarathi-serve fork's FlashInfer prefill-wrapper 'plan' step does not track the model's actual configured dtype (bfloat16, requested to match every real-vLLM run in this investigation) in at least this code path, defaulting to float16 in the plan while the runtime tensors are bfloat16.",
+  "classification": "third_distinct_failure_mode_not_a_rope_scaling_variant",
+  "resubmission_policy": "one corrected resubmission already used for this task (1111705 rope_scaling fix -> 1111711); this third, distinct failure was not retried, per the bounded-retry instruction",
+  "untested_next_step": "rerun with dtype left at this fork's own default (float16) instead of forcing bfloat16 -- ModelConfig.dtype defaults to 'float16' in sarathi/config/config.py",
+  "post_crash_note": "Slurm job appeared to hang after the RayWorker exception (no further log output, sacct still RUNNING) rather than exiting promptly the way the earlier Qwen2.5 rope_scaling failures (1111576, 1111663) did within under a minute of their error. Job was cancelled via scancel after ~8.5 minutes once the diagnostic traceback was already fully captured in run.log, to free the GPU allocation -- not a retry, no new attempt was made.",
+  "raw_output_dir_on_wulver": "/mmfs1/scratch/ikoutis/sv96/sarathi_mistral_validation_1111711"
+}

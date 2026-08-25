@@ -1,0 +1,188 @@
+{
+  "dimension_summary": {
+    "burstiness": {
+      "max": 0.9998406452318515,
+      "median": 0.5316666694768984,
+      "min": 0.0007862780666051394,
+      "p10": 0.09575330757356354,
+      "p90": 0.8978449491054599
+    },
+    "kv_pressure": {
+      "max": 1.0,
+      "median": 0.953392,
+      "min": 0.141522,
+      "p10": 0.49423690000000003,
+      "p90": 1.0
+    },
+    "late_pressure": {
+      "max": 0.997239993872894,
+      "median": 0.47840798089611386,
+      "min": 0.0061196065781348175,
+      "p10": 0.07968764401097721,
+      "p90": 0.8523952815391579
+    },
+    "long_fraction": {
+      "max": 0.8974358974358975,
+      "median": 0.513235294117647,
+      "min": 0.057692307692307696,
+      "p10": 0.22058823529411764,
+      "p90": 0.7874245472837021
+    },
+    "offered_load": {
+      "max": 1.3473890791043743,
+      "median": 1.0458024036155442,
+      "min": 0.7520665340802335,
+      "p10": 0.7957265595250894,
+      "p90": 1.2840542852027892
+    },
+    "output_median": {
+      "max": 512.0,
+      "median": 145.25,
+      "min": 32.0,
+      "p10": 56.45,
+      "p90": 415.0499999999999
+    },
+    "prompt_median": {
+      "max": 4096.0,
+      "median": 709.0,
+      "min": 83.0,
+      "p10": 175.3,
+      "p90": 2700.099999999999
+    },
+    "slo_tightness": {
+      "max": 2.390236414879075,
+      "median": 1.4516103192728749,
+      "min": 0.6517387310279812,
+      "p10": 0.8517891349878064,
+      "p90": 2.224448682309815
+    },
+    "tenant_weight_skew": {
+      "max": 4.936600015463331,
+      "median": 2.207336049654831,
+      "min": 1.0050732409114278,
+      "p10": 1.181432043273987,
+      "p90": 4.022027035272703
+    }
+  },
+  "mechanism_pressure_counts": {
+    "1": 17,
+    "2": 48,
+    "3": 90,
+    "4": 64,
+    "5": 20,
+    "6": 1
+  },
+  "multi_mechanism_fraction_ge2": 0.9291666666666667,
+  "multi_mechanism_scenarios_ge2": 223,
+  "n_scenarios": 240,
+  "pairwise_correlations": {
+    "burstiness": {
+      "burstiness": 1.0,
+      "kv_pressure": 0.0296,
+      "late_pressure": -0.0171,
+      "long_fraction": -0.0321,
+      "offered_load": -0.0708,
+      "output_median": 0.063,
+      "prompt_median": -0.0488,
+      "slo_tightness": -0.0502,
+      "tenant_weight_skew": -0.1131
+    },
+    "kv_pressure": {
+      "burstiness": 0.0296,
+      "kv_pressure": 1.0,
+      "late_pressure": -0.0146,
+      "long_fraction": -0.0734,
+      "offered_load": 0.1039,
+      "output_median": -0.0255,
+      "prompt_median": -0.1492,
+      "slo_tightness": 0.059,
+      "tenant_weight_skew": 0.0088
+    },
+    "late_pressure": {
+      "burstiness": -0.0171,
+      "kv_pressure": -0.0146,
+      "late_pressure": 1.0,
+      "long_fraction": 0.0899,
+      "offered_load": 0.0203,
+      "output_median": 0.1565,
+      "prompt_median": 0.0569,
+      "slo_tightness": -0.0585,
+      "tenant_weight_skew": 0.0556
+    },
+    "long_fraction": {
+      "burstiness": -0.0321,
+      "kv_pressure": -0.0734,
+      "late_pressure": 0.0899,
+      "long_fraction": 1.0,
+      "offered_load": 0.0321,
+      "output_median": 0.4466,
+      "prompt_median": 0.4194,
+      "slo_tightness": 0.0022,
+      "tenant_weight_skew": 0.0885
+    },
+    "offered_load": {
+      "burstiness": -0.0708,
+      "kv_pressure": 0.1039,
+      "late_pressure": 0.0203,
+      "long_fraction": 0.0321,
+      "offered_load": 1.0,
+      "output_median": -0.0042,
+      "prompt_median": -0.0222,
+      "slo_tightness": 0.0416,
+      "tenant_weight_skew": -0.0192
+    },
+    "output_median": {
+      "burstiness": 0.063,
+      "kv_pressure": -0.0255,
+      "late_pressure": 0.1565,
+      "long_fraction": 0.4466,
+      "offered_load": -0.0042,
+      "output_median": 1.0,
+      "prompt_median": 0.247,
+      "slo_tightness": -0.0563,
+      "tenant_weight_skew": 0.0237
+    },
+    "prompt_median": {
+      "burstiness": -0.0488,
+      "kv_pressure": -0.1492,
+      "late_pressure": 0.0569,
+      "long_fraction": 0.4194,
+      "offered_load": -0.0222,
+      "output_median": 0.247,
+      "prompt_median": 1.0,
+      "slo_tightness": -0.0647,
+      "tenant_weight_skew": 0.0502
+    },
+    "slo_tightness": {
+      "burstiness": -0.0502,
+      "kv_pressure": 0.059,
+      "late_pressure": -0.0585,
+      "long_fraction": 0.0022,
+      "offered_load": 0.0416,
+      "output_median": -0.0563,
+      "prompt_median": -0.0647,
+      "slo_tightness": 1.0,
+      "tenant_weight_skew": -0.0847
+    },
+    "tenant_weight_skew": {
+      "burstiness": -0.1131,
+      "kv_pressure": 0.0088,
+      "late_pressure": 0.0556,
+      "long_fraction": 0.0885,
+      "offered_load": -0.0192,
+      "output_median": 0.0237,
+      "prompt_median": 0.0502,
+      "slo_tightness": -0.0847,
+      "tenant_weight_skew": 1.0
+    }
+  },
+  "pressure_means": {
+    "burst_pressure": 0.4085347958333333,
+    "fairness_pressure": 0.3989995625,
+    "kv_pressure": 0.8339338208333333,
+    "prefill_decode_pressure": 0.5873038749999999,
+    "service_heterogeneity": 0.631128075,
+    "urgency_pressure": 0.787905525
+  },
+  "triple_plus_mechanism_scenarios": 175
+}

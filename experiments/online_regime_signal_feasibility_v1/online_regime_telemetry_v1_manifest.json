@@ -1,0 +1,31 @@
+{
+  "build_git_head_sha": "00acb1f3a06c3b850d5ce3206e2cd69eafcb8d2e",
+  "build_timestamp_utc": "2026-08-18T02:05:48Z",
+  "n_scenarios_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 72,
+    "FAMILY_B_PREFILL_DECODE_V2": 32,
+    "FAMILY_C_KV_PRESSURE_V2": 72
+  },
+  "n_steps_actually_simulated_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 2306715,
+    "FAMILY_B_PREFILL_DECODE_V2": 10380,
+    "FAMILY_C_KV_PRESSURE_V2": 180902
+  },
+  "n_total_rows_recorded_after_dedup": 127319,
+  "output_files": {
+    "online_regime_telemetry_v1.csv": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f"
+  },
+  "replay_policy": "fifo (neutral, non-native to every family)",
+  "sampling_note": "TelemetryRecordingPolicy records every activity-label TRANSITION exactly (any of a_active/b_active/c_active flipping), plus otherwise at least once every sample_stride_steps=20 raw simulator steps -- a recording-economy cadence, not a change to which steps the simulator actually executes or how signals/thresholds are computed. See TelemetryRecordingPolicy's docstring.",
+  "schema_version": "online_regime_signals_v1.0.0",
+  "sources_read": {
+    "family_c_reconstruction_v1_scenarios.jsonl": {
+      "path": "experiments/family_c_reconstruction_v1/family_c_reconstruction_v1_scenarios.jsonl",
+      "sha256": "9e1acb9bb270eda73c19ac9f1d7673431fac2130f227eb0d342e814361761d20"
+    },
+    "mf_psd_long_v1.csv": {
+      "path": "experiments/mf_psd_v1/mf_psd_long_v1.csv",
+      "sha256": "7a1bbbd925d5bfc28fd66feaa9ecc110d28cb8a47748c6dc4aa4cfcaf76b4cb4"
+    }
+  }
+}

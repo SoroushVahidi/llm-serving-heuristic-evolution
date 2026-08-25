@@ -1,0 +1,27 @@
+{
+  "point_top5_scenarios": 0.2930029665058155,
+  "point_top5pct_scenarios": 0.4876134722958395,
+  "point_top10pct_scenarios": 0.6845264170857539,
+  "diagnosis": "BUG: scenario-level bootstrap used groupby(scenario_id) after with-replacement draw, collapsing duplicate scenario draws and biasing concentration upward; CI lower bound can exceed unique-scenario point estimate",
+  "buggy_top5_ci": {
+    "ci95_high": 0.5623206903274957,
+    "ci95_low": 0.2968965865768828,
+    "mean": 0.4186635224265108
+  },
+  "corrected_top5_scenario_mass_share": {
+    "mean": 0.28653725563790944,
+    "ci95_low": 0.1924452247219528,
+    "ci95_high": 0.39933913615314703
+  },
+  "corrected_top5pct_scenario_mass_share": {
+    "mean": 0.48037603448747657,
+    "ci95_low": 0.3835050556523223,
+    "ci95_high": 0.5902473185201648
+  },
+  "corrected_top10pct_scenario_mass_share": {
+    "mean": 0.6756457382783254,
+    "ci95_low": 0.5900651671018214,
+    "ci95_high": 0.762708295653658
+  },
+  "state_level_bootstrap_status": "OK \u2014 concatenating states duplicates scenarios correctly under WR"
+}

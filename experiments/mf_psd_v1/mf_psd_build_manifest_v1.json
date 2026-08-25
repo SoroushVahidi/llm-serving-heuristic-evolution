@@ -1,0 +1,52 @@
+{
+  "builder_version": "mf_psd_v1.0.0",
+  "long_form_validation": {
+    "actual_total_rows": 496,
+    "duplicate_row_ids": 0,
+    "duplicate_scenario_policy_cells": 0,
+    "expected_total_rows": 496,
+    "forbidden_fields_present_in_long_form": [],
+    "non_finite_anwg_on_success_rows": 0,
+    "per_family_actual_rows": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 288,
+      "FAMILY_B_PREFILL_DECODE_V2": 64,
+      "FAMILY_C_KV_PRESSURE_V2": 144
+    },
+    "per_family_expected_rows": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 288,
+      "FAMILY_B_PREFILL_DECODE_V2": 64,
+      "FAMILY_C_KV_PRESSURE_V2": 144
+    },
+    "untraceable_rows": 0
+  },
+  "n_long_form_rows": 496,
+  "n_scenarios": 176,
+  "output_dir": "experiments/mf_psd_v1",
+  "per_family_row_counts": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 288,
+    "FAMILY_B_PREFILL_DECODE_V2": 64,
+    "FAMILY_C_KV_PRESSURE_V2": 144
+  },
+  "per_family_scenario_counts": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": 72,
+    "FAMILY_B_PREFILL_DECODE_V2": 32,
+    "FAMILY_C_KV_PRESSURE_V2": 72
+  },
+  "scenario_table_validation": {
+    "actual_scenarios_per_family": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 72,
+      "FAMILY_B_PREFILL_DECODE_V2": 32,
+      "FAMILY_C_KV_PRESSURE_V2": 72
+    },
+    "duplicate_scenario_ids": 0,
+    "expected_scenarios_per_family": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 72,
+      "FAMILY_B_PREFILL_DECODE_V2": 32,
+      "FAMILY_C_KV_PRESSURE_V2": 72
+    },
+    "forbidden_fields_present_as_learnable": [],
+    "scenario_ids_only_in_long": [],
+    "scenario_ids_only_in_scenario_table": [],
+    "scenarios_with_non_invariant_features": 0
+  }
+}

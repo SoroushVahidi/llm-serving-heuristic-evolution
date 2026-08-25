@@ -10,13 +10,12 @@ Phase 1.5 additions
 from __future__ import annotations
 
 import math
-import time as _time
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence
+from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 import numpy as np
 
-from .types import CompletedRequest
+from .types import CompletedRequest, Request
 
 
 @dataclass
@@ -65,11 +64,29 @@ class RunMetrics:
     # Paper-facing name: priority-weighted SLO goodput.
     # Definition: sum(priority_i * 1[completion_time_i <= deadline_i]) / sum(priority_i)
     # Uses request.priority as weight (default 1.0 if priority == 0).
+    #
+    # Historical semantics warning: this denominator is over COMPLETED
+    # requests only. It is preserved for reproducibility and is better
+    # interpreted as conditional weighted SLO attainment.
     weighted_goodput: float = float("nan")
+
+    # Corrected system-level utility: denominator is over all arriving
+    # requests. Rejected, dropped, unfinished, and SLO-missed completions get
+    # zero numerator credit but still contribute denominator weight.
+    arrival_normalized_weighted_goodput: float = float("nan")
+
+    # Weighted analogue of completion_fraction:
+    # sum(weight_i for completed requests) / sum(weight_i for all arrivals).
+    weighted_completion_fraction: float = float("nan")
 
     @property
     def priority_weighted_slo_goodput(self) -> float:
         """Alias for weighted_goodput (paper-facing name)."""
+        return self.weighted_goodput
+
+    @property
+    def conditional_weighted_slo_attainment(self) -> float:
+        """Backward-compatible semantic alias for historical weighted_goodput."""
         return self.weighted_goodput
 
     # Throughput
@@ -103,6 +120,7 @@ def compute_metrics(
     wall_clock_s: float = float("nan"),
     idle_steps_skipped: int = 0,
     num_total: int = 0,
+    all_requests: Optional[List[Request]] = None,
 ) -> RunMetrics:
     m = RunMetrics(policy_name=policy_name, workload_tag=workload_tag, seed=seed)
     m.num_completed = len(completed)
@@ -113,6 +131,9 @@ def compute_metrics(
         m.num_completed / m.num_total if m.num_total > 0 else float("nan")
     )
     m.wall_clock_s = wall_clock_s
+
+    completed_weights: np.ndarray = np.array([], dtype=float)
+    completed_met: np.ndarray = np.array([], dtype=float)
 
     if completed:
         latencies  = np.array([c.latency       for c in completed], dtype=float)
@@ -133,13 +154,16 @@ def compute_metrics(
 
         # Weighted goodput: priority-weighted SLO-met rate.
         # Use priority as weight; fall back to 1.0 when priority is 0.
-        weights = np.array(
+        completed_weights = np.array(
             [c.request.priority if c.request.priority > 0 else 1.0 for c in completed],
             dtype=float,
         )
-        met = (~violations).astype(float)
-        total_weight = float(np.sum(weights))
-        m.weighted_goodput = float(np.dot(weights, met) / total_weight) if total_weight > 0 else 0.0
+        completed_met = (~violations).astype(float)
+        total_weight = float(np.sum(completed_weights))
+        m.weighted_goodput = (
+            float(np.dot(completed_weights, completed_met) / total_weight)
+            if total_weight > 0 else 0.0
+        )
 
         total_output_tokens = sum(c.request.actual_output_tokens for c in completed)
         if sim_duration > 0:
@@ -183,7 +207,58 @@ def compute_metrics(
         m.total_policy_time_s = sum(policy_decision_times)
         m.mean_policy_time_s  = m.total_policy_time_s / len(policy_decision_times)
 
+    arrival_weight = _arrival_weight_denominator(
+        all_requests=all_requests,
+        completed=completed,
+        dropped=dropped,
+        num_total=m.num_total,
+    )
+    completed_weight = float(np.sum(completed_weights)) if completed_weights.size else 0.0
+    success_weight = (
+        float(np.dot(completed_weights, completed_met))
+        if completed_weights.size and completed_met.size else 0.0
+    )
+    if arrival_weight > 0:
+        m.weighted_completion_fraction = completed_weight / arrival_weight
+        m.arrival_normalized_weighted_goodput = success_weight / arrival_weight
+    elif m.num_total == 0:
+        m.weighted_completion_fraction = float("nan")
+        m.arrival_normalized_weighted_goodput = float("nan")
+    else:
+        m.weighted_completion_fraction = 0.0
+        m.arrival_normalized_weighted_goodput = 0.0
+
     return m
+
+
+def _request_weight(req: object) -> float:
+    priority = getattr(req, "priority", 1.0)
+    try:
+        p = float(priority)
+    except (TypeError, ValueError):
+        return 1.0
+    return p if p > 0 else 1.0
+
+
+def _arrival_weight_denominator(
+    *,
+    all_requests: Optional[List[Request]],
+    completed: List[CompletedRequest],
+    dropped: List,
+    num_total: int,
+) -> float:
+    if all_requests is not None:
+        return float(sum(_request_weight(r) for r in all_requests))
+
+    # Backward-compatible fallback for callers that predate the corrected
+    # metric. If some arrivals are unknown because only num_total was passed,
+    # assume unit weight for those missing arrivals rather than dropping them
+    # from the denominator.
+    known_weight = float(sum(_request_weight(c.request) for c in completed))
+    known_weight += float(sum(_request_weight(r) for r in dropped))
+    known_count = len(completed) + len(dropped)
+    missing = max(num_total - known_count, 0)
+    return known_weight + float(missing)
 
 
 def metrics_to_dict(m: RunMetrics) -> Dict:
@@ -213,6 +288,9 @@ def metrics_to_dict(m: RunMetrics) -> Dict:
         "slo_violation_rate":        _fmt(m.slo_violation_rate),
         "weighted_goodput":                    _fmt(m.weighted_goodput),
         "priority_weighted_slo_goodput":       _fmt(m.weighted_goodput),  # paper-facing alias
+        "conditional_weighted_slo_attainment": _fmt(m.weighted_goodput),
+        "arrival_normalized_weighted_goodput": _fmt(m.arrival_normalized_weighted_goodput),
+        "weighted_completion_fraction":        _fmt(m.weighted_completion_fraction),
         "request_throughput":        _fmt(m.request_throughput),
         "token_throughput":          _fmt(m.token_throughput),
         "mean_gpu_utilization":      _fmt(m.mean_gpu_utilization),

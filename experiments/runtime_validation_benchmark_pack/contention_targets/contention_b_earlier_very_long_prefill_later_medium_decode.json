@@ -1,0 +1,55 @@
+{
+  "fixture_id": "contention_b_earlier_very_long_prefill_later_medium_decode",
+  "description": "A much longer hog (12000 tokens) with five near-instant runners arriving shortly after -- a sustained, many-step stall window.",
+  "interaction_shape": "single_long_hog_vs_medium_runner_burst",
+  "step_token_budget": 515,
+  "max_prefill_chunk_tokens": 512,
+  "max_kv_tokens": 40000,
+  "max_active_sequences": 16,
+  "prefill_cost_per_token": 1.0,
+  "expected_to_diverge": false,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 12000,
+      "predicted_output_tokens": 1,
+      "actual_output_tokens": 1
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 60,
+      "actual_output_tokens": 60
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 60,
+      "actual_output_tokens": 60
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 60,
+      "actual_output_tokens": 60
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 60,
+      "actual_output_tokens": 60
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.001,
+      "prompt_tokens": 1,
+      "predicted_output_tokens": 60,
+      "actual_output_tokens": 60
+    }
+  ]
+}

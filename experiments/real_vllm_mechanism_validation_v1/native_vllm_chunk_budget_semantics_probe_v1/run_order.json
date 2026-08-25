@@ -1,0 +1,127 @@
+{
+  "blocks": [
+    {
+      "block": 0,
+      "regime_repetition_order": [
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 1
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 1
+        }
+      ],
+      "repetitions": [
+        0,
+        1
+      ],
+      "treatment": "T512"
+    },
+    {
+      "block": 1,
+      "regime_repetition_order": [
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 1
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 1
+        }
+      ],
+      "repetitions": [
+        0,
+        1
+      ],
+      "treatment": "T4096"
+    },
+    {
+      "block": 2,
+      "regime_repetition_order": [
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 2
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 2
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 3
+        }
+      ],
+      "repetitions": [
+        2,
+        3,
+        4
+      ],
+      "treatment": "T4096"
+    },
+    {
+      "block": 3,
+      "regime_repetition_order": [
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 2
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 2
+        }
+      ],
+      "repetitions": [
+        2,
+        3,
+        4
+      ],
+      "treatment": "T512"
+    }
+  ],
+  "seed": 20260824
+}

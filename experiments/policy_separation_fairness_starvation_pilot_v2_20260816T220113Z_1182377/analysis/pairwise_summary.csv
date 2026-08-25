@@ -1,0 +1,7 @@
+policy_i,policy_j,mean_delta_ij,median_delta_ij,i_beats_j_eps_0.0,j_beats_i_eps_0.0,near_ties_eps_0.0,bidirectional_eps_0.0,i_beats_j_eps_0.001,j_beats_i_eps_0.001,near_ties_eps_0.001,bidirectional_eps_0.001,i_beats_j_eps_0.005,j_beats_i_eps_0.005,near_ties_eps_0.005,bidirectional_eps_0.005,i_beats_j_eps_0.01,j_beats_i_eps_0.01,near_ties_eps_0.01,bidirectional_eps_0.01
+aging_priority,estimated_service_time_first,-0.13270903479236812,-0.12386363636363634,18,54,0,True,18,54,0,True,18,54,0,True,17,54,1,True
+aging_priority,fifo,0.30398428731762067,0.275,63,9,0,True,63,9,0,True,63,9,0,True,63,9,0,True
+aging_priority,weighted_fair_share,-0.15285143097643097,-0.15000000000000002,12,60,0,True,12,60,0,True,12,60,0,True,10,59,3,True
+estimated_service_time_first,fifo,0.4366933221099888,0.3534090909090909,72,0,0,False,72,0,0,False,72,0,0,False,72,0,0,False
+estimated_service_time_first,weighted_fair_share,-0.020142396184062855,0.0,27,30,15,True,27,30,15,True,27,30,15,True,26,29,17,True
+fifo,weighted_fair_share,-0.4568357182940516,-0.38055555555555554,0,72,0,False,0,72,0,False,0,72,0,False,0,72,0,False

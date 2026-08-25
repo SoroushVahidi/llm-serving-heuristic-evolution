@@ -1,0 +1,147 @@
+{
+  "canonical_scenario_id": "xlong_context_burst16",
+  "source_job": 1111572,
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "server_config": {
+    "gpu_memory_utilization": 0.35,
+    "max_num_seqs": 32,
+    "max_num_batched_tokens": 4096,
+    "block_size": 16,
+    "max_model_len": 16384,
+    "enable_chunked_prefill": true
+  },
+  "request_count": 16,
+  "max_client_concurrency": 16,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "98e68165d4562fb777672e7af9fba4d23b5d8aefd38f51dee09a405556021ca1"
+    },
+    {
+      "request_id": 1,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "2252eda9eaebabb6d79f2952dbd886cea2f8eedc2d31f2233c81bc033f775f8b"
+    },
+    {
+      "request_id": 2,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "88585ec7554f7afe93a372a9172a99968ecaf6322848fc1bc8e755436da114a1"
+    },
+    {
+      "request_id": 3,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "d9a7cd67bd7445fa99176c34ac996845de9976d3cd89f087fd90257cbb1cea2b"
+    },
+    {
+      "request_id": 4,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "783ab41a57303326b3604aedab583e3da3d06e66b7f515668c6cfa549c39eb38"
+    },
+    {
+      "request_id": 5,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "2460c78cc6a592f66fbb21433ae92528b96ffd2a70ec67651645a6935af4efe8"
+    },
+    {
+      "request_id": 6,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "c574ac2c916e9914111d3809bb4c320171163033dbb0fe0bd335bb1cc1e8b91e"
+    },
+    {
+      "request_id": 7,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "a7a0e6586b40c981d3dd432c7a99aac94ae2837d7c22ef78f9ff9c1af0130cd3"
+    },
+    {
+      "request_id": 8,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "c138632864f7bbfd518773b6ee69219553d9a17138ae98a01a5c5eda6c075373"
+    },
+    {
+      "request_id": 9,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "52c62a89c270f4d596b1ef002fb5e5105bb3e44fb5bc093d3ca75663e81131c6"
+    },
+    {
+      "request_id": 10,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "9cd59d1e20a9e4d87a7f0fa36f6a4581624713f23f9e9c493fbfccef9028a3be"
+    },
+    {
+      "request_id": 11,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "2b63f13b7434244c3c0f25aa6e4eccc3c75073a4c96f99e1f49345eca2ffb9f3"
+    },
+    {
+      "request_id": 12,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "bf0c53bb2249398fbcac735a6df03dd44abc9570592b812ddb7d971e81b96ab6"
+    },
+    {
+      "request_id": 13,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "e760c64a21ca8f3fd3f8af0c5b1bd47d8b153c01b82ba111ade60b6d3357a911"
+    },
+    {
+      "request_id": 14,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "bcb7b41e0c8d3421a92ede0fadcd45cc171a9e863563f9f6147bac84bb30f765"
+    },
+    {
+      "request_id": 15,
+      "arrival_time_s": 0.0,
+      "target_input_tokens": 12000,
+      "target_output_tokens": 512,
+      "prompt_sha256": "b83b8cf41ae55b7d2b0c3ec13b673f70f5f90e459d393093828a2aaeafa9bca7"
+    }
+  ],
+  "real_vllm_result": {
+    "completion_fraction": 1.0,
+    "num_success": 16,
+    "num_requests": 16,
+    "mean_ttft_s": 6.5068914444309485,
+    "mean_latency_s": 20.14437539386563,
+    "max_kv_cache_usage": 0.7472846252445524,
+    "max_vllm_running": 16.0,
+    "max_vllm_waiting": 15.0,
+    "note": "Real vLLM 0.24.0 (chunked prefill enabled) completes all requests -- prompt length exceeding max_num_batched_tokens is handled by chunking across iterations."
+  },
+  "vllm_faithful_simulator_result": {
+    "completion_fraction": 0.0,
+    "num_completed": 0,
+    "num_dropped": 16,
+    "note": "vllm_faithful is pinned to vLLM v0.1.0, which predates chunked prefill. Its admission check requires a request's ENTIRE prompt_tokens to fit within max_num_batched_tokens (2560 in this harness's fixed GPUConfig) in a single iteration -- no partial/chunked admission exists at that pin. A ~12,000-token prompt can never satisfy that check, so the request sits in `waiting` forever and is counted as dropped once the simulator's drain_steps budget is exhausted. This is traced, not inferred -- see docs/wulver_vllm_kv_pressure_results.md's root-cause audit section."
+  },
+  "future_vllm_chunked_prefill_faithful_requirement": "A future vllm_chunked_prefill_faithful baseline (design: docs/vllm_chunked_prefill_faithful_design_audit.md, recommended pin v0.4.2) MUST complete this fixture's 16 requests via chunked prefill admission (a SchedulingBudget-bounded partial admission per iteration, per that pin's vllm/core/scheduler.py), matching real vLLM's observed completion_fraction=1.0 here, not vllm_faithful's completion_fraction=0.0. This fixture is the acceptance-test target for that baseline's long-context admission behavior."
+}

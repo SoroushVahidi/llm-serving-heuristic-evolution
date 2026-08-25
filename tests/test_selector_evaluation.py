@@ -1,5 +1,4 @@
 """Tests for selector evaluation metrics."""
-import math
 import pytest
 
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
@@ -138,7 +137,7 @@ def test_reward_metrics_selected_mean_wg():
 
 
 def test_reward_metrics_best_fixed():
-    import sys, importlib.util
+    import importlib.util
     from pathlib import Path
     spec = importlib.util.spec_from_file_location(
         "evaluate_policy_selector",
@@ -169,7 +168,7 @@ def test_reward_metrics_best_fixed():
 # --- per_regime_breakdown ---
 
 def test_per_regime_breakdown():
-    import sys, importlib.util
+    import importlib.util
     from pathlib import Path
     spec = importlib.util.spec_from_file_location(
         "evaluate_policy_selector",
@@ -203,7 +202,7 @@ def test_per_regime_breakdown():
 # --- compute_classification_metrics ---
 
 def test_compute_classification_metrics_perfect():
-    import sys, importlib.util
+    import importlib.util
     from pathlib import Path
     spec = importlib.util.spec_from_file_location(
         "evaluate_policy_selector",

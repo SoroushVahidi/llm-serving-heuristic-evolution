@@ -1,0 +1,43 @@
+{
+  "baselines": [
+    "always WFS",
+    "always ESTF",
+    "regime identity/favored-side rule",
+    "prior analytic-index candidates A-E",
+    "pair envelope as non-deployable upper bound"
+  ],
+  "benchmark_subset": "TRAIN/D1 only; no DEV, FINAL, TEST, Wulver jobs, new simulations, or oracle labels",
+  "candidate_family": "one predeclared deterministic WFS-base rule with ESTF release guard using laxity, queue age, priority/class deficit, service size, and bounded history slopes; no coefficient sweep",
+  "do_not_launch_now": true,
+  "expected_runtime": "<2 minutes local CPU; pure CSV/JSON analysis",
+  "failure_threshold": "mean regret reduction <10% versus WFS, any favored-side safety regression >5%, quadrant ordering inverted, or >=90% overlap with old regime/static-index predictions",
+  "hypothesis": "A WFS-safe deterministic composite scheduler rule with explicit ESTF completion-release guards can recover meaningful oracle headroom on TRAIN/D1 contested states without collapsing to the failed static analytic-index patterns.",
+  "inputs": [
+    "V2 TRAIN_COLLECTION oracle rows",
+    "D1 support oracle rows",
+    "91 contested mechanism-diagnosis events",
+    "prior analytic-index NO_GO artifact"
+  ],
+  "name": "family_a_mechanism_composite_rule_static_feasibility_v1",
+  "primary_metric": "regret to certified ESTF/WFS pair envelope on TRAIN/D1 oracle rows",
+  "secondary_metrics": [
+    "completion-benefit recall",
+    "SLO-risk protection recall",
+    "favored-long/favored-short regret",
+    "quadrant semantics on 91 contested events",
+    "prediction collapse overlap with priority/regime identity"
+  ],
+  "selected_pivot": "PIVOT_TO_PORTFOLIO_POLICY_SYNTHESIS",
+  "stop_conditions": {
+    "for_next_experiment": [
+      "Stop if regret reduction versus WFS is <10%.",
+      "Stop if any favored side regresses versus WFS by >5%.",
+      "Stop if quadrant semantics are inverted or indistinguishable from the old analytic-index failure.",
+      "Stop if the rule overlaps regime identity/static priority by >=90%.",
+      "Stop if the only apparent gains depend on DEV/FINAL/TEST inspection or coefficient tuning."
+    ],
+    "general": "No D3/D4, no additional DAgger, no DEV-targeted bridge, no oracle acquisition, no selector retraining after WULVER_DEV_SUPPORT_NO_GO."
+  },
+  "strict_stop_if_failure": "If this static feasibility test fails, stop Family-A mechanism-derived scheduler synthesis unless a new non-selector mechanism is introduced outside the ESTF/WFS pair.",
+  "success_threshold": ">=30% reduction in mean regret versus always-WFS on TRAIN/D1, no favored-side regret worse than WFS by >5%, correct quadrant ordering on contested events, and <80% prediction overlap with regime identity/static priority rule"
+}

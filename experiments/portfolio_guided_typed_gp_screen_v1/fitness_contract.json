@@ -1,0 +1,48 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "forbidden_optimization_targets": [
+    "DEV",
+    "TEST",
+    "FINAL",
+    "hidden held-out labels",
+    "oracle labels acquired for this task"
+  ],
+  "lexicographic_tie_break": [
+    "higher mean_MG",
+    "more unique wins",
+    "more positive regions",
+    "lower max parent overlap",
+    "smaller AST node count",
+    "lower AST depth",
+    "lower free constants"
+  ],
+  "primary_objective": {
+    "candidate_marginal_gain": "MG_c(x;P6)=max(R_c(x),E6(x))-E6(x)",
+    "envelope": "E6(x)=max_h R_h(x) over full_prefill, chunked_prefill_small, estimated_service_time_first, weighted_fair_share, least_laxity_first, kv_constrained_online",
+    "epsilon_unique_win": 0.005,
+    "fitness": "mean_MG(c) over fixed TRAIN-only screening subset",
+    "reward_metric": "arrival_normalized_weighted_goodput (ANWG)"
+  },
+  "secondary_metrics": [
+    "mean_MG",
+    "unique_envelope_wins_eps_0.005",
+    "positive_MG_regions",
+    "worst_group_regression_vs_E6_or_best_fixed",
+    "max_parent_decision_overlap",
+    "max_parent_reward_correlation",
+    "structural_complexity",
+    "behavioral_fingerprint_hash",
+    "gain_concentration_top_scenario",
+    "parent_recovery_flag"
+  ],
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

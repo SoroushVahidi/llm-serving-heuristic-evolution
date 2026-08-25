@@ -1,0 +1,35 @@
+{
+  "baselines": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online",
+    "current six-policy envelope"
+  ],
+  "benchmark_subset": {
+    "Family A": "8-12 TRAIN scenarios spanning favored-long/favored-short, low/high skew, low/high utilization, both noise levels",
+    "Family B": "8 TRAIN scenarios spanning hog_count, late_pressure, slo_emphasis, hog/late TTFT variants",
+    "Family C": "8 TRAIN scenarios spanning bulk_pressure, urgent_arrival_phase, urgent_tightness",
+    "public_trace_sanity": "optional 6 windows, expected no ANWG separation; used only to detect catastrophic timing/feasibility regression"
+  },
+  "candidate_policy": "one low-dimensional DebtSchedulerPolicy with <=4 debt weights and <=4 thresholds selected before screening from coarse interpretable defaults; no optimizer/search beyond a tiny preregistered grid if needed",
+  "compute_budget": "local CPU, target <5 minutes, no Wulver, no GPU, no FINAL, no TEST, no oracle labels, no selector training",
+  "experiment_name": "portfolio_synthesis_debt_scheduler_screen_v1",
+  "hypothesis": "A native accumulated debt scheduler adds positive marginal ANWG to the current six-policy envelope across at least two mechanism regions without collapsing to any parent policy.",
+  "inputs": [
+    "existing TRAIN-only scenario generators or frozen TRAIN-design scenario subset spanning Family A fairness/starvation, Family B prefill/decode contention, Family C KV pressure, plus a small saturated public-trace sanity subset only if already labeled non-FINAL/non-TEST"
+  ],
+  "metrics": [
+    "ANWG",
+    "mean marginal contribution MG_c=max(R_c,E6)-E6",
+    "unique-win scenarios with eps=0.005 ANWG",
+    "worst mechanism-group effect",
+    "standalone ANWG by mechanism group",
+    "decision/action overlap with each parent",
+    "reward correlation with each parent",
+    "mechanism diagnostics: debt service balance, SLO miss/near-miss, completion release, KV reserve violations"
+  ],
+  "scope": "Design only here; do not launch in this task."
+}

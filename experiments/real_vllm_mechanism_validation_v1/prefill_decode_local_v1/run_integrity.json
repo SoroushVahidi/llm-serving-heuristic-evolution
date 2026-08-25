@@ -1,0 +1,214 @@
+{
+  "expected_measured_regime_runs": 40,
+  "expected_repetitions_per_treatment_regime": 5,
+  "expected_treatments": [
+    "FULL",
+    "CHUNKED"
+  ],
+  "integrity_pass": true,
+  "observed_measured_regime_runs": 40,
+  "post_run_audit": {
+    "active_vllm_processes": [],
+    "gpu_memory_csv_noheader": "NVIDIA GeForce RTX 5060 Ti, 15 MiB, 15834 MiB",
+    "note": "server_events returncode values were recorded before stop_server(); post-run process audit verifies no active vLLM server remains.",
+    "server_logs_error_grep": "no matches for ERROR/Error/Exception/Traceback/CUDA/OOM/OutOfMemory/failed/Killed",
+    "server_processes_stopped_verified": true,
+    "wall_time": 1787594850.9958603
+  },
+  "prompt_generation_mismatch_records": [],
+  "request_failure_records": [],
+  "request_failures": 0,
+  "server_events": [
+    {
+      "block": 0,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/prefill_decode_local_v1/server_logs/00_full.log",
+      "returncode": null,
+      "treatment": "FULL"
+    },
+    {
+      "block": 1,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/prefill_decode_local_v1/server_logs/01_chunked.log",
+      "returncode": null,
+      "treatment": "CHUNKED"
+    },
+    {
+      "block": 2,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/prefill_decode_local_v1/server_logs/02_chunked.log",
+      "returncode": null,
+      "treatment": "CHUNKED"
+    },
+    {
+      "block": 3,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/prefill_decode_local_v1/server_logs/03_full.log",
+      "returncode": null,
+      "treatment": "FULL"
+    }
+  ],
+  "warmup_records": [
+    {
+      "block": 0,
+      "health_wait_s": 15.021732568740845,
+      "server_health_wall_time": 1787594692.8879125,
+      "server_start_wall_time": 1787594677.86618,
+      "treatment": "FULL",
+      "warmup_done_wall_time": 1787594693.1262407,
+      "warmup_duration_s": 0.238328218460083,
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787594692.9642394,
+          "e2e_s": 0.07630252838134766,
+          "error": null,
+          "first_token_wall_time": 1787594692.9304066,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 415368.062084676,
+          "send_wall_time": 1787594692.8879368,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.04246973991394043
+        },
+        {
+          "completion_wall_time": 1787594693.1261914,
+          "e2e_s": 0.16190147399902344,
+          "error": null,
+          "first_token_wall_time": 1787594693.0473726,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 415368.138437201,
+          "send_wall_time": 1787594692.96429,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.08308267593383789
+        }
+      ]
+    },
+    {
+      "block": 1,
+      "health_wait_s": 14.006288290023804,
+      "server_health_wall_time": 1787594719.526841,
+      "server_start_wall_time": 1787594705.5205526,
+      "treatment": "CHUNKED",
+      "warmup_done_wall_time": 1787594719.7608225,
+      "warmup_duration_s": 0.23398160934448242,
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787594719.5836766,
+          "e2e_s": 0.056830644607543945,
+          "error": null,
+          "first_token_wall_time": 1787594719.5506725,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 415394.700993255,
+          "send_wall_time": 1787594719.526846,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.02382659912109375
+        },
+        {
+          "completion_wall_time": 1787594719.7607753,
+          "e2e_s": 0.17705559730529785,
+          "error": null,
+          "first_token_wall_time": 1787594719.6840162,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 415394.757866805,
+          "send_wall_time": 1787594719.5837197,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.1002964973449707
+        }
+      ]
+    },
+    {
+      "block": 2,
+      "health_wait_s": 15.00802493095398,
+      "server_health_wall_time": 1787594746.9454722,
+      "server_start_wall_time": 1787594731.9374473,
+      "treatment": "CHUNKED",
+      "warmup_done_wall_time": 1787594747.1904962,
+      "warmup_duration_s": 0.2450239658355713,
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787594747.0099676,
+          "e2e_s": 0.06449127197265625,
+          "error": null,
+          "first_token_wall_time": 1787594746.9768066,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 415422.119623489,
+          "send_wall_time": 1787594746.9454763,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.03133034706115723
+        },
+        {
+          "completion_wall_time": 1787594747.1904485,
+          "e2e_s": 0.1804485321044922,
+          "error": null,
+          "first_token_wall_time": 1787594747.1106248,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 415422.184147206,
+          "send_wall_time": 1787594747.01,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.10062479972839355
+        }
+      ]
+    },
+    {
+      "block": 3,
+      "health_wait_s": 15.009709596633911,
+      "server_health_wall_time": 1787594778.9506774,
+      "server_start_wall_time": 1787594763.9409678,
+      "treatment": "FULL",
+      "warmup_done_wall_time": 1787594779.1865206,
+      "warmup_duration_s": 0.23584318161010742,
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787594779.0257206,
+          "e2e_s": 0.07502245903015137,
+          "error": null,
+          "first_token_wall_time": 1787594778.992977,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 415454.124845819,
+          "send_wall_time": 1787594778.9506981,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.04227876663208008
+        },
+        {
+          "completion_wall_time": 1787594779.1864793,
+          "e2e_s": 0.16071772575378418,
+          "error": null,
+          "first_token_wall_time": 1787594779.1082988,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 415454.199908686,
+          "send_wall_time": 1787594779.0257616,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.08253717422485352
+        }
+      ]
+    }
+  ],
+  "workload_manifest_sha256": "194d8c5f2eb3f3dc8a6840c7a1a293e2afe895dae71e4e08748a6238eefe28c3"
+}

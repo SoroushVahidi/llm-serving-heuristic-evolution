@@ -19,7 +19,6 @@ import json
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock
 
 import numpy as np
 import pandas as pd
@@ -310,7 +309,6 @@ def test_lookup_table_build():
     assert isinstance(tables["prefill_table"], list)
     assert isinstance(tables["decode_table"], list)
     # Should have at least one row per unique prompt_tokens
-    n_unique = df["prompt_tokens"].nunique()
     assert len(tables["prefill_table"]) >= 1
 
 

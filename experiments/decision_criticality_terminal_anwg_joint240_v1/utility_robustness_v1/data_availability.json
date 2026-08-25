@@ -1,0 +1,42 @@
+{
+  "status": "CONTINUOUS_UTILITY_DATA_UNAVAILABLE",
+  "message": "continuous-utility robustness cannot be computed from existing branch artifacts without rerunning branches with per-request terminal traces enabled.",
+  "available_aggregate_fields": [
+    "abs_delta_anwg",
+    "cf_anwg",
+    "cf_num_completed",
+    "cf_num_dropped",
+    "cf_sim_duration",
+    "completion_count_delta",
+    "delta_anwg",
+    "reference_anwg",
+    "reference_num_completed",
+    "reference_sim_duration"
+  ],
+  "required_per_request_fields_missing": [
+    "request weights w_i",
+    "completion indicator 1[completed_i] for CF and REF",
+    "completion time C_i for CF and REF",
+    "deadline D_i",
+    "dropped/unfinished status per request",
+    "optional: class/priority if used beyond weight"
+  ],
+  "what_could_be_done_without_rerun": [
+    "aggregate completion-count deltas (already stored; not a smooth deadline utility)",
+    "ANWG exact zeros vs completion-count nonzero divergence rate (already in closed_loop_divergence)"
+  ],
+  "n_branches": 3541,
+  "n_scenarios": 240,
+  "aggregate_proxy_note": {
+    "frac_anwg_zero_with_nonzero_completion_delta": 0.0,
+    "frac_anwg_zero_with_nonzero_duration_delta": 0.15232383808095953,
+    "frac_anwg_nonzero_with_nonzero_completion_delta": 0.0,
+    "interpretation": "Among ANWG-exact-zero forks, a non-trivial share still changes completion counts or duration, suggesting ANWG zeros are not purely identical trajectories; however without per-request (C_i,D_i,w_i) we cannot recompute continuous deadline utilities."
+  },
+  "aggregate_structural_finding": {
+    "all_requests_completed_in_every_ref_and_cf_branch": true,
+    "completion_count_delta_always_zero": true,
+    "cf_num_dropped_always_zero_on_nonzero_anwg": true,
+    "implication": "On this corpus, \u0394ANWG is entirely driven by which completed requests meet deadlines (binary on-time credit), not by changes in completion count. This makes the reviewer concern about ANWG\u2019s hard deadline step particularly relevant. Continuous WCG would be identically 1.0 for all branches here (all complete), so WCG \u0394 would be exactly zero everywhere \u2014 but weighted tardiness / soft-deadline credit still require per-request (C_i, D_i, w_i), which are not stored."
+  }
+}

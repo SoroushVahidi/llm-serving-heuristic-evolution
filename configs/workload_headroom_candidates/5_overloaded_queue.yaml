@@ -1,0 +1,43 @@
+name: overloaded_queue
+purpose: >
+  Arrival rate deliberately exceeds sustainable throughput given the
+  configured concurrency/service-time distribution, so not every request
+  CAN meet its SLO regardless of policy -- ordering determines WHICH
+  requests succeed and which are sacrificed, unlike the WildChat control
+  (0.33% unavoidable-violation floor, essentially fully sustainable load).
+expected_divergent_policies: [fifo, oracle_srtf, shortest_output_first]
+scientific_purpose: >
+  This is the regime where admission-control-style policies
+  (scorpio_style_slo_guard-like guards) SHOULD plausibly help rather than
+  hurt (unlike the WildChat control run, where scorpio's guard measurably
+  hurt ANWG by dropping requests that would have been fine under FIFO) --
+  a genuinely overloaded queue is exactly the condition under which
+  trading a guaranteed drop for a probable violation can be a net win.
+workload:
+  arrival_process: poisson
+  arrival_rate: 12.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 200.0
+  prompt_sigma: 0.7
+  prompt_low: 16
+  prompt_high: 1000
+  output_dist: lognormal
+  output_mean: 300.0
+  output_sigma: 0.8
+  output_low: 16
+  output_high: 2500
+  prediction_noise_rel: 0.15
+  slo_classes:
+    - {class_id: medium, slo_slack: 1.5, priority: 1.0, weight: 1.0}
+gpu:
+  max_active_sequences: 4
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

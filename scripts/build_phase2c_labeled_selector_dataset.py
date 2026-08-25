@@ -24,12 +24,10 @@ import json
 import logging
 import sys
 from collections import Counter
-from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).parent.parent
@@ -339,9 +337,6 @@ def verify_phase2c2_references(
 ) -> Dict[str, Any]:
     ref_cfg = cfg.get("phase2c2_reference_check", {})
     tolerance = float(ref_cfg.get("tolerance", 5e-4))
-    expected_dt = float(ref_cfg.get("dt_anwg", 0.8021))
-    expected_scorpio = float(ref_cfg.get("always_scorpio", 0.7963))
-    expected_envelope = float(ref_cfg.get("external_style_envelope", 0.8297))
     expected_loss_windows = int(ref_cfg.get("external_loss_windows", 62))
 
     dt_sel_anwg = eval_df.apply(

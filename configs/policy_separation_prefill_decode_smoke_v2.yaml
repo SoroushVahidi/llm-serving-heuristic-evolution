@@ -1,0 +1,31 @@
+# Compact smoke / launch gate for Family B v2.
+# See docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md §7.
+# Not the full pilot. Bidirectional practical wins required before launch.
+
+pilot_metadata:
+  experiment_name: "policy_separation_prefill_decode_smoke_v2"
+  version: "prefill_decode_v2"
+  description: "Discriminative smoke for Family B v2 TTFT-contention launch gate"
+  predecessor_verdict: "USEFUL_BUT_NEEDS_REFINEMENT"
+  require_burstgpt: true
+
+sweep_grid:
+  hog_count: ["low"]
+  late_pressure: ["low", "high"]
+  slo_emphasis: ["hog_ttft", "late_ttft"]
+  seeds: [7, 11]
+
+fixed:
+  n_hog: null
+  n_late: null
+  max_active_sequences: 512
+  step_token_budget: 512
+
+chunk_budgets:
+  chunk_small: 64
+
+policies:
+  - "full_prefill"
+  - "chunked_prefill_small"
+
+# 1*2*2*2 = 8 scenarios x 2 policies = 16 evaluations.

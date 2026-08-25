@@ -1,0 +1,30 @@
+{
+  "local_probe_ready": true,
+  "not_run": [
+    "scientific mechanism comparison",
+    "TEST",
+    "FINAL",
+    "Wulver",
+    "external API",
+    "large benchmark"
+  ],
+  "ready_basis": [
+    "stable vLLM install succeeded in isolated env",
+    "PyTorch CUDA sees SM120 and executes kernels",
+    "vLLM imports successfully",
+    "cached Qwen2.5-0.5B config/tokenizer loads local-only",
+    "chunked-prefill disabled mode launched and served requests",
+    "chunked-prefill enabled mode launched and served requests",
+    "streaming TTFT/E2E harness works",
+    "concurrency and waiting-queue metrics observed",
+    "KV headroom is ample for 4k-context small-model validation",
+    "no unresolved SM120 architecture mismatch observed"
+  ],
+  "required_cautions": [
+    "Set VLLM_USE_FLASHINFER_SAMPLER=0 unless CUDA_HOME/nvcc is configured; otherwise FlashInfer sampler JIT fails.",
+    "Disabled chunked-prefill with max_model_len=4096 requires max_num_batched_tokens >= 4096 in vLLM 0.27.1.",
+    "First requests can include large JIT/warmup latency; scientific runs must warm up and exclude warmup.",
+    "Initial install accidentally modified modal-venv; use explicit --python or deactivate modal env in future."
+  ],
+  "scientific_local_run_ready": true
+}

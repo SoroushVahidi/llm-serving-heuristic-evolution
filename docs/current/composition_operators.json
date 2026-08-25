@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0",
+  "typed_representation": {
+    "conceptual_form": "Scheduler(admission, priority, batching, phase_control, kv_control, fairness, placement)",
+    "modules": [
+      {
+        "name": "AdmissionRule",
+        "input": "ObservableState, ObservableRequest",
+        "output": "Admit | Skip | Defer",
+        "current_support": "YES"
+      },
+      {
+        "name": "PriorityRule",
+        "input": "ObservableState, Sequence[ObservableRequest]",
+        "output": "ranked request list or per-request normalized score",
+        "current_support": "YES_WITH_SMALL_POLICY_API_EXTENSION"
+      },
+      {
+        "name": "BatchingRule",
+        "input": "ObservableState, ranked candidate requests",
+        "output": "candidate subset or batch groups",
+        "current_support": "PARTIAL"
+      },
+      {
+        "name": "PhaseControlRule",
+        "input": "ObservableState, candidate request",
+        "output": "priority penalty or admission budget",
+        "current_support": "PARTIAL"
+      },
+      {
+        "name": "KVRule",
+        "input": "ObservableState, ObservableGPUState, ObservableRequest",
+        "output": "penalty, constraint, or placement preference",
+        "current_support": "YES"
+      },
+      {
+        "name": "FairnessRule",
+        "input": "ObservableState, ObservableRequest, optional policy-local history",
+        "output": "priority bonus or deficit score",
+        "current_support": "PARTIAL"
+      },
+      {
+        "name": "PlacementRule",
+        "input": "ObservableState, ObservableRequest",
+        "output": "gpu_id or no feasible GPU",
+        "current_support": "YES"
+      }
+    ],
+    "unsupported_modules": [
+      "CacheReuseRule",
+      "CacheLoadingRule",
+      "DisaggregatedPrefillDecodeRoutingRule",
+      "RequestSplittingRule",
+      "HeterogeneousHardwareAffinityRule"
+    ]
+  },
+  "operators": [
+    {
+      "name": "weighted_normalized_score_composition",
+      "form": "P(r,s) = sum_k w_k(s) * normalize(score_k(r,s))",
+      "syntactic_closure": "PARTIAL",
+      "semantic_validity": "PARTIAL",
+      "feasibility": "Requires every member to expose a per-request score over the same candidate set.",
+      "work_conservation": "Good if followed by normal feasible-placement loop.",
+      "starvation_risk": "Medium unless age or fairness primitive is included.",
+      "fairness_risk": "Medium.",
+      "oscillation_risk": "Medium with rapidly changing contextual weights.",
+      "determinism": "Yes if weights and normalization are deterministic.",
+      "simulator_support": "Requires small policy API extension; no simulator core change.",
+      "recommendation": "Do not add raw scores directly. Use percentile/rank normalization at minimum."
+    },
+    {
+      "name": "weighted_borda_rank_aggregation",
+      "form": "score(r) = sum_k w_k * normalized_rank_k(r)",
+      "syntactic_closure": "YES",
+      "semantic_validity": "YES",
+      "feasibility": "Requires policies or primitives to expose deterministic request rankings.",
+      "work_conservation": "Good with standard feasibility and placement checks.",
+      "starvation_risk": "Low to medium depending on members; add age tiebreak for safety.",
+      "fairness_risk": "Medium unless fairness primitive is present.",
+      "oscillation_risk": "Low for static weights; medium for contextual weights.",
+      "determinism": "Yes, except when random_feasible is included.",
+      "simulator_support": "Supported with small policy API/wrapper extension.",
+      "recommendation": "Safest first composition operator."
+    },
+    {
+      "name": "reciprocal_rank_fusion",
+      "form": "score(r) = sum_k w_k / (c + rank_k(r))",
+      "syntactic_closure": "YES",
+      "semantic_validity": "YES",
+      "feasibility": "Same as rank aggregation.",
+      "work_conservation": "Good with feasibility checks.",
+      "starvation_risk": "Medium unless aging/fairness added.",
+      "fairness_risk": "Medium.",
+      "oscillation_risk": "Low for static weights.",
+      "determinism": "Yes if member rankings are deterministic.",
+      "simulator_support": "Supported with small policy API/wrapper extension.",
+      "recommendation": "Good alternative to weighted Borda when top-rank agreement matters."
+    },
+    {
+      "name": "pairwise_majority_preference",
+      "form": "For each request pair, aggregate member preferences and rank by tournament score.",
+      "syntactic_closure": "YES",
+      "semantic_validity": "YES",
+      "feasibility": "O(n^2) in waiting queue; acceptable for small batches, risky under huge queues.",
+      "work_conservation": "Good after ranking.",
+      "starvation_risk": "Medium without age/fairness tie handling.",
+      "fairness_risk": "Medium.",
+      "oscillation_risk": "Low to medium.",
+      "determinism": "Yes if tie-breaking is fixed.",
+      "simulator_support": "Supported with wrapper extension.",
+      "recommendation": "Useful diagnostic, not first production operator."
+    },
+    {
+      "name": "conditional_composition",
+      "form": "IF condition(s): use module/policy A ELSE use module/policy B",
+      "syntactic_closure": "YES",
+      "semantic_validity": "YES if conditions use causal state only.",
+      "feasibility": "Straightforward for overload, KV pressure, phase pressure, SLO pressure.",
+      "work_conservation": "Good if each branch is valid.",
+      "starvation_risk": "Medium; branch hysteresis may be needed.",
+      "fairness_risk": "Depends on branches.",
+      "oscillation_risk": "Medium to high without hysteresis/smoothing.",
+      "determinism": "Yes with deterministic thresholds.",
+      "simulator_support": "Mostly supported today through policy-local logic.",
+      "recommendation": "Most expressive low-risk operator for causal state-dependent scheduling."
+    },
+    {
+      "name": "component_wise_composition",
+      "form": "Admission(A) + Priority(B) + KV(C) + Phase(D) + Placement(E)",
+      "syntactic_closure": "YES",
+      "semantic_validity": "YES for supported modules.",
+      "feasibility": "Requires primitives to be factored out of monolithic policies.",
+      "work_conservation": "Good if admission guards cannot mask all feasible work indefinitely.",
+      "starvation_risk": "Low if aging/fairness is included; otherwise medium.",
+      "fairness_risk": "Controllable.",
+      "oscillation_risk": "Medium for stateful flow/phase modules.",
+      "determinism": "Yes.",
+      "simulator_support": "Partially supported; small policy API refactor needed, no major simulator change for current modules.",
+      "recommendation": "Best long-term design for policy evolution."
+    },
+    {
+      "name": "probabilistic_policy_mixing",
+      "form": "Choose policy k with probability w_k(s)",
+      "syntactic_closure": "YES",
+      "semantic_validity": "PARTIAL",
+      "feasibility": "Easy to implement but harder to debug and evaluate.",
+      "work_conservation": "Depends on selected policy.",
+      "starvation_risk": "Medium to high unless constrained.",
+      "fairness_risk": "Medium.",
+      "oscillation_risk": "High unless weights change slowly.",
+      "determinism": "No unless seeded and replayed.",
+      "simulator_support": "Supported with wrapper.",
+      "recommendation": "Not recommended as first scientific composition operator."
+    }
+  ],
+  "normalization_requirements": {
+    "raw_score_composition_valid": "PARTIALLY",
+    "reason": "Several policies expose private score functions, but score scales and signs differ. Many policies only produce direct actions, rankings, binary admission decisions, or placement decisions.",
+    "recommended_common_representation": "normalized deterministic per-request rank over the current candidate set, plus separate typed admission and placement modules",
+    "safe_transforms": ["percentile_rank", "normalized_rank", "reciprocal_rank", "pairwise_preference", "bounded_utility_after_monotone_transform"],
+    "unsafe_transforms": ["unscaled raw-score addition", "mixing admission booleans with ranking scores without type separation", "normalizing across future or held-out examples"]
+  },
+  "minimal_simulator_extensions": {
+    "NO_CHANGE": [
+      "compose request rankings",
+      "compose admission filters",
+      "compose KV feasibility guards",
+      "compose deterministic GPU placement rules"
+    ],
+    "SMALL_EXTENSION": [
+      "add optional policy component API exposing rank_requests, admission_filter, choose_gpu, and module metadata",
+      "add immutable state snapshot/helper for calling multiple component policies without stateful side effects",
+      "add hysteresis/smoothing utility for conditional state-dependent weights",
+      "record composed-policy provenance in manifests"
+    ],
+    "MAJOR_EXTENSION": [
+      "prefix/cache reuse",
+      "cache loading cost modeling",
+      "true disaggregated prefill/decode routing",
+      "request splitting or micro-request scheduling",
+      "heterogeneous GPU affinity and routing"
+    ]
+  }
+}

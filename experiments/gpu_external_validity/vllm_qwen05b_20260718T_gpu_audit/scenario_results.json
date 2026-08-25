@@ -1,0 +1,772 @@
+[
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "short prompt / short output",
+      "max_kv_cache_usage": 0.000355977454761236,
+      "max_vllm_running": 1.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.10088958899723366,
+      "mean_output_tokens": 16.0,
+      "mean_prompt_tokens": 167.0,
+      "mean_tpot_s": 0.004751626246919234,
+      "mean_ttft_s": 0.02961519529344514,
+      "num_requests": 4,
+      "num_success": 4,
+      "p50_latency_s": 0.1016630029771477,
+      "p50_ttft_s": 0.03033954300917685,
+      "p95_latency_s": 0.10320949298329651,
+      "p95_ttft_s": 0.03170617506839335,
+      "request_throughput": 7.282495258341406,
+      "scenario_family": "short_short",
+      "scenario_name": "short_short"
+    },
+    "scenario": {
+      "description": "short prompt / short output",
+      "max_client_concurrency": 2,
+      "name": "short_short",
+      "scenario_family": "short_short"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.017000000000000026,
+        "mean_tpot_s": 0.0010000000000000007,
+        "mean_ttft_s": 0.0020000000000000152,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.017000000000000064,
+        "p95_ttft_s": 0.002000000000000049,
+        "request_throughput": 8.583690987124463
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.016000000000000025,
+        "mean_tpot_s": 0.0010000000000000007,
+        "mean_ttft_s": 0.0010000000000000145,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.016000000000000063,
+        "p95_ttft_s": 0.0010000000000000482,
+        "request_throughput": 8.602150537634408
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "long prompt / short output",
+      "max_kv_cache_usage": 0.0035004449718184505,
+      "max_vllm_running": 1.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.10608194372616708,
+      "mean_output_tokens": 16.0,
+      "mean_prompt_tokens": 1871.0,
+      "mean_tpot_s": 0.004788298819524547,
+      "mean_ttft_s": 0.034257461433298886,
+      "num_requests": 4,
+      "num_success": 4,
+      "p50_latency_s": 0.1094270481262356,
+      "p50_ttft_s": 0.038152070017531514,
+      "p95_latency_s": 0.11918772989884019,
+      "p95_ttft_s": 0.04695722903124988,
+      "request_throughput": 7.229892930877169,
+      "scenario_family": "prefill_heavy",
+      "scenario_name": "long_prompt_short_output"
+    },
+    "scenario": {
+      "description": "long prompt / short output",
+      "max_client_concurrency": 2,
+      "name": "long_prompt_short_output",
+      "scenario_family": "prefill_heavy"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.02100000000000003,
+        "mean_tpot_s": 0.0010000000000000007,
+        "mean_ttft_s": 0.0060000000000000175,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.021000000000000067,
+        "p95_ttft_s": 0.006000000000000052,
+        "request_throughput": 8.51063829787234
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.016000000000000025,
+        "mean_tpot_s": 0.0010000000000000007,
+        "mean_ttft_s": 0.0010000000000000145,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.016000000000000063,
+        "p95_ttft_s": 0.0010000000000000482,
+        "request_throughput": 8.602150537634408
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "short prompt / long output",
+      "max_kv_cache_usage": 0.0014832393948382983,
+      "max_vllm_running": 4.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.5445589376613498,
+      "mean_output_tokens": 96.0,
+      "mean_prompt_tokens": 167.0,
+      "mean_tpot_s": 0.005476904026306186,
+      "mean_ttft_s": 0.02425305516226217,
+      "num_requests": 4,
+      "num_success": 4,
+      "p50_latency_s": 0.5447777688968927,
+      "p50_ttft_s": 0.025511445943266153,
+      "p95_latency_s": 0.5449634219985455,
+      "p95_ttft_s": 0.025997951859608293,
+      "request_throughput": 7.339942165899486,
+      "scenario_family": "decode_heavy",
+      "scenario_name": "short_prompt_long_output"
+    },
+    "scenario": {
+      "description": "short prompt / long output",
+      "max_client_concurrency": 4,
+      "name": "short_prompt_long_output",
+      "scenario_family": "decode_heavy"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.09725,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0022500000000000003,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.09785,
+        "p95_ttft_s": 0.0028499999999999997,
+        "request_throughput": 41.23711340206185
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.096,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.001,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.096,
+        "p95_ttft_s": 0.001,
+        "request_throughput": 42.10526315789474
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "long prompt / long output",
+      "max_kv_cache_usage": 0.004538712548205259,
+      "max_vllm_running": 4.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.5510963022825308,
+      "mean_output_tokens": 96.0,
+      "mean_prompt_tokens": 1871.0,
+      "mean_tpot_s": 0.005438929818276512,
+      "mean_ttft_s": 0.034397969546262175,
+      "num_requests": 4,
+      "num_success": 4,
+      "p50_latency_s": 0.5515377959236503,
+      "p50_ttft_s": 0.03569905902259052,
+      "p95_latency_s": 0.5516575591173023,
+      "p95_ttft_s": 0.036367750028148293,
+      "request_throughput": 7.25087499281317,
+      "scenario_family": "long_long",
+      "scenario_name": "long_prompt_long_output"
+    },
+    "scenario": {
+      "description": "long prompt / long output",
+      "max_client_concurrency": 4,
+      "name": "long_prompt_long_output",
+      "scenario_family": "long_long"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.107,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.012,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.1124,
+        "p95_ttft_s": 0.0174,
+        "request_throughput": 35.714285714285715
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.0975,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0025,
+        "num_completed": 4,
+        "num_dropped": 0,
+        "p95_latency_s": 0.09885000000000001,
+        "p95_ttft_s": 0.0038499999999999997,
+        "request_throughput": 40.816326530612244
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "mixed prompt lengths",
+      "max_kv_cache_usage": 0.0036784336991990685,
+      "max_vllm_running": 2.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.17708450862361738,
+      "mean_output_tokens": 32.0,
+      "mean_prompt_tokens": 855.3333333333334,
+      "mean_tpot_s": 0.0051331126071032015,
+      "mean_ttft_s": 0.01795801780341814,
+      "num_requests": 6,
+      "num_success": 6,
+      "p50_latency_s": 0.17408405197784305,
+      "p50_ttft_s": 0.01583703001961112,
+      "p95_latency_s": 0.19234613794833422,
+      "p95_ttft_s": 0.028094518929719925,
+      "request_throughput": 6.510959133926693,
+      "scenario_family": "mixed_prompt",
+      "scenario_name": "mixed_prompt_lengths"
+    },
+    "scenario": {
+      "description": "mixed prompt lengths",
+      "max_client_concurrency": 4,
+      "name": "mixed_prompt_lengths",
+      "scenario_family": "mixed_prompt"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.034666666666666686,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.003666666666666679,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.03700000000000003,
+        "p95_ttft_s": 0.006000000000000005,
+        "request_throughput": 7.633587786259541
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.03200000000000002,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.00100000000000001,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.03200000000000003,
+        "p95_ttft_s": 0.0010000000000000425,
+        "request_throughput": 7.682458386683739
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "mixed output lengths",
+      "max_kv_cache_usage": 0.0016612281222189162,
+      "max_vllm_running": 3.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.3841012528088565,
+      "mean_output_tokens": 69.33333333333333,
+      "mean_prompt_tokens": 528.3333333333334,
+      "mean_tpot_s": 0.005285316708293652,
+      "mean_ttft_s": 0.019777831349832315,
+      "num_requests": 6,
+      "num_success": 6,
+      "p50_latency_s": 0.35797838191501796,
+      "p50_ttft_s": 0.016100970096886158,
+      "p95_latency_s": 0.7081060369964689,
+      "p95_ttft_s": 0.035218394827097654,
+      "request_throughput": 4.196946531833267,
+      "scenario_family": "mixed_output",
+      "scenario_name": "mixed_output_lengths"
+    },
+    "scenario": {
+      "description": "mixed output lengths",
+      "max_client_concurrency": 4,
+      "name": "mixed_output_lengths",
+      "scenario_family": "mixed_output"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.07133333333333336,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.0030000000000000113,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.13,
+        "p95_ttft_s": 0.0030000000000000443,
+        "request_throughput": 6.825938566552901
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.06933333333333336,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.00100000000000001,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.128,
+        "p95_ttft_s": 0.0010000000000000425,
+        "request_throughput": 6.841505131128848
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "bursty arrivals",
+      "max_kv_cache_usage": 0.0027588252743993014,
+      "max_vllm_running": 8.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.3856982863508165,
+      "mean_output_tokens": 64.0,
+      "mean_prompt_tokens": 528.0,
+      "mean_tpot_s": 0.005630414275589237,
+      "mean_ttft_s": 0.030982186988694593,
+      "num_requests": 8,
+      "num_success": 8,
+      "p50_latency_s": 0.3855484260711819,
+      "p50_ttft_s": 0.031553470995277166,
+      "p95_latency_s": 0.3869457410182804,
+      "p95_ttft_s": 0.03303359588608146,
+      "request_throughput": 20.674733307433037,
+      "scenario_family": "bursty",
+      "scenario_name": "bursty_arrivals"
+    },
+    "scenario": {
+      "description": "bursty arrivals",
+      "max_client_concurrency": 8,
+      "name": "bursty_arrivals",
+      "scenario_family": "bursty"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.069625,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.006625000000000001,
+        "num_completed": 8,
+        "num_dropped": 0,
+        "p95_latency_s": 0.0733,
+        "p95_ttft_s": 0.010299999999999998,
+        "request_throughput": 109.58904109589042
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.0645,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0015,
+        "num_completed": 8,
+        "num_dropped": 0,
+        "p95_latency_s": 0.065,
+        "p95_ttft_s": 0.002,
+        "request_throughput": 125.0
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "high concurrency",
+      "max_kv_cache_usage": 0.003025808365470173,
+      "max_vllm_running": 12.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.39920834950559464,
+      "mean_output_tokens": 64.0,
+      "mean_prompt_tokens": 167.16666666666666,
+      "mean_tpot_s": 0.00572723049975971,
+      "mean_ttft_s": 0.03839282802073285,
+      "num_requests": 12,
+      "num_success": 12,
+      "p50_latency_s": 0.39948754804208875,
+      "p50_ttft_s": 0.03881559590809047,
+      "p95_latency_s": 0.4010019600391388,
+      "p95_ttft_s": 0.04045808920636773,
+      "request_throughput": 29.92380434623367,
+      "scenario_family": "high_concurrency",
+      "scenario_name": "high_concurrency"
+    },
+    "scenario": {
+      "description": "high concurrency",
+      "max_client_concurrency": 12,
+      "name": "high_concurrency",
+      "scenario_family": "high_concurrency"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.06650000000000002,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.0034999999999999996,
+        "num_completed": 12,
+        "num_dropped": 0,
+        "p95_latency_s": 0.068,
+        "p95_ttft_s": 0.005,
+        "request_throughput": 179.1044776119403
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.06400000000000002,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.0010000000000000002,
+        "num_completed": 12,
+        "num_dropped": 0,
+        "p95_latency_s": 0.064,
+        "p95_ttft_s": 0.001,
+        "request_throughput": 190.47619047619048
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "prefill-heavy long prompts",
+      "max_kv_cache_usage": 0.0042420646692376,
+      "max_vllm_running": 6.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.1263161008246243,
+      "mean_output_tokens": 16.0,
+      "mean_prompt_tokens": 1871.0,
+      "mean_tpot_s": 0.005586512992158532,
+      "mean_ttft_s": 0.04251840594224632,
+      "num_requests": 6,
+      "num_success": 6,
+      "p50_latency_s": 0.1270082830451429,
+      "p50_ttft_s": 0.04227229091338813,
+      "p95_latency_s": 0.12780687189660966,
+      "p95_ttft_s": 0.046701890882104635,
+      "request_throughput": 46.945832496813985,
+      "scenario_family": "prefill_heavy",
+      "scenario_name": "prefill_heavy"
+    },
+    "scenario": {
+      "description": "prefill-heavy long prompts",
+      "max_client_concurrency": 6,
+      "name": "prefill_heavy",
+      "scenario_family": "prefill_heavy"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.031,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.016,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.04,
+        "p95_ttft_s": 0.025,
+        "request_throughput": 150.0
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.018500000000000003,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0034999999999999996,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.02075,
+        "p95_ttft_s": 0.00575,
+        "request_throughput": 300.0
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "decode-heavy long outputs",
+      "max_kv_cache_usage": 0.002165529516463982,
+      "max_vllm_running": 6.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.7632403539028019,
+      "mean_output_tokens": 126.83333333333333,
+      "mean_prompt_tokens": 168.0,
+      "mean_tpot_s": 0.005663358624573359,
+      "mean_ttft_s": 0.05063168851969143,
+      "num_requests": 6,
+      "num_success": 6,
+      "p50_latency_s": 0.7681092091370374,
+      "p50_ttft_s": 0.05077096610330045,
+      "p95_latency_s": 0.7698496009688824,
+      "p95_ttft_s": 0.052748928079381585,
+      "request_throughput": 7.793730090200465,
+      "scenario_family": "decode_heavy",
+      "scenario_name": "decode_heavy"
+    },
+    "scenario": {
+      "description": "decode-heavy long outputs",
+      "max_client_concurrency": 6,
+      "name": "decode_heavy",
+      "scenario_family": "decode_heavy"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.1295,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0025,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.13,
+        "p95_ttft_s": 0.003,
+        "request_throughput": 46.51162790697674
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.128,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.001,
+        "num_completed": 6,
+        "num_dropped": 0,
+        "p95_latency_s": 0.128,
+        "p95_ttft_s": 0.001,
+        "request_throughput": 47.24409448818898
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "bounded KV-pressure attempt with long contexts",
+      "max_kv_cache_usage": 0.0076238504894690085,
+      "max_vllm_running": 12.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.7867247749818489,
+      "mean_output_tokens": 128.0,
+      "mean_prompt_tokens": 1872.1666666666667,
+      "mean_tpot_s": 0.005837697071466947,
+      "mean_ttft_s": 0.045337246905546635,
+      "num_requests": 12,
+      "num_success": 12,
+      "p50_latency_s": 0.7889925399795175,
+      "p50_ttft_s": 0.046343337977305055,
+      "p95_latency_s": 0.7893183939158916,
+      "p95_ttft_s": 0.05274487682618201,
+      "request_throughput": 15.197912244597848,
+      "scenario_family": "kv_pressure",
+      "scenario_name": "kv_pressure_long_context"
+    },
+    "scenario": {
+      "description": "bounded KV-pressure attempt with long contexts",
+      "max_client_concurrency": 12,
+      "name": "kv_pressure_long_context",
+      "scenario_family": "kv_pressure"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.15558333333333332,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.028583333333333336,
+        "num_completed": 12,
+        "num_dropped": 0,
+        "p95_latency_s": 0.17625,
+        "p95_ttft_s": 0.04925,
+        "request_throughput": 67.41573033707866
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.1335,
+        "mean_tpot_s": 0.0010000000000000002,
+        "mean_ttft_s": 0.0065,
+        "num_completed": 12,
+        "num_dropped": 0,
+        "p95_latency_s": 0.13845000000000002,
+        "p95_ttft_s": 0.011449999999999998,
+        "request_throughput": 86.95652173913042
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "mixed prompt/output batch turnover",
+      "max_kv_cache_usage": 0.005962622367250092,
+      "max_vllm_running": 16.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.4207683003041893,
+      "mean_output_tokens": 66.0,
+      "mean_prompt_tokens": 813.0,
+      "mean_tpot_s": 0.005720806682904446,
+      "mean_ttft_s": 0.052475294171017595,
+      "num_requests": 16,
+      "num_success": 16,
+      "p50_latency_s": 0.4162347218953073,
+      "p50_ttft_s": 0.05285414610989392,
+      "p95_latency_s": 0.7665781029500067,
+      "p95_ttft_s": 0.055092856055125594,
+      "request_throughput": 20.83953897933198,
+      "scenario_family": "batch_turnover",
+      "scenario_name": "batch_turnover_mixed"
+    },
+    "scenario": {
+      "description": "mixed prompt/output batch turnover",
+      "max_client_concurrency": 16,
+      "name": "batch_turnover_mixed",
+      "scenario_family": "batch_turnover"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.0811875,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0161875,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.1525,
+        "p95_ttft_s": 0.03,
+        "request_throughput": 102.56410256410257
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.070375,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0053750000000000004,
+        "num_completed": 16,
+        "num_dropped": 0,
+        "p95_latency_s": 0.1355,
+        "p95_ttft_s": 0.01,
+        "request_throughput": 117.6470588235294
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "small burstgpt replay with synthetic prompt text",
+      "max_kv_cache_usage": 0.004835360427172919,
+      "max_vllm_running": 4.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.649060267751338,
+      "mean_output_tokens": 114.25,
+      "mean_prompt_tokens": 561.375,
+      "mean_tpot_s": 0.005501304882440623,
+      "mean_ttft_s": 0.024859670433215797,
+      "num_requests": 8,
+      "num_success": 8,
+      "p50_latency_s": 0.7235906100831926,
+      "p50_ttft_s": 0.02833095914684236,
+      "p95_latency_s": 0.7349968969356269,
+      "p95_ttft_s": 0.03511764598079026,
+      "request_throughput": 10.871072263023816,
+      "scenario_family": "real_trace_replay",
+      "scenario_name": "burstgpt_replay_small"
+    },
+    "scenario": {
+      "description": "small burstgpt replay with synthetic prompt text",
+      "max_client_concurrency": 4,
+      "name": "burstgpt_replay_small",
+      "scenario_family": "real_trace_replay"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.11919300000000001,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0059429999999999995,
+        "num_completed": 8,
+        "num_dropped": 0,
+        "p95_latency_s": 0.13514640000000003,
+        "p95_ttft_s": 0.008146399999999998,
+        "request_throughput": 58.3941605839416
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.114943,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.001693,
+        "num_completed": 8,
+        "num_dropped": 0,
+        "p95_latency_s": 0.12914640000000002,
+        "p95_ttft_s": 0.0021463999999999997,
+        "request_throughput": 61.06870229007633
+      }
+    }
+  },
+  {
+    "runtime_summary": {
+      "completion_fraction": 1.0,
+      "description": "small azure_llm_2023 replay with synthetic prompt text",
+      "max_kv_cache_usage": 0.004360723820824641,
+      "max_vllm_running": 4.0,
+      "max_vllm_waiting": 0.0,
+      "mean_latency_s": 0.3774973453837447,
+      "mean_output_tokens": 67.0,
+      "mean_prompt_tokens": 425.375,
+      "mean_tpot_s": 0.005418171717060407,
+      "mean_ttft_s": 0.021228878234978765,
+      "num_requests": 8,
+      "num_success": 8,
+      "p50_latency_s": 0.46348480181768537,
+      "p50_ttft_s": 0.02564755082130432,
+      "p95_latency_s": 0.6893241310026497,
+      "p95_ttft_s": 0.02860476402565837,
+      "request_throughput": 11.350494216814099,
+      "scenario_family": "real_trace_replay",
+      "scenario_name": "azure_2023_replay_small"
+    },
+    "scenario": {
+      "description": "small azure_llm_2023 replay with synthetic prompt text",
+      "max_client_concurrency": 4,
+      "name": "azure_2023_replay_small",
+      "scenario_family": "real_trace_replay"
+    },
+    "simulator_summary": {
+      "sarathi_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.06955800116062164,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0035580011606216417,
+        "num_completed": 8,
+        "num_dropped": 0,
+        "p95_latency_s": 0.1254106486082077,
+        "p95_ttft_s": 0.006154852223396298,
+        "request_throughput": 54.054054054054056
+      },
+      "vllm_faithful": {
+        "arrival_normalized_weighted_goodput": 1.0,
+        "completion_fraction": 1.0,
+        "mean_latency_s": 0.06743300116062165,
+        "mean_tpot_s": 0.001,
+        "mean_ttft_s": 0.0014330011606216424,
+        "num_completed": 8,
+        "num_dropped": 0,
+        "p95_latency_s": 0.12181064860820771,
+        "p95_ttft_s": 0.0017982609272003158,
+        "request_throughput": 55.94405594405594
+      }
+    }
+  }
+]

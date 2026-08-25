@@ -1,0 +1,75 @@
+{
+  "run_dir": "experiments/prefill_control_composition_v2_20260817T154633Z",
+  "config": "experiments/prefill_control_composition_v2_20260817T154633Z/composition_config.yaml",
+  "git_head": "16be179ba06243efc59225ce36f253eb7fe7404f",
+  "git_branch": "contextual-compositional-heuristics-20260731",
+  "composition_id": "prefill_control_composition",
+  "policy_schema": {
+    "primary": [
+      "arrival_normalized_weighted_goodput"
+    ],
+    "secondary": [
+      "unweighted_slo_success_rate",
+      "completion_fraction",
+      "mean_ttft",
+      "p95_ttft",
+      "p99_ttft",
+      "mean_tpot",
+      "p95_tpot",
+      "mean_queuing_delay",
+      "mean_prefill_delay_s",
+      "request_throughput",
+      "token_throughput",
+      "global_tbt_attainment"
+    ],
+    "mechanism": [
+      "decode_stalled_steps",
+      "cumulative_decode_tokens_deferred",
+      "steps_with_prefill_while_decode_deferred",
+      "prefill_stalled_steps",
+      "cumulative_prefill_requests_stalled",
+      "budget_saturation_fraction",
+      "mean_num_decoding",
+      "mean_num_prefilling",
+      "fraction_prefill_tokens_while_decodes_active",
+      "mean_theoretical_chunks",
+      "mean_interchunk_extra_wait_s",
+      "steps_decode_active_prefill_stalled",
+      "mean_num_prefilling_saturated",
+      "mean_num_decoding_saturated",
+      "n_saturated_steps"
+    ]
+  },
+  "split_assignment": {
+    "train": [
+      "pd2.hog12.late40.slohog_ttft.s20260822",
+      "pd2.hog12.late40.slolate_ttft.s20260820",
+      "pd2.hog12.late40.slolate_ttft.s20260821",
+      "pd2.hog12.late40.slolate_ttft.s20260822",
+      "pd2.hog24.late12.slohog_ttft.s20260820",
+      "... (16 total)"
+    ],
+    "val": [
+      "pd2.hog12.late12.slohog_ttft.s20260820",
+      "pd2.hog12.late12.slohog_ttft.s20260821",
+      "pd2.hog12.late12.slohog_ttft.s20260822",
+      "pd2.hog12.late12.slolate_ttft.s20260820",
+      "pd2.hog12.late12.slolate_ttft.s20260821",
+      "... (8 total)"
+    ],
+    "test": [
+      "pd2.hog12.late12.slohog_ttft.s20260823",
+      "pd2.hog12.late12.slolate_ttft.s20260823",
+      "pd2.hog24.late12.slohog_ttft.s20260823",
+      "pd2.hog24.late12.slolate_ttft.s20260823",
+      "... (4 total)"
+    ],
+    "ood": [
+      "pd2.hog12.late40.slohog_ttft.s20260823",
+      "pd2.hog12.late40.slolate_ttft.s20260823",
+      "pd2.hog24.late40.slohog_ttft.s20260823",
+      "pd2.hog24.late40.slolate_ttft.s20260823",
+      "... (4 total)"
+    ]
+  }
+}

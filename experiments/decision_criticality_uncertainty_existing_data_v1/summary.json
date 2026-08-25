@@ -1,0 +1,89 @@
+{
+  "analysis_only": true,
+  "bootstrap": {
+    "acquired_scenarios_n": 124,
+    "method": "scenario_clustered_with_replacement",
+    "n_auroc_auprc_retained": 9994,
+    "n_empty_skipped": 0,
+    "n_prevalence_top1_scen_retained": 10000,
+    "n_resamples": 10000,
+    "n_single_class_skipped_for_ranking_metrics": 6,
+    "parent_universe_n": 144,
+    "sampling_unit": "canonical_scenario_id",
+    "seed": 202608251
+  },
+  "bootstrap_ci95_percentile": {
+    "disagreement_auprc": {
+      "ci95_high": 0.08009864612763255,
+      "ci95_low": 0.013158676302916622,
+      "mean": 0.03999187309037858,
+      "n": 9994
+    },
+    "disagreement_auroc": {
+      "ci95_high": 0.684075541871768,
+      "ci95_low": 0.2514646720757268,
+      "mean": 0.5026286035129882,
+      "n": 9994
+    },
+    "nonzero_prevalence": {
+      "ci95_high": 0.06518671401094833,
+      "ci95_low": 0.013005733367409067,
+      "mean": 0.03655407864823801,
+      "n": 10000
+    },
+    "scenario_concentration_top1pct_of_144_units": {
+      "ci95_high": 0.7848101265822786,
+      "ci95_low": 0.24737540747934925,
+      "mean": 0.4365310310617672,
+      "n": 10000
+    },
+    "top1pct_state_mass_share": {
+      "ci95_high": 0.8924050632911393,
+      "ci95_low": 0.2691099789302993,
+      "mean": 0.5014690653562419,
+      "n": 10000
+    }
+  },
+  "equality_tolerance": 1e-12,
+  "manuscript_rounding": {
+    "auprc": 0.038,
+    "auroc": 0.513,
+    "nonzero_prevalence_pct": 3.7,
+    "noskill_prevalence": 0.037,
+    "scenario_concentration_pct": 42.4,
+    "top1pct_state_mass_pct": 48.3
+  },
+  "point_estimates": {
+    "disagreement_auprc_average_precision": 0.0377643740357697,
+    "disagreement_auroc_mann_whitney": 0.5131489339410131,
+    "disagreement_auroc_sklearn": 0.5131489339410131,
+    "n_evaluated_states": 734,
+    "n_nonzero": 27,
+    "nonzero_prevalence": 0.03678474114441417,
+    "positive_prevalence_noskill_auprc": 0.03678474114441417,
+    "scenario_concentration_acquired124": {
+      "denominator": "124_scenarios_with_acquired_states",
+      "k": 2,
+      "note": "Same k=2 and share as parent-144 definition because ceil(0.01*124)=2 and zero-mass scenarios do not enter the top-2.",
+      "share": 0.42365519545606445
+    },
+    "scenario_concentration_parent144": {
+      "denominator": "all_144_parent_TRAIN_VAL_scenarios",
+      "k": 2,
+      "manuscript_phrase": "2 of 144 scenarios carry 42.4%",
+      "share": 0.42365519545606445
+    },
+    "top1pct_state_mass": {
+      "denominator": "evaluated_states",
+      "k": 8,
+      "share": 0.4834614099565657
+    }
+  },
+  "schema_version": "decision_criticality_uncertainty_existing_data_v1.0.0",
+  "source_experiment": "experiments/decision_criticality_terminal_anwg_v1",
+  "source_files": {
+    "branches_csv": "/home/soroush/llm-serving-heuristic-evolution/experiments/decision_criticality_terminal_anwg_v1/branches.csv",
+    "scenario_summaries_csv": "/home/soroush/llm-serving-heuristic-evolution/experiments/decision_criticality_terminal_anwg_v1/scenario_summaries.csv",
+    "summary_json": "/home/soroush/llm-serving-heuristic-evolution/experiments/decision_criticality_terminal_anwg_v1/summary.json"
+  }
+}

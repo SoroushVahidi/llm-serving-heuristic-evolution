@@ -1,0 +1,16 @@
+{
+  "experiment": "native_vllm_chunk_budget_semantics_probe_v1",
+  "integrity_pass": true,
+  "next_task": "stop_or_publication_integration_decision; do not automatically launch more real-vLLM experiments",
+  "no_family_b_validation_claim": true,
+  "selected_regimes": [
+    "late_tight_low_late",
+    "late_tight_high_late"
+  ],
+  "source_manifest_sha256": "194d8c5f2eb3f3dc8a6840c7a1a293e2afe895dae71e4e08748a6238eefe28c3",
+  "treatments": [
+    "T512",
+    "T4096"
+  ],
+  "verdict": "NATIVE_VLLM_BUDGET_EFFECT_STRONG"
+}

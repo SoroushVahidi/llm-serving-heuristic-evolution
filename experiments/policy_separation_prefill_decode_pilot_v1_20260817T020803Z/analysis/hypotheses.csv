@@ -1,0 +1,11 @@
+id,hypothesis,verdict,evidence
+H1,Full/large prefill competitive/superior under low decode overlap and TTFT-tight,CONFIRM,full/large unique-win count and mean ANWG competitive/superior
+H2,Chunked/decode-priority reduces decode-tenant SLO harm under high overlap + decode-tight,AMBIGUOUS,chunked mean ANWG is higher but Δ≤0.01 and TBT/TPOT are saturated
+H3,Long-prefill + high-overlap cells produce the strongest separation,CONTRADICT,long×high separation is not stronger than short×low / overall
+H4,Fixed chunking is not universally optimal,CONFIRM,non-chunk structural policies uniquely win some cells
+H5,Full prefill is not universally optimal,CONFIRM,11 cells have a structural policy beating full by >0.01; unique non-full ε=0.01 wins=0
+H6,Winner identity changes across regimes (≥2 policies uniquely win at ε=0.01),CONTRADICT,only 1 structural policy uniquely wins at ε=0.01
+H7,Near-tie rate at ε=0.01 is low enough (≤ ~0.45),CONTRADICT,near-tie rate 0.958 exceeds ~0.45 bar
+H8,At least one structural pair is bidirectional at ε=0.01,CONFIRM,"bidirectional at ε=0.01: full_prefill↔chunked_prefill_small, full_prefill↔chunked_prefill_large, full_prefill↔decode_priority_chunked, chunked_prefill_large↔decode_priority_chunked"
+H9,Seed-stable winner-set agreement ≥ ~0.7,AMBIGUOUS,winner-set agreement 0.611 is a near-miss of ~0.70
+H10,Diagnostics explain transitions,AMBIGUOUS,"TTFT/prefill-stall directions match, but decode_stalled_steps are identically 0"

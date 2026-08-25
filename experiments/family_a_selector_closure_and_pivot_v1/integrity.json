@@ -1,0 +1,35 @@
+{
+  "branch": "contextual-compositional-heuristics-20260731",
+  "dev_driven_redesign": false,
+  "dev_labels_used_in_new_diagnostics": false,
+  "final_rows_used_in_new_diagnostics": false,
+  "git_mutating_commands_used": false,
+  "gpu_used": false,
+  "head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "heavy_computation": false,
+  "input_files": {
+    "configuration_split_sha256": "8a48c51de94adbcbbde09347747b849c57dc98fe7ef2026e52058ac01ecb0f8e",
+    "d1_oracle_rows_sha256": "c2f10db04aa88abe53824717c840e170e5f7bf45ca4c792edc619959ba9035f0",
+    "v2_oracle_rows_sha256": "17467cc4aad9c36c692323014ca02dc6247d9fc4bedd321a3e78d0316866daeb",
+    "wulver_dev_support_gate_sha256": "1551d5db3a9a1684aa4e7ac382793222a28c1d8f280b450281c239d2b4690ac7"
+  },
+  "new_selector_training": false,
+  "new_simulation": false,
+  "notes": [
+    "V2 DEV/FINAL rows were counted for exclusion only, not used for label-neighborhood/headroom/stability diagnostics.",
+    "Frozen pi0 closed-loop summary aggregate was read as historical descriptive evidence; no new FINAL evaluation was run."
+  ],
+  "oracle_acquisition": false,
+  "row_scope": {
+    "d1_support_rows": 250,
+    "decisive_rows": 919,
+    "diagnostic_rows_total": 998,
+    "tie_rows": 79,
+    "v2_dev_rows_excluded": 104,
+    "v2_final_rows_excluded": 127,
+    "v2_train_rows": 748
+  },
+  "status": "PASS",
+  "test_used": false,
+  "wulver_jobs": false
+}

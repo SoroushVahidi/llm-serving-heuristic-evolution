@@ -1,0 +1,17 @@
+{
+  "best_fixed_mean_utility": 0.3140716694729327,
+  "best_fixed_policy": "kv_constrained_online",
+  "oracle_gain_summary": {
+    "epsilon_positive_fraction": 0.5125,
+    "max": 0.11439922540838321,
+    "mean": 0.019033834273102405,
+    "median": 0.010621830696808993,
+    "p75": 0.027285319724391514,
+    "p90": 0.058039846584491024,
+    "positive_fraction": 0.6041666666666666
+  },
+  "oracle_headroom_anwg": 0.0190338342731024,
+  "oracle_mean_utility": 0.3331055037460351,
+  "top10_percent_gain_share": 0.4050075690805368,
+  "top5_scenario_gain_share": 0.11199824249143518
+}

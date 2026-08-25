@@ -1,0 +1,53 @@
+{
+  "SBS": 0.7327515691773505,
+  "SBS_policy": "full_prefill",
+  "VBS": 0.7821848290598291,
+  "canonical_family": "FAMILY_B_PREFILL_DECODE_V2",
+  "cells_sha256": "2418eaf42ab8e23f9b9267678e35efd34c6b6ca249f73d737b3731389eb2de97",
+  "created_utc": "2026-08-25T00:22:40.372640+00:00",
+  "epsilon_unique": {
+    "chunked_prefill_small": 15,
+    "full_prefill": 16,
+    "vllm_style_continuous_batching": 0
+  },
+  "headroom": 0.0494332598824786,
+  "incremental_envelope_gain_vllm_style": 0.0,
+  "interpretation": {
+    "chunked_contributes": true,
+    "eliminates_full_vs_chunk_complementarity": false,
+    "full_prefill_contributes": true,
+    "vllm_style_contributes": false
+  },
+  "leave_one_out": {
+    "chunked_prefill_small": {
+      "VBS_drop": 0.0494332598824786,
+      "contributes": true
+    },
+    "full_prefill": {
+      "VBS_drop": 0.08148454193376076,
+      "contributes": true
+    },
+    "vllm_style_continuous_batching": {
+      "VBS_drop": 0.0,
+      "contributes": false
+    }
+  },
+  "mean_anwg": {
+    "chunked_prefill_small": 0.7007002871260684,
+    "full_prefill": 0.7327515691773505,
+    "vllm_style_continuous_batching": 0.0
+  },
+  "n_scenarios": 32,
+  "native_vllm_kept_separate": true,
+  "vllm_style_result": "experiments/external_baseline_comparison_v1/results/family_b_vllm_style",
+  "winner_counts": {
+    "chunked_prefill_small": 15,
+    "full_prefill": 17,
+    "vllm_style_continuous_batching": 0
+  },
+  "without_vllm_style": {
+    "SBS": 0.7327515691773505,
+    "VBS": 0.7821848290598291,
+    "headroom": 0.0494332598824786
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "deadline_seconds": 29700,
+  "phases": {
+    "phase0_preflight": {
+      "elapsed_s": 0.0,
+      "result": {
+        "branch": "selector-v2-contention-validation-pilot",
+        "git_diff_check_returncode": 0,
+        "git_status_short": "M experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log\n M scripts/run_selector_v2_overnight_validation.sh\n?? experiments/gpu_external_validity/vllm_qwen05b_stress2_20260718T2212/server.log\n?? experiments/gpu_external_validity/vllm_qwen15b_stress_20260718T2158/server.log\n?? experiments/runtime_validation_benchmark_pack/contention_targets/\n?? experiments/selector_v2_overnight_20260720T045536Z/\n?? src/llmserveopt/selector/dataset_v2/contention_fixtures.py",
+        "head": "b4c36eb51020d1222680d27924e4eb3af492f129",
+        "protected_file_hashes_before": {
+          "experiments/gpu_external_validity/vllm_qwen05b_stress2_20260718T2212/server.log": "5b9610db608b8e25c32c118086277151f1000f1d252a09ddc77cd73383cc0799",
+          "experiments/gpu_external_validity/vllm_qwen15b_stress_20260718T2158/server.log": "ca4453464f2d762ee767dd01f6a8a5acc7c0285aea2188233908eb9c471cf8c2",
+          "experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log": "737ea6d857010f9d46643f47ae9254440d5f94c6e74f5427390d4846a973540f"
+        }
+      },
+      "status": "completed"
+    },
+    "phase1_build_fixtures": {
+      "elapsed_s": 0.2,
+      "result": {
+        "fixtures_dir": "experiments/runtime_validation_benchmark_pack/contention_targets",
+        "fixtures_written": [
+          "experiments/runtime_validation_benchmark_pack/contention_targets/contention_a_earlier_long_prefill_later_short_decode.json",
+          "experiments/runtime_validation_benchmark_pack/contention_targets/contention_b_earlier_very_long_prefill_later_medium_decode.json",
+          "experiments/runtime_validation_benchmark_pack/contention_targets/contention_c_two_long_prefills_later_decode.json",
+          "experiments/runtime_validation_benchmark_pack/contention_targets/contention_d_burst_of_prefills_staggered_decode_arrivals.json",
+          "experiments/runtime_validation_benchmark_pack/contention_targets/contention_e_controlled_kv_pressure.json",
+          "experiments/runtime_validation_benchmark_pack/contention_targets/contention_f_short_context_negative_control.json"
+        ]
+      },
+      "status": "completed"
+    },
+    "phase2_mechanism_validation": {
+      "elapsed_s": 0.0,
+      "result": {
+        "csv_path": "experiments/selector_v2_overnight_20260720T045536Z/contention_fixture_results.csv",
+        "mechanism_question_answer": "sarathi_faithful outperforms vllm_chunked_prefill_faithful on 0/6 targeted fixtures; vllm_chunked_prefill_faithful outperforms on 0/6; 6/6 tie.",
+        "n_diverging": 0,
+        "n_fixtures": 6,
+        "rows": [
+          {
+            "classification": "NEAR_TIE",
+            "expected_to_diverge": false,
+            "fixture_id": "contention_a_earlier_long_prefill_later_short_decode",
+            "interaction_shape": "single_hog_vs_small_runner_burst",
+            "observed_diverges": false,
+            "sarathi_faithful_completion_fraction": 1.0,
+            "sarathi_faithful_mean_latency": 0.037,
+            "sarathi_faithful_mean_ttft": 0.0058000000000000005,
+            "sarathi_faithful_num_completed": 5,
+            "vllm_chunked_prefill_faithful_completion_fraction": 1.0,
+            "vllm_chunked_prefill_faithful_mean_latency": 0.037,
+            "vllm_chunked_prefill_faithful_mean_ttft": 0.0058000000000000005,
+            "vllm_chunked_prefill_faithful_num_completed": 5,
+            "vllm_faithful_completion_fraction": 1.0,
+            "vllm_faithful_mean_latency": 0.037,
+            "vllm_faithful_mean_ttft": 0.0058000000000000005,
+            "vllm_faithful_num_completed": 5
+          },
+          {
+            "classification": "NEAR_TIE",
+            "expected_to_diverge": false,
+            "fixture_id": "contention_b_earlier_very_long_prefill_later_medium_decode",
+            "interaction_shape": "single_long_hog_vs_medium_runner_burst",
+            "observed_diverges": false,
+            "sarathi_faithful_completion_fraction": 1.0,
+            "sarathi_faithful_mean_latency": 0.06233333333333333,
+            "sarathi_faithful_mean_ttft": 0.013166666666666669,
+            "sarathi_faithful_num_completed": 6,
+            "vllm_chunked_prefill_faithful_completion_fraction": 1.0,
+            "vllm_chunked_prefill_faithful_mean_latency": 0.06233333333333333,
+            "vllm_chunked_prefill_faithful_mean_ttft": 0.013166666666666669,
+            "vllm_chunked_prefill_faithful_num_completed": 6,
+            "vllm_faithful_completion_fraction": 1.0,
+            "vllm_faithful_mean_latency": 0.06233333333333333,
+            "vllm_faithful_mean_ttft": 0.013166666666666669,
+            "vllm_faithful_num_completed": 6
+          },
+          {
+            "classification": "NEAR_TIE",
+            "expected_to_diverge": false,
+            "fixture_id": "contention_c_two_long_prefills_later_decode",
+            "interaction_shape": "dual_hog_vs_small_runner_burst",
+            "observed_diverges": false,
+            "sarathi_faithful_completion_fraction": 1.0,
+            "sarathi_faithful_mean_latency": 0.03366666666666667,
+            "sarathi_faithful_mean_ttft": 0.007666666666666666,
+            "sarathi_faithful_num_completed": 6,
+            "vllm_chunked_prefill_faithful_completion_fraction": 1.0,
+            "vllm_chunked_prefill_faithful_mean_latency": 0.03366666666666667,
+            "vllm_chunked_prefill_faithful_mean_ttft": 0.007666666666666666,
+            "vllm_chunked_prefill_faithful_num_completed": 6,
+            "vllm_faithful_completion_fraction": 1.0,
+            "vllm_faithful_mean_latency": 0.03366666666666667,
+            "vllm_faithful_mean_ttft": 0.007666666666666666,
+            "vllm_faithful_num_completed": 6
+          },
+          {
+            "classification": "NEAR_TIE",
+            "expected_to_diverge": false,
+            "fixture_id": "contention_d_burst_of_prefills_staggered_decode_arrivals",
+            "interaction_shape": "hog_burst_vs_staggered_runner_trickle",
+            "observed_diverges": false,
+            "sarathi_faithful_completion_fraction": 1.0,
+            "sarathi_faithful_mean_latency": 0.026333333333333334,
+            "sarathi_faithful_mean_ttft": 0.003666666666666667,
+            "sarathi_faithful_num_completed": 9,
+            "vllm_chunked_prefill_faithful_completion_fraction": 1.0,
+            "vllm_chunked_prefill_faithful_mean_latency": 0.026333333333333334,
+            "vllm_chunked_prefill_faithful_mean_ttft": 0.003666666666666667,
+            "vllm_chunked_prefill_faithful_num_completed": 9,
+            "vllm_faithful_completion_fraction": 1.0,
+            "vllm_faithful_mean_latency": 0.026333333333333334,
+            "vllm_faithful_mean_ttft": 0.003666666666666667,
+            "vllm_faithful_num_completed": 9
+          },
+          {
+            "classification": "NEAR_TIE",
+            "expected_to_diverge": false,
+            "fixture_id": "contention_e_controlled_kv_pressure",
+            "interaction_shape": "single_hog_vs_small_runner_burst_tight_kv",
+            "observed_diverges": false,
+            "sarathi_faithful_completion_fraction": 1.0,
+            "sarathi_faithful_mean_latency": 0.0374,
+            "sarathi_faithful_mean_ttft": 0.0062,
+            "sarathi_faithful_num_completed": 5,
+            "vllm_chunked_prefill_faithful_completion_fraction": 1.0,
+            "vllm_chunked_prefill_faithful_mean_latency": 0.0374,
+            "vllm_chunked_prefill_faithful_mean_ttft": 0.0062,
+            "vllm_chunked_prefill_faithful_num_completed": 5,
+            "vllm_faithful_completion_fraction": 1.0,
+            "vllm_faithful_mean_latency": 0.0374,
+            "vllm_faithful_mean_ttft": 0.0062,
+            "vllm_faithful_num_completed": 5
+          },
+          {
+            "classification": "NEAR_TIE",
+            "expected_to_diverge": false,
+            "fixture_id": "contention_f_short_context_negative_control",
+            "interaction_shape": "short_context_negative_control",
+            "observed_diverges": false,
+            "sarathi_faithful_completion_fraction": 1.0,
+            "sarathi_faithful_mean_latency": 0.016,
+            "sarathi_faithful_mean_ttft": 0.002,
+            "sarathi_faithful_num_completed": 8,
+            "vllm_chunked_prefill_faithful_completion_fraction": 1.0,
+            "vllm_chunked_prefill_faithful_mean_latency": 0.016,
+            "vllm_chunked_prefill_faithful_mean_ttft": 0.002,
+            "vllm_chunked_prefill_faithful_num_completed": 8,
+            "vllm_faithful_completion_fraction": 1.0,
+            "vllm_faithful_mean_latency": 0.016,
+            "vllm_faithful_mean_ttft": 0.002,
+            "vllm_faithful_num_completed": 8
+          }
+        ],
+        "sarathi_advantage_count": 0,
+        "vllm_advantage_count": 0
+      },
+      "status": "completed"
+    },
+    "phase3_specialization_search": {
+      "elapsed_s": 5.4,
+      "result": {
+        "all_equivalent_fraction": 1.0,
+        "all_gates_pass": false,
+        "best_fixed_policy": "vllm_faithful",
+        "csv_path": "experiments/selector_v2_overnight_20260720T045536Z/specialization_search.csv",
+        "discriminative_oracle_headroom": null,
+        "gates": {
+          "all_equivalent_fraction_lt_0.40": false,
+          "at_least_3_policies_win": false,
+          "discriminative_oracle_headroom_gte_0.03": false,
+          "no_policy_dominates_strong_wins_gt_85pct": true,
+          "oracle_headroom_gte_0.01": false
+        },
+        "n_candidates_attempted": 300,
+        "n_windows_scored": 300,
+        "oracle_headroom": 0.0,
+        "strong_win_distribution": {},
+        "top_policy_strong_win_share": 0.0,
+        "win_distribution": {
+          "vllm_faithful": 300
+        }
+      },
+      "status": "completed"
+    },
+    "phase4_dataset_pilot": {
+      "status": "skipped_gate_failure"
+    },
+    "phase5_quality_gates": {
+      "elapsed_s": 0.0,
+      "result": {
+        "phase3_search_gates": {
+          "all_equivalent_fraction_lt_0.40": false,
+          "at_least_3_policies_win": false,
+          "discriminative_oracle_headroom_gte_0.03": false,
+          "no_policy_dominates_strong_wins_gt_85pct": true,
+          "oracle_headroom_gte_0.01": false
+        },
+        "proceed_to_selector_training": false
+      },
+      "status": "completed"
+    },
+    "phase6_train_selector": {
+      "status": "skipped_gate_failure"
+    },
+    "phase7_evaluate_selector": {
+      "status": "skipped_gate_failure"
+    },
+    "phase8_comparison_plan": {
+      "elapsed_s": 0.0,
+      "result": {
+        "plan_path": "experiments/selector_v2_overnight_20260720T045536Z/external_baseline_comparison_plan.md"
+      },
+      "status": "completed"
+    },
+    "phase9_testing": {
+      "elapsed_s": 209.3,
+      "result": {
+        "full_suite_returncode": 0,
+        "full_suite_tail": "arathi_style_performance.py .......                          [ 77%]\ntests/test_scorpio_style_slo_guard_policy.py .....................       [ 78%]\ntests/test_script_cli_safety.py ............                             [ 79%]\ntests/test_selector_candidates.py ....                                   [ 79%]\ntests/test_selector_dataset_v2.py .......................                [ 80%]\ntests/test_selector_evaluation.py .s......                               [ 80%]\ntests/test_selector_features.py .................                        [ 81%]\ntests/test_selector_labels.py ...........                                [ 81%]\ntests/test_selector_models.py ................                           [ 82%]\ntests/test_selector_no_leakage.py ........                               [ 82%]\ntests/test_selector_objective_analysis.py .......                        [ 83%]\ntests/test_selector_training_outputs.py .........                        [ 83%]\ntests/test_selector_windows.py ..............                            [ 83%]\ntests/test_service_model_factory.py ..........                           [ 84%]\ntests/test_sharegpt_loader.py .................                          [ 85%]\ntests/test_simulator_basic.py ..........                                 [ 85%]\ntests/test_simulator_preemption.py ..........                            [ 85%]\ntests/test_tetriinfer_paper_reimplementation.py ........................ [ 86%]\n...............                                                          [ 87%]\ntests/test_ttft_metrics_reporting.py .........                           [ 87%]\ntests/test_vllm_chunked_prefill_faithful_benchmark_pack.py ............. [ 88%]\n........                                                                 [ 88%]\ntests/test_vllm_chunked_prefill_faithful_scheduler.py .................. [ 89%]\n...                                                                      [ 89%]\ntests/test_vllm_chunked_prefill_faithful_stress.py ..................... [ 90%]\n........................................................................ [ 93%]\n........................................................................ [ 96%]\n.........................................................                [ 98%]\ntests/test_vllm_faithful_scheduler.py ................                   [ 99%]\ntests/test_weighted_goodput_metric.py .........                          [ 99%]\ntests/test_workload_generation.py .........                              [100%]\n\n=============================== warnings summary ===============================\ntests/test_disaggregated_prefill_decode.py::test_admitting_not_yet_ready_migrating_request_is_rejected\n  /home/soroush/llm-serving-heuristic-evolution/src/llmserveopt/simulator/simulator.py:386: UserWarning: Request 0 is still mid-transfer (ready at 1000.0, now 0.0); skipped.\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n===== 2452 passed, 2 skipped, 3 deselected, 1 warning in 199.08s (0:03:19) =====\n",
+        "git_diff_check_output": "",
+        "git_diff_check_returncode": 0,
+        "targeted_tests_returncode": 0,
+        "targeted_tests_tail": "============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0\nrootdir: /home/soroush/llm-serving-heuristic-evolution\nconfigfile: pyproject.toml\nplugins: anyio-4.13.0, cov-7.1.0\ncollected 449 items\n\ntests/test_decode_prefill_contention_execution.py ...................... [  4%]\n........................................................................ [ 20%]\n........................................................................ [ 36%]\n.................................................................        [ 51%]\ntests/test_vllm_chunked_prefill_faithful_scheduler.py .................. [ 55%]\n...                                                                      [ 56%]\ntests/test_sarathi_faithful_scheduler.py ..................              [ 60%]\ntests/test_selector_dataset_v2.py .......................                [ 65%]\ntests/test_selector_evaluation.py .s......                               [ 67%]\ntests/test_selector_models.py ................                           [ 70%]\ntests/test_external_baseline_integration.py ............................ [ 76%]\n........................................................................ [ 92%]\n................................                                         [100%]\n\n======================== 448 passed, 1 skipped in 8.21s ========================\n"
+      },
+      "status": "completed"
+    }
+  },
+  "start_time": 1784523336.5334241
+}

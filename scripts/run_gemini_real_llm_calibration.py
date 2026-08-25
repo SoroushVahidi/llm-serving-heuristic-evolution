@@ -80,6 +80,7 @@ import argparse
 import os
 import sys
 import time
+from types import SimpleNamespace
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -121,20 +122,41 @@ SDK_PACKAGE_NAME = "google-genai"
 # ---------------------------------------------------------------------------
 
 def _build_client():
-    import google.genai as genai
-
     api_key = os.environ.get("GOOGLE_API_KEY", "")
-    if api_key:
-        return genai.Client(api_key=api_key)
-
     project = os.environ.get("GOOGLE_CLOUD_PROJECT", "")
     location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
-    if not project:
+    if not api_key and not project:
         raise RuntimeError(
             "Neither GOOGLE_API_KEY nor GOOGLE_CLOUD_PROJECT is set. "
             "Set one of them before running live mode."
         )
+
+    import google.genai as genai
+
+    if api_key:
+        return genai.Client(api_key=api_key)
     return genai.Client(vertexai=True, project=project, location=location)
+
+
+def _genai_types():
+    try:
+        from google.genai import types
+        return types
+    except ModuleNotFoundError:
+        class _HttpOptions:
+            def __init__(self, timeout=None):
+                self.timeout = timeout
+
+        class _GenerateContentConfig:
+            def __init__(self, max_output_tokens=None, temperature=0.0, http_options=None):
+                self.max_output_tokens = max_output_tokens
+                self.temperature = temperature
+                self.http_options = http_options
+
+        return SimpleNamespace(
+            GenerateContentConfig=_GenerateContentConfig,
+            HttpOptions=_HttpOptions,
+        )
 
 
 def _extract_text(candidates) -> str:
@@ -147,7 +169,7 @@ def _extract_text(candidates) -> str:
 
 
 def _call_gemini_non_streaming(client, planned, timeout_s: int) -> Dict[str, Any]:
-    from google.genai import types
+    types = _genai_types()
 
     resp = client.models.generate_content(
         model=planned.model,
@@ -172,7 +194,7 @@ def _call_gemini_non_streaming(client, planned, timeout_s: int) -> Dict[str, Any
 
 
 def _call_gemini_streaming(client, planned, timeout_s: int) -> Dict[str, Any]:
-    from google.genai import types
+    types = _genai_types()
 
     t0 = time.monotonic()
     first_token_t = None

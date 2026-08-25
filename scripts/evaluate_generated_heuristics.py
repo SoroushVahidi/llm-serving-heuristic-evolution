@@ -18,7 +18,6 @@ NOTE: oracle_srtf is NOT included as a deployable baseline.
 """
 import argparse
 import csv
-import json
 import sys
 from pathlib import Path
 

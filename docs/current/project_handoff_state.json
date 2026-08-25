@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-07-23T00:00:00Z",
+  "updated_at": "2026-07-25T17:30:00Z",
+  "update_note": "2026-07-23 fields below preserve the FINAL pause checkpoint. reconciliation_20260724 records the later non-destructive fast-forward to the post-pause remote tip; scientific pause conclusions are unchanged.",
+  "repo_path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-final-integration",
+  "branch": "wulver-final-integration-20260721",
+  "head_sha": "8c9cedbca171d44030a16cf630f81f99d15d729f",
+  "checkpoint_commit_message": "feat: add faithful SLAI baseline and preserve paused research state",
+  "checkpoint_parent_sha": "d1d5f12a0752a061e563f87dcf3e3289bee2e4bb",
+  "upstream": "origin/wulver-final-integration-20260721",
+  "ahead": 0,
+  "behind": 0,
+  "working_tree_clean": true,
+  "modified_files": [],
+  "untracked_files": [],
+  "note_on_modified_untracked_files": "All files listed as modified/untracked during the pause sequence's own audit steps were committed in 8c9cedb and pushed. See docs/current/PAUSE_PROVENANCE_2026-07-23.md for the full file list that was included in that checkpoint commit.",
+  "reconciliation_20260724": {
+    "starting_local_head": "3aee5852795979793fd390b164ebd840452a6bb4",
+    "remote_tip_after_fetch": "37849b0d7a9d91d8559007505c34a8bc04769fd8",
+    "relationship_before_ff": "behind_only_20",
+    "action": "git merge --ff-only origin/wulver-final-integration-20260721",
+    "backup_branch": "backup/pre-reconciliation-20260724-194113",
+    "backup_directory": "/mmfs1/project/ikoutis/sv96/backups/llm-serving-heuristic-evolution-final-integration-pre-reconciliation-20260724-194113",
+    "native_composition_pilot_artifacts_verified_readable": true,
+    "native_composition_pilot_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/native_composition_pilot_20260721T194929Z",
+    "known_gaps_doc": "docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md",
+    "scientific_pause_conclusions_changed": false
+  },
+  "other_worktree": {
+    "path": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution",
+    "branch": "wulver-policy-composition-readiness",
+    "note": "Linked worktree sharing the same .git; NOT authoritative for this handoff; has its own unrelated uncommitted changes that are older drafts or byte-identical copies of work already on the authoritative branch."
+  },
+  "total_policy_count": 34,
+  "policy_count_breakdown": {
+    "historical_internal": 20,
+    "policy_library_v2_additions": 7,
+    "faithful_external_baselines": 7,
+    "oracle_reference_only": 1
+  },
+  "selector_candidate_count": 20,
+  "faithful_external_baseline_count": 7,
+  "faithful_external_baseline_names": [
+    "vllm_faithful",
+    "vllm_chunked_prefill_faithful",
+    "sarathi_faithful",
+    "distserve_faithful",
+    "tetriinfer_paper_reimplementation",
+    "llumnix_faithful",
+    "slai_faithful"
+  ],
+  "latest_selector_status": "USEFUL_NOT_SOLVED; repaired pilot PARTIALLY_READY does not authorize full sweep; freeze broad retraining pending simulator/load discrimination repair",
+  "latest_selector_artifact_path": null,
+  "primary_datasets": {
+    "azure": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/selector_v2_overnight_20260720T235405/processed/azure",
+      "in_repo_loader": true,
+      "known_saturation_risk": true
+    },
+    "burstgpt": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/selector_v2_overnight_20260720T235405/processed/burstgpt",
+      "in_repo_loader": true,
+      "known_saturation_risk": true
+    },
+    "swissai": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/swissai_trace_staging_20260722T172215Z",
+      "in_repo_loader": false,
+      "known_saturation_risk": true,
+      "token_field_availability": "prompt_tokens/output_tokens 0% populated; bucket-proxy only"
+    },
+    "tracelab": {
+      "artifact_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/tracelab_staging_20260722T192050Z",
+      "in_repo_loader": false,
+      "known_saturation_risk": "saturated in full 512-window sweep; showed differentiation in this session's small pilot",
+      "max_window_size": 128
+    }
+  },
+  "latest_slai_status": {
+    "upstream_repo": "github.com/agrimUT/SLAI",
+    "pinned_commit": "5098a7aba05e3edbcfa3a509d6cc9cd248fc4380",
+    "license": "Apache-2.0",
+    "implemented": true,
+    "tests_passing": true,
+    "bounded_pilot_oracle_envelope_gain": 0.0,
+    "full_sweep_recommendation": "NO_GO",
+    "rad_status": "theoretical_reference_only_not_implemented"
+  },
+  "latest_slai_pilot_path": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/slai_faithful_bounded_pilot_20260723T033609Z",
+  "latest_slai_pilot_job_id": "1129769",
+  "latest_full_test_result": {
+    "passed": 2501,
+    "skipped": 88,
+    "deselected": 26,
+    "failed": 0,
+    "exit_code": 0,
+    "scope": "full non-hardware suite, tested the new Action.hold_decode primitive prior to slai_faithful's own addition",
+    "durable_provenance_doc": "docs/current/PAUSE_PROVENANCE_2026-07-23.md",
+    "reproduction_command": "PYTHONPATH=src python -m pytest tests/ -q --deselect tests/test_compare_simulator_to_real_llm_latency.py --deselect tests/test_calibration_gpu.py --deselect tests/test_gpu_external_validity_audit.py",
+    "original_ephemeral_log_path_may_not_exist": "/tmp/claude-511190/-mmfs1-home-sv96/a2c3b791-b7e9-4e13-b4bb-8007e812fe25/scratchpad/full_test_run_final.log",
+    "log_path_is_durable": false
+  },
+  "major_open_problems": [
+    "Simulator/objective discriminative power (standing #1 project bottleneck, independently reconfirmed by the SLAI bounded pilot)",
+    "No frozen selector artifact exists on disk anywhere",
+    "SLAI shows zero oracle-envelope gain and loses on the one loaded dataset tested (NO_GO for full sweep)",
+    "Composition/synthesis is infrastructure-ready but scientifically unvalidated (NO_GO from native pilot)",
+    "No real-hardware cross-check for slai_faithful against upstream",
+    "Stale Dependency/DependencyNeverSatisfied Slurm jobs remain queued from already-completed experiments -- safe to cancel, not yet done",
+    "DSL HeuristicPolicy batch deadline / record_completion / calibrated decode-time wiring gaps (documented, intentionally unfixed for reproducibility \u2014 see KNOWN_SIMULATOR_HEURISTIC_GAPS.md)"
+  ],
+  "recommended_next_step": "Realistic load calibration (Stage 2 of docs/current/RESEARCH_ROADMAP.md) before any further selector, baseline, or composition work -- including before re-attempting the SLAI full sweep.",
+  "worktree_status": {
+    "verified_2026-07-23": true,
+    "reverified_2026-07-24": true,
+    "unique_work_at_risk": false,
+    "note": "Full audit of the other linked worktree (wulver-policy-composition-readiness) found every uncommitted difference is either byte-identical to what's already committed on the authoritative branch, or a strictly older/superseded draft. No reconciliation is required. See PROJECT_HANDOFF_2026-07-23.md's WORKTREE_WARNING section for full detail."
+  },
+  "authoritative_docs": [
+    "docs/current/README.md",
+    "docs/current/RESUME_HERE.md",
+    "docs/current/PROJECT_HANDOFF_2026-07-23.md",
+    "docs/current/PAUSE_PROVENANCE_2026-07-23.md",
+    "docs/current/project_handoff_state.json",
+    "docs/current/PROJECT_STATUS.md",
+    "docs/current/SELECTOR_STATUS.md",
+    "docs/current/POLICY_LIBRARY.md",
+    "docs/current/BASELINES.md",
+    "docs/current/EXPERIMENT_INDEX.md",
+    "docs/current/RESEARCH_ROADMAP.md",
+    "docs/current/ROADMAP_GAP_ANALYSIS.md",
+    "docs/current/COMPOSITION_AND_SYNTHESIS_ARCHITECTURE.md",
+    "docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md",
+    "docs/slai_faithful_scheduler_reference.md"
+  ],
+  "pause_20260725": {
+    "intentional_pause": true,
+    "durable_source_of_truth": "GitHub",
+    "pause_snapshot": "docs/current/pause_2026_07_25/",
+    "dataset_branch": "reality-grounded-dataset-expansion-20260724",
+    "dataset_worktree": "/mmfs1/project/ikoutis/sv96/github/llm-serving-heuristic-evolution-dataset-expansion",
+    "final_integration_sha_at_pause": "b0768f28016442527d2ebe9dcbc9efdf24f26da0",
+    "repaired_pilot_job": "1143392",
+    "repaired_pilot_decision": "PARTIALLY_READY",
+    "full_fingerprint_sweep_authorized": false,
+    "real_window_status": "ALL_COMPLETE_VALID",
+    "tier1_datasets_staged": true,
+    "mooncake_redistribution": "PROHIBITED_UNTIL_CLARIFIED",
+    "next_scientific_decision": "targeted_simulator_load_discrimination_repair",
+    "part3_required_before_remote_sync": true
+  }
+}

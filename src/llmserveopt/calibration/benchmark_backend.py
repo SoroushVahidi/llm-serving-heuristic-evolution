@@ -14,17 +14,13 @@ from __future__ import annotations
 
 import csv
 import time
-import warnings
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from .measurement import (
-    BatchMeasurementResult,
     MeasurementResult,
     measure_batch_latency,
     measure_decode_latency,
-    measure_prefill_latency,
 )
 from .prompt_generator import generate_prompt_of_length
 

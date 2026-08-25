@@ -1,0 +1,10 @@
+{
+  "experiment": "real_vllm_mechanism_validation_v1",
+  "hog_effect": false,
+  "integrity_pass": true,
+  "late_effect": false,
+  "note": "TRAIN/TEST/FINAL/DEV-free real-system mechanism validation; no Wulver/GPU cluster/API use.",
+  "subrun": "prefill_decode_local_v1",
+  "verdict": "PREFILL_REAL_VALIDATION_NO_GO",
+  "workload_manifest_sha256": "194d8c5f2eb3f3dc8a6840c7a1a293e2afe895dae71e4e08748a6238eefe28c3"
+}

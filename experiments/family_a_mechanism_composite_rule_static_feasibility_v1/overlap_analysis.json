@@ -1,0 +1,528 @@
+{
+  "baselines": {
+    "always_ESTF": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 1.0,
+      "overlap_always_WFS": 0.0,
+      "overlap_best_prior_analytic_rule": 0.2655310621242485,
+      "overlap_favored_size_rule": 0.2745490981963928,
+      "overlap_priority_only_rel": 0.2725450901803607,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "always_WFS": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.0,
+      "overlap_always_WFS": 1.0,
+      "overlap_best_prior_analytic_rule": 0.7344689378757515,
+      "overlap_favored_size_rule": 0.7254509018036072,
+      "overlap_priority_only_rel": 0.7274549098196392,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "idx_A_weighted_shortest_service": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.3867735470941884,
+      "overlap_always_WFS": 0.6132264529058116,
+      "overlap_best_prior_analytic_rule": 0.8627254509018036,
+      "overlap_favored_size_rule": 0.8837675350701403,
+      "overlap_priority_only_rel": 0.8857715430861723,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "idx_B_deadline_urgency": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.2655310621242485,
+      "overlap_always_WFS": 0.7344689378757515,
+      "overlap_best_prior_analytic_rule": 1.0,
+      "overlap_favored_size_rule": 0.9749498997995992,
+      "overlap_priority_only_rel": 0.9769539078156313,
+      "strict_no_go_overlap_ge_90pct_any_old_static": true
+    },
+    "idx_C_generalized_cmu": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.2655310621242485,
+      "overlap_always_WFS": 0.7344689378757515,
+      "overlap_best_prior_analytic_rule": 1.0,
+      "overlap_favored_size_rule": 0.9749498997995992,
+      "overlap_priority_only_rel": 0.9769539078156313,
+      "strict_no_go_overlap_ge_90pct_any_old_static": true
+    },
+    "idx_D_age_adjusted": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.44288577154308617,
+      "overlap_always_WFS": 0.5571142284569138,
+      "overlap_best_prior_analytic_rule": 0.8226452905811623,
+      "overlap_favored_size_rule": 0.8196392785571143,
+      "overlap_priority_only_rel": 0.8216432865731463,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "idx_E_whittle_inspired": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.2655310621242485,
+      "overlap_always_WFS": 0.7344689378757515,
+      "overlap_best_prior_analytic_rule": 1.0,
+      "overlap_favored_size_rule": 0.9749498997995992,
+      "overlap_priority_only_rel": 0.9769539078156313,
+      "strict_no_go_overlap_ge_90pct_any_old_static": true
+    },
+    "pi0_frozen": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.3557114228456914,
+      "overlap_always_WFS": 0.6442885771543087,
+      "overlap_best_prior_analytic_rule": 0.8937875751503006,
+      "overlap_favored_size_rule": 0.9168336673346693,
+      "overlap_priority_only_rel": 0.9168336673346693,
+      "strict_no_go_overlap_ge_90pct_any_old_static": true
+    },
+    "priority_only_rel": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.2725450901803607,
+      "overlap_always_WFS": 0.7274549098196392,
+      "overlap_best_prior_analytic_rule": 0.9769539078156313,
+      "overlap_favored_size_rule": 0.9979959919839679,
+      "overlap_priority_only_rel": 1.0,
+      "strict_no_go_overlap_ge_90pct_any_old_static": true
+    },
+    "regime_favored_size_only": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": false,
+      "overlap_always_ESTF": 0.2745490981963928,
+      "overlap_always_WFS": 0.7254509018036072,
+      "overlap_best_prior_analytic_rule": 0.9749498997995992,
+      "overlap_favored_size_rule": 1.0,
+      "overlap_priority_only_rel": 0.9979959919839679,
+      "strict_no_go_overlap_ge_90pct_any_old_static": true
+    }
+  },
+  "candidates": {
+    "HARD_GUARD_01": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.1282565130260521,
+      "overlap_always_WFS": 0.8717434869739479,
+      "overlap_best_prior_analytic_rule": 0.6062124248496994,
+      "overlap_favored_size_rule": 0.5971943887775552,
+      "overlap_priority_only_rel": 0.5991983967935872,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_02": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.12925851703406813,
+      "overlap_always_WFS": 0.8707414829659319,
+      "overlap_best_prior_analytic_rule": 0.6052104208416834,
+      "overlap_favored_size_rule": 0.5961923847695391,
+      "overlap_priority_only_rel": 0.5981963927855711,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_03": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.10120240480961924,
+      "overlap_always_WFS": 0.8987975951903807,
+      "overlap_best_prior_analytic_rule": 0.6332665330661322,
+      "overlap_favored_size_rule": 0.624248496993988,
+      "overlap_priority_only_rel": 0.62625250501002,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_04": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.10220440881763528,
+      "overlap_always_WFS": 0.8977955911823647,
+      "overlap_best_prior_analytic_rule": 0.6322645290581163,
+      "overlap_favored_size_rule": 0.6232464929859719,
+      "overlap_priority_only_rel": 0.625250501002004,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_05": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.20841683366733466,
+      "overlap_always_WFS": 0.7915831663326653,
+      "overlap_best_prior_analytic_rule": 0.5260521042084169,
+      "overlap_favored_size_rule": 0.5170340681362725,
+      "overlap_priority_only_rel": 0.5190380761523046,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_06": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.21042084168336672,
+      "overlap_always_WFS": 0.7895791583166333,
+      "overlap_best_prior_analytic_rule": 0.5240480961923848,
+      "overlap_favored_size_rule": 0.5150300601202404,
+      "overlap_priority_only_rel": 0.5170340681362725,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_07": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.1653306613226453,
+      "overlap_always_WFS": 0.8346693386773547,
+      "overlap_best_prior_analytic_rule": 0.5691382765531062,
+      "overlap_favored_size_rule": 0.5601202404809619,
+      "overlap_priority_only_rel": 0.5621242484969939,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_08": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.16733466933867736,
+      "overlap_always_WFS": 0.8326653306613226,
+      "overlap_best_prior_analytic_rule": 0.5671342685370742,
+      "overlap_favored_size_rule": 0.5581162324649298,
+      "overlap_priority_only_rel": 0.5601202404809619,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_09": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.2565130260521042,
+      "overlap_always_WFS": 0.7434869739478958,
+      "overlap_best_prior_analytic_rule": 0.47995991983967934,
+      "overlap_favored_size_rule": 0.4709418837675351,
+      "overlap_priority_only_rel": 0.4729458917835671,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_10": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.2605210420841683,
+      "overlap_always_WFS": 0.7394789579158316,
+      "overlap_best_prior_analytic_rule": 0.4779559118236473,
+      "overlap_favored_size_rule": 0.46893787575150303,
+      "overlap_priority_only_rel": 0.4709418837675351,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_11": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.20440881763527055,
+      "overlap_always_WFS": 0.7955911823647295,
+      "overlap_best_prior_analytic_rule": 0.5320641282565131,
+      "overlap_favored_size_rule": 0.5230460921843687,
+      "overlap_priority_only_rel": 0.5250501002004008,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HARD_GUARD_12": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.20741482965931865,
+      "overlap_always_WFS": 0.7925851703406813,
+      "overlap_best_prior_analytic_rule": 0.531062124248497,
+      "overlap_favored_size_rule": 0.5220440881763527,
+      "overlap_priority_only_rel": 0.5240480961923848,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_01": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.11723446893787576,
+      "overlap_always_WFS": 0.8827655310621243,
+      "overlap_best_prior_analytic_rule": 0.6172344689378757,
+      "overlap_favored_size_rule": 0.6082164328657315,
+      "overlap_priority_only_rel": 0.6102204408817635,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_02": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.14829659318637275,
+      "overlap_always_WFS": 0.8517034068136272,
+      "overlap_best_prior_analytic_rule": 0.5861723446893787,
+      "overlap_favored_size_rule": 0.5771543086172345,
+      "overlap_priority_only_rel": 0.5791583166332666,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_03": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.07515030060120241,
+      "overlap_always_WFS": 0.9248496993987976,
+      "overlap_best_prior_analytic_rule": 0.6593186372745491,
+      "overlap_favored_size_rule": 0.6503006012024048,
+      "overlap_priority_only_rel": 0.6523046092184369,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_04": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.09919839679358718,
+      "overlap_always_WFS": 0.9008016032064128,
+      "overlap_best_prior_analytic_rule": 0.6352705410821643,
+      "overlap_favored_size_rule": 0.62625250501002,
+      "overlap_priority_only_rel": 0.6282565130260521,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_05": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.1432865731462926,
+      "overlap_always_WFS": 0.8567134268537074,
+      "overlap_best_prior_analytic_rule": 0.591182364729459,
+      "overlap_favored_size_rule": 0.5821643286573146,
+      "overlap_priority_only_rel": 0.5841683366733467,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_06": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.17735470941883769,
+      "overlap_always_WFS": 0.8226452905811623,
+      "overlap_best_prior_analytic_rule": 0.5571142284569138,
+      "overlap_favored_size_rule": 0.5480961923847696,
+      "overlap_priority_only_rel": 0.5501002004008017,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_07": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.09118236472945891,
+      "overlap_always_WFS": 0.908817635270541,
+      "overlap_best_prior_analytic_rule": 0.6432865731462926,
+      "overlap_favored_size_rule": 0.6342685370741483,
+      "overlap_priority_only_rel": 0.6362725450901804,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "HISTORY_STATIC_APPROX_08": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.11623246492985972,
+      "overlap_always_WFS": 0.8837675350701403,
+      "overlap_best_prior_analytic_rule": 0.6182364729458918,
+      "overlap_favored_size_rule": 0.6092184368737475,
+      "overlap_priority_only_rel": 0.6112224448897795,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_01": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.09819639278557114,
+      "overlap_always_WFS": 0.9018036072144289,
+      "overlap_best_prior_analytic_rule": 0.6362725450901804,
+      "overlap_favored_size_rule": 0.627254509018036,
+      "overlap_priority_only_rel": 0.6292585170340681,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_02": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.09819639278557114,
+      "overlap_always_WFS": 0.9018036072144289,
+      "overlap_best_prior_analytic_rule": 0.6362725450901804,
+      "overlap_favored_size_rule": 0.627254509018036,
+      "overlap_priority_only_rel": 0.6292585170340681,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_03": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.15430861723446893,
+      "overlap_always_WFS": 0.845691382765531,
+      "overlap_best_prior_analytic_rule": 0.5801603206412825,
+      "overlap_favored_size_rule": 0.5711422845691383,
+      "overlap_priority_only_rel": 0.5731462925851704,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_04": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.15531062124248496,
+      "overlap_always_WFS": 0.844689378757515,
+      "overlap_best_prior_analytic_rule": 0.5791583166332666,
+      "overlap_favored_size_rule": 0.5701402805611222,
+      "overlap_priority_only_rel": 0.5721442885771543,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_05": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.11122244488977956,
+      "overlap_always_WFS": 0.8887775551102205,
+      "overlap_best_prior_analytic_rule": 0.6232464929859719,
+      "overlap_favored_size_rule": 0.6142284569138277,
+      "overlap_priority_only_rel": 0.6162324649298597,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_06": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.11122244488977956,
+      "overlap_always_WFS": 0.8887775551102205,
+      "overlap_best_prior_analytic_rule": 0.6232464929859719,
+      "overlap_favored_size_rule": 0.6142284569138277,
+      "overlap_priority_only_rel": 0.6162324649298597,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_07": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.17234468937875752,
+      "overlap_always_WFS": 0.8276553106212425,
+      "overlap_best_prior_analytic_rule": 0.5621242484969939,
+      "overlap_favored_size_rule": 0.5531062124248497,
+      "overlap_priority_only_rel": 0.5551102204408818,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "LOW_PRESSURE_COMPLETION_08": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.17334669338677355,
+      "overlap_always_WFS": 0.8266533066132264,
+      "overlap_best_prior_analytic_rule": 0.561122244488978,
+      "overlap_favored_size_rule": 0.5521042084168337,
+      "overlap_priority_only_rel": 0.5541082164328658,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_01": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.1623246492985972,
+      "overlap_always_WFS": 0.8376753507014028,
+      "overlap_best_prior_analytic_rule": 0.5761523046092184,
+      "overlap_favored_size_rule": 0.5671342685370742,
+      "overlap_priority_only_rel": 0.5691382765531062,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_02": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.08617234468937876,
+      "overlap_always_WFS": 0.9138276553106213,
+      "overlap_best_prior_analytic_rule": 0.6523046092184369,
+      "overlap_favored_size_rule": 0.6432865731462926,
+      "overlap_priority_only_rel": 0.6452905811623246,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_03": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.002004008016032064,
+      "overlap_always_WFS": 0.9979959919839679,
+      "overlap_best_prior_analytic_rule": 0.7364729458917836,
+      "overlap_favored_size_rule": 0.7274549098196392,
+      "overlap_priority_only_rel": 0.7294589178356713,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_04": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.22945891783567135,
+      "overlap_always_WFS": 0.7705410821643287,
+      "overlap_best_prior_analytic_rule": 0.5090180360721442,
+      "overlap_favored_size_rule": 0.5,
+      "overlap_priority_only_rel": 0.5020040080160321,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_05": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.12124248496993988,
+      "overlap_always_WFS": 0.8787575150300602,
+      "overlap_best_prior_analytic_rule": 0.6172344689378757,
+      "overlap_favored_size_rule": 0.6082164328657315,
+      "overlap_priority_only_rel": 0.6102204408817635,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_06": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.002004008016032064,
+      "overlap_always_WFS": 0.9979959919839679,
+      "overlap_best_prior_analytic_rule": 0.7364729458917836,
+      "overlap_favored_size_rule": 0.7274549098196392,
+      "overlap_priority_only_rel": 0.7294589178356713,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_07": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.18036072144288579,
+      "overlap_always_WFS": 0.8196392785571143,
+      "overlap_best_prior_analytic_rule": 0.5661322645290581,
+      "overlap_favored_size_rule": 0.5571142284569138,
+      "overlap_priority_only_rel": 0.5591182364729459,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_08": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.09919839679358718,
+      "overlap_always_WFS": 0.9008016032064128,
+      "overlap_best_prior_analytic_rule": 0.6472945891783567,
+      "overlap_favored_size_rule": 0.6382765531062125,
+      "overlap_priority_only_rel": 0.6402805611222445,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_09": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.006012024048096192,
+      "overlap_always_WFS": 0.9939879759519038,
+      "overlap_best_prior_analytic_rule": 0.7404809619238477,
+      "overlap_favored_size_rule": 0.7314629258517034,
+      "overlap_priority_only_rel": 0.7334669338677354,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_10": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.26152304609218435,
+      "overlap_always_WFS": 0.7384769539078156,
+      "overlap_best_prior_analytic_rule": 0.4849699398797595,
+      "overlap_favored_size_rule": 0.4759519038076152,
+      "overlap_priority_only_rel": 0.4779559118236473,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_11": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.14428857715430862,
+      "overlap_always_WFS": 0.8557114228456913,
+      "overlap_best_prior_analytic_rule": 0.6022044088176353,
+      "overlap_favored_size_rule": 0.593186372745491,
+      "overlap_priority_only_rel": 0.5951903807615231,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "PRIORITY_SAFE_RELEASE_12": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.006012024048096192,
+      "overlap_always_WFS": 0.9939879759519038,
+      "overlap_best_prior_analytic_rule": 0.7404809619238477,
+      "overlap_favored_size_rule": 0.7314629258517034,
+      "overlap_priority_only_rel": 0.7334669338677354,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_01": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.08316633266533066,
+      "overlap_always_WFS": 0.9168336673346693,
+      "overlap_best_prior_analytic_rule": 0.6513026052104208,
+      "overlap_favored_size_rule": 0.6422845691382766,
+      "overlap_priority_only_rel": 0.6442885771543087,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_02": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.12124248496993988,
+      "overlap_always_WFS": 0.8787575150300602,
+      "overlap_best_prior_analytic_rule": 0.6132264529058116,
+      "overlap_favored_size_rule": 0.6042084168336673,
+      "overlap_priority_only_rel": 0.6062124248496994,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_03": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.06513026052104208,
+      "overlap_always_WFS": 0.9348697394789579,
+      "overlap_best_prior_analytic_rule": 0.6693386773547094,
+      "overlap_favored_size_rule": 0.6603206412825652,
+      "overlap_priority_only_rel": 0.6623246492985972,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_04": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.09118236472945891,
+      "overlap_always_WFS": 0.908817635270541,
+      "overlap_best_prior_analytic_rule": 0.6432865731462926,
+      "overlap_favored_size_rule": 0.6342685370741483,
+      "overlap_priority_only_rel": 0.6362725450901804,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_05": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.1092184368737475,
+      "overlap_always_WFS": 0.8907815631262525,
+      "overlap_best_prior_analytic_rule": 0.625250501002004,
+      "overlap_favored_size_rule": 0.6162324649298597,
+      "overlap_priority_only_rel": 0.6182364729458918,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_06": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.15731462925851702,
+      "overlap_always_WFS": 0.842685370741483,
+      "overlap_best_prior_analytic_rule": 0.5771543086172345,
+      "overlap_favored_size_rule": 0.5681362725450901,
+      "overlap_priority_only_rel": 0.5701402805611222,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_07": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.0841683366733467,
+      "overlap_always_WFS": 0.9158316633266533,
+      "overlap_best_prior_analytic_rule": 0.6503006012024048,
+      "overlap_favored_size_rule": 0.6412825651302605,
+      "overlap_priority_only_rel": 0.6432865731462926,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    },
+    "TWO_STAGE_GUARD_08": {
+      "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+      "overlap_always_ESTF": 0.11923847695390781,
+      "overlap_always_WFS": 0.8807615230460922,
+      "overlap_best_prior_analytic_rule": 0.6152304609218436,
+      "overlap_favored_size_rule": 0.6062124248496994,
+      "overlap_priority_only_rel": 0.6082164328657315,
+      "strict_no_go_overlap_ge_90pct_any_old_static": false
+    }
+  }
+}

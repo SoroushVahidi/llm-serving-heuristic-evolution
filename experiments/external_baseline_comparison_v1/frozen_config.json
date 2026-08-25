@@ -1,0 +1,234 @@
+{
+  "P6": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online"
+  ],
+  "Pext": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online",
+    "vllm_style_continuous_batching",
+    "official_vtc_joint_token_budget_remap"
+  ],
+  "Pext_common": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online",
+    "vllm_style_continuous_batching",
+    "official_vtc_joint_token_budget_remap"
+  ],
+  "Pext_common_note": "Pass-4 author freeze: Pext_common = P6 + official VTC + vllm_style_continuous_batching. SOLA demoted to Related Work. LTR not in common joint/public matrix (INPUT_REPRESENTATION_UNAVAILABLE); WildChat LTR retained as separate evidence. Native vLLM = semantic validation only.",
+  "bootstrap_settings": {
+    "n_bootstrap": 1000,
+    "note": "same scenario-level bootstrap as joint-240 manuscript",
+    "seed": 20260825,
+    "unit": "scenario_with_replacement"
+  },
+  "common_information_model": {
+    "available": [
+      "arrival_time",
+      "current_time",
+      "prompt_tokens",
+      "predicted_output_tokens",
+      "class_id_tenant",
+      "priority_weight",
+      "slo_deadline",
+      "queue_state",
+      "admitted_running_state",
+      "kv_pressure",
+      "phase_state",
+      "active_sequence_count"
+    ],
+    "forbidden_unless_labeled_oracle": [
+      "actual_output_tokens_for_ranking"
+    ]
+  },
+  "created_utc": "2026-08-24T23:50:00Z",
+  "dirty_worktree_preserved": true,
+  "external_baseline_scope_pass4": {
+    "Pext_common": [
+      "full_prefill",
+      "chunked_prefill_small",
+      "estimated_service_time_first",
+      "weighted_fair_share",
+      "least_laxity_first",
+      "kv_constrained_online",
+      "vllm_style_continuous_batching",
+      "official_vtc_joint_token_budget_remap"
+    ],
+    "author_decision": "ACCEPT_PEXT_COMMON_WITHOUT_SOLA",
+    "common_external_baselines": {
+      "official_vtc_joint_token_budget_remap": {
+        "faithful_scheduler_semantics": true,
+        "provenance": "official VTC artifact + disclosed token-budget dimensional adaptation",
+        "role": "common_external"
+      },
+      "vllm_style_continuous_batching": {
+        "explicitly_not_native_vllm": true,
+        "provenance": "simulator FCFS/continuous-batching proxy (vllm_faithful)",
+        "role": "common_external"
+      }
+    },
+    "immutable_unless_implementation_bug": true,
+    "ltr_common_matrix": "LTR_NOT_IN_COMMON_PEXT_MATRIX",
+    "related_work_only": [
+      "SOLA",
+      "WAIT / Nested WAIT",
+      "external KV-cache algorithm",
+      "Sarathi-Serve",
+      "QLM",
+      "DistServe",
+      "Llumnix",
+      "Mooncake",
+      "FastServe",
+      "Splitwise"
+    ],
+    "separate_external_evidence": {
+      "native_vllm": {
+        "path": "experiments/real_vllm_mechanism_validation_v1/",
+        "scope": "engine-level semantic validation only"
+      },
+      "vllm_ltr_semantic_reference": {
+        "not_in_common_joint_public_pext": true,
+        "path": "results/vllm_ltr_first_comparative_evaluation/",
+        "scope": "prompt-bearing WildChat only"
+      }
+    },
+    "sola": {
+      "reason": "dual TTFT/TPOT SLO + hardware cost model absent from frozen single-deadline workloads; speculative overlay would change frozen evaluation",
+      "status": "DEMOTE_TO_RELATED_WORK"
+    },
+    "status": "FROZEN_EXTERNAL_BASELINE_SCOPE_PASS4"
+  },
+  "external_implementations": {
+    "official_vtc_joint_token_budget_remap": {
+      "batch_token_budget_rule": "max(step_token_budget, max_prompt_tokens_in_scenario)",
+      "clone_path": "~/.cache/external_baselines/VTC",
+      "cost_func": "linear",
+      "official_commit": "192c2e2014c69c8c6c699d7113c3822e4db632e6",
+      "official_repo": "https://github.com/Ying1123/VTC-artifact",
+      "path": "baselines/vtc/adapter/simulator_policy.py",
+      "tenant_map": "request.class_id"
+    },
+    "sola_faithful": {
+      "spec": "docs/current/sola_faithful_reimplementation_spec_20260824.md",
+      "status": "NOT_IMPLEMENTED"
+    },
+    "vllm_ltr_semantic_reference": {
+      "applicability": "D_on_joint_and_public_corpus",
+      "official_commit": "13bbf6ff3dab661791d41362551b089e5f77c91c",
+      "path": "baselines/vllm_ltr/"
+    },
+    "vllm_style_continuous_batching": {
+      "implementation_id": "vllm_faithful",
+      "path": "src/llmserveopt/policies/vllm_faithful.py",
+      "reference_commit": "67d96c29fba9b72cb4c4edbc26211c208a00ebdd",
+      "service_model_overrides": {
+        "allow_chunked_prefill": false,
+        "decode_first": true
+      }
+    }
+  },
+  "joint_240": {
+    "canonical_p6_must_not_overwrite": true,
+    "generator_spec_sha256": "176d95106efc94afd755f9ebffdff1454c56f2fb19ba5c496d732d9ba3f11463",
+    "n_scenarios": 240,
+    "p6_utility_matrix_wide": "experiments/joint_multimechanism_generalization_v1/utility_matrix_wide.csv",
+    "path": "experiments/joint_multimechanism_generalization_v1",
+    "scenario_manifest": "experiments/joint_multimechanism_generalization_v1/scenario_manifest.csv",
+    "scenario_manifest_sha256": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+    "seed": 20260824
+  },
+  "mechanism_matrices": {
+    "family_a": [
+      "weighted_fair_share",
+      "least_laxity_first",
+      "estimated_service_time_first",
+      "official_vtc_joint_token_budget_remap"
+    ],
+    "family_b": [
+      "full_prefill",
+      "chunked_prefill_small",
+      "vllm_style_continuous_batching"
+    ],
+    "family_c": [
+      "kv_constrained_online",
+      "least_laxity_first",
+      "vllm_style_continuous_batching"
+    ]
+  },
+  "output_schema": {
+    "required_fields": [
+      "workload_id",
+      "scenario_id",
+      "baseline",
+      "seed",
+      "anwg",
+      "slo_attainment_proxy",
+      "completion_fraction",
+      "num_completed",
+      "num_dropped",
+      "failure_status",
+      "implementation_version",
+      "config_hash",
+      "raw_result_pointer"
+    ]
+  },
+  "pass3_updated_utc": "2026-08-25T00:09:01.682474+00:00",
+  "pass4_updated_utc": "2026-08-25T00:17:23.293725+00:00",
+  "pext_launch_eligibility_pass1": {
+    "official_vtc_joint_token_budget_remap": "COMPLETE",
+    "sola_faithful": "BLOCKED_FIDELITY_SLO_MAPPING",
+    "vllm_ltr_semantic_reference": "NOT_IN_COMMON_PEXT_MATRIX",
+    "vllm_style_continuous_batching": "COMPLETE"
+  },
+  "primary_metric": {
+    "definition_frozen": true,
+    "name": "arrival_normalized_weighted_goodput",
+    "short": "ANWG"
+  },
+  "public_trace_stress_v1": {
+    "C": 32,
+    "M": 16,
+    "immutable": true,
+    "protocol_path": "experiments/external_baseline_comparison_v1/stress_protocol.json",
+    "status": "FROZEN_PUBLIC_TRACE_STRESS_V1"
+  },
+  "research_branch": "contextual-compositional-heuristics-20260731",
+  "research_git_head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "schema_version": "external_baseline_comparison_v1.frozen_config",
+  "seeds": {
+    "bootstrap_future_analysis": 20260825,
+    "joint": 20260824,
+    "stress_calibration": 20260824
+  },
+  "sola_faithful": {
+    "author_pass4": "accepted_demotion",
+    "do_not_relabel_sola_style": true,
+    "gate": "C",
+    "recommendation": "DEMOTE_TO_RELATED_WORK",
+    "status": "RELATED_WORK_ONLY",
+    "stop": "SOLA_BLOCKED_BY_SLO_MAPPING"
+  },
+  "stress_protocol_path": "experiments/external_baseline_comparison_v1/stress_protocol.json",
+  "success_failure_policy": {
+    "cell_failure": "record status=failed; do not silently treat as score",
+    "no_scientific_param_change_on_retry": true
+  },
+  "vllm_ltr_semantic_reference": {
+    "common_pext_status": "LTR_NOT_IN_COMMON_PEXT_MATRIX",
+    "reason": "INPUT_REPRESENTATION_UNAVAILABLE",
+    "separate_evidence": "LTR_EXTERNAL_PROMPT_BEARING_EVIDENCE_REUSABLE",
+    "separate_path": "results/vllm_ltr_first_comparative_evaluation/"
+  }
+}

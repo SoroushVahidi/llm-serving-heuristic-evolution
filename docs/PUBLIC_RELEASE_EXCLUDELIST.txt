@@ -1,0 +1,88 @@
+# Paths and patterns to EXCLUDE from a clean public-release tree.
+# Applied after allowlist matching. Comments start with #.
+
+# Secrets / sensitive
+.env
+.env.*
+!.env.example
+opencode.json
+.opencode/
+.claude/
+**/credentials.json
+**/*.pem
+**/*secret*
+results/baseline_api_audit/
+
+# Operational / agent / resume docs
+docs/current/RESUME_HERE.md
+docs/current/NEXT_ACTIONS.md
+docs/current/WORK_STATUS.md
+docs/current/AGENT_HANDOFF.md
+docs/current/PROJECT_HANDOFF_2026-07-23.md
+docs/current/PROJECT_PAUSE_HANDOFF_20260806.md
+docs/current/WULVER_HANDOFF.md
+docs/current/WOLVERINE_ORACLE_MIXTURE_HANDOFF.md
+docs/current/project_handoff_state.json
+docs/current/ACTIVE_EXPERIMENT_PROTECTED_PATHS.md
+docs/INDEX.md
+docs/START_HERE_CONTEXTUAL_COMPOSITION.md
+docs/RESUME_CONTEXTUAL_COMPOSITION.md
+docs/CONTEXTUAL_COMPOSITION_BRANCH.md
+docs/contextual_composition_roadmap.md
+docs/contextual_composition_decisions.md
+
+# Root scratch
+p2_config.yaml
+p3_chunk_control.py
+p5_analysis_chunk_comp.py
+p7_runner.py
+p8_test_runner.py
+crash.log
+run.log
+
+# Third-party raw / bulky derived data (default)
+data/raw/**
+!data/raw/**/.gitkeep
+data/processed/**
+!data/processed/**/.gitkeep
+data/public_trace_corpus_v1/*/records.parquet
+data/public_trace_corpus_v1/external_validation_metadata/
+
+# Author-decision defaults: exclude until approved
+artifacts/
+datasets/
+dataset_staging/
+
+# Generated / caches / logs
+logs/
+results/*
+!results/.gitkeep
+!results/provenance/
+!results/provenance/**
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.pyc
+hf_cache/
+hf_datasets_cache/
+hf_home/
+.local_data/
+llmserveopt-data/
+traces/
+
+# Runtime / build junk
+**/server.log
+**/*.out
+**/*.err
+paper/llm2026/main.log
+paper/llm2026/main.blg
+paper/llm2026/*.aux
+paper/llm2026/*.out
+paper/llm2026/archive/
+
+# Layout preview PNGs optional
+paper/llm2026/figures/joint_complementarity_layout_*.png

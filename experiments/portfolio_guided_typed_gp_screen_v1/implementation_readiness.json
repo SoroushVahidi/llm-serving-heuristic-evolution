@@ -1,0 +1,86 @@
+{
+  "crossover_implemented": true,
+  "equal_budget_harness_implemented": true,
+  "evolutionary_screen_status": "NOT_RUN",
+  "fingerprint_implemented": true,
+  "grammar_implemented": true,
+  "mg_evaluator_implemented": true,
+  "mutation_implemented": true,
+  "parent_structural_hashes": {
+    "chunked_prefill_small": "58631482caa179dce106d0275270dd1f9e8ea3be9f94d3019b182d0b8ea918cd",
+    "estimated_service_time_first": "c0ba47a7cb96570adb66ac592c80865db15a556118960cb89a81b97ed3558114",
+    "full_prefill": "f865d9f1f1b702b45f54b7219b55fefad8062515511e56113a71359ba2650898",
+    "kv_constrained_online": "66da0768f921bf7979c7239a99f4b69f50b6775b8285f1493568f2a721cc14c0",
+    "least_laxity_first": "33a13f728efc546b2f65e1d3dca178a1a66666b68388ec06effeefe19df52dd8",
+    "weighted_fair_share": "4ffe946951ddc7bec6b7988bd56d63cf0117f05221ff7705035975c104dede05"
+  },
+  "safety": {
+    "no_destructive_git_operation": true,
+    "no_evolutionary_screen_launched": true,
+    "no_git_push": true,
+    "no_heavy_simulation": true,
+    "no_test_final_used": true,
+    "no_wulver_gpu_api_job": true,
+    "smoke_results_not_scientific_evidence": true
+  },
+  "schema": "portfolio_guided_typed_gp_screen_v1_implementation_readiness",
+  "screen_ready": true,
+  "screen_ready_basis": [
+    "six parent reproduction tests PASS",
+    "genome/serialization tests PASS",
+    "leakage/determinism tests PASS",
+    "random grammar generation works under smoke budget",
+    "mutation-only provenance verified as single-parent/no crossover",
+    "structural crossover produced valid typed children with parent/path provenance",
+    "behavioral fingerprint and parent-overlap measurements work",
+    "MG evaluation works against frozen E6 anchors",
+    "equal evaluated-candidate accounting works",
+    "tiny smoke completed deterministically enough for launch readiness",
+    "projected serial runtime is acceptable for local CPU; original <=10 minute ambition is false but no budget change was made"
+  ],
+  "screen_ready_false_reasons": [],
+  "serialization_implemented": true,
+  "six_parent_exactness_statuses": {
+    "chunked_prefill_small": "PARENT_REPRODUCTION_PASS",
+    "estimated_service_time_first": "PARENT_REPRODUCTION_PASS",
+    "full_prefill": "PARENT_REPRODUCTION_PASS",
+    "kv_constrained_online": "PARENT_REPRODUCTION_PASS",
+    "least_laxity_first": "PARENT_REPRODUCTION_PASS",
+    "weighted_fair_share": "PARENT_REPRODUCTION_PASS"
+  },
+  "smoke_validation": {
+    "behavioral_parent_overlap_1_count": 6,
+    "behavioral_parent_overlap_1_rate": 0.5,
+    "duplicate_rate": 0.0,
+    "equal_evaluated_candidate_budget": true,
+    "evaluated_candidates_per_treatment": {
+      "A_RANDOM_GRAMMAR_GP": 4,
+      "B_PARENT_SEEDED_MUTATION_ONLY": 4,
+      "C_PORTFOLIO_STRUCTURAL_CROSSOVER": 4
+    },
+    "invalid_candidate_rate": 0.14285714285714285,
+    "mutation_only_all_single_parent": true,
+    "random_grammar_parent_seeded_count": 0,
+    "smoke_completed": true,
+    "structural_crossover_valid_child_count": 4,
+    "structural_parent_collapse_count": 0
+  },
+  "tests": {
+    "dependency_note": "pandas is declared in pyproject/requirements; using python -m pytest with /home/soroush/modal-venv/bin/python resolved prior collection issue.",
+    "pre_smoke_targeted": "python -m pytest -q tests/test_portfolio_guided_typed_gp_screen_v1.py tests/test_heuristic_dsl_no_leakage.py tests/test_heuristic_policy_determinism.py tests/test_policy_genome_coverage.py tests/test_policy_separation_prefill_decode_v2.py::test_v2_policy_set_is_exactly_two_anchors tests/test_policy_separation_prefill_decode_v2.py::test_v2_policies_use_only_online_observables -> 202 passed"
+  },
+  "tests_passed": true,
+  "timing_calibration": {
+    "candidate_scenario_evaluations": 36,
+    "full_budget_changed": false,
+    "naive_projected_full_screen_wall_time_min": 15.745924662100151,
+    "projected_full_screen_candidate_scenario_evaluations": 4320,
+    "runtime_acceptability": "ACCEPTABLE_LOCAL_CPU_SERIAL_DESPITE_GT_10_MIN; no reward-based budget change made",
+    "smoke_dir": "experiments/portfolio_guided_typed_gp_smoke_v1",
+    "ten_minute_ambition_realistic_serial": false,
+    "total_smoke_runtime_s": 7.904639562009834,
+    "wall_clock_time_per_candidate_scenario_evaluation_s": 0.21869339808472432
+  },
+  "timing_calibration_status": "SMOKE_COMPLETE",
+  "updated_utc": "2026-08-24T00:00:00Z"
+}

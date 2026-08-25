@@ -1,0 +1,64 @@
+{
+  "behavioral_note": "Official LTR ranking correlates only moderately with ESTF/SOF (Spearman ~0.35-0.48), so it is behaviorally distinct from length-only proxies; still not transferable to length-only joint/public manifests.",
+  "classification": "LTR_EXTERNAL_PROMPT_BEARING_EVIDENCE_REUSABLE",
+  "dataset": "WildChat prompt-bearing",
+  "limitation": "INPUT_REPRESENTATION_UNAVAILABLE on frozen joint/public corpora",
+  "mean_ANWG_by_policy": {
+    "edf": 0.9957159999999999,
+    "estimated_service_time_first": 0.9957159999999999,
+    "fifo": 0.9957159999999999,
+    "oracle_srtf": 0.9957159999999999,
+    "regression_anwg_selector": 0.974275,
+    "rule_based_selector": 0.9957159999999999,
+    "scorpio_style_slo_guard": 0.9742850000000001,
+    "shortest_output_first": 0.9957159999999999,
+    "vllm_ltr_semantic_reference": 0.9957159999999999,
+    "weighted_shortest_processing": 0.9957159999999999
+  },
+  "n_policies": 10,
+  "not_in_Pext_common": true,
+  "num_prompts_scores": 300,
+  "official_commit_recorded_in_frozen_config": "13bbf6ff3dab661791d41362551b089e5f77c91c",
+  "official_repo": "https://github.com/hao-ai-lab/vllm-ltr",
+  "path": "results/vllm_ltr_first_comparative_evaluation/",
+  "policies_compared": [
+    "fifo",
+    "edf",
+    "estimated_service_time_first",
+    "shortest_output_first",
+    "weighted_shortest_processing",
+    "scorpio_style_slo_guard",
+    "rule_based_selector",
+    "regression_anwg_selector",
+    "vllm_ltr_semantic_reference",
+    "oracle_srtf"
+  ],
+  "ranking_agreement_vs_ESTF_SOF": [
+    {
+      "seed": 0,
+      "spearman_ltr_vs_estimated_service_time_first": 0.3525270280780897,
+      "spearman_ltr_vs_shortest_output_first": 0.43001677796419957
+    },
+    {
+      "seed": 1,
+      "spearman_ltr_vs_estimated_service_time_first": 0.40230358115090165,
+      "spearman_ltr_vs_shortest_output_first": 0.47508972321914683
+    },
+    {
+      "seed": 2,
+      "spearman_ltr_vs_estimated_service_time_first": 0.3834260380670896,
+      "spearman_ltr_vs_shortest_output_first": 0.46209891221013566
+    }
+  ],
+  "row_count_verification": {
+    "actual_raw_rows": 9000,
+    "expected_raw_rows": 9000,
+    "formula": "n_prompts * n_seeds * n_policies",
+    "matches": true
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ]
+}

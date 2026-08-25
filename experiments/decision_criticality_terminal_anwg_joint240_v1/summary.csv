@@ -1,0 +1,2 @@
+n_scenarios,n_branches,frac_nonzero,frac_positive,frac_negative,frac_abs_ge_0.01,mean_abs_delta,mean_delta,top1pct_state_mass,top5pct_state_mass,top10pct_state_mass,auroc,auprc,ref_replay_n_checks,ref_replay_n_match,ref_replay_max_abs_mismatch,verdicts
+240,3541,0.05817565659418243,0.03191188929680881,0.026263767297373623,0.052527534594747245,0.0014133119499450206,0.00029338651517706163,0.42061961937346687,0.9512577298685135,0.9999999999999979,0.6799100449775113,0.08191414743116707,240,240,0.0,JOINT240_TERMINAL_CRITICALITY_REPLICATED

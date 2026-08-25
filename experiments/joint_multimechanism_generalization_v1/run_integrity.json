@@ -1,0 +1,46 @@
+{
+  "actual_policy_cells": 1440,
+  "expected_policy_cells": 1440,
+  "experiment": "joint_multimechanism_generalization_v1",
+  "first_attempt_note": "An initial run attempt was interrupted before utility outputs because sparse tracing/runtime feasibility needed a reward-blind implementation fix; no scientific utility result was produced from that attempt.",
+  "generator_spec_sha256_actual": "176d95106efc94afd755f9ebffdff1454c56f2fb19ba5c496d732d9ba3f11463",
+  "generator_spec_sha256_recorded": "176d95106efc94afd755f9ebffdff1454c56f2fb19ba5c496d732d9ba3f11463",
+  "output_hashes": {
+    "decision.json": "ab7e0dfbe7bc138cfcee9f63f0efa83bc9e0d5a5770e5c84411603a6edc9d047",
+    "oracle_summary.json": "9f581992fdcfb4f8bf70108ec9f76bbc04937fae50672b1a4525193eae177ffb",
+    "utility_matrix_long.csv": "bc98bf2d7014e704bf028befff622d4da7dee72f701d4ce98c01ca9087bdaa98",
+    "utility_matrix_wide.csv": "99bc4303b69b90a56d475db2e708bc8adf62a8931f6d11cfba9b8d3ff0f9b679",
+    "winner_summary.json": "e804d38f4b6fe8baec74dc7e23291c17591a7107580f3ea04d7b34beb4c29cb5"
+  },
+  "policies": [
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "full_prefill",
+    "kv_constrained_online",
+    "least_laxity_first",
+    "weighted_fair_share"
+  ],
+  "policy_counts": {
+    "chunked_prefill_small": 240,
+    "estimated_service_time_first": 240,
+    "full_prefill": 240,
+    "kv_constrained_online": 240,
+    "least_laxity_first": 240,
+    "weighted_fair_share": 240
+  },
+  "safety": {
+    "cpu_only": true,
+    "no_dev_test_final": true,
+    "no_gpu_vllm_wulver": true,
+    "no_policy_search": true,
+    "no_selector_training": true
+  },
+  "scenario_manifest_sha256_actual": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+  "scenario_manifest_sha256_recorded": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+  "scenarios": 240,
+  "status": "PASS",
+  "status_counts": {
+    "success": 1440
+  },
+  "wide_rows": 240
+}

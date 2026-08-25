@@ -1,0 +1,15 @@
+# Example Valid Hybrid-Cache Apt-Serve Configuration
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 16
+    max_batch_tokens: 512
+    max_kv_tokens: 1024
+    hybrid_cache_enabled: true
+    hidden_cache_capacity_blocks: 64
+    hidden_to_kv_memory_ratio: 0.2
+    cache_switch_latency: 0.005
+    hidden_restore_latency: 0.01
+    recomputation_cost_model: "hidden_restore"
+    apt_serve_rho: 0.6
+    apt_serve_ttft_slo: 1.5
+    apt_serve_tbt_slo: 0.1

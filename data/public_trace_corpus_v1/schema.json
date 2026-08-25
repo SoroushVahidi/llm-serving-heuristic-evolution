@@ -1,0 +1,55 @@
+{
+  "schema_version": "public_trace_corpus_v1.0.0",
+  "purpose": "Workload-input corpus schema. Contains no policy outcomes, oracle labels, or policy-comparison fields.",
+  "design_doc": "docs/design/PUBLIC_TRACE_CORPUS_V1.md",
+  "provenance_states": ["NATIVE", "DETERMINISTIC_DERIVED", "SOURCE_SPECIFIC", "UNAVAILABLE"],
+  "fields": {
+    "identity": [
+      {"name": "source_dataset", "type": "string", "description": "Short canonical source name, e.g. 'burstgpt', 'azure_2023_conv', 'agentperfbench_trace_replay'."},
+      {"name": "source_version", "type": "string", "description": "Release/commit/revision identifier for the source, where discoverable."},
+      {"name": "source_record_id", "type": "string", "description": "Native row/record identifier if the source provides one; otherwise the 0-indexed row position, disclosed as DETERMINISTIC_DERIVED."},
+      {"name": "source_url_or_repo", "type": "string", "description": "Authoritative URL (GitHub/HuggingFace/institutional) the record was pulled from."},
+      {"name": "source_license", "type": "string", "description": "SPDX identifier or plain-text license label recorded at ingestion time."},
+      {"name": "source_file_sha256", "type": "string", "description": "SHA-256 of the raw source file this record was derived from."}
+    ],
+    "timing": [
+      {"name": "arrival_timestamp", "type": "float|null", "description": "Native absolute or relative timestamp, in the source's own units, before normalization."},
+      {"name": "relative_arrival_time", "type": "float", "description": "Seconds since the first record in the source, t0 = 0.0."},
+      {"name": "interarrival_time", "type": "float|null", "description": "relative_arrival_time[i] - relative_arrival_time[i-1] within the same source partition; null for the first record."}
+    ],
+    "size": [
+      {"name": "prompt_tokens", "type": "int|null"},
+      {"name": "output_tokens", "type": "int|null"},
+      {"name": "total_tokens", "type": "int|null", "description": "Native if the source provides it directly, else prompt_tokens + output_tokens when both are NATIVE."}
+    ],
+    "model_context": [
+      {"name": "model_name", "type": "string|null"},
+      {"name": "model_family", "type": "string|null", "description": "Only populated if the source explicitly supplies a family label; never inferred from model_name."},
+      {"name": "generation_params", "type": "object|null", "description": "Namespaced map of any disclosed generation parameters (temperature, max_tokens, etc.)."}
+    ],
+    "workload_context": [
+      {"name": "session_id", "type": "string|null"},
+      {"name": "request_type", "type": "string|null", "description": "e.g. 'conversation', 'code', 'trace_replay'."},
+      {"name": "concurrency_metadata", "type": "object|null"},
+      {"name": "prefix_cache_id", "type": "string|null", "description": "Native prefix/KV-block hash identifiers where the source supplies them."}
+    ],
+    "optional_slo_priority": [
+      {"name": "priority", "type": "float|null"},
+      {"name": "deadline", "type": "float|null"},
+      {"name": "slo", "type": "object|null"},
+      {"name": "tenant_class", "type": "string|null"}
+    ],
+    "source_specific": [
+      {"name": "extra", "type": "object", "description": "Namespaced map preserving any native fields not mapped to a canonical column above. Never dropped."}
+    ],
+    "audit": [
+      {"name": "field_provenance", "type": "object", "description": "Per-canonical-field map of provenance_states values."}
+    ]
+  },
+  "invariants": [
+    "No field is fabricated; unavailable fields are null with field_provenance=UNAVAILABLE.",
+    "relative_arrival_time is monotonically non-decreasing within a single source partition (temporal ordering preserved; no shuffling).",
+    "No policy-outcome, oracle, regret, or six-policy-utility field may appear in this schema.",
+    "actual_output_tokens leakage rule from canonical_schema.py does not apply at this layer (this is a workload-input table, not a scheduler-visible ObservableRequest); output_tokens here is descriptive corpus content, not scheduler input."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "run_dir": "experiments/policy_separation_prefill_decode_smoke_v2_20260817T024136Z",
+  "config": "configs/policy_separation_prefill_decode_smoke_v2.yaml",
+  "git_head": "138cabf249b4a14e9f5fd1fa8e14f8dc641da0da",
+  "git_branch": "contextual-compositional-heuristics-20260731",
+  "burstgpt_path": ".local_data/burstgpt_v2/raw/BurstGPT_without_fails_1.csv",
+  "datasets_root": ".local_data",
+  "chunk_budgets": {
+    "chunk_small": 64
+  },
+  "metric_schema": {
+    "primary": [
+      "arrival_normalized_weighted_goodput"
+    ],
+    "secondary": [
+      "unweighted_slo_success_rate",
+      "completion_fraction",
+      "mean_ttft",
+      "p95_ttft",
+      "p99_ttft",
+      "mean_tpot",
+      "p95_tpot",
+      "mean_queuing_delay",
+      "mean_prefill_delay_s",
+      "request_throughput",
+      "token_throughput",
+      "hog_n",
+      "late_n",
+      "hog_mean_ttft",
+      "hog_p95_ttft",
+      "hog_mean_tpot",
+      "hog_p95_tpot",
+      "hog_slo_success",
+      "hog_ttft_attainment",
+      "late_mean_ttft",
+      "late_p95_ttft",
+      "late_mean_tpot",
+      "late_p95_tpot",
+      "late_slo_success",
+      "late_ttft_attainment",
+      "global_tbt_attainment"
+    ],
+    "mechanism": [
+      "decode_stalled_steps",
+      "cumulative_decode_tokens_deferred",
+      "steps_with_prefill_while_decode_deferred",
+      "prefill_stalled_steps",
+      "cumulative_prefill_requests_stalled",
+      "budget_saturation_fraction",
+      "mean_num_decoding",
+      "mean_num_prefilling",
+      "fraction_prefill_tokens_while_decodes_active",
+      "mean_theoretical_chunks",
+      "mean_interchunk_extra_wait_s",
+      "steps_decode_active_prefill_stalled",
+      "mean_num_prefilling_saturated",
+      "mean_num_decoding_saturated",
+      "n_saturated_steps"
+    ]
+  }
+}

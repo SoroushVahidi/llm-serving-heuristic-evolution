@@ -1,0 +1,22 @@
+{
+  "gates": {
+    "meaningful_complementarity": true,
+    "multi_mechanism_gain": true,
+    "not_top10_concentrated": true,
+    "positive_headroom": true
+  },
+  "next_task_recommendation": "stop science and begin manuscript production",
+  "preregistered_categories": [
+    "JOINT_GENERALIZATION_STRONG",
+    "JOINT_GENERALIZATION_PARTIAL",
+    "JOINT_GENERALIZATION_NO_GO"
+  ],
+  "safety": {
+    "cpu_only": true,
+    "no_dev_test_final": true,
+    "no_gpu_vllm_wulver": true,
+    "no_policy_search": true,
+    "no_selector_training": true
+  },
+  "verdict": "JOINT_GENERALIZATION_STRONG"
+}

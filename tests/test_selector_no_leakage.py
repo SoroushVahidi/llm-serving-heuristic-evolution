@@ -9,7 +9,6 @@ Verifies that:
 """
 import copy
 import pytest
-import numpy as np
 
 from llmserveopt.core.types import Request
 from llmserveopt.selector.features import (

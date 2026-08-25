@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import time
 
-import pytest
 
 from llmserveopt.core.types import ObservableGPUState, ObservableRequest, ObservableState
 from llmserveopt.policies.sarathi_style import SarathiStylePolicy
@@ -75,7 +74,6 @@ class TestSarathiStylePerformance:
         """
         policy = SarathiStylePolicy(max_prefill_tokens_per_step=512)
         queue = _make_queue(n=1000, prompt_tokens=64)
-        gpu = _make_gpu(max_active=2, max_kv=256, max_batch=512)
 
         start = time.monotonic()
         for _ in range(500):

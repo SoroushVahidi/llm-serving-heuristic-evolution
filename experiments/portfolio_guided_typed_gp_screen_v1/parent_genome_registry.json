@@ -1,0 +1,350 @@
+{
+  "parents": {
+    "chunked_prefill_small": {
+      "canonical_genome": {
+        "metadata": {
+          "screen": "portfolio_guided_typed_gp_screen_v1",
+          "source_policy": "chunked_prefill_small",
+          "source_policy_implementation": "src/llmserveopt/policies/prefill_control_variants.py"
+        },
+        "name": "portfolio_gp_parent::chunked_prefill_small",
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "description": "",
+              "module_id": "ranking.arrival_order",
+              "module_type": "RankingRule",
+              "parameters": {}
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "placement.default_gpu_pressure",
+              "module_type": "PlacementRule",
+              "parameters": {}
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "prefill.chunked_small",
+              "module_type": "PrefillRule",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "max_prefill_chunk_tokens"
+                ],
+                "decode_first": false,
+                "max_prefill_chunk_tokens": 64
+              }
+            }
+          ],
+          "description": "Typed exact parent representation for chunked_prefill_small",
+          "module_id": "policy.module_composition",
+          "module_type": "Policy",
+          "parameters": {
+            "canonical_parent_id": "chunked_prefill_small",
+            "exactness_status": "EXACT_PARENT_REPRESENTATION"
+          }
+        },
+        "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+      },
+      "exactness_status": "EXACT_PARENT_REPRESENTATION",
+      "known_limitations": "Exact for current parent reproduction suite; non-parent composed children are limited to implemented typed module combinations.",
+      "required_module_types": [
+        "PlacementRule",
+        "Policy",
+        "PrefillRule",
+        "RankingRule"
+      ],
+      "source_policy_implementation": "src/llmserveopt/policies/prefill_control_variants.py",
+      "structural_hash_sha256": "58631482caa179dce106d0275270dd1f9e8ea3be9f94d3019b182d0b8ea918cd"
+    },
+    "estimated_service_time_first": {
+      "canonical_genome": {
+        "metadata": {
+          "screen": "portfolio_guided_typed_gp_screen_v1",
+          "source_policy": "estimated_service_time_first",
+          "source_policy_implementation": "src/llmserveopt/policies/estimated_service_time_first.py"
+        },
+        "name": "portfolio_gp_parent::estimated_service_time_first",
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "description": "",
+              "module_id": "ranking.estf_service_time",
+              "module_type": "RankingRule",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "alpha",
+                  "beta"
+                ],
+                "alpha": 0.5,
+                "beta": 1.0
+              }
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "placement.round_robin_scan",
+              "module_type": "PlacementRule",
+              "parameters": {}
+            }
+          ],
+          "description": "Typed exact parent representation for estimated_service_time_first",
+          "module_id": "policy.module_composition",
+          "module_type": "Policy",
+          "parameters": {
+            "canonical_parent_id": "estimated_service_time_first",
+            "exactness_status": "EXACT_PARENT_REPRESENTATION"
+          }
+        },
+        "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+      },
+      "exactness_status": "EXACT_PARENT_REPRESENTATION",
+      "known_limitations": "Exact for current parent reproduction suite; non-parent composed children are limited to implemented typed module combinations.",
+      "required_module_types": [
+        "PlacementRule",
+        "Policy",
+        "RankingRule"
+      ],
+      "source_policy_implementation": "src/llmserveopt/policies/estimated_service_time_first.py",
+      "structural_hash_sha256": "c0ba47a7cb96570adb66ac592c80865db15a556118960cb89a81b97ed3558114"
+    },
+    "full_prefill": {
+      "canonical_genome": {
+        "metadata": {
+          "screen": "portfolio_guided_typed_gp_screen_v1",
+          "source_policy": "full_prefill",
+          "source_policy_implementation": "src/llmserveopt/policies/prefill_control_variants.py"
+        },
+        "name": "portfolio_gp_parent::full_prefill",
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "description": "",
+              "module_id": "ranking.arrival_order",
+              "module_type": "RankingRule",
+              "parameters": {}
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "placement.default_gpu_pressure",
+              "module_type": "PlacementRule",
+              "parameters": {}
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "prefill.full",
+              "module_type": "PrefillRule",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "max_prefill_chunk_tokens"
+                ],
+                "decode_first": false,
+                "max_prefill_chunk_tokens": 65536
+              }
+            }
+          ],
+          "description": "Typed exact parent representation for full_prefill",
+          "module_id": "policy.module_composition",
+          "module_type": "Policy",
+          "parameters": {
+            "canonical_parent_id": "full_prefill",
+            "exactness_status": "EXACT_PARENT_REPRESENTATION"
+          }
+        },
+        "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+      },
+      "exactness_status": "EXACT_PARENT_REPRESENTATION",
+      "known_limitations": "Exact for current parent reproduction suite; non-parent composed children are limited to implemented typed module combinations.",
+      "required_module_types": [
+        "PlacementRule",
+        "Policy",
+        "PrefillRule",
+        "RankingRule"
+      ],
+      "source_policy_implementation": "src/llmserveopt/policies/prefill_control_variants.py",
+      "structural_hash_sha256": "f865d9f1f1b702b45f54b7219b55fefad8062515511e56113a71359ba2650898"
+    },
+    "kv_constrained_online": {
+      "canonical_genome": {
+        "metadata": {
+          "screen": "portfolio_guided_typed_gp_screen_v1",
+          "source_policy": "kv_constrained_online",
+          "source_policy_implementation": "src/llmserveopt/policies/kv_constrained_online.py"
+        },
+        "name": "portfolio_gp_parent::kv_constrained_online",
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "description": "",
+              "module_id": "ranking.kv_urgent_kv_cost",
+              "module_type": "RankingRule",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "urgent_laxity_seconds"
+                ],
+                "alpha": 0.5,
+                "beta": 1.0,
+                "step_size": 0.001,
+                "urgent_laxity_seconds": 0.25
+              }
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "placement.kv_low_post_util",
+              "module_type": "PlacementRule",
+              "parameters": {}
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "kv_guard.target_util_or_urgent_laxity",
+              "module_type": "KVGuard",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "target_kv_utilization",
+                  "urgent_laxity_seconds"
+                ],
+                "alpha": 0.5,
+                "beta": 1.0,
+                "step_size": 0.001,
+                "target_kv_utilization": 0.82,
+                "urgent_laxity_seconds": 0.25
+              }
+            }
+          ],
+          "description": "Typed exact parent representation for kv_constrained_online",
+          "module_id": "policy.module_composition",
+          "module_type": "Policy",
+          "parameters": {
+            "canonical_parent_id": "kv_constrained_online",
+            "exactness_status": "EXACT_PARENT_REPRESENTATION"
+          }
+        },
+        "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+      },
+      "exactness_status": "EXACT_PARENT_REPRESENTATION",
+      "known_limitations": "Exact for current parent reproduction suite; non-parent composed children are limited to implemented typed module combinations.",
+      "required_module_types": [
+        "KVGuard",
+        "PlacementRule",
+        "Policy",
+        "RankingRule"
+      ],
+      "source_policy_implementation": "src/llmserveopt/policies/kv_constrained_online.py",
+      "structural_hash_sha256": "66da0768f921bf7979c7239a99f4b69f50b6775b8285f1493568f2a721cc14c0"
+    },
+    "least_laxity_first": {
+      "canonical_genome": {
+        "metadata": {
+          "screen": "portfolio_guided_typed_gp_screen_v1",
+          "source_policy": "least_laxity_first",
+          "source_policy_implementation": "src/llmserveopt/policies/least_laxity_first.py"
+        },
+        "name": "portfolio_gp_parent::least_laxity_first",
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "description": "",
+              "module_id": "ranking.llf_laxity",
+              "module_type": "RankingRule",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "alpha",
+                  "beta"
+                ],
+                "alpha": 0.5,
+                "beta": 1.0
+              }
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "placement.round_robin_scan",
+              "module_type": "PlacementRule",
+              "parameters": {}
+            }
+          ],
+          "description": "Typed exact parent representation for least_laxity_first",
+          "module_id": "policy.module_composition",
+          "module_type": "Policy",
+          "parameters": {
+            "canonical_parent_id": "least_laxity_first",
+            "exactness_status": "EXACT_PARENT_REPRESENTATION"
+          }
+        },
+        "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+      },
+      "exactness_status": "EXACT_PARENT_REPRESENTATION",
+      "known_limitations": "Exact for current parent reproduction suite; non-parent composed children are limited to implemented typed module combinations.",
+      "required_module_types": [
+        "PlacementRule",
+        "Policy",
+        "RankingRule"
+      ],
+      "source_policy_implementation": "src/llmserveopt/policies/least_laxity_first.py",
+      "structural_hash_sha256": "33a13f728efc546b2f65e1d3dca178a1a66666b68388ec06effeefe19df52dd8"
+    },
+    "weighted_fair_share": {
+      "canonical_genome": {
+        "metadata": {
+          "screen": "portfolio_guided_typed_gp_screen_v1",
+          "source_policy": "weighted_fair_share",
+          "source_policy_implementation": "src/llmserveopt/policies/weighted_fair_share.py"
+        },
+        "name": "portfolio_gp_parent::weighted_fair_share",
+        "root": {
+          "children": [
+            {
+              "children": [],
+              "description": "",
+              "module_id": "ranking.wfs_deficit_priority_service",
+              "module_type": "RankingRule",
+              "parameters": {
+                "_free_numeric_parameters": [
+                  "alpha",
+                  "beta"
+                ],
+                "alpha": 0.5,
+                "beta": 1.0
+              }
+            },
+            {
+              "children": [],
+              "description": "",
+              "module_id": "placement.default_gpu_pressure",
+              "module_type": "PlacementRule",
+              "parameters": {}
+            }
+          ],
+          "description": "Typed exact parent representation for weighted_fair_share",
+          "module_id": "policy.module_composition",
+          "module_type": "Policy",
+          "parameters": {
+            "canonical_parent_id": "weighted_fair_share",
+            "exactness_status": "EXACT_PARENT_REPRESENTATION"
+          }
+        },
+        "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+      },
+      "exactness_status": "EXACT_PARENT_REPRESENTATION",
+      "known_limitations": "Exact for current parent reproduction suite; non-parent composed children are limited to implemented typed module combinations.",
+      "required_module_types": [
+        "PlacementRule",
+        "Policy",
+        "RankingRule"
+      ],
+      "source_policy_implementation": "src/llmserveopt/policies/weighted_fair_share.py",
+      "structural_hash_sha256": "4ffe946951ddc7bec6b7988bd56d63cf0117f05221ff7705035975c104dede05"
+    }
+  },
+  "schema": "portfolio_guided_typed_gp_parent_registry_v1"
+}

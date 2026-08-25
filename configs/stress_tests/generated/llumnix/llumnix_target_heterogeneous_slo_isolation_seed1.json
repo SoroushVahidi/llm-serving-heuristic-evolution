@@ -1,0 +1,128 @@
+{
+  "entry_id": "llumnix_target_heterogeneous_slo_isolation",
+  "seed": 1,
+  "smoke": true,
+  "n_requests": 12,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 20.0,
+      "priority": 5.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.1,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 200.1,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.2,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 200.2,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.30000000000000004,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 20.3,
+      "priority": 5.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.4,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 200.4,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.5,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 200.5,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 6,
+      "arrival_time": 0.6000000000000001,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 20.6,
+      "priority": 5.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 7,
+      "arrival_time": 0.7000000000000001,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 200.7,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 8,
+      "arrival_time": 0.8,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 200.8,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 9,
+      "arrival_time": 0.9,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 20.9,
+      "priority": 5.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 10,
+      "arrival_time": 1.0,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 201.0,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 11,
+      "arrival_time": 1.1,
+      "prompt_tokens": 32,
+      "predicted_output_tokens": 200,
+      "actual_output_tokens": 200,
+      "slo_deadline": 201.1,
+      "priority": 1.0,
+      "class_id": "default"
+    }
+  ]
+}

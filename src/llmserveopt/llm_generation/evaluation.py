@@ -6,12 +6,10 @@ The selector is NOT the fitness oracle — it is an adaptive baseline.
 """
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional
 
-from ..core.metrics import RunMetrics, metrics_to_dict
+from ..core.metrics import metrics_to_dict
 from ..core.types import GPUConfig, Request
 from ..evaluation.run_policy import run_policy
 from ..heuristics import build_heuristic_policy

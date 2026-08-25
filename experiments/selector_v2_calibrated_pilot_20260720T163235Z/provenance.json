@@ -1,0 +1,90 @@
+{
+  "burstgpt_scaled_moderate": {
+    "source": "burstgpt",
+    "rel_path": "data/processed/burstgpt/burstgpt_scaled_moderate_10k.jsonl",
+    "acquired": true,
+    "n_rows": 9229,
+    "historical_pool_row_range": [
+      0,
+      7845
+    ],
+    "historical_pool_arrival_range": [
+      0.0,
+      141.0653999999996
+    ],
+    "ood_reserved_pool_row_range": [
+      7845,
+      9229
+    ],
+    "ood_reserved_pool_arrival_range": [
+      141.0779999999996,
+      190.72739999999885
+    ]
+  },
+  "burstgpt_scaled_high": {
+    "source": "burstgpt",
+    "rel_path": "data/processed/burstgpt/burstgpt_scaled_high_10k.jsonl",
+    "acquired": true,
+    "n_rows": 9229,
+    "historical_pool_row_range": [
+      0,
+      7845
+    ],
+    "historical_pool_arrival_range": [
+      0.0,
+      94.04359999999932
+    ],
+    "ood_reserved_pool_row_range": [
+      7845,
+      9229
+    ],
+    "ood_reserved_pool_arrival_range": [
+      94.05199999999931,
+      127.15159999999914
+    ]
+  },
+  "azure_2023_code": {
+    "source": "azure_llm_2023",
+    "rel_path": "data/processed/azure/azure_llm_2023_code.jsonl",
+    "acquired": true,
+    "n_rows": 8819,
+    "historical_pool_row_range": [
+      0,
+      7496
+    ],
+    "historical_pool_arrival_range": [
+      0.0,
+      125.89952299594869
+    ],
+    "ood_reserved_pool_row_range": [
+      7496,
+      8819
+    ],
+    "ood_reserved_pool_arrival_range": [
+      125.90398075580586,
+      171.79740279912974
+    ]
+  },
+  "azure_2023_conv": {
+    "source": "azure_llm_2023",
+    "rel_path": "data/processed/azure/azure_llm_2023_conv.jsonl",
+    "acquired": true,
+    "n_rows": 19366,
+    "historical_pool_row_range": [
+      0,
+      16461
+    ],
+    "historical_pool_arrival_range": [
+      0.0,
+      279.46324121952
+    ],
+    "ood_reserved_pool_row_range": [
+      16461,
+      19366
+    ],
+    "ood_reserved_pool_arrival_range": [
+      279.47789070606177,
+      350.17219371795517
+    ]
+  }
+}

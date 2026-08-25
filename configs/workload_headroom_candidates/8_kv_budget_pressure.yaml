@@ -1,0 +1,45 @@
+name: kv_budget_pressure
+purpose: >
+  max_active_sequences is left GENEROUS (8, same as the WildChat control)
+  but max_kv_tokens is set small relative to typical prompt size, so KV
+  capacity -- not sequence-count capacity -- is the binding admission
+  constraint. Ordering interacts with feasibility here: admitting a large
+  prompt first can exhaust the KV budget and block several smaller
+  requests that would otherwise fit, even though "only 8 slots is the
+  cap" would suggest no scarcity.
+expected_divergent_policies: [fifo, shortest_output_first, oracle_srtf]
+scientific_purpose: >
+  The WildChat control run used max_kv_tokens=131072 against prompts with
+  p95=1691 tokens -- ample headroom (this is one concrete, quantified
+  reason admission was rarely exclusionary there). This family inverts
+  that ratio deliberately, to test whether request ORDER (not just count)
+  interacts with a resource-feasibility constraint distinct from sequence
+  concurrency.
+workload:
+  arrival_process: poisson
+  arrival_rate: 14.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 800.0
+  prompt_sigma: 0.5
+  prompt_low: 64
+  prompt_high: 2500
+  output_dist: lognormal
+  output_mean: 80.0
+  output_sigma: 0.6
+  output_low: 8
+  output_high: 500
+  prediction_noise_rel: 0.1
+  slo_classes:
+    - {class_id: medium, slo_slack: 0.15, priority: 1.0, weight: 1.0}
+gpu:
+  max_active_sequences: 8
+  max_batch_tokens: 4096
+  max_kv_tokens: 2048
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

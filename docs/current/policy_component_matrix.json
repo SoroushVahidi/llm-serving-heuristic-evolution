@@ -1,0 +1,279 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "Policy Composition Readiness Audit",
+  "policy_count": 27,
+  "source_files_inspected": [
+    "src/llmserveopt/policies/registry.py",
+    "src/llmserveopt/policies/*.py",
+    "src/llmserveopt/core/action.py",
+    "src/llmserveopt/core/types.py"
+  ],
+  "component_dimensions": [
+    "admission_control",
+    "request_priority_ranking",
+    "slo_deadline_handling",
+    "aging_fairness",
+    "overload_load_control",
+    "prefill_control",
+    "decode_control",
+    "phase_interference_handling",
+    "batching",
+    "chunked_prefill",
+    "kv_memory_pressure",
+    "placement_routing",
+    "preemption",
+    "cache_reuse"
+  ],
+  "policies": [
+    {
+      "name": "fifo",
+      "components": ["request_priority_ranking", "placement_routing"],
+      "decision_mechanisms": ["arrival-order FIFO queue scan", "round-robin feasible GPU placement"],
+      "causal_inputs": ["waiting_queue order", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Baseline ordering primitive. No explicit admission, SLO, KV pressure, or fairness beyond arrival order."
+    },
+    {
+      "name": "edf",
+      "components": ["request_priority_ranking", "slo_deadline_handling", "placement_routing"],
+      "decision_mechanisms": ["earliest slo_deadline first", "round-robin feasible GPU placement"],
+      "causal_inputs": ["slo_deadline", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Deadline ranking without service-time or overload guard."
+    },
+    {
+      "name": "shortest_output_first",
+      "components": ["request_priority_ranking", "placement_routing"],
+      "decision_mechanisms": ["ascending predicted_output_tokens", "round-robin feasible GPU placement"],
+      "causal_inputs": ["predicted_output_tokens", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Short decode-work bias. No prompt or SLO term."
+    },
+    {
+      "name": "shortest_prompt_first",
+      "components": ["request_priority_ranking", "prefill_control", "placement_routing"],
+      "decision_mechanisms": ["ascending prompt_tokens", "round-robin feasible GPU placement"],
+      "causal_inputs": ["prompt_tokens", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Prefill-shortest ranking proxy. Does not implement chunking."
+    },
+    {
+      "name": "greedy_token_fill",
+      "components": ["kv_memory_pressure", "placement_routing"],
+      "decision_mechanisms": ["FIFO request scan", "place on feasible GPU with most remaining KV"],
+      "causal_inputs": ["waiting_queue order", "current_kv_tokens", "kv_capacity"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Resource-fill placement policy; request priority remains FIFO."
+    },
+    {
+      "name": "least_loaded",
+      "components": ["overload_load_control", "placement_routing"],
+      "decision_mechanisms": ["FIFO request scan", "place on GPU with fewest active sequences"],
+      "causal_inputs": ["active_sequences", "current_kv_tokens", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Load-balancing placement policy; weak KV tiebreak only."
+    },
+    {
+      "name": "multi_bin_batching",
+      "components": ["request_priority_ranking", "batching", "decode_control", "placement_routing"],
+      "decision_mechanisms": ["predicted-output bin grouping", "shorter bins first", "least active-load placement"],
+      "causal_inputs": ["predicted_output_tokens", "active_sequences", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Batch-shape policy that approximates length-aware grouping."
+    },
+    {
+      "name": "random_feasible",
+      "components": ["request_priority_ranking", "placement_routing"],
+      "decision_mechanisms": ["seeded random queue permutation", "round-robin feasible GPU placement"],
+      "causal_inputs": ["seeded RNG", "waiting_queue", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Stochastic baseline; deterministic when seed/reset are fixed."
+    },
+    {
+      "name": "first_fit",
+      "components": ["request_priority_ranking", "placement_routing"],
+      "decision_mechanisms": ["arrival/id FIFO ordering", "first feasible GPU by gpu_id"],
+      "causal_inputs": ["arrival_time", "request_id", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Canonical first-fit placement baseline."
+    },
+    {
+      "name": "best_fit",
+      "components": ["request_priority_ranking", "kv_memory_pressure", "placement_routing"],
+      "decision_mechanisms": ["arrival/id FIFO ordering", "minimize remaining KV after placement"],
+      "causal_inputs": ["arrival_time", "request_id", "current_kv_tokens", "kv_capacity"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "KV packing placement policy; no queue ranking beyond FIFO."
+    },
+    {
+      "name": "orca_style",
+      "components": ["request_priority_ranking", "batching", "placement_routing"],
+      "decision_mechanisms": ["priority descending then arrival ordering", "iteration-level continuous batching approximation", "round-robin feasible placement"],
+      "causal_inputs": ["priority", "arrival_time", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "ORCA-inspired batching approximation without preemption."
+    },
+    {
+      "name": "vllm_style_token_budget",
+      "components": ["request_priority_ranking", "decode_control", "kv_memory_pressure", "batching"],
+      "decision_mechanisms": ["shortest predicted output first", "KV block rounding feasibility"],
+      "causal_inputs": ["predicted_output_tokens", "prompt_tokens", "kv_block_size", "current_kv_tokens"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "vLLM-inspired token/block-budget admission approximation."
+    },
+    {
+      "name": "sarathi_style",
+      "components": ["prefill_control", "batching", "overload_load_control", "placement_routing"],
+      "decision_mechanisms": ["FIFO ordering", "per-GPU prefill token budget", "budget reduced when GPU is active"],
+      "causal_inputs": ["prompt_tokens", "active_sequences", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Sarathi-inspired prefill-budget approximation; no true partial/chunk action."
+    },
+    {
+      "name": "splitfuse_style",
+      "components": ["prefill_control", "decode_control", "batching", "phase_interference_handling", "placement_routing"],
+      "decision_mechanisms": ["FIFO ordering", "token budget reduced by active decode load", "skip oversized prompts unless safety valve applies"],
+      "causal_inputs": ["prompt_tokens", "active_sequences", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "SplitFuse-style phase budget approximation; no literal split/fuse execution."
+    },
+    {
+      "name": "slo_slack_score",
+      "components": ["request_priority_ranking", "slo_deadline_handling", "aging_fairness", "placement_routing"],
+      "decision_mechanisms": ["urgency score from deadline slack and age", "priority bonus", "round-robin feasible placement"],
+      "causal_inputs": ["now", "arrival_time", "slo_deadline", "priority", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Score-based SLO urgency and age primitive."
+    },
+    {
+      "name": "weighted_shortest_processing",
+      "components": ["request_priority_ranking", "placement_routing"],
+      "decision_mechanisms": ["predicted service proxy divided by priority", "round-robin feasible placement"],
+      "causal_inputs": ["prompt_tokens", "predicted_output_tokens", "priority", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Core WSPT short-work/priority tradeoff."
+    },
+    {
+      "name": "least_laxity_first",
+      "components": ["request_priority_ranking", "slo_deadline_handling", "placement_routing"],
+      "decision_mechanisms": ["minimum laxity first", "deadline/priority/service tiebreaks", "round-robin feasible placement"],
+      "causal_inputs": ["now", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "priority", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Deadline feasibility ranking without explicit rejection."
+    },
+    {
+      "name": "estimated_service_time_first",
+      "components": ["request_priority_ranking", "prefill_control", "decode_control", "placement_routing"],
+      "decision_mechanisms": ["ascending alpha*prompt + beta*predicted_output service proxy", "deadline/priority tiebreaks"],
+      "causal_inputs": ["prompt_tokens", "predicted_output_tokens", "slo_deadline", "priority", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Generalized shortest estimated service ranking."
+    },
+    {
+      "name": "admission_control",
+      "components": ["admission_control", "request_priority_ranking", "slo_deadline_handling", "overload_load_control", "placement_routing"],
+      "decision_mechanisms": ["reject/skip requests whose estimated laxity is below threshold", "sort admitted candidates by laxity, priority, service, deadline"],
+      "causal_inputs": ["now", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "priority", "gpu feasibility"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Explicit SLO feasibility gate over waiting requests."
+    },
+    {
+      "name": "scorpio_style_slo_guard",
+      "components": ["admission_control", "request_priority_ranking", "slo_deadline_handling", "overload_load_control", "decode_control", "kv_memory_pressure", "placement_routing"],
+      "decision_mechanisms": ["TTFT slack guard", "laxity guard", "queue/decode/KV pressure throttling", "decode-heavy penalty under KV pressure", "urgency/priority/age/service score"],
+      "causal_inputs": ["now", "arrival_time", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "priority", "active_sequences", "current_kv_tokens"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Strongest existing admission/SLO/load guard."
+    },
+    {
+      "name": "sola_style_state_aware",
+      "components": ["request_priority_ranking", "slo_deadline_handling", "overload_load_control", "decode_control", "kv_memory_pressure", "placement_routing"],
+      "decision_mechanisms": ["state-aware composite priority", "system pressure factor", "KV cost penalty", "placement by GPU pressure"],
+      "causal_inputs": ["now", "arrival_time", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "priority", "active_sequences", "current_kv_tokens"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Faithful simulator-level state-aware approximation, not a reproduction of SOLA internals."
+    },
+    {
+      "name": "slai_style_phase_aware",
+      "components": ["request_priority_ranking", "slo_deadline_handling", "prefill_control", "decode_control", "phase_interference_handling", "placement_routing"],
+      "decision_mechanisms": ["penalize prefill-heavy requests under prefill pressure", "penalize decode-heavy requests under decode pressure", "priority/service/laxity score"],
+      "causal_inputs": ["prefilling_count", "decoding_count", "prompt_tokens", "predicted_output_tokens", "slo_deadline", "priority"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Phase-aware ranking/control approximation; no separate prefill/decode routing."
+    },
+    {
+      "name": "flow_control_stability",
+      "components": ["admission_control", "request_priority_ranking", "slo_deadline_handling", "overload_load_control"],
+      "decision_mechanisms": ["stateful token budget", "arrival-slope and system-pressure overload detection", "max-admit throttling", "laxity/service ranking"],
+      "causal_inputs": ["now", "arrival_time", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "active_sequences", "waiting_queue"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Overload stability primitive with deterministic internal budget state."
+    },
+    {
+      "name": "kv_constrained_online",
+      "components": ["admission_control", "request_priority_ranking", "slo_deadline_handling", "kv_memory_pressure", "placement_routing"],
+      "decision_mechanisms": ["preserve KV reserve unless request is urgent", "urgency per KV cost ranking", "placement minimizes post-placement utilization"],
+      "causal_inputs": ["now", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "priority", "current_kv_tokens", "kv_capacity"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "KV pressure and online admission primitive."
+    },
+    {
+      "name": "adaptive_chunked_prefill",
+      "components": ["admission_control", "request_priority_ranking", "prefill_control", "overload_load_control", "batching"],
+      "decision_mechanisms": ["pressure-dependent long-prompt penalty", "cap concurrent long-prefill admissions", "urgent-deadline override"],
+      "causal_inputs": ["now", "arrival_time", "slo_deadline", "prompt_tokens", "predicted_output_tokens", "active_sequences", "waiting_queue"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Chunked-prefill admission approximation; simulator does not execute chunk-size actions."
+    },
+    {
+      "name": "aging_priority",
+      "components": ["request_priority_ranking", "slo_deadline_handling", "aging_fairness", "placement_routing"],
+      "decision_mechanisms": ["age-increased priority", "service normalization", "inverse laxity pressure", "round-robin feasible placement"],
+      "causal_inputs": ["now", "arrival_time", "slo_deadline", "priority", "prompt_tokens", "predicted_output_tokens"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Starvation-control ranking primitive."
+    },
+    {
+      "name": "weighted_fair_share",
+      "components": ["request_priority_ranking", "aging_fairness", "overload_load_control", "placement_routing"],
+      "decision_mechanisms": ["class-demand versus active-service deficit", "priority/service ranking", "class_id group proxy"],
+      "causal_inputs": ["class_id", "priority", "prompt_tokens", "predicted_output_tokens", "active_requests_info"],
+      "action_outputs": ["admit"],
+      "strictly_causal": true,
+      "notes": "Fair-share approximation limited by lack of durable tenant history."
+    }
+  ],
+  "unsupported_or_not_present_in_current_27": {
+    "preemption": "Action type exists, but none of the 27 deployable policies uses preempt as a normal scheduling mechanism.",
+    "cache_reuse": "No observable prefix/cache identity or reuse benefit is exposed to these policies.",
+    "disaggregated_routing": "GPU role is observable, but monolithic policies do not implement separate prefill/decode routing.",
+    "request_splitting": "Action interface does not expose request splitting or micro-request scheduling.",
+    "heterogeneous_hardware_routing": "Current policies treat GPU capacities as state but do not model hardware-type affinity."
+  }
+}

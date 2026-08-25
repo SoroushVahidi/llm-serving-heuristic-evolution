@@ -1,0 +1,18 @@
+{
+  "best_fixed_policy_bootstrap_counts": {
+    "chunked_prefill_small": 0,
+    "estimated_service_time_first": 0,
+    "full_prefill": 0,
+    "kv_constrained_online": 999,
+    "least_laxity_first": 0,
+    "weighted_fair_share": 1
+  },
+  "headroom_ci95": [
+    0.015987777521472592,
+    0.022432582285730952
+  ],
+  "headroom_mean": 0.0190881679486438,
+  "method": "scenario bootstrap from frozen joint population",
+  "n_bootstrap": 1000,
+  "seed": 20260825
+}

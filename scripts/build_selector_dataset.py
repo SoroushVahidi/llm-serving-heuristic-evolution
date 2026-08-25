@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 """
+HISTORICAL ENTRY POINT (Selector Dataset v1, Phase 2A).
+Retained for reproducibility of Phase 2A.2/2A.3 results only.
+For current Selector Dataset v2 generation (Option B scope, the approved
+8-policy historical-monolithic action space) use:
+    scripts/build_selector_dataset_v2_calibrated_targeted_pilot.py
+See docs/selector_v2_faithful_baseline_scope_audit.md and
+docs/selector_dataset_v2.md for the current design/rationale.
+
 Build a selector dataset: per-window features + per-policy rewards + labels.
 
 Usage
@@ -30,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from llmserveopt.core.types import GPUConfig
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
 from llmserveopt.selector.dataset import DatasetConfig, build_selector_dataset, save_dataset
-from llmserveopt.selector.features import FeatureMode, parse_feature_mode
+from llmserveopt.selector.features import parse_feature_mode
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 from llmserveopt.workloads.synthetic import WorkloadConfig, SLOClass, generate_workload

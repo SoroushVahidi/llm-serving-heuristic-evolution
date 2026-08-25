@@ -145,7 +145,7 @@ Aggregate state of the serving system.
 | `sys.token_budget_utilization` | Batch token budget utilisation |
 | `sys.arrival_rate_est` | Estimated arrival rate (req/s) |
 | `sys.burstiness_cv` | CV of inter-arrival times |
-| `sys.recent_slo_violation_rate` | SLO violation rate in recent completions |
+| `sys.recent_slo_violation_rate` | SLO violation rate in recent completions (**caveat:** `HeuristicPolicy.record_completion()` is not currently called by the simulator, so this stays `0.0` in DES runs unless a harness wires it; see `docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md`) |
 | `sys.slo_pressure` | Fraction of queue with slack < 1s |
 
 ### Batch Variables (`batch.*`)
@@ -160,10 +160,15 @@ State of the batch being built this step.
 | `batch.max_predicted_output_tokens` | Max predicted output length |
 | `batch.length_imbalance` | (max-min)/max output token imbalance |
 | `batch.sum_priority_weight` | Sum of priorities in batch |
-| `batch.min_deadline_slack` | Minimum deadline slack in batch |
-| `batch.deadline_risk` | Fraction of batch with slack < 1s |
+| `batch.min_deadline_slack` | Intended: minimum remaining deadline slack in batch. **Current binding uses absolute `slo_deadline` values** (unfinished relative-slack path); do not treat as `deadline - now` until a versioned fix lands. |
+| `batch.deadline_risk` | Intended: fraction of batch with remaining slack < 1s. **Current binding compares absolute deadlines to `1.0`**, so this is usually `0.0` for realistic deadlines. |
 | `batch.estimated_kv_cost` | Total estimated KV cost of batch |
 | `batch.sum_request_score` | Sum of individual request scores in batch |
+
+> **Scoring note:** `request_score` expressions see `batch.*` from an
+> empty batch (scores are not recomputed as admissions grow). Updated
+> `batch.*` values are used for `admission_condition` checks only. Details:
+> `docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md`.
 
 ## Forbidden Variables
 

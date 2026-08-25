@@ -26,7 +26,6 @@ from typing import Union
 from .service_model import ServiceModel
 from .calibrated_service_model import (
     CalibratedServiceModel,
-    load_calibrated_service_model_from_config,
 )
 
 _log = logging.getLogger(__name__)
@@ -83,6 +82,9 @@ def build_service_model_from_config(
         max_prefill_chunk = int(sm_cfg.get("max_prefill_chunk_tokens", 512))
         step_token_budget = int(sm_cfg.get("step_token_budget", 8192))
         decode_first = bool(sm_cfg.get("decode_first", False))
+        enable_decode_prefill_contention = bool(
+            sm_cfg.get("enable_decode_prefill_contention", False)
+        )
 
         return CalibratedServiceModel(
             calibration_file=cal_file,
@@ -92,6 +94,7 @@ def build_service_model_from_config(
             max_prefill_chunk_tokens=max_prefill_chunk,
             step_token_budget=step_token_budget,
             decode_first=decode_first,
+            enable_decode_prefill_contention=enable_decode_prefill_contention,
         )
 
     # synthetic (default)
@@ -104,6 +107,9 @@ def build_service_model_from_config(
         step_token_budget=int(sm_cfg.get("step_token_budget", 4096)),
         decode_first=bool(sm_cfg.get("decode_first", False)),
         allow_chunked_prefill=bool(sm_cfg.get("allow_chunked_prefill", True)),
+        enable_decode_prefill_contention=bool(
+            sm_cfg.get("enable_decode_prefill_contention", False)
+        ),
     )
     _log.info("Service model: synthetic  enable_prefill=%s", model.enable_prefill_modeling)
     print(f"  Service model : synthetic  enable_prefill={model.enable_prefill_modeling}")

@@ -1,0 +1,21 @@
+python scripts/run_vllm_external_baseline_comparison.py \
+  --allow-live-server --server-url http://127.0.0.1:8001 \
+  --model Qwen/Qwen2.5-0.5B-Instruct \
+  --stream \
+  --warmup \
+  --prompt-buckets short,medium,long \
+  --target-output-tokens-list 64,128,256 \
+  --concurrency-list 1,2,4,8 \
+  --requests-per-cell 5 \
+  --arrival-regimes steady_moderate,bursty_tight,overloaded_mixed_priority \
+  --seed 20260703 \
+  --timeout-seconds 180 \
+  --fail-fast \
+  --policies vllm_direct,fifo,edf,least_laxity_first,estimated_service_time_first,shortest_output_first,selector \
+  --require-our-method \
+  --selector-artifact results/corrected_selector_artifact_regression_anwg/regression_anwg_selector.joblib \
+  --decision-divergence-report \
+  --bootstrap-ci \
+  --loss-case-report \
+  --max-total-requests 3780 \
+  --output-dir experiments/real_llm/vllm_scaled_fixed_selector_comparison_20260704T011204Z

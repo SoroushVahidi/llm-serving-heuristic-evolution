@@ -1,0 +1,61 @@
+{
+  "experiment": "real_vllm_mechanism_validation_v1",
+  "date": "2026-08-24",
+  "scope": "design_and_feasibility_only",
+  "resource_verdict": "FEASIBILITY_BLOCKED",
+  "blocker": "The local workstation has a suitable single GPU for a small prefill/decode validation, but the current active Python environment does not have vLLM installed and the historical ~/.venvs/vllm_baseline_pilot environment referenced by prior runs is absent.",
+  "not_vulver_required_for": [
+    "small prefill/decode contention validation with Qwen/Qwen2.5-0.5B-Instruct",
+    "TTFT/E2E/concurrency instrumentation smoke once vLLM is restored"
+  ],
+  "vulver_required_for": [
+    "7B-class long-context/KV-pressure validation with substantial KV-cache pressure",
+    "multi-GPU tensor-parallel validation",
+    "A100-comparable 7B xlong scenarios that previously reached high KV usage"
+  ],
+  "local_hardware": {
+    "gpu_count": 1,
+    "gpu_model": "NVIDIA GeForce RTX 5060 Ti",
+    "total_vram_mib": 16311,
+    "observed_used_vram_mib": 15,
+    "driver_version": "580.173.02",
+    "cuda_reported_by_nvidia_smi": "13.0",
+    "system_ram": "62GiB",
+    "available_ram": "58GiB",
+    "disk_available": "654G",
+    "gpu_topology": "single GPU; no multi-GPU topology"
+  },
+  "software_state": {
+    "active_python": "/home/soroush/modal-venv/bin/python",
+    "python_version": "3.12.3",
+    "torch": "2.12.0+cu130",
+    "transformers": "5.8.1",
+    "vllm": "not installed in active environment",
+    "ray": "not installed in active environment",
+    "historical_vllm_env": "/home/soroush/.venvs/vllm_baseline_pilot referenced by prior docs but absent on 2026-08-24",
+    "prior_vllm_version_from_artifacts": "0.24.0",
+    "prior_successful_local_model": "Qwen/Qwen2.5-0.5B-Instruct"
+  },
+  "model_choice": {
+    "selected": "Qwen/Qwen2.5-0.5B-Instruct",
+    "reason": "cached locally, open weights, vLLM-compatible according to prior local runs, 32k configured context, small enough for one 16GB GPU while leaving KV/cache headroom under constrained max-model-len runs",
+    "local_snapshot_size_gib": 0.931,
+    "max_position_embeddings": 32768,
+    "dtype": "bfloat16",
+    "expected_weight_vram_gib": "about 1 GiB plus runtime overhead",
+    "expected_kv_headroom": "sufficient for controlled 4k-context prefill/decode contention; not sufficient to claim high-KV-pressure validation",
+    "why_not_7b_local": "cached 7B/8B snapshots are 14.2-15.0 GiB in bf16 weights alone, leaving too little room for vLLM overhead and KV-cache on a 16.3 GiB GPU"
+  },
+  "tiny_probe_status": {
+    "attempted": false,
+    "reason": "blocked before live probe because vLLM executable/import is unavailable locally",
+    "would_probe": [
+      "load selected model with vLLM",
+      "send several streaming requests",
+      "verify concurrent requests",
+      "verify TTFT/E2E instrumentation",
+      "poll /metrics for waiting/running/KV/preemption fields"
+    ]
+  },
+  "recommended_next_action": "Restore or create a minimal local vLLM environment matching the prior documented runtime, then run only a non-scientific health probe before launching the preregistered validation."
+}

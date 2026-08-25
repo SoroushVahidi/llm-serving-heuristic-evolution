@@ -1,0 +1,82 @@
+{
+  "family_specific_oracle_gains": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": {
+      "best_fixed_mean_anwg": 0.7405618686868688,
+      "best_fixed_policy": "weighted_fair_share",
+      "gap": 0.021741722783389372,
+      "oracle_mean_anwg": 0.7623035914702582
+    },
+    "FAMILY_B_PREFILL_DECODE_V2": {
+      "best_fixed_mean_anwg": 0.7327515691773505,
+      "best_fixed_policy": "estimated_service_time_first",
+      "gap": 0.0494332598824786,
+      "oracle_mean_anwg": 0.7821848290598291
+    },
+    "FAMILY_C_KV_PRESSURE_V2": {
+      "best_fixed_mean_anwg": 0.8658496732026144,
+      "best_fixed_policy": "kv_constrained_online",
+      "gap": 0.02026143790849666,
+      "oracle_mean_anwg": 0.8861111111111111
+    }
+  },
+  "global_pooled_oracle_gap": {
+    "best_fixed_mean_anwg": 0.7829427075217933,
+    "best_fixed_policy": "weighted_fair_share",
+    "gap": 0.03362418518146304,
+    "oracle_mean_anwg": 0.8165668927032563
+  },
+  "n_scenarios": 176,
+  "note_regret_profile_correlation_is_algebraically_identical_to_policy_ranking_similarity": "mean_regret[policy] = mean(oracle) - mean(anwg[policy]) within a family; since mean(oracle) is a constant shift applied uniformly across all 6 policies in that family, Spearman correlation of mean-regret vectors between two families is identical to Spearman correlation of mean-ANWG vectors between them -- verified numerically, not just asserted.",
+  "oracle_winner_distribution_by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": {
+      "estimated_service_time_first": "37",
+      "kv_constrained_online": "12",
+      "weighted_fair_share": "23"
+    },
+    "FAMILY_B_PREFILL_DECODE_V2": {
+      "chunked_prefill_small": "16",
+      "estimated_service_time_first": "16"
+    },
+    "FAMILY_C_KV_PRESSURE_V2": {
+      "chunked_prefill_small": "32",
+      "estimated_service_time_first": "17",
+      "kv_constrained_online": "19",
+      "weighted_fair_share": "4"
+    }
+  },
+  "policy_cross_family_oracle_win_breadth": {
+    "chunked_prefill_small": [
+      "FAMILY_B_PREFILL_DECODE_V2",
+      "FAMILY_C_KV_PRESSURE_V2"
+    ],
+    "estimated_service_time_first": [
+      "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "FAMILY_B_PREFILL_DECODE_V2",
+      "FAMILY_C_KV_PRESSURE_V2"
+    ],
+    "full_prefill": [],
+    "kv_constrained_online": [
+      "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "FAMILY_C_KV_PRESSURE_V2"
+    ],
+    "least_laxity_first": [],
+    "weighted_fair_share": [
+      "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "FAMILY_C_KV_PRESSURE_V2"
+    ]
+  },
+  "policy_ranking_similarity_between_families": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_B_PREFILL_DECODE_V2": {
+      "p_value": 0.27796339331848674,
+      "spearman_rho": 0.5313689313240573
+    },
+    "FAMILY_A_FAIRNESS_STARVATION_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+      "p_value": 0.21941787095461004,
+      "spearman_rho": 0.5882352941176471
+    },
+    "FAMILY_B_PREFILL_DECODE_V2_vs_FAMILY_C_KV_PRESSURE_V2": {
+      "p_value": 0.6108504002950287,
+      "spearman_rho": 0.26568446566202863
+    }
+  }
+}

@@ -1,8 +1,6 @@
 """Tests for the LeastLaxityFirst (LLF) scheduling policy."""
-import pytest
 from llmserveopt.policies.least_laxity_first import LeastLaxityFirstPolicy
 from llmserveopt.policies.registry import BASELINE_NAMES, ORACLE_POLICY_NAMES, make_policy
-from llmserveopt.core.action import Action
 from llmserveopt.core.types import ObservableGPUState, ObservableRequest, ObservableState
 
 

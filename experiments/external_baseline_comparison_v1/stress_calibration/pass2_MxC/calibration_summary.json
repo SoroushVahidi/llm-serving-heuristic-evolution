@@ -1,0 +1,207 @@
+{
+  "finished_utc": "2026-08-24T23:58:35.082245+00:00",
+  "grid": {
+    "C": [
+      256,
+      128,
+      64,
+      32
+    ],
+    "M": [
+      8,
+      16,
+      32
+    ]
+  },
+  "means": [
+    {
+      "C": 256,
+      "M": 8,
+      "active_util_max": 0.058268229166666664,
+      "active_util_p99": 0.05300130208333331,
+      "completion_fraction": 0.92625,
+      "elapsed_s": 1.2176806926727295,
+      "frac_steps_queue_positive": 0.036605295251148424,
+      "max_active": 14.916666666666666,
+      "max_kv_utilization": 0.0022186458333333333,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 13.568333333333328
+    },
+    {
+      "C": 128,
+      "M": 8,
+      "active_util_max": 0.11653645833333333,
+      "active_util_p99": 0.10600260416666663,
+      "completion_fraction": 0.92625,
+      "elapsed_s": 1.1984012126922607,
+      "frac_steps_queue_positive": 0.036605295251148424,
+      "max_active": 14.916666666666666,
+      "max_kv_utilization": 0.0022186458333333333,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 13.568333333333328
+    },
+    {
+      "C": 64,
+      "M": 8,
+      "active_util_max": 0.23307291666666666,
+      "active_util_p99": 0.21200520833333325,
+      "completion_fraction": 0.92625,
+      "elapsed_s": 1.2039308547973633,
+      "frac_steps_queue_positive": 0.036605295251148424,
+      "max_active": 14.916666666666666,
+      "max_kv_utilization": 0.0022186458333333333,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 13.568333333333328
+    },
+    {
+      "C": 32,
+      "M": 8,
+      "active_util_max": 0.4583333333333333,
+      "active_util_p99": 0.4192708333333333,
+      "completion_fraction": 0.92625,
+      "elapsed_s": 1.214120626449585,
+      "frac_steps_queue_positive": 0.03804089820438878,
+      "max_active": 14.666666666666666,
+      "max_kv_utilization": 0.0022186458333333333,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 13.416666666666666
+    },
+    {
+      "C": 256,
+      "M": 16,
+      "active_util_max": 0.11458333333333333,
+      "active_util_p99": 0.10970052083333333,
+      "completion_fraction": 0.9316666666666666,
+      "elapsed_s": 1.0496065616607666,
+      "frac_steps_queue_positive": 0.053102719243421186,
+      "max_active": 29.333333333333332,
+      "max_kv_utilization": 0.0029202916666666665,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 28.083333333333332
+    },
+    {
+      "C": 128,
+      "M": 16,
+      "active_util_max": 0.22916666666666666,
+      "active_util_p99": 0.21940104166666666,
+      "completion_fraction": 0.9316666666666666,
+      "elapsed_s": 1.0528979301452637,
+      "frac_steps_queue_positive": 0.053102719243421186,
+      "max_active": 29.333333333333332,
+      "max_kv_utilization": 0.0029202916666666665,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 28.083333333333332
+    },
+    {
+      "C": 64,
+      "M": 16,
+      "active_util_max": 0.4270833333333333,
+      "active_util_p99": 0.4114583333333333,
+      "completion_fraction": 0.9316666666666666,
+      "elapsed_s": 1.105433464050293,
+      "frac_steps_queue_positive": 0.06855338950792822,
+      "max_active": 27.333333333333332,
+      "max_kv_utilization": 0.0029202916666666665,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 26.333333333333332
+    },
+    {
+      "C": 32,
+      "M": 16,
+      "active_util_max": 0.6692708333333334,
+      "active_util_p99": 0.6484375,
+      "completion_fraction": 0.9316666666666666,
+      "elapsed_s": 1.043879508972168,
+      "frac_steps_queue_positive": 0.12378283968697991,
+      "max_active": 21.416666666666668,
+      "max_kv_utilization": 0.0028893333333333327,
+      "meets_all_gates": true,
+      "n_windows": 12,
+      "p99_active": 20.75
+    },
+    {
+      "C": 256,
+      "M": 32,
+      "active_util_max": 0.203125,
+      "active_util_p99": 0.1952897135416667,
+      "completion_fraction": 0.9341666666666667,
+      "elapsed_s": 0.9665143489837646,
+      "frac_steps_queue_positive": 0.07156431889810769,
+      "max_active": 52.0,
+      "max_kv_utilization": 0.004388416666666666,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 49.99416666666667
+    },
+    {
+      "C": 128,
+      "M": 32,
+      "active_util_max": 0.400390625,
+      "active_util_p99": 0.3866731770833334,
+      "completion_fraction": 0.9341666666666667,
+      "elapsed_s": 0.9662728309631348,
+      "frac_steps_queue_positive": 0.07534800291434984,
+      "max_active": 51.25,
+      "max_kv_utilization": 0.004388416666666666,
+      "meets_all_gates": false,
+      "n_windows": 12,
+      "p99_active": 49.49416666666667
+    },
+    {
+      "C": 64,
+      "M": 32,
+      "active_util_max": 0.62890625,
+      "active_util_p99": 0.6131901041666667,
+      "completion_fraction": 0.9341666666666667,
+      "elapsed_s": 0.9529585838317871,
+      "frac_steps_queue_positive": 0.13379898506930693,
+      "max_active": 40.25,
+      "max_kv_utilization": 0.004388416666666666,
+      "meets_all_gates": true,
+      "n_windows": 12,
+      "p99_active": 39.24416666666667
+    },
+    {
+      "C": 32,
+      "M": 32,
+      "active_util_max": 0.7838541666666666,
+      "active_util_p99": 0.765625,
+      "completion_fraction": 0.9341666666666667,
+      "elapsed_s": 0.9731957912445068,
+      "frac_steps_queue_positive": 0.32255134767351196,
+      "max_active": 25.083333333333332,
+      "max_kv_utilization": 0.003569854166666667,
+      "meets_all_gates": true,
+      "n_windows": 12,
+      "p99_active": 24.5
+    }
+  ],
+  "policy_blind": true,
+  "predeclared_gates": {
+    "active_util_max_min": 0.25,
+    "active_util_p99_min": 0.2,
+    "completion_min": 0.8,
+    "pick": "smallest_M_then_largest_C",
+    "queue_pos_min": 0.1
+  },
+  "probe_policy": "fifo",
+  "selected_primary": {
+    "C": 32,
+    "M": 16
+  },
+  "selected_reason": "lowest_stress_M_then_largest_C_satisfying_all_predeclared_gates",
+  "sources_present": [
+    "azure_2023_code",
+    "azure_2023_conv",
+    "burstgpt"
+  ],
+  "started_utc": "2026-08-24T23:58:21.548357+00:00",
+  "winner_blind_confirmation": "no ANWG/VTC/vLLM/P6 outcomes inspected for selection"
+}

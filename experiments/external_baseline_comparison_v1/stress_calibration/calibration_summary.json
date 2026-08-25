@@ -1,0 +1,70 @@
+{
+  "finished_utc": "2026-08-24T23:49:54.580327+00:00",
+  "means": [
+    {
+      "M": 1,
+      "completion_fraction": 0.8870833333333333,
+      "elapsed_s": 2.0592739582061768,
+      "frac_steps_queue_positive": 0.018794117626326347,
+      "max_active": 5.75,
+      "max_kv_utilization": 0.0012775000000000002,
+      "n_windows": 12,
+      "p99_active": 4.916666666666667
+    },
+    {
+      "M": 2,
+      "completion_fraction": 0.9199999999999999,
+      "elapsed_s": 1.7981019020080566,
+      "frac_steps_queue_positive": 0.021205532343050806,
+      "max_active": 7.166666666666667,
+      "max_kv_utilization": 0.0014811770833333335,
+      "n_windows": 12,
+      "p99_active": 6.043333333333332
+    },
+    {
+      "M": 4,
+      "completion_fraction": 0.9229166666666666,
+      "elapsed_s": 1.4955298900604248,
+      "frac_steps_queue_positive": 0.02627295411113827,
+      "max_active": 9.083333333333334,
+      "max_kv_utilization": 0.00172184375,
+      "n_windows": 12,
+      "p99_active": 7.916666666666667
+    },
+    {
+      "M": 8,
+      "completion_fraction": 0.92625,
+      "elapsed_s": 1.2541728019714355,
+      "frac_steps_queue_positive": 0.036605295251148424,
+      "max_active": 14.916666666666666,
+      "max_kv_utilization": 0.0022186458333333333,
+      "n_windows": 12,
+      "p99_active": 13.568333333333328
+    },
+    {
+      "M": 16,
+      "completion_fraction": 0.9316666666666666,
+      "elapsed_s": 1.0731580257415771,
+      "frac_steps_queue_positive": 0.053102719243421186,
+      "max_active": 29.333333333333332,
+      "max_kv_utilization": 0.0029202916666666665,
+      "n_windows": 12,
+      "p99_active": 28.083333333333332
+    },
+    {
+      "M": 32,
+      "completion_fraction": 0.9341666666666667,
+      "elapsed_s": 0.9927332401275635,
+      "frac_steps_queue_positive": 0.07156431889810769,
+      "max_active": 52.0,
+      "max_kv_utilization": 0.004388416666666666,
+      "n_windows": 12,
+      "p99_active": 49.99416666666667
+    }
+  ],
+  "policy_blind": true,
+  "probe_policy": "fifo",
+  "selected_primary_M": 32,
+  "selected_reason": "fallback_max_queue_positive_among_noncatastrophic",
+  "started_utc": "2026-08-24T23:49:45.315872+00:00"
+}

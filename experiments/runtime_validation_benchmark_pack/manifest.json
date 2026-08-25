@@ -1,0 +1,126 @@
+{
+  "schema_version": "runtime_validation_benchmark_pack_v1",
+  "purpose": "Compact, canonical real-hardware ground truth for evaluating simulator baselines (especially the future vllm_chunked_prefill_faithful) against, without needing GPU access or re-running Wulver experiments.",
+  "source_jobs": {
+    "1111541": "vLLM Qwen2.5-7B-Instruct baseline (A100, gpu-memory-utilization=0.82, max-num-seqs=8)",
+    "1111545": "vLLM Qwen2.5-7B-Instruct aggressive stress (A100, gpu-memory-utilization=0.35, max-num-seqs=32)",
+    "1111572": "vLLM Qwen2.5-7B-Instruct long-context/xlong (A100, same config as 1111545, ~12k-token prompts)",
+    "1111706": "Real vLLM Mistral-7B-Instruct-v0.1 matched comparison run",
+    "1111723": "Real Sarathi-Serve Mistral-7B-Instruct-v0.1 fp16 runtime validation (single run)",
+    "1111988": "Repeated-trial Sarathi array (5 independent trials)",
+    "1111989": "Repeated-trial vLLM array (5 independent trials, matched to 1111988)",
+    "1111990": "CPU-only statistical postprocessing for 1111988/1111989"
+  },
+  "hardware": "NVIDIA A100-SXM4-80GB, 1 GPU per job",
+  "models": [
+    "Qwen/Qwen2.5-7B-Instruct",
+    "mistralai/Mistral-7B-Instruct-v0.1"
+  ],
+  "vllm_version": "0.24.0",
+  "sarathi_serve_commit": "96f9911 (vendored fork)",
+  "positive_targets": [
+    "active_decode_plus_arriving_prefill",
+    "kv_pressure"
+  ],
+  "negative_controls": [
+    "long_prompt_moderate_output",
+    "mixed_prompt_lengths",
+    "prefill_heavy_burst"
+  ],
+  "scenarios": [
+    "long_prompt_moderate_output",
+    "active_decode_plus_arriving_prefill",
+    "prefill_heavy_burst",
+    "mixed_prompt_lengths",
+    "kv_pressure"
+  ],
+  "files": [
+    {
+      "path": "hardware_targets/active_decode_plus_arriving_prefill.json",
+      "sha256": "182ec919d3a717ba453f7821a16d41c6d44254eb4a39bfca9dba5d3b2deecd13",
+      "size_bytes": 2297
+    },
+    {
+      "path": "hardware_targets/kv_pressure.json",
+      "sha256": "f2e6776f86f9deb2e5abd4806ecb6977ace5fa40a36a15f6c0747799338b89af",
+      "size_bytes": 2256
+    },
+    {
+      "path": "hardware_targets/long_prompt_moderate_output.json",
+      "sha256": "a7f574dd3598ce71a33d045d89f606b288264cde2c1784caec288468c773215b",
+      "size_bytes": 2291
+    },
+    {
+      "path": "hardware_targets/mixed_prompt_lengths.json",
+      "sha256": "3d7622c6901ed449108ac2a7f652d135c99e7bf59c763e1b992010e9dc884e1c",
+      "size_bytes": 2286
+    },
+    {
+      "path": "hardware_targets/prefill_heavy_burst.json",
+      "sha256": "e0bbbb151e5a9bcd73903c32054314bf8b2063cf3cba554ab51f7b50875798e8",
+      "size_bytes": 2279
+    },
+    {
+      "path": "kv_progression/kv_progression.json",
+      "sha256": "cdd426ba05a9fe8a9942a34101d747c55a2d4c11c017dd74a26babe3dd6bb660",
+      "size_bytes": 2748
+    },
+    {
+      "path": "long_context/xlong_context_burst16.json",
+      "sha256": "10b24ace523eb342f3e86962bab5881f2d064d69dd0ac2fb280d9b664805a5e1",
+      "size_bytes": 5752
+    },
+    {
+      "path": "scenarios/active_decode_plus_arriving_prefill.json",
+      "sha256": "54b98e5d9d3678201ccd43c9308e23e5a21a0c3f0412441f69c6f13b06006bc4",
+      "size_bytes": 3651
+    },
+    {
+      "path": "scenarios/kv_pressure.json",
+      "sha256": "911c9cbbbd299fd3fbc3f2d65547b8ccaa657706cd75405861f54ba8d4537b7f",
+      "size_bytes": 4810
+    },
+    {
+      "path": "scenarios/long_prompt_moderate_output.json",
+      "sha256": "13d68f56815309a43176bcd0abc326ccb71c1f69af43d8572fa18949c196d2b8",
+      "size_bytes": 2391
+    },
+    {
+      "path": "scenarios/mixed_prompt_lengths.json",
+      "sha256": "f8d55be074209c302e19c5480b9a375142546ef5b0f34fdb1560c5081067e8b6",
+      "size_bytes": 2969
+    },
+    {
+      "path": "scenarios/prefill_heavy_burst.json",
+      "sha256": "89a9befe683be87f66eb5269f2f0a861ba09c8ed29456fb21ed65510b45c6945",
+      "size_bytes": 2969
+    },
+    {
+      "path": "simulator_baseline_results/active_decode_plus_arriving_prefill.json",
+      "sha256": "b6d19589860dd6470fbc236ab99d1bf9521f9b791d7db40fa804967928dfc4d0",
+      "size_bytes": 1084
+    },
+    {
+      "path": "simulator_baseline_results/kv_pressure.json",
+      "sha256": "171a1a836add4b132808457e41f3fc41035249210d328b7abdf112b3cb0ef07c",
+      "size_bytes": 825
+    },
+    {
+      "path": "simulator_baseline_results/long_prompt_moderate_output.json",
+      "sha256": "c76956357ea080b275c616624c7a66070f196f11356c0e56df95a79efa489e0b",
+      "size_bytes": 594
+    },
+    {
+      "path": "simulator_baseline_results/mixed_prompt_lengths.json",
+      "sha256": "e64070277d8df20a634e5e84b7351a615ba2b497d0c5510711d264222235f2cd",
+      "size_bytes": 643
+    },
+    {
+      "path": "simulator_baseline_results/prefill_heavy_burst.json",
+      "sha256": "db3ac2d6752856d386689c6a3d9ebd6e93761edf7243824b732ff602c420f004",
+      "size_bytes": 615
+    }
+  ],
+  "generated_by": "scripts/build_runtime_validation_benchmark_pack.py",
+  "regeneration_note": "This entire pack is deterministically regenerable by rerunning the generator script against the same committed experiments/gpu_external_validity/ source artifacts -- no GPU or network access required."
+}

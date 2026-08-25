@@ -6,7 +6,7 @@ import pytest
 
 from llmserveopt.core.types import GPUConfig, Request
 from llmserveopt.evaluation.run_policy import run_policy
-from llmserveopt.policies.registry import all_baseline_policies, BASELINE_NAMES, make_policy
+from llmserveopt.policies.registry import BASELINE_NAMES, make_policy
 from llmserveopt.simulator.service_model import ServiceModel
 from llmserveopt.workloads.synthetic import make_small_debug_trace, make_medium_trace
 

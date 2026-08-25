@@ -1,0 +1,54 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "budget_accounting": {
+    "candidate_evaluations_per_treatment": 60,
+    "duplicates": "duplicate genome hashes do not consume evaluation budget; duplicate behavioral fingerprints are recorded and do consume only if structurally unique and first observed in treatment",
+    "failed_compile": "counts against generation attempt budget, not candidate evaluation budget; retry up to fixed attempt cap",
+    "max_unique_evaluated_genomes_per_treatment": 60,
+    "same_random_seed_family": "base_seed=20260824; treatment stream = hash(treatment_id)",
+    "same_train_subset": true
+  },
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "equal_budget_treatments": {
+    "A_RANDOM_GRAMMAR_GP": {
+      "initialization": "random valid typed grammar programs, no special parent seeding",
+      "parent_modules_allowed": "grammar primitives only; no parent-derived initialization beyond universal terminal set",
+      "variation": [
+        "same-type mutation",
+        "typed subtree crossover as standard GP baseline"
+      ]
+    },
+    "B_PARENT_SEEDED_MUTATION_ONLY": {
+      "forbidden": [
+        "structural crossover between distinct parent-derived genomes"
+      ],
+      "initialization": "six exact parent genomes/wrappers plus replicated mutated copies to fill population",
+      "variation": [
+        "mutation only"
+      ]
+    },
+    "C_PORTFOLIO_STRUCTURAL_CROSSOVER": {
+      "crossover_scope": [
+        "RankingRule<->RankingRule",
+        "Boolean guard<->Boolean guard",
+        "KVGuard<->KVGuard",
+        "PrefillRule<->PrefillRule",
+        "Policy submodule<->Policy submodule if both executable"
+      ],
+      "initialization": "same six exact parent genomes/wrappers as treatment B",
+      "variation": [
+        "mutation",
+        "strongly typed structural/module-level crossover"
+      ]
+    }
+  },
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

@@ -1,0 +1,971 @@
+# Wulver vLLM KV-Pressure Results: Jobs 1111541 and 1111545
+
+Consolidated analysis of the two completed Wulver A100 vLLM validation runs
+requested by `docs/wulver_gpu_validation_handoff.md`. This is a
+validation/calibration report only: it does not train a selector, does not
+generate Selector Dataset v2 data, and does not change historical simulator
+defaults.
+
+## 1. Jobs, hardware, model, software
+
+| | Baseline (1111541) | Aggressive stress (1111545) |
+|---|---|---|
+| Slurm job | 1111541 | 1111545 |
+| Node | n0003 | n0026 |
+| Branch / commit | `wulver-gpu-validation-ready` @ `42635412a5dc441a514c94e84d89c8e99d3debfc` | same |
+| GPU | NVIDIA A100-SXM4-80GB, 81920 MiB | same |
+| Driver | 580.159.04 | same |
+| vLLM | 0.24.0 | same |
+| Model | `Qwen/Qwen2.5-7B-Instruct`, dtype bfloat16 | same |
+| `max-model-len` | 16384 | 16384 |
+| `gpu-memory-utilization` | 0.82 | 0.35 |
+| `max-num-seqs` | 8 | 32 |
+| `max-num-batched-tokens` | 2048 | 4096 |
+| `block-size` | 16 | 16 |
+| `enable-chunked-prefill` / `enable-prefix-caching` | on / off | on / off |
+| Raw output dir (Wulver scratch, not in git) | `/mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_1111541` | `/mmfs1/scratch/ikoutis/sv96/vllm_kv_pressure_aggressive_1111545` |
+| Canonical copy in repo | `experiments/gpu_external_validity/vllm_qwen7b_a100_baseline_1111541/` | `experiments/gpu_external_validity/vllm_qwen7b_a100_aggressive_1111545/` |
+| Exact server command | see `job_manifest.txt` / `environment.json` in canonical dir | same |
+| Exact audit command | `scripts/slurm/wulver_vllm_kv_pressure_verified_run1.sbatch` | `scripts/slurm/wulver_vllm_kv_pressure_aggressive_stress.sbatch` |
+
+Both runs used `scripts/run_gpu_external_validity_audit.py --phase stress
+--start-vllm-server ... --write-calibration-profile --resume` against the same
+6 built-in stress scenarios, so the two runs form a controlled A/B: the
+aggressive run isolates the effect of (a) removing the `max-num-seqs` cap and
+(b) shrinking the KV memory budget, with everything else held fixed.
+
+### Verification (section 1 of the task)
+
+- Both runs: 6/6 scenarios completed, `completion_fraction = 1.0` in every row
+  of `scenario_summary.csv`.
+- Both runs: `num_requests == num_success == 108` (24+16+16+12+16+24 across the
+  6 scenarios, sums verified against `summary.json`).
+- No hidden partial failures: `requests.jsonl` has exactly 108 lines with
+  `status: "success"` in both runs; no `error` fields set.
+- `server.log` in both runs shows one `EngineDeadError` traceback, but it
+  occurs after the final `/metrics` poll, immediately following the
+  `SIGTERM`/`shutdown mode=abort` sequence in both logs — a benign artifact of
+  aborting the engine on shutdown, not a mid-run failure. No other
+  errors/tracebacks appear in either log.
+- Git commit, GPU model, and exact vLLM server command are recorded
+  identically in `job_manifest.txt` and `environment.json` for both runs and
+  match each other (only the two intentionally-varied flags and port differ).
+
+## 2. Run-level metrics
+
+| Metric | Baseline (1111541) | Aggressive (1111545) |
+|---|---:|---:|
+| Scenarios | 6 | 6 |
+| Requests | 108 | 108 |
+| Completions | 108 | 108 |
+| Completion fraction | 1.0 | 1.0 |
+| Max running sequences | 8 | 24 |
+| Max waiting queue | 16 | 10 |
+| Max KV cache usage | 2.2173% | 13.9594% |
+| Preemption events | 0 | 0 |
+| Recompute events | 0 (not observed/logged) | 0 (not observed/logged) |
+| Swap events | not observable (vLLM v1 engine does not expose a swap counter here; not present in server.log or metrics) | same |
+| TTFT mean / p50 / p95 / p99 (s) | 2.095 / 1.877 / 5.323 / 9.407 | 0.688 / 0.575 / 1.418 / 1.673 |
+| TPOT mean / p50 / p95 / p99 (s/token) | 0.01202 / 0.01141 / 0.01690 / 0.01799 | 0.01365 / 0.01313 / 0.02060 / 0.02518 |
+| E2E latency mean / p50 / p95 / p99 (s) | 4.854 / 3.569 / 9.727 / 17.544 | 3.821 / 2.772 / 10.226 / 10.245 |
+| Throughput range (req/s, per-scenario) | 0.679 – 6.862 | 1.170 – 11.417 |
+
+Percentiles for TTFT/TPOT/E2E are computed by pooling all 108 per-request
+records in `requests.jsonl` (mean values agree with the officially recorded
+`summary.json` mean-of-scenario-means to within ~2%). vLLM/the audit harness
+does not report recompute or swap counters directly; `preemption_events_delta`
+is the only eviction-related counter exposed by the vLLM Prometheus metrics
+this harness polls, and it was 0 in every scenario of both runs.
+
+### Baseline vs. aggressive
+
+- **KV utilization multiplier**: 0.139594 / 0.022173 ≈ **6.30x** higher peak
+  KV usage in the aggressive run.
+- **Concurrency multiplier**: 24 / 8 = **3.0x** higher max running sequences.
+- **TTFT difference**: mean TTFT dropped from 2.095s to 0.688s, a **67.2%
+  reduction** (3.05x lower).
+- **E2E latency difference**: mean latency dropped from 5.191s to 4.192s
+  (officially recorded means), a **19.2% reduction**.
+- **Throughput difference**: per-scenario throughput roughly **1.7x–1.9x
+  higher** at both ends of the range in the aggressive run.
+- Preemption events: **0 in both runs** — the aggressive change increased KV
+  pressure and concurrency substantially but did not approach the point of
+  forcing eviction.
+
+## 3. Why no preemption occurred
+
+vLLM prints its actual KV pool size and theoretical max concurrency at
+startup; both are captured verbatim in `server.log`:
+
+| | Baseline (1111541) | Aggressive (1111545) |
+|---|---:|---:|
+| Available KV cache memory | 49.45 GiB | 12.12 GiB |
+| GPU KV cache size (pool) | 925,824 tokens | 226,960 tokens |
+| vLLM-reported max concurrency @ 16,384-token requests | 56.51x | 13.85x |
+| Empirically observed peak KV usage | 2.2173% | 13.9594% |
+| **Headroom ratio** (`1 / peak_kv_usage`) | **≈45.1x** | **≈7.16x** |
+
+Even in the aggressive configuration — 6.3x smaller KV pool, seq cap raised
+3x, batched-token budget doubled — peak KV demand only reached ~14% of the
+available pool, i.e. there was still >7x headroom at the moment of highest
+observed pressure (the `stress_kv_pressure` scenario: mean prompt 1,873 +
+mean output ~768 tokens ≈ 2,641 tokens/request at up to 12 concurrent
+requests). The workload's realized token footprint per request (peaking
+around 2,600 tokens) stayed far below `max-model-len` (16,384), so no
+combination of scenarios in this suite pushed the engine anywhere near its
+eviction threshold.
+
+**Classification: `PREEMPTION_NOT_REACHED_DUE_TO_HEADROOM`.**
+
+This is a headroom problem, not an untested code path in the sense of "we
+don't know what would happen" — the KV pool size, request footprint, and
+observed usage are all directly measured, and the gap between demand and
+capacity is large and consistent across two independently configured runs.
+We do not claim vLLM's preemption/recompute logic was exercised or validated;
+it was not.
+
+## 4. Comparison against the simulator
+
+The audit harness runs matched simulator traces (`vllm_faithful` and
+`sarathi_faithful`) for the same 6 scenarios inline with each GPU run, stored
+per-scenario in `scenario_results.json`. No separate simulator invocation was
+needed; the comparison below uses those matched runs directly.
+
+| Scenario | Runtime TTFT (base / aggr, s) | Sim TTFT (s) | Runtime E2E (base / aggr, s) | Sim E2E (s) | Runtime max running (base / aggr) |
+|---|---|---:|---|---:|---|
+| high_concurrency_queue | 2.290 / 1.413 | 0.0014 | 2.846 / 2.080 | 0.128 | 8 / 24 |
+| long_decode_kv | 1.154 / 0.161 | 0.0011 | 3.397 / 2.651 | 0.512 | 8 / 16 |
+| long_prefill | 1.430 / 0.999 | 0.0085 | 2.925 / 2.765 | 0.104 | 8 / 16 |
+| kv_pressure | 3.390 / 0.786 | 0.0065 | 12.014 / 10.225 | 0.773 | 8 / 12 |
+| mixed_prefill_decode | 1.248 / 0.338 | 0.0028 | 3.577 / 3.103 | 0.322 | 8 / 16 |
+| burst_overload_recovery | 3.059 / 0.428 | 0.0043 | 6.388 / 4.324 | 0.291 | 8 / 24 |
+
+Critically, the `sim_vllm_*` numbers are **identical between the baseline and
+aggressive runs for every scenario** (e.g. `stress_kv_pressure` sim latency is
+0.7735s in both). The simulator was not reconfigured between runs — it has no
+parameter tied to `--max-num-seqs` or `--gpu-memory-utilization` in this
+harness, so it cannot, by construction, respond to the exact GPU-side changes
+that produced the 3x concurrency increase and 6.3x KV-utilization increase in
+the real runtime.
+
+Dimension classification:
+
+- **A. Qualitative saturation behavior — `PARTIALLY_VALIDATED`.** The
+  simulator's relative ordering of scenarios by request size (long-prefill and
+  kv-pressure scenarios cost more than decode-only ones) points the same
+  direction as the runtime, but the simulator shows no queue buildup or
+  concurrency-driven latency growth at all — its outputs look like isolated
+  per-request service times, not a loaded system.
+- **B. Relative effect of removing the seq cap — `NOT_VALIDATED`.** Runtime:
+  3.0x more concurrency, 67% lower TTFT. Simulator: zero change, because the
+  simulator was not driven with the corresponding config change.
+- **C. Relative effect of shrinking the KV budget — `NOT_VALIDATED`.**
+  Runtime: 6.3x higher KV utilization. Simulator: zero change, same reason.
+- **D. Queueing-induced TTFT growth — `NOT_VALIDATED`.** Runtime TTFT ranged
+  0.16s–3.39s across scenarios/configs and tracked `max_vllm_waiting` (0–16).
+  Simulator TTFT stayed in the 0.001s–0.009s range regardless of queue depth —
+  it does not reproduce queueing delay at all for these scenario definitions.
+- **E. Actual timing scale — `NOT_VALIDATED`.** Runtime/simulator latency
+  ratio (median) was 18.7x in the baseline and 14.0x in the aggressive run —
+  consistently large and in the same direction (simulator underestimates),
+  but a full order of magnitude off, and the ratio itself shifts with
+  queueing rather than being a fixed constant.
+
+## 5. Calibration conclusion
+
+The per-run `calibration_profile.json` prefill fits are **not** stable between
+runs: intercept 1.699s (baseline) vs. 0.622s (aggressive), a 2.7x difference;
+slope 3.90e-4 vs 6.46e-5 s/token, a 6x difference. This instability has a
+direct cause: baseline TTFT is dominated by scheduler queueing behind
+`max-num-seqs=8`, not by GPU prefill compute, so the "prefill fit" is really
+fitting queueing delay in that run.
+
+Decode throughput, by contrast, was stable: 0.01213 s/token (baseline) vs.
+0.01365 s/token (aggressive), a 12.5% spread — plausible run-to-run variation
+at different batch occupancy, not a config artifact.
+
+**Decision: create an opt-in calibration profile, scoped to what was actually
+stable.** `configs/calibration/wulver_a100_qwen25_7b_vllm024.yaml` records the
+decode-step point estimate (~0.0129 s/token) as usable, and explicitly labels
+the prefill/TTFT fit and the runtime/simulator ratio as queueing-contaminated
+and not safe to reuse directly. It does not modify any historical simulator
+default and is not wired into any default code path.
+
+## 6. Scientific interpretation
+
+Verified against the artifacts above:
+
+- On A100 80GB with `gpu-memory-utilization=0.82`, the default-ish baseline
+  config had substantial KV headroom for this workload: peak usage 2.22% of a
+  925,824-token pool (~45x headroom).
+- Shrinking the KV budget by ~4.1x (0.82 → 0.35 `gpu-memory-utilization`, pool
+  925,824 → 226,960 tokens) increased peak observed utilization from 2.22% to
+  13.96% (6.3x), but still left ~7.16x headroom — it did not force preemption.
+- `max-num-seqs=8` induced queueing in the baseline (max waiting queue 16,
+  4/6 and in fact 6/6 scenarios showed nonzero waiting); removing the cap
+  (`max-num-seqs=32`) in the aggressive run raised max observed concurrency
+  from 8 to 24 and cut mean TTFT by 67%, while max waiting queue dropped from
+  16 to 10 and only 4/6 scenarios showed nonzero waiting.
+- Therefore the queueing observed in the baseline run was **sequence-cap
+  driven, not memory-pressure driven** — KV usage was low (2.22%) in the exact
+  same run where queueing was worst, ruling out memory pressure as the cause.
+
+## 7. Is another vLLM run needed?
+
+**Recommendation: C — one future longer-context run is justified. Not
+submitted.**
+
+Reasoning: the binding constraint on reaching real KV pressure/preemption is
+token footprint per concurrent request, not request count. vLLM's own
+diagnostic in the aggressive run's `server.log` states "Maximum concurrency
+for 16,384 tokens per request: 13.85x" — i.e. only ~14 concurrent
+full-context (16,384-token) requests would exhaust that 226,960-token pool.
+The scenarios actually run used a mean prompt+output footprint of at most
+~2,641 tokens (`stress_kv_pressure`), roughly 16% of the context window, and
+needed ~86 concurrent requests of that size to fill the pool — a much larger,
+harder-to-generate concurrent load than the ~14 needed at near-max context.
+A workload-volume increase (option B) would require pushing concurrent client
+load roughly 3.6x past what was already demonstrated (24 → ~86-90) and would
+likely first hit `max-num-seqs` or client-side scheduling limits rather than
+memory pressure. A longer-context run needs only a ~3x increase in per-request
+token length at already-demonstrated concurrency (24-32) to plausibly close
+the remaining ~7.16x headroom gap, and directly exercises the `max-model-len`
+budget this deployment was already configured for (16,384) rather than
+requiring new infrastructure or a larger model. This is not a "GPUs are
+available" recommendation — it is the more efficient of the two available
+levers, quantified from data already collected in these two runs.
+
+## 8. Preemption limitation
+
+**`PREEMPTION_NOT_REACHED_DUE_TO_HEADROOM`** — see section 3. Do not read
+these results as validation, positive or negative, of vLLM's
+preemption/recompute scheduling logic. That code path was never exercised on
+Wulver.
+
+## 9. Safe claims
+
+- On A100 80GB, this default-ish vLLM config (`gpu-memory-utilization=0.82`,
+  `max-num-seqs=8`) had ~45x KV headroom for this workload; KV pressure was
+  never a binding constraint.
+- Shrinking the KV budget ~4.1x increased peak KV utilization 6.3x (2.22% →
+  13.96%) without forcing preemption; ~7.16x headroom remained.
+- The baseline's queueing (max waiting queue 16) was caused by the
+  `max-num-seqs=8` cap, not by KV memory pressure, since KV usage was only
+  2.22% during that same run.
+- Removing the seq cap (8 → 32) increased observed concurrency 3.0x and cut
+  mean TTFT 67.2%, with everything else held fixed.
+- The faithful-baseline simulator, as invoked in this harness, does not
+  respond to `max-num-seqs` or `gpu-memory-utilization` changes and therefore
+  cannot reproduce the queueing/KV-pressure effects measured on real hardware
+  in this study.
+- The simulator underestimates real vLLM runtime latency by roughly an order
+  of magnitude (14x–19x median) on this hardware/model/workload; the ratio is
+  not constant and moves with scheduler queueing.
+- Decode-step latency (~0.0129 s/token ± 12.5%) was the one runtime quantity
+  that was consistent across both differently-configured runs.
+
+## 10. Unsafe claims
+
+- Do NOT claim vLLM preemption or KV recompute was validated, exercised, or
+  ruled out as a scheduling concern — it was never triggered on this
+  hardware/workload combination.
+- Do NOT claim the simulator captures queueing-induced TTFT growth, the
+  effect of the seq-count cap, or the effect of KV budget size — all three
+  were NOT_VALIDATED in this study.
+- Do NOT apply the runtime/simulator latency ratio (14x-19x) as a fixed
+  correction multiplier — it varies with scheduler configuration.
+- Do NOT reuse either run's `prefill_latency_fit` (from `calibration_profile.json`)
+  as a hardware-intrinsic prefill cost model — both are contaminated by
+  scheduler queueing and disagree with each other by 2.7x-6x.
+- Do NOT generalize these findings to other models, GPUs, vLLM versions, or
+  much longer context lengths — the workload used here never exceeded ~1,873
+  mean prompt tokens against a 16,384-token window.
+
+## Implication for Selector Dataset v2
+
+`docs/selector_dataset_v2.md` states that large-scale Dataset v2 generation
+should not resume until vLLM/Sarathi advantage regimes are either validated
+against GPU behavior or explicitly scoped as simulator limitations. This
+report provides that scoping for the vLLM side: the simulator's response to
+concurrency-cap changes, KV-budget changes, and queueing-induced TTFT growth
+(dimensions B, C, D in section 4) are all `NOT_VALIDATED` against real A100
+hardware. Any Selector Dataset v2 scenario or feature that depends on the
+simulator correctly ranking policies under KV pressure or admission-control
+queueing should be treated as an unvalidated simulator assumption, not a
+confirmed regime, until either (a) a longer-context Wulver run (section 7)
+demonstrates real preemption behavior to compare against, or (b) the
+simulator is explicitly extended to consume the same `max-num-seqs`/KV-budget
+parameters used on the real server, so its output can actually respond to
+those changes. The Sarathi-Serve side of this scoping is still pending a
+separate runtime-validation pass (see "Sarathi install status" below) and
+should be combined with this report before any resumption decision.
+
+---
+
+## Overnight follow-up (2026-07-19): long-context job 1111572 and Sarathi status
+
+This section extends the report above with a third vLLM run and the results
+of the Sarathi-Serve build/runtime-validation attempt recommended in section
+7. No further vLLM jobs were submitted beyond the one recommended run; the
+Sarathi install was not interrupted or modified, only investigated after it
+had already finished (and failed) on its own.
+
+### Job 1111572 (long-context KV-pressure follow-up)
+
+Directly implements section 7's recommendation: same server config as
+1111545 (`gpu-memory-utilization=0.35`, `max-num-seqs=32`,
+`max-num-batched-tokens=4096`, `max-model-len=16384`, all else identical),
+with two new scenarios (`stress_xlong_context_burst16`,
+`stress_xlong_context_saturate`, added to
+`scripts/run_gpu_external_validity_audit.py` as a new `xlong_stress` phase,
+kept fully separate from `build_stress_scenarios()`) using prompts targeting
+~12,000 tokens instead of the ~1,873-token mean used in 1111541/1111545.
+
+| | 1111541 (baseline) | 1111545 (aggressive) | 1111572 (xlong) |
+|---|---:|---:|---:|
+| Requests / completions | 108 / 108 | 108 / 108 | 40 / 40 |
+| Mean prompt tokens | ~169-1,873 (scenario-dependent) | same | ~10,581 |
+| Max KV usage | 2.2173% | 13.9594% | **83.6673%** |
+| Headroom ratio (1 / max KV usage) | ~45.1x | ~7.16x | **~1.195x** |
+| Max running sequences | 8 | 24 | 18 |
+| Max waiting queue | 16 | 10 | 15 |
+| Preemption events | 0 | 0 | **0** |
+| Mean TTFT (pooled) | 2.133s | 0.719s | 5.272s |
+| Mean E2E latency (pooled) | 4.854s | 3.821s | 20.378s |
+| Mean TPOT (pooled) | 0.01202 s/tok | 0.01365 s/tok | 0.02380 s/tok |
+| Throughput range (req/s) | 0.679-6.862 | 1.170-11.417 | 0.449-0.785 |
+
+KV pool sizes, measured by vLLM at startup: 925,824 tokens (1111541,
+`gpu-memory-utilization=0.82`), 226,960 tokens (1111545), 237,184 tokens
+(1111572, same `gpu-memory-utilization=0.35` as 1111545 — the small
+difference from 226,960 is normal run-to-run allocator variance, not a
+config change).
+
+**Updated preemption finding.** Across three runs spanning ~45x, ~7.16x, and
+~1.195x headroom, preemption never triggered — not even at 83.67% peak KV
+utilization with a genuinely oversubscribed scenario design (24 requests
+targeting ~12k-13k tokens each against a 237k-token pool). The mechanism is
+now visible in the data: `max_vllm_waiting` reached 14-15 in job 1111572
+even while `max_vllm_running` stayed at 18 (below the `max-num-seqs=32`
+cap) — vLLM's admission control queued new arrivals rather than admitting
+them and then evicting already-running work. This is a real, reportable
+property of vLLM's scheduler in these bursty-arrival scenarios, not merely
+"still not enough load." Reaching an actual preemption event would likely
+require running sequences to keep *growing* (via decode) past the pool's
+capacity *after* being admitted, which needs either a still-larger workload
+or a scenario specifically designed to grow admitted sequences past their
+initial footprint under sustained new arrivals.
+
+**Classification update:**
+
+- `PREEMPTION_CLASSIFICATION` remains **`PREEMPTION_NOT_REACHED_DUE_TO_HEADROOM`**
+  (technically correct — headroom never went negative), but the qualitative
+  finding is now much stronger than in the original report: this is an
+  admission-control-vs-eviction distinction, not an under-tested workload.
+- `KV_PRESSURE_CLASSIFICATION`: **`VALIDATED`** — genuine, substantial,
+  near-saturating KV pressure (83.67%, comfortably over the 70% bar) was
+  demonstrated on real A100 hardware. This is now a materially different
+  claim from anything in the original report and should be kept separate
+  from the (still unvalidated) preemption claim.
+
+**Simulator comparison update.** The `vllm_faithful` external-baseline
+simulator, run with this harness's fixed `GPUConfig(max_batch_tokens=2560)`,
+dropped **100% of requests** in both new long-context scenarios
+(`num_dropped == num_requests`, `completion_fraction == 0.0`) — it has no
+chunked-prefill modeling, so any request with `prompt_tokens > 2560` is
+never admitted. `sarathi_faithful` (which does model prefill chunking via
+`enable_prefill_modeling=True`) completed all 40 requests normally. This
+reclassifies `VLLM_SIMULATOR` from a timing-scale issue to a **structural**
+one for the long-context regime specifically:
+
+- `VLLM_SIMULATOR = MAJOR_MODEL_MISMATCH` for context lengths beyond
+  `max_batch_tokens` (2,560 tokens in this harness's fixed simulator config)
+  — it cannot represent the workload class this validation pass was built
+  to test at all, independent of any timing calibration.
+- For the shorter-context regime (1111541/1111545), the standing
+  classification from the original report holds: simulator dimensions
+  B/C/D/E remain `NOT_VALIDATED`, A remains `PARTIALLY_VALIDATED`.
+
+### Sarathi-Serve build and runtime validation
+
+**Build (job 1111574, compute-node, 1x A100): SUCCEEDED.** Root cause of the
+original login-node failure: `sarathi-serve/setup.py` selects target CUDA
+architectures via `torch.cuda.device_count()`; with no GPU visible (the
+login node), it silently falls back to building for *all six* supported
+architectures (`sm_70/75/80/86/89/90`), and that 6x-wider compile OOM-killed
+`cc1plus` on the memory-constrained login node. Running the build on a node
+with an A100 actually visible restricted codegen to just `sm_80`, a ~6x
+smaller compile, which completed cleanly with `MAX_JOBS=2`. Confirmed via
+`import sarathi` (version 0.1.8) and successful import of all four compiled
+CUDA extension modules (`pos_encoding_ops`, `layernorm_ops`,
+`activation_ops`, `moe_ops`). No changes were made to vLLM's environment or
+any historical simulator defaults.
+
+**GPU smoke+validation (jobs 1111576, then 1111663 after one corrected
+resubmission): FAILED, root cause identified, blocked pending a model or
+fork change.**
+
+- First attempt (1111576) failed in 38 seconds with `AssertionError` inside
+  `sarathi.utils.hf_utils.get_and_verify_max_len`: this vendored
+  Sarathi-Serve fork's RoPE-scaling validation unconditionally asserts
+  `"factor" in rope_scaling` whenever a model's HF config has a non-`None`
+  `rope_scaling` field. Qwen2.5-7B-Instruct's config sets
+  `rope_scaling={"rope_theta": 1000000.0, "rope_type": "default"}` — a
+  no-op dict (no scaling applied) that newer HuggingFace Transformers
+  versions always populate, which this older validation code
+  (pre-dating that convention) misreads as active scaling requiring a
+  `"factor"` key. `max_position_embeddings` (32,768) already comfortably
+  covers the requested `max_model_len` (16,384), so no real scaling issue
+  exists here. Fixed with a local monkeypatch in
+  `scripts/run_sarathi_gpu_smoke_and_validation.py`
+  (`_patch_get_and_verify_max_len_for_default_rope_type`) that treats a
+  `rope_type: "default"` dict with no `"factor"` key as no scaling,
+  matching how vLLM itself handles this same HF config convention. The
+  vendored Sarathi-Serve source tree itself was not modified.
+- Second attempt (1111663), using the fix above: got past RoPE validation,
+  loaded the model config, started a Ray worker, and failed with
+  `ValueError: Model architectures ['Qwen2ForCausalLM'] are not supported
+  for now. Supported architectures: ['FalconForCausalLM', 'LlamaForCausalLM',
+  'LLaMAForCausalLM', 'InternLMForCausalLM', 'MistralForCausalLM',
+  'MixtralForCausalLM', 'QWenLMHeadModel', 'YiForCausalLM']` from
+  `sarathi/model_executor/model_loader.py`. This vendored Sarathi-Serve
+  fork's model registry supports the original Qwen (v1, `QWenLMHeadModel`)
+  architecture but not Qwen2/Qwen2.5 (`Qwen2ForCausalLM`). This is a
+  structural model-support gap, not an environment or config problem — it
+  would require porting a `Qwen2ForCausalLM` model definition into the
+  fork's `sarathi/model_executor/models/`, which is real feature work, not
+  a low-risk fix. Per the bound on speculative retries, this was not
+  attempted; the finding is reported instead.
+
+**`SARATHI_SIMULATOR` classification: `RUNTIME_VALIDATION_BLOCKED`** — not
+by the build/environment (that is now fixed and confirmed working), but by
+this vendored fork's model architecture support. Recommended next steps
+(none attempted tonight, all require a human decision before proceeding):
+(a) rerun the same smoke+validation script with a model this fork already
+supports (e.g. `mistralai/Mistral-7B-Instruct-v0.1`, or the original
+`Qwen/Qwen-7B-Chat` which uses the supported `QWenLMHeadModel` class) to
+validate the harness and get a same-family Sarathi-vs-vLLM comparison point,
+accepting it won't be the identical Qwen2.5-7B-Instruct model used in
+1111541/1111545/1111572; or (b) update the vendored `sarathi-serve` checkout
+to a newer upstream commit with Qwen2 support, which is a real dependency
+version change and should go through normal review, not be done
+autonomously.
+
+### Updated Selector Dataset v2 implication
+
+KV pressure is now `VALIDATED` on real hardware (job 1111572), which
+resolves half of the original blocking condition in
+`docs/selector_dataset_v2.md`. Preemption specifically, and the simulator's
+structural inability to represent long-context vLLM workloads at all (the
+`vllm_faithful` 100%-drop finding above), remain open. Sarathi-side runtime
+validation is blocked on a model-architecture gap in the vendored fork, not
+resolved. **`SELECTOR_DATASET_V2_DECISION = MORE_RUNTIME_VALIDATION_REQUIRED`**
+— specifically: (1) resolve the Sarathi model-support gap (either path
+above) and get at least one real Sarathi-vs-vLLM runtime comparison, and (2)
+either extend the `vllm_faithful` simulator baseline to model chunked
+prefill for long contexts, or explicitly scope any Selector Dataset v2
+long-context scenarios as simulator-only until it can.
+
+---
+
+## Follow-up (2026-07-19, session 2): Sarathi runtime validation with a supported model, matched vLLM comparison, and the `vllm_faithful` long-context audit
+
+Resolves the "Sarathi model-support gap" blocker from the previous session
+by switching to a model this vendored fork actually supports, runs a
+byte-for-byte matched real-vLLM comparison, and completes the requested
+audit of *why* `vllm_faithful` drops long-context requests (not just *that*
+it does).
+
+### Model choice: `mistralai/Mistral-7B-Instruct-v0.1`
+
+Verified before submission via `transformers.AutoConfig` on the login node
+(read-only, no GPU needed for config resolution):
+
+- `architectures = ['MistralForCausalLM']` — in the pinned fork's supported
+  list (`sarathi/model_executor/model_loader.py`:
+  Falcon/Llama/LLaMA/InternLM/**Mistral**/Mixtral/QWenLMHeadModel(v1)/Yi).
+  Not Qwen2/Qwen2.5 again, per instruction.
+- `max_position_embeddings = 32768`; `rope_scaling =
+  {'rope_theta': 10000.0, 'rope_type': 'default'}` — the same benign no-op
+  pattern as Qwen2.5 (see below).
+- Public, Apache-2.0, no HF token required (confirmed by the config fetch
+  succeeding unauthenticated).
+- Comparable size to Qwen2.5-7B-Instruct (hidden_size=4096, 32 layers, ~7B
+  params) — a reasonable like-for-like comparison target.
+
+### Sarathi build/runtime: two more rope_scaling failures, both fixed at the source
+
+The compute-node build (job 1111574, previous session) already succeeded
+and was not rebuilt. Two GPU validation attempts were needed:
+
+- **1111705 (first Mistral attempt): FAILED**, `KeyError: 'type'` inside
+  `sarathi/model_executor/layers/rotary_embedding.py:314`
+  (`get_rope()`, called from every attention layer's `__init__`, e.g.
+  `models/mistral.py`). This is the *same* underlying incompatibility as
+  the previous session's Qwen2.5 `AssertionError` fix (newer HuggingFace
+  Transformers always populates `hf_config.rope_scaling` with a no-op
+  `{"rope_type": "default", ...}` dict; this vendored fork predates that
+  convention and assumes any non-`None` `rope_scaling` means active scaling
+  requiring the *older* `"type"`/`"factor"` keys) — but surfacing in a
+  **second, independent call site** that the previous session's narrower
+  patch (scoped only to `get_and_verify_max_len`) did not cover.
+- **Fix**: rather than patch each consumer separately, patch
+  `sarathi.config.config`'s bound reference to `get_config()` itself — the
+  single point every consumer's `hf_config` flows through — so a
+  `"default"`/no-`"type"`-no-`"factor"` `rope_scaling` dict is normalized
+  to `None` once, at the source, before `get_and_verify_max_len`,
+  `get_and_verify_dtype`, or any model-construction code sees it. Verified
+  on the login node (CPU-only, no GPU needed for config resolution) that
+  this normalizes `rope_scaling` to `None` for both Mistral-7B-Instruct-v0.1
+  and Qwen2.5-7B-Instruct. Still does not modify the vendored source tree;
+  still only changes behavior for the no-op-rope_scaling case.
+- **1111711 (resubmission with the source-level fix): see results below.**
+
+This was the one corrected resubmission allowed for this task. Per the
+bounded-retry policy, if 1111711 had failed with a third, distinct issue,
+this report would say so and stop rather than continue patching.
+
+### Matched real-vLLM comparison (job 1111706): COMPLETED
+
+`scripts/run_gpu_external_validity_audit.py` gained a new
+`mistral_match_stress` phase (`build_mistral_match_scenarios()`), built to
+be **byte-for-byte identical** to
+`run_sarathi_gpu_smoke_and_validation.py`'s 6 scenarios — same
+`cc.build_length_targeted_prompt` bucket/target_output_tokens/seed
+(`20260719`)/variant_index for every one of 42 requests, verified
+programmatically before submission (zero mismatches across all 42
+request/scenario pairs). Server config chosen to mirror the Sarathi run's
+`SarathiSchedulerConfig(chunk_size=512, max_num_seqs=16)` /
+`WorkerConfig(gpu_memory_utilization=0.35)`:
+`--max-num-batched-tokens 512 --max-num-seqs 16 --gpu-memory-utilization 0.35`.
+
+- 42/42 requests completed, 0 preemptions.
+- Max KV usage 29.76% (`mistral_match_kv_pressure` scenario: 12x "long"
+  2048-token prompts + 768-token decode, concurrency 12) — notably higher
+  than the equivalent Qwen2.5 scenarios at comparable settings, consistent
+  with Mistral-7B's larger hidden size (4096 vs. Qwen2.5-7B's 3584) and
+  head configuration giving it a larger per-token KV footprint.
+- Runtime mean TTFT 0.510s, mean E2E latency 3.545s (pooled across all 6
+  scenarios); `mistral_match_kv_pressure` alone: mean latency 13.62s, mean
+  TTFT 1.057s, max waiting 11.
+- Because every scenario here uses prompts of at most 2,048 tokens (the
+  "long" bucket, not the ~12k-token "xlong" bucket from the previous
+  session), **all prompts fit within `vllm_faithful`'s `max_batch_tokens`
+  (2,560) admission budget** — `sim_vllm_mean_latency_s` is populated
+  (0.226s, non-null) for every scenario, unlike the xlong run. This is a
+  direct, positive confirmation of the audit finding below: `vllm_faithful`
+  works correctly whenever prompts stay under its admission budget, and
+  only fails structurally once they don't.
+
+### Sarathi runtime validation (job 1111711): FAILED — third distinct issue, not retried further
+
+Got past both rope_scaling call sites (model loaded, weights on GPU,
+attention layers constructed) and into the actual forward pass, then
+failed with:
+
+```
+ValueError: The dtype of q torch.bfloat16 does not match the q_data_type
+torch.float16 specified in plan function.
+```
+
+in `sarathi/model_executor/attention/flashinfer_attention_wrapper.py`
+(`FlashInferAttentionWrapper.forward()` → `self.prefill_wrapper.forward()`
+→ FlashInfer's own `_check_cached_qkv_data_type`). This script requested
+`dtype="bfloat16"` (matching every real-vLLM run in this whole
+investigation, all of which ran bf16). The model's weights loaded correctly
+in bf16 (the error occurs during the *attention* computation, well after
+weight loading succeeds), but this vendored fork's FlashInfer prefill
+wrapper appears to plan/initialize with a dtype that does not track the
+model's actual configured dtype in at least this code path — plausibly a
+hardcoded or defaulted `float16` assumption elsewhere in
+`flashinfer_attention_wrapper.py`, though the exact line was not traced
+further (see below).
+
+This is a **third, distinct failure mode** — not a variant of the
+rope_scaling issue already fixed twice. Per the bounded-retry policy for
+this task ("do not blindly retry more than once... at most ONE corrected
+resubmission... if root cause is obvious, fix is low risk"), that one
+resubmission was already used (1111705 → 1111711, for the rope_scaling
+source-level fix). This third failure is reported as-is, **not retried a
+third time**, per instruction.
+
+A plausible (but untested) next step, if this is picked up again: rerun
+with `--dtype`-equivalent left at this fork's own default (`float16`
+instead of `bfloat16`) rather than forcing bf16, since the failure is
+specifically a plan-vs-runtime dtype mismatch and float16 is this vendored
+fork's own tested default (`ModelConfig.dtype` defaults to `"float16"` in
+`sarathi/config/config.py`, not `"bfloat16"`). This was not attempted here
+because it would be a second corrected resubmission, exceeding this task's
+bound.
+
+**`SARATHI_SIMULATOR` classification remains `RUNTIME_VALIDATION_BLOCKED`**,
+now for a different (and arguably more fundamental) reason than the
+Qwen2-architecture gap that motivated switching to Mistral in the first
+place: model loading and the RoPE/architecture path both now work correctly
+on a supported model, but the FlashInfer attention backend's dtype handling
+in this vendored fork blocks actually running inference in bf16.
+
+### Matched simulator comparison (job 1111706's scenario_results.json)
+
+No real Sarathi runtime numbers exist to compare against (see above), so
+this compares real vLLM 0.24.0 runtime against both `vllm_faithful` and
+`sarathi_faithful` simulator traces for the same 5 non-trivial matched
+scenarios (the 6th, `mistral_match_short_context_control`, completed
+6/6 successfully but its mean TTFT did not get sampled by the metrics
+poller in the ~0.08s the whole scenario took — a metrics-collection
+granularity artifact, not a correctness issue):
+
+| Scenario | Runtime TTFT | Sim TTFT (vllm/sarathi) | Runtime E2E | Sim E2E (vllm/sarathi) |
+|---|---:|---:|---:|---:|
+| long_prompt_moderate_output | 0.501s | 0.0025 / 0.0120 | 3.889s | 0.258 / 0.267 |
+| active_decode_plus_arriving_prefill | 0.151s | 0.0010 / 0.0053 | 1.647s | 0.160 / 0.164 |
+| prefill_heavy_burst | 0.575s | 0.0035 / 0.0160 | 1.215s | 0.035 / 0.047 |
+| mixed_prompt_lengths | 0.266s | 0.0022 / 0.0068 | 0.824s | 0.065 / 0.070 |
+| kv_pressure (matched to stress_kv_pressure) | 1.057s | 0.0065 / 0.0286 | 13.616s | 0.774 / 0.796 |
+
+Both simulator baselines completed **100% of requests in every scenario**
+(0 dropped anywhere) — confirming the audit above: since every prompt here
+is at most 2,048 tokens (under the 2,560-token admission budget),
+`vllm_faithful` behaves structurally correctly, unlike the xlong scenarios.
+The runtime/simulator latency ratio for this model/config lands in the same
+14-16x range found for Qwen2.5-7B-Instruct in the earlier sessions (e.g.
+long_prompt_moderate_output: 3.889/0.258 ≈ 15.1x), reinforcing that the
+timing-scale gap is a general simulator-vs-real-hardware property, not
+specific to one model. `sarathi_faithful` and `vllm_faithful` track each
+other closely in this regime (ratio ~1.03-1.4x apart), consistent with the
+earlier finding that both faithful baselines' *relative* behavior agrees
+even when neither matches real-hardware absolute timing.
+
+Without a real Sarathi runtime data point, this session cannot answer
+whether the simulator "preserves the winner identity" or "the expected
+regime ordering" between real Sarathi and real vLLM (Part 6's core
+question) — that comparison needs the Sarathi runtime-validation blocker
+above resolved first. What can be said: the simulator's own internal
+ordering (`sarathi_faithful` slightly higher latency/TTFT than
+`vllm_faithful` in every one of these 5 scenarios) is a specific, checkable
+prediction that a future successful Sarathi run should be compared against.
+
+### Selector Dataset v2 workload-region validity
+
+Combining every runtime/simulator data point collected across both
+sessions (jobs 1111541, 1111545, 1111572, 1111706, plus the structural
+audit above):
+
+| Workload region | Classification | Basis |
+|---|---|---|
+| Short-context monolithic (≲500 tokens) | `VALID_ONLY_WITH_CALIBRATION` | Structurally fine for both faithful baselines (well under the 2,560-token admission budget). Decode-cost calibratable via `configs/calibration/wulver_a100_qwen25_7b_vllm024.yaml` (~0.0129 s/token). TTFT/queueing dynamics (dimension D, original report) remain `NOT_VALIDATED`; runtime/sim timing ratio is a stable ~14-16x order-of-magnitude gap, not a fixed constant. Usable for relative/qualitative comparisons with these caveats stated, not for absolute-timing claims. |
+| Medium-context monolithic (~500-2,000 tokens) | `VALID_ONLY_WITH_CALIBRATION` | Same reasoning as short-context — still under the admission budget, same caveats. Confirmed structurally correct (0 drops) in job 1111706's 2,048-token "long"-bucket scenarios. |
+| Long-context monolithic (≳2,560 tokens) | `INVALID_UNTIL_SIMULATOR_EXTENSION` | `vllm_faithful` structurally drops 100% of such requests (root-cause audit above) — not a calibration gap, a missing capability (no chunked-prefill admission modeling, faithful to pinned v0.1.0). `sarathi_faithful` *can* represent this regime (chunked-prefill admission is modeled), so a Sarathi-only long-context scenario is technically representable, but any scenario requiring a fair vLLM-side comparison is not, until the Option-B `vllm_chunked_prefill_faithful` baseline exists. |
+| Prefill-heavy | `VALID_ONLY_WITH_CALIBRATION` (if prompts stay under 2,560 tokens; `INVALID_UNTIL_SIMULATOR_EXTENSION` above that) | Confirmed structurally correct at 2,048-token prompts (`stress_long_prefill`, `mistral_match_prefill_heavy_burst` — 0 drops both sessions). Qualitative saturation direction only `PARTIALLY_VALIDATED` (original report, dimension A); same timing-scale caveat as short/medium context. |
+| Decode-heavy | `VALID_ONLY_WITH_CALIBRATION` — the strongest candidate of all six regions | TPOT/decode-step cost is the *one* quantity that stayed consistent across every differently-configured run in this whole investigation (~0.0129 s/token at ~1,873-token mean context; ~0.0243 s/token at ~10,581-token mean context — two clean, reusable regime-specific points, both already in the calibration profile). No structural admission issues (decode-heavy ≠ long-prompt). |
+| High-KV-pressure | `REFERENCE_ONLY` | KV pressure itself is now `VALIDATED` as a real, reachable phenomenon (83.67% observed, job 1111572). But preemption — the specific mechanism the simulator models via `Action.preempt`/`GPUState.evict()`, shared by both faithful baselines — has *never* been triggered on real hardware at any headroom level tested (45x → 7.16x → 1.195x, still 0 preemptions), so there is no real event to check the simulator's preemption trigger/behavior against. The simulator's structural preference for admission-control queueing over eviction is plausibly consistent with the one real near-saturation data point available, but this is an untested hypothesis, not a validated one. Usable for qualitative reference and hypothesis generation, not as a trusted training signal. |
+
+**Net effect on Selector Dataset v2 generation**: still should not resume
+at full scale. Short/medium-context, prefill-heavy (bounded), and
+decode-heavy scenarios can proceed on an opt-in-calibrated basis with
+explicit timing-scale caveats attached to every claim. Long-context and
+high-KV-pressure scenarios remain out of scope until, respectively, the
+`vllm_chunked_prefill_faithful` baseline exists (Part 8) and either a real
+preemption event is observed on hardware or the simulator's preemption
+behavior is otherwise validated.
+
+### Calibration decision: no new profile created
+
+Job 1111706 gives a clean Mistral-7B-Instruct-v0.1 decode-cost data point,
+but it is exactly one run at one configuration. Every calibration number
+already in `configs/calibration/wulver_a100_qwen25_7b_vllm024.yaml` was
+only promoted from "measured" to "recorded as a reusable point estimate"
+after being checked for stability across at least two independently
+configured runs (1111541 vs. 1111545 for the short-context decode number;
+1111572 added as a second, deliberately-separate long-context regime, not
+interpolated with the first). A single Mistral run cannot be checked for
+that same stability, and creating a `wulver_a100_mistral7b_vllm024.yaml`
+profile from it would be exactly the "universal correction factor from
+insufficient evidence" this task explicitly warns against. **No calibration
+file was added or changed this session.** The Mistral numbers are recorded
+above (matched-comparison section) as a single reference point only; a
+second, differently-configured Mistral run would be needed before
+promoting them to a calibration profile.
+
+### `vllm_faithful` long-context drop: root-cause audit
+
+Traced via `docs/vllm_faithful_scheduler_reference.md` and
+`src/llmserveopt/policies/vllm_faithful.py` (no vendored-baseline code
+changed for this audit — read-only tracing, as instructed).
+
+**Precise call path:** `run_simulator_scenario()` in the harness scripts →
+`make_external_baseline("vllm_faithful")` → `VLLMFaithfulPolicy.
+select_action()` → `_run_gpu_schedule()`, admission step ("Step 3: admit
+from `waiting`, FCFS"). That step's own comment block states the exact
+budget check being reproduced: `# OWN GPUConfig constraints
+(max_active_sequences/max_batch_tokens/...)`. `GPUConfig(max_batch_tokens=
+2560)` is set identically in both harness scripts, matching
+`DEFAULT_MAX_NUM_BATCHED_TOKENS = 2560` in `vllm_faithful.py`'s own module
+constants, which the docstring states is taken verbatim from the pinned
+reference (`vllm/engine/arg_utils.py @ 67d96c29`, tag v0.1.0). A request
+whose `prompt_tokens > 2560` fails this check on every iteration it is
+tried — because **admission is all-or-nothing in this pinned reference**
+(`docs/vllm_faithful_scheduler_reference.md`: "a waiting group's entire
+prompt is admitted in one iteration ... or not admitted at all — there is
+no partial/chunked admission of a single prompt across iterations"). It
+never becomes admittable, stays in `waiting` for the rest of the
+simulation, and is counted as `num_dropped` once the harness's
+`drain_steps=50_000` budget is exhausted.
+
+**Answering the specific question posed:** the cause is **"no
+chunked-prefill implementation," operationalized through the
+`max_num_batched_tokens` all-or-nothing admission check** — both together,
+not a KV-block-accounting bug or a simulator execution-semantics artifact.
+Given the pinned reference itself has no chunking, this is not incidental
+breakage; a real, unmodified vLLM v0.1.0 server would exhibit the same
+behavior (an oversized request waits forever) for this exact workload.
+
+**Was chunked prefill in the pinned vLLM version?** No.
+`docs/vllm_faithful_scheduler_reference.md` states this explicitly:
+"Chunked prefill ... was added to vLLM in later releases and is a
+materially different scheduling algorithm. It is intentionally out of
+scope here." v0.1.0 (2023-06-20) predates it entirely; the real vLLM 0.24.0
+used on Wulver for every runtime job in this report has it enabled
+(`--enable-chunked-prefill`, confirmed in every job's server command).
+
+**Would adding chunked prefill to `vllm_faithful` still be faithful to
+v0.1.0?** No — by definition. Doing so would mean `vllm_faithful` no longer
+faithfully reimplements the v0.1.0 reference its own name, module
+docstring, `pinned_source` registry field, and reference doc all commit to.
+Every existing test and historical result that exercises `vllm_faithful`
+implicitly assumes v0.1.0's all-or-nothing admission behavior; silently
+changing it would invalidate those without changing their name.
+
+**Would a newer pinned vLLM version be required?** Yes, to represent
+modern chunked-prefill vLLM behavior at all. `docs/
+vllm_faithful_scheduler_reference.md` already anticipates this: "this
+repository already has a Sarathi-inspired chunked-prefill baseline
+(`sarathi_style` ...) ... and a future `vllm_faithful`-style Sarathi-Serve
+baseline (per the roadmap) should pin its own separate upstream reference
+rather than being folded into this one." (That sentence is about
+`sarathi_faithful`'s own construction, which *did* follow exactly this
+plan — pinning its own separate OSDI-era commit rather than modifying
+`vllm_faithful`.) The same logic applies here: a `vllm_faithful`-labeled
+policy must stay pinned to v0.1.0; a chunked-prefill-capable vLLM baseline
+needs its own name and its own pin.
+
+**Would changing `vllm_faithful` invalidate historical results?** Yes —
+any of `vllm_faithful`'s existing unit tests, prior selector-data
+generation runs, or documented findings that depend on v0.1.0's
+scheduling/memory semantics (no chunking, no prefix caching, swap-mode
+preemption absent — see the reference doc's own exclusions list) would be
+silently reinterpreted under a different algorithm. **The baseline was not
+modified as part of this audit**, per instruction.
+
+### Recommended vLLM simulator strategy: **B**
+
+Add a new, separate baseline (proposed name: `vllm_chunked_prefill_faithful`)
+pinned to its own named upstream vLLM commit/tag with real chunked-prefill
+support, documented with its own `docs/vllm_chunked_prefill_faithful_
+scheduler_reference.md` following the existing template (paper/repo
+citation, pinned commit with rationale, algorithm summary sourced from
+read source files, explicit exclusions section), and registered as its own
+entry in `EXTERNAL_BASELINE_REGISTRY` (`src/llmserveopt/policies/
+external_baselines_registry.py`) with `requires_chunked_prefill_scheduling
+=True` — a field the registry schema already tracks (currently `True` only
+for `sarathi_faithful`), so this is a schema-compatible additive entry, not
+a redesign.
+
+Why B over the alternatives:
+
+- **Not A** (leave `vllm_faithful` unchanged, scope it to short/medium
+  context only): necessary as an *interim* posture (and already reflected
+  in this doc's and the calibration profile's explicit long-context
+  caveats), but insufficient on its own — Selector Dataset v2 needs a
+  simulator baseline that can represent modern chunked-prefill vLLM
+  behavior for long-context scenarios at all, which A does not provide.
+- **Not C** (generic chunked-prefill infrastructure extension while
+  preserving `vllm_faithful` unchanged): the simulator's chunked-prefill
+  *execution* infrastructure already exists and is already shared
+  (`docs/sarathi_faithful_scheduler_reference.md`'s own infrastructure
+  audit table: "Chunked prefill (execution): Sufficient as-is... Chunked
+  prefill (admission decision): Small extension (policy-side only)").
+  What's missing is not generic infrastructure but a second *named,
+  pinned, admission-policy* built on top of that infrastructure targeting
+  vLLM specifically (as opposed to Sarathi-Serve specifically) — which is
+  exactly what a new registry entry (B) is for. Inventing a separate
+  "generic mode" would duplicate what `sarathi_faithful` already
+  demonstrates is achievable as a normal policy.
+- **B matches the codebase's own established, explicit pattern** for
+  exactly this situation (see the `vllm_faithful` reference doc quote
+  above) and requires no changes to `vllm_faithful`'s semantics, its tests,
+  or any historical result that depends on it.
+
+**Not implemented in this session** — Part 7's "do not modify the baseline
+yet" instruction and Part 8's framing as a recommendation, not an
+implementation task, are both honored here. Selecting the exact upstream
+commit/tag to pin (a real chunked-prefill-era vLLM release, ideally close
+enough to 0.24.0's scheduler behavior to be maximally relevant to this
+validation effort) requires the same primary-source archaeology used for
+the existing two reference docs and is left as a scoped follow-up. A
+concrete follow-up recommendation (`v0.4.2`) and its provenance now exist
+in `docs/vllm_chunked_prefill_faithful_design_audit.md` (session 3, below).
+
+---
+
+## Follow-up (2026-07-19, session 3): real Sarathi runtime validation succeeds
+
+Resolves the blocker from session 2: Sarathi's vendored fork forced
+`bfloat16` model weights through a FlashInfer prefill-wrapper that had
+planned for `float16`, causing a dtype-mismatch `ValueError` on every
+forward pass (job 1111711). The fix — confirmed scientifically justified by
+the fork's own `ModelConfig.dtype` default (`"float16"`, not `"bfloat16"`)
+— was to stop forcing `bfloat16` and let the fork use its own default.
+`scripts/run_sarathi_gpu_smoke_and_validation.py` gained an optional
+`--dtype` flag (default `None`, meaning "omit the kwarg entirely and let
+`ModelConfig`'s own default apply"); no vendored source was touched.
+
+### Job 1111723: SUCCESS — first real Sarathi runtime validation in this investigation
+
+- Smoke test passed (short and long prompts both completed, long prompt
+  exceeded `chunk_size` as intended, confirming chunked prefill was
+  structurally exercised).
+- Full 6-scenario matrix completed automatically in the same job/process
+  (smoke gates the matrix in-process; no Slurm dependency needed for this
+  part): **42/42 requests, completion_fraction 1.0**.
+- Server log confirmed the fix taking effect at startup: `WARNING
+  hf_utils.py:52] Casting torch.bfloat16 to torch.float16` /
+  `dtype=torch.float16` in the engine-init line.
+- Total job wall time: 3m51s (engine build alone: ~85s).
+
+### Real Sarathi vs. real vLLM (job 1111706) vs. both faithful simulators
+
+Produced by `scripts/compare_sarathi_vllm_matched_runtime.py` (new;
+combines already-collected data, does not rerun anything) and a CPU-only
+postprocessing job (1111736, `--dependency=afterok:1111723`, though by the
+time it ran 1111723 had already completed — the dependency condition was
+satisfied trivially). Full table: `experiments/gpu_external_validity/
+sarathi_vs_vllm_mistral_comparison/matched_comparison.md`.
+
+| Scenario | Real vLLM TTFT | Real Sarathi TTFT | Real vLLM E2E | Real Sarathi E2E | TTFT winner | E2E winner |
+|---|---:|---:|---:|---:|---|---|
+| long_prompt_moderate_output | 0.501s | 0.454s | 3.889s | 4.285s | sarathi | vllm |
+| active_decode_plus_arriving_prefill | 0.151s | 0.168s | 1.647s | 0.612s | vllm | **sarathi (2.7x)** |
+| prefill_heavy_burst | 0.575s | 0.629s | 1.215s | 1.371s | vllm | vllm |
+| mixed_prompt_lengths | 0.266s | 0.293s | 0.824s | 1.162s | vllm | vllm |
+| kv_pressure (matched to stress_kv_pressure) | 1.057s | 1.185s | 13.616s | 12.852s | vllm | sarathi |
+| short_context_control | n/a | 0.071s | 0.081s | 0.562s | n/a | vllm |
+
+**The clearest real-hardware signal**: `active_decode_plus_arriving_prefill`
+— vLLM has marginally better TTFT (0.151s vs 0.168s, ~11% difference), but
+**Sarathi's E2E latency is 2.7x lower** (0.612s vs 1.647s). This is exactly
+Sarathi-Serve's headline claimed mechanism — protecting already-decoding
+sequences from being stalled by newly arriving long prefills — showing up
+as a real, measured effect on real A100 hardware, not just in the paper or
+the simulator. The same direction, smaller magnitude, appears in
+`kv_pressure` (Sarathi E2E 12.852s vs vLLM 13.616s). vLLM wins cleanly
+(both TTFT and E2E) on `prefill_heavy_burst` and `mixed_prompt_lengths` —
+scenarios without the specific "protect active decode from a new arrival"
+shape.
+
+**Simulator winner-identity agreement** (comparing real-hardware
+TTFT/E2E winner per scenario against `vllm_faithful`/`sarathi_faithful`'s
+simulated winner for the same scenario): TTFT 4/5, E2E 4/6.
+
+**Most important simulator mismatch**: on `active_decode_plus_arriving_prefill`
+— the one scenario with the clearest real Sarathi advantage — the
+simulator picks **vLLM** as the E2E winner, the opposite of what real
+hardware shows. This is concrete, quantified evidence (not just the
+general timing-scale caveat already documented above) that the current
+simulator's timing/queueing abstractions miss at least one genuine,
+real Sarathi advantage regime: the specific dynamic of an already-admitted,
+mid-decode sequence competing against a newly arriving long-prefill request
+for the next scheduling slot is not modeled with enough fidelity to
+reproduce which system actually wins. This is a different, sharper finding
+than "the simulator's absolute timing is off by ~15x" (established in
+session 1) — it's a case where the simulator gets the *relative ranking*
+wrong, which matters much more for a selector that only needs to pick a
+winner, not match absolute latency.
+
+**Caveat, stated plainly**: every number above is a single run per system,
+no repeated trials, no variance/confidence interval. The two servers were
+configured to be *comparable* (matched `gpu-memory-utilization`,
+`max-num-seqs`, and per-step token budget — `--max-num-batched-tokens 512`
+for vLLM matching `chunk_size=512` for Sarathi) but are not identical
+scheduling systems, so "winner" here means "won on this one measured run
+under this one comparable-but-not-identical configuration," not "wins in
+general."
+
+### Design audit doc verified complete
+
+`docs/vllm_chunked_prefill_faithful_design_audit.md` (written earlier this
+session, extended with one more live-verified finding) covers: the
+recommended pin (`v0.4.2`, commit `c7f2cf2b7f67bce5842fedfdba508440fe257375`,
+the first vLLM release whose own notes call chunked prefill "ready for
+testing"), the exact scheduler code paths (`SchedulingBudget`,
+`enable_chunking`), the `block_manager_v1` vs `block_manager_v2` split at
+this pin with `use_v2_block_manager` defaulting to `False` (so v1, the
+reference already compatible with the existing shared `KVBlockSpaceManager`,
+is the default — v2 is flagged as a required explicit exclusion for the
+eventual real reference doc), required shared simulator primitives (mostly
+already exist, built for `sarathi_faithful`), backward-compatibility
+strategy (new file, new registry entry, zero changes to `vllm_faithful`),
+and required tests (headlined by a chunked-admission test that is the
+direct negative-image of this whole investigation's long-context-drop
+finding). **Not implemented** — audit and recommendation only, per
+instruction.
+
+### Regression check
+
+CPU-only regression job (1111737, `--dependency=afterok:1111736`): 165/165
+targeted tests passed (`test_gpu_external_validity_audit.py`,
+`test_sarathi_faithful_scheduler.py`, `test_vllm_faithful_scheduler.py`,
+`test_sarathi_style_performance.py`, `test_external_baseline_integration.py`,
+`test_selector_objective_analysis.py`). Full non-GPU suite: 80 failed /
+1783 passed / 79 skipped — an **exact match**, same failing test names, to
+the baseline established across all three prior sessions on this branch
+lineage. `git diff --check`: clean. **No new regressions.**
+
+### Safe claims
+
+- Sarathi-Serve (this vendored fork, commit `96f9911`, built successfully
+  on Wulver's A100 partition) can run `mistralai/Mistral-7B-Instruct-v0.1`
+  in float16 and complete a real, measured 6-scenario, 42-request runtime
+  matrix with 100% completion.
+- On this one comparable-but-not-identical-config comparison, real Sarathi
+  showed a real, substantial (2.7x) E2E latency advantage over real vLLM
+  specifically in the "active decode streams plus arriving long prefill"
+  scenario shape — the scenario shape that most directly exercises
+  Sarathi's stall-free decode-protection claim.
+- The `vllm_faithful`/`sarathi_faithful` simulators get the real-hardware
+  winner direction right in most (4/5 TTFT, 4/6 E2E) but not all matched
+  scenarios; the one scenario where they disagree with real hardware is
+  precisely the scenario carrying Sarathi's clearest real advantage.
+- The float16 fix, the new `--dtype` flag, the new comparison script, and
+  the new design-audit doc introduced zero regressions in the existing
+  test suite (exact baseline match, 165/165 new targeted tests passing).
+
+### Unsafe claims
+
+- Do NOT claim Sarathi is faster than vLLM in general, or in any regime
+  beyond the one specific matched scenario shape and one specific
+  comparable-but-not-identical server configuration tested here.
+- Do NOT claim this result is statistically robust — it is one run per
+  system per scenario, no repeated trials, no confidence interval.
+- Do NOT claim the simulator's winner-identity mismatch on
+  `active_decode_plus_arriving_prefill` has been root-caused at the
+  scheduler-algorithm level — it is an observed, quantified discrepancy,
+  not yet a diagnosed one (unlike the long-context-drop finding from
+  session 2, which was traced to a specific, named code path).
+- Do NOT treat the 42-request, single-configuration comparison as
+  sufficient grounds to resume Selector Dataset v2 generation — see the
+  updated implication below.
+
+### Updated implication for Selector Dataset v2
+
+Real Sarathi-vs-vLLM data now exists for the first time, and it shows a
+real, measurable advantage regime the simulator currently mis-ranks. This
+strengthens, not weakens, the case from session 1 that Selector Dataset v2
+should not resume until: (1) the simulator's handling of the
+active-decode-plus-arriving-prefill dynamic is understood well enough to
+explain the winner-identity mismatch found here, and (2) the long-context
+gap (`vllm_faithful`'s structural inability to admit >2,560-token prompts)
+is closed via the `vllm_chunked_prefill_faithful` baseline (Part 8/session
+2) or explicitly scoped around. `SELECTOR_DATASET_V2_DECISION` remains
+**`MORE_RUNTIME_VALIDATION_REQUIRED`**, now with one additional, concrete,
+quantified reason rather than a purely structural one.

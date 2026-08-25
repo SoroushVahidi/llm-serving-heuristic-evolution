@@ -1,0 +1,14 @@
+{
+  "bootstrap_seed": 20260827,
+  "design_sha256": "57c49520da34fac1235abb26845bf5c39cac95de672dfd582b1af30fa167dc97",
+  "git_head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "hostname": "al-khwarizmi",
+  "limit_scenarios": 0,
+  "n_bootstrap": 10000,
+  "parent_branches_sha256": "c53c9eb8391172dacc74d4f4c5cd4c51205f82a289213eb827a06b034da84aa2",
+  "parent_experiment": "experiments/decision_criticality_terminal_anwg_joint240_v1",
+  "parent_summary_sha256": "683b2eb7952f73bf27f76c6f668cce2c0e3c11d17a4ea70e82c285c499cbe55a",
+  "python_version": "3.12.3",
+  "sbs_policy": "kv_constrained_online",
+  "schema_version": "joint240_terminal_criticality_sbs_continuation_v1.0.0"
+}

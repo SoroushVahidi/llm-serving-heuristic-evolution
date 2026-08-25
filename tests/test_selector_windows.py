@@ -1,8 +1,7 @@
 """Tests for selector window construction."""
-import pytest
 
 from llmserveopt.core.types import Request
-from llmserveopt.selector.windows import make_windows, DEFAULT_WINDOW_SIZE, MIN_PARTIAL_WINDOW
+from llmserveopt.selector.windows import make_windows
 
 
 def _req(i: int, t: float = None) -> Request:

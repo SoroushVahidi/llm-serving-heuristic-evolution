@@ -1,0 +1,161 @@
+{
+  "causal_switch_microcase": {
+    "diverges_from_fallback_only_after_first_switch": true,
+    "dwell_violation_count": 0,
+    "first_switch_step": 21,
+    "identical_to_fallback_only_before_first_switch": true,
+    "n_switches_in_window": 3,
+    "regimes_seen": {
+      "KV_MEMORY_PRESSURE": 159,
+      "NONE": 42
+    },
+    "scenario_id": "blended.b_plus_c.s90103",
+    "steps_replayed": 201
+  },
+  "forced_parent_equivalence": {
+    "all_pass": true,
+    "per_policy": {
+      "KV_MEMORY_PRESSURE::kv_constrained_online": {
+        "bit_exact_match": true,
+        "live_forced_anwg": 0.7647058823529411,
+        "reference_anwg": 0.7647058823529411
+      },
+      "KV_MEMORY_PRESSURE::least_laxity_first": {
+        "bit_exact_match": true,
+        "live_forced_anwg": 0.4411764705882353,
+        "reference_anwg": 0.4411764705882353
+      },
+      "PREFILL_DECODE_CONTENTION::chunked_prefill_small": {
+        "bit_exact_match": true,
+        "live_forced_anwg": 0.625,
+        "reference_anwg": 0.625
+      },
+      "PREFILL_DECODE_CONTENTION::full_prefill": {
+        "bit_exact_match": true,
+        "live_forced_anwg": 0.6875,
+        "reference_anwg": 0.6875
+      },
+      "RANKING_FAIRNESS::estimated_service_time_first": {
+        "bit_exact_match": true,
+        "live_forced_anwg": 0.75,
+        "reference_anwg": 0.75
+      },
+      "RANKING_FAIRNESS::weighted_fair_share": {
+        "bit_exact_match": true,
+        "live_forced_anwg": 0.75,
+        "reference_anwg": 0.75
+      }
+    }
+  },
+  "git_head_sha": "21bfff165d5d24ed85683d05f90e33b1f36a7785",
+  "harness_readiness_inputs": {
+    "all_dwell_violations_zero": true,
+    "all_regimes_reached_in_live_smoke": true,
+    "causal_switch_demonstrated": true,
+    "forced_parent_equivalence_pass": true,
+    "no_nan_or_inf": true
+  },
+  "harness_readiness_verdict": "LIVE_HIERARCHICAL_HARNESS_READY",
+  "methodology_comparison_diagnostic": {
+    "new_live_harness_fixture_anwgs": [
+      0.75,
+      1.0,
+      0.65625,
+      1.0,
+      0.640625
+    ],
+    "new_live_harness_regimes_actually_visited": {
+      "KV_MEMORY_PRESSURE": true,
+      "PREFILL_DECODE_CONTENTION": true,
+      "RANKING_FAIRNESS": true
+    },
+    "note": "OLD = scenario-level majority-vote dispatch (offline approximation, hierarchical_router_evaluation_v1.scenario_regime_from_telemetry) on 6 real TRAIN/VAL scenarios. NEW = live per-step harness ANWG on the matched-mechanism-family synthetic fixtures from the train_val_live_smoke block above (not the identical scenario ids -- see this function's own comment for why). Diagnostic only; not used to tune or re-verdict anything.",
+    "old_majority_vote_mean_delta_anwg_vs_fixed": 0.0,
+    "old_majority_vote_n_scenarios": 6,
+    "old_majority_vote_predicted_regime_counts": {
+      "NONE": 6
+    }
+  },
+  "mode": "TRAIN_VAL_SYNTHETIC_MICROCASE_SMOKE_ONLY",
+  "run_timestamp_utc": "2026-08-18T15:31:27Z",
+  "schema_version": "hierarchical_router_live_harness_v1_smoke.1.0.0",
+  "source_checksums": {
+    "mf_psd_scenarios_v1.csv": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "online_regime_telemetry_v1.csv": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f"
+  },
+  "stage2_regimes_fit": [
+    "KV_MEMORY_PRESSURE",
+    "PREFILL_DECODE_CONTENTION",
+    "RANKING_FAIRNESS"
+  ],
+  "train_val_live_smoke": {
+    "all_dwell_violations_zero": true,
+    "all_regimes_reached": true,
+    "any_nan_or_inf": false,
+    "per_scenario": {
+      "A_fixture_1": {
+        "all_finite": true,
+        "anwg": 0.75,
+        "dwell_violation_count": 0,
+        "n_steps": 4599,
+        "regimes_seen": {
+          "NONE": 666,
+          "RANKING_FAIRNESS": 3933
+        },
+        "scenario_id": "fs2.util1.2000.skew5.0000.favlong.noise0.00.s11",
+        "wall_seconds": 51.124669551849365
+      },
+      "A_fixture_2": {
+        "all_finite": true,
+        "anwg": 1.0,
+        "dwell_violation_count": 0,
+        "n_steps": 4276,
+        "regimes_seen": {
+          "NONE": 4276
+        },
+        "scenario_id": "fs2.util1.0000.skew1.0000.favshort.noise0.00.s12",
+        "wall_seconds": 2.5535340309143066
+      },
+      "B_fixture_1": {
+        "all_finite": true,
+        "anwg": 0.65625,
+        "dwell_violation_count": 0,
+        "n_steps": 614,
+        "regimes_seen": {
+          "NONE": 608,
+          "PREFILL_DECODE_CONTENTION": 6
+        },
+        "scenario_id": "pd2.hog24.late40.slohog_ttft.s21",
+        "wall_seconds": 0.4698026180267334
+      },
+      "B_fixture_2": {
+        "all_finite": true,
+        "anwg": 1.0,
+        "dwell_violation_count": 0,
+        "n_steps": 458,
+        "regimes_seen": {
+          "NONE": 197,
+          "PREFILL_DECODE_CONTENTION": 261
+        },
+        "scenario_id": "pd2.hog12.late12.slolate_ttft.s22",
+        "wall_seconds": 3.356057643890381
+      },
+      "C_via_B_plus_C_blended_microcase": {
+        "all_finite": true,
+        "anwg": 0.640625,
+        "dwell_violation_count": 0,
+        "n_steps": 2001,
+        "regimes_seen": {
+          "KV_MEMORY_PRESSURE": 540,
+          "NONE": 1461
+        },
+        "scenario_id": "blended.b_plus_c.s90103"
+      }
+    },
+    "regimes_reached": {
+      "KV_MEMORY_PRESSURE": true,
+      "PREFILL_DECODE_CONTENTION": true,
+      "RANKING_FAIRNESS": true
+    }
+  }
+}

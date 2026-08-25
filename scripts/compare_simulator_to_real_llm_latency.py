@@ -390,12 +390,17 @@ def write_markdown(
         )
     cal_rows = [r for r in by_provider if "calibrated" in r["entity"]]
     if cal_rows:
+        hosted_prefill_values = ", ".join(
+            f"{r['entity']}={_fmt(r['ttft_or_prefill_analogue_s'], 3)}s"
+            for r in by_provider
+            if r["source"] == "hosted_api"
+        )
         lines.append(
             f"The GPU-calibrated variant does model prefill "
             f"(~{_fmt(cal_rows[0]['ttft_or_prefill_analogue_s'], 4)}s at a 512-token "
             "prompt), but this is *local GPU compute time only* for a 0.5B model — "
             "one to two orders of magnitude smaller than hosted TTFT "
-            f"({', '.join(f'{r['entity']}={_fmt(r['ttft_or_prefill_analogue_s'], 3)}s' for r in by_provider if r['source']=='hosted_api')}), "
+            f"({hosted_prefill_values}), "
             "because hosted TTFT also bundles network round-trip and provider-side "
             "admission/queueing that a local prefill-compute formula cannot represent."
         )

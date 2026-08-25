@@ -1,0 +1,11 @@
+{
+  "baseline": "vllm_style_continuous_batching",
+  "cells_path": "experiments/external_baseline_comparison_v1/results/joint_vllm_style/cells.jsonl",
+  "elapsed_s": 88.33757400512695,
+  "finished_utc": "2026-08-24T23:50:09.697240+00:00",
+  "manifest_sha256": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+  "n_failed": 38,
+  "n_scenarios": 240,
+  "n_success": 202,
+  "started_utc": "2026-08-24T23:48:41.359502+00:00"
+}

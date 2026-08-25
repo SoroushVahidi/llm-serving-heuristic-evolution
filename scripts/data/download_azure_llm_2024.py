@@ -29,7 +29,6 @@ IMPORTANT: These files are NOT committed to git (data/raw/* is gitignored).
 from __future__ import annotations
 
 import argparse
-import hashlib
 import sys
 import urllib.request
 from pathlib import Path
@@ -66,6 +65,7 @@ def download_azure_2024(output_dir: Path, traces: list[str]) -> None:
         url = AZURE_2024_URLS[trace]
         local_name = AZURE_2024_LOCAL_NAMES[trace]
         dest = output_dir / local_name
+        partial = output_dir / f"{local_name}.partial"
         expected_size = AZURE_2024_SIZES[trace]
 
         if dest.exists() and dest.stat().st_size == expected_size:
@@ -76,17 +76,18 @@ def download_azure_2024(output_dir: Path, traces: list[str]) -> None:
         print(f"  URL: {url}")
         print(f"  Destination: {dest}")
         try:
-            urllib.request.urlretrieve(url, dest, _progress_hook)
+            urllib.request.urlretrieve(url, partial, _progress_hook)
             print()
-            actual_size = dest.stat().st_size
+            actual_size = partial.stat().st_size
             if actual_size != expected_size:
                 print(f"  WARNING: expected {expected_size} bytes, got {actual_size} bytes")
             else:
                 print(f"  Download complete: {actual_size / 1e6:.0f} MB")
+            partial.replace(dest)
         except Exception as e:
             print(f"\n  ERROR: {e}", file=sys.stderr)
-            if dest.exists():
-                dest.unlink()
+            if partial.exists():
+                partial.unlink()
             sys.exit(1)
 
 

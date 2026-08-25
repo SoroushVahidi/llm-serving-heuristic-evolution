@@ -13,10 +13,9 @@ Uses only numpy for linear algebra (no sklearn dependency).
 from __future__ import annotations
 
 import json
-import warnings
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 
@@ -85,7 +84,6 @@ def fit_prefill_curve(df: Any) -> FitResult:
     -------
     FitResult
     """
-    import pandas as pd
 
     # Only use single-request rows for prefill fit
     if "batch_size" in df.columns:
@@ -180,7 +178,6 @@ def build_lookup_table(df: Any) -> dict:
         prefill_table: list of {prompt_tokens, batch_size, prefill_time_s_mean}
         decode_table:  list of {prompt_tokens, output_tokens, batch_size, decode_time_per_token_s_mean}
     """
-    import pandas as pd
 
     df_ok = df[df["skipped"] == False].copy()  # noqa: E712
 

@@ -1,0 +1,42 @@
+{
+  "GO_requires_all": [
+    "mean marginal envelope contribution >= 0.005 ANWG",
+    "positive mean marginal contribution in at least 2 distinct mechanism/config regions",
+    ">= 3 unique-win scenarios at eps=0.005 ANWG, spanning at least 2 mechanism families",
+    "no mechanism-group standalone regression > 0.030 ANWG relative to that group best fixed parent",
+    "max decision overlap with any one parent <= 95%",
+    "max reward correlation with any one parent <= 0.985 unless unique-win and MG gates pass by >2x",
+    "mechanism diagnostics match hypothesis: accumulated debt decreases without increasing SLO miss/near-miss or KV reserve violations in the targeted region",
+    "gains not concentrated: top one scenario contributes <= 40% of total positive MG and top one mechanism family <= 70%"
+  ],
+  "MIXED": "Anything between strict GO and strict NO_GO; do not promote to native closed-loop validation without a single diagnosed mechanism question.",
+  "NO_GO_if_any": [
+    "mean marginal envelope contribution < 0.001 ANWG",
+    "0 unique wins at eps=0.005 ANWG, or all wins in one isolated scenario",
+    "max decision overlap with any parent > 95% and MG < 0.005",
+    "severe mechanism-group standalone regression > 0.050 ANWG",
+    "mechanism inversion: debt rises while selected service is biased away from debt-heavy/SLO-risk classes, or KV pressure increases in KV-targeted scenarios",
+    "all apparent gains explained by matching one existing policy on the winning scenarios"
+  ],
+  "non_redundancy_gate": {
+    "concentration_fail": "top one scenario >40% or top one mechanism family >70% of positive MG",
+    "decision_overlap_fail": ">95% decisions match any existing parent on non-tie decision states",
+    "envelope_mg_fail": "mean MG <0.001 ANWG",
+    "parent_recovery_fail": "nearest behavior/reward trace is one parent and no mechanism-specific debt diagnostics differ materially",
+    "unique_win_fail": "<3 eps=0.005 unique wins or wins confined to one tiny subset"
+  },
+  "portfolio_expansion_score_definition": {
+    "E6(x)": "max over the current six policies of ANWG on scenario x",
+    "MG_c(x;P6)": "max(R_c(x), E6(x)) - E6(x)",
+    "primary_score": "mean_x MG_c(x;P6) on the fixed TRAIN-only screening subset",
+    "secondary_scores": [
+      "worst mechanism-group mean MG",
+      "unique wins eps=0.005",
+      "standalone worst-group ANWG delta to best fixed parent",
+      "decision overlap",
+      "reward correlation",
+      "public-trace sanity if included"
+    ]
+  },
+  "stop_rule": "If the debt scheduler hits NO_GO, allow at most ONE additional genuinely distinct family from this design document, preferably the two-timescale controller if diagnostics show budget-lag/transition failure. If that second family also fails strict screening, stop portfolio-policy synthesis and return to broader scheduler search outside Family-A-derived mechanisms."
+}

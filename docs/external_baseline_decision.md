@@ -5,6 +5,24 @@
 **Branch:** `phase2b9-selector-robustness-and-suite-freeze`  
 **Purpose:** Decisive, publication-oriented specification of which external baselines to implement, cite, or skip for the first paper submission.
 
+> **Addendum (post-2026-07-22): SLAI/RAD identity finding.** This document
+> predates a live-research finding made while implementing `slai_faithful`
+> (see `docs/slai_faithful_scheduler_reference.md`): **SLAI and RAD are the
+> two schedulers introduced by the same paper** — Bari, Hegde, de Veciana,
+> "Optimal Scheduling Algorithms for LLM Inference: Theory and Practice"
+> (ACM SIGMETRICS 2026 / arXiv:2508.01002) — with official Apache-2.0 code
+> at `github.com/agrimUT/SLAI`. This document does not mention SLAI/RAD at
+> all (they postdate 2026-06-25); nothing here is contradicted, but a
+> future "must-add" pass should note that `slai_faithful` is now
+> **implemented** (§ new row not added to the table below to avoid
+> rewriting a dated decision record — see `docs/current/BASELINES.md`
+> instead for the current, live external-baseline inventory). Separately:
+> while researching this, the "PROSERVE (2024)" and "Jaillet et al. (2024)"
+> citations in §B.3/B.5 below were found to have the wrong year — the real
+> papers are arXiv:2512.12928 (Dec 2025) and arXiv:2502.07115 (Feb 2025)
+> respectively. Not corrected here (out of scope for the SLAI work), but
+> flagged so a future citation-accuracy pass catches it.
+
 ---
 
 ## A. Already Implemented Deployable Baselines
@@ -48,9 +66,39 @@ These baselines are needed to fairly position the work in the LLM scheduling lit
 
 ---
 
-### B.1 Prompt-Aware LTR / PARS-style Scheduler
+### B.1 Prompt-Aware LTR / PARS-style Scheduler — **EVALUATION-READY, OFFLINE-SCORED (completed 2026-08-04)**
 
-**Why it matters:** PARS (2023) introduces learning-to-rank (LTR) for LLM request scheduling, predicting completion order to reduce mean latency. The current `estimated_service_time_first` is a simplified SJF proxy (uses predicted output as service proxy) but lacks the ranking model. Without a true LTR baseline, it is unclear whether the selector's benefit comes from policy selection or could be matched by a good learned ranker.
+**Registry:** not registered (deliberately still not selector-eligible —
+see below). **Files:** `baselines/vllm_ltr/` (isolated, outside
+`src/llmserveopt`). **Status:** the official implementation for this exact
+gap was found and used instead of a hand-rolled ranker —
+[hao-ai-lab/vllm-ltr](https://github.com/hao-ai-lab/vllm-ltr) (pinned
+commit `13bbf6ff3dab661791d41362551b089e5f77c91c`, Apache-2.0), paper Fu et
+al. *"Efficient LLM Scheduling by Learning to Rank,"* **NeurIPS 2024 (main
+conference)**, arXiv:2408.15792 as supplementary preprint id. The official
+checkpoint (`LLM-ltr/OPT-Predictors`) was downloaded, hash-recorded, and
+verified — exact architecture match and bit-exact independent-recomputation
+agreement on real ShareGPT text; a complete offline scoring pipeline turns
+real prompt text into cached, integrity-checked scores; the ranking/
+tie-break rule is reproduced exactly. The official predictor still cannot
+be invoked *live* inside the per-step simulator loop, because
+`ObservableRequest` carries only integer `prompt_tokens` counts and was
+deliberately not modified to carry raw text (explicit scope boundary, not
+an unresolved gap). See `docs/audits/vllm_ltr_baseline_audit_20260804.md`
+for the full verification record, real overhead measurements, and the one
+disclosed-but-infeasible check (a live differential against the actually
+served vLLM-fork engine). A comparison sweep has since been run (real
+WildChat-1M text, 300 requests, 3 seeds, 10 policies, independently
+re-verified) — `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`.
+Result: it tied FIFO/EDF/EST/SOF/WSP/`oracle_srtf` exactly in that regime
+(the oracle itself ties FIFO, so no reordering policy had headroom to show
+benefit there); ranking agreement with EST/SOF is moderate, not near-1.0,
+so it is not behaviorally redundant with them. **Still not registered as a
+selector candidate** — EVALUATION_ONLY; foundational-library eligibility
+was not established by this run and needs a higher-contention workload
+regime to actually test.
+
+**Why it matters (original rationale, unchanged):** PARS (2023) introduces learning-to-rank (LTR) for LLM request scheduling, predicting completion order to reduce mean latency. The current `estimated_service_time_first` is a simplified SJF proxy (uses predicted output as service proxy) but lacks the ranking model. Without a true LTR baseline, it is unclear whether the selector's benefit comes from policy selection or could be matched by a good learned ranker.
 
 **Decisions it makes:** Ranks requests by predicted service time using a learned ranker (e.g., RankNet) rather than a hand-coded proxy.
 
@@ -125,6 +173,36 @@ penalty, and admission credit throttling. See `docs/audits/phase2b10_scorpio_slo
 
 **Safe manuscript wording:** "Fairness-aware batch formation (FairBatching-inspired [cite]); allocates per-SLO-class token budgets to prevent request starvation."
 
+**Update (2026-08-05):** a *different*, distinct fairness axis --
+per-TENANT (not per-SLO-class) service equalization -- is now actually
+integrated, not just a "style/inspired" placeholder: VTC (Sheng et al.,
+"Fairness in Serving Large Language Models," OSDI 2024,
+`Ying1123/VTC-artifact`). Unlike this section's FairBatching entry, VTC's
+real official scheduling algorithm runs unmodified via
+`baselines/vtc/adapter/`; see `docs/BASELINE_STATUS.md` and
+`docs/audits/vtc_official_artifact_audit_20260805.md` for its current
+EVALUATION_ONLY status. FairBatching (per-class quotas) and VTC (per-tenant
+virtual-counter fairness) address different axes of the same general
+"fairness" concern and are not substitutes for each other -- FairBatching
+remains unimplemented/not prioritized.
+
+**Update (2026-08-05, same day, fairness-benchmark repair):** the initial
+smoke evaluation above was found to be measuring an admission-gate
+confound rather than VTC's fairness mechanism (a `max_batch_tokens` units
+mismatch between this simulator's native request-count interpretation and
+the official code's real token-budget interpretation -- see
+`docs/audits/vtc_fairness_benchmark_repair_20260805.md`). After repair
+(three labeled comparison variants isolating ordering from admission,
+retuned/headroom-gated workloads, a 108-run comparative sweep
+independently re-verified with zero mismatches), VTC wins or ties the
+per-tenant fairness comparison in 17/18 family x seed combinations, with
+a real, bounded ANWG trade-off in the one scenario designed to expose its
+SLO-blindness. Scientific classification:
+**FOUNDATIONAL_CANDIDATE**, scoped to a future fairness-aware composition
+context specifically (not a general ANWG-maximizing candidate) -- not
+registered this task. Full record:
+`docs/audits/vtc_fairness_comparative_evaluation_20260805.md`.
+
 ---
 
 ### B.5 PROSERVE SlideBatching-style Priority-Aware Scheduler
@@ -166,14 +244,26 @@ These baselines would strengthen the paper but are not blockers for a first subm
 
 These systems are cited as context but are not implemented.
 
+**Update (2026-08-06, does not rewrite the original decision below):** several rows in this
+table are stale relative to later work on this branch. "Full Sarathi-Serve integration"
+now has a faithful reimplementation plus real Wulver A100 validation
+(`docs/audits/sarathi_official_artifact_audit_20260805.md`), and "Llumnix" now has a
+complete faithful simulator implementation with 36 passing fidelity tests, registered as
+`llumnix_faithful` — it is not "out of scope," it simply has no comparative evaluation run
+against it yet (see `docs/BASELINE_STATUS.md`'s Llumnix row and
+`docs/audits/llumnix_official_artifact_audit_20260806.md`). This table is retained
+unedited below as a historical record of the original first-paper scoping decision;
+`docs/BASELINE_STATUS.md` is the authoritative current-status index and should be
+consulted instead of this table for present-day status.
+
 | System | Reason for exclusion |
 |--------|---------------------|
 | Full vLLM integration | Requires running real GPU inference; out of simulator scope |
-| Full Sarathi-Serve integration | Same; our `sarathi_style` is a simulator proxy |
+| Full Sarathi-Serve integration | Same; our `sarathi_style` is a simulator proxy *(superseded — see update note above)* |
 | Full DeepSpeed-FastGen stack | Multi-node; out of scope |
 | DistServe | Disaggregated prefill/decode; requires different simulator architecture |
 | Mooncake / Conductor | Cluster-level KV transfer scheduling; out of scope |
-| Llumnix | Live migration system; out of scope |
+| Llumnix | Live migration system; out of scope *(superseded — see update note above)* |
 | ORBITFLOW full ILP/offload stack | Requires ILP solver + offload system; out of scope |
 | Full cluster disaggregated systems | All require cluster infrastructure |
 
@@ -204,4 +294,31 @@ For the next development phase, implement in this order:
 | Implementation priority order specified | ✅ |
 | Oracle excluded from all comparisons | ✅ |
 | All baselines are deployable (no oracle leak) | ✅ |
-| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); B.1, B.3–B.5 pending |
+| Must-add B.1–B.5 implemented | Partial — **B.2 SCORPIO-style implemented** (`scorpio_style_slo_guard`, Phase 2B.10); **B.1 evaluation-ready, offline-scored, and now comparison-swept** (official vLLM-LTR checkpoint downloaded + hash-verified + architecturally/numerically verified; comparison sweep run and independently re-verified 2026-08-04 on real WildChat-1M text — tied FIFO/oracle exactly in the tested regime, EVALUATION_ONLY classification, not yet a selector candidate — see `docs/audits/vllm_ltr_baseline_audit_20260804.md` and `docs/audits/vllm_ltr_first_comparative_evaluation_20260804.md`); B.3–B.5 pending |
+
+**Additional baseline beyond the original B.1–B.5 list (added 2026-08-04,
+not a fulfillment of any B.1–B.5 item — B.1 was already fulfilled by
+vLLM-LTR above): PARS-Serve-2026** (`baselines/pars/`, official repo
+`SPEAR-UIC/PARS`, paper Tao et al., ISC High Performance 2026,
+arXiv:2510.03243). **Status: COMPLETE, INDEPENDENTLY VERIFIED,
+EVALUATION_ONLY** — official preprocessing/training code integrated and
+run unmodified; no pretrained checkpoint is released, so a real
+`bert-base-uncased` checkpoint was trained locally
+(`best_val_accuracy=0.9141`, hash-verified `d54be087...c33eb27`). Known
+license gap (no upstream LICENSE file) disclosed in
+`baselines/pars/PROVENANCE.md`. Named "PARS-Serve-2026" in prose to
+disambiguate from this document's own unrelated "PARS-2023-like"
+reference (B.1's original rationale text above, and
+`docs/external_baseline_coverage_report.md` §15, both refer to a
+*different* 2023 paper). Evaluated head-to-head against 9 other policies
+across WildChat control and all 7 accepted canonical-suite families (the
+first baseline on this branch evaluated on the full canonical suite);
+zero unique wins across 8 families, best rank 5th of 10, significantly
+worse than the top policy in 5 of 8 families, significantly better than
+FIFO/EDF in 3 burst-heavy families — final classification
+**EVALUATION_ONLY**, not promoted to any selector-candidate list. See
+`docs/BASELINE_STATUS.md` for the current cross-baseline status index,
+`docs/audits/pars_baseline_implementation_20260804.md` for the full
+implementation record, and
+`docs/audits/pars_first_comparative_evaluation_20260804.md` for the full
+evaluation, recovery, and independent-verification record.

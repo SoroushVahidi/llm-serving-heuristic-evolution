@@ -18,8 +18,6 @@ Modes
 from __future__ import annotations
 
 import argparse
-import csv
-import json
 import logging
 import sys
 from collections import Counter, defaultdict
@@ -35,7 +33,6 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from llmserveopt.selector.features import (
-    FEATURE_NAMES,
     parse_feature_mode,
     feature_mode_is_deployable,
 )
@@ -47,7 +44,6 @@ from llmserveopt.selector.roles import (
     is_deployable_headline_selector,
     is_external_style_baseline,
     is_oracle_assisted_selector,
-    selector_role,
 )
 from llmserveopt.simulator.service_model_factory import build_service_model_from_config
 
@@ -60,13 +56,10 @@ from run_phase2b9_selector_robustness import (
 from run_phase2b12_workload_diversity_selector_labels import build_rows_for_group
 from run_phase2b15_corrected_objective_selector_retraining import (
     _anwg,
-    _comp_frac,
-    _cond_wg,
     relabel_rows,
     split_rows,
 )
 from run_phase2b16_fresh_corrected_objective_validation import (
-    evaluate_fresh_selector,
     train_selectors_from_rows,
 )
 from run_phase2c1_real_trace_ingestion_validation import (

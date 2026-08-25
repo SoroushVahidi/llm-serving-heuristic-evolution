@@ -1,0 +1,9 @@
+metric,threshold,observed,pass
+DEV NN mean >= 5% improvement,>= 5%,0.31468866951099234,False
+DEV NN p90 >= 5% improvement,>= 5%,0.0,False
+favored-long DEV NN mean >= 7% improvement,>= 7%,0.5828978057339095,False
+DEV closer rows >= 15/104,>= 15/104,1/104,False
+favored-long closer rows >= 8/66,>= 8/66,1/66,False
+local 5NN density >= 3% improvement,>= 3%,1.0388066421745037,False
+top-gap overlap >= 3/5 features,>= 3/5,1/5,False
+>= 2 DEV configuration groups improve,>= 2 groups,1,False

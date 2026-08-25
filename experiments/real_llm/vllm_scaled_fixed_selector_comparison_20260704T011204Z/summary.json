@@ -1,0 +1,1161 @@
+{
+  "total_records": 3780,
+  "policies": [
+    "edf",
+    "estimated_service_time_first",
+    "fifo",
+    "least_laxity_first",
+    "selector",
+    "shortest_output_first",
+    "vllm_direct"
+  ],
+  "regimes": [
+    "bursty_tight",
+    "overloaded_mixed_priority",
+    "steady_moderate"
+  ],
+  "per_policy": {
+    "edf": {
+      "n_total": 540,
+      "n_completed": 540,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 540,
+        "mean": 0.01941319463787497,
+        "p50": 0.017771460494259372,
+        "p95": 0.033120224668527945,
+        "p99": 0.037021774352760994
+      },
+      "server_latency_stats": {
+        "count": 540,
+        "mean": 1.4826210917416676,
+        "p50": 1.337402317498345,
+        "p95": 2.8404007583420023,
+        "p99": 2.882966450577951
+      },
+      "total_wall_time_stats": {
+        "count": 540,
+        "mean": 2.6123353703703702,
+        "p50": 1.8820000000000001,
+        "p95": 7.352549999999994,
+        "p99": 11.835149000000026
+      },
+      "mean_output_tokens": 273.0814814814815,
+      "conditional_weighted_goodput": 0.22773972602739725,
+      "arrival_normalized_weighted_goodput": 0.22773972602739725,
+      "slo_violation_rate_among_completed": 0.65,
+      "request_throughput_per_sec": 1.1491366811725232,
+      "output_token_throughput_per_sec": 313.8079473193055,
+      "policy_wall_clock_seconds": 469.91799047699897
+    },
+    "estimated_service_time_first": {
+      "n_total": 540,
+      "n_completed": 540,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 540,
+        "mean": 0.019264488113737942,
+        "p50": 0.01787412297562696,
+        "p95": 0.02942402799380943,
+        "p99": 0.03691503458889201
+      },
+      "server_latency_stats": {
+        "count": 540,
+        "mean": 1.4859567382803005,
+        "p50": 1.3441588369896635,
+        "p95": 2.8466939871083015,
+        "p99": 2.88333710901381
+      },
+      "total_wall_time_stats": {
+        "count": 540,
+        "mean": 2.6202146296296296,
+        "p50": 1.9412500000000001,
+        "p95": 7.324169999999995,
+        "p99": 11.820402000000025
+      },
+      "mean_output_tokens": 273.97222222222223,
+      "conditional_weighted_goodput": 0.22773972602739725,
+      "arrival_normalized_weighted_goodput": 0.22773972602739725,
+      "slo_violation_rate_among_completed": 0.65,
+      "request_throughput_per_sec": 1.1474382057211772,
+      "output_token_throughput_per_sec": 314.36619508411025,
+      "policy_wall_clock_seconds": 470.613578411052
+    },
+    "fifo": {
+      "n_total": 540,
+      "n_completed": 540,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 540,
+        "mean": 0.019320417169796267,
+        "p50": 0.01811833248939365,
+        "p95": 0.02952409007702954,
+        "p99": 0.038279548191349044
+      },
+      "server_latency_stats": {
+        "count": 540,
+        "mean": 1.4768032050816584,
+        "p50": 1.328297937521711,
+        "p95": 2.8345123418810543,
+        "p99": 2.8679543787660076
+      },
+      "total_wall_time_stats": {
+        "count": 540,
+        "mean": 2.5934044444444444,
+        "p50": 1.8992,
+        "p95": 7.053419999999993,
+        "p99": 11.633769000000022
+      },
+      "mean_output_tokens": 274.0537037037037,
+      "conditional_weighted_goodput": 0.24143835616438356,
+      "arrival_normalized_weighted_goodput": 0.24143835616438356,
+      "slo_violation_rate_among_completed": 0.6185185185185185,
+      "request_throughput_per_sec": 1.1475330393315442,
+      "output_token_throughput_per_sec": 314.48567955117755,
+      "policy_wall_clock_seconds": 470.5746862979722
+    },
+    "least_laxity_first": {
+      "n_total": 540,
+      "n_completed": 540,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 540,
+        "mean": 0.019394037809063406,
+        "p50": 0.017854535981314257,
+        "p95": 0.030107048214995255,
+        "p99": 0.03968236096436158
+      },
+      "server_latency_stats": {
+        "count": 540,
+        "mean": 1.4967528130972318,
+        "p50": 1.3513239720195998,
+        "p95": 2.8511529376206455,
+        "p99": 2.9357234613836054
+      },
+      "total_wall_time_stats": {
+        "count": 540,
+        "mean": 2.64301,
+        "p50": 1.9568,
+        "p95": 7.273239999999995,
+        "p99": 11.812406000000024
+      },
+      "mean_output_tokens": 274.60370370370373,
+      "conditional_weighted_goodput": 0.22345890410958905,
+      "arrival_normalized_weighted_goodput": 0.22345890410958905,
+      "slo_violation_rate_among_completed": 0.6555555555555556,
+      "request_throughput_per_sec": 1.1374768262932513,
+      "output_token_throughput_per_sec": 312.35534937726123,
+      "policy_wall_clock_seconds": 474.73494625795865
+    },
+    "selector": {
+      "n_total": 540,
+      "n_completed": 483,
+      "n_failed": 57,
+      "n_dropped": 57,
+      "n_declined_admission": 57,
+      "n_never_admitted": 0,
+      "completion_fraction": 0.8944444444444445,
+      "ttft_stats": {
+        "count": 483,
+        "mean": 0.01940567819300391,
+        "p50": 0.017343074025120586,
+        "p95": 0.027232209726935252,
+        "p99": 0.04853153723059224
+      },
+      "server_latency_stats": {
+        "count": 483,
+        "mean": 1.3950678287092046,
+        "p50": 1.3087544119916856,
+        "p95": 2.7890544987516477,
+        "p99": 2.808986246625427
+      },
+      "total_wall_time_stats": {
+        "count": 483,
+        "mean": 2.378203105590062,
+        "p50": 1.6619,
+        "p95": 5.63277,
+        "p99": 9.920634000000002
+      },
+      "mean_output_tokens": 262.12422360248445,
+      "conditional_weighted_goodput": 0.2505050505050505,
+      "arrival_normalized_weighted_goodput": 0.2240628507295174,
+      "slo_violation_rate_among_completed": 0.6211180124223602,
+      "request_throughput_per_sec": 1.1670558968206304,
+      "output_token_throughput_per_sec": 305.9136208548089,
+      "policy_wall_clock_seconds": 413.861924965051
+    },
+    "shortest_output_first": {
+      "n_total": 540,
+      "n_completed": 540,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 540,
+        "mean": 0.019258132754691393,
+        "p50": 0.018393117003142834,
+        "p95": 0.028511693130712945,
+        "p99": 0.038313539494411096
+      },
+      "server_latency_stats": {
+        "count": 540,
+        "mean": 1.4905953160934453,
+        "p50": 1.3369509075128008,
+        "p95": 2.8326271575846476,
+        "p99": 2.9689141827175627
+      },
+      "total_wall_time_stats": {
+        "count": 540,
+        "mean": 2.611299259259259,
+        "p50": 1.9007999999999998,
+        "p95": 7.133894999999987,
+        "p99": 11.830297000000025
+      },
+      "mean_output_tokens": 274.72777777777776,
+      "conditional_weighted_goodput": 0.24315068493150685,
+      "arrival_normalized_weighted_goodput": 0.24315068493150685,
+      "slo_violation_rate_among_completed": 0.6166666666666667,
+      "request_throughput_per_sec": 1.1418493765946698,
+      "output_token_throughput_per_sec": 313.69774178879453,
+      "policy_wall_clock_seconds": 472.9170160870417
+    },
+    "vllm_direct": {
+      "n_total": 540,
+      "n_completed": 540,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 540,
+        "mean": 0.019308909416819613,
+        "p50": 0.018077754008118063,
+        "p95": 0.029930251828045568,
+        "p99": 0.03740469474520069
+      },
+      "server_latency_stats": {
+        "count": 540,
+        "mean": 1.4673794714875166,
+        "p50": 1.3207015114603564,
+        "p95": 2.7964509185170754,
+        "p99": 2.8464425700349967
+      },
+      "total_wall_time_stats": {
+        "count": 540,
+        "mean": 2.5734044444444444,
+        "p50": 1.8488,
+        "p95": 6.898124999999999,
+        "p99": 11.482915000000018
+      },
+      "mean_output_tokens": 274.7037037037037,
+      "conditional_weighted_goodput": 0.23972602739726026,
+      "arrival_normalized_weighted_goodput": 0.23972602739726026,
+      "slo_violation_rate_among_completed": 0.6203703703703703,
+      "request_throughput_per_sec": 1.1563465562552973,
+      "output_token_throughput_per_sec": 317.6526817683533,
+      "policy_wall_clock_seconds": 466.98802973801503
+    }
+  },
+  "per_policy_and_regime": {
+    "edf::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018903837974196196,
+        "p50": 0.01757949049351737,
+        "p95": 0.02776480383181479,
+        "p99": 0.029825635640881958
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4961848011172454,
+        "p50": 1.3402203754812945,
+        "p95": 2.8567803428770278,
+        "p99": 2.87385538843635
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.5870816666666667,
+        "p50": 1.8036,
+        "p95": 8.003744999999999,
+        "p99": 11.25652100000002
+      },
+      "mean_output_tokens": 274.6277777777778,
+      "conditional_weighted_goodput": 0.17204301075268819,
+      "arrival_normalized_weighted_goodput": 0.17204301075268819,
+      "slo_violation_rate_among_completed": 0.7555555555555555,
+      "request_throughput_per_sec": 0.3830455603908411,
+      "output_token_throughput_per_sec": 105.19495103778027,
+      "policy_wall_clock_seconds": 469.91799047699897
+    },
+    "edf::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018853648400141133,
+        "p50": 0.01717938599176705,
+        "p95": 0.028449986237683317,
+        "p99": 0.03338434329489246
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4858704169044763,
+        "p50": 1.3325112014717888,
+        "p95": 2.8767361903970596,
+        "p99": 2.882918602972641
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.566667222222222,
+        "p50": 1.9687000000000001,
+        "p95": 7.499379999999992,
+        "p99": 11.183894000000022
+      },
+      "mean_output_tokens": 272.25555555555553,
+      "conditional_weighted_goodput": 0.1047008547008547,
+      "arrival_normalized_weighted_goodput": 0.1047008547008547,
+      "slo_violation_rate_among_completed": 0.7833333333333333,
+      "request_throughput_per_sec": 0.3830455603908411,
+      "output_token_throughput_per_sec": 104.28628184729754,
+      "policy_wall_clock_seconds": 469.91799047699897
+    },
+    "edf::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.020482097539287578,
+        "p50": 0.01849836399196647,
+        "p95": 0.03563510690582916,
+        "p99": 0.04044947969960049
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.465808057203281,
+        "p50": 1.3398021790198982,
+        "p95": 2.8193992754124335,
+        "p99": 2.8846350092161446
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.683257222222222,
+        "p50": 1.85355,
+        "p95": 6.695789999999991,
+        "p99": 11.072935000000015
+      },
+      "mean_output_tokens": 272.3611111111111,
+      "conditional_weighted_goodput": 0.46646341463414637,
+      "arrival_normalized_weighted_goodput": 0.46646341463414637,
+      "slo_violation_rate_among_completed": 0.4111111111111111,
+      "request_throughput_per_sec": 0.3830455603908411,
+      "output_token_throughput_per_sec": 104.3267144342277,
+      "policy_wall_clock_seconds": 469.91799047699897
+    },
+    "estimated_service_time_first::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.01896149854259824,
+        "p50": 0.01823334049549885,
+        "p95": 0.027252679862431246,
+        "p99": 0.02857807760825381
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4878636851124207,
+        "p50": 1.3441588369896635,
+        "p95": 2.8825947291974443,
+        "p99": 2.904154927478521
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.5778616666666667,
+        "p50": 1.78755,
+        "p95": 7.971824999999999,
+        "p99": 11.26031400000002
+      },
+      "mean_output_tokens": 273.30555555555554,
+      "conditional_weighted_goodput": 0.17204301075268819,
+      "arrival_normalized_weighted_goodput": 0.17204301075268819,
+      "slo_violation_rate_among_completed": 0.7555555555555555,
+      "request_throughput_per_sec": 0.38247940190705904,
+      "output_token_throughput_per_sec": 104.53374542676538,
+      "policy_wall_clock_seconds": 470.613578411052
+    },
+    "estimated_service_time_first::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018507971776287175,
+        "p50": 0.017413444496924058,
+        "p95": 0.0267287787690293,
+        "p99": 0.02982679385459052
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.5027237343475766,
+        "p50": 1.3380060135095846,
+        "p95": 2.8466939871083015,
+        "p99": 2.8599715006595945
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.5950544444444446,
+        "p50": 2.0023999999999997,
+        "p95": 7.047884999999985,
+        "p99": 11.20253700000002
+      },
+      "mean_output_tokens": 276.30555555555554,
+      "conditional_weighted_goodput": 0.1047008547008547,
+      "arrival_normalized_weighted_goodput": 0.1047008547008547,
+      "slo_violation_rate_among_completed": 0.7833333333333333,
+      "request_throughput_per_sec": 0.38247940190705904,
+      "output_token_throughput_per_sec": 105.68118363248657,
+      "policy_wall_clock_seconds": 470.613578411052
+    },
+    "estimated_service_time_first::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.020323994022328408,
+        "p50": 0.0186937160033267,
+        "p95": 0.03565447457658592,
+        "p99": 0.03915707657695748
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4672827953809044,
+        "p50": 1.3435665589931887,
+        "p95": 2.823529648422846,
+        "p99": 2.880157292835065
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.687727777777778,
+        "p50": 1.85845,
+        "p95": 6.587879999999991,
+        "p99": 11.042512000000015
+      },
+      "mean_output_tokens": 272.30555555555554,
+      "conditional_weighted_goodput": 0.46646341463414637,
+      "arrival_normalized_weighted_goodput": 0.46646341463414637,
+      "slo_violation_rate_among_completed": 0.4111111111111111,
+      "request_throughput_per_sec": 0.38247940190705904,
+      "output_token_throughput_per_sec": 104.15126602485833,
+      "policy_wall_clock_seconds": 470.613578411052
+    },
+    "fifo::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.01870920179676937,
+        "p50": 0.017643486993620172,
+        "p95": 0.02646925041917711,
+        "p99": 0.030197941542137417
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4824653896079527,
+        "p50": 1.3332552099891473,
+        "p95": 2.825198346184334,
+        "p99": 2.851638784990646
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.544048888888889,
+        "p50": 1.6846999999999999,
+        "p95": 7.091349999999984,
+        "p99": 11.169936000000021
+      },
+      "mean_output_tokens": 273.9888888888889,
+      "conditional_weighted_goodput": 0.1935483870967742,
+      "arrival_normalized_weighted_goodput": 0.1935483870967742,
+      "slo_violation_rate_among_completed": 0.7055555555555556,
+      "request_throughput_per_sec": 0.3825110131105147,
+      "output_token_throughput_per_sec": 104.80376746991314,
+      "policy_wall_clock_seconds": 470.5746862979722
+    },
+    "fifo::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.01879809781870184,
+        "p50": 0.017872403957881033,
+        "p95": 0.027487346628913646,
+        "p99": 0.029704089555889372
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4942958298042262,
+        "p50": 1.327912857523188,
+        "p95": 2.86643540324003,
+        "p99": 2.868052991689765
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.561863888888889,
+        "p50": 1.9034,
+        "p95": 7.077059999999985,
+        "p99": 11.14961200000002
+      },
+      "mean_output_tokens": 276.24444444444447,
+      "conditional_weighted_goodput": 0.13247863247863248,
+      "arrival_normalized_weighted_goodput": 0.13247863247863248,
+      "slo_violation_rate_among_completed": 0.7277777777777777,
+      "request_throughput_per_sec": 0.3825110131105147,
+      "output_token_throughput_per_sec": 105.66654231059574,
+      "policy_wall_clock_seconds": 470.5746862979722
+    },
+    "fifo::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.020453951893917594,
+        "p50": 0.01828226901125163,
+        "p95": 0.03640899206220637,
+        "p99": 0.04338087338139303
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4536483958327961,
+        "p50": 1.325094573025126,
+        "p95": 2.852284705123748,
+        "p99": 2.8745115024875854
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.6743005555555555,
+        "p50": 1.9139,
+        "p95": 6.753884999999992,
+        "p99": 10.823881000000014
+      },
+      "mean_output_tokens": 271.9277777777778,
+      "conditional_weighted_goodput": 0.45121951219512196,
+      "arrival_normalized_weighted_goodput": 0.45121951219512196,
+      "slo_violation_rate_among_completed": 0.4222222222222222,
+      "request_throughput_per_sec": 0.3825110131105147,
+      "output_token_throughput_per_sec": 104.01536977066868,
+      "policy_wall_clock_seconds": 470.5746862979722
+    },
+    "least_laxity_first::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.019155977632423552,
+        "p50": 0.017735360481310636,
+        "p95": 0.027556706857285448,
+        "p99": 0.032527151465183125
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.5001186690820356,
+        "p50": 1.3595103374973405,
+        "p95": 2.8437745135946897,
+        "p99": 2.900442696174723
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.5929105555555556,
+        "p50": 1.8139500000000002,
+        "p95": 7.959134999999997,
+        "p99": 11.317990000000021
+      },
+      "mean_output_tokens": 274.65555555555557,
+      "conditional_weighted_goodput": 0.17204301075268819,
+      "arrival_normalized_weighted_goodput": 0.17204301075268819,
+      "slo_violation_rate_among_completed": 0.7555555555555555,
+      "request_throughput_per_sec": 0.3791589420977504,
+      "output_token_throughput_per_sec": 104.13810988571436,
+      "policy_wall_clock_seconds": 474.73494625795865
+    },
+    "least_laxity_first::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018744156101537453,
+        "p50": 0.018206584500148892,
+        "p95": 0.027045842917868865,
+        "p99": 0.028383190185413697
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.5015302019950467,
+        "p50": 1.3610056755132973,
+        "p95": 2.8539896209549624,
+        "p99": 2.967302946373238
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.605628888888889,
+        "p50": 2.009,
+        "p95": 6.967819999999983,
+        "p99": 11.26315800000002
+      },
+      "mean_output_tokens": 276.73333333333335,
+      "conditional_weighted_goodput": 0.09829059829059829,
+      "arrival_normalized_weighted_goodput": 0.09829059829059829,
+      "slo_violation_rate_among_completed": 0.7944444444444444,
+      "request_throughput_per_sec": 0.3791589420977504,
+      "output_token_throughput_per_sec": 104.9259179098508,
+      "policy_wall_clock_seconds": 474.73494625795865
+    },
+    "least_laxity_first::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.020281979693229205,
+        "p50": 0.017931935988599434,
+        "p95": 0.037341736070811746,
+        "p99": 0.0412125506560551
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4886095682146132,
+        "p50": 1.3462036034907214,
+        "p95": 2.8511529376206455,
+        "p99": 2.8679508946306305
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.7304905555555554,
+        "p50": 1.8912499999999999,
+        "p95": 6.687599999999992,
+        "p99": 10.983015000000014
+      },
+      "mean_output_tokens": 272.4222222222222,
+      "conditional_weighted_goodput": 0.4603658536585366,
+      "arrival_normalized_weighted_goodput": 0.4603658536585366,
+      "slo_violation_rate_among_completed": 0.4166666666666667,
+      "request_throughput_per_sec": 0.3791589420977504,
+      "output_token_throughput_per_sec": 103.29132158169605,
+      "policy_wall_clock_seconds": 474.73494625795865
+    },
+    "selector::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 165,
+      "n_failed": 15,
+      "n_dropped": 15,
+      "n_declined_admission": 15,
+      "n_never_admitted": 0,
+      "completion_fraction": 0.9166666666666666,
+      "ttft_stats": {
+        "count": 165,
+        "mean": 0.02035178275616614,
+        "p50": 0.01928025099914521,
+        "p95": 0.027297972224187103,
+        "p99": 0.05780970435822343
+      },
+      "server_latency_stats": {
+        "count": 165,
+        "mean": 1.4219106203925824,
+        "p50": 1.3084231509710662,
+        "p95": 2.7898504915996454,
+        "p99": 2.798106131728273
+      },
+      "total_wall_time_stats": {
+        "count": 165,
+        "mean": 2.344130909090909,
+        "p50": 1.5314,
+        "p95": 5.6245199999999995,
+        "p99": 9.188883999999966
+      },
+      "mean_output_tokens": 265.9878787878788,
+      "conditional_weighted_goodput": 0.1952662721893491,
+      "arrival_normalized_weighted_goodput": 0.17899408284023668,
+      "slo_violation_rate_among_completed": 0.7212121212121212,
+      "request_throughput_per_sec": 0.3986836914604638,
+      "output_token_throughput_per_sec": 106.0450293988899,
+      "policy_wall_clock_seconds": 413.861924965051
+    },
+    "selector::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 143,
+      "n_failed": 37,
+      "n_dropped": 37,
+      "n_declined_admission": 37,
+      "n_never_admitted": 0,
+      "completion_fraction": 0.7944444444444444,
+      "ttft_stats": {
+        "count": 143,
+        "mean": 0.02006495467686726,
+        "p50": 0.01890876895049587,
+        "p95": 0.027398414036724716,
+        "p99": 0.054480340447044175
+      },
+      "server_latency_stats": {
+        "count": 143,
+        "mean": 1.3246094656552976,
+        "p50": 0.9997090389952064,
+        "p95": 2.798332649242366,
+        "p99": 2.8319266251416413
+      },
+      "total_wall_time_stats": {
+        "count": 143,
+        "mean": 2.0500664335664336,
+        "p50": 1.5244,
+        "p95": 5.446570000000001,
+        "p99": 6.344320000000014
+      },
+      "mean_output_tokens": 247.51048951048952,
+      "conditional_weighted_goodput": 0.11799410029498525,
+      "arrival_normalized_weighted_goodput": 0.0937397574565716,
+      "slo_violation_rate_among_completed": 0.7412587412587412,
+      "request_throughput_per_sec": 0.3455258659324019,
+      "output_token_throughput_per_sec": 85.52127621546457,
+      "policy_wall_clock_seconds": 413.861924965051
+    },
+    "selector::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 175,
+      "n_failed": 5,
+      "n_dropped": 5,
+      "n_declined_admission": 5,
+      "n_never_admitted": 0,
+      "completion_fraction": 0.9722222222222222,
+      "ttft_stats": {
+        "count": 175,
+        "mean": 0.017974913678065474,
+        "p50": 0.016155091987457126,
+        "p95": 0.026764437509700655,
+        "p99": 0.033740231256233495
+      },
+      "server_latency_stats": {
+        "count": 175,
+        "mean": 1.427333458931784,
+        "p50": 1.3161705280072056,
+        "p95": 2.7754441259952727,
+        "p99": 2.7942288851039483
+      },
+      "total_wall_time_stats": {
+        "count": 175,
+        "mean": 2.6784628571428573,
+        "p50": 2.047,
+        "p95": 6.229389999999989,
+        "p99": 10.905185999999972
+      },
+      "mean_output_tokens": 270.42285714285714,
+      "conditional_weighted_goodput": 0.4536741214057508,
+      "arrival_normalized_weighted_goodput": 0.4410720624778133,
+      "slo_violation_rate_among_completed": 0.42857142857142855,
+      "request_throughput_per_sec": 0.4228463394277646,
+      "output_token_throughput_per_sec": 114.34731524045446,
+      "policy_wall_clock_seconds": 413.861924965051
+    },
+    "shortest_output_first::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.01889126240760864,
+        "p50": 0.017785847012419254,
+        "p95": 0.027060255120159124,
+        "p99": 0.027880616124602967
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.5006201761829692,
+        "p50": 1.3437542019819375,
+        "p95": 2.829158984962851,
+        "p99": 2.862836873640772
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.5670933333333332,
+        "p50": 1.82505,
+        "p95": 7.156689999999988,
+        "p99": 11.23521100000002
+      },
+      "mean_output_tokens": 275.52222222222224,
+      "conditional_weighted_goodput": 0.1935483870967742,
+      "arrival_normalized_weighted_goodput": 0.1935483870967742,
+      "slo_violation_rate_among_completed": 0.7055555555555556,
+      "request_throughput_per_sec": 0.38061645886488993,
+      "output_token_throughput_per_sec": 104.8682925608075,
+      "policy_wall_clock_seconds": 472.9170160870417
+    },
+    "shortest_output_first::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018271091004135088,
+        "p50": 0.017282521002925932,
+        "p95": 0.025388334193849005,
+        "p99": 0.028842307848972272
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.478562585926395,
+        "p50": 1.316120122995926,
+        "p95": 2.8014246166072554,
+        "p99": 2.8091132385400126
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.536641111111111,
+        "p50": 1.95365,
+        "p95": 7.019174999999985,
+        "p99": 11.05841200000002
+      },
+      "mean_output_tokens": 276.4888888888889,
+      "conditional_weighted_goodput": 0.13247863247863248,
+      "arrival_normalized_weighted_goodput": 0.13247863247863248,
+      "slo_violation_rate_among_completed": 0.7277777777777777,
+      "request_throughput_per_sec": 0.38061645886488993,
+      "output_token_throughput_per_sec": 105.2362218043769,
+      "policy_wall_clock_seconds": 472.9170160870417
+    },
+    "shortest_output_first::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.020612044852330452,
+        "p50": 0.0192455685173627,
+        "p95": 0.037505030637839804,
+        "p99": 0.040376006460865026
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4926031861709714,
+        "p50": 1.33861198098748,
+        "p95": 2.934330842483905,
+        "p99": 2.9994064245780465
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.730163333333333,
+        "p50": 1.9007999999999998,
+        "p95": 7.0549499999999945,
+        "p99": 11.046961000000014
+      },
+      "mean_output_tokens": 272.1722222222222,
+      "conditional_weighted_goodput": 0.4573170731707317,
+      "arrival_normalized_weighted_goodput": 0.4573170731707317,
+      "slo_violation_rate_among_completed": 0.4166666666666667,
+      "request_throughput_per_sec": 0.38061645886488993,
+      "output_token_throughput_per_sec": 103.59322742361013,
+      "policy_wall_clock_seconds": 472.9170160870417
+    },
+    "vllm_direct::bursty_tight": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018993190439586114,
+        "p50": 0.01783463201718405,
+        "p95": 0.027822689016466028,
+        "p99": 0.03267728458333295
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4749641616925753,
+        "p50": 1.3218694430252071,
+        "p95": 2.8262751717760692,
+        "p99": 2.846136853690841
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.525933888888889,
+        "p50": 1.73725,
+        "p95": 6.944479999999984,
+        "p99": 11.19340000000002
+      },
+      "mean_output_tokens": 275.1166666666667,
+      "conditional_weighted_goodput": 0.1935483870967742,
+      "arrival_normalized_weighted_goodput": 0.1935483870967742,
+      "slo_violation_rate_among_completed": 0.7055555555555556,
+      "request_throughput_per_sec": 0.38544885208509905,
+      "output_token_throughput_per_sec": 106.0434033561455,
+      "policy_wall_clock_seconds": 466.98802973801503
+    },
+    "vllm_direct::overloaded_mixed_priority": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.018775691609092367,
+        "p50": 0.01794115049415268,
+        "p95": 0.027001659528468724,
+        "p99": 0.03119466686504895
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4836747544306692,
+        "p50": 1.3236664124706294,
+        "p95": 2.818162792225485,
+        "p99": 2.854438188293134
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.5392333333333332,
+        "p50": 1.75535,
+        "p95": 6.934334999999984,
+        "p99": 11.03057600000002
+      },
+      "mean_output_tokens": 276.7055555555556,
+      "conditional_weighted_goodput": 0.1282051282051282,
+      "arrival_normalized_weighted_goodput": 0.1282051282051282,
+      "slo_violation_rate_among_completed": 0.7333333333333333,
+      "request_throughput_per_sec": 0.38544885208509905,
+      "output_token_throughput_per_sec": 106.6558387544585,
+      "policy_wall_clock_seconds": 466.98802973801503
+    },
+    "vllm_direct::steady_moderate": {
+      "n_total": 180,
+      "n_completed": 180,
+      "n_failed": 0,
+      "n_dropped": 0,
+      "n_declined_admission": 0,
+      "n_never_admitted": 0,
+      "completion_fraction": 1.0,
+      "ttft_stats": {
+        "count": 180,
+        "mean": 0.020157846201780356,
+        "p50": 0.018422758032102138,
+        "p95": 0.036694980424363165,
+        "p99": 0.03963481542188676
+      },
+      "server_latency_stats": {
+        "count": 180,
+        "mean": 1.4434994983393052,
+        "p50": 1.3169201859855093,
+        "p95": 2.767809840411064,
+        "p99": 2.775013799192966
+      },
+      "total_wall_time_stats": {
+        "count": 180,
+        "mean": 2.655046111111111,
+        "p50": 1.9201000000000001,
+        "p95": 6.448394999999992,
+        "p99": 10.800107000000013
+      },
+      "mean_output_tokens": 272.2888888888889,
+      "conditional_weighted_goodput": 0.45121951219512196,
+      "arrival_normalized_weighted_goodput": 0.45121951219512196,
+      "slo_violation_rate_among_completed": 0.4222222222222222,
+      "request_throughput_per_sec": 0.38544885208509905,
+      "output_token_throughput_per_sec": 104.95343965774931,
+      "policy_wall_clock_seconds": 466.98802973801503
+    }
+  },
+  "decision_divergence_n_cells_compared": 648,
+  "decision_divergence_n_slo_outcome_changes": 176,
+  "bootstrap_ci": [
+    {
+      "policy": "edf",
+      "point_estimate_wg": 0.22773972602739725,
+      "ci_low_2.5pct": 0.19665201348798617,
+      "ci_high_97.5pct": 0.26244977851035334,
+      "n_boot": 2000
+    },
+    {
+      "policy": "estimated_service_time_first",
+      "point_estimate_wg": 0.22773972602739725,
+      "ci_low_2.5pct": 0.19635383681518073,
+      "ci_high_97.5pct": 0.26143934487259585,
+      "n_boot": 2000
+    },
+    {
+      "policy": "fifo",
+      "point_estimate_wg": 0.24143835616438356,
+      "ci_low_2.5pct": 0.2080855183813107,
+      "ci_high_97.5pct": 0.2752758630902278,
+      "n_boot": 2000
+    },
+    {
+      "policy": "least_laxity_first",
+      "point_estimate_wg": 0.22345890410958905,
+      "ci_low_2.5pct": 0.1909944828770691,
+      "ci_high_97.5pct": 0.2593948660175424,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector",
+      "point_estimate_wg": 0.21232876712328766,
+      "ci_low_2.5pct": 0.18211624740864507,
+      "ci_high_97.5pct": 0.2463393626184324,
+      "n_boot": 2000
+    },
+    {
+      "policy": "shortest_output_first",
+      "point_estimate_wg": 0.24315068493150685,
+      "ci_low_2.5pct": 0.20995747745276225,
+      "ci_high_97.5pct": 0.2780726464047442,
+      "n_boot": 2000
+    },
+    {
+      "policy": "vllm_direct",
+      "point_estimate_wg": 0.23972602739726026,
+      "ci_low_2.5pct": 0.20678167959711446,
+      "ci_high_97.5pct": 0.2740102815486129,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector_minus_edf",
+      "point_estimate_wg": -0.01538750174366097,
+      "ci_low_2.5pct": -0.05916146141411841,
+      "ci_high_97.5pct": 0.03017380226709969,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector_minus_estimated_service_time_first",
+      "point_estimate_wg": -0.01543282295165643,
+      "ci_low_2.5pct": -0.06252676843365637,
+      "ci_high_97.5pct": 0.03174896254870054,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector_minus_fifo",
+      "point_estimate_wg": -0.028661228935146294,
+      "ci_low_2.5pct": -0.07460776151591585,
+      "ci_high_97.5pct": 0.018483770080429836,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector_minus_least_laxity_first",
+      "point_estimate_wg": -0.011349531153204499,
+      "ci_low_2.5pct": -0.058406780654758836,
+      "ci_high_97.5pct": 0.03476698863429076,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector_minus_shortest_output_first",
+      "point_estimate_wg": -0.03125820069913239,
+      "ci_low_2.5pct": -0.07752489100510504,
+      "ci_high_97.5pct": 0.015112076847491723,
+      "n_boot": 2000
+    },
+    {
+      "policy": "selector_minus_vllm_direct",
+      "point_estimate_wg": -0.026929332468200732,
+      "ci_low_2.5pct": -0.07332191552845156,
+      "ci_high_97.5pct": 0.018697344748358664,
+      "n_boot": 2000
+    }
+  ],
+  "loss_case_n_total": 149,
+  "loss_case_by_baseline": {
+    "fifo": 31,
+    "shortest_output_first": 31,
+    "vllm_direct": 30,
+    "estimated_service_time_first": 20,
+    "edf": 19,
+    "least_laxity_first": 18
+  }
+}

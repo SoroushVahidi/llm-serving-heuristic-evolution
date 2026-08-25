@@ -1,0 +1,297 @@
+{
+  "version": "1.0",
+  "document": "docs/design/HIERARCHICAL_REGIME_ROUTER_V1.md",
+  "date": "2026-08-17",
+  "stage_1_inputs": [
+    "contention_score_v2",
+    "priority_skew",
+    "kv_pressure",
+    "queue_length"
+  ],
+  "stage_1_excluded": [
+    "mechanism_family",
+    "canonical_scenario_id",
+    "scenario_id",
+    "seed",
+    "actual_output_tokens",
+    "ttft",
+    "tpot",
+    "slo_violated",
+    "mechanism_utility",
+    "utility_gap"
+  ],
+  "stage_1_target": {
+    "classes": [
+      "RANKING_FAIRNESS",
+      "PREFILL_DECODE_CONTENTION",
+      "KV_MEMORY_PRESSURE",
+      "NONE",
+      "OVERLAP"
+    ],
+    "label_formulas": {
+      "a_active": "priority_skew > PRIORITY_SKEW_THRESHOLD",
+      "b_active_v2": "contention_score_v2 > CONTENTION_SCORE_V2_THRESHOLD",
+      "c_active": "kv_pressure > KV_PRESSURE_THRESHOLD",
+      "none": "not (a_active or b_active_v2 or c_active)",
+      "overlap": "(a_active + b_active_v2 + c_active) > 1"
+    },
+    "thresholds": {
+      "PRIORITY_SKEW_THRESHOLD": 1.05,
+      "MIN_CONFLICT_QUEUE": 2,
+      "CONTENTION_SCORE_V2_THRESHOLD": 0.20,
+      "KV_PRESSURE_THRESHOLD": 0.82
+    }
+  },
+  "stage_1_architecture": "multiclass_classifier_5way",
+  "stage_2_policy_sets": {
+    "A_RANKING_FAIRNESS": {
+      "candidates": [
+        "estimated_service_time_first",
+        "weighted_fair_share"
+      ],
+      "excluded_cross_regime": [
+        "kv_constrained_online"
+      ],
+      "model": "logistic_regression"
+    },
+    "B_PREFILL_DECODE_CONTENTION": {
+      "candidates": [
+        "full_prefill",
+        "chunked_prefill_small"
+      ],
+      "excluded_cross_regime": []
+    },
+    "C_KV_MEMORY_PRESSURE": {
+      "candidates": [
+        "kv_constrained_online",
+        "least_laxity_first"
+      ],
+      "excluded_cross_regime": [
+        "estimated_service_time_first",
+        "weighted_fair_share"
+      ],
+      "model": "logistic_regression"
+    }
+  },
+  "none_fallback": "weighted_fair_share",
+  "overlap_fallback": "weighted_fair_share",
+  "routing_type": "hard",
+  "routing_frequency": "every_scheduling_step",
+  "dwell_rule": {
+    "minimum_dwell_steps": 20,
+    "none_overlap_exempt": true
+  },
+  "splits": {
+    "grouping_unit": "group_key",
+    "family_c_held_out": {
+      "designation": "held_out_eval_seed",
+      "scenarios": 12,
+      "seeds": [
+        "20260914",
+        "20260915"
+      ],
+      "assignment": "TEST"
+    },
+    "family_a_groups": 36,
+    "family_b_groups": 8,
+    "deterministic_hash": "sha256(group_key) mod 100",
+    "boundaries": {
+      "train": "0-60",
+      "val": "60-80",
+      "test": "80-100"
+    },
+    "stage_1_and_2_same_boundary": true
+  },
+  "baselines": {
+    "A": {
+      "name": "Best global fixed policy",
+      "deployable": true,
+      "policy": "weighted_fair_share"
+    },
+    "B": {
+      "name": "Prior flat 6-policy selector",
+      "deployable": true,
+      "artifact": "multifamily_contextual_selector_v1"
+    },
+    "C": {
+      "name": "Oracle regime router + oracle native-pair selector",
+      "deployable": false,
+      "type": "audit_only"
+    },
+    "D": {
+      "name": "Learned Stage-1 + learned Stage-2",
+      "deployable": true,
+      "type": "system_under_test"
+    },
+    "E": {
+      "name": "Learned Stage-1 + regime-specific fixed-best",
+      "deployable": true,
+      "type": "ablation"
+    },
+    "F": {
+      "name": "Hidden-family-aware selector",
+      "deployable": false,
+      "type": "audit_only"
+    },
+    "G": {
+      "name": "Global six-policy oracle",
+      "deployable": false,
+      "type": "audit_only"
+    }
+  },
+  "gates": [
+    {
+      "id": "G1",
+      "name": "Online input validity",
+      "metric": "Fraction of Stage-1 inputs that are validated online-observable fields",
+      "threshold": 1.0,
+      "operator": "==",
+      "critical": true,
+      "split": "N/A",
+      "notes": "structural/code-review gate"
+    },
+    {
+      "id": "G2",
+      "name": "Router quality",
+      "metric": "Macro-F1 over {A, B, C, NONE, OVERLAP}",
+      "threshold": 0.90,
+      "operator": ">=",
+      "critical": true,
+      "split": "TEST"
+    },
+    {
+      "id": "G3",
+      "name": "Catastrophic misrouting",
+      "metric": "Rate of A<->B<->C wrong-active-regime routing (excludes NONE/OVERLAP)",
+      "threshold": 0.05,
+      "operator": "<=",
+      "critical": true,
+      "split": "TEST"
+    },
+    {
+      "id": "G4",
+      "name": "Stage-2 preservation",
+      "metric": "Fraction of each regime's standalone within-family selector mean-regret improvement retained after full hierarchy integration",
+      "threshold": 0.90,
+      "operator": ">=",
+      "critical": true,
+      "split": "TEST"
+    },
+    {
+      "id": "G5",
+      "name": "Beat global fixed",
+      "metric": "Mean Delta-ANWG (hierarchy minus best global fixed), AND bootstrap 90% CI lower bound > 0",
+      "threshold": 0.01,
+      "operator": ">",
+      "critical": true,
+      "split": "TEST"
+    },
+    {
+      "id": "G6",
+      "name": "Oracle gap closure",
+      "metric": "(Hierarchy ANWG - best-global-fixed ANWG) / (regime-aware-oracle ANWG - best-global-fixed ANWG)",
+      "threshold": 0.75,
+      "operator": ">=",
+      "critical": false,
+      "split": "TEST"
+    },
+    {
+      "id": "G7",
+      "name": "Multi-regime benefit",
+      "metric": "Number of regimes where hierarchy per-regime ANWG exceeds best-global-fixed per-regime ANWG by > 0",
+      "threshold": 2,
+      "operator": ">=",
+      "critical": false,
+      "evaluation": "of 3 regimes",
+      "split": "TEST"
+    },
+    {
+      "id": "G8",
+      "name": "Interpretable / non-leaking errors",
+      "metric": "(a) zero hidden-label leakage; (b) every major misrouting cluster attributable to input ambiguity not forbidden fields",
+      "threshold_a": 0,
+      "operator_a": "==",
+      "threshold_b": "qualitative review",
+      "operator_b": "qualitative",
+      "critical": true,
+      "split": "TEST + code review"
+    },
+    {
+      "id": "G9",
+      "name": "Robustness",
+      "metric": "(a) Delta-ANWG >= 0 on Family-C held-out subset; (b) no catastrophic misrouting rate increase on blended microcases",
+      "threshold_a": 0,
+      "operator_a": ">=",
+      "threshold_b": 0.10,
+      "operator_b": "<=",
+      "critical": false,
+      "split": "Family-C held-out TEST + blended microcases"
+    }
+  ],
+  "verdict_logic": {
+    "HIERARCHICAL_ROUTER_NO_GO": [
+      "G1_Fail",
+      "G8a_Fail",
+      "G2_Fail",
+      "G3_Fail",
+      "G4_Fail"
+    ],
+    "HIERARCHICAL_ROUTER_ROUTING_WORKS_SELECTION_NO_GAIN": [
+      "!G2_Fail",
+      "!G3_Fail",
+      "!G4_Fail",
+      "G5_Fail"
+    ],
+    "HIERARCHICAL_ROUTER_INCONCLUSIVE": [
+      "blended_microcase_sample_too_small",
+      "TEST_sample_insufficient_for_G5_CI"
+    ],
+    "HIERARCHICAL_ROUTER_GO": [
+      "G1_Pass",
+      "G2_Pass",
+      "G3_Pass",
+      "G4_Pass",
+      "G5_Pass",
+      "G8a_Pass"
+    ]
+  },
+  "blended_regime_microcases": {
+    "A_plus_B": {
+      "source_components": [
+        "case_fairness_vs_size_v2 priority generation",
+        "case_prefill_decode_ttft_contention service_model_kwargs"
+      ],
+      "contention_score_v2_description": "Family-A priority heterogeneity + prefill modeling + tight step-token-budget",
+      "expected_active": "a_active=True AND b_active_v2=True"
+    },
+    "A_plus_C": {
+      "source_components": [
+        "case_fairness_vs_size_v2 priority generation",
+        "tight GPUConfig.max_kv_tokens (Family-C-scale, e.g. 6000)"
+      ],
+      "expected_active": "a_active=True AND c_active=True"
+    },
+    "B_plus_C": {
+      "source_components": [
+        "case_prefill_decode_ttft_contention prefill/decode config",
+        "tight GPUConfig.max_kv_tokens"
+      ],
+      "expected_active": "b_active_v2=True AND c_active=True"
+    },
+    "A_plus_B_plus_C_optional": {
+      "source_components": [
+        "all three interventions combined"
+      ],
+      "expected_active": "potentially all three labels true at overlapping times"
+    }
+  },
+  "future_test_plan_items": 17,
+  "frozen_source_immutable": [
+    "mf_psd_v1/",
+    "unified_utility_matrix_v2/",
+    "shared_cross_family_features_v1/",
+    "mechanism_choice_target_feasibility_v1/",
+    "cross_family_transfer_wellposedness_reassessment_v1/",
+    "online_regime_signal_feasibility_v1/"
+  ]
+}

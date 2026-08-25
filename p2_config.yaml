@@ -1,0 +1,206 @@
+# Family B v2 two-parent PrefillControl composition falsification
+# Configuration — p2_config.yaml
+#
+# Preregistered design: see docs/design/prefill_control_composition_falsification.md
+# Family B v2 pilot audit: docs/audits/policy_separation_prefill_decode_pilot_v2_20260817.md
+# Verdict: FAMILY_B_COMPOSITION_READY
+
+experiment:
+  family: "family_b_prefill_decode_v2"
+  design: "prefill_control_composition_falsification_v2"
+  primary_metric: "arrival_normalized_weighted_goodput"     # canonical primary
+  practical_eps: 0.01                                        # epsilon for practical significance
+  preregistered: true
+  description: >
+    Smallest two-parent PrefillControl composition falsification.
+    Parents: full_prefill vs chunked_prefill_small.
+    Tests whether contextual PrefillControl (child) creates genuine
+    held-out envelope expansion beyond contextual top-1 selection and
+    the original two-parent envelope.
+
+parents:
+  - name: "full_prefill"
+    description: "Unlimited prefill chunk (no per-step per-request cap)"
+    max_prefill_chunk_tokens: 65536
+    decode_first: false
+  - name: "chunked_prefill_small"
+    description: "Small per-request prefill chunk = 64 tokens"
+    max_prefill_chunk_tokens: 64
+    decode_first: false
+
+composition:
+  child_id: "prefill_control_child"          # contextual chunk-size selector
+  # Child composition grid: chunk sizes the child may select
+  chunk_options: [64, 96, 128, 192, 256, 65536]
+  intermediate_chunks: [96, 128, 192, 256]   # fixed intermediates for baseline
+
+  # Fixed intermediate parents for baseline comparison (GreedyArrivalPrefillControlPolicy)
+  fixed_intermediate_parents:
+    - name: "chunk_96"
+      max_prefill_chunk_tokens: 96
+      decode_first: false
+    - name: "chunk_128"
+      max_prefill_chunk_tokens: 128
+      decode_first: false
+    - name: "chunk_192"
+      max_prefill_chunk_tokens: 192
+      decode_first: false
+
+  # Composite baselines computed at analysis time (not re-run)
+  baselines:
+    - "full_prefill"
+    - "chunked_prefill_small"
+    - "best_fixed_parent"
+    - "parent_oracle"
+    - "contextual_top1"
+    - "hard_conditional"
+    - "contextual_alpha"
+    - "best_fixed_intermediate"
+
+template:
+  # Family B v2 scenario generator
+  module: "llmserveopt.policy_separation.templates_prefill_decode_v2"
+  function: "case_prefill_decode_ttft_contention"
+  sweep_grid:
+    hog_count: ["low", "high"]
+    late_pressure: ["low", "high"]
+    slo_emphasis: ["hog_ttft", "late_ttft"]
+    seeds: [20260820, 20260821, 20260822, 20260823]
+  # Total: 2 x 2 x 2 x 4 = 32 scenarios
+  class_ids_allowed: ["tenant_prefill", "tenant_late"]
+  # No class_id.endswith(".hog") assumptions
+
+# Train / validation / test / OOD splits
+splits:
+  description: >
+    Grouped by seed. Held-out seed 20260823 for both TEST and OOD.
+    No generator labels (hog_count, late_pressure, slo_emphasis, seed)
+    leak into split assignments or feature extraction.
+  train:
+    seeds: [20260820, 20260821, 20260822]
+    n_val_scenarios: 8                              # first 8 non-held-out → val
+    description: "seeds 20260820-22 minus first 8 scenarios"
+  val:
+    description: "first 8 non-held-out scenarios (dedicated validation)"
+  test:
+    seeds: [20260823]
+    condition: "late_pressure=low"
+    description: "held-out seed, low late pressure (preregistered TEST)"
+  ood:
+    seeds: [20260823]
+    condition: "late_pressure=high"
+    description: "held-out seed, high late pressure (OOD interpolation challenge)"
+
+# Selector training
+selector:
+  model_types: ["logreg", "tree"]                  # candidates; pick best on val accuracy
+  feature_names:                                   # 13 online-observable features
+    - n_queued_requests
+    - fraction_prompts_gt_1024
+    - mean_prompt_tokens
+    - max_prompt_tokens
+    - mean_slo_slack
+    - min_slo_slack
+    - std_slo_slack
+    - fraction_urgent
+    - mean_predicted_output
+    - max_predicted_output
+    - n_decoding_active
+    - n_prefilling_active
+    - kv_util_ratio
+  forbidden_features:                              # never used as model inputs
+    - scenario_id
+    - seed
+    - slo_emphasis
+    - hog_count
+    - late_pressure
+    - intended_winner
+    - intended
+    - winner
+    - generator_family
+    - generator_version
+    - token_length_source
+    - burstgpt_path
+    - allow_synthetic_tokens
+    - pair_id
+    - max_active_sequences
+    - output_intervention
+    - arrival_shape
+    - n_total_jobs
+    - n_hog
+    - n_late
+    - hog_prompt_median
+    - late_prompt_median
+    - slack_hog_s
+    - slack_late_s
+    - step_token_budget
+    - tbt_slo_s
+    - late_start_s
+    - stress_control_relationship
+    - hog_ttft
+    - late_ttft
+    - family_b
+    - policies
+    - chunk_small
+    - chunk_large
+    - unlimited
+  n_boot: 2000                                     # bootstrap samples for CI
+  seed: 20261201
+
+# Statistical settings
+statistics:
+  practical_eps: 0.01                              # practical-significance threshold
+  bootstrap:
+    n_boot: 2000
+    ci_alpha: 0.05                                 # 95% CI
+    seed: 20261201
+
+# Deterministic seeds
+seeds:
+  scenario_seeds: [20260820, 20260821, 20260822, 20260823]
+  selector_seed: 20261201
+  bootstrap_seed: 20261201
+
+# Runner settings
+runner:
+  workers: 8
+  allow_synthetic_tokens: false                    # production mode
+  require_burstgpt: false                          # allow synthetic if BurstGPT unavailable
+  enable_prefill_modeling: true
+  step_token_budget: 512
+  max_active_sequences: 512
+  enable_decode_prefill_contention: true
+  decode_first: false
+
+# Canonical metric
+primary_metric: "arrival_normalized_weighted_goodput"
+
+# Output / provenance fields
+output_fields:
+  required:
+    - scenario_id
+    - policy_name
+    - eval_id                                    # deterministic sha256(scenario_id|method|config_hash)[:16]
+    - arrival_normalized_weighted_goodput
+    - composition_id
+    - parent_policy
+    - split                                      # train / val / test / ood
+    - seed
+    - run_config_id
+  optional:
+    - status
+    - error
+    - traceback
+    - all_secondary_metrics
+
+expected_outputs:
+  - file: "per_policy_results.csv"
+    description: "One row per (scenario, method, split) evaluation"
+  - file: "scenario_features.csv"
+    description: "Scenario-level features for split assignment"
+  - file: "final_summary.json"
+    description: "High-level experiment summary"
+  - file: "run_manifest.json"
+    description: "Git hash, git branch, composition provenance"
+  - file: "composition_analysis.json"
+    description: "Full analysis output from p5_analysis_chunk_comp.py"

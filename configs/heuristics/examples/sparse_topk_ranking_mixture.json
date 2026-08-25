@@ -1,0 +1,36 @@
+{
+  "name": "sparse_topk_ranking_mixture",
+  "description": "Selects the 2 largest-|weight| terms among laxity urgency, priority, and negative queue age each step; deterministic on weight ties (by term index).",
+  "tie_breaker": "highest_priority",
+  "default": {
+    "request_score": {
+      "op": "topk_mixture",
+      "k": 2,
+      "terms": [
+        [
+          {
+            "primitive": "laxity_urgency"
+          },
+          1.0
+        ],
+        [
+          {
+            "primitive": "priority"
+          },
+          0.5
+        ],
+        [
+          {
+            "op": "neg",
+            "args": [
+              {
+                "primitive": "queue_age"
+              }
+            ]
+          },
+          0.2
+        ]
+      ]
+    }
+  }
+}

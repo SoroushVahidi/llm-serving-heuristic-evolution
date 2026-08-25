@@ -1,0 +1,94 @@
+{
+  "canonical_family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+  "created_utc": "2026-08-25T00:22:40.368452+00:00",
+  "incremental_envelope_gain_VTC": 0.0020587822671156025,
+  "interpretation": {
+    "WFS_retains_scenario_contribution": true,
+    "eliminates_WFS_ESTF_LLF_diversity": false,
+    "note": "ANWG-primary; VTC also targets fairness \u2014 interpret alongside official fairness objective"
+  },
+  "n_scenarios": 72,
+  "source_unified": "experiments/unified_utility_matrix_v2/unified_utility_matrix_wide_v2.csv",
+  "vtc_result": "experiments/external_baseline_comparison_v1/results/family_a_vtc",
+  "vtc_sha256_cells": "df57be1c5e799cb32c28d0a36b75c2ed112c41044b1e16d5a4688d1db3951e99",
+  "with_VTC": {
+    "SBS": 0.7405618686868688,
+    "SBS_policy": "weighted_fair_share",
+    "VBS": 0.7643623737373737,
+    "VBS_drop_removing_VTC": 0.002058782267115533,
+    "VBS_without_VTC": 0.7623035914702582,
+    "VTC_strict_dominates_WFS": false,
+    "WFS_strict_dominates_VTC": false,
+    "epsilon_unique": {
+      "estimated_service_time_first": 20,
+      "kv_constrained_online": 7,
+      "least_laxity_first": 0,
+      "official_vtc_joint_token_budget_remap": 5,
+      "weighted_fair_share": 23
+    },
+    "headroom": 0.023800505050504905,
+    "label": "FamilyA_plus_VTC",
+    "mean_anwg": {
+      "estimated_service_time_first": 0.7204194725028059,
+      "kv_constrained_online": 0.6856130751964086,
+      "least_laxity_first": 0.3612864758698092,
+      "official_vtc_joint_token_budget_remap": 0.5884469696969696,
+      "weighted_fair_share": 0.7405618686868688
+    },
+    "n": 72,
+    "policies": [
+      "weighted_fair_share",
+      "estimated_service_time_first",
+      "least_laxity_first",
+      "kv_constrained_online",
+      "official_vtc_joint_token_budget_remap"
+    ],
+    "scenarios_VTC_better_than_WFS": 11,
+    "scenarios_WFS_better_than_VTC": 60,
+    "winner_counts": {
+      "estimated_service_time_first": 22,
+      "kv_constrained_online": 11,
+      "least_laxity_first": 0,
+      "official_vtc_joint_token_budget_remap": 8,
+      "weighted_fair_share": 31
+    }
+  },
+  "without_VTC": {
+    "SBS": 0.7405618686868688,
+    "SBS_policy": "weighted_fair_share",
+    "VBS": 0.7623035914702582,
+    "VBS_drop_removing_VTC": null,
+    "VBS_without_VTC": null,
+    "VTC_strict_dominates_WFS": null,
+    "WFS_strict_dominates_VTC": null,
+    "epsilon_unique": {
+      "estimated_service_time_first": 21,
+      "kv_constrained_online": 8,
+      "least_laxity_first": 0,
+      "weighted_fair_share": 23
+    },
+    "headroom": 0.021741722783389372,
+    "label": "FamilyA_P6_relevant",
+    "mean_anwg": {
+      "estimated_service_time_first": 0.7204194725028059,
+      "kv_constrained_online": 0.6856130751964086,
+      "least_laxity_first": 0.3612864758698092,
+      "weighted_fair_share": 0.7405618686868688
+    },
+    "n": 72,
+    "policies": [
+      "weighted_fair_share",
+      "estimated_service_time_first",
+      "least_laxity_first",
+      "kv_constrained_online"
+    ],
+    "scenarios_VTC_better_than_WFS": null,
+    "scenarios_WFS_better_than_VTC": null,
+    "winner_counts": {
+      "estimated_service_time_first": 24,
+      "kv_constrained_online": 12,
+      "least_laxity_first": 0,
+      "weighted_fair_share": 36
+    }
+  }
+}

@@ -892,7 +892,6 @@ def run_phase2c3(cfg: dict, out_dir: Path, *, smoke: bool) -> Dict[str, Any]:
     prediction_rows = build_per_window_predictions(eval_df, selectors)
 
     for selector in selectors:
-        predictions = predict_selector(selector, eval_df)
         for view_name, view_df in views.items():
             view_pred = prediction_rows[
                 prediction_rows["selector"].eq(selector.key)

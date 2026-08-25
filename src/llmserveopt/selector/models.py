@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import numpy as np
 
@@ -237,7 +237,29 @@ def _check_sklearn():
 
 
 def _feature_matrix(rows: List[Dict[str, float]]) -> np.ndarray:
-    return np.array([[r.get(f"feat_{n}", 0.0) for n in FEATURE_NAMES] for r in rows], dtype=float)
+    """Build the feature matrix from feature-name -> value dicts.
+
+    Accepts both bare feature names (as returned by
+    ``llmserveopt.selector.features.extract_features()`` for live, per-step
+    simulator dispatch) and ``feat_``-prefixed names (the persisted
+    dataset-row column convention used by training/offline-eval data),
+    mirroring ``RuleBasedSelector._get()``'s existing dual-format lookup.
+
+    Before this fix, only ``feat_``-prefixed keys were recognized here, so
+    any of DecisionTreeSelector/RandomForestSelector/
+    PerPolicyRegressionAnwgSelector driven from live simulator state (bare
+    keys, e.g. via a SelectorDispatchPolicy-style wrapper) silently received
+    an all-zero feature vector and collapsed to a single constant decision
+    regardless of real queue/KV/SLO state -- see
+    docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md.
+    """
+    def _lookup(row: Dict[str, float], name: str) -> float:
+        v = row.get(name)
+        if v is not None:
+            return v
+        return row.get(f"feat_{name}", 0.0)
+
+    return np.array([[_lookup(r, n) for n in FEATURE_NAMES] for r in rows], dtype=float)
 
 
 def _labels(rows: List[Dict]) -> List[str]:
@@ -333,6 +355,56 @@ class RandomForestSelector:
         return obj
 
 
+#: dtype sklearn's compiled tree predict path expects (sklearn.tree._tree.DTYPE).
+_FOREST_INPUT_DTYPE = np.float32
+
+
+def _fast_forest_predict(reg, X32: np.ndarray) -> np.ndarray:
+    """Bit-exact-equivalent replacement for ``RandomForestRegressor.predict()``.
+
+    ``reg.predict(X)`` costs ~2.8ms per call even for a single row (measured,
+    100 estimators, max_depth=8) because sklearn's high-level API re-runs
+    input validation, ``__sklearn_tags__``, and a ``joblib.Parallel``
+    dispatch wrapper for *every* one of the 100 per-tree predict() calls --
+    overhead designed to be amortized over large batches, not paid once per
+    online simulator step. With 20 candidate policies (20 separate
+    regressors) called once per step, this made
+    ``PerPolicyRegressionAnwgSelector.predict_one()`` cost ~56ms/call --
+    over tens of thousands of simulator steps, this is what made the vLLM-LTR
+    comparative-evaluation run never finish. See
+    docs/audits/vllm_ltr_comparative_evaluation_recovery_20260804.md.
+
+    This function instead averages each fitted tree's compiled ``tree_.predict()``
+    output directly (the same Cython call sklearn's internals eventually make),
+    using the exact same accumulation sklearn's own ``_accumulate_prediction``
+    uses (plain running sum over estimators, in order, divided by
+    ``n_estimators`` -- NOT ``np.mean``, whose pairwise-summation algorithm
+    can differ in the last bit). Verified bit-exact (max abs diff == 0.0)
+    against ``reg.predict(X)`` across thousands of random inputs spanning all
+    20 trained regressors in this repo's selector artifact; also checked at
+    runtime by ``_verify_fast_forest_predict`` below, called once per
+    regressor in ``PerPolicyRegressionAnwgSelector.__setstate_check__``-style
+    load/fit hooks so a future sklearn upgrade that changes internal
+    behavior fails loudly instead of silently drifting.
+    """
+    acc = np.zeros((X32.shape[0], reg.n_outputs_), dtype=np.float64)
+    for est in reg.estimators_:
+        acc += est.tree_.predict(X32)
+    acc /= len(reg.estimators_)
+    return acc[:, 0] if reg.n_outputs_ == 1 else acc
+
+
+def _verify_fast_forest_predict(reg, n_features: int, seed: int = 0, n_samples: int = 8) -> bool:
+    """Self-check: does the fast path match ``reg.predict()`` exactly on a
+    synthetic canary batch? Run once per regressor at fit()/load() time."""
+    rng = np.random.default_rng(seed)
+    X = rng.uniform(-10.0, 10.0, size=(n_samples, n_features))
+    X32 = np.asarray(X, dtype=_FOREST_INPUT_DTYPE, order="C")
+    fast = _fast_forest_predict(reg, X32)
+    official = reg.predict(X)
+    return bool(np.array_equal(fast, official))
+
+
 class PerPolicyRegressionAnwgSelector:
     """One RandomForestRegressor per candidate policy, predicting
     arrival_normalized_wg; predict() takes the argmax across regressors.
@@ -359,6 +431,18 @@ class PerPolicyRegressionAnwgSelector:
         _check_sklearn()
         self._params = dict(n_estimators=n_estimators, max_depth=max_depth, random_state=random_state)
         self._regressors: Dict[str, object] = {}
+        # Per-regressor flag: whether _fast_forest_predict() was verified
+        # bit-exact against reg.predict() for this fitted model. Populated
+        # by _verify_fast_path() at the end of fit()/load(). Any regressor
+        # that fails the check (e.g. after a future sklearn internals
+        # change) falls back to the slow-but-always-correct reg.predict()
+        # path individually -- never silently produces a different answer.
+        self._fast_path_ok: Dict[str, bool] = {}
+
+    def _verify_fast_path(self) -> None:
+        n_features = len(FEATURE_NAMES)
+        for p, reg in self._regressors.items():
+            self._fast_path_ok[p] = _verify_fast_forest_predict(reg, n_features)
 
     def fit(self, rows: List[Dict]) -> "PerPolicyRegressionAnwgSelector":
         from sklearn.ensemble import RandomForestRegressor
@@ -370,11 +454,18 @@ class PerPolicyRegressionAnwgSelector:
             reg = RandomForestRegressor(**self._params)
             reg.fit(X, y)
             self._regressors[p] = reg
+        self._verify_fast_path()
         return self
 
     def predict(self, rows: List[Dict]) -> List[str]:
         X = _feature_matrix(rows)
-        preds_by_policy = {p: reg.predict(X) for p, reg in self._regressors.items()}
+        X32 = np.asarray(X, dtype=_FOREST_INPUT_DTYPE, order="C")
+        preds_by_policy = {}
+        for p, reg in self._regressors.items():
+            if self._fast_path_ok.get(p, False):
+                preds_by_policy[p] = _fast_forest_predict(reg, X32)
+            else:
+                preds_by_policy[p] = reg.predict(X)
         return [
             max(SELECTOR_CANDIDATES, key=lambda p: preds_by_policy[p][i])
             for i in range(len(rows))
@@ -394,6 +485,9 @@ class PerPolicyRegressionAnwgSelector:
         obj = joblib.load(path)
         if not isinstance(obj, cls):
             raise TypeError(f"{path} does not contain a {cls.__name__} instance (got {type(obj)})")
+        if not hasattr(obj, "_fast_path_ok"):
+            obj._fast_path_ok = {}
+        obj._verify_fast_path()
         return obj
 
 

@@ -1,0 +1,15 @@
+{
+  "chosen_direction": "PORTFOLIO_SYNTHESIS_DEBT_SCHEDULER",
+  "not_chosen": {
+    "PORTFOLIO_SYNTHESIS_KV_COMPLETION_POLICY": "Narrower and risks duplicating kv_constrained_online.",
+    "PORTFOLIO_SYNTHESIS_LEXICOGRAPHIC_NATIVE_POLICY": "Interpretable but closer to WFS/LLF and likely to collapse under non-redundancy gates.",
+    "PORTFOLIO_SYNTHESIS_TWO_TIMESCALE_CONTROLLER": "Promising but broader; better as a second family only if debt scheduler gives mixed/fail with evidence that slow budgets are the missing element.",
+    "STOP_AND_BROADEN_BEYOND_FAMILY_A": "Premature because portfolio holes remain across Families A/B/C and a native debt scheduler is not yet falsified."
+  },
+  "rationale": [
+    "Targets the largest cross-family holes without reopening ESTF/WFS selection.",
+    "Mechanistically distinct from existing six policies through accumulated service/age/SLO/KV debt.",
+    "Native request scheduler, not a selector, scalar parent blend, or static analytic index.",
+    "Can be screened locally against the current six-policy envelope with strict marginal-contribution gates."
+  ]
+}

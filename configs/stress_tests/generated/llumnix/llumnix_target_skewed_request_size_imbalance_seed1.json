@@ -1,0 +1,168 @@
+{
+  "entry_id": "llumnix_target_skewed_request_size_imbalance",
+  "seed": 1,
+  "smoke": true,
+  "n_requests": 16,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.05,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.05,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.1,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.1,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.15000000000000002,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.15,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 0.2,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.2,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 0.25,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.25,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 6,
+      "arrival_time": 0.30000000000000004,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.3,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 7,
+      "arrival_time": 0.35000000000000003,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.35,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 8,
+      "arrival_time": 0.4,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.4,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 9,
+      "arrival_time": 0.45,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.45,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 10,
+      "arrival_time": 0.5,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.5,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 11,
+      "arrival_time": 0.55,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.55,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 12,
+      "arrival_time": 0.6000000000000001,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.6,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 13,
+      "arrival_time": 0.65,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.65,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 14,
+      "arrival_time": 0.7000000000000001,
+      "prompt_tokens": 256,
+      "predicted_output_tokens": 300,
+      "actual_output_tokens": 300,
+      "slo_deadline": 1000.7,
+      "priority": 1.0,
+      "class_id": "default"
+    },
+    {
+      "request_id": 15,
+      "arrival_time": 0.75,
+      "prompt_tokens": 16,
+      "predicted_output_tokens": 20,
+      "actual_output_tokens": 20,
+      "slo_deadline": 1000.75,
+      "priority": 1.0,
+      "class_id": "default"
+    }
+  ]
+}

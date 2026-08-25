@@ -1,0 +1,222 @@
+{
+  "estf_vs_wfs": {
+    "bidirectional_eps_0.0": false,
+    "bidirectional_eps_0.001": false,
+    "bidirectional_eps_0.005": false,
+    "bidirectional_eps_0.01": false,
+    "i_beats_j_eps_0.0": 50,
+    "i_beats_j_eps_0.001": 50,
+    "i_beats_j_eps_0.005": 50,
+    "i_beats_j_eps_0.01": 39,
+    "j_beats_i_eps_0.0": 0,
+    "j_beats_i_eps_0.001": 0,
+    "j_beats_i_eps_0.005": 0,
+    "j_beats_i_eps_0.01": 0,
+    "mean_delta_ij": 0.012499999999999999,
+    "median_delta_ij": 0.0,
+    "near_ties_eps_0.0": 70,
+    "near_ties_eps_0.001": 70,
+    "near_ties_eps_0.005": 70,
+    "near_ties_eps_0.01": 81,
+    "policy_i": "estimated_service_time_first",
+    "policy_j": "weighted_fair_share"
+  },
+  "exact_tie_count": 68,
+  "exact_tie_rate": 0.5666666666666667,
+  "experiment": "policy_separation_fairness_starvation_pilot_v1",
+  "headroom": {
+    "frac_gt_0": 0.43333333333333335,
+    "frac_gt_0.01": 0.4,
+    "mean": 0.0275,
+    "median": 0.0
+  },
+  "integrity": {
+    "duplicate_scenario_policy_keys": 0,
+    "expected_policies_present": true,
+    "grid": {
+      "interactive_volume_fraction": [
+        0.1,
+        0.2,
+        0.3
+      ],
+      "product": 120,
+      "seeds": [
+        20260815,
+        20260816
+      ],
+      "target_utilization": [
+        0.5,
+        0.8,
+        1.0,
+        1.2,
+        1.5
+      ],
+      "tenant_weight_skew": [
+        1.0,
+        3.0,
+        5.0,
+        10.0
+      ]
+    },
+    "grid_product": null,
+    "grid_product_matches_n_scenarios": true,
+    "has_canonical_anwg_column": false,
+    "n_policies": 4,
+    "n_rows": 480,
+    "n_scenarios": 120,
+    "policies": [
+      "aging_priority",
+      "estimated_service_time_first",
+      "fifo",
+      "weighted_fair_share"
+    ],
+    "primary_column": "anwg",
+    "primary_semantic_label": "historical_unweighted_slo_success_rate"
+  },
+  "mechanism_flags": {
+    "aging_perfect_on_all_scenarios": true,
+    "estf_beats_wfs_scenarios": 50,
+    "estf_scenarios_with_interactive_violations": 0,
+    "estf_wfs_bidirectional_eps_0.01": false,
+    "wfs_beats_estf_scenarios": 0,
+    "wfs_equals_estf_scenarios": 70
+  },
+  "n_scenarios": 120,
+  "near_tie_counts": {
+    "0.0": 68,
+    "0.001": 68,
+    "0.005": 68,
+    "0.01": 72
+  },
+  "near_tie_rates": {
+    "0.0": 0.5666666666666667,
+    "0.001": 0.5666666666666667,
+    "0.005": 0.5666666666666667,
+    "0.01": 0.6
+  },
+  "policy_fairness_overall": [
+    {
+      "mean_bulk_violation_rate": 0.0,
+      "mean_interactive_violation_rate": 0.0,
+      "mean_jains_fairness_index": 1.0,
+      "mean_primary": 1.0,
+      "mean_ttft": 1.7495559389634079,
+      "median_primary": 1.0,
+      "n_scenarios": 120,
+      "policy_name": "aging_priority",
+      "scenarios_with_bulk_violations": 0,
+      "scenarios_with_inter_violations": 0
+    },
+    {
+      "mean_bulk_violation_rate": 0.03520723104056437,
+      "mean_interactive_violation_rate": 0.0,
+      "mean_jains_fairness_index": 0.9989814051087194,
+      "mean_primary": 0.9719444444444445,
+      "mean_ttft": 1.3470851056300746,
+      "median_primary": 1.0,
+      "n_scenarios": 120,
+      "policy_name": "estimated_service_time_first",
+      "scenarios_with_bulk_violations": 52,
+      "scenarios_with_inter_violations": 0
+    },
+    {
+      "mean_bulk_violation_rate": 0.0,
+      "mean_interactive_violation_rate": 0.49398148148148147,
+      "mean_jains_fairness_index": 0.8199221680416873,
+      "mean_primary": 0.9025,
+      "mean_ttft": 2.0226126056300746,
+      "median_primary": 0.9083333333333333,
+      "n_scenarios": 120,
+      "policy_name": "fifo",
+      "scenarios_with_bulk_violations": 0,
+      "scenarios_with_inter_violations": 104
+    },
+    {
+      "mean_bulk_violation_rate": 0.03454723324514991,
+      "mean_interactive_violation_rate": 0.06967592592592592,
+      "mean_jains_fairness_index": 0.9945309140079143,
+      "mean_primary": 0.9594444444444444,
+      "mean_ttft": 1.406973925074519,
+      "median_primary": 0.9916666666666667,
+      "n_scenarios": 120,
+      "policy_name": "weighted_fair_share",
+      "scenarios_with_bulk_violations": 52,
+      "scenarios_with_inter_violations": 50
+    }
+  ],
+  "primary_metric_caveat": "Historical Job 1182306 column 'anwg' is unweighted SLO-success, NOT canonical RunMetrics.arrival_normalized_weighted_goodput.",
+  "scientific_verdict_hint": "USEFUL_DIAGNOSTIC_ONLY",
+  "seed_stability": {
+    "best_policy_agree": 48,
+    "best_policy_agree_rate": 0.8,
+    "n_cells": 60,
+    "n_unstable_cells": 19,
+    "winner_set_agree": 48,
+    "winner_set_agree_rate": 0.8
+  },
+  "unique_winner_counts": {
+    "aging_priority": 52
+  },
+  "winner_by_axis": {
+    "interactive_volume_fraction": {
+      "0.1": {
+        "EXACT_TIE": 24,
+        "aging_priority": 16
+      },
+      "0.2": {
+        "EXACT_TIE": 24,
+        "aging_priority": 16
+      },
+      "0.3": {
+        "EXACT_TIE": 20,
+        "aging_priority": 20
+      }
+    },
+    "seed": {
+      "20260815": {
+        "EXACT_TIE": 32,
+        "aging_priority": 28
+      },
+      "20260816": {
+        "EXACT_TIE": 36,
+        "aging_priority": 24
+      }
+    },
+    "target_utilization": {
+      "0.5": {
+        "EXACT_TIE": 24
+      },
+      "0.8": {
+        "EXACT_TIE": 24
+      },
+      "1.0": {
+        "EXACT_TIE": 20,
+        "aging_priority": 4
+      },
+      "1.2": {
+        "aging_priority": 24
+      },
+      "1.5": {
+        "aging_priority": 24
+      }
+    },
+    "tenant_weight_skew": {
+      "1.0": {
+        "EXACT_TIE": 17,
+        "aging_priority": 13
+      },
+      "10.0": {
+        "EXACT_TIE": 17,
+        "aging_priority": 13
+      },
+      "3.0": {
+        "EXACT_TIE": 17,
+        "aging_priority": 13
+      },
+      "5.0": {
+        "EXACT_TIE": 17,
+        "aging_priority": 13
+      }
+    }
+  }
+}

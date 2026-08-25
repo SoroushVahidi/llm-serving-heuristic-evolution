@@ -1,0 +1,85 @@
+{
+  "classification": "MECHANISM_COMPOSITE_STATIC_NO_GO",
+  "favored_side_regressions_vs_WFS": {
+    "long": {
+      "best_mean_regret": 0.212707182320442,
+      "relative_worse_than_wfs_pct": 0.0,
+      "wfs_mean_regret": 0.212707182320442
+    },
+    "short": {
+      "best_mean_regret": 10.937956204379562,
+      "relative_worse_than_wfs_pct": -3.260167850225948,
+      "wfs_mean_regret": 11.306569343065693
+    }
+  },
+  "improvement_vs_WFS_pct": 3.1057810578105696,
+  "metrics": {
+    "balanced_action_accuracy_excluding_ties": 0.5106382978723404,
+    "estf_decision_rate": 0.006012024048096192,
+    "mean_regret": 3.1573146292585172,
+    "median_regret": 0.0,
+    "n": 998,
+    "p90_regret": 14.0,
+    "pair_envelope_utility_mean": 194.37374749498997,
+    "regret_weighted_action_accuracy": 0.8864668155941486,
+    "selected_utility_mean": 191.21643286573146,
+    "sign_action_accuracy_excluding_ties": 0.6996735582154516,
+    "total_regret": 3151.0
+  },
+  "overlap": {
+    "non_collapse_pass_lt_80pct_static_regime_overlap": true,
+    "overlap_always_ESTF": 0.006012024048096192,
+    "overlap_always_WFS": 0.9939879759519038,
+    "overlap_best_prior_analytic_rule": 0.7404809619238477,
+    "overlap_favored_size_rule": 0.7314629258517034,
+    "overlap_priority_only_rel": 0.7334669338677354,
+    "strict_no_go_overlap_ge_90pct_any_old_static": false
+  },
+  "params": {
+    "estf_service_over_mean_max": 0.22691889184815783,
+    "priority_gap_min": 0.0,
+    "service_ratio_max": 0.2856592983613769,
+    "wfs_laxity_min": -0.3753404554350951
+  },
+  "pseudocode": "action = WFS by default; for the selected template, compute causal guard predicates from service ratio, laxity, priority/deficit/pressure/history fields; return ESTF only if all release predicates pass, else WFS.",
+  "quadrant_semantics": {
+    "by_quadrant": {
+      "BOTH_RISKS": {
+        "estf_release_rate": 0.0,
+        "n": 22,
+        "wfs_retention_rate": 1.0
+      },
+      "COMPLETION_ONLY": {
+        "estf_release_rate": 0.0,
+        "n": 18,
+        "wfs_retention_rate": 1.0
+      },
+      "NEITHER_RISK": {
+        "estf_release_rate": 0.02702702702702703,
+        "n": 37,
+        "wfs_retention_rate": 0.972972972972973
+      },
+      "SLO_RISK_ONLY": {
+        "estf_release_rate": 0.0,
+        "n": 14,
+        "wfs_retention_rate": 1.0
+      }
+    },
+    "ordering_pass": false
+  },
+  "rule_id": "PRIORITY_SAFE_RELEASE_09",
+  "runtime_properties": {
+    "bounded_history_needed": false,
+    "causal_inputs_only": true,
+    "decision_cost": "O(1)",
+    "guard_count": 4,
+    "native_scheduler_insertable": true,
+    "threshold_count": 4
+  },
+  "strict_go_pass": false,
+  "strict_no_go_reasons": [
+    "mean regret reduction versus WFS <10%",
+    "mechanism quadrant ordering failed"
+  ],
+  "template": "PRIORITY_SAFE_RELEASE"
+}

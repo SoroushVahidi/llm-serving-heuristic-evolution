@@ -1,0 +1,30 @@
+# Smoke config for Family B v2 PrefillControl composition falsification.
+# Minimal grid for p7_runner.py launch validation before the full
+# p2_config.yaml run. Schema matches p2_config.yaml (nested template/runner
+# sections) -- p7_runner.py's build_scenarios_from_config reads
+# cfg["template"]["sweep_grid"] and cfg["runner"], not top-level keys.
+#
+# Grid is 2x2x1x4=16 scenarios so the held-out seed (20260823) still
+# produces non-empty train/val/test/ood splits (test=2, ood=2, val=8,
+# train=4) -- enough to smoke-test scenario generation, the split
+# predicate, selector fitting, and the fixed-intermediate/prefill_control_child/
+# composite-baseline evaluation stages end to end.
+
+experiment:
+  bootstrap_seeds:
+    seed: 20261201
+
+template:
+  module: "llmserveopt.policy_separation.templates_prefill_decode_v2"
+  function: "case_prefill_decode_ttft_contention"
+  sweep_grid:
+    hog_count: ["low", "high"]
+    late_pressure: ["low", "high"]
+    slo_emphasis: ["hog_ttft"]
+    seeds: [20260820, 20260821, 20260822, 20260823]
+
+runner:
+  workers: 4
+  require_burstgpt: false
+  step_token_budget: 512
+  max_active_sequences: 512

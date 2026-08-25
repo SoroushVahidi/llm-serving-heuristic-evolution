@@ -12,7 +12,7 @@ import json
 import hashlib
 from typing import Any, Dict, List, Optional, Tuple
 
-from .prompt_templates import _SYSTEM_PROMPT, _GENERATION_USER_TEMPLATE, _var_catalogue, _ops_catalogue, _forbidden_summary, _limits_summary
+from .prompt_templates import _SYSTEM_PROMPT, _GENERATION_USER_TEMPLATE, _var_catalogue, _forbidden_summary, _limits_summary
 from ..heuristics.dsl_schema import ALLOWED_TIE_BREAKERS, DEFAULT_LIMITS
 
 

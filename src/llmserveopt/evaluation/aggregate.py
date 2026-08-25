@@ -4,11 +4,9 @@ Aggregate metrics across multiple seeds for each policy.
 from __future__ import annotations
 
 import json
-import math
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
-import numpy as np
 import pandas as pd
 
 from ..core.metrics import RunMetrics, metrics_to_dict

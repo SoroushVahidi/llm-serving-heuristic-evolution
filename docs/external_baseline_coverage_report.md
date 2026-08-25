@@ -1,5 +1,12 @@
 # External Baseline Coverage Report
 
+> **Status: Superseded.** This planning document has been superseded by
+> [`docs/external_baseline_decision.md`](external_baseline_decision.md), the
+> decisive Phase 2B.9 specification. It is retained here for historical
+> context only. Note the baseline/policy counts below reflect the Phase
+> 2B.5 portfolio at the time and predate later portfolio growth (see
+> [`docs/research_status.md`](research_status.md) for the current count).
+
 **Branch:** phase2b5-external-baselines  
 **Date:** 2026-06-25  
 **Auditor:** automated audit (Phase 2B.5)
@@ -17,7 +24,7 @@
 | External author code used | 0 |
 | All implementations | simulator-compatible approximations or internal-only |
 
-All three "must-have" baselines from the task specification (LLF, PARS-like SJF, Multi-Bin Batching)
+All three "must-have" baselines from the task specification (LLF, PARS-2023-like SJF, Multi-Bin Batching)
 were already implemented in a prior phase (Phase 2A.3B).
 
 ---
@@ -295,12 +302,23 @@ were already implemented in a prior phase (Phase 2A.3B).
 
 ---
 
-### 15. PARS-like / Prompt-Aware SJF Proxy (ESTF)
+### 15. PARS-2023-like / Prompt-Aware SJF Proxy (ESTF)
+
+> **Naming note (added 2026-08-04):** "PARS" is used below to mean
+> Zheng et al.'s NeurIPS 2023 paper (see the Literature source row). A
+> *different*, unrelated paper (Tao et al., ISC 2026, official repo
+> `SPEAR-UIC/PARS`) was later integrated in this repo as a real,
+> official-code external baseline and is referred to as **PARS-Serve-2026**
+> throughout this project's newer docs
+> (`docs/audits/pars_baseline_implementation_20260804.md`,
+> `docs/BASELINE_STATUS.md`) to avoid this exact collision. This section's
+> own "PARS" references below are left as **PARS-2023** for clarity but
+> are otherwise historical/unmodified.
 
 | Field | Value |
 |---|---|
 | **Repo name** | `estimated_service_time_first` |
-| **Canonical name** | PARS-like prompt-and-prediction-aware SJF proxy |
+| **Canonical name** | PARS-2023-like prompt-and-prediction-aware SJF proxy |
 | **File** | `src/llmserveopt/policies/estimated_service_time_first.py` — `EstimatedServiceTimeFirstPolicy` |
 | **Online deployable** | Yes |
 | **Uses future information** | No (`predicted_output_tokens` only; `actual_output_tokens` never accessed) |
@@ -309,8 +327,8 @@ were already implemented in a prior phase (Phase 2A.3B).
 | **Token-budget / KV-cache aware** | Yes |
 | **Batching / prefill / decode aware** | No |
 | **Tests** | `tests/test_estimated_service_time_first_policy.py` (16 tests) |
-| **Implementation style** | Style/inspired — NOT a reproduction of PARS. PARS uses learning-to-rank; this uses deterministic token-length estimates only |
-| **Literature source** | Inspired by: Zheng et al., "Response Length Perception and Sequence Scheduling: An LLM-Empowered LLM Inference Pipeline," NeurIPS 2023 (PARS) |
+| **Implementation style** | Style/inspired — NOT a reproduction of PARS-2023. PARS-2023 uses learning-to-rank; this uses deterministic token-length estimates only |
+| **Literature source** | Inspired by: Zheng et al., "Response Length Perception and Sequence Scheduling: An LLM-Empowered LLM Inference Pipeline," NeurIPS 2023 (PARS-2023) |
 | **Added in phase** | Phase 2A.3B |
 
 ---
@@ -475,7 +493,7 @@ The following systems are cited in the literature. The repo has "style/inspired"
 | **vLLM / PagedAttention** | Kwon et al., SOSP 2023 | `vllm_style_token_budget` (style/inspired) |
 | **Sarathi-Serve** | Agrawal et al., OSDI 2024 | `sarathi_style` (style/inspired) |
 | **DeepSpeed-FastGen / SplitFuse** | Holmes et al., arXiv 2024 | `splitfuse_style` (style/inspired) |
-| **PARS** | Zheng et al., NeurIPS 2023 | `estimated_service_time_first` (style/inspired) |
+| **PARS-2023** | Zheng et al., NeurIPS 2023 | `estimated_service_time_first` (style/inspired) |
 | **DistServe** | Zhong et al., OSDI 2024 | None |
 | **Tempo / JITServe** | — | None |
 | **Apt-Serve** | — | None |
@@ -512,7 +530,7 @@ No license issues arise.
 | vLLM-style token-budget scheduler | ✅ Implemented (style/inspired) | `vllm_style_token_budget` |
 | Sarathi-style chunked prefill | ✅ Implemented (style/inspired) | `sarathi_style` |
 | SplitFuse-style prefill/decode handling | ✅ Implemented (style/inspired) | `splitfuse_style` |
-| PARS-like prompt-aware SJF | ✅ Implemented (style/inspired) | `estimated_service_time_first` |
+| PARS-2023-like prompt-aware SJF | ✅ Implemented (style/inspired) | `estimated_service_time_first` |
 | KV-cache-constrained online scheduling | ✅ Approximated | `vllm_style_token_budget`, `greedy_token_fill` |
 | RF selector | ✅ Implemented | `random_forest` (selector) |
 | Decision Tree selector | ✅ Implemented | `decision_tree` (selector) |

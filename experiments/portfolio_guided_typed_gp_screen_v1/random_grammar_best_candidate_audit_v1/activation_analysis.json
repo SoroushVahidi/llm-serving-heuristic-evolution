@@ -1,0 +1,207 @@
+{
+  "candidate_has_persistent_state": false,
+  "conditional_if_nodes": 0,
+  "dead_branches": [],
+  "modules": [
+    {
+      "dead": false,
+      "module_id": "policy.module_composition",
+      "module_type": "Policy",
+      "nonempty_waiting_activations": 249138,
+      "parameters": {
+        "canonical_parent_id": null,
+        "exactness_status": "COMPOSED_CANDIDATE"
+      },
+      "positive_MG_scenario_activations": 160411,
+      "total_select_action_activations": 273868
+    },
+    {
+      "dead": false,
+      "module_id": "ranking.wfs_deficit_priority_service",
+      "module_type": "RankingRule",
+      "nonempty_waiting_activations": 249138,
+      "parameters": {
+        "_free_numeric_parameters": [
+          "alpha",
+          "beta"
+        ],
+        "alpha": 0.25,
+        "beta": 1.25
+      },
+      "positive_MG_scenario_activations": 160411,
+      "total_select_action_activations": 273868
+    },
+    {
+      "dead": false,
+      "module_id": "placement.round_robin_scan",
+      "module_type": "PlacementRule",
+      "nonempty_waiting_activations": 249138,
+      "parameters": {},
+      "positive_MG_scenario_activations": 160411,
+      "total_select_action_activations": 273868
+    },
+    {
+      "dead": false,
+      "module_id": "prefill.chunked_small",
+      "module_type": "PrefillRule",
+      "nonempty_waiting_activations": 249138,
+      "parameters": {
+        "_free_numeric_parameters": [
+          "max_prefill_chunk_tokens"
+        ],
+        "decode_first": false,
+        "max_prefill_chunk_tokens": 128
+      },
+      "positive_MG_scenario_activations": 160411,
+      "total_select_action_activations": 273868
+    }
+  ],
+  "scenario_decision_counts": [
+    {
+      "decision_points": 31396,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 29163,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816"
+    },
+    {
+      "decision_points": 267,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 19,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260820"
+    },
+    {
+      "decision_points": 1544,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 750,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tightloose.s20260910"
+    },
+    {
+      "decision_points": 31888,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 29886,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00.s20260816"
+    },
+    {
+      "decision_points": 31413,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 25999,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30.s20260816"
+    },
+    {
+      "decision_points": 31892,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 29627,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favshort.noise0.30.s20260816"
+    },
+    {
+      "decision_points": 31393,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 30273,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favlong.noise0.30.s20260816"
+    },
+    {
+      "decision_points": 31885,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 31071,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew1.0000.favshort.noise0.30.s20260816"
+    },
+    {
+      "decision_points": 31393,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 30831,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816"
+    },
+    {
+      "decision_points": 31886,
+      "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "nonempty_waiting_decisions": 30084,
+      "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favshort.noise0.00.s20260816"
+    },
+    {
+      "decision_points": 267,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 19,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slolate_ttft.s20260820"
+    },
+    {
+      "decision_points": 274,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 43,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slohog_ttft.s20260820"
+    },
+    {
+      "decision_points": 274,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 43,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260820"
+    },
+    {
+      "decision_points": 372,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 30,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slohog_ttft.s20260820"
+    },
+    {
+      "decision_points": 372,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 30,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slolate_ttft.s20260820"
+    },
+    {
+      "decision_points": 378,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 58,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slohog_ttft.s20260820"
+    },
+    {
+      "decision_points": 378,
+      "family": "FAMILY_B_PREFILL_DECODE_V2",
+      "nonempty_waiting_decisions": 58,
+      "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft.s20260820"
+    },
+    {
+      "decision_points": 1544,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 750,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tighttight.s20260910"
+    },
+    {
+      "decision_points": 1791,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 899,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tightloose.s20260910"
+    },
+    {
+      "decision_points": 1791,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 899,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaselate.tighttight.s20260910"
+    },
+    {
+      "decision_points": 2805,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 2165,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tightloose.s20260910"
+    },
+    {
+      "decision_points": 2805,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 2165,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaseearly.tighttight.s20260910"
+    },
+    {
+      "decision_points": 2930,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 2138,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tightloose.s20260910"
+    },
+    {
+      "decision_points": 2930,
+      "family": "FAMILY_C_KV_PRESSURE_V2",
+      "nonempty_waiting_decisions": 2138,
+      "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tighttight.s20260910"
+    }
+  ],
+  "total_decision_points": 273868,
+  "total_nonempty_waiting_decisions": 249138
+}

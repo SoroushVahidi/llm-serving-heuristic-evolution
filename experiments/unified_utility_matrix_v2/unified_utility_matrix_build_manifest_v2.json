@@ -1,0 +1,43 @@
+{
+  "manifest_kind": "RECONSTRUCTED_POST_HOC",
+  "reconstructed_at_utc": "2026-08-19T23:41:00Z",
+  "reconstructed_by": "Pass-3 repository-polish session, per docs/current/pass1_repo_audit_20260819.md §R finding (unified_utility_matrix_v2 had no build manifest while v1 did)",
+  "reconstruction_method": "Re-ran the unmodified scripts/build_unified_utility_matrix_v2.py against the currently-tracked frozen inputs (with only its OUT_DIR redirected to a scratch directory) and diffed the result byte-for-byte against the committed experiments/unified_utility_matrix_v2/*.csv files. Diff was empty for both files, confirming the tracked outputs are exactly reproducible from the currently-tracked inputs by this deterministic, argument-free, no-simulation assembly script.",
+  "builder_version": "unified_utility_matrix_v2 (scripts/build_unified_utility_matrix_v2.py, no internal version string)",
+  "original_commit_that_added_outputs": "f13e3f78cee2e831611041db17a5cb63f893ddf2",
+  "original_commit_subject": "feat: build Family C Reconstruction v1 and complete unified matrix -- UNIFIED_UTILITY_MATRIX_READY",
+  "original_commit_timestamp": "2026-08-17T19:58:06-04:00",
+  "original_commit_parent_sha": "0716fbe9f0560bdec7a3950cbda5209775f69498",
+  "original_commit_parent_timestamp": "2026-08-17T19:52:58-04:00",
+  "original_build_timestamp_utc": null,
+  "original_build_git_head_sha": null,
+  "original_build_git_dirty": null,
+  "original_command_line": null,
+  "provenance_field_notes": "The four original_* fields above are UNKNOWN and intentionally left null: this script has no CLI arguments and its own run emitted no manifest at build time, so the exact wall-clock moment, exact git HEAD at run time (as opposed to at commit time), working-tree dirty state, and invoked command line were not captured historically and cannot be exactly recovered now. They are bounded (not fabricated) by original_commit_parent_sha/original_commit_that_added_outputs above: the build necessarily ran with a working tree between those two commits.",
+  "reproducibility_verification": {
+    "method": "byte-for-byte diff of freshly-generated output against tracked committed output",
+    "unified_utility_matrix_long_v2_csv": "IDENTICAL",
+    "unified_utility_matrix_wide_v2_csv": "IDENTICAL"
+  },
+  "input_sha256": {
+    "experiments/mf_psd_v1/mf_psd_long_v1.csv": "7a1bbbd925d5bfc28fd66feaa9ecc110d28cb8a47748c6dc4aa4cfcaf76b4cb4",
+    "experiments/unified_utility_matrix_v1/unified_utility_matrix_long_v1.csv": "171262b69978249a61424258e0e17f5e1ddf942c4548aa7a8882e08cd955e780",
+    "experiments/family_c_reconstruction_v1/family_c_reconstruction_v1_long.csv": "9ab3b894d6d88a032857dd92c5b4055b8f5539f25961410414aff049460ca936"
+  },
+  "input_provenance_cross_check": {
+    "note": "experiments/mf_psd_v1/mf_psd_long_v1.csv's sha256 recomputed here matches the mf_psd_long_sha256 field already recorded in experiments/unified_utility_matrix_v1/unified_utility_matrix_build_manifest_v1.json at v1's original build time, confirming this frozen input has not drifted since.",
+    "matches_v1_manifest_mf_psd_long_sha256": true
+  },
+  "output_sha256": {
+    "unified_utility_matrix_long_v2.csv": "7022d34eabbccb7d72bc4d55fbb3a167ab2b2af6198922f014457f8188ebe486",
+    "unified_utility_matrix_wide_v2.csv": "956de317afea969b86a9254e09114ea7854db639ca9227781895bca6108e74ca"
+  },
+  "output_row_counts": {
+    "unified_utility_matrix_long_v2.csv_rows": 1056,
+    "unified_utility_matrix_wide_v2.csv_scenarios": 176,
+    "unified_utility_matrix_wide_v2.csv_anchors": 6,
+    "expected_cells_176x6": 1056
+  },
+  "assembly_semantics": "Family A and Family B cells are carried over unchanged from MF-PSD v1 native rows plus unified_utility_matrix_v1's Step-2 cross-family evaluation rows. All Family C cells (native and cross-family) are entirely replaced by experiments/family_c_reconstruction_v1/ (FAMILY_C_RECONSTRUCTION_BOUNDED) -- historical Family-C native rows from MF-PSD v1/unified_utility_matrix_v1 are never mixed row-wise into v2. See scripts/build_unified_utility_matrix_v2.py and docs/design/FAMILY_C_RECONSTRUCTION_V1.md §4 for the exact rule.",
+  "do_not_use_for": "Do not treat original_build_timestamp_utc/original_build_git_head_sha/original_build_git_dirty/original_command_line as historical fact -- they were never captured and this manifest does not invent them. This manifest is sufficient to verify content reproducibility and input provenance, not to reconstruct the exact original invocation."
+}

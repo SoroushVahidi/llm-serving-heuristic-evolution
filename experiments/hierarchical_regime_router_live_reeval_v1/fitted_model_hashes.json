@@ -1,0 +1,7 @@
+{
+  "stage1_model_hash": "afa50132b7f0e4748e9340e11bea7887bae83f8acef5dbd4a5aadfeccde37666",
+  "stage2_model_hashes": {
+    "RANKING_FAIRNESS": "5eeb813ae1e3c7b3f9c48f01831b51cb281148318d05ef44cff3345747c3fc1c",
+    "PREFILL_DECODE_CONTENTION": "1f9c2ba1b69c731fa7414c8a268f339c58a61e23f38da7f089a87e98e9918812"
+  }
+}

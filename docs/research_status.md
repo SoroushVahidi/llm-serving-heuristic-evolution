@@ -1,12 +1,21 @@
 # Research Status
 
-**Last updated:** 2026-06-27  
-**Current branch:** `phase2c1-real-trace-ingestion-validation`  
-**Current phase:** Phase 2C — Paused after Phase 2C.3 (external-aware analysis)
+> **This file is retained for historical compatibility. It is not the
+> current-status authority.** Current project status is maintained in
+> **[docs/current/PROJECT_STATUS.md](current/PROJECT_STATUS.md)**. See also
+> [docs/current/README.md](current/README.md) for the full canonical
+> documentation set.
+>
+> Everything below this notice describes a **2026-06-27 snapshot** (the
+> "Phase 2C paused" checkpoint) and predates the unnumbered Selector v2 /
+> external-faithful-baseline / GPU-runtime-validation program entirely.
+> Retained as a historical record of that checkpoint; do not read the
+> "Current branch"/"Current phase" fields or the Quick Facts table below as
+> describing the present state of the repository.
 
 ---
 
-## Quick Facts
+## Quick Facts (historical snapshot, 2026-06-27)
 
 | Item | Value |
 |---|---|
@@ -14,7 +23,7 @@
 | Non-deployable oracle policies | **1** (`oracle_srtf`) |
 | Selector candidate policies | **20** (= deployable baselines) |
 | Implemented selector models | 3 (`rule_based`, `decision_tree`, `random_forest`) + KNN/regression/fallback variants |
-| Test count | **1560 collected** (2026-07-17; broader non-GPU smoke passes after fixing the `scripts` import path in `test_phase2c1_real_trace_runner.py`) |
+| Test count | **1594 collected** (broader non-GPU smoke passes after fixing the `scripts` import path in `test_phase2c1_real_trace_runner.py`) |
 | Phase 2C.2 eval windows | **325** (real Azure 2023 + BurstGPT traces) |
 | Phase 2C.2 best selector ANWG | **0.8021** (`native_non_oracle_dt`) |
 | Phase 2C.3 result | **Negative finding** — orca_style: 0 full-pool training labels |

@@ -1,0 +1,20 @@
+{
+  "name": "admission_gate_with_fallback",
+  "description": "Admits only requests that still fit their deadline (laxity_gate); if the gate rejects every candidate this step, the whole step delegates to the declared fifo_like fallback instead of stalling.",
+  "tie_breaker": "earliest_deadline",
+  "fallback": {
+    "policy": "fifo_like"
+  },
+  "on_no_admits": "safe_fallback",
+  "default": {
+    "request_score": {
+      "primitive": "laxity_urgency"
+    },
+    "admission_condition": {
+      "primitive_gate": "laxity_gate",
+      "params": {
+        "laxity_threshold": 0.0
+      }
+    }
+  }
+}

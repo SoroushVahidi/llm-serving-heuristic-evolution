@@ -219,8 +219,11 @@ def test_phase2c1_smoke_writes_deployable_selector_summary():
         )
         assert (out_dir / "deployable_selector_summary.csv").exists()
         assert metadata["primary_rank_metric"] == "mean_arrival_normalized_wg"
-        assert "safe_fallback_wsp_margin" in "".join(metadata["oracle_assisted_selectors"])
-        assert "regression_anwg" in metadata["deployable_headline_selectors"]
+        assert metadata["deployable_headline_selectors"]
+        assert not any(
+            s.startswith("safe_fallback_wsp_margin")
+            for s in metadata["deployable_headline_selectors"]
+        )
         with open(out_dir / "deployable_selector_summary.csv") as f:
             rows = list(csv.DictReader(f))
         assert rows

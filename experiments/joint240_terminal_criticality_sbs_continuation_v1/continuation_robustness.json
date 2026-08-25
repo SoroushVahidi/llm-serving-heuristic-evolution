@@ -1,0 +1,14 @@
+{
+  "continuation_verdict": "CONTINUATION_SENSITIVE",
+  "jaccard_top1pct": 0.1076923076923077,
+  "jaccard_top5pct": 0.1021671826625387,
+  "overlap": {
+    "both_nonzero": 101,
+    "both_zero": 2819,
+    "nonzero_label_agreement": 0.8246258119175374,
+    "only_alive_nonzero": 105,
+    "only_sbs_nonzero": 516,
+    "sign_agreement_among_dual_nonzero": 0.5346534653465347
+  },
+  "spearman_abs_alive_vs_sbs": 0.22086887883049208
+}

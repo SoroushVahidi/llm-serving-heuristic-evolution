@@ -4,7 +4,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 
 ROOT = Path(__file__).parent.parent
 SCRIPT = "scripts/report_research_status.py"

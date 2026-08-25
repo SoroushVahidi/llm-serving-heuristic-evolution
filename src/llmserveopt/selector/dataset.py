@@ -11,12 +11,10 @@ from __future__ import annotations
 
 import json
 import math
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
-import numpy as np
 
 from ..core.metrics import RunMetrics
 from ..core.types import GPUConfig, Request
@@ -24,7 +22,7 @@ from ..evaluation.run_policy import run_policy
 from ..policies.registry import make_policy
 from ..simulator.service_model import ServiceModel
 from .candidates import SELECTOR_CANDIDATES
-from .features import FeatureMode, FEATURE_NAMES, extract_features, parse_feature_mode
+from .features import FeatureMode, FEATURE_NAMES, extract_features
 from .labels import WindowLabel, label_windows
 from .windows import RequestWindow, make_windows, DEFAULT_WINDOW_SIZE, MIN_PARTIAL_WINDOW
 

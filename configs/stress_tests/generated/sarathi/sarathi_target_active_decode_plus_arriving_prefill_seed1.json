@@ -1,0 +1,88 @@
+{
+  "entry_id": "sarathi_target_active_decode_plus_arriving_prefill",
+  "seed": 1,
+  "smoke": true,
+  "n_requests": 8,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 512,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "medium_decoding"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.0,
+      "prompt_tokens": 512,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "medium_decoding"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.0,
+      "prompt_tokens": 512,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "medium_decoding"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.0,
+      "prompt_tokens": 512,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "medium_decoding"
+    },
+    {
+      "request_id": 4,
+      "arrival_time": 3.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1003.0,
+      "priority": 1.0,
+      "class_id": "long_arriving_prefill"
+    },
+    {
+      "request_id": 5,
+      "arrival_time": 4.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1004.0,
+      "priority": 1.0,
+      "class_id": "long_arriving_prefill"
+    },
+    {
+      "request_id": 6,
+      "arrival_time": 5.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1005.0,
+      "priority": 1.0,
+      "class_id": "long_arriving_prefill"
+    },
+    {
+      "request_id": 7,
+      "arrival_time": 6.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 64,
+      "actual_output_tokens": 64,
+      "slo_deadline": 1006.0,
+      "priority": 1.0,
+      "class_id": "long_arriving_prefill"
+    }
+  ]
+}

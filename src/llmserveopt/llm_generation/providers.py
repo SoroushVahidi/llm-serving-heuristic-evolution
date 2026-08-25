@@ -19,9 +19,9 @@ from __future__ import annotations
 import json
 import os
 import time
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-from .provider_base import LLMProvider, LLMResponse
+from .provider_base import LLMResponse
 
 
 # ---------------------------------------------------------------------------

@@ -1,5 +1,4 @@
 """Tests for candidate deduplication."""
-import pytest
 from llmserveopt.llm_generation.diversity import deduplicate_candidates
 
 

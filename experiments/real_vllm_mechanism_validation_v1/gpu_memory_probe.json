@@ -1,0 +1,30 @@
+{
+  "conclusion": "Enough VRAM/KV headroom for a small 4k-context prefill/decode validation on Qwen2.5-0.5B; not enough to claim local 7B/8B high-KV validation.",
+  "disabled_mode_from_server_log": {
+    "available_kv_cache_gib": 4.17,
+    "kv_cache_tokens": 364592,
+    "max_concurrency_4096_tokens": 89.01,
+    "model_load_gib": 0.93,
+    "nvidia_smi_used_mib_during_server": 5603
+  },
+  "enabled_mode_from_server_log": {
+    "available_kv_cache_gib": 4.29,
+    "kv_cache_tokens": 375200,
+    "max_concurrency_4096_tokens": 91.6,
+    "model_load_gib": 0.93,
+    "nvidia_smi_used_mib_during_server": 5743
+  },
+  "post_shutdown": {
+    "free_mib": 15834,
+    "used_mib": 15
+  },
+  "preflight": {
+    "free_mib": 15834,
+    "used_mib": 15
+  },
+  "queue_probe": {
+    "max_kv_cache_usage_perc": 0.015693632990745887,
+    "max_running": 4.0,
+    "max_waiting": 3.0
+  }
+}

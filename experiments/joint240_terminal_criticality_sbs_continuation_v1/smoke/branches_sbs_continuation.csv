@@ -1,0 +1,21 @@
+scenario_id,step,acquisition_type,alt_policy_id,chosen_policy_id,canonical_ref_action,canonical_alt_action,sbs_ref_anwg,sbs_cf_anwg,sbs_delta_anwg,sbs_abs_delta_anwg,sbs_nonzero,alive_delta_anwg,alive_abs_delta_anwg,alive_nonzero,fold,n_elevated_mechanisms,live_fingerprint_unchanged,cf_extra_steps,ref_extra_steps
+joint_mm_0000,14,AGREEMENT_CONTROL,weighted_fair_share,estimated_service_time_first,"((0, (0,)),)","((0, (0,)),)",0.1928770189717766,0.1928770189717766,0.0,0.0,False,0.0,0.0,False,3,3,True,604,604
+joint_mm_0000,15,AGREEMENT_CONTROL,weighted_fair_share,estimated_service_time_first,"((0, (1,)),)","((0, (1,)),)",0.1928770189717766,0.1928770189717766,0.0,0.0,False,0.0,0.0,False,3,3,True,603,603
+joint_mm_0000,19,AGREEMENT_CONTROL,weighted_fair_share,estimated_service_time_first,"((0, (2,)),)","((0, (2,)),)",0.1928770189717766,0.1928770189717766,0.0,0.0,False,0.0,0.0,False,3,3,True,599,599
+joint_mm_0000,20,AGREEMENT_CONTROL,weighted_fair_share,estimated_service_time_first,"((0, (3,)),)","((0, (3,)),)",0.1928770189717766,0.1928770189717766,0.0,0.0,False,0.0,0.0,False,3,3,True,598,598
+joint_mm_0000,23,AGREEMENT_CONTROL,weighted_fair_share,estimated_service_time_first,"((0, (4,)),)","((0, (4,)),)",0.1928770189717766,0.1928770189717766,0.0,0.0,False,0.0,0.0,False,3,3,True,595,595
+joint_mm_0001,10,AGREEMENT_CONTROL,estimated_service_time_first,chunked_prefill_small,"((0, (0,)),)","((0, (0,)),)",0.20840084025330238,0.20840084025330238,0.0,0.0,False,0.0,0.0,False,1,4,True,525,525
+joint_mm_0001,22,AGREEMENT_CONTROL,estimated_service_time_first,chunked_prefill_small,"((0, (1,)),)","((0, (1,)),)",0.20840084025330238,0.20840084025330238,0.0,0.0,False,0.0,0.0,False,1,4,True,513,513
+joint_mm_0001,27,AGREEMENT_CONTROL,estimated_service_time_first,chunked_prefill_small,"((0, (2,)),)","((0, (2,)),)",0.20840084025330238,0.20840084025330238,0.0,0.0,False,0.0,0.0,False,1,4,True,508,508
+joint_mm_0001,42,AGREEMENT_CONTROL,estimated_service_time_first,chunked_prefill_small,"((0, (3,)),)","((0, (3,)),)",0.20840084025330238,0.20840084025330238,0.0,0.0,False,0.0,0.0,False,1,4,True,493,493
+joint_mm_0001,58,AGREEMENT_CONTROL,estimated_service_time_first,chunked_prefill_small,"((0, (4,)),)","((0, (4,)),)",0.20840084025330238,0.20840084025330238,0.0,0.0,False,0.0,0.0,False,1,4,True,477,477
+joint_mm_0001,86,DISAGREEMENT,full_prefill,weighted_fair_share,"((0, (17, 18)),)",(),0.20643132830433966,0.20840084025330238,0.001969511948962721,0.001969511948962721,True,0.0,0.0,False,1,4,True,449,444
+joint_mm_0001,91,DISAGREEMENT,full_prefill,weighted_fair_share,"((0, (24,)),)",(),0.20643132830433966,0.20643132830433966,0.0,0.0,False,0.0,0.0,False,1,4,True,439,439
+joint_mm_0001,103,DISAGREEMENT,full_prefill,weighted_fair_share,"((0, (22,)),)",(),0.20643132830433966,0.20643132830433966,0.0,0.0,False,0.0,0.0,False,1,4,True,428,427
+joint_mm_0001,107,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (19,)),)",(),0.18903698616634224,0.18903698616634224,0.0,0.0,False,0.0,0.0,False,1,4,True,427,431
+joint_mm_0001,113,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (31,)),)",(),0.18903698616634224,0.18903698616634224,0.0,0.0,False,0.0,0.0,False,1,4,True,425,433
+joint_mm_0001,126,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (51,)),)",(),0.18903698616634224,0.18903698616634224,0.0,0.0,False,0.0,0.0,False,1,4,True,420,431
+joint_mm_0001,144,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (39,)),)",(),0.1736121559773075,0.18903698616634224,0.015424830189034733,0.015424830189034733,True,0.0,0.0,False,1,4,True,413,420
+joint_mm_0001,146,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (49,)),)",(),0.1736121559773075,0.1736121559773075,0.0,0.0,False,0.0,0.0,False,1,4,True,418,401
+joint_mm_0001,153,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (38,)),)",(),0.19100649811530496,0.1736121559773075,-0.017394342137997454,0.017394342137997454,True,0.0,0.0,False,1,4,True,394,401
+joint_mm_0001,156,DISAGREEMENT,full_prefill,least_laxity_first,"((0, (44,)),)",(),0.17558166792627022,0.19100649811530496,0.015424830189034733,0.015424830189034733,True,0.0,0.0,False,1,4,True,398,387

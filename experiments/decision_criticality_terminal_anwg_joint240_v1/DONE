@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "elapsed_s": 1456.5185992717743,
+  "n_branches": 3541,
+  "verdicts": [
+    "JOINT240_TERMINAL_CRITICALITY_REPLICATED"
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "canonical_simplifications_allowed_before_hash": [
+    "sort commutative child order only for add/min/max when both children are pure expressions",
+    "remove IF branches only when both serialized branches are identical",
+    "normalize numeric constants to finite decimal strings"
+  ],
+  "complexity_limits": {
+    "actual_output_tokens_access": false,
+    "future_information_access": false,
+    "max_ast_depth": 4,
+    "max_free_numeric_constants": 4,
+    "max_if_nodes": 3,
+    "max_nodes": 31,
+    "unrestricted_loops": false,
+    "unrestricted_python": false
+  },
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "genome_to_execution": [
+    "canonical genome string",
+    "typed AST / SchedulerGenomeV1-profile object",
+    "compiled HeuristicPolicy or exact native parent/wrapper",
+    "deterministic scheduler action"
+  ],
+  "grammar_name": "PortfolioGuidedTypedGPGrammarV1",
+  "implementation_gap": "Existing DSL enforces leakage and expression validity, but it is not a full unit-typed AST. The screen implementation must add a static type checker/profile layer before evolution is run.",
+  "operators": {
+    "arithmetic": [
+      "add",
+      "sub",
+      "mul",
+      "div_safe",
+      "min",
+      "max",
+      "clip"
+    ],
+    "boolean": [
+      "gt",
+      "lt",
+      "and",
+      "or",
+      "not"
+    ],
+    "control": [
+      "IF(Boolean, same_type, same_type)"
+    ],
+    "module_composition": [
+      "KV_GUARD(RankingRule)",
+      "PREFILL_RULE(Policy)",
+      "ADMISSION_GUARD(Policy)",
+      "LEXICOGRAPHIC(RankingRule, RankingRule)"
+    ]
+  },
+  "policy_signature": "action_t = pi(observable_state_t, persistent_policy_memory_t)",
+  "reuse_policy": "Reuse existing SchedulerGenomeV1 plus heuristics DSL as executable substrate; add a small typed profile and parent-module fidelity gates rather than a second DSL.",
+  "state_feature_terminals": {
+    "Count": [
+      "sys.queue_length",
+      "sys.active_sequence_count",
+      "batch.size"
+    ],
+    "Ratio": [
+      "sys.kv_utilization",
+      "sys.free_sequence_ratio",
+      "sys.token_budget_utilization",
+      "sys.arrival_rate_est",
+      "sys.burstiness_cv",
+      "sys.recent_slo_violation_rate",
+      "sys.slo_pressure"
+    ],
+    "Score": [
+      "req.priority_weight",
+      "deadline_urgency",
+      "fairness_starvation_bonus",
+      "weighted_shortest_processing_score"
+    ],
+    "Time": [
+      "req.waiting_time",
+      "req.deadline_slack",
+      "laxity(req,state)"
+    ],
+    "Tokens": [
+      "req.prompt_tokens",
+      "req.predicted_output_tokens",
+      "req.estimated_prefill_cost",
+      "req.estimated_decode_cost",
+      "req.estimated_kv_cost",
+      "batch.sum_prompt_tokens",
+      "batch.sum_predicted_output_tokens"
+    ]
+  },
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only",
+  "types": {
+    "AdmissionCondition": "request/GPU/system eligibility predicate",
+    "Boolean": "guard predicate",
+    "Count": "queue length, active sequence count, batch size",
+    "KVGuard": "KV reserve/admission/placement module",
+    "Policy": "complete scheduler module composition",
+    "PrefillRule": "service-model prefill/chunk controller module",
+    "RankingRule": "per-request ordering module",
+    "Ratio": "bounded nonnegative pressure/utilization/deficit ratios",
+    "Score": "request ranking score; higher preferred after canonical normalization",
+    "Time": "seconds or simulation time units from waiting_time/deadline_slack/laxity",
+    "Tokens": "prompt/output/KV/prefill/decode token counts or estimates"
+  }
+}

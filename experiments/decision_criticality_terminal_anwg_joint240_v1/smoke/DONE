@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "elapsed_s": 87.10050296783447,
+  "n_branches": 12,
+  "verdicts": [
+    "JOINT240_INSUFFICIENT_EFFECT_EVENTS"
+  ]
+}

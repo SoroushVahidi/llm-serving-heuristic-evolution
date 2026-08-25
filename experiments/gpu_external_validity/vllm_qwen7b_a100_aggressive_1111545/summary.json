@@ -1,0 +1,15 @@
+{
+  "max_observed_kv_cache_usage": 0.13959390862944165,
+  "max_observed_vllm_running": 24.0,
+  "num_requests": 108,
+  "num_scenarios": 6,
+  "num_success": 108,
+  "preemption_events": 0.0,
+  "runtime_mean_latency_s": 4.191505699411613,
+  "runtime_mean_ttft_s": 0.6875711722364536,
+  "sarathi_sim_vs_vllm_sim_latency_ratio_median": 1.030665722959096,
+  "scenarios_with_vllm_waiting": 4,
+  "sim_sarathi_mean_latency_s": 0.3680208333333333,
+  "sim_vllm_mean_latency_s": 0.35508680555555555,
+  "vllm_runtime_vs_sim_latency_ratio_median": 14.031643520126517
+}

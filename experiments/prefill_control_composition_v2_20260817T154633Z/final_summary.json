@@ -1,0 +1,31 @@
+{
+  "experiment": "prefill_control_composition",
+  "n_scenarios": 32,
+  "n_tasks": 120,
+  "n_completed": 120,
+  "n_failed": 0,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "split_sizes": {
+    "train": 16,
+    "val": 8,
+    "test": 4,
+    "ood": 4
+  },
+  "parents": [
+    "full_prefill",
+    "chunked_prefill_small"
+  ],
+  "children_evaluated": [
+    "chunk_96",
+    "chunk_128",
+    "chunk_192",
+    "prefill_control_child"
+  ],
+  "composite_baselines_evaluated": [
+    "contextual_top1",
+    "hard_conditional",
+    "contextual_alpha"
+  ],
+  "seed": 20261201,
+  "run_config_id": "39b54d547d3f"
+}

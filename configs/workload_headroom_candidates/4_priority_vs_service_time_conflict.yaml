@@ -1,0 +1,49 @@
+name: priority_vs_service_time_conflict
+purpose: >
+  High-priority requests and low-priority requests are drawn from the SAME
+  wide output-length distribution (so priority is independent of size --
+  a high-priority request is equally likely to be long or short), under
+  tight concurrency. This creates real cases where a high-priority LONG
+  job competes with a low-priority SHORT job for the same admission slot:
+  a pure SRTF/SOF policy ignores priority entirely (admits the short job),
+  while a priority-aware or WSP-style policy would prefer the long,
+  high-priority one -- a genuine conflict this cheap checker's four
+  policies (which ignore priority except via the shared ANWG weighting)
+  cannot resolve on their own, but can DETECT via the metrics below.
+expected_divergent_policies: [oracle_srtf, weighted_shortest_processing]
+scientific_purpose: >
+  Complements family 3 (deadline conflict) with a priority-weight conflict
+  -- WSP is not in this cheap checker's policy set (see module docstring:
+  no learned/expensive policies), but weighted_shortest_processing's own
+  ANWG can be spot-checked separately if this family passes the gate.
+workload:
+  arrival_process: poisson
+  arrival_rate: 16.0
+  duration: 15.0
+  prompt_dist: lognormal
+  prompt_mean: 80.0
+  prompt_sigma: 0.5
+  prompt_low: 16
+  prompt_high: 300
+  output_dist: lognormal
+  output_mean: 90.0
+  output_sigma: 1.2
+  output_low: 8
+  output_high: 1500
+  prediction_noise_rel: 0.1
+  slo_classes:
+    # both classes share the same slack (priority is the only asymmetry,
+    # by design) -- see 1_staggered_heterogeneous.yaml's comment for scale.
+    - {class_id: high_priority, slo_slack: 0.15, priority: 5.0, weight: 0.3}
+    - {class_id: low_priority,  slo_slack: 0.15, priority: 1.0, weight: 0.7}
+gpu:
+  max_active_sequences: 2
+  max_batch_tokens: 4096
+  max_kv_tokens: 65536
+service_model:
+  step_size: 0.001
+  enable_prefill_modeling: true
+  prefill_cost_per_token: 1.0
+  max_prefill_chunk_tokens: 512
+  step_token_budget: 4096
+  decode_first: false

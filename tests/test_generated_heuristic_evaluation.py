@@ -1,6 +1,5 @@
 """Tests for candidate evaluation via the simulator."""
 import math
-import pytest
 from llmserveopt.llm_generation.evaluation import (
     CandidateResult,
     EvaluationConfig,

@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import csv
 import math
-import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -68,7 +67,7 @@ def plot_summary_table(rows: List[Dict], output_dir: Path, dry_run: bool) -> Non
     colors = [_source_color(s) for s in sources]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    bars = ax.barh(range(len(names)), wgs, color=colors)
+    ax.barh(range(len(names)), wgs, color=colors)
     ax.set_yticks(range(len(names)))
     ax.set_yticklabels(names, fontsize=8)
     ax.invert_yaxis()

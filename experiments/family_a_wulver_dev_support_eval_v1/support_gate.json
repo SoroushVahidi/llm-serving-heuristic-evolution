@@ -1,0 +1,76 @@
+{
+  "checks": {
+    ">= 2 DEV configuration groups improve": false,
+    "DEV NN mean >= 5% improvement": false,
+    "DEV NN p90 >= 5% improvement": false,
+    "DEV closer rows >= 15/104": false,
+    "favored-long DEV NN mean >= 7% improvement": false,
+    "favored-long closer rows >= 8/66": false,
+    "local 5NN density >= 3% improvement": false,
+    "top-gap overlap >= 3/5 features": false
+  },
+  "classification": "WULVER_DEV_SUPPORT_NO_GO",
+  "gate_pass": false,
+  "next_scientific_action": "stop/reconsider current Family-A selector-support direction; do not label automatically",
+  "oracle_acquisition_allowed_next": false,
+  "table": [
+    {
+      "metric": "DEV NN mean >= 5% improvement",
+      "observed": 0.31468866951099234,
+      "pass": false,
+      "threshold": ">= 5%"
+    },
+    {
+      "metric": "DEV NN p90 >= 5% improvement",
+      "observed": 0.0,
+      "pass": false,
+      "threshold": ">= 5%"
+    },
+    {
+      "metric": "favored-long DEV NN mean >= 7% improvement",
+      "observed": 0.5828978057339095,
+      "pass": false,
+      "threshold": ">= 7%"
+    },
+    {
+      "metric": "DEV closer rows >= 15/104",
+      "observed": "1/104",
+      "pass": false,
+      "threshold": ">= 15/104"
+    },
+    {
+      "metric": "favored-long closer rows >= 8/66",
+      "observed": "1/66",
+      "pass": false,
+      "threshold": ">= 8/66"
+    },
+    {
+      "metric": "local 5NN density >= 3% improvement",
+      "observed": 1.0388066421745037,
+      "pass": false,
+      "threshold": ">= 3%"
+    },
+    {
+      "metric": "top-gap overlap >= 3/5 features",
+      "observed": "1/5",
+      "pass": false,
+      "threshold": ">= 3/5"
+    },
+    {
+      "metric": ">= 2 DEV configuration groups improve",
+      "observed": 1,
+      "pass": false,
+      "threshold": ">= 2 groups"
+    }
+  ],
+  "thresholds": {
+    "dev_configuration_groups_improved": 2,
+    "dev_nn_mean_improvement_pct": 5.0,
+    "dev_nn_p90_improvement_pct": 5.0,
+    "dev_rows_closer": 15,
+    "favored_long_nn_mean_improvement_pct": 7.0,
+    "favored_long_rows_closer": 8,
+    "local_5nn_density_improvement_pct": 3.0,
+    "top5_overlap_features_improved": 3
+  }
+}

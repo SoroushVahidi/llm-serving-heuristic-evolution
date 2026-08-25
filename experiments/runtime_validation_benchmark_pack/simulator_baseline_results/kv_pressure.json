@@ -1,0 +1,19 @@
+{
+  "canonical_scenario_id": "kv_pressure",
+  "vllm_faithful": {
+    "mean_ttft_s": 0.0065,
+    "mean_e2e_s": 0.7735,
+    "completion_fraction": 1.0
+  },
+  "sarathi_faithful": {
+    "mean_ttft_s": 0.028583333333333336,
+    "mean_e2e_s": 0.7955833333333334,
+    "completion_fraction": 1.0
+  },
+  "simulator_e2e_winner": "vllm",
+  "hardware_e2e_winner_robust": "sarathi",
+  "simulator_matches_hardware": false,
+  "known_mismatch_reason": "Not specifically root-caused at the scheduler-algorithm level (unlike the active_decode_plus_arriving_prefill mismatch). Confirmed a stable (ROBUST, 5/5) real effect by docs/wulver_sarathi_vllm_repeated_validation.md.",
+  "source_job_for_simulator_numbers": 1111706,
+  "note": "Simulator numbers were computed inline by job 1111706 (run_simulator_scenario()); not rerun for this pack."
+}

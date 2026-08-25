@@ -1,0 +1,19 @@
+{
+  "candidate_scenario_evaluations": 36,
+  "projected_full_screen": {
+    "candidate_scenario_evaluations": 4320,
+    "local_cpu_parallelism_supported_by_runner": false,
+    "naive_projected_wall_time_min": 15.745924662100151,
+    "naive_projected_wall_time_s": 944.7554797260091,
+    "ten_minute_ambition_realistic": false
+  },
+  "schema": "portfolio_guided_typed_gp_smoke_v1_timing",
+  "timing_components_s": {
+    "candidate_generation_s": 0.0015908450004644692,
+    "candidate_scenario_evaluation_s": 7.872962331050076,
+    "fingerprint_s": 0.027964278066065162,
+    "mg_aggregation_s": 0.0003499290905892849
+  },
+  "total_smoke_runtime_s": 7.904639562009834,
+  "wall_clock_time_per_candidate_scenario_evaluation_s": 0.21869339808472432
+}

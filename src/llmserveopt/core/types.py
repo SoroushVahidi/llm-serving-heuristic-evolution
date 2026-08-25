@@ -35,12 +35,34 @@ class Request:
             raise ValueError(f"arrival_time must be non-negative, got {self.arrival_time}")
 
 
+#: Valid GPUConfig.role values for disaggregated prefill/decode execution
+#: (see docs/distserve_faithful_scheduler_reference.md). None (the default)
+#: means legacy/colocated: a GPU that runs both prefill and decode, exactly
+#: as every existing config already does.
+DISAGGREGATION_ROLES = ("prefill", "decode")
+
+
 @dataclass(frozen=True)
 class GPUConfig:
     gpu_id: int
     max_active_sequences: int   # max concurrently active requests
     max_batch_tokens: int       # max tokens processed in one step (all active reqs)
     max_kv_tokens: int          # total KV-cache capacity in tokens
+    # Disaggregated prefill/decode execution (opt-in; see
+    # docs/distserve_faithful_scheduler_reference.md). None = legacy/colocated
+    # GPU, unchanged behavior. Every existing config leaves this unset.
+    role: Optional[str] = None
+
+    # Dual-tier cache support (Apt-Serve style)
+    hybrid_cache_enabled: bool = False
+    hidden_cache_capacity_blocks: int = 0
+    hidden_to_kv_memory_ratio: float = 0.1
+    cache_switch_latency: float = 0.0
+    hidden_restore_latency: float = 0.0
+    recomputation_cost_model: str = "full"
+    apt_serve_rho: float = 0.5
+    apt_serve_ttft_slo: float = 2.0
+    apt_serve_tbt_slo: float = 0.05
 
     def __post_init__(self) -> None:
         if self.max_active_sequences <= 0:
@@ -49,6 +71,38 @@ class GPUConfig:
             raise ValueError("max_batch_tokens must be positive")
         if self.max_kv_tokens <= 0:
             raise ValueError("max_kv_tokens must be positive")
+        if self.role is not None and self.role not in DISAGGREGATION_ROLES:
+            raise ValueError(
+                f"role must be one of {DISAGGREGATION_ROLES} or None, got {self.role!r}"
+            )
+
+        if self.hybrid_cache_enabled:
+            if self.hidden_cache_capacity_blocks <= 0:
+                raise ValueError("hidden_cache_capacity_blocks must be positive when hybrid cache is enabled")
+            if self.hidden_to_kv_memory_ratio <= 0.0 or self.hidden_to_kv_memory_ratio > 1.0:
+                raise ValueError("hidden_to_kv_memory_ratio must be in (0.0, 1.0]")
+            if self.cache_switch_latency < 0.0:
+                raise ValueError("cache_switch_latency must be non-negative")
+            if self.hidden_restore_latency < 0.0:
+                raise ValueError("hidden_restore_latency must be non-negative")
+            if self.recomputation_cost_model not in ("full", "hidden_restore"):
+                raise ValueError(f"unsupported recomputation_cost_model: {self.recomputation_cost_model}")
+            if self.apt_serve_rho < 0.0:
+                raise ValueError("apt_serve_rho must be non-negative")
+            if self.apt_serve_ttft_slo <= 0.0:
+                raise ValueError("apt_serve_ttft_slo must be positive")
+            if self.apt_serve_tbt_slo <= 0.0:
+                raise ValueError("apt_serve_tbt_slo must be positive")
+        else:
+            if (self.hidden_cache_capacity_blocks != 0 or
+                self.hidden_to_kv_memory_ratio != 0.1 or
+                self.cache_switch_latency != 0.0 or
+                self.hidden_restore_latency != 0.0 or
+                self.recomputation_cost_model != "full" or
+                self.apt_serve_rho != 0.5 or
+                self.apt_serve_ttft_slo != 2.0 or
+                self.apt_serve_tbt_slo != 0.05):
+                raise ValueError("Hybrid cache fields can only be set when hybrid_cache_enabled=True")
 
 
 @dataclass
@@ -92,6 +146,19 @@ class ObservableGPUState:
     # Phase 1.5: phase-split counts (0 when enable_prefill_modeling=False)
     prefilling_count: int = 0
     decoding_count: int = 0
+    # Disaggregated prefill/decode execution (opt-in; mirrors GPUConfig.role).
+    # None for every legacy/colocated GPU.
+    role: Optional[str] = None
+    # Live cross-instance relocation (opt-in; see
+    # docs/llumnix_faithful_scheduler_reference.md): requests whose
+    # migration transfer to THIS specific GPU has already completed and
+    # are awaiting admission here. Distinct from ObservableState's own
+    # migrating_queue (disaggregated prefill/decode bridge queue, any
+    # decode-role GPU may claim those) -- a relocation always has exactly
+    # one fixed destination, fixed at the moment a policy issued
+    # Action.migrate. Always empty unless a policy has ever set
+    # Action.migrate.
+    incoming_migrations: List[ObservableRequest] = field(default_factory=list)
 
     @property
     def free_sequences(self) -> int:
@@ -121,6 +188,14 @@ class ObservableState:
     gpu_states: List[ObservableGPUState]
     completed_count: int
     step: int
+    # Disaggregated prefill/decode execution (opt-in; see
+    # docs/distserve_faithful_scheduler_reference.md): requests that have
+    # finished prefill on a role="prefill" GPU and whose transfer delay has
+    # already elapsed -- eligible for admission onto a role="decode" GPU via
+    # the same Action.admit mechanism. Distinct from waiting_queue, which
+    # holds only genuinely-new, needs-prefill requests. Always empty unless
+    # ServiceModel.enable_disaggregation is set.
+    migrating_queue: List[ObservableRequest] = field(default_factory=list)
 
 
 @dataclass

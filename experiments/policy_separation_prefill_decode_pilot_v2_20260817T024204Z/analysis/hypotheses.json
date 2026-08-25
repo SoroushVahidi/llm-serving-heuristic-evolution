@@ -1,0 +1,106 @@
+[
+  {
+    "id": "H1",
+    "verdict": "CONFIRM",
+    "detail": {
+      "unique_wins_full": 16,
+      "seeds_with_full_win": [
+        20260820,
+        20260821,
+        20260822,
+        20260823
+      ]
+    }
+  },
+  {
+    "id": "H2",
+    "verdict": "CONFIRM",
+    "detail": {
+      "unique_wins_small": 15,
+      "seeds_with_small_win": [
+        20260820,
+        20260821,
+        20260822,
+        20260823
+      ]
+    }
+  },
+  {
+    "id": "H3",
+    "verdict": "CONFIRM",
+    "detail": {
+      "accuracy": 1.0,
+      "n_non_neartie": 31
+    }
+  },
+  {
+    "id": "H4",
+    "verdict": "CONFIRM",
+    "detail": {
+      "seeds_with_reverse": [
+        20260820,
+        20260821,
+        20260822,
+        20260823
+      ],
+      "sign_agree": 0.875
+    }
+  },
+  {
+    "id": "H5",
+    "verdict": "CONFIRM",
+    "detail": {
+      "exact_tie_rate": 0.03125,
+      "near_tie_rate": 0.03125
+    }
+  },
+  {
+    "id": "H6",
+    "verdict": "CONFIRM",
+    "detail": {
+      "frac_full_win_hog_ttft_lower": 1.0,
+      "frac_small_win_late_ttft_lower": 1.0,
+      "n_full_win": 16,
+      "n_small_win": 15
+    }
+  },
+  {
+    "id": "H7",
+    "verdict": "NOT_APPLICABLE",
+    "detail": "third decode-priority policy not retained"
+  },
+  {
+    "id": "H8",
+    "verdict": "CONFIRM",
+    "detail": {
+      "held_out_seed": 20260823,
+      "held_full_wins": 4,
+      "held_small_wins": 4,
+      "sign_match_frac": 1.0
+    }
+  },
+  {
+    "id": "H9",
+    "verdict": "CONFIRM",
+    "detail": {
+      "full_unique_wins": 16,
+      "small_unique_wins": 15
+    }
+  },
+  {
+    "id": "H10",
+    "verdict": "CONFIRM",
+    "detail": {
+      "G1": true,
+      "G2": true,
+      "G3": true,
+      "G4": true,
+      "G5": true,
+      "G6": true,
+      "G7": true,
+      "G8": true,
+      "G9": true,
+      "G10": true
+    }
+  }
+]

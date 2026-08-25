@@ -1,0 +1,17 @@
+# KV-aware composition falsification v1 (frozen, full grid).
+# See docs/design/KV_COMPOSITION_FALSIFICATION_V1.md sections 2-7.
+# Identical scenario grid to the frozen KV v2 pairwise-separation pilot
+# (configs/kv_pressure_pilot_v2.yaml) -- same generator, same 6 seeds. The
+# TRAIN/VAL/TEST/OOD split (src/llmserveopt/composition/kv_composition_splits.py)
+# reuses KV v2's own in-sample (20260910-13) / held-out (20260914-15) seed
+# partition, subdividing the 4 in-sample seeds into train(2)/val(1)/test(1).
+
+sweep_grid:
+  bulk_pressure: ["low", "high"]
+  urgent_arrival_phase: ["early", "middle", "late"]
+  urgent_tightness: ["loose", "tight"]
+  seeds: [20260910, 20260911, 20260912, 20260913, 20260914, 20260915]
+
+max_kv_tokens: 6000
+max_active_sequences: 64
+max_batch_tokens: 64

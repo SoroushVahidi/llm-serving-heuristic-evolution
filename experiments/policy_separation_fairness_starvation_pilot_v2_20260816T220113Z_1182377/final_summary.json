@@ -1,0 +1,21 @@
+{
+  "experiment_name": "policy_separation_fairness_starvation_pilot_v2",
+  "generator_version": "fairness_starvation_v2",
+  "n_scenarios": 72,
+  "n_tasks": 288,
+  "n_completed": 288,
+  "n_failed": 0,
+  "elapsed_seconds": 70.218430519104,
+  "primary_metric": "arrival_normalized_weighted_goodput",
+  "token_length_sources_observed": [
+    "burstgpt_staged"
+  ],
+  "require_burstgpt": true,
+  "allow_synthetic_tokens": false,
+  "policies": [
+    "fifo",
+    "estimated_service_time_first",
+    "aging_priority",
+    "weighted_fair_share"
+  ]
+}

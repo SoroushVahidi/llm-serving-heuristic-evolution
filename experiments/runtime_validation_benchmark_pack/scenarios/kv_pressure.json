@@ -1,0 +1,140 @@
+{
+  "canonical_scenario_id": "kv_pressure",
+  "category": "kv_pressure",
+  "positive_target": true,
+  "negative_control": false,
+  "sarathi_harness_name": "sarathi_matched_vllm_kv_pressure",
+  "vllm_harness_name": "mistral_match_kv_pressure",
+  "source_functions": [
+    "scripts/run_sarathi_gpu_smoke_and_validation.py:make_scenarios",
+    "scripts/run_gpu_external_validity_audit.py:build_mistral_match_scenarios"
+  ],
+  "prompt_seed": 20260719,
+  "request_count": 12,
+  "max_client_concurrency": 12,
+  "arrival_order_by_request_id": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "e6709122db328c702952eaaf8bd75a6f20114b58525182a9b250afc60bb0d150"
+    },
+    {
+      "request_id": 1,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "b55cd23d3e9773c848a39d5892822c4fd3f9e5675e2332bb73cd44277c696185"
+    },
+    {
+      "request_id": 2,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "ee82c1702455169fbd7234fb58ba9a1ffe02a720c98abdcd0956f9017150d0db"
+    },
+    {
+      "request_id": 3,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "c3f266d946fee15689bb4e2c76bdd183e55d7ca7e96808fef8c0107ec36a09f8"
+    },
+    {
+      "request_id": 4,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "258a995e3a7de2f4972b68a607c31b9c37725be730ae9b213f6686bc60a05d06"
+    },
+    {
+      "request_id": 5,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "e64004563c7b102276c76ebe3760af3b5dfcf11e5e2be28bb2cd2d5a5961f01b"
+    },
+    {
+      "request_id": 6,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "02cbb645edbb46f4a459fdca555bc58229b75262ddc4bac58f99a33a46a64a07"
+    },
+    {
+      "request_id": 7,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "8c81f1502268fe86552bc66c840cd77c193f549f536f541fb03b6122bf41e72f"
+    },
+    {
+      "request_id": 8,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "41a331b09c43ae3bd637076f6f442b69f58ccce5ac23402fd29389ceec636450"
+    },
+    {
+      "request_id": 9,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "303f07fee91dca45911c21b5c80ac3fc7b1ae377f93004f04b538fa3a48b3a87"
+    },
+    {
+      "request_id": 10,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "9fda82929be6043fbb3ad3f291a6119fa8727808a2a416aed8e64b33d0ff884e"
+    },
+    {
+      "request_id": 11,
+      "arrival_time_s": 0.0,
+      "prompt_bucket": "long",
+      "target_output_tokens": 768,
+      "intended_prompt_tokens_approx": 2116,
+      "prompt_char_length": 10532,
+      "prompt_sha256": "1a9c50cead7448bb7e63318d6a0fd10172824d95a80122d52545cc46f00ee6a6"
+    }
+  ],
+  "note": "Full prompt text is deliberately omitted (compact fixture); prompt_sha256 lets a consumer verify regenerated prompt text matches exactly. Regenerate full prompts by calling llmserveopt.real_llm.calibration_common.build_length_targeted_prompt(prompt_bucket, target_output_tokens, seed=20260719, variant_index=...) -- variant_index is not itself stored here since it is an internal implementation detail of the two source functions above, not part of the observable scenario contract; the sha256 is the portable verification mechanism."
+}

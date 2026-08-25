@@ -1,0 +1,13 @@
+{
+  "run_dir": "experiments/policy_separation_prefill_decode_smoke_v1_20260817T020443Z",
+  "config": "configs/policy_separation_prefill_decode_smoke_v1.yaml",
+  "git_head": "35ecffc85cdaa1f39f680d430dd9ef4853d6c3b3",
+  "git_branch": "contextual-compositional-heuristics-20260731",
+  "burstgpt_path": "/home/soroush/llm-serving-heuristic-evolution/.local_data/burstgpt_v2/raw/BurstGPT_without_fails_1.csv",
+  "datasets_root": ".local_data",
+  "chunk_budgets": {
+    "chunk_small": 64,
+    "chunk_large": 256,
+    "decode_priority_chunk": 64
+  }
+}

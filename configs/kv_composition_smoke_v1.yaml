@@ -1,0 +1,16 @@
+# KV-aware composition falsification v1 -- smoke/mechanism-validation grid.
+# Small subset of the frozen grid (configs/kv_composition_falsification_v1.yaml):
+# one TRAIN seed, both bulk_pressure levels, all three phases, both
+# tightness levels -- enough to exercise both child modes and both
+# low/high-pressure regimes cheaply. Mechanism validation only (item 12);
+# not scored for any gate.
+
+sweep_grid:
+  bulk_pressure: ["low", "high"]
+  urgent_arrival_phase: ["early", "middle", "late"]
+  urgent_tightness: ["loose", "tight"]
+  seeds: [20260910]
+
+max_kv_tokens: 6000
+max_active_sequences: 64
+max_batch_tokens: 64

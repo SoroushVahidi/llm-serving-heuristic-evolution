@@ -1,0 +1,131 @@
+{
+  "policy_x_mechanism_matrix": {
+    "chunked_prefill_small": {
+      "completion_behavior": "Completion-safe in audited pilots; completion is not the primary objective.",
+      "fairness_behavior": "Implicit temporal sharing through chunking, not explicit class fairness.",
+      "known_failure_modes": [
+        "underperforms full_prefill when uninterrupted prefill is beneficial",
+        "collapses to full/near-tie when prefill not active"
+      ],
+      "kv_load_behavior": "No explicit KV reserve, but chunking can reduce bursty prompt pressure.",
+      "latency_slo_behavior": "Protects late/short tenant TTFT but can hurt hog TTFT.",
+      "overlap_with_other_policies": "Complements full_prefill in Family B; ties all six on public trace ANWG.",
+      "prefill_decode_behavior": "Prefill chunking is the central mechanism.",
+      "primary_scheduling_mechanism": "Greedy arrival-order admission with small prefill chunks; slices prompt work to interleave classes.",
+      "strongest_workload_regimes": [
+        "Family B late-tenant TTFT contention",
+        "cases where crumbs prevent prompt convoying"
+      ],
+      "weakest_workload_regimes": [
+        "hog-prefill cases where chunking adds interchunk wait",
+        "public saturated-at-1.0 traces where chunking changes timing but not ANWG"
+      ]
+    },
+    "estimated_service_time_first": {
+      "completion_behavior": "Strong completion/size-sensitive behavior.",
+      "fairness_behavior": "No explicit class deficit; fairness can degrade.",
+      "known_failure_modes": [
+        "fairness/SLO protection failure on high-skew favored-long Family A",
+        "selector/composite attempts around ESTF/WFS failed held-out support and mechanism gates"
+      ],
+      "kv_load_behavior": "KV-blind except through prompt in service proxy.",
+      "latency_slo_behavior": "Improves short-job completion/latency but can starve long high-priority tenants.",
+      "overlap_with_other_policies": "High reward correlation with WFS in Family A (0.9705) despite bidirectional wins.",
+      "prefill_decode_behavior": "Uses token-length proxy but does not control chunk size.",
+      "primary_scheduling_mechanism": "Shortest estimated service first using prompt and predicted output tokens.",
+      "strongest_workload_regimes": [
+        "Family A favored-short or size-priority-aligned regimes",
+        "high-utilization cases where completion protection matters"
+      ],
+      "weakest_workload_regimes": [
+        "favored-long/high-skew regimes where WFS class protection matters",
+        "priority/fairness conflicts"
+      ]
+    },
+    "full_prefill": {
+      "completion_behavior": "Completes admitted work reliably in audited prefill/decode pilots; not a completion-prioritizing size rule.",
+      "fairness_behavior": "No explicit fairness or class-debt protection.",
+      "known_failure_modes": [
+        "convoying late tenants behind hog prompts",
+        "degenerate with chunked policy when prefill is not the bottleneck"
+      ],
+      "kv_load_behavior": "No explicit KV reserve beyond simulator feasibility.",
+      "latency_slo_behavior": "Can lower hog/large-job TTFT but can increase late tenant prefill waiting under contention.",
+      "overlap_with_other_policies": "Ties all policies on public trace ANWG; is the full-chunk anchor opposite chunked_prefill_small in Family B.",
+      "prefill_decode_behavior": "Maximal prefill chunk; favors uninterrupted prompt processing.",
+      "primary_scheduling_mechanism": "Greedy arrival-order admission with effectively unlimited prompt/prefill chunk; lets long prefills run without artificial chunking.",
+      "strongest_workload_regimes": [
+        "Family B hog-prefill cases where uninterrupted prefill protects hog TTFT/E2E",
+        "public traces under frozen capacity, though all six tie on ANWG"
+      ],
+      "weakest_workload_regimes": [
+        "late-arriving short/urgent decode or TTFT-sensitive tenants behind long prefill",
+        "prefill/decode contention with crumb fairness needed"
+      ]
+    },
+    "kv_constrained_online": {
+      "completion_behavior": "May trade bulk completion/throughput for reserve safety.",
+      "fairness_behavior": "No explicit class debt except urgent bypass.",
+      "known_failure_modes": [
+        "over-conservative reserve under some arrival timing",
+        "KV composition/hysteresis child did not prove safe envelope expansion"
+      ],
+      "kv_load_behavior": "Strongest explicit KV/load mechanism among the six.",
+      "latency_slo_behavior": "Protects urgent work by preventing bulk KV saturation; may defer bulk work.",
+      "overlap_with_other_policies": "Dominant Family C best fixed; limited marginal headroom but unique mechanism.",
+      "prefill_decode_behavior": "No chunk-size controller, but admission affects prompt/KV load.",
+      "primary_scheduling_mechanism": "KV-aware online admission preserving a target KV reserve, with urgent-laxity bypass.",
+      "strongest_workload_regimes": [
+        "Family C bulk pressure and scarce-KV regimes",
+        "urgent tenants arriving under high reserve pressure"
+      ],
+      "weakest_workload_regimes": [
+        "low KV pressure where reserve deferral is unnecessary",
+        "cells where LLF urgency dominates"
+      ]
+    },
+    "least_laxity_first": {
+      "completion_behavior": "Service-aware through laxity; not a pure completion rule.",
+      "fairness_behavior": "No class debt except deadline effects.",
+      "known_failure_modes": [
+        "admits urgent-looking work without preserving KV reserve",
+        "mostly redundant in Family C mean but still has a few unique wins"
+      ],
+      "kv_load_behavior": "KV-blind in admission except feasibility.",
+      "latency_slo_behavior": "Direct urgent/deadline protection.",
+      "overlap_with_other_policies": "Causal urgency anchor opposite kv_constrained_online.",
+      "prefill_decode_behavior": "No chunk/prefill control.",
+      "primary_scheduling_mechanism": "Ranks by deadline laxity: deadline minus current time minus predicted remaining service.",
+      "strongest_workload_regimes": [
+        "urgent deadline pressure when laxity is causal and KV reserve is not binding",
+        "some Family C arrival-timing cells"
+      ],
+      "weakest_workload_regimes": [
+        "bulk KV pressure where reserve admission matters",
+        "Family C v2 where kv_constrained_online dominates mean ANWG"
+      ]
+    },
+    "weighted_fair_share": {
+      "completion_behavior": "Can incur completion-related regret relative to ESTF.",
+      "fairness_behavior": "Strongest explicit fairness/class-deficit behavior among the six.",
+      "known_failure_modes": [
+        "completion pressure when smaller/near-complete jobs should release first",
+        "insufficient alone for all Family A oracle headroom"
+      ],
+      "kv_load_behavior": "KV-blind except feasibility.",
+      "latency_slo_behavior": "Protects priority/SLO/timeliness by class deficit; may sacrifice raw latency/completion efficiency.",
+      "overlap_with_other_policies": "Robust Family A parent but not a portfolio-expanding policy in prefill/KV mechanisms.",
+      "prefill_decode_behavior": "No chunk/prefill control.",
+      "primary_scheduling_mechanism": "Ranks by class demand/served deficit times priority over estimated service.",
+      "strongest_workload_regimes": [
+        "Family A favored-long/high-skew fairness and SLO protection",
+        "robust default in closed-loop Family A evidence"
+      ],
+      "weakest_workload_regimes": [
+        "cases where completion-efficient ESTF choices matter",
+        "favored-short or low-skew regimes where size ordering dominates"
+      ]
+    }
+  },
+  "scope_note": "Design/audit artifact. Mechanism summaries are reconstructed from existing source policy implementations and frozen audits only; no new experiments, labels, DEV, FINAL, or TEST were used."
+}

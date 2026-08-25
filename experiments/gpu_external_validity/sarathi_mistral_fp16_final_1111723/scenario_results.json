@@ -1,0 +1,218 @@
+[
+  {
+    "scenario_name": "sarathi_long_prompt_moderate_output",
+    "runtime_summary": {
+      "scenario_name": "sarathi_long_prompt_moderate_output",
+      "num_requests": 4,
+      "num_success": 4,
+      "completion_fraction": 1.0,
+      "max_concurrent_unfinished": 4,
+      "mean_ttft_s": 0.45346678599889856,
+      "p50_ttft_s": 0.45423378300620243,
+      "mean_tpot_s": 0.01631161848014609,
+      "mean_latency_s": 4.285325785240275,
+      "p50_latency_s": 4.277594634011621,
+      "wall_clock_timed_out": false
+    },
+    "simulator_summary": {
+      "vllm_faithful": {
+        "num_completed": 4,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 15.503875968992247,
+        "mean_latency_s": 0.2575,
+        "mean_ttft_s": 0.0025,
+        "mean_tpot_s": 0.001
+      },
+      "sarathi_faithful": {
+        "num_completed": 4,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 14.705882352941176,
+        "mean_latency_s": 0.267,
+        "mean_ttft_s": 0.012,
+        "mean_tpot_s": 0.001
+      }
+    }
+  },
+  {
+    "scenario_name": "sarathi_active_decode_plus_arriving_prefill",
+    "runtime_summary": {
+      "scenario_name": "sarathi_active_decode_plus_arriving_prefill",
+      "num_requests": 8,
+      "num_success": 8,
+      "completion_fraction": 1.0,
+      "max_concurrent_unfinished": 4,
+      "mean_ttft_s": 0.16746626061649295,
+      "p50_ttft_s": 0.17728392998105846,
+      "mean_tpot_s": 0.016303866417575308,
+      "mean_latency_s": 0.6120616131083807,
+      "p50_latency_s": 0.39031551097286865,
+      "wall_clock_timed_out": false
+    },
+    "simulator_summary": {
+      "vllm_faithful": {
+        "num_completed": 8,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 1.3194788058716806,
+        "mean_latency_s": 0.16000000000000003,
+        "mean_ttft_s": 0.0010000000000001115,
+        "mean_tpot_s": 0.0009999999999999987
+      },
+      "sarathi_faithful": {
+        "num_completed": 8,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 1.3183915622940012,
+        "mean_latency_s": 0.16424999999999998,
+        "mean_ttft_s": 0.005250000000000114,
+        "mean_tpot_s": 0.0009999999999999979
+      }
+    }
+  },
+  {
+    "scenario_name": "sarathi_prefill_heavy_burst",
+    "runtime_summary": {
+      "scenario_name": "sarathi_prefill_heavy_burst",
+      "num_requests": 6,
+      "num_success": 6,
+      "completion_fraction": 1.0,
+      "max_concurrent_unfinished": 6,
+      "mean_ttft_s": 0.6287278759894738,
+      "p50_ttft_s": 0.6271065199980512,
+      "mean_tpot_s": 0.023939863360557024,
+      "mean_latency_s": 1.3708636401667416,
+      "p50_latency_s": 1.3708823869819753,
+      "wall_clock_timed_out": false
+    },
+    "simulator_summary": {
+      "vllm_faithful": {
+        "num_completed": 6,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 166.66666666666666,
+        "mean_latency_s": 0.0345,
+        "mean_ttft_s": 0.0034999999999999996,
+        "mean_tpot_s": 0.001
+      },
+      "sarathi_faithful": {
+        "num_completed": 6,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 107.14285714285714,
+        "mean_latency_s": 0.04699999999999999,
+        "mean_ttft_s": 0.016,
+        "mean_tpot_s": 0.001
+      }
+    }
+  },
+  {
+    "scenario_name": "sarathi_mixed_prompt_lengths",
+    "runtime_summary": {
+      "scenario_name": "sarathi_mixed_prompt_lengths",
+      "num_requests": 6,
+      "num_success": 6,
+      "completion_fraction": 1.0,
+      "max_concurrent_unfinished": 5,
+      "mean_ttft_s": 0.2934235583428138,
+      "p50_ttft_s": 0.26959936899947934,
+      "mean_tpot_s": 0.02086278368907374,
+      "mean_latency_s": 1.1624387243549184,
+      "p50_latency_s": 1.621265949041117,
+      "wall_clock_timed_out": false
+    },
+    "simulator_summary": {
+      "vllm_faithful": {
+        "num_completed": 6,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 90.9090909090909,
+        "mean_latency_s": 0.06516666666666666,
+        "mean_ttft_s": 0.002166666666666667,
+        "mean_tpot_s": 0.001
+      },
+      "sarathi_faithful": {
+        "num_completed": 6,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 80.0,
+        "mean_latency_s": 0.06983333333333334,
+        "mean_ttft_s": 0.006833333333333334,
+        "mean_tpot_s": 0.001
+      }
+    }
+  },
+  {
+    "scenario_name": "sarathi_matched_vllm_kv_pressure",
+    "runtime_summary": {
+      "scenario_name": "sarathi_matched_vllm_kv_pressure",
+      "num_requests": 12,
+      "num_success": 12,
+      "completion_fraction": 1.0,
+      "max_concurrent_unfinished": 12,
+      "mean_ttft_s": 1.1851756445200106,
+      "p50_ttft_s": 1.1773960510327015,
+      "mean_tpot_s": 0.017475786827212767,
+      "mean_latency_s": 12.852149516436233,
+      "p50_latency_s": 14.16953378051403,
+      "wall_clock_timed_out": false
+    },
+    "simulator_summary": {
+      "vllm_faithful": {
+        "num_completed": 12,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 15.424164524421593,
+        "mean_latency_s": 0.7735,
+        "mean_ttft_s": 0.0065,
+        "mean_tpot_s": 0.0010000000000000002
+      },
+      "sarathi_faithful": {
+        "num_completed": 12,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 14.669926650366747,
+        "mean_latency_s": 0.7955833333333334,
+        "mean_ttft_s": 0.028583333333333336,
+        "mean_tpot_s": 0.0010000000000000002
+      }
+    }
+  },
+  {
+    "scenario_name": "sarathi_short_context_control",
+    "runtime_summary": {
+      "scenario_name": "sarathi_short_context_control",
+      "num_requests": 6,
+      "num_success": 6,
+      "completion_fraction": 1.0,
+      "max_concurrent_unfinished": 5,
+      "mean_ttft_s": 0.0705021339817904,
+      "p50_ttft_s": 0.07938009346253239,
+      "mean_tpot_s": 0.01561523582595376,
+      "mean_latency_s": 0.5623820624993338,
+      "p50_latency_s": 0.5698306425183546,
+      "wall_clock_timed_out": false
+    },
+    "simulator_summary": {
+      "vllm_faithful": {
+        "num_completed": 6,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 95.23809523809524,
+        "mean_latency_s": 0.064,
+        "mean_ttft_s": 0.001,
+        "mean_tpot_s": 0.001
+      },
+      "sarathi_faithful": {
+        "num_completed": 6,
+        "num_dropped": 0,
+        "completion_fraction": 1.0,
+        "request_throughput": 92.3076923076923,
+        "mean_latency_s": 0.0655,
+        "mean_ttft_s": 0.0025,
+        "mean_tpot_s": 0.001
+      }
+    }
+  }
+]

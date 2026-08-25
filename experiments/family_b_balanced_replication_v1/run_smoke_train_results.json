@@ -1,0 +1,70 @@
+{
+  "family_counts": {
+    "FAMILY_B_PREFILL_DECODE_V2": 3
+  },
+  "n_scenarios": 3,
+  "per_scenario_results": [
+    {
+      "A_count": 0,
+      "B_count": 62,
+      "C_count": 0,
+      "anwg_live": 0.7916666666666666,
+      "canonical_scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260820",
+      "dwell_violations": 0,
+      "fallback_rate": 0.7489878542510121,
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft",
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2",
+      "n_steps": 247,
+      "seed": 20260820,
+      "total_transitions": 2
+    },
+    {
+      "A_count": 0,
+      "B_count": 69,
+      "C_count": 0,
+      "anwg_live": 0.75,
+      "canonical_scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260821",
+      "dwell_violations": 0,
+      "fallback_rate": 0.73046875,
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft",
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2",
+      "n_steps": 256,
+      "seed": 20260821,
+      "total_transitions": 4
+    },
+    {
+      "A_count": 0,
+      "B_count": 45,
+      "C_count": 0,
+      "anwg_live": 0.75,
+      "canonical_scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260822",
+      "dwell_violations": 0,
+      "fallback_rate": 0.8235294117647058,
+      "group_key": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft",
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2",
+      "n_steps": 255,
+      "seed": 20260822,
+      "total_transitions": 4
+    }
+  ],
+  "provenance": {
+    "design_doc_sha256": "41b57733cc531414f587d31fb0950ed841c62274dd361ddcb038a3e67462e706",
+    "frozen_selection_sha256": "120be3c05454a693821e19d56d383cf87043c66d2028ef5f2d4828667a14946c",
+    "gates_json_sha256": "b63265531a9687fa16bca5e990270427d11353fa42e00f2c5151ceb2cfc627ae",
+    "git_head_sha": "4cfdb6feaf72e3431cd535a13f7e5f47d990c9fb",
+    "git_tree_dirty": true,
+    "mf_psd_scenarios_sha256": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "reused_model_hashes": {
+      "stage1_model_hash": "afa50132b7f0e4748e9340e11bea7887bae83f8acef5dbd4a5aadfeccde37666",
+      "stage2_model_hashes": {
+        "KV_MEMORY_PRESSURE": "9c298d589a2158eb513cb52191144518a2acab2cb0c04f1df14fca0f712fa4a1",
+        "PREFILL_DECODE_CONTENTION": "1f9c2ba1b69c731fa7414c8a268f339c58a61e23f38da7f089a87e98e9918812",
+        "RANKING_FAIRNESS": "5eeb813ae1e3c7b3f9c48f01831b51cb281148318d05ef44cff3345747c3fc1c"
+      }
+    },
+    "telemetry_csv_sha256": "b085940a09bbd0b3dc471ab802c38a703ec9b599a83f8ee35d3cab48197a8b8f"
+  },
+  "run_tag": "smoke_train",
+  "run_timestamp_utc": "2026-08-19T04:26:46Z",
+  "schema_version": "family_b_balanced_replication_v1.1.0.0"
+}

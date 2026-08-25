@@ -1,0 +1,14 @@
+{
+  "continuation_verdict": "CONTINUATION_SENSITIVE",
+  "jaccard_top1pct": 0.0,
+  "jaccard_top5pct": 0.0,
+  "overlap": {
+    "both_nonzero": 0,
+    "both_zero": 16,
+    "nonzero_label_agreement": 0.8,
+    "only_alive_nonzero": 0,
+    "only_sbs_nonzero": 4,
+    "sign_agreement_among_dual_nonzero": NaN
+  },
+  "spearman_abs_alive_vs_sbs": NaN
+}

@@ -1,0 +1,3605 @@
+{
+  "summary": {
+    "n_discriminative_windows_at_default": 299,
+    "robustness_counts": {
+      "ROBUST_TO_SLO_SCALE": 185,
+      "SENSITIVE_TO_SLO_SCALE": 88,
+      "ARTIFACT_OF_THRESHOLD": 26
+    },
+    "robustness_fractions": {
+      "ROBUST_TO_SLO_SCALE": 0.6187,
+      "SENSITIVE_TO_SLO_SCALE": 0.2943,
+      "ARTIFACT_OF_THRESHOLD": 0.087
+    }
+  },
+  "rows": [
+    {
+      "window_idx": 0,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 1,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 2,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 3,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 4,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 5,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 6,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 7,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 8,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 9,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 10,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 11,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 12,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 13,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 14,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 15,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 16,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 17,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 18,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 19,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 20,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 21,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 22,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 23,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 24,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 25,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 26,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 27,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 28,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 29,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 30,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 31,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 32,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 33,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 34,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 35,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 36,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 37,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 39,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 40,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 41,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 42,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 43,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 44,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 45,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 46,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 47,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 48,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 49,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 50,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 51,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 52,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 53,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 54,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 55,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 56,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 57,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 58,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 59,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "weighted_shortest_processing"
+      }
+    },
+    {
+      "window_idx": 60,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 61,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 62,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 63,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 64,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 65,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 66,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 67,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 68,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 69,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 70,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 71,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 72,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 73,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 74,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 75,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 76,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 77,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 78,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 79,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 80,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 81,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 82,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 83,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 84,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 85,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 86,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 87,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 88,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 89,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 90,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "weighted_shortest_processing"
+      }
+    },
+    {
+      "window_idx": 91,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 92,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 93,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 94,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 95,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 96,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 97,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 98,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 99,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "weighted_shortest_processing"
+      }
+    },
+    {
+      "window_idx": 100,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 101,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 102,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 103,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 104,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 105,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 106,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 107,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 108,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 109,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 110,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 111,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 112,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 113,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 114,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 115,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 116,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 117,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 118,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 119,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 120,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 121,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 122,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 123,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 124,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 125,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 126,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 127,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 128,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 129,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 130,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 131,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 132,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 133,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 134,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 135,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 136,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 137,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 138,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 139,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 140,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 141,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 142,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 143,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 144,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 145,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 146,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 147,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 148,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 149,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 150,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 151,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 152,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 153,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 154,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 155,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 156,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 157,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 158,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 159,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 160,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 161,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 162,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 163,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 164,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 165,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 166,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 167,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 168,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 169,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 170,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 171,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 172,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 173,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 174,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 175,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 176,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 177,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 178,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 179,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 180,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 181,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 182,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 183,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 184,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "weighted_shortest_processing"
+      }
+    },
+    {
+      "window_idx": 185,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 186,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 187,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 188,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 189,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 190,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 191,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 192,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 193,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 194,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 195,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 196,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 197,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 198,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 199,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 200,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 201,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 202,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 203,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 204,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 205,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "weighted_shortest_processing"
+      }
+    },
+    {
+      "window_idx": 206,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 207,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 208,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 209,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 210,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 211,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 212,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 213,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 214,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 215,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "weighted_shortest_processing"
+      }
+    },
+    {
+      "window_idx": 216,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 217,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 218,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 219,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 220,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 221,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 222,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 223,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 224,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 225,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 226,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 227,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 228,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 229,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 230,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 231,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 232,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 233,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 234,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 235,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 236,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 237,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 238,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 239,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 240,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 241,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 242,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 243,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 244,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 245,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 246,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 247,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 248,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 249,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 250,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "weighted_shortest_processing",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "weighted_shortest_processing",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 251,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 252,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 253,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 254,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 255,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 256,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 257,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 258,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 259,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 260,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 261,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 262,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 263,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 264,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 265,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 266,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 267,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 268,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 269,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 270,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 271,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 272,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 273,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 274,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 275,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 276,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 277,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 278,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 279,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 280,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 281,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 282,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 283,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 284,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "edf",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 285,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 286,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 287,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 288,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 289,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ARTIFACT_OF_THRESHOLD",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "vllm_faithful",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 290,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 291,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 292,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 293,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "scorpio_style_slo_guard"
+      }
+    },
+    {
+      "window_idx": 294,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "weighted_shortest_processing",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    },
+    {
+      "window_idx": 295,
+      "shape": "A_same_arrival_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 296,
+      "shape": "B_closely_spaced_heterogeneous_cluster",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "vllm_faithful",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 297,
+      "shape": "C_admission_reorder_boundary",
+      "default_winner": "vllm_faithful",
+      "default_classification": "NEAR_TIE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "vllm_faithful",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 298,
+      "shape": "D_long_prefill_overlap",
+      "default_winner": "scorpio_style_slo_guard",
+      "default_classification": "STRONGLY_DISCRIMINATIVE",
+      "robustness": "SENSITIVE_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "scorpio_style_slo_guard",
+        "2.0": "scorpio_style_slo_guard",
+        "3.0": "vllm_faithful"
+      }
+    },
+    {
+      "window_idx": 299,
+      "shape": "E_kv_pressure_admission_order",
+      "default_winner": "edf",
+      "default_classification": "NEAR_TIE",
+      "robustness": "ROBUST_TO_SLO_SCALE",
+      "winners_by_multiplier": {
+        "1.5": "edf",
+        "2.0": "edf",
+        "3.0": "edf"
+      }
+    }
+  ]
+}

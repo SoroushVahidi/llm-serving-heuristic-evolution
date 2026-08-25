@@ -1,0 +1,75 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+INFO 07-19 09:41:23 base_llm_engine.py:56] Initializing an LLM engine with config: model='mistralai/Mistral-7B-Instruct-v0.1', dtype=torch.bfloat16, tensor_parallel_size=1, pipeline_parallel_size=1, seed=0)
+INFO 07-19 09:41:23 metrics_store.py:76] MetricsStore disabled
+2026-07-19 09:41:34,443	INFO worker.py:2024 -- Started a local Ray instance.
+INFO 07-19 09:41:51 base_llm_engine.py:144] Starting workers with resource mapping: [(None, 0)]
+[36m(RayWorker pid=2638680)[0m [W719 09:42:21.286546301 ProcessGroupNCCL.cpp:924] Warning: TORCH_NCCL_AVOID_RECORD_STREAMS is the default now, this environment variable is thus deprecated. (function operator())
+[36m(RayWorker pid=2638680)[0m INFO 07-19 09:42:20 metrics_store.py:76] MetricsStore disabled
+[36m(RayWorker pid=2638680)[0m INFO 07-19 09:42:21 base_worker.py:110] Worker 0 is using device 0
+[36m(RayWorker pid=2638680)[0m INFO 07-19 09:42:22 base_worker.py:131] Initializing worker 0 on device cuda:0, tensor parallel rank 0 and pipeline parallel rank 0.
+[36m(RayWorker pid=2638680)[0m INFO 07-19 09:42:30 base_worker.py:144] Model initialized on worker 0.
+INFO 07-19 09:42:32 base_llm_engine.py:227] # GPU blocks: 6933
+[36m(RayWorker pid=2638680)[0m Traceback (most recent call last):
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/utils/threading_utils.py", line 27, in wrapper
+[36m(RayWorker pid=2638680)[0m     return func(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/worker/base_worker.py", line 220, in _execution_loop
+[36m(RayWorker pid=2638680)[0m     output = self.execute_model(step_inputs.scheduler_outputs)
+[36m(RayWorker pid=2638680)[0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+[36m(RayWorker pid=2638680)[0m     return func(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/worker/base_worker.py", line 184, in execute_model
+[36m(RayWorker pid=2638680)[0m     sampler_outputs = self.model_runner.run(
+[36m(RayWorker pid=2638680)[0m                       ^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/model_executor/model_runner.py", line 239, in run
+[36m(RayWorker pid=2638680)[0m     output = self.model(
+[36m(RayWorker pid=2638680)[0m              ^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[36m(RayWorker pid=2638680)[0m     return self._call_impl(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[36m(RayWorker pid=2638680)[0m     return forward_call(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/model_executor/models/mistral.py", line 331, in forward
+[36m(RayWorker pid=2638680)[0m     hidden_states = self.model(hidden_states, positions, attention_backend_wrapper)
+[36m(RayWorker pid=2638680)[0m                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[36m(RayWorker pid=2638680)[0m     return self._call_impl(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[36m(RayWorker pid=2638680)[0m     return forward_call(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/model_executor/models/mistral.py", line 281, in forward
+[36m(RayWorker pid=2638680)[0m     hidden_states = layer(
+[36m(RayWorker pid=2638680)[0m                     ^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[36m(RayWorker pid=2638680)[0m     return self._call_impl(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[36m(RayWorker pid=2638680)[0m     return forward_call(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/model_executor/models/mistral.py", line 219, in forward
+[36m(RayWorker pid=2638680)[0m     hidden_states = self.self_attn(
+[36m(RayWorker pid=2638680)[0m                     ^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[36m(RayWorker pid=2638680)[0m     return self._call_impl(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[36m(RayWorker pid=2638680)[0m     return forward_call(*args, **kwargs)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/model_executor/models/mistral.py", line 169, in forward
+[36m(RayWorker pid=2638680)[0m     attn_output = attention_backend_wrapper.forward(
+[36m(RayWorker pid=2638680)[0m                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/vendor/sarathi-serve/sarathi/model_executor/attention/flashinfer_attention_wrapper.py", line 277, in forward
+[36m(RayWorker pid=2638680)[0m     output[: self.num_prefill_tokens] = self.prefill_wrapper.forward(
+[36m(RayWorker pid=2638680)[0m                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/flashinfer/prefill.py", line 1947, in forward
+[36m(RayWorker pid=2638680)[0m     return self.run(q, paged_kv_cache, k_scale=k_scale, v_scale=v_scale)
+[36m(RayWorker pid=2638680)[0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/flashinfer/prefill.py", line 2041, in run
+[36m(RayWorker pid=2638680)[0m     _check_cached_qkv_data_type(
+[36m(RayWorker pid=2638680)[0m   File "/mmfs1/project/ikoutis/sv96/conda_env/sarathi-serve/lib/python3.11/site-packages/flashinfer/utils.py", line 255, in _check_cached_qkv_data_type
+[36m(RayWorker pid=2638680)[0m     raise ValueError(
+[36m(RayWorker pid=2638680)[0m ValueError: The dtype of q torch.bfloat16 does not match the q_data_type torch.float16 specified in plan function.

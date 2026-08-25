@@ -1,0 +1,43 @@
+{
+  "n_windows_checked": 910,
+  "per_policy_ok_count": {
+    "vllm_faithful": 910,
+    "sarathi_faithful": 910,
+    "vllm_chunked_prefill_faithful": 910,
+    "fifo": 910,
+    "edf": 910,
+    "scorpio_style_slo_guard": 910,
+    "admission_control": 910,
+    "weighted_shortest_processing": 910,
+    "estimated_service_time_first": 910,
+    "best_fit": 910,
+    "multi_bin_batching": 910
+  },
+  "per_policy_ok_fraction": {
+    "vllm_faithful": 1.0,
+    "sarathi_faithful": 1.0,
+    "vllm_chunked_prefill_faithful": 1.0,
+    "fifo": 1.0,
+    "edf": 1.0,
+    "scorpio_style_slo_guard": 1.0,
+    "admission_control": 1.0,
+    "weighted_shortest_processing": 1.0,
+    "estimated_service_time_first": 1.0,
+    "best_fit": 1.0,
+    "multi_bin_batching": 1.0
+  },
+  "per_policy_error_samples": {},
+  "per_policy_error_count": {
+    "vllm_faithful": 0,
+    "sarathi_faithful": 0,
+    "vllm_chunked_prefill_faithful": 0,
+    "fifo": 0,
+    "edf": 0,
+    "scorpio_style_slo_guard": 0,
+    "admission_control": 0,
+    "weighted_shortest_processing": 0,
+    "estimated_service_time_first": 0,
+    "best_fit": 0,
+    "multi_bin_batching": 0
+  }
+}

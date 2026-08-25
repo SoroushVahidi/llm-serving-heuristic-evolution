@@ -1,0 +1,48 @@
+{
+  "entry_id": "sarathi_counter_long_prompt_moderate_output",
+  "seed": 1,
+  "smoke": true,
+  "n_requests": 4,
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time": 0.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "long"
+    },
+    {
+      "request_id": 1,
+      "arrival_time": 0.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "long"
+    },
+    {
+      "request_id": 2,
+      "arrival_time": 0.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "long"
+    },
+    {
+      "request_id": 3,
+      "arrival_time": 0.0,
+      "prompt_tokens": 2048,
+      "predicted_output_tokens": 256,
+      "actual_output_tokens": 256,
+      "slo_deadline": 1000.0,
+      "priority": 1.0,
+      "class_id": "long"
+    }
+  ]
+}

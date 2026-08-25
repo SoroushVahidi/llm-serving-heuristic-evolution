@@ -32,19 +32,17 @@ import math
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from llmserveopt.selector.candidates import SELECTOR_CANDIDATES
-from llmserveopt.selector.features import FEATURE_NAMES
 from llmserveopt.selector.models import (
     DecisionTreeSelector,
     RandomForestSelector,
     RuleBasedSelector,
-    evaluate_selector,
 )
 
 

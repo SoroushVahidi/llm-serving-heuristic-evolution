@@ -1,6 +1,6 @@
 """Tests for HeuristicPolicy integration with the simulator."""
 import pytest
-from llmserveopt.heuristics import build_heuristic_policy, compile_heuristic
+from llmserveopt.heuristics import build_heuristic_policy
 from llmserveopt.heuristics.compiler import CompilationError
 from llmserveopt.heuristics.examples import edf_like, fifo_like, slo_kv_balanced, throughput_oriented
 from llmserveopt.core.action import Action

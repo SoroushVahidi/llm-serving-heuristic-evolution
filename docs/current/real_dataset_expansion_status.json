@@ -1,0 +1,36 @@
+{
+  "schema_version": "real_dataset_expansion_status_v2",
+  "updated_at": "2026-07-25T17:00:00Z",
+  "status": "STAGED_AND_WINDOW_READY",
+  "branch": "reality-grounded-dataset-expansion-20260724",
+  "datasets_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/datasets",
+  "window_root": "/mmfs1/project/ikoutis/sv96/llmserveopt-data/real_window_construction_20260725T035054Z",
+  "window_status": "ALL_COMPLETE_VALID",
+  "repaired_pilot": {
+    "job_id": "1143392",
+    "decision": "PARTIALLY_READY",
+    "full_sweep_authorized": false
+  },
+  "mooncake": {
+    "DATA_LICENSE": "NOT_EXPLICITLY_SPECIFIED",
+    "REDISTRIBUTION": "PROHIBITED_UNTIL_CLARIFIED",
+    "EVALUATION_ROLE": "INTERNAL_OOD_ONLY"
+  },
+  "classes": {
+    "real_serving_traces": [
+      "burstgpt_v2",
+      "azure_llm_2023",
+      "azure_llm_2024",
+      "bailian_qwen"
+    ],
+    "internal_ood_only": [
+      "mooncake"
+    ],
+    "prompt_corpora": [],
+    "future_candidates": [
+      "swissai",
+      "tracelab"
+    ]
+  },
+  "pause_snapshot": "docs/current/pause_2026_07_25/"
+}

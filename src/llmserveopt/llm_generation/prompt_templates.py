@@ -12,7 +12,6 @@ from typing import List, Tuple
 from ..heuristics.dsl_schema import (
     ALLOWED_OPS,
     ALLOWED_TIE_BREAKERS,
-    ALLOWED_VARS,
     BATCH_VARS,
     DEFAULT_LIMITS,
     FORBIDDEN_SUBSTRINGS,

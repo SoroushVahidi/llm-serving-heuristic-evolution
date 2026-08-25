@@ -1,8 +1,6 @@
 """Tests for EstimatedServiceTimeFirst (ESTF) policy — PARS-inspired SJF proxy."""
-import pytest
 from llmserveopt.policies.estimated_service_time_first import EstimatedServiceTimeFirstPolicy
 from llmserveopt.policies.registry import BASELINE_NAMES, ORACLE_POLICY_NAMES, make_policy
-from llmserveopt.core.action import Action
 from llmserveopt.core.types import ObservableGPUState, ObservableRequest, ObservableState
 
 

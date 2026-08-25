@@ -1,0 +1,7 @@
+# Example Apt-Serve Legacy-Equivalent Disabled Configuration
+gpus:
+  - gpu_id: 0
+    max_active_sequences: 16
+    max_batch_tokens: 512
+    max_kv_tokens: 1024
+    hybrid_cache_enabled: false

@@ -1,0 +1,1204 @@
+{
+  "configuration_context_effect": {
+    "history_effect_v1_contradictory_fraction_reduction_vs_no_history": 0.015075376884421829,
+    "task_contradictory_fraction_reduction_vs_state_only": -0.037037037037036966,
+    "v1_contradictory_fraction_reduction_vs_state_only": 0.007653061224489976,
+    "v1_entropy_reduction_vs_state_only": 0.019078900302304982,
+    "v2n_contradictory_fraction_reduction_vs_state_only": 0.011904761904761934
+  },
+  "rows": {
+    "d1_support_rows": 250,
+    "decisive_rows": 919,
+    "diagnostic_rows_total": 998,
+    "tie_rows": 79,
+    "v2_dev_rows_excluded": 104,
+    "v2_final_rows_excluded": 127,
+    "v2_train_rows": 748
+  },
+  "scope": "V2 TRAIN_COLLECTION + all D1 support rows only; V2 DEV/FINAL excluded from label-neighborhood diagnostics",
+  "views": {
+    "FEATURE_V1_FULL_CAUSAL": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.18840579710144928,
+          "contradictory_neighbor_fraction_mean": 0.03333333333333334,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.10699760326427309,
+          "mean_neighbor_distance": 3.794381607059986,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.011971458773784355
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.17105263157894737,
+          "contradictory_neighbor_fraction_mean": 0.024999999999999998,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.09386594902194129,
+          "mean_neighbor_distance": 3.629564173802592,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.019406614785992222
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.35789473684210527,
+          "contradictory_neighbor_fraction_mean": 0.12000000000000001,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.1661441581980751,
+          "mean_neighbor_distance": 3.420656663564214,
+          "median_knn_label_entropy": 0.0,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.07270601987142021
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3723404255319149,
+          "contradictory_neighbor_fraction_mean": 0.045744680851063826,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.19515676690483763,
+          "mean_neighbor_distance": 3.425423451434061,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05376237623762376
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.6482355695129396,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.16216216216216217,
+          "contradictory_neighbor_fraction_mean": 0.033783783783783786,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.09779019786571617,
+          "mean_neighbor_distance": 3.5698218100966512,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.010959885386819485
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.1232876712328767,
+          "contradictory_neighbor_fraction_mean": 0.0273972602739726,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.06821586090681883,
+          "mean_neighbor_distance": 3.4107678030411206,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.01204745346696666
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.430386871143823,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.933493048124852,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.22448979591836735,
+          "contradictory_neighbor_fraction_mean": 0.04897959183673469,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.12102691296497171,
+          "mean_neighbor_distance": 3.5224751314661398,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.014109024278515804
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3723404255319149,
+          "contradictory_neighbor_fraction_mean": 0.10638297872340426,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.16812261603998002,
+          "mean_neighbor_distance": 3.623540838679717,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05285472018089316
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.2782394255832243,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.4596969315139954,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.25705794947994054,
+          "contradictory_neighbor_fraction_mean": 0.05824665676077266,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.13153859396041662,
+          "mean_neighbor_distance": 3.541723121631898,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.023815704088254383
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.479831138222669,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "feature_count": 63,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.1882480957562568,
+        "contradictory_neighbor_fraction_mean": 0.042655059847660506,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.09632804541388507,
+        "mean_neighbor_distance": 3.525155735430951,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.021157310657923183
+      }
+    },
+    "FEATURE_V1_NO_HISTORY": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.17391304347826086,
+          "contradictory_neighbor_fraction_mean": 0.0318840579710145,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.10020056567602263,
+          "mean_neighbor_distance": 3.4938111122504365,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.010808668076109937
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.17105263157894737,
+          "contradictory_neighbor_fraction_mean": 0.02368421052631579,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.09053788979433494,
+          "mean_neighbor_distance": 3.268421235584715,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.016123540856031127
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.35789473684210527,
+          "contradictory_neighbor_fraction_mean": 0.11789473684210527,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.1661441581980751,
+          "mean_neighbor_distance": 2.944744075566528,
+          "median_knn_label_entropy": 0.0,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.06475745178258328
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.4148936170212766,
+          "contradictory_neighbor_fraction_mean": 0.05106382978723403,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.21780479749691434,
+          "mean_neighbor_distance": 2.8755872505958,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.052128712871287126
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.348611689779698,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.17567567567567569,
+          "contradictory_neighbor_fraction_mean": 0.03513513513513514,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.0998208733373732,
+          "mean_neighbor_distance": 3.2424190940229507,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.012058261700095513
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.1095890410958904,
+          "contradictory_neighbor_fraction_mean": 0.024657534246575342,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.0583264349494577,
+          "mean_neighbor_distance": 3.0881776146109243,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.007772550623849458
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.117926781188886,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.712298353109105,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.21428571428571427,
+          "contradictory_neighbor_fraction_mean": 0.05000000000000001,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.10820198946467728,
+          "mean_neighbor_distance": 3.0825378973756004,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.013925790196976639
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.425531914893617,
+          "contradictory_neighbor_fraction_mean": 0.11170212765957449,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.1907706466320567,
+          "mean_neighbor_distance": 3.1612745271447795,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05833804409270774
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.9907693456946345,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.194682719913424,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.2674591381872214,
+          "contradictory_neighbor_fraction_mean": 0.059138187221396736,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.134075594024918,
+          "mean_neighbor_distance": 3.126528035220294,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.022120376378974696
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.200052404099874,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "feature_count": 60,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.19586507072905332,
+        "contradictory_neighbor_fraction_mean": 0.04330794341675734,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.09818593555905313,
+        "mean_neighbor_distance": 3.1462092046918686,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.0196512214455574
+      }
+    },
+    "FEATURE_V1_WITH_CONFIG": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.15942028985507245,
+          "contradictory_neighbor_fraction_mean": 0.030434782608695653,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.09340352808777218,
+          "mean_neighbor_distance": 4.3871872147566,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.009011627906976745
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.07894736842105263,
+          "contradictory_neighbor_fraction_mean": 0.013157894736842105,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.04401286799929482,
+          "mean_neighbor_distance": 4.247804257849784,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.004377431906614786
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.49473684210526314,
+          "contradictory_neighbor_fraction_mean": 0.13578947368421054,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.22804815424406938,
+          "mean_neighbor_distance": 3.9625583457802316,
+          "median_knn_label_entropy": 0.0,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.0875511396843951
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3191489361702128,
+          "contradictory_neighbor_fraction_mean": 0.04042553191489362,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.16921477046971897,
+          "mean_neighbor_distance": 3.833654317280733,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.04772277227722772
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.873856168250853,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.10810810810810811,
+          "contradictory_neighbor_fraction_mean": 0.02972972972972973,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.070285533288683,
+          "mean_neighbor_distance": 4.1823447189911525,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.007211079274116524
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0821917808219178,
+          "contradictory_neighbor_fraction_mean": 0.02054794520547945,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.04201241181964067,
+          "mean_neighbor_distance": 3.987546950878675,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0047044385354878294
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.60046653968042,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 4.25321574712372,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.25510204081632654,
+          "contradictory_neighbor_fraction_mean": 0.054081632653061235,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.14283033009881618,
+          "mean_neighbor_distance": 4.009715236944231,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.02262940907008704
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.39361702127659576,
+          "contradictory_neighbor_fraction_mean": 0.1074468085106383,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.18309056051623368,
+          "mean_neighbor_distance": 4.002936128966142,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05093273035613342
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.4776278825662854,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.684076535807607,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.2526002971768202,
+          "contradictory_neighbor_fraction_mean": 0.057800891530460634,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.12902898224034043,
+          "mean_neighbor_distance": 4.059685165009123,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.019914016872160937
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.6995008213962888,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "feature_count": 67,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.18498367791077258,
+        "contradictory_neighbor_fraction_mean": 0.042328618063112076,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.09449021223911765,
+        "mean_neighbor_distance": 3.9632702046949153,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.01769114361893781
+      }
+    },
+    "FEATURE_V2_NORMALIZED": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.21739130434782608,
+          "contradictory_neighbor_fraction_mean": 0.03768115942028986,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.12425736686538387,
+          "mean_neighbor_distance": 3.9294076272873375,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.02108879492600423
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.10526315789473684,
+          "contradictory_neighbor_fraction_mean": 0.019736842105263157,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.06510785476400607,
+          "mean_neighbor_distance": 3.8133243601325084,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.013837548638132297
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.4105263157894737,
+          "contradictory_neighbor_fraction_mean": 0.12526315789473685,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.21165597776332762,
+          "mean_neighbor_distance": 3.403333717445213,
+          "median_knn_label_entropy": 0.0,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.07685563997662186
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3191489361702128,
+          "contradictory_neighbor_fraction_mean": 0.04468085106382979,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.1792363331938995,
+          "mean_neighbor_distance": 3.3059995702851754,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05653465346534654
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.02,
+          "contradictory_neighbor_fraction_mean": 0.016,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.014438561897747247,
+          "mean_neighbor_distance": 3.0544861287065133,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.015904572564612324
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.20270270270270271,
+          "contradictory_neighbor_fraction_mean": 0.0445945945945946,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.12832200842810587,
+          "mean_neighbor_distance": 3.771530668783853,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.016427889207258833
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0821917808219178,
+          "contradictory_neighbor_fraction_mean": 0.026027397260273973,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.04542367893700102,
+          "mean_neighbor_distance": 3.9143281593749903,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.008058907752096544
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.8835787431029054,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.3588430069686743,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.2653061224489796,
+          "contradictory_neighbor_fraction_mean": 0.061224489795918366,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.13833980055588166,
+          "mean_neighbor_distance": 3.3328342490913414,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.02459917544663307
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3404255319148936,
+          "contradictory_neighbor_fraction_mean": 0.10425531914893618,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.17056082477004722,
+          "mean_neighbor_distance": 3.40934396594511,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.04929338609383833
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.8767034047326074,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.8581139423307422,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.2540861812778603,
+          "contradictory_neighbor_fraction_mean": 0.0612184249628529,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.13800782117750426,
+          "mean_neighbor_distance": 3.576460259659985,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.0256124269954575
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0040650406504065045,
+          "contradictory_neighbor_fraction_mean": 0.0032520325203252032,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0029346670523876517,
+          "mean_neighbor_distance": 2.9467374243852755,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0025823111684958036
+        }
+      },
+      "feature_count": 54,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.18715995647442873,
+        "contradictory_neighbor_fraction_mean": 0.04570184983677911,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.10185113356621081,
+        "mean_neighbor_distance": 3.407894625843251,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.023041723715500468
+      }
+    },
+    "FEATURE_V2_NORMALIZED_WITH_CONFIG": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.2318840579710145,
+          "contradictory_neighbor_fraction_mean": 0.0391304347826087,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.1310544044536343,
+          "mean_neighbor_distance": 4.562052084513285,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.02034883720930233
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.06578947368421052,
+          "contradictory_neighbor_fraction_mean": 0.013157894736842105,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.04116993257441061,
+          "mean_neighbor_distance": 4.413763221528127,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.006712062256809339
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.5263157894736842,
+          "contradictory_neighbor_fraction_mean": 0.1494736842105263,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.28637107947230345,
+          "mean_neighbor_distance": 3.97257799764497,
+          "median_knn_label_entropy": 0.0,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.10315604909409702
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.23404255319148937,
+          "contradictory_neighbor_fraction_mean": 0.02978723404255319,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.12391870928556567,
+          "mean_neighbor_distance": 3.714140019749458,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.03767326732673268
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.02,
+          "contradictory_neighbor_fraction_mean": 0.01,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.02,
+          "mean_neighbor_distance": 3.2840556399612484,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.009940357852882704
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.13513513513513514,
+          "contradictory_neighbor_fraction_mean": 0.03513513513513514,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.09106155878502728,
+          "mean_neighbor_distance": 4.376972219425785,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.009527220630372495
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0684931506849315,
+          "contradictory_neighbor_fraction_mean": 0.024657534246575342,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.03899908176454511,
+          "mean_neighbor_distance": 4.484461778982478,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.003988545714870117
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.0603406950232603,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.6936718773480393,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.24489795918367346,
+          "contradictory_neighbor_fraction_mean": 0.06020408163265306,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.13230419862806808,
+          "mean_neighbor_distance": 3.8411968865418418,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.03092075125973431
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3723404255319149,
+          "contradictory_neighbor_fraction_mean": 0.10638297872340426,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.1818425756478665,
+          "mean_neighbor_distance": 3.7895249033313165,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.04460146975692481
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.1147613316634972,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 3.0756913835670106,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.24814264487369986,
+          "contradictory_neighbor_fraction_mean": 0.06092124814264487,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.13472478737150356,
+          "mean_neighbor_distance": 4.102029658540489,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.022834198572355614
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0040650406504065045,
+          "contradictory_neighbor_fraction_mean": 0.0020325203252032522,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0040650406504065045,
+          "mean_neighbor_distance": 3.1783804582878483,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0016139444803098773
+        }
+      },
+      "feature_count": 58,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.18280739934711643,
+        "contradictory_neighbor_fraction_mean": 0.04515778019586507,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.09974949064311416,
+        "mean_neighbor_distance": 3.854785150094189,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.02046551848382215
+      }
+    },
+    "TASK_RELEVANT_SUBSPACE": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.10144927536231885,
+          "contradictory_neighbor_fraction_mean": 0.02463768115942029,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.062128683432691935,
+          "mean_neighbor_distance": 2.047643409701231,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.0049947145877378436
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.06578947368421052,
+          "contradictory_neighbor_fraction_mean": 0.013157894736842105,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.04116993257441061,
+          "mean_neighbor_distance": 2.045302034648131,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.004693579766536966
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.42105263157894735,
+          "contradictory_neighbor_fraction_mean": 0.12736842105263158,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.2136258661202698,
+          "mean_neighbor_distance": 1.9002778271834089,
+          "median_knn_label_entropy": 0.0,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.08942139099941554
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.43617021276595747,
+          "contradictory_neighbor_fraction_mean": 0.05106382978723404,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.22140646225891059,
+          "mean_neighbor_distance": 1.9285099774908245,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.057623762376237626
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.02,
+          "contradictory_neighbor_fraction_mean": 0.02,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.0274943816889124,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.019880715705765408
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.05405405405405406,
+          "contradictory_neighbor_fraction_mean": 0.014864864864864866,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.04151641334739643,
+          "mean_neighbor_distance": 1.9859001960383602,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.0024832855778414518
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0684931506849315,
+          "contradictory_neighbor_fraction_mean": 0.01780821917808219,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.03212298586227953,
+          "mean_neighbor_distance": 1.9931084175337637,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.003252198813663326
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 1.8773700472030497,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.3440700391143787,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.336734693877551,
+          "contradictory_neighbor_fraction_mean": 0.07244897959183674,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.17795616641992126,
+          "mean_neighbor_distance": 1.9525446895383813,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.04196060467246908
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3617021276595745,
+          "contradictory_neighbor_fraction_mean": 0.11063829787234045,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.16791164924273547,
+          "mean_neighbor_distance": 2.040436305932909,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05178066704352741
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 1.8925866018925677,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 1.9690240276868767,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.2511144130757801,
+          "contradictory_neighbor_fraction_mean": 0.058692421991084695,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.12951419117369586,
+          "mean_neighbor_distance": 1.9823783100868684,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.020972582738481505
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0040650406504065045,
+          "contradictory_neighbor_fraction_mean": 0.0040650406504065045,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 1.9797752891261264,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0032278889606197547
+        }
+      },
+      "feature_count": 23,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.18498367791077258,
+        "contradictory_neighbor_fraction_mean": 0.044069640914037,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.09484553934700472,
+        "mean_neighbor_distance": 1.9816815275446023,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.018991857029617355
+      }
+    },
+    "TASK_RELEVANT_WITH_CONFIG": {
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.057971014492753624,
+          "contradictory_neighbor_fraction_mean": 0.01884057971014493,
+          "mean_abs_delta": 54.84057971014493,
+          "mean_knn_label_entropy": 0.042158576545409145,
+          "mean_neighbor_distance": 2.5250323390747758,
+          "median_knn_label_entropy": 0.0,
+          "n": 69,
+          "regret_weighted_contradictory_fraction": 0.0025105708245243127
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.039473684210526314,
+          "contradictory_neighbor_fraction_mean": 0.010526315789473684,
+          "mean_abs_delta": 54.10526315789474,
+          "mean_knn_label_entropy": 0.02882794326942952,
+          "mean_neighbor_distance": 2.5690343248072516,
+          "median_knn_label_entropy": 0.0,
+          "n": 76,
+          "regret_weighted_contradictory_fraction": 0.002966926070038911
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.6421052631578947,
+          "contradictory_neighbor_fraction_mean": 0.15263157894736842,
+          "mean_abs_delta": 18.010526315789473,
+          "mean_knn_label_entropy": 0.31768667532428857,
+          "mean_neighbor_distance": 2.3905634099516875,
+          "median_knn_label_entropy": 0.4689955935892812,
+          "n": 95,
+          "regret_weighted_contradictory_fraction": 0.1081823495032145
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.23404255319148937,
+          "contradictory_neighbor_fraction_mean": 0.029787234042553193,
+          "mean_abs_delta": 21.48936170212766,
+          "mean_knn_label_entropy": 0.12491413159359491,
+          "mean_neighbor_distance": 2.32943745368823,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.03653465346534654
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.02,
+          "contradictory_neighbor_fraction_mean": 0.02,
+          "mean_abs_delta": 10.06,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.318960016038372,
+          "median_knn_label_entropy": 0.0,
+          "n": 50,
+          "regret_weighted_contradictory_fraction": 0.019880715705765408
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.04054054054054054,
+          "contradictory_neighbor_fraction_mean": 0.016216216216216217,
+          "mean_abs_delta": 56.5945945945946,
+          "mean_knn_label_entropy": 0.03678281209307246,
+          "mean_neighbor_distance": 2.5221373054011553,
+          "median_knn_label_entropy": 0.0,
+          "n": 74,
+          "regret_weighted_contradictory_fraction": 0.002125119388729704
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0410958904109589,
+          "contradictory_neighbor_fraction_mean": 0.015068493150684932,
+          "mean_abs_delta": 66.97260273972603,
+          "mean_knn_label_entropy": 0.01927379151736772,
+          "mean_neighbor_distance": 2.521962848283871,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0018817754141951322
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 10.416666666666666,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.0357818792694484,
+          "median_knn_label_entropy": 0.0,
+          "n": 24,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 16.75,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.7269225552424503,
+          "median_knn_label_entropy": 0.0,
+          "n": 20,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3877551020408163,
+          "contradictory_neighbor_fraction_mean": 0.09081632653061225,
+          "mean_abs_delta": 22.275510204081634,
+          "mean_knn_label_entropy": 0.2399390183469067,
+          "mean_neighbor_distance": 2.412274150067591,
+          "median_knn_label_entropy": 0.0,
+          "n": 98,
+          "regret_weighted_contradictory_fraction": 0.06591846083371507
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.3829787234042553,
+          "contradictory_neighbor_fraction_mean": 0.11063829787234043,
+          "mean_abs_delta": 18.819148936170212,
+          "mean_knn_label_entropy": 0.180188822428584,
+          "mean_neighbor_distance": 2.4259217207822457,
+          "median_knn_label_entropy": 0.0,
+          "n": 94,
+          "regret_weighted_contradictory_fraction": 0.05319389485585076
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 13.73972602739726,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.1203431867659854,
+          "median_knn_label_entropy": 0.0,
+          "n": 73,
+          "regret_weighted_contradictory_fraction": 0.0
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "contradictory_neighbor_any_rate": 0.0,
+          "contradictory_neighbor_fraction_mean": 0.0,
+          "mean_abs_delta": 12.746835443037975,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.228053961354562,
+          "median_knn_label_entropy": 0.0,
+          "n": 79,
+          "regret_weighted_contradictory_fraction": 0.0
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "contradictory_neighbor_any_rate": 0.2526002971768202,
+          "contradictory_neighbor_fraction_mean": 0.06092124814264487,
+          "mean_abs_delta": 36.63595839524517,
+          "mean_knn_label_entropy": 0.13611101928329003,
+          "mean_neighbor_distance": 2.4527866889423144,
+          "median_knn_label_entropy": 0.0,
+          "n": 673,
+          "regret_weighted_contradictory_fraction": 0.02176752109020117
+        },
+        "short": {
+          "contradictory_neighbor_any_rate": 0.0040650406504065045,
+          "contradictory_neighbor_fraction_mean": 0.0040650406504065045,
+          "mean_abs_delta": 12.59349593495935,
+          "mean_knn_label_entropy": 0.0,
+          "mean_neighbor_distance": 2.2363680186591934,
+          "median_knn_label_entropy": 0.0,
+          "n": 246,
+          "regret_weighted_contradictory_fraction": 0.0032278889606197547
+        }
+      },
+      "feature_count": 27,
+      "k": 10,
+      "n_decisive_rows": 919,
+      "overall": {
+        "contradictory_neighbor_any_rate": 0.18607181719260066,
+        "contradictory_neighbor_fraction_mean": 0.04570184983677911,
+        "mean_abs_delta": 30.200217627856365,
+        "mean_knn_label_entropy": 0.09967651357742564,
+        "mean_neighbor_distance": 2.394855249454123,
+        "median_knn_label_entropy": 0.0,
+        "n": 919,
+        "regret_weighted_contradictory_fraction": 0.019698061540678824
+      }
+    }
+  }
+}

@@ -707,7 +707,6 @@ def main() -> None:
 
     # Regret weights
     rw_all = compute_anwg_regret_weights(train_rows, rw_eps)
-    rw_meaningful = compute_anwg_regret_weights(train_meaningful, rw_eps)
 
     # Override best_policy in rows to arrival-norm best (for sklearn fit)
     def _anwg_labeled(rows: List[Dict]) -> List[Dict]:
@@ -719,7 +718,6 @@ def main() -> None:
         return out
 
     train_anwg = _anwg_labeled(train_rows)
-    train_anwg_meaningful = _anwg_labeled(train_meaningful)
 
     # Train RF (all windows, arrival-norm labels)
     rf_anwg = RandomForestSelector(n_estimators=200, max_depth=10, random_state=42)

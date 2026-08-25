@@ -1,0 +1,8 @@
+job_id=1195540 array_job_id=1195488 array_task_id=47
+host=n0017
+date_utc=2026-08-25T18:32:02Z
+Python 3.11.14
+[TASK47] window=PUBLIC_TRACE::burstgpt::w3159::augmented n_ok=64 n_fail=0 elapsed=55.70s -> /mmfs1/scratch/ikoutis/sv96/llm-serving-heuristic-evolution/public_replay_load_scaling_v1/experiments/public_replay_load_scaling_v1/cells_window_3159_burstgpt.jsonl
+provenance written to /mmfs1/scratch/ikoutis/sv96/llm-serving-heuristic-evolution/public_replay_load_scaling_v1/experiments/public_replay_load_scaling_v1/provenance_task_047.json
+task_exit_code=0
+finished_at_utc=2026-08-25T18:33:01Z

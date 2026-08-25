@@ -1,5 +1,4 @@
 """Tests for design target diversity controls."""
-import pytest
 from llmserveopt.llm_generation.diversity import (
     DESIGN_TARGETS,
     DEFAULT_TARGET_CYCLE,

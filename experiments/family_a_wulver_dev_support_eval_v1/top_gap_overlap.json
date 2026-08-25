@@ -1,0 +1,66 @@
+{
+  "features": {
+    "source_feat_estf_predicted_output_tokens": {
+      "available": true,
+      "baseline_overlap": 0.9168962350780532,
+      "dev_p10": 41.3,
+      "dev_p90": 259.1,
+      "expanded_overlap": 0.7561983471074379,
+      "expanded_p10_after": 11.0,
+      "expanded_p90_after": 206.0,
+      "improved": false,
+      "train_p10_before": 29.700000000000003,
+      "train_p90_before": 241.0
+    },
+    "source_feat_estf_queue_age": {
+      "available": true,
+      "baseline_overlap": 0.966343020208374,
+      "dev_p10": 0.02937159692691311,
+      "dev_p90": 1.1494726732324076,
+      "expanded_overlap": 0.9721392607948536,
+      "expanded_p10_after": 0.060578440897264274,
+      "expanded_p90_after": 6.1708924596544055,
+      "improved": true,
+      "train_p10_before": 0.06707081621670559,
+      "train_p90_before": 1.2863639620550786
+    },
+    "source_feat_history_queue_len_slope": {
+      "available": true,
+      "baseline_overlap": 1.797173521111972e-06,
+      "dev_p10": -0.0454545454545454,
+      "dev_p90": -0.0454545454545436,
+      "expanded_overlap": 1.797173521111972e-06,
+      "expanded_p10_after": -0.1090909090909087,
+      "expanded_p90_after": 6.048123022453497e-16,
+      "improved": false,
+      "train_p10_before": -0.0454545454545454,
+      "train_p90_before": 4.321621991514517e-16
+    },
+    "source_feat_laxity_p90": {
+      "available": true,
+      "baseline_overlap": 0.9896236889711191,
+      "dev_p10": 5.518816631695547,
+      "dev_p90": 7.723776777301449,
+      "expanded_overlap": 0.972212407603079,
+      "expanded_p10_after": 0.6642805827843183,
+      "expanded_p90_after": 7.662506243523897,
+      "improved": false,
+      "train_p10_before": 4.39983673548506,
+      "train_p90_before": 7.700897425024356
+    },
+    "source_feat_wfs_priority": {
+      "available": true,
+      "baseline_overlap": 1.0,
+      "dev_p10": 1.0,
+      "dev_p90": 5.0,
+      "expanded_overlap": 0.0,
+      "expanded_p10_after": 5.0,
+      "expanded_p90_after": 10.0,
+      "improved": false,
+      "train_p10_before": 1.0,
+      "train_p90_before": 10.0
+    }
+  },
+  "features_improved": 1,
+  "features_total": 5
+}

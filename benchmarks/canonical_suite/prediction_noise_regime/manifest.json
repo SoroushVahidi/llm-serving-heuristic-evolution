@@ -1,0 +1,227 @@
+{
+  "name": "prediction_noise_regime",
+  "suite_version": "1.0",
+  "target_phenomenon": "robustness of predicted-length-based ranking to prediction error",
+  "hypothesis": "High, deployment-realistic prediction noise (prediction_noise_rel=0.6) means predicted_output_tokens diverges substantially from actual_output_tokens, so a policy ranking by PREDICTED length (EST/SOF) can disagree with the hindsight oracle even when both would agree under perfect prediction -- isolating predictor quality from ordering-at-all as separate value sources.",
+  "expected_divergent_policies": [
+    "estimated_service_time_first",
+    "shortest_output_first",
+    "oracle_srtf"
+  ],
+  "expected_winner": "oracle_srtf (by construction; the interesting comparison is EST/SOF's gap to it)",
+  "workload_config": {
+    "arrival_process": "poisson",
+    "arrival_rate": 16.0,
+    "duration": 15.0,
+    "prompt_dist": "lognormal",
+    "prompt_mean": 80.0,
+    "prompt_sigma": 0.5,
+    "prompt_low": 16,
+    "prompt_high": 300,
+    "output_dist": "lognormal",
+    "output_mean": 80.0,
+    "output_sigma": 0.8,
+    "output_low": 8,
+    "output_high": 1200,
+    "prediction_noise_rel": 0.6,
+    "slo_classes": [
+      {
+        "class_id": "medium",
+        "slo_slack": 0.15,
+        "priority": 1.0,
+        "weight": 1.0
+      }
+    ],
+    "burst_factor": 5.0,
+    "burst_fraction": 0.2,
+    "tag": "prediction_noise_regime"
+  },
+  "gpu": {
+    "max_active_sequences": 2,
+    "max_batch_tokens": 4096,
+    "max_kv_tokens": 65536
+  },
+  "service_model": {
+    "step_size": 0.001,
+    "enable_prefill_modeling": true,
+    "prefill_cost_per_token": 1.0,
+    "max_prefill_chunk_tokens": 512,
+    "step_token_budget": 8192,
+    "decode_first": false
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_sha256_by_seed": {
+    "0": "db9e116e0b2866834f13de0973a56f2755e6fa9d7e88baccfe4fc035333b87e2",
+    "1": "897b8f1fcec7fde706e77fce79ca6173da8950eba4016ac8c3c4198bd563d5e6",
+    "2": "bea7f7a42203abd0f6831f1a1782fb649a2ef5f47b53b1e0c70037fc1b657b54"
+  },
+  "validation": {
+    "family": "prediction_noise_regime",
+    "target_phenomenon": "robustness of predicted-length-based ranking to prediction error",
+    "hypothesis": "High, deployment-realistic prediction noise (prediction_noise_rel=0.6) means predicted_output_tokens diverges substantially from actual_output_tokens, so a policy ranking by PREDICTED length (EST/SOF) can disagree with the hindsight oracle even when both would agree under perfect prediction -- isolating predictor quality from ordering-at-all as separate value sources.",
+    "expected_divergent_policies": [
+      "estimated_service_time_first",
+      "shortest_output_first",
+      "oracle_srtf"
+    ],
+    "expected_winner": "oracle_srtf (by construction; the interesting comparison is EST/SOF's gap to it)",
+    "per_seed": [
+      {
+        "seed": 0,
+        "metrics": {
+          "n_requests": 246,
+          "n_decision_steps_with_nonempty_queue": 3675,
+          "queue_contention_fraction": 0.4772789115646259,
+          "fifo_srtf_decision_disagreement_fraction": 0.008979591836734694,
+          "service_time_cv": 0.796838040130181,
+          "deadline_slack_cv": 1.343987751542713e-15,
+          "prompt_predicted_output_correlation": -0.005562525942162818,
+          "priority_distribution": {
+            "1.0": 246
+          },
+          "anwg": {
+            "fifo": 0.7886178861788617,
+            "estimated_service_time_first": 0.7845528455284553,
+            "shortest_output_first": 0.7886178861788617,
+            "oracle_srtf": 0.7926829268292683
+          },
+          "fifo_srtf_anwg_gap": 0.004065040650406582,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.21138211382113822,
+            "oracle_srtf": 0.2073170731707317
+          },
+          "fifo_srtf_slo_violation_gap": 0.004065040650406526,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.4463864518812644,
+          "n_ranked_decisions": 57,
+          "max_entropy_bits": 2.0,
+          "normalized_entropy": 0.7231932259406322
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": false,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": false
+        },
+        "headroom_score": 0.3551785951860044
+      },
+      {
+        "seed": 1,
+        "metrics": {
+          "n_requests": 240,
+          "n_decision_steps_with_nonempty_queue": 5058,
+          "queue_contention_fraction": 0.5377619612495057,
+          "fifo_srtf_decision_disagreement_fraction": 0.008896797153024912,
+          "service_time_cv": 0.9561058200537759,
+          "deadline_slack_cv": 1.2587855373573062e-15,
+          "prompt_predicted_output_correlation": 0.030378972308256834,
+          "priority_distribution": {
+            "1.0": 240
+          },
+          "anwg": {
+            "fifo": 0.7125,
+            "estimated_service_time_first": 0.7583333333333333,
+            "shortest_output_first": 0.775,
+            "oracle_srtf": 0.7666666666666667
+          },
+          "fifo_srtf_anwg_gap": 0.054166666666666696,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.2875,
+            "oracle_srtf": 0.23333333333333334
+          },
+          "fifo_srtf_slo_violation_gap": 0.05416666666666664,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.7273966735744792,
+          "n_ranked_decisions": 70,
+          "max_entropy_bits": 2.0,
+          "normalized_entropy": 0.8636983367872396
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.5302657269409776
+      },
+      {
+        "seed": 2,
+        "metrics": {
+          "n_requests": 229,
+          "n_decision_steps_with_nonempty_queue": 3756,
+          "queue_contention_fraction": 0.38391906283280086,
+          "fifo_srtf_decision_disagreement_fraction": 0.006922257720979766,
+          "service_time_cv": 1.0227418699520718,
+          "deadline_slack_cv": 1.2941053626098888e-15,
+          "prompt_predicted_output_correlation": -0.037624290466736376,
+          "priority_distribution": {
+            "1.0": 229
+          },
+          "anwg": {
+            "fifo": 0.777292576419214,
+            "estimated_service_time_first": 0.8165938864628821,
+            "shortest_output_first": 0.8209606986899564,
+            "oracle_srtf": 0.8253275109170306
+          },
+          "fifo_srtf_anwg_gap": 0.048034934497816595,
+          "completion_fraction": {
+            "fifo": 1.0,
+            "oracle_srtf": 1.0
+          },
+          "fifo_srtf_completion_gap": 0.0,
+          "slo_violation_rate": {
+            "fifo": 0.22270742358078602,
+            "oracle_srtf": 0.17467248908296942
+          },
+          "fifo_srtf_slo_violation_gap": 0.048034934497816595,
+          "all_four_policies_bit_identical_anwg": false
+        },
+        "entropy": {
+          "ordering_entropy_bits": 1.8869553683351177,
+          "n_ranked_decisions": 45,
+          "max_entropy_bits": 2.321928094887362,
+          "normalized_entropy": 0.8126674432726801
+        },
+        "gate": {
+          "checks": {
+            "disagreement_fraction_nonzero": true,
+            "anwg_gap_meaningful": true,
+            "queue_contention_sufficient": true,
+            "not_degenerate_tie": true
+          },
+          "passed": true
+        },
+        "headroom_score": 0.45384525137581055
+      }
+    ],
+    "mean_fifo_srtf_anwg_gap": 0.03542221393829662,
+    "mean_fifo_srtf_decision_disagreement_fraction": 0.008266215570246458,
+    "mean_queue_contention_fraction": 0.4663199785489775,
+    "mean_headroom_score": 0.44642985783426425,
+    "accepted": true
+  }
+}

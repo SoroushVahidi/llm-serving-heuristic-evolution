@@ -1,0 +1,46 @@
+{
+  "active_local_jobs_note": "33048 SNl   3-20:03:47 update-manager  /usr/bin/python3 /usr/bin/update-manager --no-update --no-focus-on-map\n 435048 Ss      14:10:26 ssh             ssh -M -S /home/soroush/.ssh/cm/wulver.sock -fN sv96@wulver.njit.edu\n 435073 Ss      14:09:41 ssh             ssh -M -S /home/soroush/.ssh/cm/wulver.sock -fN sv96@wulver.njit.edu\n 495552 Ssl        08:48 python          /home/soroush/modal-venv/bin/python -m uvicorn njit_auditor.web_app:app --host 0.0.0.0 --port 8000\n 506954 Sl         00:00 python          python -",
+  "artifact_generation_note": "Only local design/audit artifacts were written. No existing frozen inputs were modified.",
+  "artifact_hashes_excluding_integrity_json": {
+    "candidate_policy_families.json": "86e081297c3e89e5808679f0d515ca203e5be276d9f1e8bb46b7c70a5a157218",
+    "chosen_policy_family.json": "923a3fb755b0ee52c41981f723889f0f74d43bf8ddf8163048f1844cda7de03d",
+    "envelope_holes.json": "075b7860e9fe0bff942140aecd97e48e35a496aab2a26af9c293bd3839d07c50",
+    "go_no_go_contract.json": "292d195f0c84711fad171398035cdc687a2a8fa2b6438157db5e356fa5630416",
+    "policy_mechanism_matrix.json": "cdbb2625dd632c56ff34c486cb4aa9df7b07dad5a775a85f28878d07738aa267",
+    "portfolio_redundancy.json": "85f4edd39da3f8f831d9b99e147bcbb28d817439874fd05c89f9c58ff8dfb17f",
+    "screening_experiment_design.json": "754bced116ee2e0b0be2e9ee67579f84db9d2a5e62f03525fa0998ee3bcedc60"
+  },
+  "branch": "contextual-compositional-heuristics-20260731",
+  "created_at": "2026-08-24T00:00:00-04:00",
+  "git_locks": "",
+  "git_status_short_before_artifact_creation": "?? artifacts/\n?? datasets/\n?? docs/current/family_a_config_state_surrogate_v1_analysis_20260823.md\n?? docs/current/family_a_dagger_d1_v1_analysis_20260823.md\n?? docs/current/family_a_joint_feature_scenario_pilot_v1_analysis_20260823.md\n?? docs/current/family_a_mechanism_composite_rule_static_feasibility_v1_analysis_20260824.md\n?? docs/current/family_a_pi0_closed_loop_final_v1_analysis_20260823.md\n?? docs/current/family_a_scientific_evidence_audit_20260823.md\n?? docs/current/family_a_selector_closure_and_pivot_v1_analysis_20260824.md\n?? docs/current/family_a_v2_learning_pipeline_v1_analysis_20260823.md\n?? docs/current/family_a_wulver_dev_support_eval_v1_analysis_20260824.md\n?? docs/current/family_a_wulver_medium_sweep_v1_analysis_20260823.md\n?? docs/current/family_a_wulver_medium_sweep_v1_analysis_20260824.md\n?? docs/current/family_a_wulver_smoke_repro_diagnosis_v1.md\n?? experiments/decision_criticality_timescale_trainval_v1/\n?? experiments/family_a_analytic_index_feasibility/\n?? experiments/family_a_config_state_surrogate_v1/\n?? experiments/family_a_contested_request_value_diagnosis/\n?? experiments/family_a_dagger_d1_v1/\n?? experiments/family_a_feature_gap_design_v1/\n?? experiments/family_a_horizon_stability_v1/\n?? experiments/family_a_horizon_stability_v1_rerun/\n?? experiments/family_a_joint_feature_scenario_pilot_v1/\n?? experiments/family_a_mechanism_composite_rule_static_feasibility_v1/\n?? experiments/family_a_observability_continuation_v1/\n?? experiments/family_a_observability_continuation_v1_invalid_pre_snapshot_fix_20260820/\n?? experiments/family_a_oracle_v2_validation/\n?? experiments/family_a_oracle_v2_validation_rerun/\n?? experiments/family_a_pi0_closed_loop_final_v1/\n?? experiments/family_a_receding_horizon_oracle_v1/\n?? experiments/family_a_receding_horizon_terminal_value_v1/\n?? experiments/family_a_scientific_evidence_audit_v1/\n?? experiments/family_a_selector_closure_and_pivot_v1/\n?? experiments/family_a_stateful_controller_v1/\n?? experiments/family_a_v2_learning_pipeline_v1/\n?? experiments/family_a_wulver_dev_support_eval_v1/\n?? experiments/family_a_wulver_medium_sweep_v1/\n?? experiments/family_a_wulver_smoke_repro_diagnosis_v1/\n?? experiments/public_trace_replay_v1/\n?? scripts/family_a_config_state_surrogate_v1.py\n?? scripts/family_a_dagger_d1_v1.py\n?? scripts/family_a_joint_feature_scenario_pilot_v1.py\n?? scripts/family_a_oracle_v2_full_relabel.py\n?? scripts/family_a_oracle_v2_validation.py\n?? scripts/family_a_pi0_closed_loop_final_v1.py\n?? scripts/family_a_v2_postrelabel_pipeline.py\n?? scripts/run_family_a_v2_postrelabel_overnight.sh\n?? tests/test_family_a_dagger_d1_recapture.py\n?? tests/test_family_a_joint_feature_scenario_pilot_v1.py\n?? tests/test_family_a_oracle_v2_validation.py\n?? tests/test_family_a_pi0_closed_loop_final_v1.py\n?? tests/test_family_a_v2_postrelabel_feature_contract.py",
+  "head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "prohibitions_confirmed": {
+    "no_DEV_driven_redesign": true,
+    "no_FINAL": true,
+    "no_GPUs": true,
+    "no_TEST": true,
+    "no_Wulver_jobs": true,
+    "no_git_mutation": true,
+    "no_heavy_simulation": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true
+  },
+  "source_hashes": {
+    "decision_timescale": "a2c6122090c45b4ed2d0c802c09d890bb8c399b51e0c414dea4b2ba1528559bf",
+    "family_a_audit": "975b6364a30f5fe7ab5a65f177d4dfc61b0813c18d1c81cf1562eff618cc0020",
+    "family_b_audit": "aaed87516097bb6b1e6d5698f3e6ce656ee5e52a8edf32d899a7ad25cf3e8426",
+    "family_c_audit": "e86748eab89d7fef2e04056d1c06b15c6a30430008d386733af4767c09ba1887",
+    "guarded_rule_no_go": "b970cddf70f18222ab854c19b20ded8c67b40ca9cef5da6634a27ebc5201aa4b",
+    "kv_hysteresis_summary": "d2d115fc4de08f97c35a0df53e7e1de9a1b9bd3b9b65776c61cddb7837651012",
+    "mf_psd_long": "7a1bbbd925d5bfc28fd66feaa9ecc110d28cb8a47748c6dc4aa4cfcaf76b4cb4",
+    "mf_psd_provenance": "576ca484c0e3d17288d035c42bff02ae55899b261623dd3ee98a3df8b15bd379",
+    "mf_psd_scenarios": "9aaf651a7c90238e9e52e3f33200cd878737fa23ffa8174a43fe53a68608c52e",
+    "prefill_composition": "205ee460fefb177408c3cb826038fef515622bd68c18d7440de8493380074dcc",
+    "public_trace_audit": "9f8163212eecda5a7342abcba6e4d2025cd9d265afe63e7364ab6b5f3d36c3c5",
+    "public_trace_layer3": "9392ba1d6c380547b98687a4e80963d8e08435cfca5d1b71c4f9c36412860793",
+    "selector_closure": "a866f01458772853b96887145c89ae24fd13196b6aad8f9618acce8d60a490fc"
+  },
+  "upstream_ahead_behind": "0\t2",
+  "worktrees": "worktree /home/soroush/llm-serving-heuristic-evolution\nHEAD 2987b7181efa2bc550d8a894c537eca8f6393eb6\nbranch refs/heads/contextual-compositional-heuristics-20260731"
+}

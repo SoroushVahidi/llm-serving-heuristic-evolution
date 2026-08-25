@@ -8,7 +8,6 @@ Verifies:
 4. MultiRegimeConfig with include_oracle=True passes the flag through.
 5. Phase 2B.4 config files parse without error.
 """
-import pytest
 from pathlib import Path
 
 

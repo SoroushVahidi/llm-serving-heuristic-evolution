@@ -1,0 +1,101 @@
+{
+  "schema_version": "public_trace_corpus_v1.0.0",
+  "design_doc": "docs/design/PUBLIC_TRACE_CORPUS_V1.md",
+  "git_head_sha": "84fa31b8eb9de20030800f39a7b44d93a3aefba9",
+  "build_start_utc": "2026-08-19T18:30:17Z",
+  "build_end_utc": "2026-08-19T18:30:52Z",
+  "build_duration_seconds": 35.242,
+  "sources": {
+    "burstgpt": {
+      "report": {
+        "source_dataset": "burstgpt",
+        "source_file": "/home/soroush/llm-serving-heuristic-evolution/data/raw/burstgpt/BurstGPT_1.csv",
+        "rows_read": 1429737,
+        "rows_retained": 1404294,
+        "rows_dropped_malformed": 25443,
+        "time_range_seconds": 5269968.0
+      },
+      "n_records": 1404294
+    },
+    "azure_2023_conv": {
+      "report": {
+        "source_dataset": "azure_2023_conv",
+        "source_file": "/home/soroush/llm-serving-heuristic-evolution/data/raw/azure/AzureLLMInferenceTrace_conv_2023.csv",
+        "rows_read": 19366,
+        "rows_retained": 19366,
+        "rows_dropped_malformed": 0,
+        "time_range_seconds": 3501.7219371795654
+      },
+      "n_records": 19366
+    },
+    "azure_2023_code": {
+      "report": {
+        "source_dataset": "azure_2023_code",
+        "source_file": "/home/soroush/llm-serving-heuristic-evolution/data/raw/azure/AzureLLMInferenceTrace_code_2023.csv",
+        "rows_read": 8819,
+        "rows_retained": 8819,
+        "rows_dropped_malformed": 0,
+        "time_range_seconds": 3435.9480559825897
+      },
+      "n_records": 8819
+    },
+    "azure_2024": {
+      "status": "REFERENCE_ONLY_THIS_PASS",
+      "availability_check": {
+        "status": "REFERENCE_ONLY_USER_INITIATED",
+        "downloader_script": "scripts/data/download_azure_llm_2024.py",
+        "known_sizes_bytes": {
+          "code": 691989454,
+          "conv": 1135195393
+        },
+        "reason": "repo convention: large (>500MB) trace downloads are user-initiated, not part of an unattended build"
+      }
+    },
+    "agentperfbench_trace_replay": {
+      "role": "REAL_SYSTEM_VALIDATION_SOURCE",
+      "ingested_into_workload_corpus": false,
+      "external_validation_metadata": {
+        "source_dataset": "agentperfbench_trace_replay",
+        "source_url_or_repo": "https://huggingface.co/datasets/agent-perf-bench/AgentPerfBench",
+        "source_license": "Apache-2.0",
+        "source_file_sha256": "568efbdae473a830ba792317fb09cfba0ea4f667db67b93d28e72637a5c71d1e",
+        "columns": [
+          "run_id",
+          "model",
+          "model_family",
+          "hardware",
+          "engine",
+          "tensor_parallelism",
+          "profile",
+          "concurrency",
+          "num_requests",
+          "duration_s",
+          "request_throughput",
+          "input_token_throughput",
+          "output_token_throughput",
+          "total_token_throughput",
+          "mean_ttft_ms",
+          "median_ttft_ms",
+          "p90_ttft_ms",
+          "p99_ttft_ms",
+          "mean_tpot_ms",
+          "median_tpot_ms",
+          "p90_tpot_ms",
+          "p99_tpot_ms",
+          "mean_itl_ms",
+          "median_itl_ms",
+          "p90_itl_ms",
+          "p99_itl_ms",
+          "mean_e2el_ms",
+          "median_e2el_ms",
+          "p90_e2el_ms",
+          "p99_e2el_ms"
+        ],
+        "n_rows": 2932,
+        "note": "Run-level aggregate real-system performance metrics only (vLLM 0.19.0 / SGLang 0.5.9 on real GPUs); no per-request prompt/output token fields present. Classified REAL_SYSTEM_VALIDATION_SOURCE, not TRACE_SOURCE. Not ingested into the workload-input corpus."
+      }
+    }
+  },
+  "no_policy_evaluation": true,
+  "no_paid_api_used": true
+}

@@ -1,0 +1,23 @@
+# ESTF↔WFS minimal composition falsification (Family A v2)
+# Ranking-only. No LLM APIs. No MAP-Elites.
+
+pilot_metadata:
+  experiment_name: estf_wfs_composition_falsification_v1
+  parents: [estimated_service_time_first, weighted_fair_share]
+  primary_metric: arrival_normalized_weighted_goodput
+  family_a_job: 1182377
+
+static_alphas: [0.25, 0.50, 0.75]
+methods:
+  - static_alpha_0.25
+  - static_alpha_0.50
+  - static_alpha_0.75
+  - contextual_top1
+  - contextual_alpha
+  - hard_conditional
+
+split:
+  train: seed 20260816 excluding OOD
+  val: seed 20260817 util in {1.1, 1.3} excluding OOD
+  test: seed 20260817 util=1.5 excluding OOD
+  ood: favored=long AND skew=10 (both seeds)
