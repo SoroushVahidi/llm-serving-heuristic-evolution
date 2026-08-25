@@ -1,0 +1,414 @@
+{
+  "comparisons": {
+    "hog_tight_high_late": {
+      "hog_e2e_chunked_minus_full_s_by_rep": [
+        -0.05270934104919445,
+        -0.009717941284179688,
+        -0.009123563766479492,
+        0.015715281168619755,
+        0.01627270380655932
+      ],
+      "hog_e2e_diff_bootstrap_ci_s": [
+        -0.030314652125040743,
+        0.010970481236775732
+      ],
+      "hog_e2e_improvement_fraction_full_vs_chunked": -0.008277740684693571,
+      "hog_e2e_mean_chunked_minus_full_s": -0.00791257222493491,
+      "hog_e2e_sign_consistency_full_lower": 2,
+      "late_ttft_chunked_minus_full_s_by_rep": [
+        -0.02643342812856042,
+        0.015751798947652107,
+        0.01482391357421875,
+        0.03815567493438721,
+        0.038023034731547
+      ],
+      "late_ttft_diff_bootstrap_ci_s": [
+        -0.005264139175415061,
+        0.03362184365590411
+      ],
+      "late_ttft_improvement_fraction_chunked_vs_full": -0.0271731702403623,
+      "late_ttft_mean_chunked_minus_full_s": 0.01606419881184893,
+      "late_ttft_sign_consistency_chunked_lower": 1,
+      "throughput_chunked_minus_full_rps_by_rep": [
+        0.4054686927364868,
+        0.1237981531174901,
+        0.10894981021733763,
+        -0.05732580319111591,
+        -0.09146669431597143
+      ],
+      "throughput_mean_chunked_minus_full_rps": 0.09788483171284543
+    },
+    "hog_tight_low_late": {
+      "hog_e2e_chunked_minus_full_s_by_rep": [
+        -0.024975697199503655,
+        -0.054069677988688114,
+        0.025919993718465206,
+        0.006954828898111942,
+        -0.03630471229553223
+      ],
+      "hog_e2e_diff_bootstrap_ci_s": [
+        -0.04114489555358887,
+        0.009682019551595067
+      ],
+      "hog_e2e_improvement_fraction_full_vs_chunked": -0.017400783808487582,
+      "hog_e2e_mean_chunked_minus_full_s": -0.016495052973429368,
+      "hog_e2e_sign_consistency_full_lower": 2,
+      "late_ttft_chunked_minus_full_s_by_rep": [
+        0.021177053451538086,
+        -0.0001270771026611328,
+        0.04423713684082031,
+        0.036742289861043276,
+        0.015803178151448605
+      ],
+      "late_ttft_diff_bootstrap_ci_s": [
+        0.009431076049804709,
+        0.03705137570699056
+      ],
+      "late_ttft_improvement_fraction_chunked_vs_full": -0.06330518281813796,
+      "late_ttft_mean_chunked_minus_full_s": 0.02356651624043783,
+      "late_ttft_sign_consistency_chunked_lower": 1,
+      "throughput_chunked_minus_full_rps_by_rep": [
+        -0.040748181810728035,
+        0.14229224768462956,
+        -0.35117629036562104,
+        -0.2370460813170947,
+        0.02788407393576353
+      ],
+      "throughput_mean_chunked_minus_full_rps": -0.09175884637461014
+    },
+    "late_tight_high_late": {
+      "hog_e2e_chunked_minus_full_s_by_rep": [
+        -0.03296995162963878,
+        0.007039070129394531,
+        0.01356617609659827,
+        0.0010390281677246094,
+        -0.01654020945231116
+      ],
+      "hog_e2e_diff_bootstrap_ci_s": [
+        -0.021682198842366596,
+        0.008449904123942042
+      ],
+      "hog_e2e_improvement_fraction_full_vs_chunked": -0.0057668719886186616,
+      "hog_e2e_mean_chunked_minus_full_s": -0.005573177337646507,
+      "hog_e2e_sign_consistency_full_lower": 3,
+      "late_ttft_chunked_minus_full_s_by_rep": [
+        -0.007440447807312012,
+        0.03349733352661133,
+        0.029127001762390137,
+        0.029408613840738895,
+        0.007927656173706055
+      ],
+      "late_ttft_diff_bootstrap_ci_s": [
+        0.003002985318501783,
+        0.030987779299418115
+      ],
+      "late_ttft_improvement_fraction_chunked_vs_full": -0.03061095898379599,
+      "late_ttft_mean_chunked_minus_full_s": 0.01850403149922688,
+      "late_ttft_sign_consistency_chunked_lower": 1,
+      "throughput_chunked_minus_full_rps_by_rep": [
+        0.2919865114654394,
+        -0.0123665443433163,
+        -0.07076332812493824,
+        0.09506435618273024,
+        0.1454949072182785
+      ],
+      "throughput_mean_chunked_minus_full_rps": 0.08988318047963872
+    },
+    "late_tight_low_late": {
+      "hog_e2e_chunked_minus_full_s_by_rep": [
+        -0.020412206649780273,
+        -0.027353286743164062,
+        0.005352894465128544,
+        -0.012008269627888923,
+        0.026243607203165653
+      ],
+      "hog_e2e_diff_bootstrap_ci_s": [
+        -0.02150785128275552,
+        0.012734301884969046
+      ],
+      "hog_e2e_improvement_fraction_full_vs_chunked": -0.005876311357773172,
+      "hog_e2e_mean_chunked_minus_full_s": -0.005635452270507812,
+      "hog_e2e_sign_consistency_full_lower": 2,
+      "late_ttft_chunked_minus_full_s_by_rep": [
+        0.03004765510559082,
+        0.039908409118652344,
+        0.03258872032165527,
+        0.032521963119506836,
+        0.04235267639160156
+      ],
+      "late_ttft_diff_bootstrap_ci_s": [
+        0.031545591354370114,
+        0.03989768028259277
+      ],
+      "late_ttft_improvement_fraction_chunked_vs_full": -0.09553509806520699,
+      "late_ttft_mean_chunked_minus_full_s": 0.03548388481140137,
+      "late_ttft_sign_consistency_chunked_lower": 0,
+      "throughput_chunked_minus_full_rps_by_rep": [
+        -0.06706569540039009,
+        -0.026939866466949347,
+        -0.22851691574670507,
+        -0.1250025948092084,
+        -0.36036174662612463
+      ],
+      "throughput_mean_chunked_minus_full_rps": -0.1615773638098755
+    }
+  },
+  "gate_definitions": {
+    "PREFILL_REAL_VALIDATION_NO_GO": "no stable expected effect, opposite effect without systems explanation, or instrumentation/workload inadequacy.",
+    "PREFILL_REAL_VALIDATION_PARTIAL": "exactly one of late_effect or hog_effect holds, or one stable expected effect is present but broader reversal is incomplete/noisy.",
+    "PREFILL_REAL_VALIDATION_STRONG": "late_effect and hog_effect both hold, giving a stable interpretable tradeoff/winner reversal across the four regimes.",
+    "hog_effect": "For hog_tight regimes, FULL hog-class mean E2E must be at least 5% lower than CHUNKED with sign consistency >=4/5 repetitions.",
+    "late_effect": "For late_tight regimes, CHUNKED late-class mean TTFT must be at least 5% lower than FULL with sign consistency >=4/5 repetitions."
+  },
+  "hog_effect": false,
+  "late_effect": false,
+  "max_telemetry": {
+    "kv_cache_usage": 0.028394628280523082,
+    "preemptions": 0.0,
+    "running": 4.0,
+    "waiting": 7.0
+  },
+  "repetition_metrics": {
+    "hog_tight_high_late::CHUNKED::0": {
+      "hog_mean_e2e": 0.9678005377451578,
+      "late_mean_ttft": 0.6165715853373209,
+      "success_count": 9,
+      "throughput_rps": 7.836807906244141
+    },
+    "hog_tight_high_late::CHUNKED::1": {
+      "hog_mean_e2e": 0.9799542427062988,
+      "late_mean_ttft": 0.6293430725733439,
+      "success_count": 9,
+      "throughput_rps": 7.75852443749842
+    },
+    "hog_tight_high_late::CHUNKED::2": {
+      "hog_mean_e2e": 0.9822555383046468,
+      "late_mean_ttft": 0.6261431376139323,
+      "success_count": 9,
+      "throughput_rps": 7.715240655100026
+    },
+    "hog_tight_high_late::CHUNKED::3": {
+      "hog_mean_e2e": 0.9901448885599772,
+      "late_mean_ttft": 0.6376960277557373,
+      "success_count": 9,
+      "throughput_rps": 7.669088960957037
+    },
+    "hog_tight_high_late::CHUNKED::4": {
+      "hog_mean_e2e": 0.9917705853780111,
+      "late_mean_ttft": 0.6376327276229858,
+      "success_count": 9,
+      "throughput_rps": 7.656054580268865
+    },
+    "hog_tight_high_late::FULL::0": {
+      "hog_mean_e2e": 1.0205098787943523,
+      "late_mean_ttft": 0.6430050134658813,
+      "success_count": 9,
+      "throughput_rps": 7.431339213507655
+    },
+    "hog_tight_high_late::FULL::1": {
+      "hog_mean_e2e": 0.9896721839904785,
+      "late_mean_ttft": 0.6135912736256918,
+      "success_count": 9,
+      "throughput_rps": 7.63472628438093
+    },
+    "hog_tight_high_late::FULL::2": {
+      "hog_mean_e2e": 0.9913791020711263,
+      "late_mean_ttft": 0.6113192240397135,
+      "success_count": 9,
+      "throughput_rps": 7.606290844882689
+    },
+    "hog_tight_high_late::FULL::3": {
+      "hog_mean_e2e": 0.9744296073913574,
+      "late_mean_ttft": 0.5995403528213501,
+      "success_count": 9,
+      "throughput_rps": 7.726414764148153
+    },
+    "hog_tight_high_late::FULL::4": {
+      "hog_mean_e2e": 0.9754978815714518,
+      "late_mean_ttft": 0.5996096928914388,
+      "success_count": 9,
+      "throughput_rps": 7.7475212745848365
+    },
+    "hog_tight_low_late::CHUNKED::0": {
+      "hog_mean_e2e": 0.9724249045054117,
+      "late_mean_ttft": 0.40774957338968915,
+      "success_count": 6,
+      "throughput_rps": 5.9555876563275785
+    },
+    "hog_tight_low_late::CHUNKED::1": {
+      "hog_mean_e2e": 0.9581678708394369,
+      "late_mean_ttft": 0.39966193834940594,
+      "success_count": 6,
+      "throughput_rps": 6.047869004058056
+    },
+    "hog_tight_low_late::CHUNKED::2": {
+      "hog_mean_e2e": 1.0059142112731934,
+      "late_mean_ttft": 0.4093625545501709,
+      "success_count": 6,
+      "throughput_rps": 5.756845137129211
+    },
+    "hog_tight_low_late::CHUNKED::3": {
+      "hog_mean_e2e": 0.981905460357666,
+      "late_mean_ttft": 0.40471084912618,
+      "success_count": 6,
+      "throughput_rps": 5.902954523757529
+    },
+    "hog_tight_low_late::CHUNKED::4": {
+      "hog_mean_e2e": 0.9619614283243815,
+      "late_mean_ttft": 0.4007350603739421,
+      "success_count": 6,
+      "throughput_rps": 6.023272790633441
+    },
+    "hog_tight_low_late::FULL::0": {
+      "hog_mean_e2e": 0.9974006017049154,
+      "late_mean_ttft": 0.38657251993815106,
+      "success_count": 6,
+      "throughput_rps": 5.9963358381383065
+    },
+    "hog_tight_low_late::FULL::1": {
+      "hog_mean_e2e": 1.012237548828125,
+      "late_mean_ttft": 0.3997890154520671,
+      "success_count": 6,
+      "throughput_rps": 5.905576756373426
+    },
+    "hog_tight_low_late::FULL::2": {
+      "hog_mean_e2e": 0.9799942175547282,
+      "late_mean_ttft": 0.3651254177093506,
+      "success_count": 6,
+      "throughput_rps": 6.108021427494832
+    },
+    "hog_tight_low_late::FULL::3": {
+      "hog_mean_e2e": 0.9749506314595541,
+      "late_mean_ttft": 0.3679685592651367,
+      "success_count": 6,
+      "throughput_rps": 6.140000605074624
+    },
+    "hog_tight_low_late::FULL::4": {
+      "hog_mean_e2e": 0.9982661406199137,
+      "late_mean_ttft": 0.38493188222249347,
+      "success_count": 6,
+      "throughput_rps": 5.995388716697677
+    },
+    "late_tight_high_late::CHUNKED::0": {
+      "hog_mean_e2e": 0.97771684328715,
+      "late_mean_ttft": 0.6247201760609945,
+      "success_count": 9,
+      "throughput_rps": 7.776978055620337
+    },
+    "late_tight_high_late::CHUNKED::1": {
+      "hog_mean_e2e": 0.9900453885396322,
+      "late_mean_ttft": 0.6383803685506185,
+      "success_count": 9,
+      "throughput_rps": 7.668772687122288
+    },
+    "late_tight_high_late::CHUNKED::2": {
+      "hog_mean_e2e": 0.9916176795959473,
+      "late_mean_ttft": 0.6326009829839071,
+      "success_count": 9,
+      "throughput_rps": 7.653408019580405
+    },
+    "late_tight_high_late::CHUNKED::3": {
+      "hog_mean_e2e": 0.9939271608988444,
+      "late_mean_ttft": 0.6385876337687174,
+      "success_count": 9,
+      "throughput_rps": 7.644489950652406
+    },
+    "late_tight_high_late::CHUNKED::4": {
+      "hog_mean_e2e": 0.9758773644765218,
+      "late_mean_ttft": 0.622231682141622,
+      "success_count": 9,
+      "throughput_rps": 7.761466022453696
+    },
+    "late_tight_high_late::FULL::0": {
+      "hog_mean_e2e": 1.0106867949167888,
+      "late_mean_ttft": 0.6321606238683065,
+      "success_count": 9,
+      "throughput_rps": 7.484991544154898
+    },
+    "late_tight_high_late::FULL::1": {
+      "hog_mean_e2e": 0.9830063184102377,
+      "late_mean_ttft": 0.6048830350240072,
+      "success_count": 9,
+      "throughput_rps": 7.681139231465604
+    },
+    "late_tight_high_late::FULL::2": {
+      "hog_mean_e2e": 0.978051503499349,
+      "late_mean_ttft": 0.603473981221517,
+      "success_count": 9,
+      "throughput_rps": 7.724171347705343
+    },
+    "late_tight_high_late::FULL::3": {
+      "hog_mean_e2e": 0.9928881327311198,
+      "late_mean_ttft": 0.6091790199279785,
+      "success_count": 9,
+      "throughput_rps": 7.5494255944696755
+    },
+    "late_tight_high_late::FULL::4": {
+      "hog_mean_e2e": 0.992417573928833,
+      "late_mean_ttft": 0.6143040259679159,
+      "success_count": 9,
+      "throughput_rps": 7.615971115235418
+    },
+    "late_tight_low_late::CHUNKED::0": {
+      "hog_mean_e2e": 0.9783527056376139,
+      "late_mean_ttft": 0.4133017857869466,
+      "success_count": 6,
+      "throughput_rps": 5.925791690694398
+    },
+    "late_tight_low_late::CHUNKED::1": {
+      "hog_mean_e2e": 0.9744017124176025,
+      "late_mean_ttft": 0.41486644744873047,
+      "success_count": 6,
+      "throughput_rps": 5.9493519047586405
+    },
+    "late_tight_low_late::CHUNKED::2": {
+      "hog_mean_e2e": 0.976176897684733,
+      "late_mean_ttft": 0.4006795088450114,
+      "success_count": 6,
+      "throughput_rps": 5.936808849742908
+    },
+    "late_tight_low_late::CHUNKED::3": {
+      "hog_mean_e2e": 0.9847369988759359,
+      "late_mean_ttft": 0.40068578720092773,
+      "success_count": 6,
+      "throughput_rps": 5.879306336990852
+    },
+    "late_tight_low_late::CHUNKED::4": {
+      "hog_mean_e2e": 0.9991840521494547,
+      "late_mean_ttft": 0.40755724906921387,
+      "success_count": 6,
+      "throughput_rps": 5.793068204497705
+    },
+    "late_tight_low_late::FULL::0": {
+      "hog_mean_e2e": 0.9987649122873942,
+      "late_mean_ttft": 0.3832541306813558,
+      "success_count": 6,
+      "throughput_rps": 5.992857386094788
+    },
+    "late_tight_low_late::FULL::1": {
+      "hog_mean_e2e": 1.0017549991607666,
+      "late_mean_ttft": 0.3749580383300781,
+      "success_count": 6,
+      "throughput_rps": 5.97629177122559
+    },
+    "late_tight_low_late::FULL::2": {
+      "hog_mean_e2e": 0.9708240032196045,
+      "late_mean_ttft": 0.36809078852335614,
+      "success_count": 6,
+      "throughput_rps": 6.165325765489613
+    },
+    "late_tight_low_late::FULL::3": {
+      "hog_mean_e2e": 0.9967452685038248,
+      "late_mean_ttft": 0.3681638240814209,
+      "success_count": 6,
+      "throughput_rps": 6.00430893180006
+    },
+    "late_tight_low_late::FULL::4": {
+      "hog_mean_e2e": 0.9729404449462891,
+      "late_mean_ttft": 0.3652045726776123,
+      "success_count": 6,
+      "throughput_rps": 6.1534299511238295
+    }
+  },
+  "verdict": "PREFILL_REAL_VALIDATION_NO_GO"
+}

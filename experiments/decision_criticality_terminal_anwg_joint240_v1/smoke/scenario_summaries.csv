@@ -1,0 +1,4 @@
+scenario_id,fold,seed,n_elevated_mechanisms,reference_anwg,reference_num_completed,n_branch_rows,n_disagreement_evaluated,n_agreement_evaluated,alive_n_switches
+joint_mm_0000,3,20260824,3,0.1928770189717766,42,2,0,2,4
+joint_mm_0001,1,20260825,4,0.2064313283043397,61,5,3,2,4
+joint_mm_0002,2,20260826,1,0.295183539213585,66,5,3,2,50

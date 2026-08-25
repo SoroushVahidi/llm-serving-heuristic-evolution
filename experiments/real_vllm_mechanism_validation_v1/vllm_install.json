@@ -1,0 +1,34 @@
+{
+  "blackwell_check": {
+    "cuda_kernel_executed": true,
+    "device_capability": [
+      12,
+      0
+    ],
+    "sm120_arch_mismatch": false,
+    "torch_cuda_available": true,
+    "vllm_imported": true
+  },
+  "install_method": "python3 -m venv, pip install uv inside new env, then uv pip install --python /home/soroush/.venvs/vllm_real_validation_v1/bin/python vllm --torch-backend=cu130",
+  "nightly_used": false,
+  "official_guidance_consulted": [
+    "https://docs.vllm.ai/en/stable/getting_started/installation/gpu/",
+    "https://vllm.ai/"
+  ],
+  "reasoning": "Official docs say Blackwell requires CUDA >=12.8 and current vLLM installer supports CUDA 13 via uv torch backend auto/cu130. Stable was tried before nightly.",
+  "required_runtime_env": {
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "VLLM_USE_FLASHINFER_SAMPLER": "0"
+  },
+  "stable_failed": false,
+  "versions": {
+    "cuda_python": "13.3.1",
+    "flashinfer_python": "0.6.16.post3",
+    "torch": "2.13.0+cu130",
+    "transformers": "5.15.1",
+    "triton": "3.7.1",
+    "uv": "0.12.5",
+    "vllm": "0.27.1"
+  }
+}

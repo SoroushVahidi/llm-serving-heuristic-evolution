@@ -1,0 +1,27 @@
+{
+  "best_prior_analytic_rule_by_train_d1_mean_regret": "idx_B_deadline_urgency",
+  "created_unix": 1787579734.2042253,
+  "experiment": "family_a_mechanism_composite_rule_static_feasibility_v1",
+  "frozen_inputs": {
+    "analytic_event_table_sha256": "75cf281974e18f4167193b0a9eb86be99b7b3b4ee76fd36399ae3664a86f9937",
+    "analytic_summary_sha256": "c75f7b87bef61c3c7b519629827f92455e6d2ac4f7d45d010bea2b8010343272",
+    "configuration_split_sha256": "8a48c51de94adbcbbde09347747b849c57dc98fe7ef2026e52058ac01ecb0f8e",
+    "contested_mechanism_events": 91,
+    "contested_table_sha256": "ccb0a03ee5a034e0b08d3519429e7635597ad1739f490b43bdf2d93ec3c24dde",
+    "d1_oracle_rows_sha256": "c2f10db04aa88abe53824717c840e170e5f7bf45ca4c792edc619959ba9035f0",
+    "d1_train_support_rows": 250,
+    "feature_sets_sha256": "a87982108081fb6e5e1bcacd5783674ec110fb79e746a97297a356d2afb53b2b",
+    "pi0_model_sha256": "5a170bcd033f91c661f609c2924b1923410aca6713dc6815290d9e7a272110eb",
+    "v2_oracle_rows_sha256": "17467cc4aad9c36c692323014ca02dc6247d9fc4bedd321a3e78d0316866daeb",
+    "v2_train_rows": 748
+  },
+  "no_dev_labels_or_results_used_for_design": true,
+  "no_final": true,
+  "no_git_mutation": true,
+  "no_gpu": true,
+  "no_oracle_labels": true,
+  "no_simulations": true,
+  "no_test": true,
+  "no_wulver_jobs": true,
+  "pi0_threshold": 7.579439252336448
+}

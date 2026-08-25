@@ -1,0 +1,30 @@
+{
+  "rows": [
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "reconstructed_scenario_id": "fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+      "request_count": 120,
+      "screen_role": "TRAIN_SCREEN_ONLY_NON_DEV_NON_TEST_NON_FINAL",
+      "source_scenario_id": "fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late12.slohog_ttft.s20260820",
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2",
+      "reconstructed_scenario_id": "pd2.hog12.late12.slohog_ttft.s20260820",
+      "request_count": 24,
+      "screen_role": "TRAIN_SCREEN_ONLY_NON_DEV_NON_TEST_NON_FINAL",
+      "source_scenario_id": "pd2.hog12.late12.slohog_ttft.s20260820"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk10.phaseearly.tightloose.s20260910",
+      "mechanism_family": "FAMILY_C_KV_PRESSURE_V2",
+      "reconstructed_scenario_id": "kvp2.bulk10.phaseearly.tightloose.s20260910",
+      "request_count": 20,
+      "screen_role": "TRAIN_SCREEN_ONLY_NON_DEV_NON_TEST_NON_FINAL",
+      "source_scenario_id": "kvp2.bulk10.phaseearly.tightloose.s20260910"
+    }
+  ],
+  "schema": "portfolio_guided_typed_gp_smoke_v1_scenario_manifest",
+  "source_manifest": "/home/soroush/llm-serving-heuristic-evolution/experiments/portfolio_guided_typed_gp_screen_v1/train_subset_manifest.json"
+}

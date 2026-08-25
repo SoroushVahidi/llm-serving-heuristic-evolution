@@ -1,0 +1,11 @@
+{
+  "freeze_decision": "RANDOM_GP_CANDIDATE_NOT_FREEZE_READY",
+  "freeze_ready": false,
+  "held_out_validation_run": false,
+  "reasons_not_ready": [
+    "no group regression >0.030 ANWG",
+    "top-one scenario MG share <=0.40",
+    "top-one family MG share <=0.70"
+  ],
+  "selection_bias_warning": "Candidate was selected as best of 60 A_RANDOM_GRAMMAR_GP candidates on TRAIN; TRAIN mean_MG is selection-biased and not a generalization estimate."
+}

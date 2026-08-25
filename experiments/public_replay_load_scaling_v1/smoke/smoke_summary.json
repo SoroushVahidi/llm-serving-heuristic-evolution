@@ -1,0 +1,20 @@
+[
+  {
+    "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w0::augmented",
+    "cells_path": "/home/soroush/llm-serving-heuristic-evolution/experiments/public_replay_load_scaling_v1/smoke/cells_window_000_azure_2023_code.jsonl",
+    "elapsed_s": 0.9621469974517822,
+    "n_fail": 0,
+    "n_ok": 4,
+    "source_dataset": "azure_2023_code",
+    "window_index": 0
+  },
+  {
+    "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w10::augmented",
+    "cells_path": "/home/soroush/llm-serving-heuristic-evolution/experiments/public_replay_load_scaling_v1/smoke/cells_window_010_azure_2023_code.jsonl",
+    "elapsed_s": 0.353640079498291,
+    "n_fail": 0,
+    "n_ok": 4,
+    "source_dataset": "azure_2023_code",
+    "window_index": 10
+  }
+]

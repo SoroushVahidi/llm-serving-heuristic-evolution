@@ -1,0 +1,94 @@
+{
+  "experiment": "real_vllm_mechanism_validation_v1",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "primary_mechanism_family": "PREFILL_DECODE_CONTENTION",
+  "primary_treatments": [
+    {
+      "name": "real_vllm_full_prefill",
+      "server_controls": [
+        "--disable-chunked-prefill",
+        "--no-enable-prefix-caching",
+        "--enforce-eager",
+        "--max-model-len 4096",
+        "--max-num-seqs 2",
+        "--block-size 16"
+      ]
+    },
+    {
+      "name": "real_vllm_chunked_prefill",
+      "server_controls": [
+        "--enable-chunked-prefill",
+        "--max-num-batched-tokens 512",
+        "--no-enable-prefix-caching",
+        "--enforce-eager",
+        "--max-model-len 4096",
+        "--max-num-seqs 2",
+        "--block-size 16"
+      ]
+    }
+  ],
+  "secondary_optional_mechanism": {
+    "name": "FAIRNESS_COMPLETION_CONFLICT",
+    "status": "design_only_until WFS external-admission wiring is verified",
+    "treatments": [
+      "estimated_service_time_first external admission",
+      "weighted_fair_share external admission"
+    ],
+    "fidelity": "APPROXIMATE"
+  },
+  "excluded_from_first_local_run": {
+    "KV_PRESSURE_URGENCY": "Local 0.5B prior stress produced only 0.021 max KV usage; high-pressure 7B/xlong validation likely requires A100-class hardware."
+  },
+  "regimes": [
+    {
+      "id": "pd_real_hog_ttft_low_late",
+      "description": "Long-prompt hogs arrive before short late tenants; hog class has tight TTFT/E2E SLO.",
+      "expected_direction": "full_prefill improves hog TTFT/SLO relative to chunked"
+    },
+    {
+      "id": "pd_real_late_ttft_low_late",
+      "description": "Same geometry, but short late tenants have tight TTFT/E2E SLO.",
+      "expected_direction": "chunked_prefill improves late TTFT/SLO relative to full"
+    },
+    {
+      "id": "pd_real_hog_ttft_high_late",
+      "description": "Higher late-tenant pressure with hog-tight SLO.",
+      "expected_direction": "full_prefill retains hog advantage, margin may shrink"
+    },
+    {
+      "id": "pd_real_late_ttft_high_late",
+      "description": "Higher late-tenant pressure with late-tight SLO.",
+      "expected_direction": "chunked_prefill retains late advantage"
+    }
+  ],
+  "request_geometry": {
+    "hog_prompt_tokens": [4096, 8192],
+    "late_prompt_tokens": [64, 256],
+    "output_tokens": [64, 128],
+    "arrivals": "deterministic staged arrivals; hog convoy first, late tenants overlap after 25% of convoy span",
+    "concurrency": "server max_num_seqs=2 for local pressure; client concurrency high enough to build a waiting queue"
+  },
+  "metrics": [
+    "TTFT",
+    "E2E latency",
+    "throughput",
+    "arrival-normalized weighted goodput where SLO labels are valid",
+    "per-class fairness/SLO attainment",
+    "vLLM waiting queue",
+    "running sequence count",
+    "KV-cache utilization",
+    "preemptions",
+    "prompt/decode token throughput where vLLM metrics expose it"
+  ],
+  "repetitions": {
+    "warmup": "at least one short and one medium request per server mode before measurement",
+    "measured_repetitions": 5,
+    "treatment_order": "randomized or alternated by repetition with fixed seed",
+    "success_unit": "qualitative sign stability, not exact simulator numeric agreement"
+  },
+  "preregistered_outcomes": {
+    "REAL_MECHANISM_VALIDATION_STRONG": "At least two major mechanism families show stable qualitative corroboration.",
+    "REAL_MECHANISM_VALIDATION_PARTIAL": "One family is corroborated, or additional families are noisy/incomplete.",
+    "REAL_MECHANISM_VALIDATION_NO_GO": "Mechanisms do not reproduce or implementation fidelity is inadequate."
+  }
+}

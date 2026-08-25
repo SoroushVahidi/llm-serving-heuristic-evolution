@@ -268,6 +268,138 @@ class Simulator:
             all_requests=[ir.request for ir in self._pending_arrivals],
         )
 
+    def continue_run(
+        self,
+        policy,
+        workload_tag: str = "unknown",
+        seed: int = 0,
+        *,
+        num_total: Optional[int] = None,
+        all_requests: Optional[Sequence] = None,
+    ) -> RunMetrics:
+        """Continue from the current mid-simulation state (no `_reset`).
+
+        Used by counterfactual forks that already applied a forced first action
+        via `fork_from_live_simulator` and need the remaining trajectory to use
+        the same idle fast-forward / drain / handoff semantics as `run()`.
+        `self._pending_arrivals` must be either the full arrival list (with
+        already-due requests already residing in waiting/GPU structures) or a
+        not-yet-enqueued future suffix; in both cases `arrival_idx` starts at
+        the first pending entry with `arrival_time > self._time` (or 0 when the
+        list is already a future suffix).
+        """
+        wall_start = _time.perf_counter()
+
+        step_size = self.config.service_model.step_size
+        max_steps = self.config.max_steps
+        drain_steps = self.config.drain_steps
+
+        n_arrivals = len(self._pending_arrivals)
+        # Fork shells typically hold a future-arrival suffix; start at 0 and let
+        # the loop enqueue anything due at the current `_time`. Do not advance
+        # `arrival_idx` without enqueueing (that drops arrivals).
+        arrival_idx = 0
+        steps_since_last_arrival = 0
+
+        while True:
+            self._time = self._step * step_size
+
+            while (
+                arrival_idx < n_arrivals
+                and self._pending_arrivals[arrival_idx].request.arrival_time
+                <= self._time
+            ):
+                ir = self._pending_arrivals[arrival_idx]
+                self._waiting.append(ir)
+                self._waiting_map[ir.request_id] = ir
+                arrival_idx += 1
+
+            self._waiting_queue_history.append(len(self._waiting))
+
+            state = self._build_observable_state()
+
+            t0 = _time.perf_counter()
+            action = policy.select_action(state)
+            self._policy_times.append(_time.perf_counter() - t0)
+
+            if getattr(policy, "hybrid_cache_enabled", False):
+                for g in self._gpus:
+                    mgr = policy._get_cache_manager(g.to_observable())
+                    for rid, req in g._active.items():
+                        req.current_tier = mgr.get_request_tier(rid).value
+
+            self._apply_action(action)
+            step_completed = self._advance_decode(action)
+            self._completed.extend(step_completed)
+            self._collect_handoffs()
+
+            total_active = sum(g.num_active for g in self._gpus)
+            n_gpus = len(self._gpus)
+            mean_util = (
+                sum(g.utilization for g in self._gpus) / n_gpus if n_gpus else 0.0
+            )
+            self._util_history.append(mean_util)
+            self._batch_history.append(total_active)
+
+            all_arrivals_done = arrival_idx >= n_arrivals
+            all_active_done = total_active == 0
+            queue_empty = (
+                len(self._waiting) == 0
+                and len(self._migrating) == 0
+                and len(self._relocating) == 0
+            )
+
+            if all_arrivals_done:
+                steps_since_last_arrival += 1
+            else:
+                steps_since_last_arrival = 0
+
+            if max_steps is not None and self._step >= max_steps:
+                break
+            if all_arrivals_done and queue_empty and all_active_done:
+                break
+            if all_arrivals_done and steps_since_last_arrival >= drain_steps:
+                break
+
+            if not all_arrivals_done and queue_empty and all_active_done:
+                next_arr_time = self._pending_arrivals[arrival_idx].request.arrival_time
+                skip_to = int(next_arr_time / step_size)
+                idle_gap = skip_to - (self._step + 1)
+                if idle_gap > 0:
+                    self._idle_skipped += idle_gap
+                    self._step = skip_to - 1
+
+            self._step += 1
+
+        sim_duration = self._time
+        wall_elapsed = _time.perf_counter() - wall_start
+        dropped = (
+            [ir.request for ir in self._waiting]
+            + [ir.request for ir in self._migrating]
+            + [ir.request for ir in self._relocating.values()]
+        )
+        metrics_requests = (
+            list(all_requests)
+            if all_requests is not None
+            else [ir.request for ir in self._pending_arrivals]
+        )
+        total = int(num_total) if num_total is not None else len(metrics_requests)
+        return compute_metrics(
+            completed=self._completed,
+            dropped=dropped,
+            sim_duration=sim_duration,
+            gpu_utilization_history=self._util_history,
+            active_batch_history=self._batch_history,
+            policy_name=getattr(policy, "name", workload_tag),
+            workload_tag=workload_tag,
+            seed=seed,
+            policy_decision_times=self._policy_times,
+            wall_clock_s=wall_elapsed,
+            idle_steps_skipped=self._idle_skipped,
+            num_total=total,
+            all_requests=metrics_requests,
+        )
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------

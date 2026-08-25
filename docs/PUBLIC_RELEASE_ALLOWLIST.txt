@@ -1,0 +1,116 @@
+# Paths and patterns to INCLUDE in a clean public-release tree (allowlist).
+# One pattern per line. Comments start with #.
+# Dry-run builders should copy only these (plus their non-excluded children).
+
+# Root public entry
+README.md
+REPRODUCIBILITY.md
+LICENSE
+CITATION.cff
+CONTRIBUTING.md
+.gitignore
+.env.example
+pyproject.toml
+requirements.txt
+requirements-selector.txt
+
+# Library and tests
+src/
+tests/
+configs/
+baselines/
+benchmarks/
+tools/
+external/
+.github/
+
+# Scripts (full tree; smoke_test.py is required)
+scripts/
+
+# Paper package (Strategy A — identified). Strategy B must sanitize/exclude.
+paper/llm2026/
+
+# Canonical paper experiments
+experiments/joint_multimechanism_generalization_v1/
+experiments/unified_utility_matrix_v2/
+experiments/public_trace_replay_v1/
+experiments/multifamily_contextual_selector_v1/
+experiments/hierarchical_regime_router_live_reeval_v1/
+experiments/family_a_wulver_dev_support_eval_v1/
+experiments/family_a_mechanism_composite_rule_static_feasibility_v1/
+experiments/portfolio_guided_typed_gp_screen_v1/
+experiments/real_vllm_mechanism_validation_v1/
+
+# Supporting / precursor experiments commonly cited by audits (tracked)
+experiments/mf_psd_v1/
+experiments/shared_cross_family_features_v1/
+experiments/mechanism_choice_target_feasibility_v1/
+experiments/portfolio_guided_typed_gp_smoke_v1/
+experiments/portfolio_policy_synthesis_design_v1/
+experiments/family_a_selector_closure_and_pivot_v1/
+experiments/family_a_scientific_evidence_audit_v1/
+
+# Data metadata only (not raw)
+data/README.md
+data/public_trace_corpus_v1/manifest.json
+data/public_trace_corpus_v1/schema.json
+data/public_trace_corpus_v1/distribution_stats.json
+data/public_trace_corpus_v1/source_coverage.csv
+data/raw/.gitkeep
+data/processed/.gitkeep
+
+# Selected committed provenance
+results/provenance/
+results/.gitkeep
+
+# Public docs
+docs/README.md
+docs/REPOSITORY_MAP.md
+docs/RESULTS_INDEX.md
+docs/PUBLIC_RELEASE_CHECKLIST.md
+docs/PUBLIC_RELEASE_MANIFEST.md
+docs/PUBLIC_RELEASE_ALLOWLIST.txt
+docs/PUBLIC_RELEASE_EXCLUDELIST.txt
+docs/PUBLIC_RELEASE_AUTHOR_DECISIONS.md
+docs/DATA_RELEASE_POLICY.md
+docs/PROJECT_MAP.md
+docs/BASELINE_STATUS.md
+docs/audits/
+docs/architecture/
+docs/design/
+docs/experiments/
+docs/milestones/
+docs/paper/
+docs/research/
+docs/templates/
+docs/api_provider_setup.md
+docs/baselines.md
+docs/data_field_provenance.md
+docs/dataset_workload_decision.md
+docs/dataset_workload_plan.md
+docs/gpu_environment.md
+docs/gpu_calibration.md
+docs/simulator_design.md
+docs/selector.md
+docs/workload_realism.md
+docs/COMPUTE_POLICY.md
+# docs/INDEX.md intentionally omitted (stale cross-links to excluded handoffs)
+
+# Scientific docs/current (manuscript ledgers + analyses); NOT operational handoffs
+docs/current/llm2026_
+docs/current/family_a_
+docs/current/joint_multimechanism_
+docs/current/native_vllm_
+docs/current/portfolio_
+docs/current/random_grammar_
+docs/current/real_vllm_
+docs/current/public_repository_readiness_audit_20260824.md
+docs/current/KNOWN_SIMULATOR_HEURISTIC_GAPS.md
+docs/current/EXPERIMENT_INDEX.md
+docs/current/EXPERIMENTS_AND_RESULTS.md
+docs/current/ARCHITECTURE.md
+docs/current/BASELINES.md
+docs/current/SCIENTIFIC_DECISIONS.md
+docs/current/COMPOSITION_
+docs/current/composable_primitives.json
+docs/current/composition_

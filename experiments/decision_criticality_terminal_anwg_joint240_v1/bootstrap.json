@@ -1,0 +1,76 @@
+{
+  "auprc": {
+    "ci95_high": 0.13078684557191733,
+    "ci95_low": 0.0643246979736484,
+    "mean": 0.09252370270961321
+  },
+  "auroc": {
+    "ci95_high": 0.6835985312117503,
+    "ci95_low": 0.676678445229682,
+    "mean": 0.6799421637795611
+  },
+  "disagreement_enrichment": {
+    "ci95_high": null,
+    "ci95_low": null,
+    "mean": null
+  },
+  "frac_zero_mass_replicates": 0.0,
+  "mean_abs_delta": {
+    "ci95_high": 0.00193925750328925,
+    "ci95_low": 0.0009793804825251973,
+    "mean": 0.0014148968253295613
+  },
+  "n": 2000,
+  "n_zero_mass_replicates": 0,
+  "nonzero_prevalence": {
+    "ci95_high": 0.07336799190489895,
+    "ci95_low": 0.044376821677085655,
+    "mean": 0.05809842468466416
+  },
+  "scenario_bootstrap_correction_history": {
+    "buggy_top10pct_scenario_mass_share": {
+      "ci95_high": 0.7601979691537974,
+      "ci95_low": 0.5929601714880632,
+      "mean": 0.6747030571313732
+    },
+    "buggy_top5_scenario_mass_share": {
+      "ci95_high": 0.5623206903274957,
+      "ci95_low": 0.2968965865768828,
+      "mean": 0.4186635224265108
+    },
+    "diagnosis": "BUG: scenario-level bootstrap used groupby(scenario_id) after with-replacement draw, collapsing duplicate scenario draws and biasing concentration upward; CI lower bound can exceed unique-scenario point estimate"
+  },
+  "scenario_bootstrap_note": "CORRECTED 2026-08-25: scenario-level CIs now retain with-replacement multiplicity. Prior top5_scenario CI used groupby collapse (biased high; excluded point estimate).",
+  "seed": 20260825,
+  "top10pct_scenario_mass_share": {
+    "ci95_high": 0.762708295653658,
+    "ci95_low": 0.5900651671018214,
+    "mean": 0.6756457382783254
+  },
+  "top10pct_state_mass_share": {
+    "ci95_high": 1.0000000000000007,
+    "ci95_low": 0.9999999999999969,
+    "mean": 0.9999999999999989
+  },
+  "top1pct_state_mass_share": {
+    "ci95_high": 0.5041416193779161,
+    "ci95_low": 0.34003117076214456,
+    "mean": 0.41846260800186397
+  },
+  "top5_scenario_mass_share": {
+    "ci95_high": 0.39933913615314703,
+    "ci95_low": 0.1924452247219528,
+    "mean": 0.28653725563790944
+  },
+  "top5pct_scenario_mass_share": {
+    "ci95_high": 0.5902473185201648,
+    "ci95_low": 0.3835050556523223,
+    "mean": 0.48037603448747657
+  },
+  "top5pct_state_mass_share": {
+    "ci95_high": 1.0,
+    "ci95_low": 0.8560333957034042,
+    "mean": 0.9478103542765721
+  },
+  "zero_mass_rule": "concentration_share=0.0 when total abs mass is 0"
+}

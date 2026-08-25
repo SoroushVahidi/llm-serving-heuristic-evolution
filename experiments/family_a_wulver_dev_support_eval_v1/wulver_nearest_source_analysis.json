@@ -1,0 +1,37 @@
+{
+  "all_nearest_wulver_cell_counts": {
+    "util1.0000.skew5.0000.favlong.noise0.30.n120.maxseq1": 1
+  },
+  "distribution": {
+    "favored_side": {
+      "long": 1
+    },
+    "noise": {
+      "0.3": 1
+    },
+    "skew": {
+      "5.0": 1
+    },
+    "utilization": {
+      "1.0": 1
+    }
+  },
+  "improved_dev_rows_nearest_wulver": 1,
+  "movement_shape": "CONCENTRATED",
+  "top10_share": 1.0,
+  "top1_share": 1.0,
+  "top5_share": 1.0,
+  "top_cells": [
+    {
+      "configuration_group_id": "util1.0000.skew5.0000.favlong.noise0.30.n120.maxseq1",
+      "count": 1,
+      "favored_tenant_size": "long",
+      "max_active_sequences": 1,
+      "n_total_jobs": 120,
+      "prediction_noise_sigma": 0.3,
+      "target_utilization": 1.0,
+      "tenant_weight_skew": 5.0
+    }
+  ],
+  "unique_wulver_cells_responsible": 1
+}

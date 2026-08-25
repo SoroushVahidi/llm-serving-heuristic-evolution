@@ -1,0 +1,185 @@
+{
+  "bootstrap": {
+    "n": 1000,
+    "scenario_mean_abs_mass": {
+      "ci95_high": 0.012712857966801277,
+      "ci95_low": 0.001960043089816571,
+      "mean": 0.006843848829854524
+    },
+    "seed": 20260825,
+    "top5pct_scenario_mass_share": {
+      "ci95_high": 1.0,
+      "ci95_low": 0.6862700130630471,
+      "mean": 0.9120350980780079
+    }
+  },
+  "by_acquisition": {
+    "AGREEMENT_CONTROL": {
+      "frac_nonzero": 0.03494623655913978,
+      "mean_abs": 0.001377113776307325,
+      "median_abs": 0.0,
+      "n": 372,
+      "thresholds": {
+        "0.001": 0.03494623655913978,
+        "0.005": 0.03494623655913978,
+        "0.01": 0.03494623655913978
+      }
+    },
+    "DISAGREEMENT": {
+      "frac_nonzero": 0.03867403314917127,
+      "mean_abs": 0.0009230672010977506,
+      "median_abs": 0.0,
+      "n": 362,
+      "thresholds": {
+        "0.001": 0.03867403314917127,
+        "0.005": 0.03867403314917127,
+        "0.01": 0.03867403314917127
+      }
+    }
+  },
+  "by_family": {
+    "FAMILY_A_FAIRNESS_STARVATION_V2": {
+      "frac_nonzero": 0.014204545454545454,
+      "mean_abs": 0.0001972853535353536,
+      "n": 352
+    },
+    "FAMILY_B_PREFILL_DECODE_V2": {
+      "frac_nonzero": 0.13541666666666666,
+      "mean_abs": 0.005336315883190884,
+      "n": 96
+    },
+    "FAMILY_C_KV_PRESSURE_V2": {
+      "frac_nonzero": 0.03146853146853147,
+      "mean_abs": 0.0009255450431921022,
+      "n": 286
+    }
+  },
+  "concentration_abs_delta_all_states": {
+    "0.01": {
+      "k": 8,
+      "share": 0.48346140995656506
+    },
+    "0.05": {
+      "k": 37,
+      "share": 0.9999999999999996
+    },
+    "0.1": {
+      "k": 74,
+      "share": 0.9999999999999996
+    },
+    "0.2": {
+      "k": 147,
+      "share": 0.9999999999999996
+    },
+    "0.5": {
+      "k": 367,
+      "share": 0.9999999999999996
+    }
+  },
+  "concentration_abs_delta_disagreement_only": {
+    "0.01": {
+      "k": 4,
+      "share": 0.3520782396088019
+    },
+    "0.05": {
+      "k": 19,
+      "share": 1.0
+    },
+    "0.1": {
+      "k": 37,
+      "share": 1.0
+    },
+    "0.2": {
+      "k": 73,
+      "share": 1.0
+    },
+    "0.5": {
+      "k": 181,
+      "share": 1.0
+    }
+  },
+  "concentration_positive_gain_all_states": {
+    "0.01": {
+      "k": 8,
+      "share": 0.7592723079879571
+    },
+    "0.05": {
+      "k": 37,
+      "share": 1.0
+    },
+    "0.1": {
+      "k": 74,
+      "share": 1.0
+    },
+    "0.2": {
+      "k": 147,
+      "share": 1.0
+    },
+    "0.5": {
+      "k": 367,
+      "share": 1.0
+    }
+  },
+  "config": {
+    "bootstrap_seed": 20260825,
+    "control_seed": 20260824,
+    "design_doc": "docs/design/DECISION_CRITICALITY_TERMINAL_ANWG_V1.md",
+    "design_sha256": "947ff0586a28a12b50e341bf6a20a69353d5cdb249e3b704b47d9888c409bd60",
+    "git_dirty": true,
+    "git_head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+    "max_agreement_control_per_scenario": 3,
+    "max_disagreement_per_scenario": 5,
+    "n_bootstrap": 1000,
+    "n_scenarios": 144,
+    "python": "/home/soroush/modal-venv/bin/python3",
+    "python_version": "3.12.3",
+    "schema_version": "decision_criticality_terminal_anwg_v1.0.0"
+  },
+  "elapsed_s": 9768.651704072952,
+  "failures": [],
+  "finished_utc": "2026-08-25T04:45:56.182301+00:00",
+  "h10_proxy_join": {
+    "available": true,
+    "frac_anwg_crit_also_h10_crit": 0.07142857142857142,
+    "frac_anwg_crit_missed_by_h10": 0.9285714285714286,
+    "frac_h10_crit_also_anwg_crit": 0.043478260869565216,
+    "n_joined": 362,
+    "spearman_abs_delta_vs_h10_completed": 0.005028827439722593
+  },
+  "n_scenarios_attempted": 144,
+  "n_scenarios_failed": 0,
+  "n_scenarios_succeeded": 144,
+  "prevalence": 855,
+  "ref_replay": {
+    "n_checks": 124,
+    "n_match": 124
+  },
+  "scenario_concentration_abs_mass": {
+    "0.01": {
+      "k": 2,
+      "share": 0.42365519545606417
+    },
+    "0.05": {
+      "k": 7,
+      "share": 0.9343653710509708
+    },
+    "0.1": {
+      "k": 13,
+      "share": 1.0000000000000002
+    },
+    "0.2": {
+      "k": 25,
+      "share": 1.0000000000000002
+    },
+    "0.5": {
+      "k": 62,
+      "share": 1.0000000000000002
+    }
+  },
+  "started_utc": "2026-08-25T02:03:07.530610+00:00",
+  "temporal_anwg_critical_disagreement_bursts": {
+    "frac_length_1": 0.7142857142857143,
+    "median_length": 1.0,
+    "n_bursts": 7
+  }
+}

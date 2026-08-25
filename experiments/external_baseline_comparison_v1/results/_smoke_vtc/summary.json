@@ -1,0 +1,11 @@
+{
+  "baseline": "official_vtc_joint_token_budget_remap",
+  "cells_path": "experiments/external_baseline_comparison_v1/results/_smoke_vtc/cells.jsonl",
+  "elapsed_s": 0.7582554817199707,
+  "finished_utc": "2026-08-24T23:48:24.406399+00:00",
+  "manifest_sha256": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+  "n_failed": 0,
+  "n_scenarios": 2,
+  "n_success": 2,
+  "started_utc": "2026-08-24T23:48:23.648021+00:00"
+}

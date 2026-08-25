@@ -1,0 +1,35 @@
+{
+  "note": "Contrast only; corpora are not pooled.",
+  "rows": [
+    {
+      "acquired_states": 734,
+      "corpus": "A/B/C TRAIN/VAL (terminal_anwg_v1)",
+      "disagreement_auprc": 0.045226295740812404,
+      "disagreement_auroc": 0.5131489339410131,
+      "divergence_among_nonzero": 1.0,
+      "h10_spearman": 0.005028827439722593,
+      "mean_abs_delta": 0.0011531834490241266,
+      "negative_pct": 1.6348773841961852,
+      "nonzero_pct": 3.6784741144414173,
+      "positive_pct": 2.043596730245232,
+      "scenarios": 144,
+      "top1pct_mass": 0.48346140995656584,
+      "top5pct_mass": 0.9999999999999998
+    },
+    {
+      "acquired_states": 3541,
+      "corpus": "joint-240 (terminal_anwg_joint240_v1)",
+      "disagreement_auprc": 0.08191414743116707,
+      "disagreement_auroc": 0.6799100449775113,
+      "divergence_among_nonzero": 1.0,
+      "h10_spearman": null,
+      "mean_abs_delta": 0.0014133119499450206,
+      "negative_pct": 2.626376729737362,
+      "nonzero_pct": 5.817565659418243,
+      "positive_pct": 3.191188929680881,
+      "scenarios": 240,
+      "top1pct_mass": 0.42061961937346687,
+      "top5pct_mass": 0.9512577298685135
+    }
+  ]
+}

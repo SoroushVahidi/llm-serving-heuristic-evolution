@@ -1,0 +1,97 @@
+{
+  "ast_depth": 2,
+  "behavioral_fingerprint": "2065e43e809f2a586b7a805ae329e1acd742a048f0dd977f10b95819d8668889",
+  "canonical_genome": "{\"metadata\":{\"index\":40,\"operator\":\"random_grammar_initialization\",\"parent_seeded\":false,\"seed\":20260824},\"name\":\"random_grammar_gp::20260824::40\",\"root\":{\"children\":[{\"children\":[],\"description\":\"\",\"module_id\":\"ranking.wfs_deficit_priority_service\",\"module_type\":\"RankingRule\",\"parameters\":{\"_free_numeric_parameters\":[\"alpha\",\"beta\"],\"alpha\":0.25,\"beta\":1.25}},{\"children\":[],\"description\":\"\",\"module_id\":\"placement.round_robin_scan\",\"module_type\":\"PlacementRule\",\"parameters\":{}},{\"children\":[],\"description\":\"\",\"module_id\":\"prefill.chunked_small\",\"module_type\":\"PrefillRule\",\"parameters\":{\"_free_numeric_parameters\":[\"max_prefill_chunk_tokens\"],\"decode_first\":false,\"max_prefill_chunk_tokens\":128}}],\"description\":\"\",\"module_id\":\"policy.module_composition\",\"module_type\":\"Policy\",\"parameters\":{\"canonical_parent_id\":null,\"exactness_status\":\"COMPOSED_CANDIDATE\"}},\"schema_version\":\"PortfolioGuidedTypedGPGenomeV1\"}",
+  "canonical_simplification_occurred": false,
+  "confirmed_frozen_train_candidate": true,
+  "free_constant_names_and_values": [
+    {
+      "module_id": "ranking.wfs_deficit_priority_service",
+      "parameter": "alpha",
+      "value": 0.25
+    },
+    {
+      "module_id": "ranking.wfs_deficit_priority_service",
+      "parameter": "beta",
+      "value": 1.25
+    },
+    {
+      "module_id": "prefill.chunked_small",
+      "parameter": "max_prefill_chunk_tokens",
+      "value": 128
+    }
+  ],
+  "free_constants": [
+    0.25,
+    1.25,
+    128.0
+  ],
+  "generation_provenance": {
+    "index": 40,
+    "operator": "random_grammar_initialization",
+    "parent_seeded": false,
+    "seed": 20260824
+  },
+  "node_count": 4,
+  "proposal_index": 40,
+  "readable_symbolic_policy": "Policy(WFS_deficit_priority_service(alpha=0.25,beta=1.25), round_robin_scan placement, chunked_prefill cap=128)",
+  "round_trip_exact": true,
+  "seed": 20260824,
+  "structural_hash": "837e6de6d8a1ad8ab5ec3d6fd928495e7e972de5557c42dbe80a11ada7276d16",
+  "treatment_id": "A_RANDOM_GRAMMAR_GP",
+  "typed_ast": {
+    "metadata": {
+      "index": 40,
+      "operator": "random_grammar_initialization",
+      "parent_seeded": false,
+      "seed": 20260824
+    },
+    "name": "random_grammar_gp::20260824::40",
+    "root": {
+      "children": [
+        {
+          "children": [],
+          "description": "",
+          "module_id": "ranking.wfs_deficit_priority_service",
+          "module_type": "RankingRule",
+          "parameters": {
+            "_free_numeric_parameters": [
+              "alpha",
+              "beta"
+            ],
+            "alpha": 0.25,
+            "beta": 1.25
+          }
+        },
+        {
+          "children": [],
+          "description": "",
+          "module_id": "placement.round_robin_scan",
+          "module_type": "PlacementRule",
+          "parameters": {}
+        },
+        {
+          "children": [],
+          "description": "",
+          "module_id": "prefill.chunked_small",
+          "module_type": "PrefillRule",
+          "parameters": {
+            "_free_numeric_parameters": [
+              "max_prefill_chunk_tokens"
+            ],
+            "decode_first": false,
+            "max_prefill_chunk_tokens": 128
+          }
+        }
+      ],
+      "description": "",
+      "module_id": "policy.module_composition",
+      "module_type": "Policy",
+      "parameters": {
+        "canonical_parent_id": null,
+        "exactness_status": "COMPOSED_CANDIDATE"
+      }
+    },
+    "schema_version": "PortfolioGuidedTypedGPGenomeV1"
+  }
+}

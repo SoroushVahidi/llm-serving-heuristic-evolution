@@ -1,0 +1,387 @@
+{
+  "best_crossover_child": {
+    "behavior_fingerprint": "a1e9fde08bd1b86c2c8c79615e422189c132721df0457c1c02cf3c5a9a7b4dcd",
+    "canonical_genome": "{\"metadata\":{\"module_type\":\"RankingRule\",\"operator\":\"typed_subtree_crossover\",\"parent_a\":\"4ffe946951ddc7bec6b7988bd56d63cf0117f05221ff7705035975c104dede05\",\"parent_b\":\"c0ba47a7cb96570adb66ac592c80865db15a556118960cb89a81b97ed3558114\",\"parent_ids\":[\"weighted_fair_share\",\"estimated_service_time_first\"],\"path_a\":[0],\"path_b\":[0],\"seed\":20260886,\"treatment_id\":\"C_PORTFOLIO_STRUCTURAL_CROSSOVER\",\"uses_crossover\":true},\"name\":\"structural_crossover::weighted_fair_share::estimated_service_time_first::2\",\"root\":{\"children\":[{\"children\":[],\"description\":\"\",\"module_id\":\"ranking.estf_service_time\",\"module_type\":\"RankingRule\",\"parameters\":{\"_free_numeric_parameters\":[\"alpha\",\"beta\"],\"alpha\":0.5,\"beta\":1.0}},{\"children\":[],\"description\":\"\",\"module_id\":\"placement.default_gpu_pressure\",\"module_type\":\"PlacementRule\",\"parameters\":{}}],\"description\":\"Typed exact parent representation for weighted_fair_share\",\"module_id\":\"policy.module_composition\",\"module_type\":\"Policy\",\"parameters\":{\"canonical_parent_id\":null,\"exactness_status\":\"COMPOSED_CANDIDATE\"}},\"schema_version\":\"PortfolioGuidedTypedGPGenomeV1\"}",
+    "complexity": {
+      "ast_depth": 2,
+      "free_constants": 2,
+      "node_count": 3
+    },
+    "genome_hash": "dc4dbe92d481cdc6e1d7713760609e62857938744959e4a2267aef251da59d33",
+    "largest_regressions": [
+      {
+        "E6": 0.44393939393939397,
+        "candidate_reward": 0.3181818181818182,
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "regression": 0.1257575757575758,
+        "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816",
+        "scenario_index": 8
+      },
+      {
+        "E6": 0.5,
+        "candidate_reward": 0.421875,
+        "family": "FAMILY_B_PREFILL_DECODE_V2",
+        "regression": 0.078125,
+        "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft.s20260820",
+        "scenario_index": 16
+      },
+      {
+        "E6": 0.7696969696969697,
+        "candidate_reward": 0.7121212121212122,
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "regression": 0.0575757575757575,
+        "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew10.0000.favlong.noise0.30.s20260816",
+        "scenario_index": 4
+      },
+      {
+        "E6": 0.8888888888888888,
+        "candidate_reward": 0.8333333333333334,
+        "family": "FAMILY_B_PREFILL_DECODE_V2",
+        "regression": 0.05555555555555547,
+        "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late12.slolate_ttft.s20260820",
+        "scenario_index": 14
+      },
+      {
+        "E6": 0.975,
+        "candidate_reward": 0.925,
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "regression": 0.04999999999999993,
+        "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favshort.noise0.00.s20260816",
+        "scenario_index": 3
+      },
+      {
+        "E6": 0.9117647058823529,
+        "candidate_reward": 0.8823529411764706,
+        "family": "FAMILY_C_KV_PRESSURE_V2",
+        "regression": 0.02941176470588236,
+        "scenario_id": "FAMILY_C_KV_PRESSURE_V2::kvp2.bulk24.phaselate.tightloose.s20260910",
+        "scenario_index": 22
+      },
+      {
+        "E6": 0.75,
+        "candidate_reward": 0.725,
+        "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+        "regression": 0.025000000000000022,
+        "scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.1000.skew1.0000.favlong.noise0.00.s20260816",
+        "scenario_index": 0
+      },
+      {
+        "E6": 1.0,
+        "candidate_reward": 0.9807692307692307,
+        "family": "FAMILY_B_PREFILL_DECODE_V2",
+        "regression": 0.019230769230769273,
+        "scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog12.late40.slolate_ttft.s20260820",
+        "scenario_index": 12
+      }
+    ],
+    "metadata": {
+      "module_type": "RankingRule",
+      "operator": "typed_subtree_crossover",
+      "parent_a": "4ffe946951ddc7bec6b7988bd56d63cf0117f05221ff7705035975c104dede05",
+      "parent_b": "c0ba47a7cb96570adb66ac592c80865db15a556118960cb89a81b97ed3558114",
+      "parent_ids": [
+        "weighted_fair_share",
+        "estimated_service_time_first"
+      ],
+      "path_a": [
+        0
+      ],
+      "path_b": [
+        0
+      ],
+      "seed": 20260886,
+      "treatment_id": "C_PORTFOLIO_STRUCTURAL_CROSSOVER",
+      "uses_crossover": true
+    },
+    "metrics": {
+      "any_positive_MG_scenarios": 0,
+      "family_mean_regression": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 0.032291666666666656,
+        "FAMILY_B_PREFILL_DECODE_V2": 0.019113915598290593,
+        "FAMILY_C_KV_PRESSURE_V2": 0.003676470588235295
+      },
+      "family_positive_MG": {
+        "FAMILY_A_FAIRNESS_STARVATION_V2": 0.0,
+        "FAMILY_B_PREFILL_DECODE_V2": 0.0,
+        "FAMILY_C_KV_PRESSURE_V2": 0.0
+      },
+      "max_parent_behavior_overlap": 0.5,
+      "max_parent_reward_correlation": 1.0,
+      "mean_MG": 0.0,
+      "median_MG": 0.0,
+      "parent_reward_correlations": {
+        "chunked_prefill_small": 0.6003200604489017,
+        "estimated_service_time_first": 1.0,
+        "full_prefill": 0.5784176883653072,
+        "kv_constrained_online": 0.954131354870442,
+        "least_laxity_first": 0.46533595428075586,
+        "weighted_fair_share": 0.9774182419748961
+      },
+      "positive_MG_families": [],
+      "positive_MG_region_count": 0,
+      "top_one_family_positive_MG_share": 1.0,
+      "top_one_scenario_positive_MG_share": 1.0,
+      "total_MG": 0.0,
+      "unique_wins_eps_0.005": 0,
+      "worst_family_mean_regression": 0.032291666666666656,
+      "worst_group_mean_regression": 0.1257575757575758,
+      "worst_scenario_regression": 0.1257575757575758
+    },
+    "parent_behavior_overlaps": {
+      "chunked_prefill_small": 0.0,
+      "estimated_service_time_first": 0.5,
+      "full_prefill": 0.0,
+      "kv_constrained_online": 0.0,
+      "least_laxity_first": 0.0,
+      "weighted_fair_share": 0.5
+    },
+    "parent_reward_correlations": {
+      "chunked_prefill_small": 0.6003200604489017,
+      "estimated_service_time_first": 1.0,
+      "full_prefill": 0.5784176883653072,
+      "kv_constrained_online": 0.954131354870442,
+      "least_laxity_first": 0.46533595428075586,
+      "weighted_fair_share": 0.9774182419748961
+    },
+    "proposal_index": 2,
+    "readable_policy": "policy.module_composition(ranking.estf_service_time, placement.default_gpu_pressure)",
+    "treatment_id": "C_PORTFOLIO_STRUCTURAL_CROSSOVER",
+    "unique_win_scenarios_eps_0.005": []
+  },
+  "comparison": {
+    "B_best_minus_A_best_mean_MG": -0.008743686868686863,
+    "C_best_minus_A_best_mean_MG": -0.011294934640522872,
+    "C_best_minus_B_best_mean_MG": -0.002551247771836009,
+    "C_has_best_overall": false,
+    "mutation_equivalent_or_better_than_best_C_count": 60,
+    "random_equivalent_or_better_than_best_C_count": 60
+  },
+  "constraints": {
+    "no_api": true,
+    "no_dev_tuning": true,
+    "no_gpu": true,
+    "no_test_final": true,
+    "no_wulver": true,
+    "train_only": true
+  },
+  "created_utc": "2026-08-24T15:47:10.221242+00:00",
+  "e6_baseline": {
+    "max_E6_ANWG": 1.0,
+    "mean_E6_ANWG": 0.8382885522361625,
+    "median_E6_ANWG": 0.8963675213675213,
+    "min_E6_ANWG": 0.44393939393939397
+  },
+  "gate_table": {
+    ">=3 unique wins at epsilon 0.005": {
+      "observed": 0,
+      "pass": false,
+      "threshold": 3
+    },
+    "all parent reproduction gates remain PASS": {
+      "observed": {
+        "chunked_prefill_small": "PARENT_REPRODUCTION_PASS",
+        "estimated_service_time_first": "PARENT_REPRODUCTION_PASS",
+        "full_prefill": "PARENT_REPRODUCTION_PASS",
+        "kv_constrained_online": "PARENT_REPRODUCTION_PASS",
+        "least_laxity_first": "PARENT_REPRODUCTION_PASS",
+        "weighted_fair_share": "PARENT_REPRODUCTION_PASS"
+      },
+      "pass": true,
+      "threshold": "all PASS"
+    },
+    "gains not concentrated in one scenario/family": {
+      "observed": {
+        "top_family_share": 1.0,
+        "top_scenario_share": 1.0
+      },
+      "pass": false,
+      "threshold": {
+        "top_family": 0.7,
+        "top_scenario": 0.4
+      }
+    },
+    "max parent decision overlap <=95%": {
+      "observed": 0.5,
+      "pass": true,
+      "threshold": 0.95
+    },
+    "max parent reward correlation <=0.985": {
+      "observed": 1.0,
+      "pass": false,
+      "threshold": 0.985
+    },
+    "mean MG >= 0.005 ANWG": {
+      "observed": 0.0,
+      "pass": false,
+      "threshold": 0.005
+    },
+    "mechanism behavior scientifically coherent": {
+      "observed": false,
+      "pass": false,
+      "threshold": true
+    },
+    "no group regression >0.030 ANWG": {
+      "observed": 0.032291666666666656,
+      "pass": false,
+      "threshold": 0.03
+    },
+    "wins across >=2 regions": {
+      "observed": 0,
+      "pass": false,
+      "threshold": 2
+    }
+  },
+  "go_pass": false,
+  "llm_2026_story_supported": "diagnostic-only",
+  "next_scientific_decision": "do not launch another search; choose preregistered two-timescale fallback or diagnostic-paper path",
+  "no_go_reasons": [
+    "mean_MG_below_0.001",
+    "no_unique_wins_eps_0.005",
+    "isolated_or_absent_gains"
+  ],
+  "overall_verdict": "SYNTHESIS_NO_GO",
+  "parent_mean_rewards": {
+    "chunked_prefill_small": 0.6491629625820802,
+    "estimated_service_time_first": 0.819927867951765,
+    "full_prefill": 0.6732125530379207,
+    "kv_constrained_online": 0.8045089731211054,
+    "least_laxity_first": 0.6605825768050032,
+    "weighted_fair_share": 0.8110857705067264
+  },
+  "run_integrity": {
+    "candidate_scenario_evaluations": 4320,
+    "command": "python scripts/run_portfolio_guided_typed_gp_screen_v1.py --mode screen --confirm-full-screen --candidates-per-treatment 60 --scenario-limit 24 --seed 20260824 --out-dir experiments/portfolio_guided_typed_gp_screen_v1/run_train_screen_v1",
+    "equal_budget": true,
+    "mode": "screen",
+    "rejected_count": 5,
+    "scenario_count": 24,
+    "scenario_families": {
+      "FAMILY_A_FAIRNESS_STARVATION_V2": 8,
+      "FAMILY_B_PREFILL_DECODE_V2": 8,
+      "FAMILY_C_KV_PRESSURE_V2": 8
+    },
+    "seed": 20260824,
+    "treatment_accounting": [
+      {
+        "complete": true,
+        "duplicate_candidates": 0,
+        "evaluated_candidates": 60,
+        "proposed_candidates": 64,
+        "rejected_candidates": 4,
+        "target_evaluated_candidates": 60,
+        "treatment_id": "A_RANDOM_GRAMMAR_GP",
+        "unique_candidates": 60,
+        "valid_candidates": 60
+      },
+      {
+        "complete": true,
+        "duplicate_candidates": 0,
+        "evaluated_candidates": 60,
+        "proposed_candidates": 60,
+        "rejected_candidates": 0,
+        "target_evaluated_candidates": 60,
+        "treatment_id": "B_PARENT_SEEDED_MUTATION_ONLY",
+        "unique_candidates": 60,
+        "valid_candidates": 60
+      },
+      {
+        "complete": true,
+        "duplicate_candidates": 0,
+        "evaluated_candidates": 60,
+        "proposed_candidates": 61,
+        "rejected_candidates": 1,
+        "target_evaluated_candidates": 60,
+        "treatment_id": "C_PORTFOLIO_STRUCTURAL_CROSSOVER",
+        "unique_candidates": 60,
+        "valid_candidates": 60
+      }
+    ]
+  },
+  "schema": "portfolio_guided_typed_gp_screen_v1_train_decision",
+  "treatment_summaries": {
+    "A_RANDOM_GRAMMAR_GP": {
+      "best_candidate": {
+        "genome_hash": "837e6de6d8a1ad8ab5ec3d6fd928495e7e972de5557c42dbe80a11ada7276d16",
+        "max_parent_behavior_overlap": 0.0,
+        "max_parent_reward_correlation": 0.9484239608915721,
+        "mean_MG": 0.011294934640522872,
+        "median_MG": 0.0,
+        "positive_MG_families": [
+          "FAMILY_A_FAIRNESS_STARVATION_V2",
+          "FAMILY_C_KV_PRESSURE_V2"
+        ],
+        "positive_MG_region_count": 2,
+        "proposal_index": 40,
+        "top_one_family_positive_MG_share": 0.891500904159132,
+        "top_one_scenario_positive_MG_share": 0.41361170475094516,
+        "unique_wins_eps_0.005": 6,
+        "worst_family_mean_regression": 0.044971955128205135,
+        "worst_group_mean_regression": 0.125,
+        "worst_scenario_regression": 0.125
+      },
+      "best_unique_win_count_eps_0.005": 6,
+      "candidates_mean_MG_at_least_0.005": 7,
+      "candidates_wins_across_at_least_2_regions": 6,
+      "candidates_with_any_positive_MG": 39,
+      "evaluated_candidates": 60,
+      "max_parent_overlap_1_count": 19,
+      "mean_candidate_mean_MG": 0.001980033174886117,
+      "median_candidate_mean_MG": 0.0005050505050505083
+    },
+    "B_PARENT_SEEDED_MUTATION_ONLY": {
+      "best_candidate": {
+        "genome_hash": "7dad87415105866b08ffd6f73536e8ba7e8b265c40e7a4e83cc5658417443d17",
+        "max_parent_behavior_overlap": 1.0,
+        "max_parent_reward_correlation": 0.9988231903595625,
+        "mean_MG": 0.002551247771836009,
+        "median_MG": 0.0,
+        "positive_MG_families": [
+          "FAMILY_A_FAIRNESS_STARVATION_V2",
+          "FAMILY_C_KV_PRESSURE_V2"
+        ],
+        "positive_MG_region_count": 2,
+        "proposal_index": 8,
+        "top_one_family_positive_MG_share": 0.5196506550218343,
+        "top_one_scenario_positive_MG_share": 0.48034934497816567,
+        "unique_wins_eps_0.005": 4,
+        "worst_family_mean_regression": 0.028314393939393938,
+        "worst_group_mean_regression": 0.11060606060606065,
+        "worst_scenario_regression": 0.11060606060606065
+      },
+      "best_unique_win_count_eps_0.005": 4,
+      "candidates_mean_MG_at_least_0.005": 0,
+      "candidates_wins_across_at_least_2_regions": 3,
+      "candidates_with_any_positive_MG": 21,
+      "evaluated_candidates": 60,
+      "max_parent_overlap_1_count": 35,
+      "mean_candidate_mean_MG": 0.0004920838284808874,
+      "median_candidate_mean_MG": 0.0
+    },
+    "C_PORTFOLIO_STRUCTURAL_CROSSOVER": {
+      "best_candidate": {
+        "genome_hash": "dc4dbe92d481cdc6e1d7713760609e62857938744959e4a2267aef251da59d33",
+        "max_parent_behavior_overlap": 0.5,
+        "max_parent_reward_correlation": 1.0,
+        "mean_MG": 0.0,
+        "median_MG": 0.0,
+        "positive_MG_families": [],
+        "positive_MG_region_count": 0,
+        "proposal_index": 2,
+        "top_one_family_positive_MG_share": 1.0,
+        "top_one_scenario_positive_MG_share": 1.0,
+        "unique_wins_eps_0.005": 0,
+        "worst_family_mean_regression": 0.032291666666666656,
+        "worst_group_mean_regression": 0.1257575757575758,
+        "worst_scenario_regression": 0.1257575757575758
+      },
+      "best_unique_win_count_eps_0.005": 0,
+      "candidates_mean_MG_at_least_0.005": 0,
+      "candidates_wins_across_at_least_2_regions": 0,
+      "candidates_with_any_positive_MG": 0,
+      "evaluated_candidates": 60,
+      "max_parent_overlap_1_count": 24,
+      "mean_candidate_mean_MG": 0.0,
+      "median_candidate_mean_MG": 0.0
+    }
+  }
+}

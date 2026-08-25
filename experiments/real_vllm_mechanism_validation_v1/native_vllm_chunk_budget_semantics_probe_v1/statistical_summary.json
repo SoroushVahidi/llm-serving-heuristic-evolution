@@ -1,0 +1,115 @@
+{
+  "comparisons": {
+    "late_tight_high_late": {
+      "hog_e2e_T4096_lower_reps": 0,
+      "hog_e2e_T4096_minus_T512_s_by_rep": [
+        0.023055553436279297,
+        0.024832725524902455,
+        0.020069996515909794,
+        0.010039965311686272,
+        0.03861633936564124
+      ],
+      "hog_e2e_T4096_minus_T512_s_ci95": [
+        0.015601634979248113,
+        0.03179491360982256
+      ],
+      "hog_e2e_T4096_minus_T512_s_mean": 0.023322916030883812,
+      "late_ttft_T4096_lower_reps": 3,
+      "late_ttft_T4096_minus_T512_s_by_rep": [
+        -0.004683891932169559,
+        -0.0007518529891967773,
+        0.0009115537007648999,
+        -0.012209733327229744,
+        0.0039966503779093054
+      ],
+      "late_ttft_T4096_minus_T512_s_ci95": [
+        -0.007694228490193633,
+        0.0018129110336303268
+      ],
+      "late_ttft_T4096_minus_T512_s_mean": -0.002547454833984375,
+      "throughput_T4096_higher_reps": 0,
+      "throughput_T4096_minus_T512_rps_by_rep": [
+        -0.20371734412852582,
+        -0.22505185515698312,
+        -0.19415949471570393,
+        -0.08735222492945915,
+        -0.28649756879422394
+      ],
+      "throughput_T4096_minus_T512_rps_ci95": [
+        -0.2514739090453803,
+        -0.1362536049322129
+      ],
+      "throughput_T4096_minus_T512_rps_mean": -0.1993556975449792
+    },
+    "late_tight_low_late": {
+      "hog_e2e_T4096_lower_reps": 0,
+      "hog_e2e_T4096_minus_T512_s_by_rep": [
+        0.023463090260823605,
+        0.011492808659871345,
+        0.02904001871744788,
+        0.012596925099690792,
+        0.005089203516642327
+      ],
+      "hog_e2e_T4096_minus_T512_s_ci95": [
+        0.009152189890543626,
+        0.023520628611246753
+      ],
+      "hog_e2e_T4096_minus_T512_s_mean": 0.01633640925089519,
+      "late_ttft_T4096_lower_reps": 5,
+      "late_ttft_T4096_minus_T512_s_by_rep": [
+        -0.0222502549489339,
+        -0.03876368204752606,
+        -0.017904202143351255,
+        -0.03602488835652673,
+        -0.03815579414367676
+      ],
+      "late_ttft_T4096_minus_T512_s_ci95": [
+        -0.037972768147786475,
+        -0.022823731104532886
+      ],
+      "late_ttft_T4096_minus_T512_s_mean": -0.03061976432800294,
+      "throughput_T4096_higher_reps": 5,
+      "throughput_T4096_minus_T512_rps_by_rep": [
+        0.043502348282258296,
+        0.13566049187218887,
+        0.021360309361676322,
+        0.11878930262987986,
+        0.1657003990120991
+      ],
+      "throughput_T4096_minus_T512_rps_ci95": [
+        0.049702923583549816,
+        0.14430221687969116
+      ],
+      "throughput_T4096_minus_T512_rps_mean": 0.09700257023162048
+    }
+  },
+  "max_server_metrics": {
+    "kv_cache_usage": null,
+    "preemptions": null,
+    "running": null,
+    "status": "unavailable_due_metric_parse_empty; use scheduler trace for waiting/running",
+    "waiting": null
+  },
+  "server_metrics_status": {
+    "max_running_after_schedule_by_trace": {
+      "T4096": 4,
+      "T512": 4
+    },
+    "max_waiting_after_schedule_by_trace": {
+      "T4096": 5,
+      "T512": 7
+    },
+    "parsed_metric_rows_nonempty": 0,
+    "prometheus_metrics_available_for_kv_preemption": false,
+    "queue_running_available_from_scheduler_trace": true,
+    "reason": "metric parser in this runner returned empty metric dictionaries; do not use KV/preemption maxima from this artifact",
+    "server_metric_rows": 413,
+    "server_metric_scrape_errors": 0
+  },
+  "verdict": "NATIVE_VLLM_BUDGET_EFFECT_STRONG",
+  "verdict_criteria": {
+    "meaningful_tradeoff": true,
+    "stable_latency": true,
+    "stable_mechanism_separation": true
+  }
+}

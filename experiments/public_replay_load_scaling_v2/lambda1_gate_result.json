@@ -1,0 +1,12 @@
+{
+  "n_cells_checked": 480,
+  "n_p6_cells_checked": 360,
+  "n_p6_failures": 0,
+  "n_truncated_any_policy": 0,
+  "n_non_success": 0,
+  "max_p6_anwg_abs_error": 0.0,
+  "elapsed_s": 523.0105431079865,
+  "gate_pass": true,
+  "failing_rows": [],
+  "truncated_rows": []
+}

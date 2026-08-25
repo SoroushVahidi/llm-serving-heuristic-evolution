@@ -1,0 +1,654 @@
+{
+  "candidate_count": 48,
+  "candidate_templates": [
+    "HARD_GUARD",
+    "HISTORY_STATIC_APPROX",
+    "LOW_PRESSURE_COMPLETION",
+    "PRIORITY_SAFE_RELEASE",
+    "TWO_STAGE_GUARD"
+  ],
+  "candidates": [
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.0,
+        "service_ratio_max": 0.20511482254697286,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "HARD_GUARD_01",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.20511482254697286,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "HARD_GUARD_02",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.0,
+        "service_ratio_max": 0.20511482254697286,
+        "wfs_laxity_min": 0.41892443871050333
+      },
+      "rule_id": "HARD_GUARD_03",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.20511482254697286,
+        "wfs_laxity_min": 0.41892443871050333
+      },
+      "rule_id": "HARD_GUARD_04",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "HARD_GUARD_05",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "HARD_GUARD_06",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": 0.41892443871050333
+      },
+      "rule_id": "HARD_GUARD_07",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": 0.41892443871050333
+      },
+      "rule_id": "HARD_GUARD_08",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "HARD_GUARD_09",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "HARD_GUARD_10",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": 0.41892443871050333
+      },
+      "rule_id": "HARD_GUARD_11",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "ESTF only for short-service completion states with WFS laxity and aggregate laxity safety.",
+      "params": {
+        "estf_laxity_min": 0.5748774248136744,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": 0.41892443871050333
+      },
+      "rule_id": "HARD_GUARD_12",
+      "template": "HARD_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.1,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_floor": -0.3753404554350951
+      },
+      "rule_id": "TWO_STAGE_GUARD_01",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.25,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_floor": -0.3753404554350951
+      },
+      "rule_id": "TWO_STAGE_GUARD_02",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.1,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_floor": 0.41892443871050333
+      },
+      "rule_id": "TWO_STAGE_GUARD_03",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.25,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_floor": 0.41892443871050333
+      },
+      "rule_id": "TWO_STAGE_GUARD_04",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.1,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_floor": -0.3753404554350951
+      },
+      "rule_id": "TWO_STAGE_GUARD_05",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.25,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_floor": -0.3753404554350951
+      },
+      "rule_id": "TWO_STAGE_GUARD_06",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.1,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_floor": 0.41892443871050333
+      },
+      "rule_id": "TWO_STAGE_GUARD_07",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "First protect urgent/fairness states with WFS; allow ESTF only in residual completion-sensitive states.",
+      "params": {
+        "deficit_max": 12.0,
+        "near_deadline_max": 0.25,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_floor": 0.41892443871050333
+      },
+      "rule_id": "TWO_STAGE_GUARD_08",
+      "template": "TWO_STAGE_GUARD"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "priority_gap_min": -9.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_01",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_02",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "priority_gap_min": 0.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_03",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.2636594756835494,
+        "priority_gap_min": -9.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_04",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.2636594756835494,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_05",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.2636594756835494,
+        "priority_gap_min": 0.0,
+        "service_ratio_max": 0.24604942353481268,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_06",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "priority_gap_min": -9.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_07",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_08",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "priority_gap_min": 0.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_09",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.2636594756835494,
+        "priority_gap_min": -9.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_10",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.2636594756835494,
+        "priority_gap_min": -4.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_11",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Completion release constrained by priority contrast and WFS laxity safety.",
+      "params": {
+        "estf_service_over_mean_max": 0.2636594756835494,
+        "priority_gap_min": 0.0,
+        "service_ratio_max": 0.2856592983613769,
+        "wfs_laxity_min": -0.3753404554350951
+      },
+      "rule_id": "PRIORITY_SAFE_RELEASE_12",
+      "template": "PRIORITY_SAFE_RELEASE"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.00017537841393505853,
+        "history_queue_slope_max": -0.0454545454545453,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_01",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.00017537841393505853,
+        "history_queue_slope_max": -1.7265010309389806e-16,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_02",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.0004464274422529774,
+        "history_queue_slope_max": -0.0454545454545453,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_03",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.0004464274422529774,
+        "history_queue_slope_max": -1.7265010309389806e-16,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_04",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.00017537841393505853,
+        "history_queue_slope_max": -0.0454545454545453,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.2856592983613769
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_05",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.00017537841393505853,
+        "history_queue_slope_max": -1.7265010309389806e-16,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.2856592983613769
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_06",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.0004464274422529774,
+        "history_queue_slope_max": -0.0454545454545453,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.2856592983613769
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_07",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Static approximation to hysteresis: release ESTF only under stable queue history and aged short-service request.",
+      "params": {
+        "estf_age_service_min": 0.0004464274422529774,
+        "history_queue_slope_max": -1.7265010309389806e-16,
+        "negative_laxity_max": 0.1,
+        "service_ratio_max": 0.2856592983613769
+      },
+      "rule_id": "HISTORY_STATIC_APPROX_08",
+      "template": "HISTORY_STATIC_APPROX"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 12.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 6.0,
+        "service_ratio_max": 0.20511482254697286
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_01",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 19.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 6.0,
+        "service_ratio_max": 0.20511482254697286
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_02",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 12.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 14.0,
+        "service_ratio_max": 0.20511482254697286
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_03",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 19.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 14.0,
+        "service_ratio_max": 0.20511482254697286
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_04",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 12.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 6.0,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_05",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 19.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 6.0,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_06",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 12.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 14.0,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_07",
+      "template": "LOW_PRESSURE_COMPLETION"
+    },
+    {
+      "description": "Release ESTF only under low/medium pressure when completion-sensitive service contrast is strong.",
+      "params": {
+        "deficit_max": 19.0,
+        "estf_service_over_mean_max": 0.22691889184815783,
+        "queue_pressure_max": 14.0,
+        "service_ratio_max": 0.24604942353481268
+      },
+      "rule_id": "LOW_PRESSURE_COMPLETION_08",
+      "template": "LOW_PRESSURE_COMPLETION"
+    }
+  ],
+  "experiment": "family_a_mechanism_composite_rule_static_feasibility_v1",
+  "mechanism_contract": {
+    "ESTF_role": [
+      "completion protection",
+      "service/size-sensitive behavior",
+      "valuable where WFS incurs completion-related regret"
+    ],
+    "WFS_role": [
+      "robust default after pi0 closed-loop",
+      "fairness/SLO/timeliness protection",
+      "class-deficit and high-priority protection",
+      "safe fallback when release evidence is insufficient"
+    ],
+    "forbidden_inputs": [
+      "J_ESTF_v2",
+      "J_WFS_v2",
+      "delta_J_v2",
+      "label_v2",
+      "certificate fields",
+      "branch outcomes",
+      "DEV/FINAL/TEST labels"
+    ],
+    "runtime_causal_variables": {
+      "bounded_history": [
+        "source_feat_history_queue_len_slope",
+        "source_feat_history_kv_util_slope",
+        "source_feat_history_admitted_count_slope"
+      ],
+      "class_deficit": [
+        "source_feat_max_class_deficit_ratio",
+        "source_feat_n_distinct_classes_in_queue"
+      ],
+      "laxity": [
+        "source_feat_laxity_*",
+        "source_feat_estf_laxity_own",
+        "source_feat_wfs_laxity_own",
+        "source_feat_fraction_laxity_negative",
+        "source_feat_fraction_laxity_near_deadline"
+      ],
+      "pressure_load_kv": [
+        "source_feat_queue_length",
+        "source_feat_active_count",
+        "source_feat_mean_kv_utilization",
+        "source_feat_max_kv_utilization",
+        "source_feat_free_kv_capacity"
+      ],
+      "priorities": [
+        "source_feat_wfs_priority",
+        "source_feat_estf_priority",
+        "source_feat_priority_diff_estf_minus_wfs"
+      ],
+      "queue_age": [
+        "source_feat_queue_age_*",
+        "source_feat_estf_queue_age",
+        "source_feat_wfs_queue_age"
+      ],
+      "service_size": [
+        "source_feat_estf_predicted_service_proxy",
+        "source_feat_wfs_predicted_service_proxy",
+        "source_feat_est_service_time_*",
+        "source_feat_predicted_output_tokens_*"
+      ]
+    }
+  },
+  "parameter_selection_rule": "coarse quantile/fixed guard thresholds from V2 TRAIN + D1 only; <=4 thresholds per rule; no coefficient fitting",
+  "threshold_basis": {
+    "deficit_quantiles": {
+      "q50": 4.0,
+      "q75": 12.0,
+      "q90": 19.0
+    },
+    "estf_age_service_quantiles": {
+      "q25": 0.00017537841393505853,
+      "q50": 0.0004464274422529774
+    },
+    "estf_laxity_quantiles": {
+      "q10": 0.5748774248136744,
+      "q25": 0.9070643084047769
+    },
+    "estf_service_over_mean_quantiles": {
+      "q25": 0.22691889184815783,
+      "q40": 0.2636594756835494,
+      "q50": 0.2873624556226706
+    },
+    "history_queue_slope_quantiles": {
+      "q50": -0.0454545454545453,
+      "q75": -1.7265010309389806e-16
+    },
+    "queue_pressure_quantiles": {
+      "q50": 6.0,
+      "q75": 14.0
+    },
+    "service_ratio_quantiles": {
+      "q25": 0.20511482254697286,
+      "q40": 0.24604942353481268,
+      "q50": 0.2856592983613769,
+      "q60": 0.32577192936005717
+    },
+    "source": "V2 TRAIN_COLLECTION + D1 TRAIN support only",
+    "wfs_laxity_quantiles": {
+      "q10": -0.3753404554350951,
+      "q25": 0.41892443871050333,
+      "q40": 0.6744737961878156
+    }
+  },
+  "written_before_outcome_evaluation": true
+}

@@ -1,0 +1,47 @@
+{
+  "ESTF": {
+    "vllm_implementation_or_control": "Client-side external admission controller using estimated prompt+predicted-output service ranking; no current internal vLLM scheduler hook verified locally.",
+    "fidelity": "APPROXIMATE",
+    "notes": "Faithful to this repo's ESTF policy logic as an external admission layer, not exact replacement of vLLM's internal scheduler."
+  },
+  "WFS": {
+    "vllm_implementation_or_control": "Possible client-side external admission controller using class deficit, priority, and service estimate; current real-vLLM harness does not list weighted_fair_share among WIRED_POLICIES.",
+    "fidelity": "APPROXIMATE",
+    "notes": "Would require small harness wiring and careful class/debt bookkeeping before a fair real run."
+  },
+  "LLF": {
+    "vllm_implementation_or_control": "Client-side external admission controller already listed in the real-vLLM harness as least_laxity_first.",
+    "fidelity": "APPROXIMATE",
+    "notes": "Uses observable deadlines and predicted service before admission; internal vLLM batching remains unchanged."
+  },
+  "chunked_full_prefill": {
+    "vllm_implementation_or_control": "Actual vLLM server flags: --enable-chunked-prefill versus --disable-chunked-prefill, with max_num_batched_tokens/max_num_seqs/max_model_len/block_size held fixed.",
+    "fidelity": "EXACT",
+    "notes": "This is the strongest local real-system target because it uses native vLLM controls rather than approximating via client-side ranking."
+  },
+  "KV_aware_scheduling": {
+    "vllm_implementation_or_control": "KV pressure can be measured through vLLM metrics and induced through max_model_len/gpu_memory_utilization/max_num_seqs, but a faithful KV-aware request scheduler is not exposed by the current harness.",
+    "fidelity": "APPROXIMATE",
+    "notes": "Prior local 0.5B stress reached queueing but only 2.1% KV usage; prior 7B A100 xlong reached 83.7% KV usage."
+  },
+  "queue_wait": {
+    "vllm_implementation_or_control": "vLLM Prometheus metrics vllm:num_requests_waiting plus client-side admission timestamps.",
+    "fidelity": "EXACT",
+    "notes": "Prior local stress saw waiting in 8/8 scenarios."
+  },
+  "TTFT": {
+    "vllm_implementation_or_control": "Streaming first-token timestamp from /v1/completions.",
+    "fidelity": "EXACT",
+    "notes": "Existing harness already records TTFT."
+  },
+  "SLO_goodput": {
+    "vllm_implementation_or_control": "Harness-level deadline/priority scoring over real request completion and first-token timing.",
+    "fidelity": "APPROXIMATE",
+    "notes": "SLOs are experimental workload labels, not vLLM-native SLO enforcement."
+  },
+  "KV_pressure": {
+    "vllm_implementation_or_control": "vLLM Prometheus kv_cache_usage_perc metric and preemption counters.",
+    "fidelity": "EXACT",
+    "notes": "Measurement is exact where metric is exposed; inducing high pressure locally is not yet shown feasible."
+  }
+}

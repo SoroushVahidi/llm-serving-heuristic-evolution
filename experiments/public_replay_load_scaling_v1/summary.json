@@ -1,0 +1,109 @@
+{
+  "schema_version": "public_replay_load_scaling_v1_summary.1.0.0",
+  "date": "2026-08-25",
+  "slurm_job": {
+    "array_job_id": 1195488,
+    "n_tasks": 60,
+    "all_completed": true,
+    "all_exit_0_0": true
+  },
+  "copyback": {
+    "n_files": 121,
+    "n_hash_mismatches": 0,
+    "actual_cells": 3840,
+    "expected_cells": 3840
+  },
+  "lambda1_mandatory_reproduction_check": {
+    "tolerance": 1e-06,
+    "n_p6_cells_checked": 360,
+    "n_matches": 294,
+    "n_failures": 66,
+    "max_anwg_abs_error_from_1": 0.98,
+    "max_completion_abs_error_from_1": 0.98,
+    "failing_windows": [
+      "PUBLIC_TRACE::azure_2023_code::w4::augmented",
+      "PUBLIC_TRACE::burstgpt::w0::augmented",
+      "PUBLIC_TRACE::burstgpt::w1404::augmented",
+      "PUBLIC_TRACE::burstgpt::w1755::augmented",
+      "PUBLIC_TRACE::burstgpt::w351::augmented",
+      "PUBLIC_TRACE::burstgpt::w3861::augmented",
+      "PUBLIC_TRACE::burstgpt::w4563::augmented",
+      "PUBLIC_TRACE::burstgpt::w4914::augmented",
+      "PUBLIC_TRACE::burstgpt::w5616::augmented",
+      "PUBLIC_TRACE::burstgpt::w5967::augmented",
+      "PUBLIC_TRACE::burstgpt::w6669::augmented"
+    ],
+    "n_failing_windows": 11,
+    "verdict": "MATERIAL_FAILURE"
+  },
+  "corruption_scope_full_grid": {
+    "definition": "a cell is 'incomplete' if num_completed + num_dropped < num_total (200) -- i.e. some requests never arrived/were-processed before the simulation halted, despite status=='success' and no NaN/error being recorded (the corruption is silent with respect to design check #9/#10, which only check for crashes/NaNs, not scientific completeness)",
+    "n_incomplete_cells_total": 256,
+    "frac_incomplete_cells_total": 0.06666666666666667,
+    "incomplete_cells_by_lambda": {
+      "1.0": 88,
+      "2.0": 48,
+      "4.0": 40,
+      "8.0": 32,
+      "16.0": 24,
+      "32.0": 8,
+      "64.0": 8,
+      "128.0": 8
+    },
+    "total_cells_by_lambda": {
+      "1.0": 480,
+      "2.0": 480,
+      "4.0": 480,
+      "8.0": 480,
+      "16.0": 480,
+      "32.0": 480,
+      "64.0": 480,
+      "128.0": 480
+    },
+    "n_affected_windows_any_lambda": 11,
+    "affected_windows": [
+      "PUBLIC_TRACE::azure_2023_code::w4::augmented",
+      "PUBLIC_TRACE::burstgpt::w0::augmented",
+      "PUBLIC_TRACE::burstgpt::w1404::augmented",
+      "PUBLIC_TRACE::burstgpt::w1755::augmented",
+      "PUBLIC_TRACE::burstgpt::w351::augmented",
+      "PUBLIC_TRACE::burstgpt::w3861::augmented",
+      "PUBLIC_TRACE::burstgpt::w4563::augmented",
+      "PUBLIC_TRACE::burstgpt::w4914::augmented",
+      "PUBLIC_TRACE::burstgpt::w5616::augmented",
+      "PUBLIC_TRACE::burstgpt::w5967::augmented",
+      "PUBLIC_TRACE::burstgpt::w6669::augmented"
+    ],
+    "affected_windows_by_source": {
+      "azure_2023_code": 1,
+      "burstgpt": 10
+    },
+    "windows_still_incomplete_at_lambda128_top_of_grid": [
+      "PUBLIC_TRACE::burstgpt::w0::augmented"
+    ]
+  },
+  "preregistered_verdict": "PUBLIC_LOAD_SCALING_INCONCLUSIVE",
+  "verdict_justification": "Per docs/design/PUBLIC_REPLAY_LOAD_SCALING_V1.md section 10: 'PUBLIC_LOAD_SCALING_INCONCLUSIVE -- technical failures or trace/simulator incompatibility prevent interpretation.' The mandatory lambda=1 reproduction check (section 9, item 1) fails materially: 66/360 (18.3%) of P6 lambda=1 cells deviate from the required ANWG=1.0/completion=1.0 by up to 0.98 absolute, far outside the 1e-6 tolerance. Per section E of the operating instructions for this analysis, interpretation of higher loads (sections F onward) was NOT performed.",
+  "sections_completed": [
+    "A_preflight",
+    "B_wulver_validation",
+    "C_copyback_integrity",
+    "D_frozen_design_integrity_partial",
+    "E_lambda1_reproduction"
+  ],
+  "sections_halted": [
+    "F_load_curve",
+    "G_operating_regimes",
+    "H_portfolio_headroom",
+    "I_policy_ranking_diversity",
+    "J_p6_vs_external",
+    "K_source_stratified",
+    "L_pressure_separation_relation",
+    "M_prior_public_trace_claim",
+    "N_stressed_public_comparison",
+    "O_uncertainty"
+  ],
+  "halt_reason": "Mandatory lambda=1 reproduction check materially failed (see lambda1_mandatory_reproduction_check); root cause identified (see integrity_report.json.root_cause_analysis) as a hardcoded SIM_MAX_STEPS=200_000 simulator ceiling in evaluate_cell() that is inconsistent with the authoritative public_trace_replay_v1 harness (which uses unbounded max_steps). This silently truncates 256/3840 (6.67%) of ALL cells across the full lambda grid, concentrated in 11/60 windows (10 BurstGPT, 1 Azure-code), with 1 window (burstgpt::w0, real span 34,064s) corrupted at every single preregistered lambda value including the top of the grid (128).",
+  "no_new_slurm_job_submitted": true,
+  "no_files_modified_under_frozen_design_or_remote_bundle": true
+}

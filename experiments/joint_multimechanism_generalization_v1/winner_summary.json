@@ -1,0 +1,42 @@
+{
+  "mean_by_policy": {
+    "chunked_prefill_small": 0.22557919300588047,
+    "estimated_service_time_first": 0.3039245658217757,
+    "full_prefill": 0.25581259031678527,
+    "kv_constrained_online": 0.3140716694729327,
+    "least_laxity_first": 0.29093412365405247,
+    "weighted_fair_share": 0.3068098906524835
+  },
+  "nontrivial_policy_spread_fraction": 0.9166666666666666,
+  "policy_range_summary": {
+    "max": 0.5023391319782731,
+    "mean": 0.111657590511989,
+    "median": 0.090686766052382,
+    "p90": 0.26975674481480394
+  },
+  "unique_winner_counts_epsilon": {
+    "chunked_prefill_small": 2,
+    "estimated_service_time_first": 28,
+    "full_prefill": 3,
+    "kv_constrained_online": 40,
+    "least_laxity_first": 45,
+    "weighted_fair_share": 25
+  },
+  "unique_winner_fraction": 0.5958333333333333,
+  "winner_counts": {
+    "chunked_prefill_small": 5,
+    "estimated_service_time_first": 45,
+    "full_prefill": 46,
+    "kv_constrained_online": 50,
+    "least_laxity_first": 59,
+    "weighted_fair_share": 35
+  },
+  "winner_fractions": {
+    "chunked_prefill_small": 0.020833333333333332,
+    "estimated_service_time_first": 0.1875,
+    "full_prefill": 0.19166666666666668,
+    "kv_constrained_online": 0.20833333333333334,
+    "least_laxity_first": 0.24583333333333332,
+    "weighted_fair_share": 0.14583333333333334
+  }
+}

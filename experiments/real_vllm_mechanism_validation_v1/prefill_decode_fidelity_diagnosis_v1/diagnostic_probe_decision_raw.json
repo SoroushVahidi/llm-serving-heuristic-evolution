@@ -1,0 +1,9 @@
+{
+  "chunked_partial_prefill_chunks": 21,
+  "chunked_steps_with_prefill_and_decode": 16,
+  "diagnosis": "pending_analysis",
+  "full_partial_prefill_chunks": 0,
+  "full_steps_with_prefill_and_decode": 6,
+  "overlap_probe_success": true,
+  "prefill_3200_ttft_to_decode_itl_ratio": 12.990163383069756
+}

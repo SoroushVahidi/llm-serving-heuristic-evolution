@@ -1,0 +1,75 @@
+{
+  "canonical_baseline": "V2 TRAIN_COLLECTION + D1 TRAIN-only rows, because prior support analyses and thresholds were defined versus V2+D1 current support",
+  "classification_rule": {
+    "WULVER_DEV_SUPPORT_GATE_GO": "all eight gate metrics pass",
+    "WULVER_DEV_SUPPORT_NO_GO": "target-free expansion does not materially move DEV support",
+    "WULVER_DEV_SUPPORT_PARTIAL_SIGNAL": "meaningful movement but at least one formal threshold fails",
+    "WULVER_DEV_SUPPORT_SOFTWARE_FAILURE": "artifact, schema, checksum, or monotonic-distance invariant failure prevents valid evaluation"
+  },
+  "created_utc": "2026-08-24T00:00:00Z",
+  "dev_set_expected": {
+    "configuration_groups": 4,
+    "excluded": [
+      "FINAL_VAL",
+      "TEST"
+    ],
+    "favored_long_rows": 66,
+    "rows": 104,
+    "split_name": "DEV_VAL"
+  },
+  "distance_definition": "Euclidean distance in baseline-standardized feature space; nearest neighbor distance is min distance to support set",
+  "expanded_support": "canonical baseline plus deterministically deduplicated unique Wulver candidate states by oracle_state_fingerprint_v2",
+  "feature_schema": {
+    "FEATURE_V1": "scripts.family_a_joint_feature_scenario_pilot_v1.feature_columns_v1() 63 causal source_feat columns",
+    "FEATURE_V2_NORMALIZED": "historical compute_v2_normalized_from_v1 support_metric_columns",
+    "TASK_RELEVANT_SUBSPACE": "frozen task-relevant subset from config-state surrogate, intersected with available columns"
+  },
+  "group_improvement_definition": "strictly lower group mean NN distance after expansion by >1e-12 and at least one row in the group strictly closer; frozen here because no prior numeric definition was found",
+  "local_5nn_density_definition": "historical proxy: mean distance to the k=min(5,n_support) nearest support rows; improvement is percent reduction in mean local_5nn distance",
+  "predeclared_dev_groups_from_feature_gap_design": [
+    "util1.1000.skew5.0000.favlong.noise0.30.n120.maxseq1",
+    "util1.1000.skew5.0000.favshort.noise0.00.n120.maxseq1",
+    "util1.3000.skew10.0000.favshort.noise0.00.n120.maxseq1",
+    "util1.3000.skew10.0000.favshort.noise0.30.n120.maxseq1"
+  ],
+  "primary_formal_view": "FEATURE_V1",
+  "prohibitions": [
+    "no DEV-driven redesign",
+    "no new configurations",
+    "no oracle labels",
+    "no retraining",
+    "no threshold tuning",
+    "no FINAL",
+    "no TEST",
+    "no D2",
+    "no new simulations",
+    "no Wulver jobs",
+    "no GPUs",
+    "no git mutation"
+  ],
+  "purpose": "one frozen DEV support evaluation of target-free Wulver sweep; DEV is a fixed evaluation target only",
+  "scaler_reference_population": "baseline support only; per-feature mean/std from baseline support, std<1e-12 replaced with 1.0; missing/non-numeric filled as 0.0, matching historical standardized_nn_metrics",
+  "secondary_diagnostic_views": [
+    "FEATURE_V2_NORMALIZED",
+    "TASK_RELEVANT_SUBSPACE"
+  ],
+  "status": "FROZEN_BEFORE_DEV_COMPUTATION",
+  "thresholds": {
+    "dev_configuration_groups_improved": 2,
+    "dev_nn_mean_improvement_pct": 5.0,
+    "dev_nn_p90_improvement_pct": 5.0,
+    "dev_rows_closer": 15,
+    "favored_long_nn_mean_improvement_pct": 7.0,
+    "favored_long_rows_closer": 8,
+    "local_5nn_density_improvement_pct": 3.0,
+    "top5_overlap_features_improved": 3
+  },
+  "top_gap_features": [
+    "source_feat_wfs_priority",
+    "source_feat_estf_queue_age",
+    "source_feat_laxity_p90",
+    "source_feat_estf_predicted_output_tokens",
+    "source_feat_history_queue_len_slope"
+  ],
+  "top_gap_overlap_definition": "p10-p90 interval width overlap with DEV interval divided by DEV p10-p90 width; feature improves if expanded overlap > baseline overlap + 1e-12"
+}

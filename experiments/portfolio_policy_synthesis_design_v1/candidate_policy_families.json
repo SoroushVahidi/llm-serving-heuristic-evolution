@@ -1,0 +1,176 @@
+{
+  "abandoned_internal_history": [
+    {
+      "classification": "REJECTED_SCIENTIFICALLY",
+      "idea": "Family-A ESTF/WFS statewise selector / DAgger / support expansion",
+      "reason": "Selector hypothesis falsified; Wulver DEV support gate NO_GO; oracle acquisition not allowed."
+    },
+    {
+      "classification": "REJECTED_SCIENTIFICALLY",
+      "idea": "Guarded ESTF/WFS composite rule",
+      "reason": "MECHANISM_COMPOSITE_STATIC_NO_GO; best rule improved WFS 3.11% only and failed mechanism quadrant ordering."
+    },
+    {
+      "classification": "REJECTED_SCIENTIFICALLY",
+      "idea": "Coefficient-free analytic/scalar index",
+      "reason": "ANALYTIC_INDEX_NO_GO; forms collapsed or inverted quadrant semantics."
+    },
+    {
+      "classification": "REJECTED_SCIENTIFICALLY_FOR_THAT_PAIR",
+      "idea": "PrefillControl children from full/chunked anchors",
+      "reason": "Held-out/OOD envelope gain 0.0; selection sufficient for that pair, but native prefill/decode mechanism remains useful evidence."
+    },
+    {
+      "classification": "SUPERSEDED_OR_BOUNDARY_RISK",
+      "idea": "KV reserve/LLF switching or hysteresis child",
+      "reason": "KV composition safety refinement failed to establish safe envelope expansion; native KV/debt policy can still be distinct if not parent switching."
+    },
+    {
+      "classification": "REJECTED_SCIENTIFICALLY",
+      "idea": "Family-A stateful controller as ESTF/WFS mode selector",
+      "reason": "STATEFUL_CONTROLLER_NO_GO; it was a selector over parents, not native debt scheduling."
+    },
+    {
+      "classification": "PROMISING_DISTINCT",
+      "idea": "Dynamic chunk-size control",
+      "reason": "Prior chunk children did not add envelope as two-parent children, but slow-timescale chunk budget coordinated with debt/KV is not yet tested as a native portfolio policy."
+    },
+    {
+      "classification": "PROMISING_DISTINCT",
+      "idea": "Service/SLO/KV debt scheduler",
+      "reason": "WFS uses instantaneous deficit; no native accumulated multi-debt scheduler has been evaluated across the six-policy envelope."
+    },
+    {
+      "classification": "PROMISING_DISTINCT",
+      "idea": "Two-timescale controller with slow budgets and fast request ranking",
+      "reason": "Decision-criticality and public/controlled contrasts suggest memoryless per-decision policies are narrow; no native two-timescale portfolio policy has been screened."
+    }
+  ],
+  "candidate_policy_families": [
+    {
+      "expected_advantage": "Targets fairness/SLO, completion pressure, queue-age starvation, KV load, and mixed transitions in one native rule without selecting parents.",
+      "expected_failure_mode": "May behave like WFS if debt update is too instantaneous, or over-serve debt-heavy classes and lose completion efficiency.",
+      "mechanism": "Maintain explicit per-class and system debts for service share, waiting age, SLO risk, completion backlog, and KV occupancy; schedule the request with highest normalized debt reduction per predicted service under feasibility guards.",
+      "name": "PORTFOLIO_SYNTHESIS_DEBT_SCHEDULER",
+      "portfolio_hole_targeted": [
+        "fairness_slo_pressure",
+        "completion_pressure",
+        "queue_age_starvation",
+        "mixed_regime_transitions",
+        "kv_pressure"
+      ],
+      "priority_decision_rule": "score(req)=debt_pressure(class,system,req)/predicted_service(req) + completion_release_bonus(req) - kv_pressure_penalty(req), with hard feasibility and starvation guards; debts update once per simulator step.",
+      "state_inputs": [
+        "class_id",
+        "priority",
+        "arrival_time",
+        "slo_deadline",
+        "prompt_tokens",
+        "predicted_output_tokens",
+        "active_request_ids/info",
+        "current_kv_tokens/max_kv_tokens",
+        "bounded rolling admitted/completed service by class",
+        "bounded SLO miss/near-miss debt"
+      ],
+      "why_not_redundant": "Uses accumulated cross-step debt and direct request ranking, not WFS instantaneous demand/served deficit and not ESTF/WFS parent choice."
+    },
+    {
+      "expected_advantage": "Directly addresses endogenous closed-loop shift and regime persistence.",
+      "expected_failure_mode": "Budget lag can miss short bursts; too many controls may duplicate previous composition complexity.",
+      "mechanism": "Slow controller sets service quota, chunk budget, KV reserve, and urgent budget from regime state; fast scheduler ranks requests within those budgets.",
+      "name": "PORTFOLIO_SYNTHESIS_TWO_TIMESCALE_CONTROLLER",
+      "portfolio_hole_targeted": [
+        "mixed_regime_transitions",
+        "prefill_decode_contention",
+        "kv_pressure",
+        "burstiness"
+      ],
+      "priority_decision_rule": "Every M steps update budgets; every step admit/rank by urgency and completion efficiency constrained by slow budgets.",
+      "state_inputs": [
+        "rolling arrival/service rates",
+        "queue composition",
+        "KV utilization trend",
+        "prefill/decode active counts",
+        "class debt",
+        "laxity distribution"
+      ],
+      "why_not_redundant": "Controls chunk/reserve/quota state rather than choosing among fixed policies or blending scores."
+    },
+    {
+      "expected_advantage": "Encodes mechanism evidence without scalar blend and may preserve interpretability.",
+      "expected_failure_mode": "Hard buckets can be brittle at boundaries and may reproduce LLF/WFS behavior in many states.",
+      "mechanism": "Hard priority order: deadline-infeasible/near-deadline requests, then debt/starvation guard, then completion-efficient release, then KV-safe placement.",
+      "name": "PORTFOLIO_SYNTHESIS_LEXICOGRAPHIC_NATIVE_POLICY",
+      "portfolio_hole_targeted": [
+        "completion_pressure",
+        "fairness_slo_pressure",
+        "queue_age_starvation"
+      ],
+      "priority_decision_rule": "Partition requests into protected buckets, then sort lexicographically within the first nonempty bucket.",
+      "state_inputs": [
+        "laxity",
+        "age",
+        "predicted service",
+        "class debt",
+        "KV utilization",
+        "queue pressure"
+      ],
+      "why_not_redundant": "Action space is requests directly; however it is closer to existing LLF/WFS than the debt scheduler."
+    },
+    {
+      "expected_advantage": "Targets KV reserve over-conservatism and completion release simultaneously.",
+      "expected_failure_mode": "Could duplicate kv_constrained_online except for small completion pockets; may ignore fairness debt.",
+      "mechanism": "KV reserve plus completion packing: reserve memory for urgent/near-deadline work while prioritizing near-complete or small-KV jobs that release capacity soon.",
+      "name": "PORTFOLIO_SYNTHESIS_KV_COMPLETION_POLICY",
+      "portfolio_hole_targeted": [
+        "kv_pressure",
+        "completion_pressure"
+      ],
+      "priority_decision_rule": "Under high KV pressure, admit requests maximizing expected KV release/completion per token while preserving urgent reserve.",
+      "state_inputs": [
+        "KV utilization",
+        "prompt+predicted output footprint",
+        "laxity",
+        "predicted remaining service",
+        "queue length",
+        "active load"
+      ],
+      "why_not_redundant": "Adds completion-release objective to KV reserve, but narrower than debt scheduler."
+    },
+    {
+      "expected_advantage": "Targets public/controlled gap and prefill/decode transient contention.",
+      "expected_failure_mode": "May add no ANWG if capacity remains saturated/degenerate or reproduce chunked_prefill_small.",
+      "mechanism": "Stateful burst detector modulates prefill chunk/admission budget and class service credits during arrivals.",
+      "name": "PORTFOLIO_SYNTHESIS_BURST_AWARE_PREFILL_SHAPER",
+      "portfolio_hole_targeted": [
+        "burstiness",
+        "prefill_decode_contention",
+        "mixed_regime_transitions"
+      ],
+      "priority_decision_rule": "When burst debt rises, shrink prompt chunks and protect late/urgent classes; relax after debt decays.",
+      "state_inputs": [
+        "arrival-rate slope",
+        "queue growth",
+        "prefill/decode active counts",
+        "TTFT/laxity risk",
+        "class mix"
+      ],
+      "why_not_redundant": "Stateful burst response rather than static small/full chunking."
+    }
+  ],
+  "mechanistic_novelty_filter": {
+    "kept_because": "All retained families rank/admit requests natively and introduce either accumulated debt, slow-timescale budgets, or direct KV/prefill control.",
+    "rejected_forms": [
+      "WFS with another threshold",
+      "ESTF with another threshold",
+      "LLF with size correction",
+      "static scalar blend",
+      "favored-size regime rule",
+      "selector over six policies",
+      "ESTF/WFS guarded release"
+    ]
+  },
+  "native_lexicographic_assessment": "Viable backup family: more faithful than guarded ESTF/WFS because it chooses requests directly, but higher risk of collapsing to LLF/WFS bucket logic.",
+  "stateful_debt_credit_assessment": "Most promising next direction. WFS already has instantaneous deficit, but accumulated service/age/SLO/KV debt is distinct and can address long-run fairness/completion tradeoffs that static selectors missed.",
+  "two_timescale_assessment": "Scientifically promising: decision-criticality and closed-loop failures suggest memoryless per-decision selection is too narrow. However, starting with a debt scheduler is cleaner because it can be implemented as one native policy while still leaving room for bounded debt updates."
+}

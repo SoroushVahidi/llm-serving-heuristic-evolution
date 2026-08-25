@@ -1,0 +1,39 @@
+{
+  "alive_nonzero_n": 0,
+  "alive_nonzero_prevalence": 0.0,
+  "continuation_verdict": "CONTINUATION_SENSITIVE",
+  "design_sha256": "57c49520da34fac1235abb26845bf5c39cac95de672dfd582b1af30fa167dc97",
+  "disagreement_proxy_sbs": {
+    "auprc": 0.4,
+    "auroc": 0.8125,
+    "noskill_prevalence": 0.2,
+    "score": "binary acquisition_type==DISAGREEMENT"
+  },
+  "finished_utc": "2026-08-25T21:19:12.303678+00:00",
+  "jaccard_top1pct": 0.0,
+  "jaccard_top5pct": 0.0,
+  "n_missing_keys": 0,
+  "n_rows": 20,
+  "n_scenarios": 2,
+  "overlap": {
+    "both_nonzero": 0,
+    "both_zero": 16,
+    "nonzero_label_agreement": 0.8,
+    "only_alive_nonzero": 0,
+    "only_sbs_nonzero": 4,
+    "sign_agreement_among_dual_nonzero": NaN
+  },
+  "sbs_mean_abs_delta": 0.002510675723251482,
+  "sbs_nonzero_n": 4,
+  "sbs_nonzero_prevalence": {
+    "ci95_high": 0.26666666666666666,
+    "ci95_low": 0.0,
+    "mean": 0.2
+  },
+  "sbs_top10pct_mass": 0.6535924178318279,
+  "sbs_top1pct_mass": 0.34640758216817213,
+  "sbs_top5pct_mass": 0.34640758216817213,
+  "schema_version": "joint240_terminal_criticality_sbs_continuation_v1.0.0",
+  "spearman_abs_alive_vs_sbs": NaN,
+  "wall_s": 55.0660318590235
+}

@@ -1,0 +1,347 @@
+{
+  "closed_loop_descriptive_prior_aggregate": {
+    "best_fixed_policy": "WFS",
+    "policy_metrics": {
+      "ESTF": {
+        "mean_anwg": 0.8493916477272727,
+        "mean_priority_weighted_slo_safe_utility": 0.8493916477272727,
+        "mean_regret_to_estf_wfs_envelope": 0.01696510227272727,
+        "wins_ties_losses_vs_ESTF": {
+          "losses": 0,
+          "ties": 88,
+          "wins": 0
+        },
+        "wins_ties_losses_vs_WFS": {
+          "losses": 24,
+          "ties": 44,
+          "wins": 20
+        },
+        "wins_ties_losses_vs_best_fixed": {
+          "losses": 24,
+          "ties": 44,
+          "wins": 20
+        }
+      },
+      "WFS": {
+        "mean_anwg": 0.8597480454545454,
+        "mean_priority_weighted_slo_safe_utility": 0.8597480454545454,
+        "mean_regret_to_estf_wfs_envelope": 0.0066087045454545435,
+        "wins_ties_losses_vs_ESTF": {
+          "losses": 20,
+          "ties": 44,
+          "wins": 24
+        },
+        "wins_ties_losses_vs_WFS": {
+          "losses": 0,
+          "ties": 88,
+          "wins": 0
+        },
+        "wins_ties_losses_vs_best_fixed": {
+          "losses": 0,
+          "ties": 88,
+          "wins": 0
+        }
+      },
+      "pi0_abstention_wfs_fallback": {
+        "mean_anwg": 0.8546143068181817,
+        "mean_priority_weighted_slo_safe_utility": 0.8546143068181817,
+        "mean_regret_to_estf_wfs_envelope": 0.011742443181818179,
+        "wins_ties_losses_vs_ESTF": {
+          "losses": 1,
+          "ties": 68,
+          "wins": 19
+        },
+        "wins_ties_losses_vs_WFS": {
+          "losses": 18,
+          "ties": 46,
+          "wins": 24
+        },
+        "wins_ties_losses_vs_best_fixed": {
+          "losses": 18,
+          "ties": 46,
+          "wins": 24
+        }
+      },
+      "pi0_selector": {
+        "mean_anwg": 0.8546143068181817,
+        "mean_priority_weighted_slo_safe_utility": 0.8546143068181817,
+        "mean_regret_to_estf_wfs_envelope": 0.011742443181818179,
+        "wins_ties_losses_vs_ESTF": {
+          "losses": 1,
+          "ties": 68,
+          "wins": 19
+        },
+        "wins_ties_losses_vs_WFS": {
+          "losses": 18,
+          "ties": 46,
+          "wins": 24
+        },
+        "wins_ties_losses_vs_best_fixed": {
+          "losses": 18,
+          "ties": 46,
+          "wins": 24
+        }
+      }
+    },
+    "scientific_classification": "PI0_CLOSED_LOOP_MIXED_SIGNAL",
+    "source": "experiments/family_a_pi0_closed_loop_final_v1/summary.json aggregate only; no new FINAL evaluation",
+    "worst_group": {
+      "ESTF_mean_anwg": 0.4911615909090909,
+      "WFS_mean_anwg": 0.557702,
+      "configuration_group_id": "util1.3000.skew5.0000.favlong.noise0.00.n120.maxseq1",
+      "n_scenarios": 22,
+      "pi0_abstaining_mean_anwg": 0.5113635454545454,
+      "pi0_abstaining_regret_to_envelope": 0.04633845454545453,
+      "pi0_mean_anwg": 0.5113635454545454
+    }
+  },
+  "oracle_train_d1_assessment": {
+    "classification": "PARENTS_HAVE_REAL_COMPLEMENTARITY",
+    "headroom": {
+      "abs_delta_distribution": {
+        "max": 146.0,
+        "mean": 27.809619238476955,
+        "median": 19.0,
+        "n": 998,
+        "p90": 69.0,
+        "p95": 91.14999999999998
+      },
+      "always_ESTF_mean_regret_to_pair_envelope": 24.551102204408817,
+      "always_WFS_mean_regret_to_pair_envelope": 3.258517034068136,
+      "by_configuration_group": {
+        "util1.1000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "always_ESTF_regret": 49.776315789473685,
+          "always_WFS_regret": 0.013157894736842105,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.013157894736821163,
+          "label_counts": {
+            "ESTF": 1,
+            "EXACT_TIE": 7,
+            "WFS": 68
+          },
+          "mean_J_ESTF": 272.4736842105263,
+          "mean_J_WFS": 322.2368421052632,
+          "n": 76
+        },
+        "util1.1000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 50.75308641975309,
+          "always_WFS_regret": 0.012345679012345678,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.012345679012355504,
+          "label_counts": {
+            "ESTF": 1,
+            "EXACT_TIE": 5,
+            "WFS": 75
+          },
+          "mean_J_ESTF": 270.87654320987656,
+          "mean_J_WFS": 321.61728395061726,
+          "n": 81
+        },
+        "util1.1000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "always_ESTF_regret": 15.345794392523365,
+          "always_WFS_regret": 0.6448598130841121,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.6448598130841106,
+          "label_counts": {
+            "ESTF": 7,
+            "EXACT_TIE": 12,
+            "WFS": 88
+          },
+          "mean_J_ESTF": 145.02803738317758,
+          "mean_J_WFS": 159.7289719626168,
+          "n": 107
+        },
+        "util1.3000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 19.794117647058822,
+          "always_WFS_regret": 0.00980392156862745,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.009803921568646956,
+          "label_counts": {
+            "ESTF": 1,
+            "EXACT_TIE": 8,
+            "WFS": 93
+          },
+          "mean_J_ESTF": 135.38235294117646,
+          "mean_J_WFS": 155.16666666666666,
+          "n": 102
+        },
+        "util1.3000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 0.0,
+          "always_WFS_regret": 8.672413793103448,
+          "best_mean_parent": "ESTF",
+          "envelope_advantage_over_best_parent_mean": 0.0,
+          "label_counts": {
+            "ESTF": 50,
+            "EXACT_TIE": 8
+          },
+          "mean_J_ESTF": 122.55172413793103,
+          "mean_J_WFS": 113.87931034482759,
+          "n": 58
+        },
+        "util1.5000.skew10.0000.favlong.noise0.00.n120.maxseq1": {
+          "always_ESTF_regret": 52.949367088607595,
+          "always_WFS_regret": 0.06329113924050633,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.06329113924050489,
+          "label_counts": {
+            "ESTF": 2,
+            "EXACT_TIE": 5,
+            "WFS": 72
+          },
+          "mean_J_ESTF": 204.34177215189874,
+          "mean_J_WFS": 257.2278481012658,
+          "n": 79
+        },
+        "util1.5000.skew10.0000.favlong.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 62.57692307692308,
+          "always_WFS_regret": 0.10256410256410256,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.10256410256408799,
+          "label_counts": {
+            "ESTF": 2,
+            "EXACT_TIE": 5,
+            "WFS": 71
+          },
+          "mean_J_ESTF": 201.89743589743588,
+          "mean_J_WFS": 264.37179487179486,
+          "n": 78
+        },
+        "util1.5000.skew10.0000.favshort.noise0.00.n120.maxseq1": {
+          "always_ESTF_regret": 0.0,
+          "always_WFS_regret": 7.8125,
+          "best_mean_parent": "ESTF",
+          "envelope_advantage_over_best_parent_mean": 0.0,
+          "label_counts": {
+            "ESTF": 24,
+            "EXACT_TIE": 8
+          },
+          "mean_J_ESTF": 155.09375,
+          "mean_J_WFS": 147.28125,
+          "n": 32
+        },
+        "util1.5000.skew10.0000.favshort.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 0.0,
+          "always_WFS_regret": 12.407407407407407,
+          "best_mean_parent": "ESTF",
+          "envelope_advantage_over_best_parent_mean": 0.0,
+          "label_counts": {
+            "ESTF": 20,
+            "EXACT_TIE": 7
+          },
+          "mean_J_ESTF": 181.03703703703704,
+          "mean_J_WFS": 168.62962962962962,
+          "n": 27
+        },
+        "util1.5000.skew5.0000.favlong.noise0.00.n120.maxseq1": {
+          "always_ESTF_regret": 21.61,
+          "always_WFS_regret": 0.22,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.21999999999999886,
+          "label_counts": {
+            "ESTF": 10,
+            "EXACT_TIE": 2,
+            "WFS": 88
+          },
+          "mean_J_ESTF": 129.1,
+          "mean_J_WFS": 150.49,
+          "n": 100
+        },
+        "util1.5000.skew5.0000.favlong.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 17.04950495049505,
+          "always_WFS_regret": 0.46534653465346537,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.4653465346534631,
+          "label_counts": {
+            "ESTF": 12,
+            "EXACT_TIE": 7,
+            "WFS": 82
+          },
+          "mean_J_ESTF": 127.25742574257426,
+          "mean_J_WFS": 143.84158415841586,
+          "n": 101
+        },
+        "util1.5000.skew5.0000.favshort.noise0.00.n120.maxseq1": {
+          "always_ESTF_regret": 0.0,
+          "always_WFS_regret": 13.025974025974026,
+          "best_mean_parent": "ESTF",
+          "envelope_advantage_over_best_parent_mean": 0.0,
+          "label_counts": {
+            "ESTF": 73,
+            "EXACT_TIE": 4
+          },
+          "mean_J_ESTF": 146.27272727272728,
+          "mean_J_WFS": 133.24675324675326,
+          "n": 77
+        },
+        "util1.5000.skew5.0000.favshort.noise0.30.n120.maxseq1": {
+          "always_ESTF_regret": 0.0,
+          "always_WFS_regret": 12.5875,
+          "best_mean_parent": "ESTF",
+          "envelope_advantage_over_best_parent_mean": 0.0,
+          "label_counts": {
+            "ESTF": 79,
+            "EXACT_TIE": 1
+          },
+          "mean_J_ESTF": 145.3875,
+          "mean_J_WFS": 132.8,
+          "n": 80
+        }
+      },
+      "by_favored_size": {
+        "long": {
+          "always_ESTF_regret": 33.84254143646409,
+          "always_WFS_regret": 0.212707182320442,
+          "best_mean_parent": "WFS",
+          "envelope_advantage_over_best_parent_mean": 0.21270718232042896,
+          "label_counts": {
+            "ESTF": 36,
+            "EXACT_TIE": 51,
+            "WFS": 637
+          },
+          "mean_J_ESTF": 179.04696132596686,
+          "mean_J_WFS": 212.6767955801105,
+          "n": 724
+        },
+        "short": {
+          "always_ESTF_regret": 0.0,
+          "always_WFS_regret": 11.306569343065693,
+          "best_mean_parent": "ESTF",
+          "envelope_advantage_over_best_parent_mean": 0.0,
+          "label_counts": {
+            "ESTF": 246,
+            "EXACT_TIE": 28
+          },
+          "mean_J_ESTF": 145.44890510948906,
+          "mean_J_WFS": 134.14233576642334,
+          "n": 274
+        }
+      },
+      "fraction_rows_oracle_choice_matters": {
+        "abs_delta_ge_1": 0.9208416833667334,
+        "abs_delta_ge_10": 0.7374749498997996,
+        "abs_delta_ge_25": 0.41783567134268534,
+        "abs_delta_ge_5": 0.8637274549098196,
+        "abs_delta_gt_0": 0.9208416833667334
+      },
+      "label_counts": {
+        "ESTF": 282,
+        "EXACT_TIE": 79,
+        "WFS": 637
+      },
+      "mean_J_ESTF": 169.82264529058116,
+      "mean_J_WFS": 191.11523046092185,
+      "parent_envelope_advantage_over_ESTF_mean": 24.551102204408817,
+      "parent_envelope_advantage_over_WFS_mean": 3.258517034068136,
+      "parent_envelope_mean_utility": 194.37374749498997,
+      "regret_mass_top_10pct": 0.5839483394833949,
+      "regret_mass_top_1pct": 0.08856088560885608,
+      "regret_mass_top_20pct": 0.8951414514145142,
+      "regret_mass_top_5pct": 0.3490159901599016,
+      "robust_single_parent_by_oracle_rows": "WFS",
+      "rows": 998,
+      "scope": "V2 TRAIN_COLLECTION + D1 support rows; no V2 DEV/FINAL/TEST rows"
+    },
+    "why": "TRAIN/D1 oracle labels contain both ESTF and WFS winners with strong favored-side stratification; pair envelope has nonzero advantage over either fixed parent."
+  },
+  "practical_read": "WFS is the robust closed-loop default among the two parents, but oracle evidence still shows real ESTF/WFS complementarity; statewise learned selection failed to exploit it robustly."
+}

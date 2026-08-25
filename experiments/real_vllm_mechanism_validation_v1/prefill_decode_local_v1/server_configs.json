@@ -1,0 +1,46 @@
+{
+  "CHUNKED": {
+    "block_size": 16,
+    "chunked_prefill": true,
+    "enable_prefix_caching": false,
+    "enforce_eager": true,
+    "environment": {
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "VLLM_USE_FLASHINFER_SAMPLER": "0"
+    },
+    "extra_flags": [
+      "--enable-chunked-prefill"
+    ],
+    "gpu_memory_utilization": 0.35,
+    "host": "127.0.0.1",
+    "max_model_len": 4096,
+    "max_num_batched_tokens": 512,
+    "max_num_seqs": 4,
+    "model_path": "/home/soroush/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "port": 8062,
+    "served_model_name": "qwen05b-local"
+  },
+  "FULL": {
+    "block_size": 16,
+    "chunked_prefill": false,
+    "enable_prefix_caching": false,
+    "enforce_eager": true,
+    "environment": {
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "VLLM_USE_FLASHINFER_SAMPLER": "0"
+    },
+    "extra_flags": [
+      "--no-enable-chunked-prefill"
+    ],
+    "gpu_memory_utilization": 0.35,
+    "host": "127.0.0.1",
+    "max_model_len": 4096,
+    "max_num_batched_tokens": 4096,
+    "max_num_seqs": 4,
+    "model_path": "/home/soroush/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "port": 8061,
+    "served_model_name": "qwen05b-local"
+  }
+}

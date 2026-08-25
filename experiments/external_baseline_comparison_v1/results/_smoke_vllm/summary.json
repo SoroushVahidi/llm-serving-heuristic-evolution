@@ -1,0 +1,11 @@
+{
+  "baseline": "vllm_style_continuous_batching",
+  "cells_path": "experiments/external_baseline_comparison_v1/results/_smoke_vllm/cells.jsonl",
+  "elapsed_s": 0.6612005233764648,
+  "finished_utc": "2026-08-24T23:48:23.115314+00:00",
+  "manifest_sha256": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+  "n_failed": 0,
+  "n_scenarios": 3,
+  "n_success": 3,
+  "started_utc": "2026-08-24T23:48:22.453949+00:00"
+}

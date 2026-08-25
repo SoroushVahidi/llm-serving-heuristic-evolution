@@ -1,0 +1,211 @@
+{
+  "analytic_index_audit": {
+    "direct_synthesis_viability": "Direct synthesis remains viable only if it is not a single coefficient-free static index: it must encode explicit risk guards, causal history/regime state, and a WFS-safe default with ESTF release conditions.",
+    "forms_tried": [
+      "priority/service",
+      "priority/laxity",
+      "priority/(laxity*service) style",
+      "age-adjusted priority/service",
+      "priority*service/laxity inspired"
+    ],
+    "prior_classification": "ANALYTIC_INDEX_NO_GO",
+    "why_failed": [
+      "three of five collapsed to priority/regime identity",
+      "non-collapsed candidates got favlong completion-vs-SLO quadrant semantics backwards",
+      "only prior constrained learned rule got quadrant ordering right and it was not training-free"
+    ]
+  },
+  "chosen_pivot": "PIVOT_TO_PORTFOLIO_POLICY_SYNTHESIS",
+  "configuration_level_policy_selection": {
+    "assessment": "DIAGNOSTICALLY_INTERESTING_BUT_NOT_MAIN_PIVOT",
+    "evidence_against": [
+      "Still selects ESTF/WFS rather than creating a new scheduler",
+      "Held-out configuration compositionality is the deepest failure mode",
+      "Would invite DEV/config-targeted redesign after a NO-GO"
+    ],
+    "evidence_for": [
+      "Many configurations/scenarios are parent-dominant",
+      "Configuration-level best-parent upper bound captures a measurable share of pair-envelope gain in TRAIN/D1 rows"
+    ]
+  },
+  "failure_modes_ranked": [
+    {
+      "contradicting_evidence": [
+        "Surrogate rank metrics show configuration parameters encode some state-response structure",
+        "Wulver found 156 novel TRAIN-side domains"
+      ],
+      "falsifiable_implication": "A non-DEV held-out group with matched configuration axes should remain poorly covered by target-free novelty unless the acquisition explicitly captures its compositional interaction.",
+      "mode": "CONFIGURATION_COMPOSITIONAL_GENERALIZATION_FAILURE",
+      "rank": 1,
+      "supporting_evidence": [
+        "Held-out DEV support did not move despite broad target-free TRAIN expansion",
+        "Configuration->state response had strong structure but target-free novelty was not DEV-relevant",
+        "Only 1/4 DEV groups improved and only one DEV row switched nearest source to Wulver"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Offline decision replay on held-out rows can be strong when evaluated statically",
+        "Closed-loop WFS default is stable, so not every policy suffers equally"
+      ],
+      "falsifiable_implication": "A selector that looks good on static rows will generate a shifted trajectory distribution where its own high-confidence states have weak support or low utility contribution.",
+      "mode": "ENDOGENOUS_CLOSED_LOOP_SHIFT",
+      "rank": 2,
+      "supporting_evidence": [
+        "pi0 offline DEV signal did not translate to robust closed-loop utility",
+        "D1 candidates came from pi0/native trajectories yet offline gates failed",
+        "Selector choices alter future reachable state distribution"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Oracle rows show real parent complementarity and nonzero pair-envelope headroom",
+        "Mechanism evidence is interpretable rather than noise"
+      ],
+      "falsifiable_implication": "Even with improved labels/support, a memoryless ESTF/WFS switcher will add little or negative portfolio value relative to a robust parent or a direct composite scheduler.",
+      "mode": "POLICY_SELECTION_FORMULATION_ITSELF_IS_WRONG",
+      "rank": 3,
+      "supporting_evidence": [
+        "The practical closed-loop winner among parents is WFS while statewise selector underperforms WFS",
+        "Support expansion did not repair transfer",
+        "Analytic index and stateful controller attempts failed to convert event-level signal into robust policy value"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Offline pi0 achieved real DEV signal; labels are not random under the feature set",
+        "Some favored/config groups are nearly one-parent dominated"
+      ],
+      "falsifiable_implication": "Adding causal context/history should reduce local label entropy only partially; exact or near-exact observable states will still sometimes imply opposite oracle parents.",
+      "mode": "NON_STATIONARY_OR_STATE_ALIASED_DECISION_PROBLEM",
+      "rank": 4,
+      "supporting_evidence": [
+        "kNN label neighborhoods show nontrivial contradictory-neighbor fractions in observable state space",
+        "Configuration context reduces but does not eliminate contradiction",
+        "Labels depend on future branch dynamics compressed into limited features"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Feature contracts are causal and offline pi0 performed well on DEV",
+        "Adding normalized/config views did not rescue Wulver support"
+      ],
+      "falsifiable_implication": "Adding causal workload/history descriptors should reduce aliasing and improve static support, but not necessarily solve closed-loop value.",
+      "mode": "WRONG_FEATURES",
+      "rank": 5,
+      "supporting_evidence": [
+        "Task-subspace DEV support showed zero movement; top-gap features barely improved after Wulver",
+        "Prior feature-gap artifacts identified missing/domain-level gaps"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Wulver was target-free, broad, and produced many novel states; failure is not just a small acquisition batch",
+        "DEV-targeted acquisition is scientifically disallowed"
+      ],
+      "falsifiable_implication": "Another acquisition that is not DEV-aware would need a different mechanism, not simply more cells, to produce held-out support movement.",
+      "mode": "WRONG_ACQUISITION",
+      "rank": 6,
+      "supporting_evidence": [
+        "D1 and bridge pilot did not move frozen gates",
+        "Wulver target-free cells produced novelty mostly away from DEV"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Wulver added 24,314 unique target-free states and still moved 1/104 DEV rows",
+        "D1 added labels/support without gate success",
+        "Failure persisted across V1, V2-normalized, and task subspace"
+      ],
+      "falsifiable_implication": "If sheer volume were the main issue, broad target-free novelty should have produced broad DEV support movement; it did not.",
+      "mode": "INSUFFICIENT_DATA",
+      "rank": 7,
+      "supporting_evidence": [
+        "The supervised V2 seed set is only 979 rows and DEV has 104 rows"
+      ]
+    }
+  ],
+  "portfolio_policy_synthesis": {
+    "assessment": "BEST_NEXT_DIRECTION",
+    "evidence_against": [
+      "Needs future closed-loop and real-serving validation before constructive claims",
+      "Prior analytic index warns against naive static score design"
+    ],
+    "evidence_for": [
+      "Original project objective is a new scheduler with marginal portfolio contribution",
+      "Mechanism evidence can seed a deterministic composite policy",
+      "Avoids the failed premise that per-state support expansion will make ESTF/WFS switching robust"
+    ]
+  },
+  "publication_value": {
+    "claim": "Large target-free expansion of reachable TRAIN disagreement-state support did not resolve held-out decision-state support for statewise scheduling-policy selection.",
+    "recommended_placement": "central if paper is about certified oracle/support failure methodology; appendix if the final contribution becomes a new composite scheduler.",
+    "value": "CENTRAL_NEGATIVE_RESULT_SPINE_WITH_MAIN_OR_APPENDIX_PLACEMENT_DEPENDING_ON_FINAL_PAPER_FRAMING",
+    "why_stronger_than_model_did_not_work": [
+      "predeclared support gate and frozen DEV evaluation contract",
+      "target-free sweep avoided DEV-driven cell selection",
+      "64/64 shards valid and 24,314 unique candidate states",
+      "moderate TRAIN-side expansion but negligible DEV movement across three feature views",
+      "all eight gates failed, including density, p90, rows closer, favored-long, and group-spread requirements"
+    ]
+  },
+  "robust_single_scheduler": {
+    "assessment": "VIABLE_AS_MECHANISM_SYNTHESIS_BUT_NOT_AS_OLD_STATIC_INDEX",
+    "candidate_formulations": [
+      {
+        "difference_from_old_analytic_index": "uses risk guards and two-risk semantics, not a single static scalar",
+        "expected_behavior": "WFS by default under deadline/fairness pressure; ESTF only when service completion is clearly at risk and SLO slack is positive",
+        "failure_mode": "too conservative; may collapse to WFS",
+        "form": "lexicographic WFS unless ESTF has strong completion-risk advantage and bounded SLO harm",
+        "inputs": [
+          "laxity",
+          "queue_age",
+          "priority/class deficit",
+          "service size",
+          "ESTF/WFS candidate features"
+        ],
+        "name": "SLO_SAFE_COMPLETION_PROTECTION_RULE"
+      },
+      {
+        "difference_from_old_analytic_index": "explicit fairness gate before size score",
+        "expected_behavior": "prevents ESTF starving high-priority/fairness-debt work while preserving completion wins",
+        "failure_mode": "threshold brittleness and simulator-specific units",
+        "form": "priority/fairness deficit gate first; within safe deficit band choose shorter remaining service/completion candidate",
+        "inputs": [
+          "max_class_deficit_ratio",
+          "priority",
+          "remaining predicted service",
+          "laxity",
+          "queue age"
+        ],
+        "name": "DEFICIT_GATED_SHORTEST_COMPLETION"
+      },
+      {
+        "difference_from_old_analytic_index": "stateful/hysteretic and closed-loop-aware",
+        "expected_behavior": "reduces harmful rapid switching and treats ESTF as a release valve",
+        "failure_mode": "history may lag sudden overload or collapse to parent default",
+        "form": "WFS mode until consecutive safe-completion signals; return to WFS on deficit/laxity alarms",
+        "inputs": [
+          "bounded history slopes",
+          "recent admissions/completions",
+          "laxity negative fraction",
+          "class deficit",
+          "service-size contrast"
+        ],
+        "name": "HYSTERETIC_WFS_BASE_WITH_ESTF_RELEASE"
+      }
+    ],
+    "evidence_against": [
+      "Prior coefficient-free static indices failed",
+      "Statewise selector and stateful controller failed closed-loop",
+      "Task-subspace support did not move DEV"
+    ],
+    "evidence_for": [
+      "Mechanism split is interpretable: completion protection vs SLO/fairness pressure",
+      "Configuration context partially reduces aliasing",
+      "WFS robust default suggests a conservative base with explicit ESTF release conditions"
+    ]
+  },
+  "why_not_configuration_level_selection": "It remains a selector over the same parents and attacks the easier static level rather than producing a new scheduler; it is useful as a diagnostic baseline only.",
+  "why_not_stop_family_a_entirely": "The contextual-selector hypothesis is closed, but Family-A still supplies certified oracle semantics, interpretable ESTF/WFS mechanisms, and measurable parent-envelope headroom that can seed a genuinely new portfolio policy."
+}

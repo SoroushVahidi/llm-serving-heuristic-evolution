@@ -1,0 +1,22 @@
+{
+  "C": 32,
+  "M": 16.0,
+  "baselines": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online"
+  ],
+  "cells_path": "experiments/external_baseline_comparison_v1/results/public_trace_stress_v1_p6/cells.jsonl",
+  "elapsed_s": 35.453635692596436,
+  "finished_utc": "2026-08-25T00:17:59.655505+00:00",
+  "n_cells_expected": 360,
+  "n_failed": 0,
+  "n_policies": 6,
+  "n_scenarios": 60,
+  "n_success": 360,
+  "started_utc": "2026-08-25T00:17:24.201856+00:00",
+  "workload": "public_trace_stress_v1"
+}

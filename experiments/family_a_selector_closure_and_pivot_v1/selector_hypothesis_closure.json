@@ -1,0 +1,145 @@
+{
+  "decision_tree_stop_condition_matched": "Target-free sweep materially expands TRAIN but does not move DEV support by frozen thresholds.",
+  "evidence_chain": [
+    {
+      "evidence": "selected pi0 DEV mean regret 1.115 vs WFS/majority 4.087 and ESTF 12.087; balanced sign accuracy 0.855 from frozen offline artifact",
+      "stage": "pi0_offline",
+      "verdict": "SUPPORTED_OFFLINE_SIGNAL"
+    },
+    {
+      "evidence": "closed-loop aggregate pi0 mean ANWG 0.854614 below WFS 0.859748; worst favored-long group regret 0.0463",
+      "stage": "pi0_closed_loop",
+      "verdict": "MIXED_SIGNAL"
+    },
+    {
+      "evidence": "D1 status/classification: None / DAGGER_D1_OFFLINE_NO_GO; active acquisition did not pass frozen gates",
+      "stage": "D1",
+      "verdict": "OFFLINE_NO_GO"
+    },
+    {
+      "evidence": "scientific audit stop tree prohibited D2/oracle acquisition unless support gates passed; D1 did not solve support/offline transfer",
+      "stage": "D2_support_diagnosis",
+      "verdict": "DO_NOT_RUN_D2"
+    },
+    {
+      "evidence": "18 scenarios, 812 candidates, FEATURE_V1 0/104 DEV closer and favored-long 0/66 closer",
+      "stage": "bridge_pilot",
+      "verdict": "FEATURE_ONLY_SIGNAL_NO_GATE"
+    },
+    {
+      "evidence": "surrogate predicted response/yield better than naive parameter NN, justifying target-free sweep but not scheduler success",
+      "stage": "configuration_state_surrogate",
+      "verdict": "SURROGATE_GO_DIAGNOSTIC_ONLY"
+    },
+    {
+      "evidence": "200 cells, 400 scenarios, 24,314 unique fingerprints, 156 novel TRAIN-side domains",
+      "stage": "wulver_target_free_sweep",
+      "verdict": "MODERATE_TRAIN_EXPANSION"
+    },
+    {
+      "evidence": "all 8 gates failed; 1/104 DEV rows closer; task subspace 0/104 rows closer",
+      "stage": "frozen_dev_support_eval",
+      "verdict": "NO_GO"
+    }
+  ],
+  "failure_modes_ranked": [
+    {
+      "contradicting_evidence": [
+        "Surrogate rank metrics show configuration parameters encode some state-response structure",
+        "Wulver found 156 novel TRAIN-side domains"
+      ],
+      "falsifiable_implication": "A non-DEV held-out group with matched configuration axes should remain poorly covered by target-free novelty unless the acquisition explicitly captures its compositional interaction.",
+      "mode": "CONFIGURATION_COMPOSITIONAL_GENERALIZATION_FAILURE",
+      "rank": 1,
+      "supporting_evidence": [
+        "Held-out DEV support did not move despite broad target-free TRAIN expansion",
+        "Configuration->state response had strong structure but target-free novelty was not DEV-relevant",
+        "Only 1/4 DEV groups improved and only one DEV row switched nearest source to Wulver"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Offline decision replay on held-out rows can be strong when evaluated statically",
+        "Closed-loop WFS default is stable, so not every policy suffers equally"
+      ],
+      "falsifiable_implication": "A selector that looks good on static rows will generate a shifted trajectory distribution where its own high-confidence states have weak support or low utility contribution.",
+      "mode": "ENDOGENOUS_CLOSED_LOOP_SHIFT",
+      "rank": 2,
+      "supporting_evidence": [
+        "pi0 offline DEV signal did not translate to robust closed-loop utility",
+        "D1 candidates came from pi0/native trajectories yet offline gates failed",
+        "Selector choices alter future reachable state distribution"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Oracle rows show real parent complementarity and nonzero pair-envelope headroom",
+        "Mechanism evidence is interpretable rather than noise"
+      ],
+      "falsifiable_implication": "Even with improved labels/support, a memoryless ESTF/WFS switcher will add little or negative portfolio value relative to a robust parent or a direct composite scheduler.",
+      "mode": "POLICY_SELECTION_FORMULATION_ITSELF_IS_WRONG",
+      "rank": 3,
+      "supporting_evidence": [
+        "The practical closed-loop winner among parents is WFS while statewise selector underperforms WFS",
+        "Support expansion did not repair transfer",
+        "Analytic index and stateful controller attempts failed to convert event-level signal into robust policy value"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Offline pi0 achieved real DEV signal; labels are not random under the feature set",
+        "Some favored/config groups are nearly one-parent dominated"
+      ],
+      "falsifiable_implication": "Adding causal context/history should reduce local label entropy only partially; exact or near-exact observable states will still sometimes imply opposite oracle parents.",
+      "mode": "NON_STATIONARY_OR_STATE_ALIASED_DECISION_PROBLEM",
+      "rank": 4,
+      "supporting_evidence": [
+        "kNN label neighborhoods show nontrivial contradictory-neighbor fractions in observable state space",
+        "Configuration context reduces but does not eliminate contradiction",
+        "Labels depend on future branch dynamics compressed into limited features"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Feature contracts are causal and offline pi0 performed well on DEV",
+        "Adding normalized/config views did not rescue Wulver support"
+      ],
+      "falsifiable_implication": "Adding causal workload/history descriptors should reduce aliasing and improve static support, but not necessarily solve closed-loop value.",
+      "mode": "WRONG_FEATURES",
+      "rank": 5,
+      "supporting_evidence": [
+        "Task-subspace DEV support showed zero movement; top-gap features barely improved after Wulver",
+        "Prior feature-gap artifacts identified missing/domain-level gaps"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Wulver was target-free, broad, and produced many novel states; failure is not just a small acquisition batch",
+        "DEV-targeted acquisition is scientifically disallowed"
+      ],
+      "falsifiable_implication": "Another acquisition that is not DEV-aware would need a different mechanism, not simply more cells, to produce held-out support movement.",
+      "mode": "WRONG_ACQUISITION",
+      "rank": 6,
+      "supporting_evidence": [
+        "D1 and bridge pilot did not move frozen gates",
+        "Wulver target-free cells produced novelty mostly away from DEV"
+      ]
+    },
+    {
+      "contradicting_evidence": [
+        "Wulver added 24,314 unique target-free states and still moved 1/104 DEV rows",
+        "D1 added labels/support without gate success",
+        "Failure persisted across V1, V2-normalized, and task subspace"
+      ],
+      "falsifiable_implication": "If sheer volume were the main issue, broad target-free novelty should have produced broad DEV support movement; it did not.",
+      "mode": "INSUFFICIENT_DATA",
+      "rank": 7,
+      "supporting_evidence": [
+        "The supervised V2 seed set is only 979 rows and DEV has 104 rows"
+      ]
+    }
+  ],
+  "scope_note": "Falsified for the current statewise ESTF/WFS contextual-selector formulation and frozen support-expansion route; not a theorem that no scheduler can use these mechanisms.",
+  "status": "SELECTOR_HYPOTHESIS_FALSIFIED",
+  "tested_hypothesis": "A contextual selector over ESTF/WFS can be made robust across held-out Family-A configurations by sufficiently expanding TRAIN disagreement-state support."
+}

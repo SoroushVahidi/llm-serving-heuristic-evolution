@@ -1,0 +1,816 @@
+{
+  "did_prefill_decode_overlap_occur": "YES",
+  "evidence": {
+    "CHUNKED_example": "step 38 scheduled 1 decode token and 511 prefill tokens in the same 512-token iteration",
+    "CHUNKED_partial_prefill_chunks": 21,
+    "CHUNKED_steps_with_prefill_and_decode": 16,
+    "FULL_example": "step 31 scheduled 2 decode tokens and 3456 prefill tokens in the same 4096-token iteration",
+    "FULL_partial_prefill_chunks": 0,
+    "FULL_steps_with_prefill_and_decode": 6
+  },
+  "existing_scientific_run_summary": {
+    "max_kv_cache_usage": 0.028394628280523082,
+    "max_running": 4.0,
+    "max_waiting": 7.0,
+    "preemptions": 0.0
+  },
+  "interpretation": "Overlap existed, but it occurred under vLLM running-first scheduling and different token budgets, not under the simulator Family-B shared-FCFS 512-token budget with 64-token chunks.",
+  "tiny_trace_probe": {
+    "CHUNKED": {
+      "example_mixed_steps": [
+        {
+          "current_step": 38,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 511,
+          "running_len_after_schedule": 2,
+          "scheduled": [
+            {
+              "computed_before": 3200,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 384,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 511,
+              "prefill_tokens": 511,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 2,
+          "time": 1787595340.6259866,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 5
+        },
+        {
+          "current_step": 39,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 511,
+          "running_len_after_schedule": 2,
+          "scheduled": [
+            {
+              "computed_before": 3201,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 895,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 511,
+              "prefill_tokens": 511,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 2,
+          "time": 1787595340.6379561,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 5
+        },
+        {
+          "current_step": 40,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 511,
+          "running_len_after_schedule": 2,
+          "scheduled": [
+            {
+              "computed_before": 3202,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 1406,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 511,
+              "prefill_tokens": 511,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 2,
+          "time": 1787595340.6501744,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 5
+        },
+        {
+          "current_step": 41,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 511,
+          "running_len_after_schedule": 2,
+          "scheduled": [
+            {
+              "computed_before": 3203,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 1917,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 511,
+              "prefill_tokens": 511,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 2,
+          "time": 1787595340.6627681,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 5
+        },
+        {
+          "current_step": 42,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 511,
+          "running_len_after_schedule": 2,
+          "scheduled": [
+            {
+              "computed_before": 3204,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 2428,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 511,
+              "prefill_tokens": 511,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 2,
+          "time": 1787595340.675853,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 5
+        },
+        {
+          "current_step": 43,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 511,
+          "running_len_after_schedule": 3,
+          "scheduled": [
+            {
+              "computed_before": 3205,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 2939,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 421,
+              "prefill_tokens": 421,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": true
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 90,
+              "prefill_tokens": 90,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-8c1d0db1eb992967-0-a7591b38",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 3,
+          "time": 1787595340.6895027,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 4
+        },
+        {
+          "current_step": 44,
+          "decode_tokens": 2,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 510,
+          "running_len_after_schedule": 3,
+          "scheduled": [
+            {
+              "computed_before": 3206,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3360,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 90,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 510,
+              "prefill_tokens": 510,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-8c1d0db1eb992967-0-a7591b38",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 3,
+          "time": 1787595340.7037468,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 4
+        },
+        {
+          "current_step": 45,
+          "decode_tokens": 2,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 510,
+          "running_len_after_schedule": 3,
+          "scheduled": [
+            {
+              "computed_before": 3207,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3361,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 600,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 510,
+              "prefill_tokens": 510,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-8c1d0db1eb992967-0-a7591b38",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 3,
+          "time": 1787595340.7185767,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 4
+        },
+        {
+          "current_step": 46,
+          "decode_tokens": 2,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 510,
+          "running_len_after_schedule": 3,
+          "scheduled": [
+            {
+              "computed_before": 3208,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3362,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 1110,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 510,
+              "prefill_tokens": 510,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-8c1d0db1eb992967-0-a7591b38",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 3,
+          "time": 1787595340.7310421,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 4
+        },
+        {
+          "current_step": 47,
+          "decode_tokens": 2,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 512,
+          "pid": 562955,
+          "prefill_tokens": 510,
+          "running_len_after_schedule": 3,
+          "scheduled": [
+            {
+              "computed_before": 3209,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3363,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 1620,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 510,
+              "prefill_tokens": 510,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-8c1d0db1eb992967-0-a7591b38",
+              "was_prefill_chunk_before": true
+            }
+          ],
+          "scheduled_req_count": 3,
+          "time": 1787595340.7440283,
+          "total_num_scheduled_tokens": 512,
+          "waiting_len_after_schedule": 4
+        }
+      ],
+      "first_partial_prefill_chunks": [
+        {
+          "computed_before": 0,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 1440,
+          "request_id": "cmpl-8f73ac29fbd704af-0-825fdd97",
+          "step": 11,
+          "was_prefill_chunk_before": false
+        },
+        {
+          "computed_before": 512,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 1440,
+          "request_id": "cmpl-8f73ac29fbd704af-0-825fdd97",
+          "step": 12,
+          "was_prefill_chunk_before": true
+        },
+        {
+          "computed_before": 0,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 3200,
+          "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+          "step": 31,
+          "was_prefill_chunk_before": false
+        },
+        {
+          "computed_before": 512,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 3200,
+          "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+          "step": 32,
+          "was_prefill_chunk_before": true
+        },
+        {
+          "computed_before": 1024,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 3200,
+          "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+          "step": 33,
+          "was_prefill_chunk_before": true
+        },
+        {
+          "computed_before": 1536,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 3200,
+          "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+          "step": 34,
+          "was_prefill_chunk_before": true
+        },
+        {
+          "computed_before": 2048,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 3200,
+          "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+          "step": 35,
+          "was_prefill_chunk_before": true
+        },
+        {
+          "computed_before": 2560,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 512,
+          "prefill_tokens": 512,
+          "prompt_tokens": 3200,
+          "request_id": "cmpl-bc833e65861a1d4e-0-be689384",
+          "step": 36,
+          "was_prefill_chunk_before": true
+        },
+        {
+          "computed_before": 0,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 384,
+          "prefill_tokens": 384,
+          "prompt_tokens": 3360,
+          "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+          "step": 37,
+          "was_prefill_chunk_before": false
+        },
+        {
+          "computed_before": 384,
+          "decode_tokens": 0,
+          "num_scheduled_tokens": 511,
+          "prefill_tokens": 511,
+          "prompt_tokens": 3360,
+          "request_id": "cmpl-bf94e9e91147cb37-0-85882322",
+          "step": 38,
+          "was_prefill_chunk_before": true
+        }
+      ],
+      "max_decode_tokens_in_step": 4,
+      "max_prefill_tokens_in_step": 512,
+      "max_total_tokens_in_step": 512,
+      "partial_prefill_chunks": 21,
+      "raw_rows": 150,
+      "scheduled_steps": 150,
+      "steps_decode_only": 117,
+      "steps_prefill_only": 11,
+      "steps_with_prefill_and_decode": 16,
+      "trace_errors": [],
+      "trace_path": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/prefill_decode_fidelity_diagnosis_v1/scheduler_trace_chunked.jsonl"
+    },
+    "FULL": {
+      "example_mixed_steps": [
+        {
+          "current_step": 30,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 4096,
+          "pid": 562562,
+          "prefill_tokens": 3280,
+          "running_len_after_schedule": 2,
+          "scheduled": [
+            {
+              "computed_before": 3200,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-91a8cd0d352fb7a6-0-91965d08",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 3280,
+              "prefill_tokens": 3280,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-bea46e0aad0b8ab2-0-bd1623d1",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 2,
+          "time": 1787595319.1693766,
+          "total_num_scheduled_tokens": 3281,
+          "waiting_len_after_schedule": 1
+        },
+        {
+          "current_step": 31,
+          "decode_tokens": 2,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 4096,
+          "pid": 562562,
+          "prefill_tokens": 3456,
+          "running_len_after_schedule": 4,
+          "scheduled": [
+            {
+              "computed_before": 3201,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-91a8cd0d352fb7a6-0-91965d08",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3280,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-bea46e0aad0b8ab2-0-bd1623d1",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 3360,
+              "prefill_tokens": 3360,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-b7fa918061f8af50-0-9481807c",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 96,
+              "prefill_tokens": 96,
+              "prompt_tokens": 96,
+              "request_id": "cmpl-9a8764ebdb25b0e8-0-9816d152",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 4,
+          "time": 1787595319.2318444,
+          "total_num_scheduled_tokens": 3458,
+          "waiting_len_after_schedule": 2
+        },
+        {
+          "current_step": 56,
+          "decode_tokens": 3,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 4096,
+          "pid": 562562,
+          "prefill_tokens": 104,
+          "running_len_after_schedule": 4,
+          "scheduled": [
+            {
+              "computed_before": 3226,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-91a8cd0d352fb7a6-0-91965d08",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3305,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-bea46e0aad0b8ab2-0-bd1623d1",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3384,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-b7fa918061f8af50-0-9481807c",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 104,
+              "prefill_tokens": 104,
+              "prompt_tokens": 104,
+              "request_id": "cmpl-a3694147913a6fc2-0-bd14c9f8",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 4,
+          "time": 1787595319.5178635,
+          "total_num_scheduled_tokens": 107,
+          "waiting_len_after_schedule": 2
+        },
+        {
+          "current_step": 81,
+          "decode_tokens": 3,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 4096,
+          "pid": 562562,
+          "prefill_tokens": 112,
+          "running_len_after_schedule": 4,
+          "scheduled": [
+            {
+              "computed_before": 3251,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-91a8cd0d352fb7a6-0-91965d08",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3330,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-bea46e0aad0b8ab2-0-bd1623d1",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3409,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-b7fa918061f8af50-0-9481807c",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 112,
+              "prefill_tokens": 112,
+              "prompt_tokens": 112,
+              "request_id": "cmpl-b15f1e4263643dbb-0-b5061dbb",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 4,
+          "time": 1787595319.6695979,
+          "total_num_scheduled_tokens": 115,
+          "waiting_len_after_schedule": 1
+        },
+        {
+          "current_step": 106,
+          "decode_tokens": 3,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 4096,
+          "pid": 562562,
+          "prefill_tokens": 96,
+          "running_len_after_schedule": 4,
+          "scheduled": [
+            {
+              "computed_before": 3276,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3200,
+              "request_id": "cmpl-91a8cd0d352fb7a6-0-91965d08",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3355,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3280,
+              "request_id": "cmpl-bea46e0aad0b8ab2-0-bd1623d1",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 3434,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 3360,
+              "request_id": "cmpl-b7fa918061f8af50-0-9481807c",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 96,
+              "prefill_tokens": 96,
+              "prompt_tokens": 96,
+              "request_id": "cmpl-92b742e6bf37104c-0-9309c021",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 4,
+          "time": 1787595319.8308163,
+          "total_num_scheduled_tokens": 99,
+          "waiting_len_after_schedule": 0
+        },
+        {
+          "current_step": 148,
+          "decode_tokens": 1,
+          "has_prefill_and_decode": true,
+          "max_num_scheduled_tokens": 4096,
+          "pid": 562562,
+          "prefill_tokens": 288,
+          "running_len_after_schedule": 4,
+          "scheduled": [
+            {
+              "computed_before": 96,
+              "decode_tokens": 1,
+              "num_scheduled_tokens": 1,
+              "prefill_tokens": 0,
+              "prompt_tokens": 96,
+              "request_id": "cmpl-92c5a2f15fe2b200-0-9981fbe9",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 96,
+              "prefill_tokens": 96,
+              "prompt_tokens": 96,
+              "request_id": "cmpl-ab5a277bdd50eb6d-0-8b55b813",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 96,
+              "prefill_tokens": 96,
+              "prompt_tokens": 96,
+              "request_id": "cmpl-aaccdc43635763d2-0-ad7ca220",
+              "was_prefill_chunk_before": false
+            },
+            {
+              "computed_before": 0,
+              "decode_tokens": 0,
+              "num_scheduled_tokens": 96,
+              "prefill_tokens": 96,
+              "prompt_tokens": 96,
+              "request_id": "cmpl-af7b5bcd189480ad-0-a9a973ed",
+              "was_prefill_chunk_before": false
+            }
+          ],
+          "scheduled_req_count": 4,
+          "time": 1787595320.583047,
+          "total_num_scheduled_tokens": 289,
+          "waiting_len_after_schedule": 0
+        }
+      ],
+      "first_partial_prefill_chunks": [],
+      "max_decode_tokens_in_step": 4,
+      "max_prefill_tokens_in_step": 3456,
+      "max_total_tokens_in_step": 3458,
+      "partial_prefill_chunks": 0,
+      "raw_rows": 213,
+      "scheduled_steps": 213,
+      "steps_decode_only": 180,
+      "steps_prefill_only": 9,
+      "steps_with_prefill_and_decode": 6,
+      "trace_errors": [],
+      "trace_path": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/prefill_decode_fidelity_diagnosis_v1/scheduler_trace_full.jsonl"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "baseline": "official_vtc_joint_token_budget_remap",
+  "cells_path": "experiments/external_baseline_comparison_v1/results/family_a_vtc/cells.jsonl",
+  "elapsed_s": 37.50417900085449,
+  "family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+  "finished_utc": "2026-08-25T00:18:01.135792+00:00",
+  "n_failed": 0,
+  "n_scenarios": 72,
+  "n_success": 72,
+  "scenario_csv": "/home/soroush/llm-serving-heuristic-evolution/experiments/mf_psd_v1/mf_psd_scenarios_v1.csv",
+  "started_utc": "2026-08-25T00:17:23.631591+00:00"
+}

@@ -1,0 +1,117 @@
+{
+  "absolute_low_envelope_scenarios_from_mf_psd_pairwise_anchors": [
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew5.0000.favlong.noise0.00.s20260817",
+      "family_pair_envelope": 0.4138888888888888,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.3000.skew5.0000.favlong.noise0.00.s20260817",
+      "family_pair_envelope": 0.4194444444444444,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft.s20260823",
+      "family_pair_envelope": 0.421875,
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260816",
+      "family_pair_envelope": 0.4439393939393939,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.00.s20260817",
+      "family_pair_envelope": 0.4469696969696969,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_B_PREFILL_DECODE_V2::pd2.hog24.late40.slolate_ttft.s20260821",
+      "family_pair_envelope": 0.453125,
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.3000.skew10.0000.favlong.noise0.00.s20260817",
+      "family_pair_envelope": 0.456060606060606,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew5.0000.favlong.noise0.00.s20260816",
+      "family_pair_envelope": 0.4583333333333333,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew5.0000.favlong.noise0.30.s20260817",
+      "family_pair_envelope": 0.4666666666666667,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.3000.skew10.0000.favlong.noise0.30.s20260817",
+      "family_pair_envelope": 0.4696969696969697,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.5000.skew10.0000.favlong.noise0.30.s20260817",
+      "family_pair_envelope": 0.4909090909090909,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    },
+    {
+      "canonical_scenario_id": "FAMILY_A_FAIRNESS_STARVATION_V2::fs2.util1.3000.skew5.0000.favlong.noise0.30.s20260817",
+      "family_pair_envelope": 0.4972222222222222,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2"
+    }
+  ],
+  "hole_summary_by_mechanism": [
+    {
+      "evidence": "Family A still has pair-envelope p10 0.4718 and several favlong high-util/skew cases below 0.47; ESTF helps completion but WFS remains robust, and static guarded blending failed.",
+      "hole": "completion_pressure",
+      "severity": "HIGH"
+    },
+    {
+      "evidence": "WFS is the Family A robust default, but ESTF unique wins show WFS leaves completion headroom; statewise selection and guards failed, implying the hole is not solved by choosing between parents.",
+      "hole": "fairness_slo_pressure",
+      "severity": "HIGH"
+    },
+    {
+      "evidence": "Family C best fixed kv_constrained_online dominates mean, but LLF has 5 epsilon-unique wins and 6/16 timing triples had winner flips in the KV audit; reserve/urgency interaction remains a bounded hole.",
+      "hole": "kv_pressure",
+      "severity": "MEDIUM"
+    },
+    {
+      "evidence": "Family B has the largest pairwise headroom over best fixed (0.0494 ANWG) and balanced full/small unique wins, but PrefillControl children added zero envelope gain in held-out/OOD.",
+      "hole": "prefill_decode_contention",
+      "severity": "HIGH"
+    },
+    {
+      "evidence": "Family A aging had unique wins in source audit but is not one of the six anchors; explicit accumulated age/debt is underrepresented in current six-policy envelope.",
+      "hole": "queue_age_starvation",
+      "severity": "MEDIUM_HIGH"
+    },
+    {
+      "evidence": "Public trace is saturated, but controlled families show regime persistence and Sobol family B headroom 0.0159; burst/ramp response remains insufficiently native in current six.",
+      "hole": "burstiness",
+      "severity": "MEDIUM"
+    },
+    {
+      "evidence": "Family A and B low-envelope cases concentrate in favlong/high-skew or hog-prefill regimes where size and priority conflict.",
+      "hole": "heavy_tail_size_skew",
+      "severity": "HIGH"
+    },
+    {
+      "evidence": "Decision-criticality timescale artifact shows disagreement episodes and dwell/reaction latency; prior memoryless selectors and static guards missed closed-loop shifts.",
+      "hole": "mixed_regime_transitions",
+      "severity": "HIGH"
+    }
+  ],
+  "large_margin_regions": {
+    "Family A": "ESTF/WFS complementarity exists but selector and guarded-composite routes are closed",
+    "Family B": "balanced full vs chunked wins with 0.0494 mean headroom over best fixed",
+    "Family C": "KV dominates mean but urgency-timing pockets remain."
+  },
+  "small_margin_or_near_tie_regions": {
+    "Family A near ties eps 0.01": 0.2361111111111111,
+    "Family B near ties eps 0.01": 0.03125,
+    "Family C near ties eps 0.01": 0.3055555555555556,
+    "interpretation": "C and A include large near-tie regions; a new policy must add envelope value, not just shuffle ties."
+  }
+}

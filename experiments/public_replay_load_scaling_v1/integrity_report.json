@@ -1,0 +1,152 @@
+{
+  "schema_version": "public_replay_load_scaling_v1_integrity_report.1.0.0",
+  "date": "2026-08-25",
+  "matrix_completeness": {
+    "expected_cells": 3840,
+    "actual_cells": 3840,
+    "n_duplicate_keys": 0,
+    "status_counts": {
+      "success": 3840
+    },
+    "n_explicit_errors": 0,
+    "n_nan_fields": 0,
+    "source_window_counts": {
+      "azure_2023_code": 20,
+      "burstgpt": 20,
+      "azure_2023_conv": 20
+    },
+    "expected_source_window_counts": {
+      "burstgpt": 20,
+      "azure_2023_conv": 20,
+      "azure_2023_code": 20
+    },
+    "load_factors_present": [
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      32.0,
+      64.0,
+      128.0
+    ],
+    "load_factors_expected": [
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      32.0,
+      64.0,
+      128.0
+    ],
+    "policy_ids_present": [
+      "chunked_prefill_small",
+      "estimated_service_time_first",
+      "full_prefill",
+      "kv_constrained_online",
+      "least_laxity_first",
+      "official_vtc_joint_token_budget_remap",
+      "vllm_style_continuous_batching",
+      "weighted_fair_share"
+    ],
+    "gpu_capacity_tuples_seen": [
+      [
+        512,
+        512,
+        8000000
+      ]
+    ],
+    "n_requests_base_distribution": {
+      "200": 3840
+    },
+    "n_requests_scaled_distribution": {
+      "200": 3840
+    },
+    "unit_tests_local": "tests/test_public_replay_load_scaling_v1.py: 20/20 passed (transform correctness, matrix completeness, ordering/slack invariants) -- does not cover full-duration simulation-to-completion, which is where the defect below manifests"
+  },
+  "lambda1_mandatory_reproduction_check": {
+    "tolerance": 1e-06,
+    "n_p6_cells_checked": 360,
+    "n_matches": 294,
+    "n_failures": 66,
+    "max_anwg_abs_error_from_1": 0.98,
+    "max_completion_abs_error_from_1": 0.98,
+    "failing_windows": [
+      "PUBLIC_TRACE::azure_2023_code::w4::augmented",
+      "PUBLIC_TRACE::burstgpt::w0::augmented",
+      "PUBLIC_TRACE::burstgpt::w1404::augmented",
+      "PUBLIC_TRACE::burstgpt::w1755::augmented",
+      "PUBLIC_TRACE::burstgpt::w351::augmented",
+      "PUBLIC_TRACE::burstgpt::w3861::augmented",
+      "PUBLIC_TRACE::burstgpt::w4563::augmented",
+      "PUBLIC_TRACE::burstgpt::w4914::augmented",
+      "PUBLIC_TRACE::burstgpt::w5616::augmented",
+      "PUBLIC_TRACE::burstgpt::w5967::augmented",
+      "PUBLIC_TRACE::burstgpt::w6669::augmented"
+    ],
+    "n_failing_windows": 11,
+    "verdict": "MATERIAL_FAILURE"
+  },
+  "root_cause_analysis": {
+    "defect": "SIM_MAX_STEPS=200_000 and SIM_DRAIN_STEPS=50_000 are hardcoded constants in src/llmserveopt/policy_separation/public_replay_load_scaling_v1.py (evaluate_cell, ~line 322-323), passed to SimulatorConfig(max_steps=SIM_MAX_STEPS, drain_steps=SIM_DRAIN_STEPS). Combined with the base scenario's service_model_kwargs['step_size']=0.001 (inherited unchanged from public_trace_replay_v1, confirmed identical across lambda), this imposes an effective SIMULATED-WALL-CLOCK CEILING of approximately 200-210 seconds, independent of the load factor lambda.",
+    "contrast_with_authoritative_harness": "The authoritative prior harness (public_trace_replay_v1.evaluate_scenario_policy, line ~327) constructs SimulatorConfig(gpu_configs=..., service_model=...) WITHOUT max_steps/drain_steps overrides, so it uses SimulatorConfig's own defaults (max_steps=None i.e. unbounded; src/llmserveopt/simulator/simulator.py line 53). That is why the prior layer3_checkpoint.jsonl shows ANWG=1.0, num_completed=200/200 for every one of these windows: the original harness runs until natural completion (all arrivals done + drain_steps idle), with no artificial ceiling.",
+    "why_lambda1_is_worst_affected": "At lambda=1 (identity transform, no compression), the affected windows' real arrival span is used unscaled. The worst case (PUBLIC_TRACE::burstgpt::w0::augmented) spans 34,064 seconds (~9.5h) of real time; only requests arriving in the first ~200-210s of that span (observed: 4-5 of 200 requests) are ever admitted before the simulation halts. This affects all policies identically (confirmed: all 6 P6 + VTC give bit-identical ANWG/completion per affected window at lambda=1), consistent with a shared harness ceiling rather than a policy-specific bug.",
+    "why_this_is_not_isolated_to_lambda1": "The ceiling is a FIXED real-time budget (~200-210s), not a fixed number of requests or a step count relative to lambda. As lambda grows, the *scaled* arrival span (original_span / lambda) shrinks, so windows fall under the ~200s ceiling at different lambda thresholds depending on their own real-world span. The single worst window (burstgpt::w0, span 34,064s) requires lambda > ~170 to fit under the ceiling -- ABOVE the top of the entire preregistered grid (128) -- so it is corrupted at every single preregistered lambda value in this experiment, not just lambda=1.",
+    "code_citations": [
+      "src/llmserveopt/policy_separation/public_replay_load_scaling_v1.py:104-105 (SIM_MAX_STEPS, SIM_DRAIN_STEPS)",
+      "src/llmserveopt/policy_separation/public_replay_load_scaling_v1.py:317-323 (SimulatorConfig(...) in evaluate_cell)",
+      "src/llmserveopt/policy_separation/public_trace_replay_v1.py:327-330 (authoritative SimulatorConfig(...) with no max_steps override)",
+      "src/llmserveopt/simulator/simulator.py:53,55 (SimulatorConfig defaults: max_steps=None, drain_steps=50_000)"
+    ]
+  },
+  "corruption_scope_full_grid": {
+    "definition": "a cell is 'incomplete' if num_completed + num_dropped < num_total (200) -- i.e. some requests never arrived/were-processed before the simulation halted, despite status=='success' and no NaN/error being recorded (the corruption is silent with respect to design check #9/#10, which only check for crashes/NaNs, not scientific completeness)",
+    "n_incomplete_cells_total": 256,
+    "frac_incomplete_cells_total": 0.06666666666666667,
+    "incomplete_cells_by_lambda": {
+      "1.0": 88,
+      "2.0": 48,
+      "4.0": 40,
+      "8.0": 32,
+      "16.0": 24,
+      "32.0": 8,
+      "64.0": 8,
+      "128.0": 8
+    },
+    "total_cells_by_lambda": {
+      "1.0": 480,
+      "2.0": 480,
+      "4.0": 480,
+      "8.0": 480,
+      "16.0": 480,
+      "32.0": 480,
+      "64.0": 480,
+      "128.0": 480
+    },
+    "n_affected_windows_any_lambda": 11,
+    "affected_windows": [
+      "PUBLIC_TRACE::azure_2023_code::w4::augmented",
+      "PUBLIC_TRACE::burstgpt::w0::augmented",
+      "PUBLIC_TRACE::burstgpt::w1404::augmented",
+      "PUBLIC_TRACE::burstgpt::w1755::augmented",
+      "PUBLIC_TRACE::burstgpt::w351::augmented",
+      "PUBLIC_TRACE::burstgpt::w3861::augmented",
+      "PUBLIC_TRACE::burstgpt::w4563::augmented",
+      "PUBLIC_TRACE::burstgpt::w4914::augmented",
+      "PUBLIC_TRACE::burstgpt::w5616::augmented",
+      "PUBLIC_TRACE::burstgpt::w5967::augmented",
+      "PUBLIC_TRACE::burstgpt::w6669::augmented"
+    ],
+    "affected_windows_by_source": {
+      "azure_2023_code": 1,
+      "burstgpt": 10
+    },
+    "windows_still_incomplete_at_lambda128_top_of_grid": [
+      "PUBLIC_TRACE::burstgpt::w0::augmented"
+    ]
+  },
+  "overall_verdict": "INTEGRITY_FAIL_MATERIAL_LAMBDA1_REPRODUCTION",
+  "action_taken": "STOPPED before interpreting the load curve (sections F onward of the requested analysis), per the frozen design's own mandatory check #1 and explicit operating instructions. No SLURM job was submitted or resubmitted. No files under the frozen design, the remote bundle, or job 1195488's outputs were modified. This report and the raw copied-back data (full_results.csv) are the deliverable; remediation (fixing SIM_MAX_STEPS/SIM_DRAIN_STEPS and re-running only the affected cells, or all cells for cleanliness) requires explicit authorization before execution.",
+  "recommended_remediation": "In evaluate_cell(), remove the hardcoded max_steps=SIM_MAX_STEPS override (or set it to None) so SimulatorConfig defaults to unbounded max_steps, matching the authoritative public_trace_replay_v1 harness exactly; drain_steps=50_000 alone (idle-based termination) is sufficient to end the simulation once all arrivals are processed and the system drains, at any lambda. Re-run only the 11 affected windows across all 8 lambda values (88 cells) -- or, for full auditability, all 3,840 cells with the corrected harness -- and re-verify the lambda=1 mandatory check before any interpretation."
+}

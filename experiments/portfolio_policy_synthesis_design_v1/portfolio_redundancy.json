@@ -1,0 +1,180 @@
+{
+  "data_contract": "MF-PSD is pairwise within each mechanism family; public_trace_replay_v1 is dense six-policy but exactly tied on ANWG. Redundancy statements distinguish these two evidence modes.",
+  "mf_psd_family_pair_accounting": [
+    {
+      "best_fixed_policy": "WFS",
+      "exact_unique_win_count": {
+        "ESTF": 27,
+        "WFS": 30
+      },
+      "family_pair_envelope_mean_anwg": 0.7570496632996634,
+      "leave_one_policy_out_mean_envelope_degradation": {
+        "ESTF": 0.01648779461279461,
+        "WFS": 0.036630190796857455
+      },
+      "low_envelope_min": 0.4138888888888888,
+      "low_envelope_p10": 0.47181818181818186,
+      "mean_headroom_over_best_fixed": 0.01648779461279461,
+      "mechanism_family": "FAMILY_A_FAIRNESS_STARVATION_V2",
+      "n_scenarios": 72,
+      "near_tie_rate_eps_0p01": 0.2361111111111111,
+      "policies_present": [
+        "ESTF",
+        "WFS"
+      ],
+      "policy_mean_anwg": {
+        "ESTF": 0.7204194725028059,
+        "WFS": 0.7405618686868688
+      },
+      "unique_win_count_eps_0p01": {
+        "ESTF": 26,
+        "WFS": 29
+      }
+    },
+    {
+      "best_fixed_policy": "full_prefill",
+      "exact_unique_win_count": {
+        "chunked_prefill_small": 15,
+        "full_prefill": 16
+      },
+      "family_pair_envelope_mean_anwg": 0.7821848290598291,
+      "leave_one_policy_out_mean_envelope_degradation": {
+        "chunked_prefill_small": 0.049433259882478625,
+        "full_prefill": 0.08148454193376067
+      },
+      "low_envelope_min": 0.421875,
+      "low_envelope_p10": 0.5,
+      "mean_headroom_over_best_fixed": 0.049433259882478625,
+      "mechanism_family": "FAMILY_B_PREFILL_DECODE_V2",
+      "n_scenarios": 32,
+      "near_tie_rate_eps_0p01": 0.03125,
+      "policies_present": [
+        "full_prefill",
+        "chunked_prefill_small"
+      ],
+      "policy_mean_anwg": {
+        "chunked_prefill_small": 0.7007002871260684,
+        "full_prefill": 0.7327515691773505
+      },
+      "unique_win_count_eps_0p01": {
+        "chunked_prefill_small": 15,
+        "full_prefill": 16
+      }
+    },
+    {
+      "best_fixed_policy": "kv_constrained_online",
+      "exact_unique_win_count": {
+        "kv_constrained_online": 45,
+        "least_laxity_first": 5
+      },
+      "family_pair_envelope_mean_anwg": 0.8706699346405229,
+      "leave_one_policy_out_mean_envelope_degradation": {
+        "kv_constrained_online": 0.11098856209150326,
+        "least_laxity_first": 0.003186274509803926
+      },
+      "low_envelope_min": 0.6176470588235294,
+      "low_envelope_p10": 0.7088235294117647,
+      "mean_headroom_over_best_fixed": 0.003186274509803926,
+      "mechanism_family": "FAMILY_C_KV_PRESSURE_V2",
+      "n_scenarios": 72,
+      "near_tie_rate_eps_0p01": 0.3055555555555556,
+      "policies_present": [
+        "kv_constrained_online",
+        "least_laxity_first"
+      ],
+      "policy_mean_anwg": {
+        "kv_constrained_online": 0.867483660130719,
+        "least_laxity_first": 0.7596813725490197
+      },
+      "unique_win_count_eps_0p01": {
+        "kv_constrained_online": 45,
+        "least_laxity_first": 5
+      }
+    }
+  ],
+  "pairwise_reward_correlation_and_wins": [
+    {
+      "mechanism_families": [
+        "FAMILY_A_FAIRNESS_STARVATION_V2"
+      ],
+      "n_coevaluated_scenarios": 72,
+      "near_ties_eps_0p01": 17,
+      "pair": [
+        "ESTF",
+        "WFS"
+      ],
+      "reward_correlation": 0.9705140030262289,
+      "win_loss_tie_exact": {
+        "ESTF": 27,
+        "WFS": 30,
+        "ties": 15
+      }
+    },
+    {
+      "mechanism_families": [
+        "FAMILY_B_PREFILL_DECODE_V2"
+      ],
+      "n_coevaluated_scenarios": 32,
+      "near_ties_eps_0p01": 1,
+      "pair": [
+        "full_prefill",
+        "chunked_prefill_small"
+      ],
+      "reward_correlation": 0.7812942138534235,
+      "win_loss_tie_exact": {
+        "chunked_prefill_small": 15,
+        "full_prefill": 16,
+        "ties": 1
+      }
+    },
+    {
+      "mechanism_families": [
+        "FAMILY_C_KV_PRESSURE_V2"
+      ],
+      "n_coevaluated_scenarios": 72,
+      "near_ties_eps_0p01": 22,
+      "pair": [
+        "kv_constrained_online",
+        "least_laxity_first"
+      ],
+      "reward_correlation": 0.7938342101003002,
+      "win_loss_tie_exact": {
+        "kv_constrained_online": 45,
+        "least_laxity_first": 5,
+        "ties": 22
+      }
+    }
+  ],
+  "portfolio_interpretation": {
+    "clearly_expanding_current_portfolio": [
+      "full_prefill",
+      "chunked_prefill_small",
+      "estimated_service_time_first",
+      "weighted_fair_share",
+      "kv_constrained_online"
+    ],
+    "missing_dense_matrix_warning": "Do not remove policies from the six-policy portfolio based on MF-PSD pairwise data alone; run a future dense six-policy screening matrix when evaluating a new native policy.",
+    "mostly_redundant_but_not_removable": [
+      "least_laxity_first has low mean marginal contribution in Family C but still has 5 epsilon-unique wins and remains the causal urgency anchor"
+    ],
+    "saturated_domains": [
+      "public-trace windows: six-policy envelope gain 0.0 because all policies achieve ANWG 1.0"
+    ]
+  },
+  "public_trace_six_policy_accounting": {
+    "all_policies_tie_exact_windows": 60,
+    "best_fixed_mean_anwg": 1.0,
+    "interpretation": "Natural public-trace replay is utility-saturated under frozen capacity; it is not useful for discovering envelope holes but is a safety/sanity domain.",
+    "mean_envelope_gain_over_best_fixed": 0.0,
+    "n_annotated_six_policy_windows": 60,
+    "policies": [
+      "chunked_prefill_small",
+      "ESTF",
+      "full_prefill",
+      "kv_constrained_online",
+      "least_laxity_first",
+      "WFS"
+    ],
+    "six_policy_envelope_mean_anwg": 1.0
+  }
+}

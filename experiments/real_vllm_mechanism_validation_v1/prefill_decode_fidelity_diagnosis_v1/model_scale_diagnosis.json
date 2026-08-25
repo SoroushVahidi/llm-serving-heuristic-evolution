@@ -1,0 +1,14 @@
+{
+  "classification": "SIMULATOR_VLLM_SEMANTICS_MISMATCH",
+  "interpretation": "The local setup induced queueing, chunking, and prefill/decode overlap, so pressure was adequate for a native-vLLM diagnostic. It was not adequate for high-KV claims, and it did not instantiate the simulator Family-B semantics because of scheduler/token-budget mismatch.",
+  "pressure_evidence": {
+    "completed_run_max_running": 4.0,
+    "completed_run_max_waiting": 7.0,
+    "max_kv_usage": 0.028394628280523082,
+    "prefill_3200_to_decode_itl_ratio": 12.990163383069756,
+    "prefill_3200_ttft_s": 0.07673811912536621,
+    "representative_decode_itl_s": 0.005907402152106876,
+    "trace_steps_with_prefill_decode_overlap_chunked": 16,
+    "trace_steps_with_prefill_decode_overlap_full": 6
+  }
+}

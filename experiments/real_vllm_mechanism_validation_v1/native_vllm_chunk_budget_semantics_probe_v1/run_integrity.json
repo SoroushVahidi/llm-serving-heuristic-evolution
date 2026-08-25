@@ -1,0 +1,195 @@
+{
+  "expected_regime_runs": 20,
+  "failure_records": [],
+  "integrity_pass": true,
+  "observed_regime_runs": 20,
+  "request_failures": 0,
+  "server_events": [
+    {
+      "block": 0,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/server_logs/00_t512.log",
+      "treatment": "T512"
+    },
+    {
+      "block": 1,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/server_logs/01_t4096.log",
+      "treatment": "T4096"
+    },
+    {
+      "block": 2,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/server_logs/02_t4096.log",
+      "treatment": "T4096"
+    },
+    {
+      "block": 3,
+      "log": "/home/soroush/llm-serving-heuristic-evolution/experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/server_logs/03_t512.log",
+      "treatment": "T512"
+    }
+  ],
+  "server_metrics_status": {
+    "max_running_after_schedule_by_trace": {
+      "T4096": 4,
+      "T512": 4
+    },
+    "max_waiting_after_schedule_by_trace": {
+      "T4096": 5,
+      "T512": 7
+    },
+    "parsed_metric_rows_nonempty": 0,
+    "prometheus_metrics_available_for_kv_preemption": false,
+    "queue_running_available_from_scheduler_trace": true,
+    "reason": "metric parser in this runner returned empty metric dictionaries; do not use KV/preemption maxima from this artifact",
+    "server_metric_rows": 413,
+    "server_metric_scrape_errors": 0
+  },
+  "warmups": [
+    {
+      "block": 0,
+      "health_wait_s": 15.019361972808838,
+      "treatment": "T512",
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787595993.1364405,
+          "e2e_s": 0.060350894927978516,
+          "error": null,
+          "first_token_wall_time": 1787595993.103261,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 416668.250236943,
+          "send_wall_time": 1787595993.0760896,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.02717137336730957
+        },
+        {
+          "completion_wall_time": 1787595993.3192246,
+          "e2e_s": 0.18274283409118652,
+          "error": null,
+          "first_token_wall_time": 1787595993.24039,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 416668.310629071,
+          "send_wall_time": 1787595993.1364818,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.10390830039978027
+        }
+      ]
+    },
+    {
+      "block": 1,
+      "health_wait_s": 15.010157346725464,
+      "treatment": "T4096",
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787596016.1838343,
+          "e2e_s": 0.05846691131591797,
+          "error": null,
+          "first_token_wall_time": 1787596016.1489897,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 416691.299514405,
+          "send_wall_time": 1787596016.1253674,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.02362227439880371
+        },
+        {
+          "completion_wall_time": 1787596016.3530083,
+          "e2e_s": 0.1691298484802246,
+          "error": null,
+          "first_token_wall_time": 1787596016.269393,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 416691.358025586,
+          "send_wall_time": 1787596016.1838784,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.08551454544067383
+        }
+      ]
+    },
+    {
+      "block": 2,
+      "health_wait_s": 15.011605262756348,
+      "treatment": "T4096",
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787596039.3051317,
+          "e2e_s": 0.05774402618408203,
+          "error": null,
+          "first_token_wall_time": 1787596039.2711172,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 416714.421534915,
+          "send_wall_time": 1787596039.2473876,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.023729562759399414
+        },
+        {
+          "completion_wall_time": 1787596039.4701345,
+          "e2e_s": 0.16495919227600098,
+          "error": null,
+          "first_token_wall_time": 1787596039.3895283,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 416714.47932251,
+          "send_wall_time": 1787596039.3051753,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.08435297012329102
+        }
+      ]
+    },
+    {
+      "block": 3,
+      "health_wait_s": 15.007052183151245,
+      "treatment": "T512",
+      "warmup_requests": [
+        {
+          "completion_wall_time": 1787596064.6065853,
+          "e2e_s": 0.05727386474609375,
+          "error": null,
+          "first_token_wall_time": 1787596064.5728698,
+          "input_tokens": 7,
+          "output_tokens": 8,
+          "phase": "warmup",
+          "request_id": "warmup.short",
+          "send_monotonic_time": 416739.723458607,
+          "send_wall_time": 1787596064.5493114,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.023558378219604492
+        },
+        {
+          "completion_wall_time": 1787596064.7898762,
+          "e2e_s": 0.18325233459472656,
+          "error": null,
+          "first_token_wall_time": 1787596064.7095473,
+          "input_tokens": 1440,
+          "output_tokens": 16,
+          "phase": "warmup",
+          "request_id": "warmup.medium",
+          "send_monotonic_time": 416739.780771106,
+          "send_wall_time": 1787596064.606624,
+          "slo_met": null,
+          "success": true,
+          "ttft_s": 0.10292339324951172
+        }
+      ]
+    }
+  ]
+}

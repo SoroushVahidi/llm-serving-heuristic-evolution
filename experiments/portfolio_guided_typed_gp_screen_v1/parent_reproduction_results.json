@@ -1,0 +1,68 @@
+{
+  "all_parent_reproduction_pass": true,
+  "probe_state_count": 4,
+  "probe_suite": "make_parent_reproduction_probe_states",
+  "results": {
+    "chunked_prefill_small": {
+      "decision_points": 4,
+      "exact_action_agreement": true,
+      "first_mismatch": null,
+      "metric_equality": null,
+      "metric_equality_checked": false,
+      "policy_id": "chunked_prefill_small",
+      "scenarios_checked": 4,
+      "status": "PARENT_REPRODUCTION_PASS"
+    },
+    "estimated_service_time_first": {
+      "decision_points": 4,
+      "exact_action_agreement": true,
+      "first_mismatch": null,
+      "metric_equality": null,
+      "metric_equality_checked": false,
+      "policy_id": "estimated_service_time_first",
+      "scenarios_checked": 4,
+      "status": "PARENT_REPRODUCTION_PASS"
+    },
+    "full_prefill": {
+      "decision_points": 4,
+      "exact_action_agreement": true,
+      "first_mismatch": null,
+      "metric_equality": null,
+      "metric_equality_checked": false,
+      "policy_id": "full_prefill",
+      "scenarios_checked": 4,
+      "status": "PARENT_REPRODUCTION_PASS"
+    },
+    "kv_constrained_online": {
+      "decision_points": 4,
+      "exact_action_agreement": true,
+      "first_mismatch": null,
+      "metric_equality": null,
+      "metric_equality_checked": false,
+      "policy_id": "kv_constrained_online",
+      "scenarios_checked": 4,
+      "status": "PARENT_REPRODUCTION_PASS"
+    },
+    "least_laxity_first": {
+      "decision_points": 4,
+      "exact_action_agreement": true,
+      "first_mismatch": null,
+      "metric_equality": null,
+      "metric_equality_checked": false,
+      "policy_id": "least_laxity_first",
+      "scenarios_checked": 4,
+      "status": "PARENT_REPRODUCTION_PASS"
+    },
+    "weighted_fair_share": {
+      "decision_points": 4,
+      "exact_action_agreement": true,
+      "first_mismatch": null,
+      "metric_equality": null,
+      "metric_equality_checked": false,
+      "policy_id": "weighted_fair_share",
+      "scenarios_checked": 4,
+      "status": "PARENT_REPRODUCTION_PASS"
+    }
+  },
+  "schema": "portfolio_guided_typed_gp_parent_reproduction_results_v1"
+}

@@ -1,0 +1,42 @@
+{
+  "active_modal_env_initially": "/home/soroush/modal-venv",
+  "branch": "contextual-compositional-heuristics-20260731",
+  "created_at": "2026-08-24T13:31:24-0400",
+  "gpu": {
+    "compute_capability": [
+      12,
+      0
+    ],
+    "count": 1,
+    "cuda_driver_reported": "13.0",
+    "driver": "580.173.02",
+    "name": "NVIDIA GeForce RTX 5060 Ti",
+    "vram_total_mib": 16311
+  },
+  "head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "host": {
+    "disk_available": "654G",
+    "ram_available_prefight": "58GiB",
+    "ram_total": "62GiB"
+  },
+  "isolation_incident": {
+    "description": "The first uv pip install was invoked through the new env uv executable but uv selected the already-active /home/soroush/modal-venv. It installed vllm 0.27.1 and upgraded torch/triton there before the install was repeated with explicit --python targeting the new env.",
+    "modal_env_observed_after": {
+      "torch": "2.13.0+cu130",
+      "transformers": "5.8.1",
+      "triton": "3.7.1",
+      "vllm": "0.27.1"
+    },
+    "occurred": true,
+    "rollback_attempted": false,
+    "rollback_reason": "Avoided further risky changes to an existing research environment without explicit instruction."
+  },
+  "model_cache": {
+    "local_only_config_tokenizer_loaded": true,
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "snapshot": "/home/soroush/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "snapshot_size_bytes": 999586347
+  },
+  "new_env_path": "/home/soroush/.venvs/vllm_real_validation_v1",
+  "repo": "/home/soroush/llm-serving-heuristic-evolution"
+}

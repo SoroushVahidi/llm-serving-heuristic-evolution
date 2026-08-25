@@ -1,0 +1,62 @@
+{
+  "coverage_pressure_means": {
+    "burst_pressure": 0.4085347958333333,
+    "fairness_pressure": 0.3989995625,
+    "kv_pressure": 0.8339338208333333,
+    "prefill_decode_pressure": 0.5873038749999999,
+    "service_heterogeneity": 0.631128075,
+    "urgency_pressure": 0.787905525
+  },
+  "gain_share_multi_mechanism_ge2": 0.9309751279784771,
+  "gain_share_triple_plus_ge3": 0.6334948986843587,
+  "win_by_elevated_mechanism_count": {
+    "chunked_prefill_small": {
+      "1": 0,
+      "2": 1,
+      "3": 1,
+      "4": 2,
+      "5": 1,
+      "6": 0
+    },
+    "estimated_service_time_first": {
+      "1": 2,
+      "2": 9,
+      "3": 16,
+      "4": 14,
+      "5": 4,
+      "6": 0
+    },
+    "full_prefill": {
+      "1": 1,
+      "2": 7,
+      "3": 17,
+      "4": 15,
+      "5": 5,
+      "6": 1
+    },
+    "kv_constrained_online": {
+      "1": 8,
+      "2": 12,
+      "3": 17,
+      "4": 8,
+      "5": 5,
+      "6": 0
+    },
+    "least_laxity_first": {
+      "1": 2,
+      "2": 14,
+      "3": 25,
+      "4": 17,
+      "5": 1,
+      "6": 0
+    },
+    "weighted_fair_share": {
+      "1": 4,
+      "2": 5,
+      "3": 14,
+      "4": 8,
+      "5": 4,
+      "6": 0
+    }
+  }
+}

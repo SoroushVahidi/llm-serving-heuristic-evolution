@@ -1,0 +1,367 @@
+{
+  "bootstrap": {
+    "auprc": {
+      "ci95_high": 1.0,
+      "ci95_low": 0.125,
+      "mean": 0.3986542078044194
+    },
+    "auroc": {
+      "ci95_high": 0.875,
+      "ci95_low": 0.7142857142857142,
+      "mean": 0.7760288723969966
+    },
+    "disagreement_enrichment": {
+      "ci95_high": null,
+      "ci95_low": null,
+      "mean": null
+    },
+    "mean_abs_delta": {
+      "ci95_high": 0.007931961601132076,
+      "ci95_low": 0.0,
+      "mean": 0.0031268453628462735
+    },
+    "n": 2000,
+    "nonzero_prevalence": {
+      "ci95_high": 0.2,
+      "ci95_low": 0.0,
+      "mean": 0.07884166666666667
+    },
+    "seed": 20260825,
+    "top10pct_state_mass_share": {
+      "ci95_high": 1.0,
+      "ci95_low": 0.0,
+      "mean": 0.6973333333333334
+    },
+    "top1pct_state_mass_share": {
+      "ci95_high": 1.0,
+      "ci95_low": 0.0,
+      "mean": 0.5761666666666666
+    },
+    "top5_scenario_mass_share": {
+      "ci95_high": 1.0,
+      "ci95_low": 0.0,
+      "mean": 0.709
+    },
+    "top5pct_state_mass_share": {
+      "ci95_high": 1.0,
+      "ci95_low": 0.0,
+      "mean": 0.5761666666666666
+    },
+    "zero_mass_rule": "concentration_share=0.0 when total abs mass is 0"
+  },
+  "by_acquisition": {
+    "AGREEMENT_CONTROL": {
+      "frac_nonzero": 0.0,
+      "mean_abs": 0.0,
+      "median_abs": 0.0,
+      "n": 6,
+      "thresholds": {
+        "0.001": 0.0,
+        "0.005": 0.0,
+        "0.01": 0.0
+      }
+    },
+    "DISAGREEMENT": {
+      "frac_nonzero": 0.16666666666666666,
+      "mean_abs": 0.006609968000943396,
+      "median_abs": 0.0,
+      "n": 6,
+      "thresholds": {
+        "0.001": 0.16666666666666666,
+        "0.005": 0.16666666666666666,
+        "0.01": 0.16666666666666666
+      }
+    }
+  },
+  "by_pressure": {
+    "high_burst_pressure=False": {
+      "frac_nonzero": 0.2,
+      "mean_abs": 0.007931961601132076,
+      "n": 5
+    },
+    "high_burst_pressure=True": {
+      "frac_nonzero": 0.0,
+      "mean_abs": 0.0,
+      "n": 7
+    },
+    "high_fairness_pressure=False": {
+      "frac_nonzero": 0.08333333333333333,
+      "mean_abs": 0.003304984000471698,
+      "n": 12
+    },
+    "high_kv_pressure=False": {
+      "frac_nonzero": 0.14285714285714285,
+      "mean_abs": 0.005665686857951483,
+      "n": 7
+    },
+    "high_kv_pressure=True": {
+      "frac_nonzero": 0.0,
+      "mean_abs": 0.0,
+      "n": 5
+    },
+    "high_prefill_decode_pressure=False": {
+      "frac_nonzero": 0.08333333333333333,
+      "mean_abs": 0.003304984000471698,
+      "n": 12
+    },
+    "high_service_heterogeneity=True": {
+      "frac_nonzero": 0.08333333333333333,
+      "mean_abs": 0.003304984000471698,
+      "n": 12
+    },
+    "high_urgency_pressure=False": {
+      "frac_nonzero": 0.2,
+      "mean_abs": 0.007931961601132076,
+      "n": 5
+    },
+    "high_urgency_pressure=True": {
+      "frac_nonzero": 0.0,
+      "mean_abs": 0.0,
+      "n": 7
+    },
+    "n_elevated_mechanisms_bins": {
+      "0_1": {
+        "frac_nonzero": 0.2,
+        "mean_abs": 0.007931961601132076,
+        "n": 5
+      },
+      "3": {
+        "frac_nonzero": 0.0,
+        "mean_abs": 0.0,
+        "n": 2
+      },
+      "ge4": {
+        "frac_nonzero": 0.0,
+        "mean_abs": 0.0,
+        "n": 5
+      }
+    }
+  },
+  "closed_loop_divergence": {
+    "available": true,
+    "intervention_step_quantiles": {
+      "0.1": 10.4,
+      "0.5": 88.5,
+      "0.9": 131.60000000000002
+    },
+    "mean_cf_extra_steps_nonzero": 2619.0,
+    "median_cf_extra_steps_nonzero": 2619.0,
+    "rate_among_nonzero": 1.0,
+    "rate_among_zero": 0.18181818181818182
+  },
+  "comparison_vs_abc": {
+    "note": "Contrast only; corpora are not pooled.",
+    "rows": [
+      {
+        "acquired_states": 734,
+        "corpus": "A/B/C TRAIN/VAL (terminal_anwg_v1)",
+        "disagreement_auprc": 0.045226295740812404,
+        "disagreement_auroc": 0.5131489339410131,
+        "divergence_among_nonzero": 1.0,
+        "h10_spearman": 0.005028827439722593,
+        "mean_abs_delta": 0.0011531834490241266,
+        "negative_pct": 1.6348773841961852,
+        "nonzero_pct": 3.6784741144414173,
+        "positive_pct": 2.043596730245232,
+        "scenarios": 144,
+        "top1pct_mass": 0.48346140995656584,
+        "top5pct_mass": 0.9999999999999998
+      },
+      {
+        "acquired_states": 12,
+        "corpus": "joint-240 (terminal_anwg_joint240_v1)",
+        "disagreement_auprc": 0.2,
+        "disagreement_auroc": 0.7727272727272727,
+        "divergence_among_nonzero": 1.0,
+        "h10_spearman": null,
+        "mean_abs_delta": 0.003304984000471698,
+        "negative_pct": 8.333333333333332,
+        "nonzero_pct": 8.333333333333332,
+        "positive_pct": 0.0,
+        "scenarios": null,
+        "top1pct_mass": 1.0,
+        "top5pct_mass": 1.0
+      }
+    ]
+  },
+  "concentration_abs_delta_all_states": {
+    "0.01": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.05": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.1": {
+      "k": 2,
+      "share": 1.0
+    },
+    "0.2": {
+      "k": 3,
+      "share": 1.0
+    },
+    "0.5": {
+      "k": 6,
+      "share": 1.0
+    }
+  },
+  "concentration_abs_delta_disagreement_only": {
+    "0.01": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.05": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.1": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.2": {
+      "k": 2,
+      "share": 1.0
+    },
+    "0.5": {
+      "k": 3,
+      "share": 1.0
+    }
+  },
+  "concentration_positive_gain_all_states": {
+    "0.01": {
+      "k": 1,
+      "share": 0.0
+    },
+    "0.05": {
+      "k": 1,
+      "share": 0.0
+    },
+    "0.1": {
+      "k": 2,
+      "share": 0.0
+    },
+    "0.2": {
+      "k": 3,
+      "share": 0.0
+    },
+    "0.5": {
+      "k": 6,
+      "share": 0.0
+    }
+  },
+  "config": {
+    "bootstrap_seed": 20260825,
+    "continuation_policy": "live_p6_dwell_router_v1 (OOF Alive)",
+    "control_seed": 20260825,
+    "design_doc": "docs/design/DECISION_CRITICALITY_TERMINAL_ANWG_JOINT240_V1.md",
+    "design_sha256": "3c76621b506fdf7a3b2d8bce96cc0c9cde50119ab09d2cd827e87fa32d896ad8",
+    "estimand": "continuation-policy-conditional one-step terminal Delta ANWG",
+    "git_dirty": true,
+    "git_head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+    "joint240_exp": "experiments/joint240_same_distribution_adaptive_exploitability_v1",
+    "max_agreement_control_per_scenario": 2,
+    "max_disagreement_per_scenario": 3,
+    "n_bootstrap": 2000,
+    "n_scenarios": 3,
+    "p6": [
+      "full_prefill",
+      "chunked_prefill_small",
+      "estimated_service_time_first",
+      "weighted_fair_share",
+      "least_laxity_first",
+      "kv_constrained_online"
+    ],
+    "python": "/home/soroush/modal-venv/bin/python",
+    "python_version": "3.12.3",
+    "schema_version": "decision_criticality_terminal_anwg_joint240_v1.0.0"
+  },
+  "disagreement_as_criticality_proxy": {
+    "auprc_disagreement_for_nonzero_abs_delta": 0.2,
+    "auroc_disagreement_for_nonzero_abs_delta": 0.7727272727272727,
+    "available": true,
+    "base_prevalence": 0.08333333333333333,
+    "enrichment_ratio": null,
+    "n_negative": 11,
+    "n_positive": 1,
+    "prevalence_agreement_control": 0.0,
+    "prevalence_disagreement": 0.16666666666666666
+  },
+  "elapsed_s": 87.10050296783447,
+  "failures": [],
+  "finished_utc": "2026-08-25T16:46:32.731998+00:00",
+  "h10_proxy_join": {
+    "available": false,
+    "reason": "H10 completed-count events are from the A/B/C TRAIN/VAL timescale experiment; they do not share scenario_id/step with joint-240 Alive trajectories. No new proxy invented."
+  },
+  "n_scenarios_attempted": 3,
+  "n_scenarios_failed": 0,
+  "n_scenarios_succeeded": 3,
+  "prevalence": {
+    "frac_abs_ge_0.01": 0.08333333333333333,
+    "frac_exact_zero": 0.9166666666666666,
+    "frac_negative": 0.08333333333333333,
+    "frac_nonzero": 0.08333333333333333,
+    "frac_positive": 0.0,
+    "mean_abs_delta": 0.003304984000471698,
+    "mean_delta": -0.003304984000471698,
+    "median_abs_delta": 0.0,
+    "median_delta": 0.0,
+    "n_states": 12,
+    "quantiles_abs_delta": {
+      "0.5": 0.0,
+      "0.9": 0.0,
+      "0.95": 0.017846913602547143,
+      "0.99": 0.03529722912503776
+    },
+    "thresholds": {
+      "0.001": 0.08333333333333333,
+      "0.005": 0.08333333333333333,
+      "0.01": 0.08333333333333333
+    }
+  },
+  "ref_replay": {
+    "max_abs_mismatch": 0.0,
+    "n_checks": 3,
+    "n_match": 3
+  },
+  "scenario_concentration_abs_mass": {
+    "0.01": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.05": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.1": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.2": {
+      "k": 1,
+      "share": 1.0
+    },
+    "0.5": {
+      "k": 2,
+      "share": 1.0
+    }
+  },
+  "scenario_prevalence": {
+    "frac_with_ge1_nonzero": 0.3333333333333333,
+    "mean_nonzero_per_scenario": 0.3333333333333333,
+    "mean_states_per_scenario": 4.0,
+    "n_scenarios": 3
+  },
+  "scenario_top_concentration": {
+    "top_1": 1.0,
+    "top_10pct_scenarios": 1.0,
+    "top_2": 1.0,
+    "top_5": 1.0,
+    "top_5pct_scenarios": 1.0
+  },
+  "started_utc": "2026-08-25T16:45:05.631505+00:00",
+  "verdicts": [
+    "JOINT240_INSUFFICIENT_EFFECT_EVENTS"
+  ]
+}

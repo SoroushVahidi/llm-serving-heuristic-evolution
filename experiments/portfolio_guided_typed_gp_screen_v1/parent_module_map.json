@@ -1,0 +1,103 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "minimum_extension_needed_before_run": [
+    "exact parent token/wrapper support for all six parents",
+    "typed causal class-deficit aggregate for WFS or keep WFS as exact opaque parent only",
+    "PrefillRule service_model_kwargs slot for full/chunk parents",
+    "KVGuard per-GPU post-util admission/placement slot"
+  ],
+  "parent_reproduction_requirement": "Before any screen can run, each encoded parent must reproduce the corresponding native parent decision/fingerprint on the fixed regression suite. Approximate genome mappings are allowed only as design modules, not as claims of exact parent reproduction.",
+  "parents": {
+    "chunked_prefill_small": {
+      "cannot_reuse_without_extension": [
+        "service-model chunk-size module in executable GP policy wrapper"
+      ],
+      "dsl_module_status": "NOT_REPRESENTED_AS_REQUEST_RANKING; exact behavior lives in service-model/chunking configuration",
+      "exact_runtime_formula": "GreedyArrivalPrefillControlPolicy with service_model_kwargs max_prefill_chunk_tokens=DEFAULT_CHUNK_SMALL, decode_first=False",
+      "genetic_material": [
+        "PrefillRule: small_chunk_budget"
+      ],
+      "mechanism": "small fixed prefill chunks to reduce prefill/decode contention",
+      "source": "src/llmserveopt/policies/prefill_control_variants.py"
+    },
+    "estimated_service_time_first": {
+      "cannot_reuse_without_extension": [
+        "full native placement/tie-break order beyond primary ranking"
+      ],
+      "dsl_module_status": "EXACT_PRIMARY_RANKING; tie-break reproduction limited by current DSL single tie breaker",
+      "exact_runtime_formula": "sort by alpha*prompt_tokens + beta*predicted_output_tokens, then deadline, priority, request_id",
+      "genetic_material": [
+        "service_proxy RankingRule",
+        "completion_efficiency Score terminal"
+      ],
+      "mechanism": "completion/size-sensitive shortest estimated service ranking",
+      "source": "src/llmserveopt/policies/estimated_service_time_first.py"
+    },
+    "full_prefill": {
+      "cannot_reuse_without_extension": [
+        "dynamic chunk-size action in HeuristicPolicy",
+        "service_model_kwargs encoded in current SchedulerGenomeV1"
+      ],
+      "dsl_module_status": "NOT_REPRESENTED_AS_REQUEST_RANKING; exact behavior lives in service-model/chunking configuration",
+      "exact_runtime_formula": "GreedyArrivalPrefillControlPolicy with service_model_kwargs max_prefill_chunk_tokens=UNLIMITED_PREFILL_CHUNK, decode_first=False",
+      "genetic_material": [
+        "PrefillRule: full_prefill_budget"
+      ],
+      "mechanism": "uninterrupted/full prompt prefill through service_model max_prefill_chunk_tokens = unlimited and decode_first=False",
+      "source": "src/llmserveopt/policies/prefill_control_variants.py"
+    },
+    "kv_constrained_online": {
+      "cannot_reuse_without_extension": [
+        "per-GPU post-util admission filter",
+        "gpu_key placement ordering"
+      ],
+      "dsl_module_status": "APPROXIMATE; aggregate KV pressure/ranking can compile, but per-GPU post-placement reserve and urgent bypass require wrapper support",
+      "exact_runtime_formula": "rank by nonurgent flag, kv_cost/priority, laxity, request_id; admit only if post-util <= reserve threshold or urgent",
+      "genetic_material": [
+        "KVGuard threshold",
+        "urgent_laxity bypass Boolean",
+        "kv_cost/priority ranking"
+      ],
+      "mechanism": "KV utilization reserve with urgent-laxity bypass and KV-aware placement",
+      "source": "src/llmserveopt/policies/kv_constrained_online.py"
+    },
+    "least_laxity_first": {
+      "cannot_reuse_without_extension": [
+        "full native multi-key tie breaker"
+      ],
+      "dsl_module_status": "EXACT_PRIMARY_RANKING; tie-break reproduction limited by current DSL single tie breaker",
+      "exact_runtime_formula": "sort by deadline - now - estimated_service, then deadline, priority, request_id",
+      "genetic_material": [
+        "laxity RankingRule",
+        "negative-laxity Boolean guard",
+        "deadline urgency Score"
+      ],
+      "mechanism": "deadline laxity / SLO urgency ranking",
+      "source": "src/llmserveopt/policies/least_laxity_first.py"
+    },
+    "weighted_fair_share": {
+      "cannot_reuse_without_extension": [
+        "admitted_counts update during a decision",
+        "queue_class_counts by class_id as typed causal aggregate"
+      ],
+      "dsl_module_status": "APPROXIMATE in existing structural_synthesis; exact admitted-count deficit is not represented by current stateless DSL vars",
+      "exact_runtime_formula": "score = demand[class] / max(1, active[class]+admitted[class]+1) * priority / estimated_service",
+      "genetic_material": [
+        "priority_over_service score",
+        "class deficit concept as required exact primitive before run"
+      ],
+      "mechanism": "instantaneous class demand/served deficit times priority over service",
+      "source": "src/llmserveopt/policies/weighted_fair_share.py"
+    }
+  },
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

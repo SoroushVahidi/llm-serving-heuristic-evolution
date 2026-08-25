@@ -433,6 +433,11 @@ class LiveHierarchicalRouterPolicy(BasePolicy):
         self.last_dwell_diagnostics = None
         self.stage2_call_count: Dict[str, int] = {r: 0 for r in ACTIVE_REGIMES}
         self.selected_policy_step_counts: Dict[str, int] = {}
+        # Stage-2 inputs are t=0 scenario-level feature rows (constant for the
+        # whole trajectory). Caching the predicted native policy id per regime
+        # is therefore bit-identical to re-predicting every step, and avoids
+        # repeating an expensive sklearn call ~30k times on long Family-A runs.
+        self._stage2_policy_cache: Dict[str, str] = {}
 
     def reset(self) -> None:
         self._fsm = IncrementalDwellFallbackFSM(self.dwell_steps)
@@ -440,6 +445,7 @@ class LiveHierarchicalRouterPolicy(BasePolicy):
         self.last_dwell_diagnostics = None
         self.stage2_call_count = {r: 0 for r in ACTIVE_REGIMES}
         self.selected_policy_step_counts = {}
+        self._stage2_policy_cache = {}
         for p in self.native_policies.values():
             p.reset()
 
@@ -493,7 +499,12 @@ class LiveHierarchicalRouterPolicy(BasePolicy):
             if selector is not None and feat_row is not None:
                 stage2_regime = effective_regime
                 self.stage2_call_count[effective_regime] += 1
-                policy_id = str(selector.predict(feat_row)[0])
+                cached = self._stage2_policy_cache.get(effective_regime)
+                if cached is not None:
+                    policy_id = cached
+                else:
+                    policy_id = str(selector.predict(feat_row)[0])
+                    self._stage2_policy_cache[effective_regime] = policy_id
             else:
                 # No trained selector / no feature row reachable for this
                 # regime on this scenario -- safe default, same fallback

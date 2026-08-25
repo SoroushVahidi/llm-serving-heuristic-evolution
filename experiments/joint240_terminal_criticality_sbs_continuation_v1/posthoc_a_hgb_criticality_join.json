@@ -1,0 +1,63 @@
+{
+  "analysis": "POST_HOC",
+  "n_scenarios": 240,
+  "spearman_abs_mass_vs_a_hgb_regret": {
+    "correlation": 0.0406519751322132,
+    "pvalue": 0.5308238702454331
+  },
+  "spearman_n_nonzero_vs_a_hgb_regret": {
+    "correlation": 0.06279980408031866,
+    "pvalue": 0.33266113156197197
+  },
+  "strata": [
+    {
+      "label": "a_hgb_catastrophic",
+      "n": 34,
+      "mean_abs_mass": 0.014530618253580664,
+      "mean_n_nonzero": 0.6176470588235294,
+      "mean_a_hgb_regret": 0.04179843860127429,
+      "frac_with_any_nonzero_crit": 0.29411764705882354
+    },
+    {
+      "label": "a_hgb_not_catastrophic",
+      "n": 206,
+      "mean_abs_mass": 0.02189561453462901,
+      "mean_n_nonzero": 0.8980582524271845,
+      "mean_a_hgb_regret": 0.014730395834663445,
+      "frac_with_any_nonzero_crit": 0.3640776699029126
+    },
+    {
+      "label": "a_hgb_wrong_vbs",
+      "n": 177,
+      "mean_abs_mass": 0.017996621332222917,
+      "mean_n_nonzero": 0.7344632768361582,
+      "mean_a_hgb_regret": 0.025172929120813533,
+      "frac_with_any_nonzero_crit": 0.3050847457627119
+    },
+    {
+      "label": "a_hgb_correct_vbs",
+      "n": 63,
+      "mean_abs_mass": 0.028875168872251767,
+      "mean_n_nonzero": 1.2063492063492063,
+      "mean_a_hgb_regret": 0.0,
+      "frac_with_any_nonzero_crit": 0.49206349206349204
+    },
+    {
+      "label": "a_hgb_regret_ge_median",
+      "n": 120,
+      "mean_abs_mass": 0.022321186183316504,
+      "mean_n_nonzero": 0.9416666666666667,
+      "mean_a_hgb_regret": 0.03635249528897609,
+      "frac_with_any_nonzero_crit": 0.36666666666666664
+    },
+    {
+      "label": "a_hgb_regret_lt_median",
+      "n": 120,
+      "mean_abs_mass": 0.01938329393964448,
+      "mean_n_nonzero": 0.775,
+      "mean_a_hgb_regret": 0.0007775751642238648,
+      "frac_with_any_nonzero_crit": 0.3416666666666667
+    }
+  ],
+  "caveat": "A_hgb is scenario-level selection; state-level criticality under Alive continuation does not directly explain A_hgb mistakes. Descriptive only."
+}

@@ -1,0 +1,207 @@
+{
+  "blocks": [
+    {
+      "block": 0,
+      "regime_repetition_order": [
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 1
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 0
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 1
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 0
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 1
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 1
+        }
+      ],
+      "repetitions": [
+        0,
+        1
+      ],
+      "treatment": "FULL"
+    },
+    {
+      "block": 1,
+      "regime_repetition_order": [
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 0
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 1
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 1
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 0
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 1
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 0
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 1
+        }
+      ],
+      "repetitions": [
+        0,
+        1
+      ],
+      "treatment": "CHUNKED"
+    },
+    {
+      "block": 2,
+      "regime_repetition_order": [
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 4
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 4
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 2
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 2
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 2
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 4
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 2
+        }
+      ],
+      "repetitions": [
+        2,
+        3,
+        4
+      ],
+      "treatment": "CHUNKED"
+    },
+    {
+      "block": 3,
+      "regime_repetition_order": [
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 2
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 3
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 2
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 2
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 4
+        },
+        {
+          "regime": "hog_tight_high_late",
+          "repetition": 3
+        },
+        {
+          "regime": "late_tight_low_late",
+          "repetition": 2
+        },
+        {
+          "regime": "hog_tight_low_late",
+          "repetition": 4
+        },
+        {
+          "regime": "late_tight_high_late",
+          "repetition": 4
+        }
+      ],
+      "repetitions": [
+        2,
+        3,
+        4
+      ],
+      "treatment": "FULL"
+    }
+  ],
+  "seed": 20260824
+}

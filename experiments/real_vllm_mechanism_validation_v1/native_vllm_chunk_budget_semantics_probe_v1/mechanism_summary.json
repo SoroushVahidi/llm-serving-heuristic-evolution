@@ -1,0 +1,51 @@
+{
+  "interpretation": "Both treatments use native vLLM chunked prefill; T512 produces smaller prompt-token steps and more partial prefill chunks than T4096. The latency comparison tests native budget semantics, not simulator Family-B.",
+  "trace_summary_by_treatment": {
+    "T4096": {
+      "decode_token_share": 0.04719347616949732,
+      "max_running_after_schedule": 4,
+      "max_waiting_after_schedule": 5,
+      "mixed_prefill_decode_steps": 55,
+      "mixed_step_fraction": 0.035807291666666664,
+      "partial_prefill_items": 9,
+      "prompt_tokens_per_prefill_step": {
+        "mean": 1535.855072463768,
+        "median": 112,
+        "n": 69,
+        "p95": 4095.0,
+        "sd": 1630.9142264329062
+      },
+      "scheduled_steps": 1536,
+      "total_tokens_per_step": {
+        "mean": 73.7553050397878,
+        "median": 4.0,
+        "n": 1508,
+        "p95": 4.0,
+        "sd": 471.9448816042347
+      }
+    },
+    "T512": {
+      "decode_token_share": 0.04719347616949732,
+      "max_running_after_schedule": 4,
+      "max_waiting_after_schedule": 7,
+      "mixed_prefill_decode_steps": 165,
+      "mixed_step_fraction": 0.09821428571428571,
+      "partial_prefill_items": 194,
+      "prompt_tokens_per_prefill_step": {
+        "mean": 436.10699588477365,
+        "median": 511,
+        "n": 243,
+        "p95": 512.0,
+        "sd": 153.59820959951867
+      },
+      "scheduled_steps": 1680,
+      "total_tokens_per_step": {
+        "mean": 67.32627118644068,
+        "median": 4.0,
+        "n": 1652,
+        "p95": 512.0,
+        "sd": 164.49076225137713
+      }
+    }
+  }
+}

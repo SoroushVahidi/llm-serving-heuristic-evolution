@@ -1,0 +1,238 @@
+{
+  "available": true,
+  "caveat": "Policy trajectories can diverge; this is diagnostic, not a same-state selector disagreement estimate.",
+  "local_winner_structure": {
+    "feature_axes": [
+      "fairness_pressure",
+      "service_heterogeneity",
+      "prefill_decode_pressure",
+      "kv_pressure",
+      "urgency_pressure",
+      "burst_pressure"
+    ],
+    "k": 10,
+    "local_winner_entropy_mean_bits": 1.9420990271721725,
+    "local_winner_entropy_median_bits": 1.9609640474436814,
+    "nearest_neighbor_winner_consistency_mean": 0.2129166666666667,
+    "nearest_neighbor_winner_consistency_median": 0.2,
+    "winner_by_pressure_bin": {
+      "burst_pressure": {
+        "chunked_prefill_small": {
+          "high": 3,
+          "low": 1,
+          "mid": 1
+        },
+        "estimated_service_time_first": {
+          "high": 6,
+          "low": 18,
+          "mid": 21
+        },
+        "full_prefill": {
+          "high": 12,
+          "low": 10,
+          "mid": 24
+        },
+        "kv_constrained_online": {
+          "high": 4,
+          "low": 29,
+          "mid": 17
+        },
+        "least_laxity_first": {
+          "high": 7,
+          "low": 22,
+          "mid": 30
+        },
+        "weighted_fair_share": {
+          "high": 4,
+          "low": 16,
+          "mid": 15
+        }
+      },
+      "fairness_pressure": {
+        "chunked_prefill_small": {
+          "high": 3,
+          "low": 0,
+          "mid": 2
+        },
+        "estimated_service_time_first": {
+          "high": 7,
+          "low": 25,
+          "mid": 13
+        },
+        "full_prefill": {
+          "high": 10,
+          "low": 20,
+          "mid": 16
+        },
+        "kv_constrained_online": {
+          "high": 13,
+          "low": 20,
+          "mid": 17
+        },
+        "least_laxity_first": {
+          "high": 10,
+          "low": 32,
+          "mid": 17
+        },
+        "weighted_fair_share": {
+          "high": 7,
+          "low": 20,
+          "mid": 8
+        }
+      },
+      "kv_pressure": {
+        "chunked_prefill_small": {
+          "high": 4,
+          "low": 0,
+          "mid": 1
+        },
+        "estimated_service_time_first": {
+          "high": 35,
+          "low": 2,
+          "mid": 8
+        },
+        "full_prefill": {
+          "high": 35,
+          "low": 0,
+          "mid": 11
+        },
+        "kv_constrained_online": {
+          "high": 38,
+          "low": 0,
+          "mid": 12
+        },
+        "least_laxity_first": {
+          "high": 45,
+          "low": 2,
+          "mid": 12
+        },
+        "weighted_fair_share": {
+          "high": 28,
+          "low": 3,
+          "mid": 4
+        }
+      },
+      "prefill_decode_pressure": {
+        "chunked_prefill_small": {
+          "high": 1,
+          "low": 0,
+          "mid": 4
+        },
+        "estimated_service_time_first": {
+          "high": 16,
+          "low": 5,
+          "mid": 24
+        },
+        "full_prefill": {
+          "high": 21,
+          "low": 2,
+          "mid": 23
+        },
+        "kv_constrained_online": {
+          "high": 13,
+          "low": 4,
+          "mid": 33
+        },
+        "least_laxity_first": {
+          "high": 19,
+          "low": 11,
+          "mid": 29
+        },
+        "weighted_fair_share": {
+          "high": 11,
+          "low": 4,
+          "mid": 20
+        }
+      },
+      "service_heterogeneity": {
+        "chunked_prefill_small": {
+          "high": 2,
+          "low": 0,
+          "mid": 3
+        },
+        "estimated_service_time_first": {
+          "high": 23,
+          "low": 1,
+          "mid": 21
+        },
+        "full_prefill": {
+          "high": 23,
+          "low": 3,
+          "mid": 20
+        },
+        "kv_constrained_online": {
+          "high": 17,
+          "low": 3,
+          "mid": 30
+        },
+        "least_laxity_first": {
+          "high": 21,
+          "low": 5,
+          "mid": 33
+        },
+        "weighted_fair_share": {
+          "high": 16,
+          "low": 2,
+          "mid": 17
+        }
+      },
+      "urgency_pressure": {
+        "chunked_prefill_small": {
+          "high": 2,
+          "low": 0,
+          "mid": 3
+        },
+        "estimated_service_time_first": {
+          "high": 27,
+          "low": 0,
+          "mid": 18
+        },
+        "full_prefill": {
+          "high": 39,
+          "low": 0,
+          "mid": 7
+        },
+        "kv_constrained_online": {
+          "high": 27,
+          "low": 0,
+          "mid": 23
+        },
+        "least_laxity_first": {
+          "high": 48,
+          "low": 0,
+          "mid": 11
+        },
+        "weighted_fair_share": {
+          "high": 15,
+          "low": 0,
+          "mid": 20
+        }
+      }
+    }
+  },
+  "metric": "closed_loop_action_set_disagreement_proxy",
+  "overall_mean_pairwise_disagreement": 0.7852939702950323,
+  "pairwise_mean": {
+    "('chunked_prefill_small', 'estimated_service_time_first')": 0.826451,
+    "('chunked_prefill_small', 'kv_constrained_online')": 0.825999,
+    "('chunked_prefill_small', 'least_laxity_first')": 0.825403,
+    "('chunked_prefill_small', 'weighted_fair_share')": 0.826288,
+    "('estimated_service_time_first', 'kv_constrained_online')": 0.722092,
+    "('estimated_service_time_first', 'least_laxity_first')": 0.789623,
+    "('estimated_service_time_first', 'weighted_fair_share')": 0.705166,
+    "('full_prefill', 'chunked_prefill_small')": 0.818338,
+    "('full_prefill', 'estimated_service_time_first')": 0.78577,
+    "('full_prefill', 'kv_constrained_online')": 0.787559,
+    "('full_prefill', 'least_laxity_first')": 0.78581,
+    "('full_prefill', 'weighted_fair_share')": 0.78384,
+    "('least_laxity_first', 'kv_constrained_online')": 0.786539,
+    "('weighted_fair_share', 'kv_constrained_online')": 0.722986,
+    "('weighted_fair_share', 'least_laxity_first')": 0.787546
+  },
+  "scenario_disagreement_policy_range_correlation": 0.27657487308030315,
+  "scenario_summary": {
+    "max": 0.9930680480702481,
+    "median": 0.8644424719131287,
+    "p90": 0.9602398577873279
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "DO_NOT_RETEST_EQUIVALENT_FORMS": [
+    {
+      "failure": "quadrant semantics wrong in favlong; scalar blend",
+      "formula": "priority / predicted_service_proxy",
+      "id": "A"
+    },
+    {
+      "failure": "collapsed to priority/regime identity on contested events",
+      "formula": "priority / laxity_own",
+      "id": "B"
+    },
+    {
+      "failure": "collapsed to priority/regime identity",
+      "formula": "priority * urgency / predicted_service_proxy",
+      "id": "C"
+    },
+    {
+      "failure": "quadrant semantics wrong",
+      "formula": "(priority/service) * (1 + queue_age)",
+      "id": "D"
+    },
+    {
+      "failure": "collapsed to priority/regime identity",
+      "formula": "priority * predicted_service_proxy / laxity_own",
+      "id": "E"
+    },
+    {
+      "failure": "static priority/regime identity",
+      "formula": "higher priority side wins",
+      "id": "priority_only_rel"
+    },
+    {
+      "failure": "regime identity, not mechanism synthesis",
+      "formula": "favlong->WFS, favshort->ESTF",
+      "id": "favored_size_only"
+    }
+  ],
+  "new_family_structural_checks": [
+    "WFS default required",
+    "ESTF only by guarded release",
+    "no unconstrained additive weighted scalar blend",
+    "no coefficient search",
+    "no direct favored-size-only condition in candidate rules"
+  ],
+  "prior_analytic_summary_sha256": "c75f7b87bef61c3c7b519629827f92455e6d2ac4f7d45d010bea2b8010343272"
+}

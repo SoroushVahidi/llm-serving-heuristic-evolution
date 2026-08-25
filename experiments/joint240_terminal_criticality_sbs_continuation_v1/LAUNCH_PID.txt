@@ -1,0 +1,8 @@
+PID=2896942
+launched_at=2026-08-25T21:41:54Z
+command=python3 -u scripts/run_joint240_terminal_criticality_sbs_continuation_v1.py
+out_dir=experiments/joint240_terminal_criticality_sbs_continuation_v1
+stdout=experiments/joint240_terminal_criticality_sbs_continuation_v1/run.log
+stderr=merged_stdout
+design_sha256_sbs=57c49520da34fac1235abb26845bf5c39cac95de672dfd582b1af30fa167dc97
+gate_design_sha256=e4c446f5857ebc0ce5a1ff7e1f6c304a55519ea2e20c915d24ba576a8e67a6fd

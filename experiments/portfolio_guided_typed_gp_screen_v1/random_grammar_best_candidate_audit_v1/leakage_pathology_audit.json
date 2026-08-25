@@ -1,0 +1,14 @@
+{
+  "actual_output_length_access_found": false,
+  "basis": "Candidate uses ObservableState.waiting_queue, ObservableRequest class_id/priority/arrival_time/request_id/prompt_tokens/predicted_output_tokens/slo_deadline, active request class counts, GPU capacities, and Action.prefill_chunk_override. No DEV/TEST/FINAL/OOD data or reward values are referenced by generation or execution.",
+  "candidate_validity": "NO_LEAKAGE_OR_PATHOLOGY_FOUND",
+  "constant_values_encode_scenario_ids_found": false,
+  "future_information_access_found": false,
+  "generator_identifier_access_found": false,
+  "impossible_state_values_found": false,
+  "metric_artifact_found": false,
+  "nan_missingness_artifact_found": false,
+  "policy_action_noop_pathology_found": false,
+  "scenario_family_identifier_access_found": false,
+  "tie_breaking_exploitation_found": false
+}

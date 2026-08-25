@@ -1,0 +1,36 @@
+{
+  "artifact_created_utc": "2026-08-24T00:00:00Z",
+  "constraints": {
+    "no_dev_design_tuning": true,
+    "no_heavy_simulation_launched": true,
+    "no_oracle_acquisition": true,
+    "no_selector_reopening": true,
+    "no_test_final": true,
+    "no_wulver_gpu_api_jobs": true
+  },
+  "go_gate_all_required": {
+    "max_parent_decision_overlap_at_most": 0.95,
+    "max_parent_reward_correlation_at_most": 0.985,
+    "mean_MG_ANWG_at_least": 0.005,
+    "mechanism_behavior_matches_declared_hypothesis": true,
+    "parent_reproduction_tests_pass": true,
+    "positive_MG_regions_at_least": 2,
+    "severe_group_regression_ANWG_at_most": 0.03,
+    "top_one_family_positive_MG_share_at_most": 0.7,
+    "top_one_scenario_positive_MG_share_at_most": 0.4,
+    "unique_wins_eps_0.005_at_least": 3
+  },
+  "no_go_if_any": {
+    "max_parent_overlap_above_0.95_and_mean_MG_below_0.005": true,
+    "mean_MG_ANWG_below": 0.001,
+    "mechanism_inversion": true,
+    "only_isolated_scenario_wins": true,
+    "parent_behavioral_recovery": true,
+    "parent_reproduction_tests_fail": true,
+    "severe_group_regression_ANWG_above": 0.05,
+    "unique_wins_eps_0.005_equals": 0
+  },
+  "source": "Preserves portfolio_policy_synthesis_design_v1 gates where compatible; adds parent-reproduction as a hard validity gate for the GP screen.",
+  "status": "DESIGNED_NOT_RUN",
+  "task": "portfolio_guided_typed_gp_screen_v1_design_only"
+}

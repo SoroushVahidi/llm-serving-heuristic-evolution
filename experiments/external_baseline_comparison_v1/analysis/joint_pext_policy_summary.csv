@@ -1,0 +1,9 @@
+policy,in_P6,mean_anwg,winner_count,epsilon_unique_count,VBS_drop_if_removed,contributes_to_envelope
+full_prefill,True,0.2558125903167852,27,2,0.00011436012834542542,True
+chunked_prefill_small,True,0.22557919300588047,3,2,0.0004011341499303711,True
+estimated_service_time_first,True,0.3039245658217756,45,28,0.0028154300434100055,True
+weighted_fair_share,True,0.3068098906524835,34,25,0.0037818109809072964,True
+least_laxity_first,True,0.2909341236540524,57,43,0.005761709031829043,True
+kv_constrained_online,True,0.3140716694729327,48,39,0.00709373051591039,True
+official_vtc_joint_token_budget_remap,False,0.2548790366295616,23,3,0.00021363058614387587,True
+vllm_style_continuous_batching,False,0.13173044540156173,3,0,0.0,False

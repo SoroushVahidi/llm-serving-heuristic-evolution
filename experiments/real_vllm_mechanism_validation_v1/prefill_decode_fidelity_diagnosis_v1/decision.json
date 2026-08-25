@@ -1,0 +1,22 @@
+{
+  "current_no_go_proves": "Evidence against this concrete native vLLM configuration reproducing the simulator Family-B reversal; not strong evidence against Family-B transfer in all real systems.",
+  "diagnosis": "SIMULATOR_VLLM_SEMANTICS_MISMATCH",
+  "did_real_contention_match_family_b_semantics": "NO",
+  "did_real_contention_occur": "YES",
+  "paper_classification": "evidence only against this concrete vLLM configuration; use as validation/limitation subsection or appendix unless follow-up native-vLLM question is run.",
+  "safety": {
+    "large_sweep_run": false,
+    "new_model_downloaded": false,
+    "policies_implemented": [
+      "none"
+    ],
+    "test_final_used": false,
+    "wulver_used": false
+  },
+  "single_cheapest_follow_up": {
+    "design": "Local cached Qwen0.5B, chunked prefill enabled for all treatments, compare max_num_batched_tokens=512 vs 4096 on 1-2 regimes with scheduler tracing. This tests the native vLLM mechanism actually implemented without the disabled-chunking validation constraint.",
+    "launch_now": false,
+    "name": "native_vllm_chunk_budget_semantics_probe_v1",
+    "reason": "Scaling to 7B/Wulver would not resolve the semantic mismatch first."
+  }
+}

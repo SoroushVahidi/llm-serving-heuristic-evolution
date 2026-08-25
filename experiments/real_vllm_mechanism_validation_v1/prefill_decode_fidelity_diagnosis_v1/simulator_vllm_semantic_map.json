@@ -1,0 +1,92 @@
+{
+  "experiment": "real_vllm_prefill_decode_fidelity_diagnosis_v1",
+  "is_acceptable_family_b_analogue": "NO; it is acceptable as a native vLLM chunked-prefill test but not as an isolated simulator Family-B reproduction.",
+  "rows": [
+    {
+      "consequence": "Real FULL has a much larger per-iteration budget than Family-B full; 3200-token hogs fit in one iteration and can leave room for decode/short-prefill work.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "full_prefill uses GreedyArrivalPrefillControlPolicy plus max_prefill_chunk_tokens=65536, decode_first=False under enable_decode_prefill_contention=True; an earlier hog can consume the whole 512-token step budget.",
+      "simulator_primitive": "full prompt prefill",
+      "vllm_0_27_1_analogue": "--no-enable-chunked-prefill with max_num_batched_tokens=4096; waiting request is admitted only if its full prompt fits remaining token budget."
+    },
+    {
+      "consequence": "The real chunk size is about 8x the simulator small chunk and is coupled to total batch budget.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "chunked_prefill_small uses max_prefill_chunk_tokens=64 with step_token_budget=512.",
+      "simulator_primitive": "chunk size",
+      "vllm_0_27_1_analogue": "--enable-chunked-prefill and max_num_batched_tokens=512; actual chunks are determined by remaining token budget, often 510-512 tokens in the diagnostic trace."
+    },
+    {
+      "consequence": "Modern vLLM does not match the old v0.4.2-style shared FCFS simulator abstraction exactly.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "Family-B v2 does not rely on decode_first; decode_priority_chunked was dropped because it is a twin on clean traces.",
+      "simulator_primitive": "decode priority",
+      "vllm_0_27_1_analogue": "vLLM V1 scheduler has no separate decode phase; it schedules running requests first, then waiting requests, against one token budget."
+    },
+    {
+      "consequence": "Treatment changes chunking and total scheduled-token budget together; this is a bundled scheduling/budget intervention.",
+      "fidelity": "MISMATCH",
+      "simulator_implementation": "step_token_budget=512 shared across prefill and decode in Family-B v2.",
+      "simulator_primitive": "token budget per iteration",
+      "vllm_0_27_1_analogue": "FULL required max_num_batched_tokens=4096; CHUNKED used 512. Disabled chunked prefill with 512 is rejected by vLLM when max_model_len=4096."
+    },
+    {
+      "consequence": "Queueing exists, but late waiting requests are not interleaved with running prefill chunks the same way as simulator late-prefill crumbs.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "simulator GPU active sequence model with stepwise token budget and greedy arrival admission.",
+      "simulator_primitive": "batching / active sequence cap",
+      "vllm_0_27_1_analogue": "max_num_seqs=4; scheduler first visits running requests, then promotes waiting requests while token and sequence slots remain."
+    },
+    {
+      "consequence": "Observed overlap exists, but it is not the same natural-trace FCFS interaction that created Family-B v2 wins.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "decode requests consume one token in the same shared FCFS pass under decode_first=False, or first under decode-protected mode.",
+      "simulator_primitive": "active decode handling",
+      "vllm_0_27_1_analogue": "running decode requests are scheduled before waiting requests; running decode and running prefill chunks can share an iteration."
+    },
+    {
+      "consequence": "A long request once admitted under chunked mode can repeatedly consume budget while late requests remain waiting.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "policy admission is greedy arrival order; fixed variants differ only by service_model kwargs.",
+      "simulator_primitive": "request admission / queue ordering",
+      "vllm_0_27_1_analogue": "FCFS waiting queue, but already-running requests are always considered before waiting admissions."
+    },
+    {
+      "consequence": "Absolute service ratios are hardware/model dependent, not simulator-step commensurate.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "discrete 1 ms steps; token cost represented by counts against step budget.",
+      "simulator_primitive": "GPU service cost",
+      "vllm_0_27_1_analogue": "real kernels on RTX 5060 Ti; measured 3200-token single-request TTFT about 76.7 ms, representative decode ITL about 5.91 ms."
+    },
+    {
+      "consequence": "Measurement is valid, but underlying service events differ.",
+      "fidelity": "EXACT_MEASUREMENT_APPROXIMATE_SEMANTICS",
+      "simulator_implementation": "first decode token time after prefill completion in step simulation.",
+      "simulator_primitive": "TTFT",
+      "vllm_0_27_1_analogue": "client-side streaming first-token timestamp from OpenAI-compatible endpoint."
+    },
+    {
+      "consequence": "Useful for ratio diagnostics, not a direct simulator-step mapping.",
+      "fidelity": "APPROXIMATE",
+      "simulator_implementation": "one decoded token per active decode request per step.",
+      "simulator_primitive": "decode latency",
+      "vllm_0_27_1_analogue": "streamed token inter-arrival approximated by (E2E - TTFT)/(output_tokens-1); batching and kernels are real."
+    },
+    {
+      "consequence": "KV pressure was not active and should not be used for mechanism claims here.",
+      "fidelity": "EXACT_MEASUREMENT",
+      "simulator_implementation": "simulator KV token counts; Family B v2 not a high-KV-pressure mechanism.",
+      "simulator_primitive": "KV allocation",
+      "vllm_0_27_1_analogue": "vLLM KV cache allocation measured via Prometheus; max completed-run usage 2.84%, no preemptions."
+    }
+  ],
+  "source_basis": [
+    "docs/design/POLICY_SEPARATION_FAMILY_PREFILL_DECODE_V2.md",
+    "docs/decode_prefill_contention_execution_model.md",
+    "src/llmserveopt/policies/prefill_control_variants.py",
+    "src/llmserveopt/simulator/gpu.py",
+    "/home/soroush/.venvs/vllm_real_validation_v1/lib/python3.12/site-packages/vllm/v1/core/sched/scheduler.py",
+    "/home/soroush/.venvs/vllm_real_validation_v1/lib/python3.12/site-packages/vllm/config/scheduler.py"
+  ],
+  "treatment_assessment": "BUNDLED_SCHEDULING_BUDGET_INTERVENTION"
+}

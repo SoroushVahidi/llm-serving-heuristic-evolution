@@ -1,0 +1,35 @@
+{
+  "exact_command": "python3 scripts/run_public_replay_load_scaling_v1.py --smoke",
+  "expected_n_cells": 3840,
+  "git_head_sha": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "git_tree_dirty": true,
+  "hostname": "al-khwarizmi",
+  "load_factors": [
+    1.0,
+    2.0,
+    4.0,
+    8.0,
+    16.0,
+    32.0,
+    64.0,
+    128.0
+  ],
+  "mode": "smoke",
+  "numpy_version": "2.3.5",
+  "pandas_version": "3.0.2",
+  "pext_policies": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online",
+    "official_vtc_joint_token_budget_remap",
+    "vllm_style_continuous_batching"
+  ],
+  "python_executable": "/home/soroush/modal-venv/bin/python",
+  "python_version": "3.12.3",
+  "run_timestamp_utc_end": "2026-08-25T18:23:55Z",
+  "run_timestamp_utc_start": "2026-08-25T18:23:54Z",
+  "schema_version": "public_replay_load_scaling_v1_provenance.1.0.0"
+}

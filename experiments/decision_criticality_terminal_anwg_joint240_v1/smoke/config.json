@@ -1,0 +1,26 @@
+{
+  "schema_version": "decision_criticality_terminal_anwg_joint240_v1.0.0",
+  "max_disagreement_per_scenario": 3,
+  "max_agreement_control_per_scenario": 2,
+  "control_seed": 20260825,
+  "bootstrap_seed": 20260825,
+  "n_bootstrap": 2000,
+  "design_doc": "docs/design/DECISION_CRITICALITY_TERMINAL_ANWG_JOINT240_V1.md",
+  "design_sha256": "3c76621b506fdf7a3b2d8bce96cc0c9cde50119ab09d2cd827e87fa32d896ad8",
+  "n_scenarios": 3,
+  "continuation_policy": "live_p6_dwell_router_v1 (OOF Alive)",
+  "estimand": "continuation-policy-conditional one-step terminal Delta ANWG",
+  "git_head": "2987b7181efa2bc550d8a894c537eca8f6393eb6",
+  "git_dirty": true,
+  "python": "/home/soroush/modal-venv/bin/python",
+  "python_version": "3.12.3",
+  "joint240_exp": "experiments/joint240_same_distribution_adaptive_exploitability_v1",
+  "p6": [
+    "full_prefill",
+    "chunked_prefill_small",
+    "estimated_service_time_first",
+    "weighted_fair_share",
+    "least_laxity_first",
+    "kv_constrained_online"
+  ]
+}

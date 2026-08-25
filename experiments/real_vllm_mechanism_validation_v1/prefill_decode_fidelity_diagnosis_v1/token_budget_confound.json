@@ -1,0 +1,27 @@
+{
+  "can_control_independently": {
+    "instrument_actual_chunk_sizes": "YES; scheduler trace recorded actual scheduled prefill tokens.",
+    "prompts_exceeding_common_budget": "ONLY with chunked enabled or lower max_model_len; disabled requires budget >= max_model_len.",
+    "same_flag_different_budget": "YES; chunked-enabled 512 vs chunked-enabled larger budgets can test native vLLM budget/chunk behavior, but not full-vs-chunked simulator mapping.",
+    "same_max_num_batched_tokens_for_disabled_and_chunked_at_512": "NO for max_model_len=4096; disabled mode is invalid."
+  },
+  "completed_treatments": {
+    "CHUNKED": {
+      "enable_chunked_prefill": true,
+      "max_num_batched_tokens": 512,
+      "reason": "intended native chunked-prefill pressure setting."
+    },
+    "FULL": {
+      "enable_chunked_prefill": false,
+      "max_num_batched_tokens": 4096,
+      "reason": "vLLM rejects disabled chunked prefill when max_num_batched_tokens < max_model_len=4096."
+    }
+  },
+  "diagnosis": "The completed real comparison was not an isolated chunking intervention. It bundled chunking, total token budget, admission feasibility, and running-before-waiting scheduler behavior.",
+  "vllm_source_findings": [
+    "SchedulerConfig says chunked prefill chunks based on remaining max_num_batched_tokens.",
+    "SchedulerConfig validation rejects max_num_batched_tokens < max_model_len when chunked prefill is disabled.",
+    "Scheduler.schedule initializes token_budget from max_num_scheduled_tokens/max_num_batched_tokens, schedules running requests first, then waiting requests.",
+    "If chunked prefill is disabled and a waiting request needs more tokens than remaining budget, scheduler breaks instead of chunking it."
+  ]
+}
