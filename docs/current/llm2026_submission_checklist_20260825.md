@@ -16,7 +16,7 @@
 | Source archive | `paper/llm2026/llm2026_submission_source.zip` |
 | Source zip SHA-256 | `dac617e0a59bd3b6a93f0d431b0f31ca6a3ff8fe5b9eabb51981fcaf89486238` |
 | main.tex SHA-256 | `39bfa54b51b2c27a5c90ee141edc00959168799035cd4521cffd85125df2f857` |
-| Branch | contextual-compositional-heuristics-20260731 |
+| Git commit SHA | `80707c6479b275a4c2061dec89b2afb9444f1770` |
 | Repository | https://github.com/SoroushVahidi/llm-serving-heuristic-evolution |
 | AI declaration | ChatGPT, Claude, Codex, Gemini, Perplexity AI — present |
 | Data/Code Availability | present |
