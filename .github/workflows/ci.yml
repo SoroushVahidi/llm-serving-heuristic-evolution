@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package (core + selector + dev)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,selector]"
+      - name: Run deterministic test subset (CPU-only)
+        run: |
+          python -m pytest tests/ -q -m "not gpu" \
+            --ignore=tests/test_public_trace_replay_v1.py \
+            --ignore=tests/test_public_replay_load_scaling_v1.py \
+            --ignore=tests/test_public_replay_load_scaling_v2.py \
+            --ignore=tests/test_family_c_reconstruction_v1.py \
+            --ignore=tests/test_family_a_oracle_policy_pilot_v1.py \
+            --ignore=tests/test_family_a_oracle_policy_v1_generation.py \
+            --ignore=tests/test_unified_utility_matrix_v1.py \
+            --ignore=tests/test_horizon_stability_v1_reconstruction.py \
+            --ignore=tests/test_family_b_balanced_replication_v1.py \
+            --ignore=tests/test_kv_composition_falsification_v1.py \
+            --ignore=tests/test_contextual_composition_status_checker.py \
+            --ignore=tests/test_cc4_oracle_composition_dataset.py \
+            --ignore=tests/test_cc1_composition_opportunity.py

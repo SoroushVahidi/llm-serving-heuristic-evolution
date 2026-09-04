@@ -128,6 +128,33 @@ GPU/checkpoint tests are opt-in:
 LLMSERVEOPT_RUN_GPU_TESTS=1 python3 -m pytest -m gpu
 ```
 
+## Continuous Integration (CI)
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the **deterministic,
+CPU-only test subset** on every push/PR to `main` (Python 3.12, `pip install
+-e ".[dev,selector]"`, no GPU, no paid credentials, no API keys, no network
+beyond package installation). This is the subset that passes offline on a
+clean machine: simulator and policy-library unit/integration tests, external
+scheduler adapters (mocked/offline), selector tooling, analysis/report
+consistency checks, and repository handoff-consistency checks (~4.1k tests).
+
+CI deliberately does **not** cover:
+
+- **Artifact/dataset-reconstruction tests** (13 test modules excluded via
+  `--ignore`, e.g. `test_public_trace_replay_v1.py`,
+  `test_public_replay_load_scaling_v1/v2.py`,
+  `test_unified_utility_matrix_v1.py`, `test_family_*_v1.py`). These require
+  large datasets that are not committed to the repository: the public trace
+  corpus parquet files under `data/public_trace_corpus_v1/` and the staged
+  BurstGPT dataset (HPC-staged, deliberately *not* substituted with synthetic
+  fallback). Their failures/errors in a full local run without those datasets
+  are expected and are availability failures, not code defects. One excluded
+  module additionally asserts on a historical working-branch state.
+- **GPU/checkpoint tests** (`-m gpu`): opt-in via
+  `LLMSERVEOPT_RUN_GPU_TESTS=1` and a CUDA-capable GPU.
+- **HPC/SLURM, real-vLLM serving, and external-API runs**: these execute on
+  Wulver/GPU infrastructure or need credentials and are outside CI scope.
+
 ## Reproduce Key Workflows
 
 - Phase G collection runner: `python scripts/run_apt_serve_phase_g.py --help`
