@@ -1,6 +1,6 @@
 # LLM 2026 Final Submission Checklist
 
-**SUBMISSION NOT YET PERFORMED**
+**SUBMITTED to LLM 2026 on 2026-08-25**
 
 | Field | Value |
 |---|---|

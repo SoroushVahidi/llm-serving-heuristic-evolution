@@ -17,7 +17,8 @@ by all arriving requests.
 A finalized 15-page LNCS manuscript, **"The Exploitability Gap in
 LLM-Serving Scheduler Portfolios"**, is included at
 [`paper/llm2026/`](paper/llm2026/) (source, PDF, figures, and figure
-regeneration scripts), prepared for the LLM 2026 conference. The paper's core
+regeneration scripts). The manuscript was submitted to the LLM 2026
+conference on August 25, 2026. The paper's core
 results are summarized under *Key Findings* below.
 
 ## Research Problem
