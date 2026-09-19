@@ -1,0 +1,46 @@
+{
+  "bootstrap": {
+    "bootstrap_mean": -0.00025115334309704627,
+    "ci95_high": 0.0005637780765335589,
+    "ci95_low": -0.0010167976331709404,
+    "random_seed": 20260919,
+    "replicates": 2000
+  },
+  "created_utc": "2026-09-19T22:12:51Z",
+  "git": {
+    "branch": "contextual-compositional-heuristics-20260731",
+    "head": "4b1cbb6ef0000618afce78e4948b42ae3a53172f"
+  },
+  "input_hashes": {
+    "label_source": "c083b57079c49e94c50403b257e64f3effd7dc1a2d45f368ee4256607c6171bd",
+    "protocol": "0e769f74d7c08c5deb19a0e8bb59ee4485045ad5a598a2c80b73b1e87b22187d",
+    "stage_a_freeze": "1e32420f9588c7a00dcc38213bb03f831e557066c6f407018d23d89fe97055cb",
+    "stage_a_predictions": "fb3526428f4c92b215b553585545b097adaa067a15ee2fb12b038d01d1b71537"
+  },
+  "package_versions": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3"
+  },
+  "primary_denominator": 2862,
+  "primary_mean_realized_gain": -0.0002603116959423829,
+  "primary_verdict": "POSITIVE_GENERALIZATION_NOT_CONFIRMED",
+  "schema_version": "sbs_override_fresh_id_confirmatory_evaluate_v2.0.0",
+  "secondary_diagnostics": {
+    "beneficial_overrides": 122,
+    "harmful_overrides": 111,
+    "negative_aggregate_gain_scenarios": 20,
+    "override_count": 356,
+    "override_rate": 0.1243885394828791,
+    "positive_aggregate_gain_scenarios": 18,
+    "top1_scenario_share_of_positive_gain": 0.37242158972968986,
+    "top5_scenario_share_of_positive_gain": 0.6889541287309866,
+    "total_realized_gain": -0.7450120737870998,
+    "worst_override": -0.1081603647330569,
+    "worst_scenario": -0.5248420075188774,
+    "zero_aggregate_gain_scenarios": 40,
+    "zero_effect_overrides": 123
+  }
+}
+
