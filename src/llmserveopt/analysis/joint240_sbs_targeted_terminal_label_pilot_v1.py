@@ -348,6 +348,56 @@ def build_pilot(out_dir: Path, scan_root: Path = SCAN_ARTIFACT_ROOT) -> Dict[str
     return summary
 
 
+def build_full_manifest(out_dir: Path, scan_root: Path = SCAN_ARTIFACT_ROOT) -> Dict[str, Any]:
+    """Freeze the full all-disagreement manifest for terminal labeling.
+
+    This uses the same state universe as the scan's all-disagreement manifest,
+    enriched with the same outcome-blind episode and trajectory-position
+    fields used by the pilot.  No terminal labels are read or computed here.
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    states = load_scan_disagreement_states(scan_root)
+    full = states.copy().sort_values(["fold", "scenario_id", "step"]).reset_index(drop=True)
+    full["policy_signature"] = full["differing_policy_ids"].fillna("").astype(str)
+    full["full_ord"] = np.arange(len(full), dtype=int)
+    scenario_ord = {sid: i for i, sid in enumerate(sorted(full["scenario_id"].astype(str).unique()))}
+    full["full_scenario_ord"] = [scenario_ord[str(sid)] for sid in full["scenario_id"]]
+    full["expected_unique_action_branches"] = full["n_distinct_canonical_p6_actions_full"].astype(int)
+    full["selection_seed"] = PILOT_SEED
+    manifest_path = out_dir / "full_manifest_all_disagreements.csv"
+    full.to_csv(manifest_path, index=False)
+    summary = {
+        "schema_version": SCHEMA_VERSION,
+        "provenance": source_provenance(scan_root),
+        "full_manifest": {
+            **full_manifest_unique_branch_summary(full),
+            "path": str(manifest_path),
+            "sha256": sha256_file(manifest_path),
+            "scenarios": int(full["scenario_id"].nunique()),
+            "fold_counts": {
+                str(k): int(v) for k, v in full["fold"].value_counts().sort_index().items()
+            },
+            "episode_type_counts": {
+                str(k): int(v)
+                for k, v in full["disagreement_episode_type"].value_counts().sort_index().items()
+            },
+            "position_bin_counts": {
+                str(k): int(v)
+                for k, v in full["trajectory_position_bin"].value_counts().sort_index().items()
+            },
+        },
+        "primary_universe": "all SBS-trajectory states where >=1 non-SBS P6 policy differs from SBS",
+        "excluded_all_equal_states": 444128,
+    }
+    (out_dir / "full_manifest_summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n"
+    )
+    (out_dir / "provenance.json").write_text(
+        json.dumps(source_provenance(scan_root), indent=2, sort_keys=True) + "\n"
+    )
+    return summary
+
+
 def shard_scenarios(pilot: pd.DataFrame, shard_index: int, num_shards: int) -> pd.DataFrame:
     scenarios = sorted(pilot["scenario_id"].astype(str).unique())
     keep = {sid for i, sid in enumerate(scenarios) if i % int(num_shards) == int(shard_index)}
@@ -681,6 +731,11 @@ def cmd_prepare(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2, sort_keys=True))
 
 
+def cmd_prepare_full(args: argparse.Namespace) -> None:
+    summary = build_full_manifest(Path(args.output_dir).resolve(), Path(args.scan_root).resolve())
+    print(json.dumps(summary, indent=2, sort_keys=True))
+
+
 def cmd_run_shard(args: argparse.Namespace) -> None:
     summary = run_label_shard(
         pilot_manifest=Path(args.pilot_manifest).resolve(),
@@ -704,6 +759,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="cmd", required=True)
     sp = sub.add_parser("prepare")
     sp.set_defaults(func=cmd_prepare)
+    sp = sub.add_parser("prepare-full")
+    sp.set_defaults(func=cmd_prepare_full)
     sp = sub.add_parser("run-shard")
     sp.add_argument("--pilot-manifest", required=True)
     sp.add_argument("--shard-index", type=int, required=True)
