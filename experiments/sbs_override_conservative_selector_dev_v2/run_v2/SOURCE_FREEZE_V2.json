@@ -1,0 +1,19 @@
+{
+  "analysis_git_branch": "contextual-compositional-heuristics-20260731",
+  "analysis_git_sha_at_freeze_start": "74e62b3f4e408df11133d999729992f306999bcf",
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "created_at": "2026-09-19T15:48:54-04:00",
+  "fresh_confirmatory_outcomes_used": false,
+  "outer_oof_results_used_for_final_selection": false,
+  "sha256": {
+    "docs/current/SBS_OVERRIDE_FINAL_HANDOFF_20260919.md": "60ea75413070d3e9ce09f842bcb3001e21d9037743c976d7ab99ca6c268e2339",
+    "docs/current/SBS_OVERRIDE_FINAL_SELECTOR_PREREGISTRATION_AUDIT_20260919.md": "a4098176facce491dfd045c09a6d6766661ca6db3069daa8f4dfe622dc9ebb64",
+    "docs/current/SBS_OVERRIDE_STATUS.md": "f96d53442b9865d3eb5de48353ec85799b95856b13ba7ab8dededeaf5246e456",
+    "docs/design/SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V2.md": "99cf56335505c1684c8f247caa15025a84b9e70f5b62b4b85c8c1e573714e9c0",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/PREREGISTERED_SEARCH_DESIGN_V2.json": "1923cc19f41166769620e7dee17246d52e9e2c7310367a1d365309c57e22e4a8",
+    "scripts/sbs_override_conservative_selector_dev_v2.py": "3def32f75c379112bd531706e0286ea15a824993f497d2ef0df377b7d55705a1",
+    "tests/test_sbs_override_conservative_selector_dev_v2.py": "ae038f851fe61dcb2f860ebbcf668bc5c2927fc6a5c1c590f94e74ab4a46825b"
+  },
+  "v1_selector_status": "HISTORICAL_NOT_FOR_CONFIRMATION",
+  "v2_full_development_run_executed": false
+}

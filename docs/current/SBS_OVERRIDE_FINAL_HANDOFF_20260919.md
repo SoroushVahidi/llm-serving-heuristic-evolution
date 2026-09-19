@@ -14,8 +14,8 @@ this work.
 | Integration branch | `contextual-compositional-heuristics-20260731` |
 | Query-4 starting HEAD | `5d3c6f60757c9db9160ade8503af4e1a751bc862` |
 | Remote branch | `origin/contextual-compositional-heuristics-20260731` |
-| Current active experiment | `SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V1` |
-| Active run root | `experiments/sbs_override_conservative_selector_dev_v1/run_v1` |
+| Current active experiment | `SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V2` |
+| Active run root | `experiments/sbs_override_conservative_selector_dev_v2/run_v2` |
 | Confirmatory label access | `CONFIRMATORY_LABEL_ACCESS = NOT_ACCESSED` |
 
 Use this document together with:
@@ -25,6 +25,7 @@ Use this document together with:
 - [`WORK_STATUS.md`](WORK_STATUS.md)
 - [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md)
 - [`SBS_OVERRIDE_QUERY3_PREP.md`](SBS_OVERRIDE_QUERY3_PREP.md)
+- [`SBS_OVERRIDE_FINAL_SELECTOR_PREREGISTRATION_AUDIT_20260919.md`](SBS_OVERRIDE_FINAL_SELECTOR_PREREGISTRATION_AUDIT_20260919.md)
 
 ## Scientific Goal
 
@@ -102,16 +103,34 @@ Fresh labels generated does not mean fresh labels evaluated.
 
 ## Active Selector Run
 
-The protected active run is:
+Historical V1 status:
+
+`FINAL_CONFIRMATORY_SELECTOR_V1 = HISTORICAL_NOT_FOR_CONFIRMATION`.
+
+The V1 run completed and remains preserved as development evidence. A later
+audit found ambiguous final-selector preregistration provenance: the
+implementation selected the final configuration from aggregated nested-inner
+candidate summaries and full-development gate refit, while the design markdown
+described a final choice from outer-OOF bootstrap summaries. This is a
+procedural preregistration ambiguity, not a mathematical invalidation of the V1
+result.
+
+V2 supersedes the ambiguous V1 final-selection rule. V2 keeps nested outer OOF
+as evaluation-only and performs final configuration selection in a separate
+full-development grouped-CV stage using development data only.
+
+The later V2 development-only run command is:
 
 ```bash
-tmux session: sbs_cons_selector_v1
-python scripts/sbs_override_conservative_selector_dev_v1.py \
+python scripts/sbs_override_conservative_selector_dev_v2.py \
+  --execute-full-selection \
   --n-jobs 8 \
   --bootstrap-replicates 2000
 ```
 
-Query 4 performed the required single check only. At that check:
+Do not run this command until the V2 design/source/test freeze is accepted.
+
+Query 4 performed the required single V1 check only. At that check:
 
 - tmux was alive;
 - the bash wrapper and Python process were alive;
@@ -173,20 +192,20 @@ If the tmux session is still running, stop there and leave the run alone.
 
 ## Result Consumption Procedure
 
-After the selector naturally completes:
+For V2:
 
-1. Inspect development-side outputs only.
-2. Verify `RUN_SUMMARY.json`, `reload_prediction_test.json`,
-   `FINAL_CONFIRMATORY_SELECTOR_V1.json`, and
-   `confirmatory_protocol_and_verdict_freeze.json`.
-3. If status is `CONFIRMATORY_EVALUATION_READY`, preserve compact selector
-   metadata/provenance and decide whether the final model binary belongs in Git
-   or remains an external artifact.
-4. Commit any compact development-only final artifacts.
+1. Run the full V2 development-only recomputation in a separate task.
+2. Inspect development-side outputs only.
+3. Verify `RUN_SUMMARY_V2.json`, `reload_prediction_test_v2.json`,
+   `FINAL_CONFIRMATORY_SELECTOR_V2.json`, and
+   `FINAL_CONFIRMATORY_SELECTOR_V2.joblib`.
+4. Preserve compact V2 selector metadata/provenance and decide whether the
+   final model binary belongs in Git or remains an external artifact.
 5. Only after that, run a separate explicitly authorized one-shot fresh
    confirmation task.
 
-Do not modify the frozen selector protocol after the development run completes.
+Do not modify the frozen V2 selector protocol after the development run
+completes.
 
 ## Confirmatory Blindness Boundary
 

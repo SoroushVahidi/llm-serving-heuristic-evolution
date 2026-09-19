@@ -1,0 +1,111 @@
+{
+  "analysis_git_branch": "contextual-compositional-heuristics-20260731",
+  "analysis_git_sha_at_design_freeze_start": "74e62b3f4e408df11133d999729992f306999bcf",
+  "candidate_action_semantics": "unique non-SBS canonical actions; abstain falls back to SBS",
+  "candidate_universe": {
+    "model_families": [
+      "EXTRA_TREES",
+      "HIST_GRADIENT_BOOSTING",
+      "ENSEMBLE_50_50"
+    ],
+    "weight_strategies": [
+      "STATE_EQUAL",
+      "SCENARIO_EQUAL"
+    ],
+    "extra_trees_grid": {
+      "max_depth": [
+        8,
+        null
+      ],
+      "max_features": [
+        0.5
+      ],
+      "min_samples_leaf": [
+        10,
+        25
+      ],
+      "n_estimators": [
+        160
+      ]
+    },
+    "hist_gradient_boosting_grid": {
+      "l2_regularization": [
+        0.1
+      ],
+      "learning_rate": [
+        0.05,
+        0.1
+      ],
+      "max_iter": [
+        120
+      ],
+      "max_leaf_nodes": [
+        15,
+        31
+      ]
+    },
+    "ensemble_50_50": "one bounded ExtraTrees config plus one bounded HistGradientBoosting config; no learned blending weight",
+    "gate_families": [
+      "MEAN_THRESHOLD",
+      "OOF_RESIDUAL_LOWER_BOUND"
+    ],
+    "residual_quantiles": {
+      "q90": 0.9,
+      "q95": 0.95
+    },
+    "tau_grid": [
+      0.0,
+      0.001,
+      0.0025,
+      0.005,
+      0.01,
+      0.02
+    ]
+  },
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "created_at": "2026-09-19T15:47:32-04:00",
+  "development_input_integrity": {
+    "expected_non_sbs_rows": 21858,
+    "expected_scenarios": 236,
+    "expected_state_action_rows_full_sha256": "a96af891b70bcd0895440207df6febb5d1c1545af4eaaf455367e56152950dca",
+    "expected_state_policy_action_map_full_sha256": "7a4118b65e4222e189aa1139ba548ade99951ae285a50b7b193fec6ef55d1324",
+    "expected_states": 8888,
+    "folds": 5
+  },
+  "feature_set": "STATE_ACTION_V1",
+  "feature_counts": {
+    "action_features": 70,
+    "state_features": 95,
+    "total": 165
+  },
+  "final_fit": "after V2 candidate and gate parameters are selected from grouped-crossfit predictions, fit selected estimator(s) on all development rows and serialize without further calibration",
+  "final_selection_objective": [
+    "maximize minimum fold mean realized gain",
+    "maximize overall mean realized gain",
+    "minimize number of negative aggregate-gain scenarios",
+    "minimize number of harmful overrides",
+    "minimize override rate",
+    "deterministic stable-key tie-break"
+  ],
+  "fresh_confirmatory_outcomes_used": false,
+  "gate_calibration": "for residual lower-bound gates, compute q90/q95 residual margins only from full-development grouped-crossfit out-of-fold residuals",
+  "grouped_cv": "use the frozen five scenario folds; no scenario may appear in both train and validation for a candidate prediction",
+  "nested_outer_oof_role": "evaluation-only development evidence retained from V1; not used for V2 final selector selection",
+  "no_new_search_dimensions": true,
+  "outer_oof_results_used_for_final_selection": false,
+  "package_versions_at_design_freeze": {
+    "joblib": "1.5.3",
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "python": "3.12.3",
+    "scikit_learn": "1.8.0"
+  },
+  "purpose": "Resolve V1 final-selector preregistration ambiguity with an explicit V2 development-only final-selection rule before any V2 full development computation.",
+  "schema_version": "sbs_override_conservative_selector_dev_v2.0.0",
+  "source_hashes_before_v2_full_selection": {
+    "docs/current/SBS_OVERRIDE_FINAL_SELECTOR_PREREGISTRATION_AUDIT_20260919.md": "a4098176facce491dfd045c09a6d6766661ca6db3069daa8f4dfe622dc9ebb64",
+    "docs/design/SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V2.md": "99cf56335505c1684c8f247caa15025a84b9e70f5b62b4b85c8c1e573714e9c0",
+    "scripts/sbs_override_conservative_selector_dev_v2.py": "3def32f75c379112bd531706e0286ea15a824993f497d2ef0df377b7d55705a1"
+  },
+  "v1_selector_status": "HISTORICAL_DEVELOPMENT_SELECTOR_WITH_AMBIGUOUS_FINAL_SELECTION_PREREGISTRATION"
+}

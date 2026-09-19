@@ -9,11 +9,22 @@ predate the SBS-specific development and fresh-confirmatory sequence.
 First read the final pause-state handoff:
 [`SBS_OVERRIDE_FINAL_HANDOFF_20260919.md`](SBS_OVERRIDE_FINAL_HANDOFF_20260919.md).
 
+Then read the V1 preregistration remediation audit:
+[`SBS_OVERRIDE_FINAL_SELECTOR_PREREGISTRATION_AUDIT_20260919.md`](SBS_OVERRIDE_FINAL_SELECTOR_PREREGISTRATION_AUDIT_20260919.md).
+
 ## Current Status
 
-The active experiment is `SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V1`. It is
-running locally in tmux session `sbs_cons_selector_v1`; see
-`ACTIVE_JOBS.md`.
+`FINAL_CONFIRMATORY_SELECTOR_V1 = HISTORICAL_NOT_FOR_CONFIRMATION`.
+
+The V1 selector completed as a development artifact, but its final-selector
+selection rule had ambiguous preregistration provenance. V1 remains useful
+development evidence and must not be overwritten. It is not the selector for
+fresh confirmation.
+
+The replacement design/source freeze is
+`SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V2`. V2 uses development data only and
+freezes a separate full-development grouped-CV final-selection stage. The full
+V2 development recomputation has not been run by this freeze update.
 
 Fresh confirmatory terminal labels exist, but their scientific outcomes remain
 blind. The final selector must be frozen from development data only before the
@@ -40,8 +51,9 @@ Permitted before confirmation:
 - already-frozen structural counts;
 - source/scenario identity and action-support metadata.
 
-The selector script added for this line refuses training/evaluation input paths
-containing `sbs_override_fresh_id_confirmatory_terminal_label_v1`.
+The V1 and V2 selector scripts refuse training/evaluation input paths
+containing `sbs_override_fresh_id_confirmatory_terminal_label_v1`. The V2
+script also rejects outer-OOF result paths as final-selection inputs.
 
 ## Canonical Development Inputs
 
@@ -145,7 +157,11 @@ stress-OOD experiment must be labeled synthetic or controlled.
 13. Fresh confirmatory corpus construction and natural OOD support scans:
     untracked Wulver/local source preserved by the provenance freeze.
 14. Fresh-ID confirmatory terminal labels: Wulver job `1299925`, completed.
-15. Conservative selector development V1: currently running from this branch.
+15. Conservative selector development V1: completed and retained as
+    `HISTORICAL_DEVELOPMENT_SELECTOR_WITH_AMBIGUOUS_FINAL_SELECTION_PREREGISTRATION`.
+16. Conservative selector development V2: design/source/test freeze prepared to
+    resolve the V1 final-selector preregistration ambiguity without using fresh
+    labels.
 
 ## Branches To Preserve
 
@@ -184,7 +200,7 @@ Do not commit by default:
 
 ## Next Scientific Gate
 
-After `SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V1` finishes and the final
-selector is committed, the next scientific action is exactly one fresh
-confirmatory evaluation under the frozen protocol. Until then, fresh terminal
-outcomes stay blind.
+The next scientific action is the full V2 development-only recomputation under
+the frozen V2 design. Only after V2 is frozen and reproducibility checks pass
+can a separate task run the one-shot fresh confirmatory evaluation. Until then,
+fresh terminal outcomes stay blind.
