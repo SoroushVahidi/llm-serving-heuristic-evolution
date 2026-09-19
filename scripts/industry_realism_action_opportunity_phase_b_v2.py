@@ -53,7 +53,16 @@ DRAIN_STEPS = 250_000
 
 
 def stable_json(obj: Any) -> str:
-    return json.dumps(obj, indent=2, sort_keys=True, separators=(",", ": ")) + "\n"
+    def default(o: Any) -> Any:
+        if isinstance(o, np.integer):
+            return int(o)
+        if isinstance(o, np.floating):
+            return float(o)
+        if isinstance(o, np.bool_):
+            return bool(o)
+        raise TypeError(f"Object of type {o.__class__.__name__} is not JSON serializable")
+
+    return json.dumps(obj, indent=2, sort_keys=True, separators=(",", ": "), default=default) + "\n"
 
 
 def sha256_file(path: Path) -> str:
@@ -526,13 +535,56 @@ def run_phase_b(out_dir: Path, n_jobs: int) -> dict[str, Any]:
         "completed_window_conditions": len(rows),
         "invalid_window_conditions": int(sum(1 for r in rows if str(r["validity_class"]).startswith("INVALID"))),
         "failed_window_conditions": 0,
-        "validity_class_counts": dict(pd.Series([r["validity_class"] for r in rows]).value_counts().sort_index()),
+        "validity_class_counts": {
+            str(k): int(v)
+            for k, v in pd.Series([r["validity_class"] for r in rows]).value_counts().sort_index().items()
+        },
         "augmented_windows_used": False,
         "causal_labeling_executed": False,
         "new_selector_training_executed": False,
         "real_trace_structure_preserved": True,
         "transition_summary": transitions,
         "workload_axis_summary": aggregate,
+        "git": {"head": git(["rev-parse", "HEAD"]), "branch": git(["branch", "--show-current"])},
+    }
+    (out_dir / "PHASE_B_V2_RESULT_SUMMARY.json").write_text(stable_json(result))
+    return result
+
+
+def recover_result_summary_from_csv(out_dir: Path) -> dict[str, Any]:
+    window_path = out_dir / "PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv"
+    aggregate_path = out_dir / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"
+    transition_path = out_dir / "PHASE_B_V2_TRANSITION_MAP.csv"
+    if not window_path.exists() or not aggregate_path.exists() or not transition_path.exists():
+        raise FileNotFoundError("cannot recover summary without all Phase-B V2 CSV products")
+    window_df = pd.read_csv(window_path)
+    aggregate_df = pd.read_csv(aggregate_path)
+    transition_df = pd.read_csv(transition_path)
+    expected = phase_a.EXPECTED_TOTAL_WINDOWS * len(pressure_conditions())
+    result = {
+        "schema_version": SCHEMA_VERSION,
+        "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "recovered_from_csv_after_summary_serialization_failure": True,
+        "phase_a_canonical_result_commit": "416e1403a5111ac0a421785b2c4a28ef2a485937",
+        "phase_b_v1_executed": False,
+        "phase_b_v1_grid_status": "SUPERSEDED_PRE_EXECUTION_BY_PHASE_A_TELEMETRY",
+        "phase_b_v1_grid_sha256": PHASE_B_V1_GRID_SHA256,
+        "phase_b_v2_preregistration_sha256": sha256_file(DESIGN_DIR / "PHASE_B_V2_PREREGISTRATION.json"),
+        "phase_b_v2_grid_sha256": sha256_file(DESIGN_DIR / "PHASE_B_V2_GRID.json"),
+        "expected_window_conditions": expected,
+        "completed_window_conditions": int(len(window_df)),
+        "invalid_window_conditions": int(window_df["validity_class"].astype(str).str.startswith("INVALID").sum()),
+        "failed_window_conditions": 0 if len(window_df) == expected else int(expected - len(window_df)),
+        "validity_class_counts": {
+            str(k): int(v)
+            for k, v in window_df["validity_class"].astype(str).value_counts().sort_index().items()
+        },
+        "augmented_windows_used": False,
+        "causal_labeling_executed": False,
+        "new_selector_training_executed": False,
+        "real_trace_structure_preserved": True,
+        "transition_summary": transition_df.to_dict(orient="records"),
+        "workload_axis_summary": aggregate_df.to_dict(orient="records"),
         "git": {"head": git(["rev-parse", "HEAD"]), "branch": git(["branch", "--show-current"])},
     }
     (out_dir / "PHASE_B_V2_RESULT_SUMMARY.json").write_text(stable_json(result))
@@ -635,6 +687,10 @@ def write_report(out_dir: Path) -> None:
     total_disagreements = sum(int(float(r["disagreement_states"])) for r in aggregate)
     total_collapse = sum(int(float(r["canonical_action_collapse_states"])) for r in aggregate)
     total_proxy = sum(int(float(r["policy_ranking_proxy_difference_states"])) for r in aggregate)
+    valid_aggregate = [r for r in aggregate if not str(r["pressure_regime_class"]).startswith("INVALID")]
+    valid_disagreements = sum(int(float(r["disagreement_states"])) for r in valid_aggregate)
+    valid_collapse = sum(int(float(r["canonical_action_collapse_states"])) for r in valid_aggregate)
+    valid_proxy = sum(int(float(r["policy_ranking_proxy_difference_states"])) for r in valid_aggregate)
     readiness_total = readiness.get("total_score", 70)
     readiness_conf = readiness.get("contribution_strength_confidence_percent", 62)
     system_gate = readiness.get("hard_gates", {}).get("systems_regime_characterization", "PARTIAL")
@@ -695,11 +751,11 @@ def write_report(out_dir: Path) -> None:
         "",
         "## 8. ACTION_COLLAPSE",
         "",
-        f"Across workload-axis aggregates, canonical disagreements total {total_disagreements} states. Proxy/ranking differences total {total_proxy} states, with {total_collapse} collapsing to SBS-identical canonical actions. The per-condition tables preserve both collapse and true canonical disagreement counts.",
+        f"Across valid workload-axis aggregates, canonical disagreements total {valid_disagreements} states. Proxy/ranking differences total {valid_proxy} states, with {valid_collapse} collapsing to SBS-identical canonical actions. Including invalid horizon-truncated regimes, the retained totals are {total_disagreements} canonical disagreements, {total_proxy} proxy/ranking differences, and {total_collapse} collapsed states. The per-condition tables preserve both collapse and true canonical disagreement counts.",
         "",
         "## 9. INDUSTRY_INTERPRETATION",
         "",
-        "Phase B maps where scheduler choice becomes structurally available under pressure. Interpret disagreement only in valid regimes and only as support/prevalence; no terminal benefit or causal headroom is inferred here.",
+        "Scheduler choice remains absent under native resources and under arrival scaling through 8x, because achieved active/KV pressure remains far below binding. Genuine canonical alternatives emerge when the same traces are replayed with tight KV or active-sequence resources. This supports a regime-dependent interpretation of action opportunity, with workload-specific onset thresholds. Interpret disagreement only in valid regimes and only as support/prevalence; no terminal benefit or causal headroom is inferred here.",
         "",
         "## 10. NULL_AND_EXTREME_REGIMES",
         "",
@@ -749,6 +805,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write-freeze", action="store_true")
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--recover-summary-from-csv", action="store_true")
     parser.add_argument("--write-readiness-checkpoint", action="store_true")
     parser.add_argument("--write-report", action="store_true")
     parser.add_argument("--out-dir", default=str(OUT_DIR))
@@ -759,11 +816,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         write_freeze()
     if args.execute:
         run_phase_b(out_dir, n_jobs=max(1, int(args.n_jobs)))
+    if args.recover_summary_from_csv:
+        recover_result_summary_from_csv(out_dir)
     if args.write_readiness_checkpoint:
         write_readiness_checkpoint(out_dir)
     if args.write_report:
         write_report(out_dir)
-    if not any([args.write_freeze, args.execute, args.write_readiness_checkpoint, args.write_report]):
+    if not any([args.write_freeze, args.execute, args.recover_summary_from_csv, args.write_readiness_checkpoint, args.write_report]):
         parser.error("select at least one action")
     return 0
 
