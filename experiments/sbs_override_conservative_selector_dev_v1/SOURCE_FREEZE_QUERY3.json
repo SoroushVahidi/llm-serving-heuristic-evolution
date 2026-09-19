@@ -1,0 +1,32 @@
+{
+  "schema": "sbs_override_conservative_selector_dev_v1.source_freeze_query3",
+  "created_at": "2026-09-19T13:50:29-04:00",
+  "repository": "/home/soroush/llm-serving-heuristic-evolution",
+  "branch": "contextual-compositional-heuristics-20260731",
+  "head_sha_at_launch_and_query3_freeze": "94f4621bb6610c2b426e365f659636b1a48a89f5",
+  "active_run_status_at_query3_check": "RUNNING_HEALTHY",
+  "tmux_session": "sbs_cons_selector_v1",
+  "command": "python scripts/sbs_override_conservative_selector_dev_v1.py --n-jobs 8 --bootstrap-replicates 2000",
+  "run_root": "experiments/sbs_override_conservative_selector_dev_v1/run_v1",
+  "run_root_commit_policy": "Do not commit partial active-run outputs while the tmux session is alive. Commit final compact outputs only after RUN_SUMMARY.json reports CONFIRMATORY_EVALUATION_READY.",
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "source_files": [
+    {
+      "path": "docs/design/SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V1.md",
+      "sha256": "3ea76f69b660e293ad16f7fee83e39d23a5e23263ac94aee83fea20fe35e6e27"
+    },
+    {
+      "path": "scripts/sbs_override_conservative_selector_dev_v1.py",
+      "sha256": "d6f2b12ac221e21501a1f2a93a851cb121d0373ea089929518cf247ec41f4617"
+    },
+    {
+      "path": "tests/test_sbs_override_conservative_selector_dev_v1.py",
+      "sha256": "911a111aa76136b34a6329c32c060e88429d79018cabfa8f26ba50784cf84b9f"
+    }
+  ],
+  "active_run_preregistration_file": {
+    "path": "experiments/sbs_override_conservative_selector_dev_v1/run_v1/PREREGISTERED_SEARCH_DESIGN.json",
+    "sha256": "c35f9092e35249ac7baf0f99f1a476453382ffdd0875d8feedf543f730274f1f",
+    "commit_policy": "leave untracked until the active run completes or Query 4 explicitly snapshots active-run metadata"
+  }
+}
