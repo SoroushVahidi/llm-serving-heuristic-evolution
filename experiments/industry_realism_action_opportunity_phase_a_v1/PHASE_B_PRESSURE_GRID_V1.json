@@ -1,0 +1,52 @@
+{
+  "axes": [
+    {
+      "axis": "arrival_pressure_multiplier",
+      "changes_workload": false,
+      "grid": [
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.5,
+        2.0
+      ]
+    },
+    {
+      "axis": "kv_capacity_fraction_of_native",
+      "changes_workload": false,
+      "grid": [
+        1.0,
+        0.5,
+        0.25,
+        0.125
+      ]
+    },
+    {
+      "axis": "max_active_sequences_fraction_of_native",
+      "changes_workload": false,
+      "grid": [
+        1.0,
+        0.5,
+        0.25,
+        0.125
+      ]
+    }
+  ],
+  "forbidden": [
+    "prompt length scaling",
+    "output length scaling",
+    "augmented windows",
+    "synthetic scenarios",
+    "selector training",
+    "causal labeling during support sweep"
+  ],
+  "principle": "Preserve real request identity, ordering, prompt/output lengths, and window membership; vary one system/environment axis at a time.",
+  "schema_version": "industry_realism_action_opportunity_phase_b_pressure_grid_v1.0.0",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "workloads": [
+    "azure_2023_code",
+    "azure_2023_conv",
+    "burstgpt"
+  ]
+}
