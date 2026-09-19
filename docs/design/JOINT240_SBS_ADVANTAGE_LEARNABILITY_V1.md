@@ -121,6 +121,14 @@ Hyperparameter objective on cross-fitted outer-training predictions:
 maximize mean realized gain per training state after threshold selection.  Tie
 breaks: higher threshold, then smaller model configuration JSON string.
 
+Primary model-family selection is also done inside each outer fold using only
+cross-fitted outer-training predictions.  Among the preregistered regression
+families for `STATE_ACTION_V1`, choose the family/configuration/threshold with
+the highest training mean realized gain; ties choose the higher threshold and
+then the lexicographically later model name.  This produces one
+`STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED` out-of-fold decision table without
+using outer-test performance for model-family selection.
+
 ## Abstaining Selector
 
 For held-out state `s`, predict every unique non-SBS candidate action.  Let:
