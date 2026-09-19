@@ -1,0 +1,1074 @@
+{
+  "ablation": [
+    {
+      "ci95_high": 0.0005859577436553393,
+      "ci95_low": -0.00020766285012871125,
+      "harmful_override_rate": 0.05063006300630063,
+      "label": "STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED",
+      "mean_realized_gain": 0.00019594132039085852,
+      "negative_scenario_count": 57,
+      "oracle_gap_closure": 0.042005184160838975,
+      "override_rate": 0.3822007200720072,
+      "precision": 0.16720635855166324,
+      "total_realized_gain": 1.7415264556339505
+    },
+    {
+      "ci95_high": 5.127909272340113e-05,
+      "ci95_low": -0.0003310137729542487,
+      "harmful_override_rate": 0.008888388838883888,
+      "label": "STATE_CORE_V1.RIDGE",
+      "mean_realized_gain": -0.00011720938049540215,
+      "negative_scenario_count": 16,
+      "oracle_gap_closure": -0.02512691862679166,
+      "override_rate": 0.08168316831683169,
+      "precision": 0.05509641873278237,
+      "total_realized_gain": -1.0417569738431343
+    },
+    {
+      "ci95_high": 6.264009982188624e-05,
+      "ci95_low": -7.957453180502952e-05,
+      "harmful_override_rate": 0.0014626462646264626,
+      "label": "STATE_CORE_V1.HIST_GRADIENT_BOOSTING",
+      "mean_realized_gain": -3.1840584985579225e-06,
+      "negative_scenario_count": 4,
+      "oracle_gap_closure": -0.0006825868241778463,
+      "override_rate": 0.008325832583258325,
+      "precision": 0.25675675675675674,
+      "total_realized_gain": -0.028299911935182817
+    },
+    {
+      "ci95_high": 3.0449820728228115e-05,
+      "ci95_low": -0.0003054203440653575,
+      "harmful_override_rate": 0.0063006300630063005,
+      "label": "STATE_CORE_V1.EXTRA_TREES",
+      "mean_realized_gain": -0.00011254467394325762,
+      "negative_scenario_count": 6,
+      "oracle_gap_closure": -0.024126915884193807,
+      "override_rate": 0.018114311431143115,
+      "precision": 0.2111801242236025,
+      "total_realized_gain": -1.0002970620076737
+    },
+    {
+      "ci95_high": 0.0,
+      "ci95_low": 0.0,
+      "harmful_override_rate": 0.0,
+      "label": "STATE_CORE_V1.DUMMY_ZERO",
+      "mean_realized_gain": 0.0,
+      "negative_scenario_count": 0,
+      "oracle_gap_closure": 0.0,
+      "override_rate": 0.0,
+      "precision": null,
+      "total_realized_gain": 0.0
+    }
+  ],
+  "analysis_git_head_before_commit": "4004c72fa7d788904e4182ad375f33669f93ec43",
+  "bootstrap": {
+    "gap_closure": {
+      "ci95_high": 0.11871145774805653,
+      "ci95_low": -0.0480844497850424,
+      "mean": 0.04116630777054325
+    },
+    "is_lower_bound_greater_than_zero": false,
+    "mean_realized_gain": {
+      "ci95_high": 0.0005859577436553393,
+      "ci95_low": -0.00020766285012871125,
+      "mean": 0.0001983998309974331
+    },
+    "mean_scenario_gain": {
+      "ci95_high": 0.03520342195947507,
+      "ci95_low": -0.012362671837627832,
+      "mean": 0.011797169273915187
+    },
+    "precision_among_overrides": {
+      "ci95_high": 0.2021121422776725,
+      "ci95_low": 0.1342280904265898,
+      "mean": 0.16727755664107707
+    },
+    "replicates": 10000,
+    "seed": 20260919
+  },
+  "closed_loop_bottleneck": "scenario-bootstrap 95% CI lower bound for mean held-out realized gain is not greater than zero",
+  "closed_loop_gate_status": "JOINT240_SBS_OVERRIDE_CLOSED_LOOP_V1 = BLOCKED",
+  "duplication_gate": "NOT_PREVIOUSLY_DONE",
+  "exact_next_action": "Do not launch closed-loop. Treat the offline result as positive but statistically uncertain; investigate robustness/concentration or improve selector before any 9-hour Wulver campaign.",
+  "fixed_threshold_harm_table": [
+    {
+      "beneficial_override_count": 646,
+      "gap_closure": 0.05714819784449248,
+      "harmful_override_count": 487,
+      "harmful_override_rate": 0.05479297929792979,
+      "mean_realized_gain": 0.0002665788418098967,
+      "oracle_mean_gain": 0.00466469375876544,
+      "oracle_total_gain": 41.459798127907234,
+      "override_count": 4211,
+      "override_rate": 0.4737848784878488,
+      "precision_among_overrides": 0.15340774162906673,
+      "states": 8888,
+      "threshold": 0.0,
+      "total_realized_gain": 2.3693527460063617,
+      "zero_effect_override_count": 3078
+    },
+    {
+      "beneficial_override_count": 491,
+      "gap_closure": 0.03654736063994118,
+      "harmful_override_count": 387,
+      "harmful_override_rate": 0.04354185418541854,
+      "mean_realized_gain": 0.00017048224507648332,
+      "oracle_mean_gain": 0.00466469375876544,
+      "oracle_total_gain": 41.459798127907234,
+      "override_count": 2172,
+      "override_rate": 0.24437443744374437,
+      "precision_among_overrides": 0.22605893186003684,
+      "states": 8888,
+      "threshold": 0.001,
+      "total_realized_gain": 1.5152461942397837,
+      "zero_effect_override_count": 1294
+    },
+    {
+      "beneficial_override_count": 337,
+      "gap_closure": 0.030122209491026827,
+      "harmful_override_count": 239,
+      "harmful_override_rate": 0.02689018901890189,
+      "mean_realized_gain": 0.00014051088261301796,
+      "oracle_mean_gain": 0.00466469375876544,
+      "oracle_total_gain": 41.459798127907234,
+      "override_count": 1258,
+      "override_rate": 0.14153915391539154,
+      "precision_among_overrides": 0.26788553259141495,
+      "states": 8888,
+      "threshold": 0.0025,
+      "total_realized_gain": 1.2488607246645036,
+      "zero_effect_override_count": 682
+    },
+    {
+      "beneficial_override_count": 155,
+      "gap_closure": 0.010399416051252896,
+      "harmful_override_count": 111,
+      "harmful_override_rate": 0.012488748874887488,
+      "mean_realized_gain": 4.8510091149084524e-05,
+      "oracle_mean_gain": 0.00466469375876544,
+      "oracle_total_gain": 41.459798127907234,
+      "override_count": 578,
+      "override_rate": 0.06503150315031503,
+      "precision_among_overrides": 0.2681660899653979,
+      "states": 8888,
+      "threshold": 0.005,
+      "total_realized_gain": 0.43115769013306326,
+      "zero_effect_override_count": 312
+    },
+    {
+      "beneficial_override_count": 34,
+      "gap_closure": 0.005094886832082504,
+      "harmful_override_count": 25,
+      "harmful_override_rate": 0.0028127812781278128,
+      "mean_realized_gain": 2.3766086807231487e-05,
+      "oracle_mean_gain": 0.00466469375876544,
+      "oracle_total_gain": 41.459798127907234,
+      "override_count": 205,
+      "override_rate": 0.023064806480648063,
+      "precision_among_overrides": 0.16585365853658537,
+      "states": 8888,
+      "threshold": 0.01,
+      "total_realized_gain": 0.21123297954267345,
+      "zero_effect_override_count": 146
+    },
+    {
+      "beneficial_override_count": 5,
+      "gap_closure": -0.0006446962774582325,
+      "harmful_override_count": 6,
+      "harmful_override_rate": 0.0006750675067506751,
+      "mean_realized_gain": -3.00731070175873e-06,
+      "oracle_mean_gain": 0.00466469375876544,
+      "oracle_total_gain": 41.459798127907234,
+      "override_count": 30,
+      "override_rate": 0.0033753375337533752,
+      "precision_among_overrides": 0.16666666666666666,
+      "states": 8888,
+      "threshold": 0.02,
+      "total_realized_gain": -0.026728977517231592,
+      "zero_effect_override_count": 19
+    }
+  ],
+  "fold_level": [
+    {
+      "beneficial_overrides": 53,
+      "fold": 0,
+      "harmful_overrides": 46,
+      "mean_realized_gain": 0.00016707436998906547,
+      "oracle_gap_closure": 0.0415228710950724,
+      "oracle_mean_gain": 0.004023670945261118,
+      "override_precision": 0.09169550173010381,
+      "override_rate": 0.30405049973698056,
+      "scenario_count": 50,
+      "selected_hyperparameters": "{\"max_depth\":8,\"max_features\":0.5,\"min_samples_leaf\":20,\"model_name\":\"EXTRA_TREES\",\"n_estimators\":100,\"n_jobs\":4}",
+      "selected_model_family": "EXTRA_TREES",
+      "selected_threshold": 0.0,
+      "state_count": 1901,
+      "total_realized_gain": 0.3176083773492135,
+      "train_selection_metric": 0.0001929780005451,
+      "zero_effect_overrides": 479
+    },
+    {
+      "beneficial_overrides": 164,
+      "fold": 1,
+      "harmful_overrides": 138,
+      "mean_realized_gain": -8.899437743042069e-08,
+      "oracle_gap_closure": -2.219852179755376e-05,
+      "oracle_mean_gain": 0.0040090226836738165,
+      "override_precision": 0.16786079836233367,
+      "override_rate": 0.5618171362852213,
+      "scenario_count": 48,
+      "selected_hyperparameters": "{\"max_depth\":null,\"max_features\":1.0,\"min_samples_leaf\":20,\"model_name\":\"EXTRA_TREES\",\"n_estimators\":100,\"n_jobs\":4}",
+      "selected_model_family": "EXTRA_TREES",
+      "selected_threshold": 0.0,
+      "state_count": 1739,
+      "total_realized_gain": -0.00015476122235150158,
+      "train_selection_metric": 0.000409427611025,
+      "zero_effect_overrides": 675
+    },
+    {
+      "beneficial_overrides": 91,
+      "fold": 2,
+      "harmful_overrides": 144,
+      "mean_realized_gain": -0.00021750187377387852,
+      "oracle_gap_closure": -0.044541525311110906,
+      "oracle_mean_gain": 0.004883125852890866,
+      "override_precision": 0.14,
+      "override_rate": 0.34318901795142553,
+      "scenario_count": 48,
+      "selected_hyperparameters": "{\"l2_regularization\":0.0,\"learning_rate\":0.1,\"max_iter\":100,\"max_leaf_nodes\":15,\"model_name\":\"HIST_GRADIENT_BOOSTING\"}",
+      "selected_model_family": "HIST_GRADIENT_BOOSTING",
+      "selected_threshold": 0.001,
+      "state_count": 1894,
+      "total_realized_gain": -0.4119485489277259,
+      "train_selection_metric": 0.0005374163479959,
+      "zero_effect_overrides": 415
+    },
+    {
+      "beneficial_overrides": 143,
+      "fold": 3,
+      "harmful_overrides": 63,
+      "mean_realized_gain": 0.0005679401177869571,
+      "oracle_gap_closure": 0.10328513463823197,
+      "oracle_mean_gain": 0.005498759524071228,
+      "override_precision": 0.3029661016949153,
+      "override_rate": 0.280785246876859,
+      "scenario_count": 45,
+      "selected_hyperparameters": "{\"l2_regularization\":0.0,\"learning_rate\":0.05,\"max_iter\":100,\"max_leaf_nodes\":31,\"model_name\":\"HIST_GRADIENT_BOOSTING\"}",
+      "selected_model_family": "HIST_GRADIENT_BOOSTING",
+      "selected_threshold": 0.001,
+      "state_count": 1681,
+      "total_realized_gain": 0.954707337999875,
+      "train_selection_metric": 0.0003512720985022,
+      "zero_effect_overrides": 266
+    },
+    {
+      "beneficial_overrides": 117,
+      "fold": 4,
+      "harmful_overrides": 59,
+      "mean_realized_gain": 0.0005267866410250683,
+      "oracle_gap_closure": 0.10558384324190868,
+      "oracle_mean_gain": 0.0049892732150137765,
+      "override_precision": 0.1625,
+      "override_rate": 0.4303646144650329,
+      "scenario_count": 45,
+      "selected_hyperparameters": "{\"l2_regularization\":0.1,\"learning_rate\":0.1,\"max_iter\":100,\"max_leaf_nodes\":15,\"model_name\":\"HIST_GRADIENT_BOOSTING\"}",
+      "selected_model_family": "HIST_GRADIENT_BOOSTING",
+      "selected_threshold": 0.0,
+      "state_count": 1673,
+      "total_realized_gain": 0.8813140504349393,
+      "train_selection_metric": 0.0004872394334155,
+      "zero_effect_overrides": 544
+    }
+  ],
+  "folds_with_positive_realized_gain": 3,
+  "harmful_override_analysis": {
+    "folds_with_harmful_override": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "harmful_fraction_all_states": 0.05063006300630063,
+    "harmful_fraction_overrides": 0.13246982631733883,
+    "harmful_override_count": 450,
+    "maximum_harmful_loss": -0.1035442413473432,
+    "mean_harmful_loss": -0.019477429635187112,
+    "median_harmful_loss": -0.0144804126038285,
+    "p90_absolute_harmful_loss": 0.04189138579711206,
+    "p95_absolute_harmful_loss": 0.0544530049142912,
+    "scenarios_with_harmful_override": 87
+  },
+  "input_integrity": {
+    "feature_counts": {
+      "action_features": 70,
+      "state_features": 95
+    },
+    "folds": 5,
+    "map_path": "/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1/experiments/joint240_sbs_targeted_terminal_label_full_v1/full_v1/analysis_v1/state_policy_action_map_full.csv",
+    "map_sha256": "7a4118b65e4222e189aa1139ba548ade99951ae285a50b7b193fec6ef55d1324",
+    "map_sha256_matches": true,
+    "non_sbs_rows": 21858,
+    "rows": 30746,
+    "rows_path": "/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1/experiments/joint240_sbs_targeted_terminal_label_full_v1/full_v1/analysis_v1/state_action_rows_full.csv",
+    "rows_sha256": "a96af891b70bcd0895440207df6febb5d1c1545af4eaaf455367e56152950dca",
+    "rows_sha256_matches": true,
+    "scenarios": 236,
+    "states": 8888
+  },
+  "inventory": {
+    "files": [
+      {
+        "path": "EXIT_CODE",
+        "sha256": null,
+        "size_bytes": 2
+      },
+      {
+        "path": "input_integrity_and_split_audit.json",
+        "sha256": "009bd8dfd15d9f3a95b769ea18e34c40bde6cdc2af2aed49958cd9ff75c912ba",
+        "size_bytes": 2478
+      },
+      {
+        "path": "learnability_summary.json",
+        "sha256": "71d10fc269c8fdf7098dafc87764e89f02e7ed66e28b1d52ae6f3efe31c9b19f",
+        "size_bytes": 109898
+      },
+      {
+        "path": "logs/run_stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "path": "logs/run_stdout.json",
+        "sha256": "71d10fc269c8fdf7098dafc87764e89f02e7ed66e28b1d52ae6f3efe31c9b19f",
+        "size_bytes": 109898
+      },
+      {
+        "path": "oof_action_predictions.STATE_ACTION_V1.DUMMY_ZERO.csv",
+        "sha256": "fd2bfa653ff0f938e4ed14d7edd1a4bd73a275f08dbeb3853212b37ebe6d0188",
+        "size_bytes": 53505283
+      },
+      {
+        "path": "oof_action_predictions.STATE_ACTION_V1.EXTRA_TREES.csv",
+        "sha256": "205819fb65b70103e5fe25327c1041268fd9c4586d164c0e8664c21a387e8536",
+        "size_bytes": 53908093
+      },
+      {
+        "path": "oof_action_predictions.STATE_ACTION_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "76e1a41d7766402cb9825e6aadbf0c966669b752cd55e412d0392254dec26547",
+        "size_bytes": 53905183
+      },
+      {
+        "path": "oof_action_predictions.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv",
+        "sha256": "4ae7c259ed80e73ff22ae4f34ff89b64032b71323d60b3e36c5fa775139cdacc",
+        "size_bytes": 54308596
+      },
+      {
+        "path": "oof_action_predictions.STATE_ACTION_V1.RIDGE.csv",
+        "sha256": "12e159bae34330de48a05996c1f1226f61f87c6fd58b1a2486aa0ab5ad574a2e",
+        "size_bytes": 53902305
+      },
+      {
+        "path": "oof_action_predictions.STATE_CORE_V1.DUMMY_ZERO.csv",
+        "sha256": "fd2bfa653ff0f938e4ed14d7edd1a4bd73a275f08dbeb3853212b37ebe6d0188",
+        "size_bytes": 53505283
+      },
+      {
+        "path": "oof_action_predictions.STATE_CORE_V1.EXTRA_TREES.csv",
+        "sha256": "2c9bc68cec015b0f7f41fc8fa1ae38c7205ab83dfbfce0bc5d4e728cee06b87f",
+        "size_bytes": 53908077
+      },
+      {
+        "path": "oof_action_predictions.STATE_CORE_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "8d3eb475465d10cb751ec63eb7366b0c1a38742f61278a78c22096aa7ed017c6",
+        "size_bytes": 53906498
+      },
+      {
+        "path": "oof_action_predictions.STATE_CORE_V1.RIDGE.csv",
+        "sha256": "4eea96b1183a5912ab7ce0bcb4f39a992a6db1ee82d25ab335b67da95428540e",
+        "size_bytes": 53903027
+      },
+      {
+        "path": "oof_state_decisions.STATE_ACTION_V1.DUMMY_ZERO.csv",
+        "sha256": "38fdcf266981eadfcb2919527021f8160e7e5ebd6d3c681212ec141c21109dae",
+        "size_bytes": 900044
+      },
+      {
+        "path": "oof_state_decisions.STATE_ACTION_V1.EXTRA_TREES.csv",
+        "sha256": "ba2d2be88bb539bb14ceb56e06b8a1497b17735a593fde0c94a3ce824732e17c",
+        "size_bytes": 1127791
+      },
+      {
+        "path": "oof_state_decisions.STATE_ACTION_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "5ba2ef3ecf2993decfdb079d1d182c951060ed3794930b1847273b475b820405",
+        "size_bytes": 1146058
+      },
+      {
+        "path": "oof_state_decisions.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv",
+        "sha256": "368a28d3738e87d0d0384b4e6e8161cd1d3f5611a471966f86c2cacd9d41b87b",
+        "size_bytes": 1135014
+      },
+      {
+        "path": "oof_state_decisions.STATE_ACTION_V1.RIDGE.csv",
+        "sha256": "c97e0dabeee75101a426225c50c172d11b0e3c183e8dcdd463fb5cb9d40987ab",
+        "size_bytes": 1089716
+      },
+      {
+        "path": "oof_state_decisions.STATE_CORE_V1.DUMMY_ZERO.csv",
+        "sha256": "38fdcf266981eadfcb2919527021f8160e7e5ebd6d3c681212ec141c21109dae",
+        "size_bytes": 900044
+      },
+      {
+        "path": "oof_state_decisions.STATE_CORE_V1.EXTRA_TREES.csv",
+        "sha256": "45e102f7c0b0c421b6a8a505372bc7aea15dcb3e80cf523810d0dec14df0f065",
+        "size_bytes": 1077993
+      },
+      {
+        "path": "oof_state_decisions.STATE_CORE_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "066c29918a0a13a9d74d705a9232b448459b19695eb35cb9269e3de152a5baa2",
+        "size_bytes": 1064973
+      },
+      {
+        "path": "oof_state_decisions.STATE_CORE_V1.RIDGE.csv",
+        "sha256": "c88ca5006bcc5da1b9890b4117d032446c0351590571f98584dd1988a0696a15",
+        "size_bytes": 1084401
+      },
+      {
+        "path": "scenario_bootstrap.STATE_ACTION_V1.DUMMY_ZERO.csv",
+        "sha256": "4e7ab7141a7a7ae3a528816e5c96ebe1cb61589e42e5a883ffaeb90616b1486a",
+        "size_bytes": 178982
+      },
+      {
+        "path": "scenario_bootstrap.STATE_ACTION_V1.EXTRA_TREES.csv",
+        "sha256": "7019431a908fe8c64717aa8f8d9b2ae1fdc88ce9d04e24e71f43844147ab7bca",
+        "size_bytes": 878676
+      },
+      {
+        "path": "scenario_bootstrap.STATE_ACTION_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "d8e2135b3698a7f1d7603aa566698690e31bf4af0685b598349517297e82252e",
+        "size_bytes": 893470
+      },
+      {
+        "path": "scenario_bootstrap.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv",
+        "sha256": "c701a27c5a4347e1ef712d19f8b50e02fda0910a3f2091399468e9326e41b0d1",
+        "size_bytes": 886371
+      },
+      {
+        "path": "scenario_bootstrap.STATE_ACTION_V1.RIDGE.csv",
+        "sha256": "4377c9b6c78a55eb266ca7a79a2c82ebe018bab75121bacecec895c1309b2ece",
+        "size_bytes": 916182
+      },
+      {
+        "path": "scenario_bootstrap.STATE_CORE_V1.DUMMY_ZERO.csv",
+        "sha256": "4e7ab7141a7a7ae3a528816e5c96ebe1cb61589e42e5a883ffaeb90616b1486a",
+        "size_bytes": 178982
+      },
+      {
+        "path": "scenario_bootstrap.STATE_CORE_V1.EXTRA_TREES.csv",
+        "sha256": "3097b2eb2b50b07c6572c8800389e392e0f3e3a655ca07f0878626c937159606",
+        "size_bytes": 906779
+      },
+      {
+        "path": "scenario_bootstrap.STATE_CORE_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "ec95b7cec8d319ee7c1030cd95b97f4fcc349721228aa95a796f209372ae6a4c",
+        "size_bytes": 897613
+      },
+      {
+        "path": "scenario_bootstrap.STATE_CORE_V1.RIDGE.csv",
+        "sha256": "6dafe01d96ec42ae83257f7fc1f0526b802bf658e3584ff9969395125a678686",
+        "size_bytes": 917633
+      },
+      {
+        "path": "scenario_metrics.STATE_ACTION_V1.DUMMY_ZERO.csv",
+        "sha256": "4b46e8883525f0bc6e02e8a4440971f2bf22f3d842a91c3083ea0842a93069e6",
+        "size_bytes": 11663
+      },
+      {
+        "path": "scenario_metrics.STATE_ACTION_V1.EXTRA_TREES.csv",
+        "sha256": "401a67a572f3873b741fc4c31cc61afcb35667333d1cb8ee1870f06970fa3281",
+        "size_bytes": 15979
+      },
+      {
+        "path": "scenario_metrics.STATE_ACTION_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "6ff3216de78ea84e5d8e1a35971b766a4392dcf0979a5c68a3275a57cdb9297e",
+        "size_bytes": 17445
+      },
+      {
+        "path": "scenario_metrics.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv",
+        "sha256": "27a1a5c90e3d4bcfe46ab3e734468ec4e94c90823a998df2825ad6c3582c4b1e",
+        "size_bytes": 16493
+      },
+      {
+        "path": "scenario_metrics.STATE_ACTION_V1.RIDGE.csv",
+        "sha256": "26563ef15c40bdb5e519b0578dfe14a3173c095b543e2f99351f557cc7f33ec0",
+        "size_bytes": 13271
+      },
+      {
+        "path": "scenario_metrics.STATE_CORE_V1.DUMMY_ZERO.csv",
+        "sha256": "4b46e8883525f0bc6e02e8a4440971f2bf22f3d842a91c3083ea0842a93069e6",
+        "size_bytes": 11663
+      },
+      {
+        "path": "scenario_metrics.STATE_CORE_V1.EXTRA_TREES.csv",
+        "sha256": "693ece6e41ece4289fea66275b8fae7d220274b3a40d03cc397b805e4ae0aa49",
+        "size_bytes": 12110
+      },
+      {
+        "path": "scenario_metrics.STATE_CORE_V1.HIST_GRADIENT_BOOSTING.csv",
+        "sha256": "52e353cb71135407c05d79d36a322c1afce7b43f513a5dd0ba66445e6a1e8cc1",
+        "size_bytes": 12082
+      },
+      {
+        "path": "scenario_metrics.STATE_CORE_V1.RIDGE.csv",
+        "sha256": "43f55eadccd651ccd3d606ce0b6c5ce29485c50ad4e9038fe2fb5a905e242512",
+        "size_bytes": 12679
+      },
+      {
+        "path": "selected_hyperparameters_and_thresholds.csv",
+        "sha256": "a80972758c24d58d9742ee8d22d3f8419e1aa747abf8b904c04988aac0e4daff",
+        "size_bytes": 5619
+      },
+      {
+        "path": "summary.STATE_ACTION_V1.DUMMY_ZERO.json",
+        "sha256": "7be071184ca9754b3747bcd148378824d25028a298046ef39e39c82dd433d485",
+        "size_bytes": 7181
+      },
+      {
+        "path": "summary.STATE_ACTION_V1.EXTRA_TREES.json",
+        "sha256": "e8e7e78a6cce74531843872b19f328bc6fbcfeee538c3c35be1e1f1aaae329e5",
+        "size_bytes": 10886
+      },
+      {
+        "path": "summary.STATE_ACTION_V1.HIST_GRADIENT_BOOSTING.json",
+        "sha256": "7a32c65864379f965f49cc73e34fafeec61d99521800072f3c66bd90940ec5ab",
+        "size_bytes": 11005
+      },
+      {
+        "path": "summary.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.json",
+        "sha256": "9c9401fd5064a3978679964f475d82263369f4c760b4cd8d6672e218060b71b1",
+        "size_bytes": 11001
+      },
+      {
+        "path": "summary.STATE_ACTION_V1.RIDGE.json",
+        "sha256": "90759046d3a078c1440dbc14fbd0b55b6a8db6115bb48d8333040b22098ea1f5",
+        "size_bytes": 10886
+      },
+      {
+        "path": "summary.STATE_CORE_V1.DUMMY_ZERO.json",
+        "sha256": "88e8cf1b77a646baef344c30e79165375f0263e0a53db70004ac1314745f696a",
+        "size_bytes": 7179
+      },
+      {
+        "path": "summary.STATE_CORE_V1.EXTRA_TREES.json",
+        "sha256": "91bb4ec5b421789bc92355acb9dda8b855ae4be4268fd7f41dda71647cb252a5",
+        "size_bytes": 10854
+      },
+      {
+        "path": "summary.STATE_CORE_V1.HIST_GRADIENT_BOOSTING.json",
+        "sha256": "7b12f1b11087047fce0132f318cedfa4bb9b76f4bb593d46aeb7656815129205",
+        "size_bytes": 10972
+      },
+      {
+        "path": "summary.STATE_CORE_V1.RIDGE.json",
+        "sha256": "d2c88f3c37ec11a3f93f562e0e61dd60f9d978477ff1e8142820fc0411f1e484",
+        "size_bytes": 10750
+      }
+    ],
+    "model_serialization_present": false,
+    "sign_classifier_outputs_present": false
+  },
+  "key_file_checksums": {
+    "input_integrity_and_split_audit.json": "009bd8dfd15d9f3a95b769ea18e34c40bde6cdc2af2aed49958cd9ff75c912ba",
+    "learnability_summary.json": "71d10fc269c8fdf7098dafc87764e89f02e7ed66e28b1d52ae6f3efe31c9b19f",
+    "oof_state_decisions.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv": "368a28d3738e87d0d0384b4e6e8161cd1d3f5611a471966f86c2cacd9d41b87b",
+    "scenario_bootstrap.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv": "c701a27c5a4347e1ef712d19f8b50e02fda0910a3f2091399468e9326e41b0d1",
+    "scenario_metrics.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.csv": "27a1a5c90e3d4bcfe46ab3e734468ec4e94c90823a998df2825ad6c3582c4b1e",
+    "selected_hyperparameters_and_thresholds.csv": "a80972758c24d58d9742ee8d22d3f8419e1aa747abf8b904c04988aac0e4daff",
+    "summary.STATE_ACTION_V1.PRIMARY_TRAIN_SELECTED.json": "9c9401fd5064a3978679964f475d82263369f4c760b4cd8d6672e218060b71b1"
+  },
+  "model_family_results": [
+    {
+      "harmful_rate": 0.01338883888388839,
+      "label": "STATE_ACTION_V1.RIDGE",
+      "mae": 0.008674689716885346,
+      "mean_realized_gain": -0.00016322127599815132,
+      "override_precision": 0.0583596214511041,
+      "override_rate": 0.14266426642664268,
+      "pearson": 0.11470906944397659,
+      "rmse": 0.016147327150711807,
+      "spearman": 0.09651615340029603
+    },
+    {
+      "harmful_rate": 0.06008100810081008,
+      "label": "STATE_ACTION_V1.HIST_GRADIENT_BOOSTING",
+      "mae": 0.00831868070186654,
+      "mean_realized_gain": 9.140275106538895e-05,
+      "override_precision": 0.16636897167644807,
+      "override_rate": 0.4409315931593159,
+      "pearson": 0.12838094438762662,
+      "rmse": 0.016368254902702644,
+      "spearman": 0.10809752429793551
+    },
+    {
+      "harmful_rate": 0.043091809180918095,
+      "label": "STATE_ACTION_V1.EXTRA_TREES",
+      "mae": 0.007827138185975614,
+      "mean_realized_gain": 0.00034585539543663613,
+      "override_precision": 0.1484375,
+      "override_rate": 0.40324032403240323,
+      "pearson": 0.14310322005787593,
+      "rmse": 0.015981073738643457,
+      "spearman": 0.12647438877996015
+    },
+    {
+      "harmful_rate": 0.0,
+      "label": "STATE_ACTION_V1.DUMMY_ZERO",
+      "mae": 0.00675478790537794,
+      "mean_realized_gain": 0.0,
+      "override_precision": null,
+      "override_rate": 0.0,
+      "pearson": 0.0,
+      "rmse": 0.016177169253404868,
+      "spearman": 0.0
+    },
+    {
+      "harmful_rate": 0.008888388838883888,
+      "label": "STATE_CORE_V1.RIDGE",
+      "mae": 0.008685305717283836,
+      "mean_realized_gain": -0.00011720938049540215,
+      "override_precision": 0.05509641873278237,
+      "override_rate": 0.08168316831683169,
+      "pearson": 0.08544893402734638,
+      "rmse": 0.016224719210637378,
+      "spearman": 0.06843334143391824
+    },
+    {
+      "harmful_rate": 0.0014626462646264626,
+      "label": "STATE_CORE_V1.HIST_GRADIENT_BOOSTING",
+      "mae": 0.008319132061369796,
+      "mean_realized_gain": -3.1840584985579225e-06,
+      "override_precision": 0.25675675675675674,
+      "override_rate": 0.008325832583258325,
+      "pearson": 0.05479290282926704,
+      "rmse": 0.016611155086610208,
+      "spearman": 0.05500520153085094
+    },
+    {
+      "harmful_rate": 0.0063006300630063005,
+      "label": "STATE_CORE_V1.EXTRA_TREES",
+      "mae": 0.007976765009693356,
+      "mean_realized_gain": -0.00011254467394325762,
+      "override_precision": 0.2111801242236025,
+      "override_rate": 0.018114311431143115,
+      "pearson": 0.08675065239310219,
+      "rmse": 0.01618461528249606,
+      "spearman": 0.06706402798098098
+    },
+    {
+      "harmful_rate": 0.0,
+      "label": "STATE_CORE_V1.DUMMY_ZERO",
+      "mae": 0.00675478790537794,
+      "mean_realized_gain": 0.0,
+      "override_precision": null,
+      "override_rate": 0.0,
+      "pearson": 0.0,
+      "rmse": 0.016177169253404868,
+      "spearman": 0.0
+    }
+  ],
+  "open_loop_d_sbs_descriptive_estimate": {
+    "descriptive_mean_gain_per_sbs_decision_state": 3.844293481099896e-06,
+    "disagreement_rate": 0.019619616084200115,
+    "mean_gain_per_disagreement_state": 0.00019594132039085852,
+    "total_realized_gain_div_total_sbs_decision_states": 3.844293481099896e-06
+  },
+  "optional_sign_classifier_result": "ABSENT_NOT_RUN",
+  "oracle_gap_closure": {
+    "gap_closure": 0.042005184160838975,
+    "learned_mean_gain_per_state": 0.00019594132039085852,
+    "learned_total_gain": 1.7415264556339505,
+    "mean_regret_to_oracle": 0.004468752438374582,
+    "oracle_mean_gain_per_state": 0.00466469375876544,
+    "oracle_total_gain": 41.459798127907234,
+    "p90_regret": 0.0170095551515423,
+    "p95_regret": 0.0272333985716475
+  },
+  "prediction_diagnostics": {
+    "calibration_bins": [
+      {
+        "bin": "(-0.0593, -0.00642]",
+        "mean_pred": -0.011779665660011623,
+        "mean_true": -0.007996797861398437,
+        "n": 2186,
+        "positive_rate": 0.20539798719121682
+      },
+      {
+        "bin": "(-0.00642, -0.00365]",
+        "mean_pred": -0.004842869305447463,
+        "mean_true": -0.003160320077935764,
+        "n": 2186,
+        "positive_rate": 0.1989935956084172
+      },
+      {
+        "bin": "(-0.00365, -0.00217]",
+        "mean_pred": -0.0028441045327620446,
+        "mean_true": -0.0018990934784207875,
+        "n": 2186,
+        "positive_rate": 0.1706312900274474
+      },
+      {
+        "bin": "(-0.00124, -0.000588]",
+        "mean_pred": -0.000902084491845959,
+        "mean_true": -0.0011330580799200863,
+        "n": 2186,
+        "positive_rate": 0.0818847209515096
+      },
+      {
+        "bin": "(-0.00217, -0.00124]",
+        "mean_pred": -0.0016605116596825717,
+        "mean_true": -0.001613075237952059,
+        "n": 2185,
+        "positive_rate": 0.13318077803203662
+      },
+      {
+        "bin": "(-0.000588, -0.000118]",
+        "mean_pred": -0.0003401149585009641,
+        "mean_true": -0.00038827095803091894,
+        "n": 2187,
+        "positive_rate": 0.06767261088248742
+      },
+      {
+        "bin": "(0.000147, 0.000629]",
+        "mean_pred": 0.00034438803310382675,
+        "mean_true": -4.397367217392532e-05,
+        "n": 2186,
+        "positive_rate": 0.059469350411710885
+      },
+      {
+        "bin": "(0.000629, 0.00223]",
+        "mean_pred": 0.0012978375532878529,
+        "mean_true": -7.572275496599494e-05,
+        "n": 2186,
+        "positive_rate": 0.11985361390667887
+      },
+      {
+        "bin": "(0.00223, 0.0411]",
+        "mean_pred": 0.0059534579979359774,
+        "mean_true": -0.0007829301275739485,
+        "n": 2186,
+        "positive_rate": 0.22095150960658738
+      },
+      {
+        "bin": "(-0.000118, 0.000147]",
+        "mean_pred": 1.6017940124380684e-05,
+        "mean_true": 0.0002325062549622296,
+        "n": 2184,
+        "positive_rate": 0.043498168498168496
+      }
+    ],
+    "mae": 0.008108245309739394,
+    "pearson": 0.1367101170554641,
+    "predicted_positive_precision": 0.1184446149910463,
+    "predicted_positive_recall": 0.3254833040421793,
+    "rmse": 0.016181077614930876,
+    "rows": 21858,
+    "sign_accuracy_nonzero": 0.5841307228028854,
+    "spearman": 0.11261132087929088
+  },
+  "primary_selector_result": {
+    "beneficial_override_count": 568,
+    "beneficial_override_rate": 0.0639063906390639,
+    "gap_closure": 0.042005184160838975,
+    "harmful_override_count": 450,
+    "harmful_override_rate": 0.05063006300630063,
+    "maximum_harmful_override": -0.1035442413473432,
+    "mean_gain_conditional_on_overriding": 0.0005126660157886223,
+    "mean_loss_conditional_on_harmful_override": -0.019477429635187112,
+    "mean_realized_gain": 0.00019594132039085852,
+    "mean_regret_to_oracle": 0.004468752438374582,
+    "median_realized_gain": 0.0,
+    "oracle_mean_gain": 0.00466469375876544,
+    "oracle_total_gain": 41.459798127907234,
+    "override_count": 3397,
+    "override_rate": 0.3822007200720072,
+    "p10_state_realized_gain": 0.0,
+    "p5_state_realized_gain": -2.775557561562892e-17,
+    "precision_among_overrides": 0.16720635855166324,
+    "states": 8888,
+    "total_realized_gain": 1.7415264556339505,
+    "zero_effect_override_count": 2379,
+    "zero_effect_override_rate": 0.26766426642664265
+  },
+  "protocol_audit": {
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20260919,
+    "implementation_notes": [
+      "Frozen implementation crossfits each candidate on the four outer-training folds only.",
+      "Hyperparameter and threshold selection use those outer-training cross-fitted predictions.",
+      "Final outer-test predictions are emitted only after model/config/threshold selection.",
+      "All actions from a state and all states from a scenario stay in one frozen fold."
+    ],
+    "outer_test_scenarios_disjoint_from_train": true,
+    "outer_test_states_disjoint_from_train": true,
+    "quick_mode": false,
+    "scenario_assigned_to_multiple_folds": 0,
+    "state_equal_weights_recorded": true,
+    "status": "PASS",
+    "threshold_grid": [
+      0.0,
+      0.001,
+      0.0025,
+      0.005,
+      0.01,
+      0.02
+    ]
+  },
+  "required_fold_models_and_thresholds": [
+    {
+      "beneficial_overrides": 53,
+      "fold": 0,
+      "harmful_overrides": 46,
+      "mean_realized_gain": 0.00016707436998906547,
+      "oracle_gap_closure": 0.0415228710950724,
+      "oracle_mean_gain": 0.004023670945261118,
+      "override_precision": 0.09169550173010381,
+      "override_rate": 0.30405049973698056,
+      "scenario_count": 50,
+      "selected_hyperparameters": "{\"max_depth\":8,\"max_features\":0.5,\"min_samples_leaf\":20,\"model_name\":\"EXTRA_TREES\",\"n_estimators\":100,\"n_jobs\":4}",
+      "selected_model_family": "EXTRA_TREES",
+      "selected_threshold": 0.0,
+      "state_count": 1901,
+      "total_realized_gain": 0.3176083773492135,
+      "train_selection_metric": 0.0001929780005451,
+      "zero_effect_overrides": 479
+    },
+    {
+      "beneficial_overrides": 164,
+      "fold": 1,
+      "harmful_overrides": 138,
+      "mean_realized_gain": -8.899437743042069e-08,
+      "oracle_gap_closure": -2.219852179755376e-05,
+      "oracle_mean_gain": 0.0040090226836738165,
+      "override_precision": 0.16786079836233367,
+      "override_rate": 0.5618171362852213,
+      "scenario_count": 48,
+      "selected_hyperparameters": "{\"max_depth\":null,\"max_features\":1.0,\"min_samples_leaf\":20,\"model_name\":\"EXTRA_TREES\",\"n_estimators\":100,\"n_jobs\":4}",
+      "selected_model_family": "EXTRA_TREES",
+      "selected_threshold": 0.0,
+      "state_count": 1739,
+      "total_realized_gain": -0.00015476122235150158,
+      "train_selection_metric": 0.000409427611025,
+      "zero_effect_overrides": 675
+    },
+    {
+      "beneficial_overrides": 91,
+      "fold": 2,
+      "harmful_overrides": 144,
+      "mean_realized_gain": -0.00021750187377387852,
+      "oracle_gap_closure": -0.044541525311110906,
+      "oracle_mean_gain": 0.004883125852890866,
+      "override_precision": 0.14,
+      "override_rate": 0.34318901795142553,
+      "scenario_count": 48,
+      "selected_hyperparameters": "{\"l2_regularization\":0.0,\"learning_rate\":0.1,\"max_iter\":100,\"max_leaf_nodes\":15,\"model_name\":\"HIST_GRADIENT_BOOSTING\"}",
+      "selected_model_family": "HIST_GRADIENT_BOOSTING",
+      "selected_threshold": 0.001,
+      "state_count": 1894,
+      "total_realized_gain": -0.4119485489277259,
+      "train_selection_metric": 0.0005374163479959,
+      "zero_effect_overrides": 415
+    },
+    {
+      "beneficial_overrides": 143,
+      "fold": 3,
+      "harmful_overrides": 63,
+      "mean_realized_gain": 0.0005679401177869571,
+      "oracle_gap_closure": 0.10328513463823197,
+      "oracle_mean_gain": 0.005498759524071228,
+      "override_precision": 0.3029661016949153,
+      "override_rate": 0.280785246876859,
+      "scenario_count": 45,
+      "selected_hyperparameters": "{\"l2_regularization\":0.0,\"learning_rate\":0.05,\"max_iter\":100,\"max_leaf_nodes\":31,\"model_name\":\"HIST_GRADIENT_BOOSTING\"}",
+      "selected_model_family": "HIST_GRADIENT_BOOSTING",
+      "selected_threshold": 0.001,
+      "state_count": 1681,
+      "total_realized_gain": 0.954707337999875,
+      "train_selection_metric": 0.0003512720985022,
+      "zero_effect_overrides": 266
+    },
+    {
+      "beneficial_overrides": 117,
+      "fold": 4,
+      "harmful_overrides": 59,
+      "mean_realized_gain": 0.0005267866410250683,
+      "oracle_gap_closure": 0.10558384324190868,
+      "oracle_mean_gain": 0.0049892732150137765,
+      "override_precision": 0.1625,
+      "override_rate": 0.4303646144650329,
+      "scenario_count": 45,
+      "selected_hyperparameters": "{\"l2_regularization\":0.1,\"learning_rate\":0.1,\"max_iter\":100,\"max_leaf_nodes\":15,\"model_name\":\"HIST_GRADIENT_BOOSTING\"}",
+      "selected_model_family": "HIST_GRADIENT_BOOSTING",
+      "selected_threshold": 0.0,
+      "state_count": 1673,
+      "total_realized_gain": 0.8813140504349393,
+      "train_selection_metric": 0.0004872394334155,
+      "zero_effect_overrides": 544
+    }
+  ],
+  "run_root": "/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-advantage-learnability-v1/experiments/joint240_sbs_advantage_learnability_v1/run_v1",
+  "saved_final_verdict": "HELD_OUT_SIGNAL_POSITIVE_BUT_UNCERTAIN",
+  "saved_final_verdict_in_expected_set": true,
+  "scenario_level": {
+    "best_scenario": {
+      "beneficial_overrides": 13,
+      "fold": 1,
+      "harmful_overrides": 0,
+      "mean_state_gain": 0.0139147883270384,
+      "oracle_gain": 0.5137767997675725,
+      "overrides": 27,
+      "scenario_gain": 0.4452732264652295,
+      "scenario_id": "joint_mm_0065",
+      "states": 32
+    },
+    "maximum_harmful_overrides_in_one_scenario": 30,
+    "mean_scenario_gain": 0.007379349388279451,
+    "median_scenario_gain": 0.0,
+    "p10_scenario_gain": -0.07217477426217944,
+    "p5_scenario_gain": -0.14540098526258438,
+    "positive_gain_concentration": {
+      "top_10pct": {
+        "gain": 5.525962038941801,
+        "scenario_count": 24,
+        "share_of_net_gain": 3.173056614250652,
+        "share_of_positive_gain": 0.7082285960847412
+      },
+      "top_1pct": {
+        "gain": 1.2739769050355478,
+        "scenario_count": 3,
+        "share_of_net_gain": 0.731528884280885,
+        "share_of_positive_gain": 0.16327779100532694
+      },
+      "top_20pct": {
+        "gain": 7.164563051882798,
+        "scenario_count": 48,
+        "share_of_net_gain": 4.11395590845317,
+        "share_of_positive_gain": 0.9182380182921491
+      },
+      "top_5pct": {
+        "gain": 3.699336274153584,
+        "scenario_count": 12,
+        "share_of_net_gain": 2.1241918330818303,
+        "share_of_positive_gain": 0.4741211968931413
+      }
+    },
+    "scenarios_containing_harmful_overrides": 87,
+    "scenarios_negative_gain": 57,
+    "scenarios_positive_gain": 80,
+    "scenarios_zero_gain": 99,
+    "worst_scenario": {
+      "beneficial_overrides": 0,
+      "fold": 1,
+      "harmful_overrides": 14,
+      "mean_state_gain": -0.0241820024310787,
+      "oracle_gain": 0.0673940159731047,
+      "overrides": 19,
+      "scenario_gain": -0.7738240777945211,
+      "scenario_id": "joint_mm_0064",
+      "states": 32
+    }
+  },
+  "source_git_branch": "experiment/joint240-sbs-advantage-learnability-v1",
+  "source_git_head": "4004c72fa7d788904e4182ad375f33669f93ec43",
+  "split_audit": {
+    "fold_state_counts": {
+      "0": 1901,
+      "1": 1739,
+      "2": 1894,
+      "3": 1681,
+      "4": 1673
+    },
+    "outer_folds": [
+      {
+        "outer_fold": 0,
+        "scenario_overlap": 0,
+        "state_overlap": 0,
+        "test_rows": 4804,
+        "test_scenarios": 50,
+        "test_states": 1901,
+        "train_rows": 17054,
+        "train_scenarios": 186,
+        "train_states": 6987
+      },
+      {
+        "outer_fold": 1,
+        "scenario_overlap": 0,
+        "state_overlap": 0,
+        "test_rows": 4343,
+        "test_scenarios": 48,
+        "test_states": 1739,
+        "train_rows": 17515,
+        "train_scenarios": 188,
+        "train_states": 7149
+      },
+      {
+        "outer_fold": 2,
+        "scenario_overlap": 0,
+        "state_overlap": 0,
+        "test_rows": 4409,
+        "test_scenarios": 48,
+        "test_states": 1894,
+        "train_rows": 17449,
+        "train_scenarios": 188,
+        "train_states": 6994
+      },
+      {
+        "outer_fold": 3,
+        "scenario_overlap": 0,
+        "state_overlap": 0,
+        "test_rows": 4161,
+        "test_scenarios": 45,
+        "test_states": 1681,
+        "train_rows": 17697,
+        "train_scenarios": 191,
+        "train_states": 7207
+      },
+      {
+        "outer_fold": 4,
+        "scenario_overlap": 0,
+        "state_overlap": 0,
+        "test_rows": 4141,
+        "test_scenarios": 45,
+        "test_states": 1673,
+        "train_rows": 17717,
+        "train_scenarios": 191,
+        "train_states": 7215
+      }
+    ],
+    "scenario_assigned_to_multiple_folds": 0
+  },
+  "validated_final_verdict": "HELD_OUT_SIGNAL_POSITIVE_BUT_UNCERTAIN",
+  "validation": {
+    "all_preregistered_model_families_completed": true,
+    "duplicate_state_action_predictions": 0,
+    "duplicate_state_decisions": 0,
+    "exit_code": "0",
+    "held_out_action_predictions": 21858,
+    "held_out_state_decisions": 8888,
+    "max_scenario_fold_count": 1,
+    "max_state_fold_count": 1,
+    "outer_folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "sbs_rows_in_action_predictions": 0,
+    "scenario_count": 236,
+    "state_action_completed": true,
+    "state_core_completed": true,
+    "stderr_bytes": 0,
+    "unique_decision_states": 8888
+  }
+}
