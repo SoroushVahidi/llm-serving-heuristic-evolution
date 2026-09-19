@@ -1,0 +1,70 @@
+{
+  "bootstrap": {
+    "ci": "two-sided 95% percentile interval",
+    "ci_quantiles": [
+      0.025,
+      0.975
+    ],
+    "random_seed": 20260919,
+    "replicate_algorithm": [
+      "sample 78 supported scenario IDs with replacement",
+      "include all state rows for each sampled scenario, preserving multiplicity",
+      "sum realized gains over sampled state instances",
+      "divide by sampled state-instance count, including abstentions"
+    ],
+    "replicates": 2000,
+    "resampling_unit": "scenario",
+    "supported_scenarios": 78
+  },
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "forbidden_primary_alternates": [
+    "override precision",
+    "beneficial override fraction",
+    "total gain alone",
+    "harmful count",
+    "negative-scenario count",
+    "oracle-gap closure",
+    "subgroup result"
+  ],
+  "gain_definition": {
+    "abstain_to_sbs": "G_s = 0",
+    "override": "G_s = A_SBS(s,a) for the action frozen by Stage A",
+    "oracle_substitution": "forbidden"
+  },
+  "primary_endpoint": {
+    "denominator": 2862,
+    "estimand": "state-weighted mean realized SBS-relative gain",
+    "formula": "G_bar = (1 / 2862) * sum_s G_s",
+    "population": "canonical 2862 unique fresh disagreement states from the 78 supported scenarios"
+  },
+  "primary_success_rule": {
+    "failure_verdict": "POSITIVE_GENERALIZATION_NOT_CONFIRMED",
+    "success_conditions": [
+      "observed G_bar > 0",
+      "lower endpoint of frozen two-sided 95% scenario-clustered percentile bootstrap CI is strictly greater than 0"
+    ],
+    "success_verdict": "CONFIRMED_POSITIVE_GENERALIZATION"
+  },
+  "schema_version": "sbs_override_fresh_id_confirmatory_protocol_v2.0.0",
+  "secondary_diagnostics_descriptive_only": [
+    "override count",
+    "override rate among 2862 states",
+    "broader SBS-decision context when meaningful",
+    "beneficial overrides where G_s > 0 among overrides",
+    "harmful overrides where G_s < 0 among overrides",
+    "zero-effect overrides where G_s == 0 among overrides",
+    "total realized gain",
+    "negative aggregate-gain scenarios",
+    "positive aggregate-gain scenarios",
+    "zero aggregate-gain scenarios",
+    "worst override",
+    "worst scenario",
+    "top-1/top-5 scenario contribution to positive aggregate gain",
+    "per-scenario gain distribution"
+  ],
+  "selector_application_rule": {
+    "stage_a_predictions": "immutable predictions frozen before label access",
+    "threshold": "strict gate_score > tau as implemented by frozen selector semantics"
+  },
+  "stage_b_status": "IMPLEMENTED_BUT_NOT_EXECUTED"
+}

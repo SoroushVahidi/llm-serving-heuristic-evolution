@@ -1,0 +1,23 @@
+{
+  "clean_unique_disagreement_states": 2862,
+  "clean_unique_state_ids": 2862,
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "duplicate_handling": "first raw occurrence by state_id, yielding full_support_only clean manifest",
+  "input_sha256": {
+    "policy_action_map": "a6d89a94d9e786b43841d4b9e5bfc5cbde4e2a42d661a2fec228fb0328780e8f",
+    "scenario_manifest": "72c023e9c8a85ce8175506bf4491ef4fcf7c63435da7e757a24dd74f1408d0a1",
+    "state_manifest": "09566916c2419f8337aa5bb5b6e26b3cf29e31321f5158969836284fca86c93e"
+  },
+  "policy_action_map": "/home/soroush/llm-serving-heuristic-evolution/experiments/sbs_override_fresh_confirmatory_corpus_v1/fresh_state_policy_action_map.full_support_only.csv",
+  "policy_action_map_rows": 11419,
+  "raw_disagreement_rows": 2918,
+  "raw_duplicate_state_id_rows": 56,
+  "sbs_reference_branches": 2862,
+  "scenario_manifest": "/home/soroush/llm-serving-heuristic-evolution/experiments/sbs_override_fresh_confirmatory_corpus_v1/fresh_candidate_scenario_manifest.csv",
+  "schema_version": "sbs_override_fresh_id_stage_a_predict_v2.0.0",
+  "selected_scenarios": 80,
+  "state_manifest": "/home/soroush/llm-serving-heuristic-evolution/experiments/sbs_override_fresh_confirmatory_corpus_v1/fresh_state_manifest.full_support_only.csv",
+  "supported_scenarios": 78,
+  "total_terminal_continuations": 9858,
+  "unique_non_sbs_canonical_branches": 6996
+}
