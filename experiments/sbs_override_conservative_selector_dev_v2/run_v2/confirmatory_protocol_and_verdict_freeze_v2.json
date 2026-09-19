@@ -1,0 +1,39 @@
+{
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "confirmatory_protocol": {
+    "baseline": "always SBS = 0",
+    "primary_metric": "mean realized A_SBS per fresh disagreement state",
+    "primary_uncertainty": "scenario-level bootstrap over supported fresh scenarios",
+    "steps": [
+      "enumerate unique non-SBS candidate actions per fresh disagreement state",
+      "compute STATE_ACTION_V1 in frozen feature order",
+      "predict with FINAL_CONFIRMATORY_SELECTOR_V2",
+      "apply frozen V2 gate parameters without retraining or calibration",
+      "choose exactly one candidate action or abstain to SBS",
+      "only then join fresh A_SBS labels in the separate one-shot confirmation task",
+      "calculate realized gain against always-SBS baseline"
+    ]
+  },
+  "development_result": "final_development_oof_result_v2.json",
+  "fresh_confirmatory_outcomes_used": false,
+  "outer_oof_results_used_for_final_selection": false,
+  "schema_version": "sbs_override_conservative_selector_dev_v2.0.0",
+  "selector_joblib": "FINAL_CONFIRMATORY_SELECTOR_V2.joblib",
+  "selector_json": "FINAL_CONFIRMATORY_SELECTOR_V2.json",
+  "status": "V2_DEVELOPMENT_SELECTOR_FROZEN_CONFIRMATORY_NOT_RUN",
+  "verdict_rule": {
+    "FRESH_CONFIRMATION_FAIL": [
+      "mean realized gain <= 0 or meaningful generalization is absent"
+    ],
+    "FRESH_CONFIRMATION_POSITIVE_BUT_UNCERTAIN": [
+      "point estimate > 0",
+      "CI includes zero"
+    ],
+    "FRESH_CONFIRMATION_SUCCESS": [
+      "mean realized gain > 0",
+      "scenario-bootstrap 95% CI lower bound > 0",
+      "benefit not driven by a tiny number of scenarios",
+      "downside metrics reported"
+    ]
+  }
+}
