@@ -1,0 +1,57 @@
+{
+  "schema_version": "industry_realism_action_opportunity_metric_definitions_v1.0.0",
+  "status": "PLANNING_ONLY_NOT_PREREGISTERED",
+  "primary_characterization_question": "How does canonical SBS-vs-portfolio action-disagreement prevalence change as production-derived workloads move from native replay into progressively resource-constrained serving regimes?",
+  "primary_outcome": {
+    "name": "disagreement_rate",
+    "definition": "canonical_disagreement_states / total_SBS_decision_states",
+    "interpretation": "descriptive opportunity prevalence P(D), not selector accuracy and not causal gain"
+  },
+  "events": {
+    "D": "live SBS decision state where SBS and at least one alternative scheduler induce different canonical actions",
+    "B": "at least one available non-SBS action has positive SBS-relative one-step causal advantage",
+    "G": "SBS-relative causal gain"
+  },
+  "support_metrics": [
+    "total_SBS_decision_states",
+    "canonical_disagreement_states",
+    "disagreement_rate",
+    "distinct_alternative_canonical_actions",
+    "scenarios_or_windows_with_any_disagreement",
+    "scenario_or_window_disagreement_fraction"
+  ],
+  "headroom_metrics_after_labeling_only": [
+    "fraction_disagreement_states_with_any_beneficial_alternative",
+    "oracle_best_one_step_gain",
+    "mean_best_SBS_relative_gain",
+    "median_best_SBS_relative_gain",
+    "harmful_alternative_prevalence",
+    "zero_effect_alternative_prevalence",
+    "action_advantage_distribution"
+  ],
+  "concentration_metrics": [
+    "disagreement_concentration_by_window_or_scenario",
+    "top_1_percent_segment_share_of_disagreement",
+    "top_5_percent_segment_share_of_disagreement",
+    "top_10_percent_segment_share_of_disagreement",
+    "headroom_concentration_by_window_or_scenario",
+    "pressure_disagreement_relationship"
+  ],
+  "context_metrics": [
+    "queue_length",
+    "active_sequence_count",
+    "KV_utilization",
+    "arrival_intensity",
+    "prompt_length_distribution",
+    "output_length_distribution",
+    "prefix_cache_reuse_when_genuinely_available_and_modeled",
+    "load_regime_label"
+  ],
+  "reporting_rules": [
+    "Report every preregistered workload and pressure point, including zero-support regimes.",
+    "Do not train a selector in this phase.",
+    "Do not use Tier 4 generated data as primary industry-prevalence evidence.",
+    "Do not select Phase-D causal-labeling regimes by favorable observed gain.",
+    "Keep workload transformations separate from system-pressure transformations."
+  ]
+}

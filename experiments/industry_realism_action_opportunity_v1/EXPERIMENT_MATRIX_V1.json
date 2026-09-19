@@ -1,0 +1,91 @@
+{
+  "schema_version": "industry_realism_action_opportunity_experiment_matrix_v1.0.0",
+  "status": "PLANNING_ONLY_NOT_PREREGISTERED",
+  "primary_question": "How does canonical SBS-vs-portfolio action-disagreement prevalence change as production-derived workloads move from native replay into progressively resource-constrained serving regimes?",
+  "phase_a_native_replay": {
+    "goal": "Support mapping only under native or already-canonical baseline replay.",
+    "candidate_workloads": ["azure_2023_code", "azure_2023_conversation", "burstgpt"],
+    "deferred_until_data_freeze": ["azure_2024", "bailian_qwen", "mooncake_kimi"],
+    "metrics": ["total_SBS_decision_states", "canonical_disagreement_states", "disagreement_rate", "pressure_telemetry"],
+    "execution_status": "NOT_RUN_IN_THIS_TASK"
+  },
+  "phase_b_resource_pressure_sweep": {
+    "goal": "Preserve workload identity while varying one serving pressure axis at a time.",
+    "axes": [
+      {
+        "axis": "arrival_rate_multiplier",
+        "type": "SYSTEM_PRESSURE_TRANSFORMED_TRACE",
+        "currently_supported": true,
+        "candidate_grids": {
+          "fine_industry_grid_for_short_traces": [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
+          "existing_geometric_grid": [1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+        },
+        "recommended_for_v1": true,
+        "notes": "Choose and freeze one grid before execution; do not pick after observing support."
+      },
+      {
+        "axis": "max_active_sequences",
+        "type": "SYSTEM_PRESSURE_TRANSFORMED_TRACE",
+        "currently_supported": true,
+        "candidate_grid": ["baseline", "0.5x_baseline", "0.25x_baseline", "0.125x_baseline"],
+        "recommended_for_v1": true,
+        "notes": "Operator-controllable and physically interpretable."
+      },
+      {
+        "axis": "max_kv_tokens",
+        "type": "SYSTEM_PRESSURE_TRANSFORMED_TRACE",
+        "currently_supported": true,
+        "candidate_grid": ["baseline", "0.5x_baseline", "0.25x_baseline", "0.125x_baseline"],
+        "recommended_for_v1": true,
+        "notes": "Prefer dimensionless fractions of baseline feasible capacity."
+      },
+      {
+        "axis": "step_token_budget",
+        "type": "SYSTEM_PRESSURE_TRANSFORMED_TRACE",
+        "currently_supported": true,
+        "candidate_grid": ["baseline", "0.5x_baseline", "0.25x_baseline"],
+        "recommended_for_v1": "secondary",
+        "notes": "Requires clear prefill/decode fidelity caveats."
+      },
+      {
+        "axis": "prefix_cache_availability",
+        "type": "SYSTEM_PRESSURE_TRANSFORMED_TRACE",
+        "currently_supported": false,
+        "candidate_grid": [],
+        "recommended_for_v1": false,
+        "notes": "Do not fabricate prefix sharing; implement only for traces with genuine prefix/block fields."
+      }
+    ],
+    "execution_status": "NOT_RUN_IN_THIS_TASK"
+  },
+  "phase_c_joint_realistic_regimes": {
+    "goal": "Small predetermined sparse grid over operator-relevant pressure axes.",
+    "rule": "Define before execution from Phase-A/B design feasibility, not favorable measured outcomes.",
+    "candidate_matrix": [
+      {"arrival_multiplier": 1.0, "max_active_sequences_fraction": 1.0, "max_kv_tokens_fraction": 1.0},
+      {"arrival_multiplier": 1.5, "max_active_sequences_fraction": 1.0, "max_kv_tokens_fraction": 1.0},
+      {"arrival_multiplier": 2.0, "max_active_sequences_fraction": 1.0, "max_kv_tokens_fraction": 1.0},
+      {"arrival_multiplier": 1.0, "max_active_sequences_fraction": 0.5, "max_kv_tokens_fraction": 1.0},
+      {"arrival_multiplier": 1.0, "max_active_sequences_fraction": 1.0, "max_kv_tokens_fraction": 0.5},
+      {"arrival_multiplier": 1.5, "max_active_sequences_fraction": 0.5, "max_kv_tokens_fraction": 0.5}
+    ],
+    "execution_status": "NOT_RUN_IN_THIS_TASK"
+  },
+  "phase_d_causal_headroom": {
+    "goal": "Run expensive one-step SBS-relative counterfactual labeling only after support mapping.",
+    "regime_selection_rule": "Freeze coverage criteria before labels: native if nonzero support, first-emergence pressure, mid-pressure, high-pressure, and a zero-support control where feasible.",
+    "forbidden_rule": "Do not choose regimes because they appear to have favorable gains.",
+    "execution_status": "NOT_RUN_IN_THIS_TASK"
+  },
+  "phase_e_predictability": {
+    "goal": "Consider learned online prediction only after support/headroom characterization.",
+    "execution_status": "OUT_OF_SCOPE_FOR_THIS_PHASE"
+  },
+  "anti_cherry_picking": [
+    "Retain every workload/resource combination in final tables.",
+    "Report zero-support conditions.",
+    "Report negative/null headroom conditions.",
+    "Do not delete boring regimes.",
+    "Do not make selector accuracy the primary endpoint."
+  ]
+}
