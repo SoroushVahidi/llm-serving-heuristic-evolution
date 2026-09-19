@@ -1,0 +1,46 @@
+{
+  "confirmatory_data": {
+    "scenario_count": 240,
+    "selector_freeze_rule": "no fresh terminal labels may be used for design/model/threshold choices",
+    "source_composition": {
+      "azure_llm_2024": 80,
+      "bailian_qwen": 80,
+      "fresh_joint_multimechanism_generator_holdout": 80
+    },
+    "terminal_labels_status": "not generated and not inspected"
+  },
+  "created_utc": "2026-09-19T15:55:28Z",
+  "development_data": {
+    "description": "entire existing joint240 targeted corpus and all OOF results",
+    "non_sbs_unique_actions": 21858,
+    "scenarios": 236,
+    "states": 8888,
+    "status": "DEVELOPMENT_DATA_ONLY"
+  },
+  "git": {
+    "branch": "contextual-compositional-heuristics-20260731",
+    "head": "94f4621bb6610c2b426e365f659636b1a48a89f5",
+    "status_short": "M .gitignore\n M CITATION.cff\n M CONTRIBUTING.md\n M LICENSE\n M README.md\n M docs/PROJECT_MAP.md\n M docs/README.md\n M docs/current/NEXT_ACTIONS.md\n M docs/current/PROJECT_MAP.md\n M docs/current/RESUME_HERE.md\n M docs/current/WORK_STATUS.md\n M scripts/phase17c_postprocess.sh\n?? REPRODUCIBILITY.md\n?? artifacts/\n?? datasets/\n?? docs/current/WULVER_ACCESS_20260825.md\n?? docs/current/family_a_config_state_surrogate_v1_analysis_20260823.md\n?? docs/current/family_a_dagger_d1_v1_analysis_20260823.md\n?? docs/current/family_a_joint_feature_scenario_pilot_v1_analysis_20260823.md\n?? docs/current/family_a_pi0_closed_loop_final_v1_analysis_20260823.md\n?? docs/current/family_a_scientific_evidence_audit_20260823.md\n?? docs/current/family_a_v2_learning_pipeline_v1_analysis_20260823.md\n?? docs/current/family_a_wulver_medium_sweep_v1_analysis_20260823.md\n?? docs/current/family_a_wulver_medium_sweep_v1_analysis_20260824.md\n?? docs/current/family_a_wulver_smoke_repro_diagnosis_v1.md\n?? docs/design/DECISION_CRITICALITY_TERMINAL_UTILITY_JOINT240_V1.md\n?? docs/design/JOINT240_ALIVE_UNDERPERFORMANCE_DECOMPOSITION_V1.md\n?? docs/design/JOINT240_GUARDED_ABSTAINING_SELECTOR_V1.md\n?? experiments/decision_criticality_terminal_utility_joint240_v1/\n?? experiments/decision_criticality_timescale_trainval_v1/\n?? experiments/family_a_analytic_index_feasibility/\n?? experiments/family_a_config_state_surrogate_v1/\n?? experiments/family_a_contested_request_value_diagnosis/\n?? experiments/family_a_dagger_d1_v1/\n?? experiments/family_a_feature_gap_design_v1/\n?? experiments/family_a_horizon_stability_v1/\n?? experiments/family_a_horizon_stability_v1_rerun/\n?? experiments/family_a_joint_feature_scenario_pilot_v1/\n?? experiments/family_a_observability_continuation_v1/\n?? experiments/family_a_observability_continuation_v1_invalid_pre_snapshot_fix_20260820/\n?? experiments/family_a_oracle_v2_validation/\n?? experiments/family_a_oracle_v2_validation_rerun/\n?? experiments/family_a_pi0_closed_loop_final_v1/\n?? experiments/family_a_receding_horizon_oracle_v1/\n?? experiments/family_a_receding_horizon_terminal_value_v1/\n?? experiments/family_a_scientific_evidence_audit_v1/\n?? experiments/family_a_stateful_controller_v1/\n?? experiments/family_a_v2_learning_pipeline_v1/\n?? experiments/family_a_wulver_medium_sweep_v1/\n?? experiments/family_a_wulver_smoke_repro_diagnosis_v1/\n?? experiments/infrastructure/\n?? experiments/joint240_alive_underperformance_decomposition_v1/\n?? experiments/joint240_guarded_abstaining_selector_v1/\n?? experiments/sbs_override_fresh_confirmatory_corpus_v1/\n?? paper/llm2026/archive/\n?? paper/llm2026/figures/joint_complementarity.png\n?? paper/llm2026/figures/joint_complementarity_layout_A.png\n?? paper/llm2026/figures/joint_complementarity_layout_B.png\n?? paper/llm2026/figures/joint_complementarity_layout_B_h2.35.png\n?? paper/llm2026/figures/joint_complementarity_layout_B_h2.55.png\n?? paper/llm2026/figures/joint_complementarity_layout_B_h2.75.png\n?? paper/llm2026/figures/joint_complementarity_layout_C.png\n?? paper/llm2026/figures/vllm_semantic_validation.png\n?? paper/llm2026/main.blg\n?? paper/llm2026/template/official/\n?? paper/llm2026/template/source/\n?? scripts/family_a_config_state_surrogate_v1.py\n?? scripts/family_a_dagger_d1_v1.py\n?? scripts/family_a_joint_feature_scenario_pilot_v1.py\n?? scripts/family_a_oracle_v2_full_relabel.py\n?? scripts/family_a_oracle_v2_validation.py\n?? scripts/family_a_pi0_closed_loop_final_v1.py\n?? scripts/family_a_v2_postrelabel_pipeline.py\n?? scripts/run_family_a_v2_postrelabel_overnight.sh\n?? scripts/sbs_override_fresh_confirmatory_corpus_v1.py\n?? tests/test_family_a_dagger_d1_recapture.py\n?? tests/test_family_a_joint_feature_scenario_pilot_v1.py\n?? tests/test_family_a_oracle_v2_validation.py\n?? tests/test_family_a_pi0_closed_loop_final_v1.py\n?? tests/test_family_a_v2_postrelabel_feature_contract.py"
+  },
+  "inputs": {
+    "joint_runner": "/home/soroush/llm-serving-heuristic-evolution/experiments/joint_multimechanism_generalization_v1/run_joint_multimechanism_generalization_v1.py",
+    "joint_runner_sha256": "84bab3d24c671ee52a3582c4a804327385a796114e33c95064f59206e88cc93c",
+    "lssp_windows_cache": "/home/soroush/repos/llm-serving-scheduler-lssp-phase12-freeze/artifacts/pilot_v2_windows_full_cache.json",
+    "lssp_windows_cache_sha256": "97fbaf6a4b9b5f14cd19ce1c37193996c0758eebca73ab2adb1e944b404b3f4c",
+    "manifest": "/home/soroush/llm-serving-heuristic-evolution/experiments/sbs_override_fresh_confirmatory_corpus_v1/fresh_candidate_scenario_manifest.csv"
+  },
+  "schema_version": "sbs_override_fresh_confirmatory_corpus_v1.0.0",
+  "support_scan": {
+    "allowed_before_terminal_labels": true,
+    "policy": "kv_constrained_online",
+    "selection_rule_after_scan": "retain/downweight sources by action-support only, never by terminal benefit",
+    "shadow_policy_portfolio": [
+      "full_prefill",
+      "chunked_prefill_small",
+      "estimated_service_time_first",
+      "weighted_fair_share",
+      "least_laxity_first",
+      "kv_constrained_online"
+    ]
+  }
+}

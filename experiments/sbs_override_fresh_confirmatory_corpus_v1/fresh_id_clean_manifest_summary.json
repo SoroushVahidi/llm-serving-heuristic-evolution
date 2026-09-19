@@ -1,0 +1,14 @@
+{
+  "duplicate_state_rows": 0,
+  "map_sha256": "a6d89a94d9e786b43841d4b9e5bfc5cbde4e2a42d661a2fec228fb0328780e8f",
+  "policy_rows": 11419,
+  "policy_states": 2862,
+  "scenario_count": 78,
+  "source_counts": {
+    "fresh_joint_multimechanism_generator_holdout": 2862
+  },
+  "state_rows": 2862,
+  "state_sha256": "09566916c2419f8337aa5bb5b6e26b3cf29e31321f5158969836284fca86c93e",
+  "unique_non_sbs_branches": 6996,
+  "unique_states": 2862
+}

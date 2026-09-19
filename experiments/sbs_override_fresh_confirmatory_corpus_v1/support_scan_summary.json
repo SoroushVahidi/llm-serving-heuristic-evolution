@@ -1,0 +1,21 @@
+{
+  "by_source": {
+    "decision_states": {
+      "azure_llm_2024": 299490,
+      "bailian_qwen": 503059,
+      "fresh_joint_multimechanism_generator_holdout": 146574
+    },
+    "disagreement_states": {
+      "azure_llm_2024": 0,
+      "bailian_qwen": 0,
+      "fresh_joint_multimechanism_generator_holdout": 2918
+    }
+  },
+  "disagreement_rate": 0.0030744171198042827,
+  "disagreement_states": 2918,
+  "sbs_decision_states": 949123,
+  "scenario_count": 240,
+  "scenarios_with_disagreement": 79,
+  "schema_version": "sbs_override_fresh_support_scan_v1.0.0",
+  "unique_action_branch_count_estimate": 6996
+}
