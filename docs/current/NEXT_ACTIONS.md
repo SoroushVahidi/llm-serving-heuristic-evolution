@@ -2,14 +2,16 @@
 
 ## 2026-09-19 Immediate SBS Override Actions
 
-1. Let `sbs_cons_selector_v1` finish naturally. Do not stop, restart, or poll it
+1. Read [`SBS_OVERRIDE_FINAL_HANDOFF_20260919.md`](SBS_OVERRIDE_FINAL_HANDOFF_20260919.md)
+   before resuming this line.
+2. Let `sbs_cons_selector_v1` finish naturally. Do not stop, restart, or poll it
    repeatedly. See [`ACTIVE_JOBS.md`](ACTIVE_JOBS.md).
-2. After it finishes, inspect development-side outputs only:
+3. After it finishes, inspect development-side outputs only:
    `RUN_SUMMARY.json`, final selector JSON/design, reload test, and compact
    development summaries.
-3. Commit the SBS source/docs/provenance groups described in
-   [`SBS_OVERRIDE_QUERY3_PREP.md`](SBS_OVERRIDE_QUERY3_PREP.md).
-4. Do not run the fresh confirmatory evaluation until the selector freeze is
+4. If the run reports `CONFIRMATORY_EVALUATION_READY`, commit compact
+   development-only selector/protocol metadata before any fresh evaluation.
+5. Do not run the fresh confirmatory evaluation until the selector freeze is
    committed and explicitly authorized.
 
 This is the current prioritized action list. It must agree with

@@ -1,6 +1,9 @@
 # Active Jobs
 
-Last checked: 2026-09-19 13:50:29 EDT.
+Last documented for Query 4: 2026-09-19 14:06:21 EDT.
+
+The Query-4 selector health check was performed once, as required. No later
+selector polling was performed while writing the final handoff.
 
 This file records jobs that cleanup, commit, and documentation tasks must not
 interrupt. It is a handoff document only; it is not a request to monitor,
@@ -18,7 +21,7 @@ restart, cancel, or modify any job.
 | Run root | `experiments/sbs_override_conservative_selector_dev_v1/run_v1` |
 | Log | `experiments/sbs_override_conservative_selector_dev_v1/run_v1/logs/run.log` |
 | Command | `python scripts/sbs_override_conservative_selector_dev_v1.py --n-jobs 8 --bootstrap-replicates 2000` |
-| Current evidence | Process alive, CPU-active, `PREREGISTERED_SEARCH_DESIGN.json` exists, `outer_fold_progress/outer_0.json` exists, `RUN_SUMMARY.json` not yet present |
+| Current evidence | Process alive, CPU-active, `PREREGISTERED_SEARCH_DESIGN.json` exists, `outer_fold_progress/outer_0.json` and `outer_fold_progress/outer_1.json` exist, `RUN_SUMMARY.json` not yet present |
 
 Scientific purpose:
 
@@ -65,8 +68,8 @@ Result-consumption plan after completion:
 1. Read only development-side outputs and selector freeze artifacts.
 2. Verify `RUN_SUMMARY.json`, `reload_prediction_test.json`, and the final
    selector/protocol files.
-3. Commit source, tests, design docs, compact provenance, and compact
-   development summaries as planned in `SBS_OVERRIDE_QUERY3_PREP.md`.
+3. Commit compact development summaries and final selector/protocol metadata if
+   repository convention supports them.
 4. Do not run the fresh one-shot confirmatory evaluation until the final
    selector freeze is committed and explicitly authorized.
 

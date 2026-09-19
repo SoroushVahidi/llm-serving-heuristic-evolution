@@ -7,13 +7,15 @@ confirmatory protocol, not the older August manuscript-production status below.
 
 Read first:
 
-1. [`ACTIVE_JOBS.md`](ACTIVE_JOBS.md) for the protected running tmux job
+1. [`SBS_OVERRIDE_FINAL_HANDOFF_20260919.md`](SBS_OVERRIDE_FINAL_HANDOFF_20260919.md)
+   for the canonical SBS-override project map and pause state.
+2. [`ACTIVE_JOBS.md`](ACTIVE_JOBS.md) for the protected running tmux job
    `sbs_cons_selector_v1`.
-2. [`SBS_OVERRIDE_STATUS.md`](SBS_OVERRIDE_STATUS.md) for the lineage,
+3. [`SBS_OVERRIDE_STATUS.md`](SBS_OVERRIDE_STATUS.md) for the lineage,
    confirmatory-blindness boundary, fresh clean-vs-raw counts, OOD null result,
    and source/generated-artifact split.
-3. [`SBS_OVERRIDE_QUERY3_PREP.md`](SBS_OVERRIDE_QUERY3_PREP.md) for the next
-   commit grouping plan.
+4. [`SBS_OVERRIDE_QUERY3_PREP.md`](SBS_OVERRIDE_QUERY3_PREP.md) for the commit
+   grouping plan used before this final handoff.
 
 Fresh confirmatory terminal labels exist but remain scientifically blind.
 Do not open fresh outcome contents, compute fresh `Q_SBS`/`A_SBS`, or evaluate

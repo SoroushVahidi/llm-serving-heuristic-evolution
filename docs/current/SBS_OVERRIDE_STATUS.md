@@ -6,6 +6,9 @@ This is the current navigation and provenance map for the SBS-relative override
 line. Historical docs before this file are still useful, but many of them
 predate the SBS-specific development and fresh-confirmatory sequence.
 
+First read the final pause-state handoff:
+[`SBS_OVERRIDE_FINAL_HANDOFF_20260919.md`](SBS_OVERRIDE_FINAL_HANDOFF_20260919.md).
+
 ## Current Status
 
 The active experiment is `SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V1`. It is
