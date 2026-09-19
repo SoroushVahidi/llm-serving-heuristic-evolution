@@ -1,0 +1,58 @@
+{
+  "contribution_strength_confidence_percent": 45,
+  "hard_gates": {
+    "causal_headroom": "FAIL_UNTIL_PHASE_D",
+    "literature_novelty": "PARTIAL",
+    "practitioner_value": "PARTIAL",
+    "real_world_evidence": "PARTIAL",
+    "reproducibility": "PASS_FOR_PHASE_A",
+    "systems_regime_characterization": "FAIL_UNTIL_PHASE_B"
+  },
+  "remaining_evidence_to_exceed_90": [
+    "Phase B pressure-transition map",
+    "Phase D causal headroom on frozen regimes",
+    "broader Tier-1 trace coverage or explicit scope limits",
+    "reproducible public package"
+  ],
+  "rubric": {
+    "experimental_rigor": {
+      "full_points_requires": "Completed Phase B/D with preregistered reporting and uncertainty/concentration analysis.",
+      "max": 20,
+      "points": 12,
+      "why": "Pre-outcome design/source/config freeze, tests, exact denominators, and zero-result retention."
+    },
+    "industry_realism": {
+      "full_points_requires": "Broader production traces including prefix/cache-heavy and agentic/coding classes.",
+      "max": 20,
+      "points": 11,
+      "why": "Uses three local Tier-1 public traces natively, but Azure 2024/Bailian/Mooncake not yet frozen locally."
+    },
+    "practitioner_value": {
+      "full_points_requires": "Operating-regime map with pressure thresholds and implications.",
+      "max": 10,
+      "points": 4,
+      "why": "Can identify whether native traces expose scheduler choice, but not yet thresholds for actionability."
+    },
+    "reproducibility_community_value": {
+      "full_points_requires": "Clean public run package for full Phase A/B/D matrix.",
+      "max": 10,
+      "points": 8,
+      "why": "Local public-trace artifacts, hashes, tests, and compact summaries are reproducible."
+    },
+    "scientific_novelty": {
+      "full_points_requires": "Regime-transition and causal-headroom evidence across production traces.",
+      "max": 20,
+      "points": 12,
+      "why": "Clear pivot from selector rescue to action-opportunity mapping, but only Phase A native support evidence so far."
+    },
+    "technical_depth": {
+      "full_points_requires": "Phase-B pressure sweeps and Phase-D one-step headroom.",
+      "max": 20,
+      "points": 8,
+      "why": "Action-support instrumentation is useful but not yet resource-pressure matrix or causal labeling."
+    }
+  },
+  "schema_version": "industry_realism_action_opportunity_fgcs_readiness_checkpoint_v1.0.0",
+  "status": "POST_PHASE_A_CHECKPOINT_TEMPLATE_UPDATED_AFTER_RESULTS",
+  "total_score": 55
+}
