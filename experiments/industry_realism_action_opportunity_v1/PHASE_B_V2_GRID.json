@@ -1,0 +1,235 @@
+{
+  "active_sequence_caps": [
+    512,
+    64,
+    32,
+    16,
+    8,
+    4
+  ],
+  "arrival_multipliers": [
+    0.5,
+    1.0,
+    2.0,
+    4.0,
+    8.0
+  ],
+  "conditions": [
+    {
+      "arrival_multiplier": 0.5,
+      "axis": "arrival_pressure",
+      "axis_value": 0.5,
+      "condition_id": "arrival_x0p5",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 0
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "arrival_pressure",
+      "axis_value": 1.0,
+      "condition_id": "arrival_x1p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 1
+    },
+    {
+      "arrival_multiplier": 2.0,
+      "axis": "arrival_pressure",
+      "axis_value": 2.0,
+      "condition_id": "arrival_x2p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 2
+    },
+    {
+      "arrival_multiplier": 4.0,
+      "axis": "arrival_pressure",
+      "axis_value": 4.0,
+      "condition_id": "arrival_x4p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 3
+    },
+    {
+      "arrival_multiplier": 8.0,
+      "axis": "arrival_pressure",
+      "axis_value": 8.0,
+      "condition_id": "arrival_x8p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 4
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 8000000,
+      "condition_id": "kv_8000000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 0
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 240000,
+      "condition_id": "kv_240000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 240000,
+      "pressure_order": 1
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 120000,
+      "condition_id": "kv_120000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 120000,
+      "pressure_order": 2
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 60000,
+      "condition_id": "kv_60000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 60000,
+      "pressure_order": 3
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 32000,
+      "condition_id": "kv_32000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 32000,
+      "pressure_order": 4
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 16000,
+      "condition_id": "kv_16000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 16000,
+      "pressure_order": 5
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 8000,
+      "condition_id": "kv_8000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000,
+      "pressure_order": 6
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 512,
+      "condition_id": "active_512",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 0
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 64,
+      "condition_id": "active_64",
+      "max_active_sequences": 64,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 1
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 32,
+      "condition_id": "active_32",
+      "max_active_sequences": 32,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 2
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 16,
+      "condition_id": "active_16",
+      "max_active_sequences": 16,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 3
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 8,
+      "condition_id": "active_8",
+      "max_active_sequences": 8,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 4
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 4,
+      "condition_id": "active_4",
+      "max_active_sequences": 4,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 5
+    }
+  ],
+  "conditions_per_window": 18,
+  "expected_window_conditions": 1080,
+  "kv_capacity_tokens": [
+    8000000,
+    240000,
+    120000,
+    60000,
+    32000,
+    16000,
+    8000
+  ],
+  "phase_a_telemetry": {
+    "by_source": {
+      "azure_2023_code": {
+        "max_active_sequences_observed": 9,
+        "max_kv_tokens_observed": 21724.0,
+        "max_queue_length_observed": 4,
+        "median_window_peak_kv_tokens": 14233.5,
+        "phase_a_disagreement_states": 0,
+        "phase_a_sbs_decision_states": 99992,
+        "phase_a_windows": 20
+      },
+      "azure_2023_conv": {
+        "max_active_sequences_observed": 7,
+        "max_kv_tokens_observed": 13822.0,
+        "max_queue_length_observed": 2,
+        "median_window_peak_kv_tokens": 9564.0,
+        "phase_a_disagreement_states": 0,
+        "phase_a_sbs_decision_states": 461985,
+        "phase_a_windows": 20
+      },
+      "burstgpt": {
+        "max_active_sequences_observed": 31,
+        "max_kv_tokens_observed": 30416.0,
+        "max_queue_length_observed": 31,
+        "median_window_peak_kv_tokens": 3971.0,
+        "phase_a_disagreement_states": 0,
+        "phase_a_sbs_decision_states": 440461,
+        "phase_a_windows": 20
+      }
+    },
+    "native_max_active_sequences": 512,
+    "native_max_kv_tokens": 8000000,
+    "overall_max_active_sequences_observed": 31,
+    "overall_max_kv_tokens_observed": 30416.0
+  },
+  "phase_b_v1_grid_status": "SUPERSEDED_PRE_EXECUTION_BY_PHASE_A_TELEMETRY",
+  "rationale": {
+    "active_sequence_capacity": "Caps cross below, near, and above Phase-A observed active maxima (7, 9, 31), while retaining native 512.",
+    "arrival_pressure": "Spans underload/native/moderate/strong overload without changing request identities or lengths.",
+    "kv_capacity": "Absolute capacities are derived from Phase-A observed peak KV occupancy (~30k tokens), not fractions of the 8M native cap."
+  },
+  "schema_version": "industry_realism_action_opportunity_phase_b_v2.0.0.grid",
+  "status": "PHASE_B_V2_GRID_FROZEN_BEFORE_EXECUTION"
+}

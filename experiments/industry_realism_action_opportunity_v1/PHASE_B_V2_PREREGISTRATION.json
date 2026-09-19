@@ -1,0 +1,870 @@
+{
+  "conditions": [
+    {
+      "arrival_multiplier": 0.5,
+      "axis": "arrival_pressure",
+      "axis_value": 0.5,
+      "condition_id": "arrival_x0p5",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 0
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "arrival_pressure",
+      "axis_value": 1.0,
+      "condition_id": "arrival_x1p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 1
+    },
+    {
+      "arrival_multiplier": 2.0,
+      "axis": "arrival_pressure",
+      "axis_value": 2.0,
+      "condition_id": "arrival_x2p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 2
+    },
+    {
+      "arrival_multiplier": 4.0,
+      "axis": "arrival_pressure",
+      "axis_value": 4.0,
+      "condition_id": "arrival_x4p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 3
+    },
+    {
+      "arrival_multiplier": 8.0,
+      "axis": "arrival_pressure",
+      "axis_value": 8.0,
+      "condition_id": "arrival_x8p0",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 4
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 8000000,
+      "condition_id": "kv_8000000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 0
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 240000,
+      "condition_id": "kv_240000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 240000,
+      "pressure_order": 1
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 120000,
+      "condition_id": "kv_120000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 120000,
+      "pressure_order": 2
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 60000,
+      "condition_id": "kv_60000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 60000,
+      "pressure_order": 3
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 32000,
+      "condition_id": "kv_32000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 32000,
+      "pressure_order": 4
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 16000,
+      "condition_id": "kv_16000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 16000,
+      "pressure_order": 5
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 8000,
+      "condition_id": "kv_8000",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000,
+      "pressure_order": 6
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 512,
+      "condition_id": "active_512",
+      "max_active_sequences": 512,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 0
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 64,
+      "condition_id": "active_64",
+      "max_active_sequences": 64,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 1
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 32,
+      "condition_id": "active_32",
+      "max_active_sequences": 32,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 2
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 16,
+      "condition_id": "active_16",
+      "max_active_sequences": 16,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 3
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 8,
+      "condition_id": "active_8",
+      "max_active_sequences": 8,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 4
+    },
+    {
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 4,
+      "condition_id": "active_4",
+      "max_active_sequences": 4,
+      "max_kv_tokens": 8000000,
+      "pressure_order": 5
+    }
+  ],
+  "created_utc": "2026-09-19T23:16:29Z",
+  "expected_faithful_windows": 60,
+  "expected_window_conditions": 1080,
+  "forbidden": [
+    "augmented windows",
+    "request identity changes",
+    "prompt/output length changes",
+    "joint combinations",
+    "causal labeling",
+    "selector training",
+    "post-result grid extension"
+  ],
+  "git": {
+    "branch": "contextual-compositional-heuristics-20260731",
+    "head": "416e1403a5111ac0a421785b2c4a28ef2a485937"
+  },
+  "input_hashes": {
+    "azure_2023_code_records": "f5fafc110f10e9545ef655dce21ddb608681bd81d4a22e59a88f4dbeed50e46c",
+    "azure_2023_conv_records": "3e0ad5fbbbafff064b0bf072a7c32a27489686f9c906b27b743d06bde0250c32",
+    "burstgpt_records": "0e911ed784d715949ce78c61c14a1bdc47fb1e8f3a00b97da9621e9eec3f1cb6",
+    "phase_a_preregistration": "c55268e818557298144e95c0db9a1b2d940e49c1965db500dd219f86b59234df",
+    "phase_a_window_summary": "3728f04ba5d149a78bfd73ac2dcba2145348322fc1f0dc31cf7edc125bce005f",
+    "phase_a_workload_summary": "258e31a2e0cff244142dcd58a5d1cf44aecba1540ac8cc20738dec3c7d873d00",
+    "public_trace_manifest": "33e7b1cda30f1bf3a3f46bf2b7311b9faecdcf90a75889452990f9508c69e08b",
+    "public_trace_source_coverage": "92a43dfda80d4accfb19dba34974297e6db1603321800fc793082436c4b12aed"
+  },
+  "one_axis_rule": "Arrival, KV capacity, and active-sequence capacity are swept separately; non-manipulated axes remain at native Phase-A values.",
+  "package_versions": {
+    "joblib": "1.5.3",
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "scikit-learn": "1.8.0"
+  },
+  "phase_a_telemetry_used_for_grid": {
+    "by_source": {
+      "azure_2023_code": {
+        "max_active_sequences_observed": 9,
+        "max_kv_tokens_observed": 21724.0,
+        "max_queue_length_observed": 4,
+        "median_window_peak_kv_tokens": 14233.5,
+        "phase_a_disagreement_states": 0,
+        "phase_a_sbs_decision_states": 99992,
+        "phase_a_windows": 20
+      },
+      "azure_2023_conv": {
+        "max_active_sequences_observed": 7,
+        "max_kv_tokens_observed": 13822.0,
+        "max_queue_length_observed": 2,
+        "median_window_peak_kv_tokens": 9564.0,
+        "phase_a_disagreement_states": 0,
+        "phase_a_sbs_decision_states": 461985,
+        "phase_a_windows": 20
+      },
+      "burstgpt": {
+        "max_active_sequences_observed": 31,
+        "max_kv_tokens_observed": 30416.0,
+        "max_queue_length_observed": 31,
+        "median_window_peak_kv_tokens": 3971.0,
+        "phase_a_disagreement_states": 0,
+        "phase_a_sbs_decision_states": 440461,
+        "phase_a_windows": 20
+      }
+    },
+    "native_max_active_sequences": 512,
+    "native_max_kv_tokens": 8000000,
+    "overall_max_active_sequences_observed": 31,
+    "overall_max_kv_tokens_observed": 30416.0
+  },
+  "phase_b_v1_grid_path": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_B_PRESSURE_GRID_V1.json",
+  "phase_b_v1_grid_sha256": "72eb3e7d6915e93c237cd721baec32e526d91c6ed4689da5fdc5b64e42965711",
+  "phase_b_v1_grid_status": "SUPERSEDED_PRE_EXECUTION_BY_PHASE_A_TELEMETRY",
+  "primary_metric": "disagreement_rate = canonical_disagreement_states / total_SBS_decision_states",
+  "schema_version": "industry_realism_action_opportunity_phase_b_v2.0.0.preregistration",
+  "scientific_question": "As the same production-derived request traces are replayed under progressively tighter system constraints, where does canonical SBS-vs-P6 action disagreement begin to emerge?",
+  "selected_windows": [
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w0::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 199.08958506584167,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 0
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w2::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 36.498870849609375,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 2
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w4::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 219.03983998298645,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 4
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w6::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 9.489774942398071,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 6
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w8::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 15.364619970321655,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 8
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w10::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 7.9646220207214355,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 10
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w12::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 35.41749811172485,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 12
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w14::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 165.41164016723633,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 14
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w16::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 51.575242042541504,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 16
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w18::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 90.71576023101807,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 18
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w20::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 37.019201040267944,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 20
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w22::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 21.63537287712097,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 22
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w24::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 142.06716299057007,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 24
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w26::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 41.09759497642517,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 26
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w28::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 40.900301933288574,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 28
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w30::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 84.36138606071472,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 30
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w32::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 56.457457065582275,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 32
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w34::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 83.92049598693848,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 34
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w36::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 83.69174599647522,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 36
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_code::w38::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 54.1828830242157,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_code",
+      "window_index": 38
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w0::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 61.26353716850281,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 0
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w4::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 34.1006019115448,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 4
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w8::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 45.41456604003906,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 8
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w12::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 39.014946937561035,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 12
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w16::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 40.51156783103943,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 16
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w20::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 35.893388986587524,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 20
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w24::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 40.959222078323364,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 24
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w28::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 31.21925401687622,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 28
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w32::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 32.60985779762268,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 32
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w36::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 28.71714210510254,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 36
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w40::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 32.14309906959534,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 40
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w44::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 24.034641981124878,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 44
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w48::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 26.39572310447693,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 48
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w52::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 24.479618072509766,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 52
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w56::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 26.3468918800354,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 56
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w60::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 27.361865997314453,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 60
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w64::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 25.651371002197266,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 64
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w68::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 37.58685803413391,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 68
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w72::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 31.76207399368286,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 72
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::azure_2023_conv::w76::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 31.949815034866333,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "azure_2023_conv",
+      "window_index": 76
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w0::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 34064.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 0
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w351::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 261.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 351
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w702::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 60.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 702
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w1053::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 51.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 1053
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w1404::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 3307.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 1404
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w1755::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 288.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 1755
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w2106::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 156.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 2106
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w2457::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 126.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 2457
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w2808::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 56.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 2808
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w3159::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 145.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 3159
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w3510::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 71.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 3510
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w3861::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 317.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 3861
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w4212::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 122.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 4212
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w4563::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 1463.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 4563
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w4914::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 323.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 4914
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w5265::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 163.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 5265
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w5616::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 2649.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 5616
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w5967::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 688.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 5967
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w6318::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 64.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 6318
+    },
+    {
+      "applicable_policy_note": "Phase A evaluates all six P6 policies on faithful SBS states; public_trace_replay_v1 faithful-view applicable_policies lists only the two policies that read no controlled annotations.",
+      "canonical_scenario_id": "PUBLIC_TRACE::burstgpt::w6669::faithful",
+      "first_arrival_time": 0.0,
+      "last_arrival_time": 6001.0,
+      "requests": 200,
+      "scenario_evidence_class": "PUBLIC_TRACE_FAITHFUL",
+      "source_dataset": "burstgpt",
+      "window_index": 6669
+    }
+  ],
+  "source_hashes": {
+    "phase_a_scanner_script": "c97e6c2549aefc68dd5be703d8f8ae7dbbb3d64ee0558cc8036bd69a25322211",
+    "phase_b_v2_script": "5a09f178fd217f089c315c17712f49f8dc4122e3d02dd2520373998f6e070282",
+    "public_trace_replay_v1": "6b34c9c649088946bd2254e05b8e6ed74b87794020e217071dce2c450499fe07",
+    "service_model": "523fedb8c2f3f5e0b523fca264fad5c47f939af89387d61c970b7c9b6daab0ae",
+    "simulator": "b76f04aff45c0bb9e2fa8b9947d145dd8824fac80ba38eb5cc35573e541bf007"
+  },
+  "status": "PHASE_B_V2_SOURCE_CONFIG_FREEZE_BEFORE_EXECUTION",
+  "transition_metrics": {
+    "first_binding_point": "first preregistered pressure setting where the manipulated or induced resource binding count is positive",
+    "first_disagreement_point": "first preregistered pressure setting with at least one canonical SBS-vs-P6 disagreement",
+    "sustained_disagreement_point": "first preregistered pressure setting with disagreement in at least 2 faithful windows"
+  },
+  "validity_classes": [
+    "VALID_UNCONSTRAINED",
+    "VALID_PARTIALLY_CONSTRAINED",
+    "VALID_STRONGLY_CONSTRAINED",
+    "INVALID_RESOURCE_INFEASIBLE",
+    "INVALID_HORIZON_TRUNCATED",
+    "INVALID_OTHER"
+  ],
+  "workloads": [
+    "azure_2023_code",
+    "azure_2023_conv",
+    "burstgpt"
+  ]
+}
