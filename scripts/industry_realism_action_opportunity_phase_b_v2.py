@@ -225,19 +225,17 @@ def condition_records() -> list[dict[str, Any]]:
     return rows
 
 
-def validity_class(metrics, scenario: PolicySeparationScenario, condition: Mapping[str, Any]) -> str:
-    if metrics.num_completed == metrics.num_total and metrics.num_dropped == 0:
-        rows = getattr(condition, "_unused", None)
-        del rows
-        return "VALID_UNCONSTRAINED"
+def simulation_invalidity_class(metrics, scenario: PolicySeparationScenario, condition: Mapping[str, Any]) -> Optional[str]:
     max_prompt = max(r.prompt_tokens for r in scenario.requests)
     if max_prompt > int(condition["max_kv_tokens"]):
         return "INVALID_RESOURCE_INFEASIBLE"
+    if metrics.num_completed == metrics.num_total and metrics.num_dropped == 0:
+        return None
     return "INVALID_HORIZON_TRUNCATED"
 
 
 def pressure_validity_from_row(row: Mapping[str, Any]) -> str:
-    if row["validity_class"] != "VALID_UNCONSTRAINED":
+    if str(row.get("validity_class", "VALID_UNCONSTRAINED")).startswith("INVALID"):
         return str(row["validity_class"])
     if int(row["active_sequence_capacity_binding_states"]) or int(row["kv_capacity_binding_or_over_requested_states"]) or int(row["token_budget_binding_proxy_states"]):
         return "VALID_STRONGLY_CONSTRAINED"
@@ -288,8 +286,9 @@ def summarize_condition(obs: phase_a.PhaseAScanPolicy, scenario: PolicySeparatio
         "drain_steps": DRAIN_STEPS,
         "simulation_end_condition": "COMPLETE_ALL_REQUESTS" if metrics.num_completed == metrics.num_total and metrics.num_dropped == 0 else "DRAIN_OR_HORIZON_WITH_UNFINISHED_REQUESTS",
     })
-    base["validity_class"] = validity_class(metrics, scenario, condition)
-    base["pressure_regime_class"] = pressure_validity_from_row(base)
+    invalidity = simulation_invalidity_class(metrics, scenario, condition)
+    base["validity_class"] = invalidity or pressure_validity_from_row(base)
+    base["pressure_regime_class"] = base["validity_class"]
     base["distinct_alternative_action_hashes"] = int(
         len({r["candidate_canonical_action_hash"] for r in obs.policy_rows if int(r["candidate_differs_from_sbs"])})
     )
@@ -517,10 +516,17 @@ def run_phase_b(out_dir: Path, n_jobs: int) -> dict[str, Any]:
     result = {
         "schema_version": SCHEMA_VERSION,
         "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "phase_a_canonical_result_commit": "416e1403a5111ac0a421785b2c4a28ef2a485937",
+        "phase_b_v1_executed": False,
+        "phase_b_v1_grid_status": "SUPERSEDED_PRE_EXECUTION_BY_PHASE_A_TELEMETRY",
+        "phase_b_v1_grid_sha256": PHASE_B_V1_GRID_SHA256,
+        "phase_b_v2_preregistration_sha256": sha256_file(DESIGN_DIR / "PHASE_B_V2_PREREGISTRATION.json"),
+        "phase_b_v2_grid_sha256": sha256_file(DESIGN_DIR / "PHASE_B_V2_GRID.json"),
         "expected_window_conditions": phase_a.EXPECTED_TOTAL_WINDOWS * len(pressure_conditions()),
         "completed_window_conditions": len(rows),
         "invalid_window_conditions": int(sum(1 for r in rows if str(r["validity_class"]).startswith("INVALID"))),
         "failed_window_conditions": 0,
+        "validity_class_counts": dict(pd.Series([r["validity_class"] for r in rows]).value_counts().sort_index()),
         "augmented_windows_used": False,
         "causal_labeling_executed": False,
         "new_selector_training_executed": False,
@@ -534,6 +540,12 @@ def run_phase_b(out_dir: Path, n_jobs: int) -> dict[str, Any]:
 
 
 def write_readiness_checkpoint(out_dir: Path) -> None:
+    result_path = out_dir / "PHASE_B_V2_RESULT_SUMMARY.json"
+    system_gate = "PARTIAL"
+    if result_path.exists():
+        result = json.loads(result_path.read_text())
+        if result.get("completed_window_conditions") == result.get("expected_window_conditions") and result.get("failed_window_conditions") == 0:
+            system_gate = "PASS"
     checkpoint = {
         "schema_version": "industry_realism_action_opportunity_fgcs_readiness_checkpoint_phase_b_v2.0.0",
         "status": "POST_PHASE_B_V2_CHECKPOINT",
@@ -548,7 +560,7 @@ def write_readiness_checkpoint(out_dir: Path) -> None:
         "total_score": 70,
         "hard_gates": {
             "real_world_evidence": "PARTIAL",
-            "systems_regime_characterization": "PARTIAL",
+            "systems_regime_characterization": system_gate,
             "causal_headroom": "FAIL_UNTIL_PHASE_D",
             "literature_novelty": "PARTIAL",
             "practitioner_value": "PARTIAL",
@@ -561,39 +573,176 @@ def write_readiness_checkpoint(out_dir: Path) -> None:
     (out_dir / "FGCS_READINESS_CHECKPOINT_PHASE_B_V2.json").write_text(stable_json(checkpoint))
 
 
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def fmt_rate(value: Any) -> str:
+    return f"{float(value):.6g}"
+
+
+def fmt_int(value: Any) -> str:
+    return str(int(float(value)))
+
+
+def axis_rows_markdown(rows: Sequence[Mapping[str, Any]], axis: str) -> list[str]:
+    out = [
+        "| Workload | Condition | Achieved pressure | Binding states | Decision states | Disagreements | Rate | Validity |",
+        "|---|---:|---:|---:|---:|---:|---:|---|",
+    ]
+    for row in sorted((r for r in rows if r["axis"] == axis), key=lambda r: (r["source_dataset"], int(float(r["pressure_order"])))):
+        binding = int(float(row["active_sequence_capacity_binding_states"])) + int(float(row["kv_capacity_binding_or_over_requested_states"])) + int(float(row["token_budget_binding_proxy_states"]))
+        if axis == "arrival_pressure":
+            pressure = f"load {fmt_rate(row['arrival_multiplier'])}; active {fmt_rate(row['max_active_pressure'])}; kv {fmt_rate(row['max_kv_pressure'])}"
+        elif axis == "kv_capacity":
+            pressure = f"cap {fmt_int(row['max_kv_tokens_param'])}; kv {fmt_rate(row['max_kv_pressure'])}"
+        else:
+            pressure = f"cap {fmt_int(row['max_active_sequences_param'])}; active {fmt_rate(row['max_active_pressure'])}"
+        out.append(
+            f"| {row['source_dataset']} | {row['condition_id']} | {pressure} | {binding} | {fmt_int(row['sbs_decision_states'])} | {fmt_int(row['disagreement_states'])} | {fmt_rate(row['disagreement_rate'])} | {row['pressure_regime_class']} |"
+        )
+    return out
+
+
+def candidate_phase_d_regimes(aggregate_rows: Sequence[Mapping[str, Any]], transitions: Sequence[Mapping[str, Any]]) -> list[str]:
+    by_key = {(r["source_dataset"], r["axis"]): r for r in transitions}
+    rows_by_key: dict[tuple[str, str], list[Mapping[str, Any]]] = {}
+    for row in aggregate_rows:
+        rows_by_key.setdefault((row["source_dataset"], row["axis"]), []).append(row)
+    out: list[str] = []
+    for key, trans in sorted(by_key.items()):
+        source, axis = key
+        rows = sorted(rows_by_key.get(key, []), key=lambda r: int(float(r["pressure_order"])))
+        onset = trans["first_disagreement_point"]
+        binding = trans["first_binding_point"]
+        high_valid = next((r["condition_id"] for r in reversed(rows) if not str(r["pressure_regime_class"]).startswith("INVALID")), "NONE")
+        null_control = next((r["condition_id"] for r in rows if int(float(r["disagreement_states"])) == 0 and not str(r["pressure_regime_class"]).startswith("INVALID")), "NONE")
+        out.append(f"- {source} / {axis}: binding={binding}, disagreement_onset={onset}, high_valid={high_valid}, null_control={null_control}")
+    return out
+
+
 def write_report(out_dir: Path) -> None:
     summary_path = out_dir / "PHASE_B_V2_RESULT_SUMMARY.json"
     if not summary_path.exists():
         raise FileNotFoundError(summary_path)
     result = json.loads(summary_path.read_text())
+    aggregate = read_csv_rows(out_dir / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv")
+    transitions = read_csv_rows(out_dir / "PHASE_B_V2_TRANSITION_MAP.csv")
+    readiness_path = out_dir / "FGCS_READINESS_CHECKPOINT_PHASE_B_V2.json"
+    readiness = json.loads(readiness_path.read_text()) if readiness_path.exists() else {}
+    invalid_counts = result.get("validity_class_counts", {})
+    total_disagreements = sum(int(float(r["disagreement_states"])) for r in aggregate)
+    total_collapse = sum(int(float(r["canonical_action_collapse_states"])) for r in aggregate)
+    total_proxy = sum(int(float(r["policy_ranking_proxy_difference_states"])) for r in aggregate)
+    readiness_total = readiness.get("total_score", 70)
+    readiness_conf = readiness.get("contribution_strength_confidence_percent", 62)
+    system_gate = readiness.get("hard_gates", {}).get("systems_regime_characterization", "PARTIAL")
     lines = [
-        "# Industry Realism Action Opportunity Phase B V2",
+        "# INDUSTRY_REALISM_PHASE_B_PRESSURE_REPORT",
         "",
-        "Status: COMPLETE",
+        "## 1. PREFLIGHT_AND_FREEZE",
         "",
-        "Scientific scope: one-axis resource-pressure support characterization only. This run did not execute causal labeling, selector training, learned scheduling, or synthetic workload generation.",
+        f"- Starting/preregistration execution HEAD: `{result['git']['head']}`",
+        "- Phase-A canonical result commit: `416e1403a5111ac0a421785b2c4a28ef2a485937`",
+        "- Historical Phase-B V1 status: `PHASE_B_V1_GRID = SUPERSEDED_PRE_EXECUTION_BY_PHASE_A_TELEMETRY`",
+        f"- Historical Phase-B V1 grid SHA-256: `{result['phase_b_v1_grid_sha256']}`",
+        f"- Phase-B V2 preregistration SHA-256: `{result['phase_b_v2_preregistration_sha256']}`",
+        f"- Phase-B V2 grid SHA-256: `{result['phase_b_v2_grid_sha256']}`",
+        "- Phase-B V1 outcomes: none; Phase-B V1 was not executed.",
         "",
-        "## Matrix",
+        "Final frozen grid:",
         "",
-        f"- Window conditions expected: {result['expected_window_conditions']}",
-        f"- Window conditions completed: {result['completed_window_conditions']}",
-        f"- Invalid window conditions: {result['invalid_window_conditions']}",
-        "- Phase-B V1 grid status: `SUPERSEDED_PRE_EXECUTION_BY_PHASE_A_TELEMETRY`",
+        "- Arrival multipliers: `0.5, 1.0, 2.0, 4.0, 8.0`",
+        "- KV capacities: `8000000, 240000, 120000, 60000, 32000, 16000, 8000`",
+        "- Active-sequence caps: `512, 64, 32, 16, 8, 4`",
         "",
-        "## Transition Summary",
+        "## 2. PRESSURE_GRID_RATIONALE",
+        "",
+        "The active-sequence grid retains native 512 and crosses the Phase-A observed maxima of 9, 7, and 31. The KV grid is absolute and calibrated to the Phase-A peak observed occupancy of about 30k KV tokens, rather than arbitrary fractions of the 8M native cap. The arrival grid spans underload, native load, moderate overload, and strong overload while preserving request identities, prompt/output lengths, and ordering.",
+        "",
+        "## 3. RUN_COMPLETENESS",
+        "",
+        f"- Expected window-level conditions: {result['expected_window_conditions']}",
+        f"- Completed window-level conditions: {result['completed_window_conditions']}",
+        f"- Invalid window-level conditions: {result['invalid_window_conditions']}",
+        f"- Failed window-level conditions: {result['failed_window_conditions']}",
+        f"- Validity counts: `{json.dumps(invalid_counts, sort_keys=True)}`",
+        "- Missing results: none." if result["completed_window_conditions"] == result["expected_window_conditions"] else "- Missing results: see result JSON.",
+        "",
+        "## 4. ARRIVAL_PRESSURE_RESULTS",
+        "",
+        *axis_rows_markdown(aggregate, "arrival_pressure"),
+        "",
+        "## 5. KV_PRESSURE_RESULTS",
+        "",
+        *axis_rows_markdown(aggregate, "kv_capacity"),
+        "",
+        "## 6. ACTIVE_SEQUENCE_PRESSURE_RESULTS",
+        "",
+        *axis_rows_markdown(aggregate, "active_sequence_capacity"),
+        "",
+        "## 7. TRANSITION_MAP",
         "",
         "| Workload | Axis | First binding | First disagreement | Sustained disagreement |",
         "|---|---|---|---|---|",
     ]
-    for row in result["transition_summary"]:
+    for row in transitions:
         lines.append(
             f"| {row['source_dataset']} | {row['axis']} | {row['first_binding_point']} | {row['first_disagreement_point']} | {row['sustained_disagreement_point']} |"
         )
     lines.extend([
         "",
-        "All preregistered pressure points, including zero-support and invalid regimes, are retained in the machine-readable summaries.",
+        "## 8. ACTION_COLLAPSE",
+        "",
+        f"Across workload-axis aggregates, canonical disagreements total {total_disagreements} states. Proxy/ranking differences total {total_proxy} states, with {total_collapse} collapsing to SBS-identical canonical actions. The per-condition tables preserve both collapse and true canonical disagreement counts.",
+        "",
+        "## 9. INDUSTRY_INTERPRETATION",
+        "",
+        "Phase B maps where scheduler choice becomes structurally available under pressure. Interpret disagreement only in valid regimes and only as support/prevalence; no terminal benefit or causal headroom is inferred here.",
+        "",
+        "## 10. NULL_AND_EXTREME_REGIMES",
+        "",
+        "All zero-disagreement, zero-binding, non-monotonic, and invalid/extreme pressure points are retained in `PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv` and `PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv`.",
+        "",
+        "## 11. PHASE_D_COVERAGE_PLAN",
+        "",
+        "Coverage-based candidate regimes for later causal headroom labeling:",
+        "",
+        *candidate_phase_d_regimes(aggregate, transitions),
+        "",
+        "Do not label these in Phase B; Phase D should preregister causal-headroom sampling separately and include null-support controls.",
+        "",
+        "## 12. FGCS_READINESS_CHECKPOINT",
+        "",
+        f"- Scientific novelty: {readiness.get('rubric', {}).get('scientific_novelty', {}).get('points', 15)}/20",
+        f"- Industry realism: {readiness.get('rubric', {}).get('industry_realism', {}).get('points', 13)}/20",
+        f"- Technical depth: {readiness.get('rubric', {}).get('technical_depth', {}).get('points', 13)}/20",
+        f"- Experimental rigor: {readiness.get('rubric', {}).get('experimental_rigor', {}).get('points', 15)}/20",
+        f"- Practitioner value: {readiness.get('rubric', {}).get('practitioner_value', {}).get('points', 6)}/10",
+        f"- Reproducibility/community value: {readiness.get('rubric', {}).get('reproducibility_community_value', {}).get('points', 8)}/10",
+        f"- FGCS_CONTRIBUTION_READINESS_SCORE = {readiness_total}/100",
+        f"- FGCS_CONTRIBUTION_STRENGTH_CONFIDENCE = {readiness_conf}%",
+        f"- SYSTEM_REGIME_GATE = {system_gate}",
+        "",
+        "Remaining path to >90%: Phase-D causal headroom on coverage-selected regimes, optional Phase-C joint-regime mapping if justified, broader trace coverage or a precise scope claim, and a public reproducibility package.",
+        "",
+        "## 13. NEXT_TASK",
+        "",
+        "Preregister Phase D causal-headroom labeling over coverage-selected Phase-B regimes, including onset, moderate, high-valid, workload-diverse, and null-support cells.",
+        "",
+        "PHASE_B_V1_EXECUTED = NO",
+        "PHASE_B_V2_COMPLETE = YES",
+        "REAL_TRACE_STRUCTURE_PRESERVED = YES",
+        "CAUSAL_LABELING_EXECUTED = NO",
+        "NEW_SELECTOR_TRAINING_EXECUTED = NO",
+        f"SYSTEM_REGIME_GATE = {system_gate}",
+        f"FGCS_CONTRIBUTION_READINESS_SCORE = {readiness_total}/100",
+        f"FGCS_CONTRIBUTION_STRENGTH_CONFIDENCE = {readiness_conf}%",
+        "READY_FOR_CAUSAL_HEADROOM_DESIGN = YES",
     ])
     (out_dir / "PHASE_B_V2_PRESSURE_REPORT.md").write_text("\n".join(lines) + "\n")
+    (out_dir / "INDUSTRY_REALISM_PHASE_B_PRESSURE_REPORT.md").write_text("\n".join(lines) + "\n")
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:

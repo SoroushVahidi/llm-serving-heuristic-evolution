@@ -163,7 +163,7 @@
       "pressure_order": 5
     }
   ],
-  "created_utc": "2026-09-19T23:16:29Z",
+  "created_utc": "2026-09-19T23:42:51Z",
   "expected_faithful_windows": 60,
   "expected_window_conditions": 1080,
   "forbidden": [
@@ -177,7 +177,7 @@
   ],
   "git": {
     "branch": "contextual-compositional-heuristics-20260731",
-    "head": "416e1403a5111ac0a421785b2c4a28ef2a485937"
+    "head": "70f66786be39a0bf96bae80b068c43612d3f968c"
   },
   "input_hashes": {
     "azure_2023_code_records": "f5fafc110f10e9545ef655dce21ddb608681bd81d4a22e59a88f4dbeed50e46c",
@@ -843,7 +843,7 @@
   ],
   "source_hashes": {
     "phase_a_scanner_script": "c97e6c2549aefc68dd5be703d8f8ae7dbbb3d64ee0558cc8036bd69a25322211",
-    "phase_b_v2_script": "5a09f178fd217f089c315c17712f49f8dc4122e3d02dd2520373998f6e070282",
+    "phase_b_v2_script": "e8d987d16b3bee86a2deda3dca5485ebad87eb048f6fec0db0cf08ebc1a62a95",
     "public_trace_replay_v1": "6b34c9c649088946bd2254e05b8e6ed74b87794020e217071dce2c450499fe07",
     "service_model": "523fedb8c2f3f5e0b523fca264fad5c47f939af89387d61c970b7c9b6daab0ae",
     "simulator": "b76f04aff45c0bb9e2fa8b9947d145dd8824fac80ba38eb5cc35573e541bf007"

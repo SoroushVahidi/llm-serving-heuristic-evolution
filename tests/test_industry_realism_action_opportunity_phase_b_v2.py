@@ -85,6 +85,37 @@ def test_pressure_regime_classification():
     assert phase_b.pressure_validity_from_row(row) == "INVALID_HORIZON_TRUNCATED"
 
 
+def test_complete_binding_condition_uses_preregistered_validity_class():
+    base = {
+        "active_sequence_capacity_binding_states": 0,
+        "kv_capacity_binding_or_over_requested_states": 2,
+        "token_budget_binding_proxy_states": 0,
+        "active_sequence_capacity_near_binding_states": 0,
+        "kv_capacity_near_binding_states": 0,
+        "max_active_pressure": 0.2,
+        "max_kv_pressure": 0.4,
+    }
+    assert phase_b.pressure_validity_from_row(base) == "VALID_STRONGLY_CONSTRAINED"
+
+
+def test_simulation_invalidity_detects_horizon_and_resource_infeasible():
+    class Metrics:
+        num_completed = 0
+        num_total = 1
+        num_dropped = 0
+
+    rec = phase_a.faithful_records()[0]
+    scenario = rec["scenario"]
+    condition = {
+        "max_kv_tokens": 1,
+    }
+    assert phase_b.simulation_invalidity_class(Metrics(), scenario, condition) == "INVALID_RESOURCE_INFEASIBLE"
+    condition = {
+        "max_kv_tokens": 8_000_000,
+    }
+    assert phase_b.simulation_invalidity_class(Metrics(), scenario, condition) == "INVALID_HORIZON_TRUNCATED"
+
+
 def test_transition_summary_retains_zero_support():
     rows = [
         {
