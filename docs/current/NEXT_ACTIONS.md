@@ -1,8 +1,45 @@
 # Next Actions
 
+## 2026-09-19 Immediate SBS Override Actions
+
+1. Let `sbs_cons_selector_v1` finish naturally. Do not stop, restart, or poll it
+   repeatedly. See [`ACTIVE_JOBS.md`](ACTIVE_JOBS.md).
+2. After it finishes, inspect development-side outputs only:
+   `RUN_SUMMARY.json`, final selector JSON/design, reload test, and compact
+   development summaries.
+3. Commit the SBS source/docs/provenance groups described in
+   [`SBS_OVERRIDE_QUERY3_PREP.md`](SBS_OVERRIDE_QUERY3_PREP.md).
+4. Do not run the fresh confirmatory evaluation until the selector freeze is
+   committed and explicitly authorized.
+
 This is the current prioritized action list. It must agree with
 [`../PROJECT_MAP.md`](../PROJECT_MAP.md), [`RESUME_HERE.md`](RESUME_HERE.md),
 [`WORK_STATUS.md`](WORK_STATUS.md), and [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md).
+
+## 2026-08-24 Publication-Stage Supersession
+
+The active LLM 2026 path has moved to **MANUSCRIPT PRODUCTION**. Priority 1
+real-vLLM work is complete (`PREFILL_REAL_VALIDATION_NO_GO`,
+`SIMULATOR_VLLM_SEMANTICS_MISMATCH`, `NATIVE_VLLM_BUDGET_EFFECT_STRONG`).
+Priority 2 joint multi-mechanism generalization is complete with
+`JOINT_GENERALIZATION_STRONG`.
+
+Canonical next action: draft the manuscript from
+`docs/current/llm2026_full_manuscript_architecture_20260824.md`,
+`paper/llm2026/main.tex`, and the evidence ledgers:
+
+- `docs/current/llm2026_manuscript_plan_20260824.md`
+- `docs/current/llm2026_claim_evidence_ledger_20260824.md`
+- `docs/current/llm2026_number_source_of_truth_20260824.md`
+- `docs/current/llm2026_figure_table_manifest_20260824.md`
+
+The full architecture audit recommends a seven-section, eight-page two-column
+structure and identifies the first writing task as venue-template/scaffold
+alignment followed by Sections 1-2 drafting.
+
+No further pre-submission experiment is currently required. Do not launch the
+older queued experiments below unless a new paper-driven decision explicitly
+supersedes this publication-stage freeze.
 
 For the full operational narrative, read [`RESUME_HERE.md`](RESUME_HERE.md). This doc is a pointer + delta list.
 
