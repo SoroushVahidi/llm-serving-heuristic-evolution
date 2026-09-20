@@ -107,6 +107,13 @@ experiments/selector_v2_calibrated_pilot_*/window_features.csv
 .coverage
 htmlcov/
 
+# LaTeX build intermediates; source, figures, and canonical PDFs remain trackable
+*.aux
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
 # OS / editor
 .DS_Store
 Thumbs.db
