@@ -1,0 +1,16 @@
+{
+  "hashes": {
+    "compute_budget": "87d66c18b8d002b190162915027ef0be52ae152b1441bf927eb172b20f467876",
+    "design_doc": "f5c9beac08b64e192809a43efab910099a114bf73de0b906fce61a51f709f88e",
+    "design_report": "e3c212def234472468f796648e28294bcd6f943ddcd4c33ae7792e1e1ae1c8e0",
+    "eligible_branches_csv": "a774db6e8c969f010c89e7673bac355c9bf7f28b5a191f125f727f1d205fc5fe",
+    "eligible_states_csv": "2a3224c4942dd0a0ecbae4b03f28879dfdffaecd0a7d08cdb5329b3bd6c3fa0c",
+    "eligible_universe": "4b992e4dc7199147bd2e69615577bf0579baf82ae1f3e1f5aa7c60eace5c1b1d",
+    "implementation_reuse_audit": "7183f9e137654603c60ae01ea3cf5fc42dbb21928646ccf1865f9677d9938c39",
+    "metric_protocol": "503dd9b427898c332457eb519ed17699ba8ab6806e55679259aea1c5aa86b1ad",
+    "preregistration": "067ffc4aea089bb3e3c6d2d6db2ba5b089ef22269f89e5508bb0f06aef645e78",
+    "regime_selection": "27f34ff44705de48a8ed08bf03838b122addfa47ba1986025edf4c060aebb316",
+    "sampling_or_exhaustive_plan": "53c757d7ea41bc0a29d298b9851f8c60eff185b6fc9b175c89857b143ee058b7"
+  },
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0"
+}

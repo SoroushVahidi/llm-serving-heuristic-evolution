@@ -1,0 +1,30 @@
+{
+  "causal_correctness_tests_required_before_full_execution": [
+    "exactly one forced intervention",
+    "subsequent policy is SBS",
+    "original live state is not mutated",
+    "future arrivals identical across branches",
+    "random state identical across branches",
+    "SBS reference replay matches native SBS continuation",
+    "canonical action branch is feasible",
+    "duplicate canonical actions are not relabeled",
+    "same state/action replay is deterministic",
+    "pressure configuration persists identically in reference and counterfactual branches"
+  ],
+  "pilot_policy": "engineering smoke may use deterministic states, but any inspected outcome-bearing pilot rows must be quarantined and excluded from final inference",
+  "required_adaptations": [
+    "load Phase-D state/action manifest keyed by faithful public-trace window and Phase-B pressure condition",
+    "replay SBS trajectory to target steps under exact Phase-B pressure settings",
+    "force each unique non-SBS canonical action once and compute SBS-reference continuation once per state",
+    "write sharded state-action outcome rows only in Phase-D execution task"
+  ],
+  "reuse_targets": [
+    "llmserveopt.analysis.joint240_dense_sbs_state_action_v1.run_one_step_then_sbs_terminal",
+    "llmserveopt.analysis.decision_criticality_timescale_trainval_v1.fork_from_live_simulator",
+    "Simulator.continue_run",
+    "Phase-A canonical_action/state_pressure_features",
+    "Phase-B transformed_scenario and frozen pressure-condition generation"
+  ],
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+  "status": "PREREGISTERED_NOT_EXECUTED"
+}

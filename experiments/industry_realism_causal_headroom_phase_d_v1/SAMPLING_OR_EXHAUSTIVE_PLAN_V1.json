@@ -1,0 +1,29 @@
+{
+  "chosen_path": "EXHAUSTIVE_SELECTED_REGIME_LABELING",
+  "decision_rule": "Use exhaustive selected-regime labeling when expected terminal continuations <= 50000; otherwise deterministic stratified sampling.",
+  "outcome_files_created": false,
+  "sampling_fallback": {
+    "forbidden_sampling_inputs": [
+      "predicted gain",
+      "V2 score",
+      "proxy scheduler ranking",
+      "action interestingness",
+      "future outcomes"
+    ],
+    "seed": 20260920,
+    "sparse_onset_rule": "do not undersample sparse onset cells; include all sparse onset states before applying caps to dense strata",
+    "strata": [
+      "source_dataset",
+      "axis",
+      "regime_stage",
+      "condition_id",
+      "window_index"
+    ]
+  },
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+  "selected_disagreement_states": 11328,
+  "selected_sbs_reference_branches": 11328,
+  "selected_unique_non_sbs_branches": 12169,
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "total_expected_terminal_continuations": 23497
+}
