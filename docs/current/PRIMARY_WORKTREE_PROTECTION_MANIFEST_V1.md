@@ -60,6 +60,17 @@ cleanup branch:
 - `REPRODUCIBILITY.md`, an untracked primary-worktree document not present at
   the canonical comparison commit.
 
+The separately registered unintegrated worktrees also retain untracked result
+paths and are protected by this audit:
+
+- `/home/soroush/llm-serving-heuristic-evolution/worktrees/fresh-latency-confirmatory-v1/experiments/fresh_production_latency_headroom_confirmatory_v1/fresh_latency_causal_run_v1/`
+- `/home/soroush/llm-serving-heuristic-evolution/worktrees/fresh-latency-execution-v1/experiments/fresh_production_latency_headroom_confirmatory_v1/fresh_latency_causal_run_v1/`
+- `/home/soroush/llm-serving-heuristic-evolution-joint240-dense-sbs-state-action-v1/experiments/joint240_dense_sbs_state_action_v1/`
+- `/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-advantage-learnability-v1/experiments/joint240_sbs_advantage_learnability_v1/run_v1/`
+- `/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-disagreement-scan-v1/experiments/joint240_sbs_disagreement_scan_v1/`
+- `/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1/experiments/joint240_sbs_targeted_terminal_label_full_v1/`
+- `/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-pilot-v1/experiments/joint240_sbs_targeted_terminal_label_pilot_v1/`
+
 Ordinary caches and logs were observed but are not individually hashed here:
 `.pytest_cache/`, `__pycache__/`, `.coverage`, `logs/`, `data/raw/`, and ignored
 runtime logs. Query 3 must make the final disposition decisions for all
