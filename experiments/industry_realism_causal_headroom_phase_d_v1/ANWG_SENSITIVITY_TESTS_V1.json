@@ -1,0 +1,106 @@
+{
+  "cases": [
+    {
+      "anwg": 1.0,
+      "case": "A_same_completed_work_low_latency",
+      "completion": 1.0,
+      "mean_latency": 1.5,
+      "num_completed": 2,
+      "num_dropped": 0,
+      "p95_latency": 1.95,
+      "slo_violation": 0.0,
+      "weighted_completion": 1.0
+    },
+    {
+      "anwg": 1.0,
+      "case": "A_same_completed_work_high_latency",
+      "completion": 1.0,
+      "mean_latency": 8.5,
+      "num_completed": 2,
+      "num_dropped": 0,
+      "p95_latency": 8.95,
+      "slo_violation": 0.0,
+      "weighted_completion": 1.0
+    },
+    {
+      "anwg": 1.0,
+      "case": "B_all_three_complete_by_fixed_eval",
+      "completion": 1.0,
+      "mean_latency": 3.0,
+      "num_completed": 3,
+      "num_dropped": 0,
+      "p95_latency": 3.0,
+      "slo_violation": 0.0,
+      "weighted_completion": 1.0
+    },
+    {
+      "anwg": 0.3333333333333333,
+      "case": "B_only_one_complete_by_fixed_eval",
+      "completion": 0.3333333333333333,
+      "mean_latency": 3.0,
+      "num_completed": 1,
+      "num_dropped": 0,
+      "p95_latency": 3.0,
+      "slo_violation": 0.0,
+      "weighted_completion": 0.3333333333333333
+    },
+    {
+      "anwg": 1.0,
+      "case": "C_both_meet_deadline",
+      "completion": 1.0,
+      "mean_latency": 4.25,
+      "num_completed": 2,
+      "num_dropped": 0,
+      "p95_latency": 4.475,
+      "slo_violation": 0.0,
+      "weighted_completion": 1.0
+    },
+    {
+      "anwg": 0.5,
+      "case": "C_one_misses_deadline",
+      "completion": 1.0,
+      "mean_latency": 5.0,
+      "num_completed": 2,
+      "num_dropped": 0,
+      "p95_latency": 5.9,
+      "slo_violation": 0.5,
+      "weighted_completion": 1.0
+    },
+    {
+      "anwg": 1.0,
+      "case": "D_short_queueing",
+      "completion": 1.0,
+      "mean_latency": 2.0,
+      "num_completed": 3,
+      "num_dropped": 0,
+      "p95_latency": 2.9,
+      "slo_violation": 0.0,
+      "weighted_completion": 1.0
+    },
+    {
+      "anwg": 1.0,
+      "case": "D_long_queueing",
+      "completion": 1.0,
+      "mean_latency": 60.0,
+      "num_completed": 3,
+      "num_dropped": 0,
+      "p95_latency": 69.0,
+      "slo_violation": 0.0,
+      "weighted_completion": 1.0
+    }
+  ],
+  "interpretation": {
+    "detects_deadline_failure": true,
+    "detects_incomplete_or_unfinished_work": true,
+    "detects_latency_order_when_deadline_success_identical": false,
+    "detects_queueing_when_deadline_success_identical": false,
+    "metric_validation_not_scientific_outcome": true
+  },
+  "schema_version": "anwg_sensitivity_tests_v1.0.0",
+  "test_design": [
+    "A: same eventual completed work but different latency/order",
+    "B: one trajectory completes less work by a fixed evaluation point",
+    "C: different SLO attainment",
+    "D: different queueing/flow-time behavior with loose deadlines"
+  ]
+}

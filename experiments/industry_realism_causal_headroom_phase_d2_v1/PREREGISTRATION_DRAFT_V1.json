@@ -1,0 +1,65 @@
+{
+  "anti_rescue_rules": {
+    "do_not_add_scheduler": true,
+    "do_not_change_phase_a_b_d_v1_artifacts": true,
+    "do_not_select_states_by_latency_sign_or_magnitude": true,
+    "do_not_train_selector": true,
+    "phase_d_v1_anwg_result_preserved": "ZERO_ADVANTAGE_UNDER_FROZEN_TERMINAL_ANWG"
+  },
+  "execution_mode": {
+    "preferred": "ANALYSIS_ONLY_REUSE_EXISTING_PHASE_D_V1_CONTINUATIONS",
+    "required_input": "experiments/industry_realism_causal_headroom_phase_d_v1/PHASE_D_CONTINUATION_RESULTS_V1.csv",
+    "rerun_simulation": false,
+    "richer_tracing_needed_for": [
+      "TTFT",
+      "TPOT",
+      "per-request completion order",
+      "weighted tardiness",
+      "soft deadline credit",
+      "queue-area"
+    ]
+  },
+  "intervention_semantics": {
+    "continuation": "fixed SBS / kv_constrained_online immediately after one forced action",
+    "forced_action": "one unique non-SBS canonical action from Phase-D V1 branch manifest",
+    "forbidden": [
+      "policy-forever switching",
+      "learned continuation",
+      "new scheduler",
+      "selector training",
+      "post hoc state selection"
+    ],
+    "reference": "SBS reference branch from same Phase-D V1 state"
+  },
+  "population": {
+    "branches": 12169,
+    "source": "exact Phase-D V1 causal population",
+    "states": 11328,
+    "workloads": [
+      "azure_2023_code",
+      "azure_2023_conv",
+      "burstgpt"
+    ]
+  },
+  "primary_metric": {
+    "advantage": "A_latency(s,a) = mean_latency_ref(s) - mean_latency_cf(s,a)",
+    "beneficial": "B_latency(s)=1 iff max_a A_latency(s,a) > 0",
+    "interpretation": "positive means the forced alternative reduces mean request latency",
+    "oracle_headroom": "H_latency(s)=max(0,max_a A_latency(s,a))",
+    "reason": "request latency/flow time is an operational serving objective represented by the simulator and stored in Phase-D V1 continuation rows"
+  },
+  "schema_version": "industry_realism_causal_headroom_phase_d2_v1.preregistration_draft.0.0",
+  "secondary_metrics": [
+    "p95_latency_improvement = p95_latency_ref - p95_latency_cf",
+    "sim_duration_improvement = sim_duration_ref - sim_duration_cf"
+  ],
+  "statistical_protocol": {
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci": "percentile 95%",
+    "cluster_unit": "faithful window",
+    "minimum_clusters_for_ci": 5,
+    "sparse_rule": "descriptive only when contributing windows < 5"
+  },
+  "status": "DRAFT_NOT_EXECUTED"
+}

@@ -1,0 +1,82 @@
+{
+  "anwg_definition": {
+    "bounded_by_one": true,
+    "completion_dependence": "completed requests receive possible numerator credit; dropped/unfinished requests receive zero numerator credit and remain in the denominator",
+    "denominator": "sum_i w_i over all arriving requests passed via all_requests",
+    "formula": "ANWG = (sum_i w_i * 1[completed_i] * 1[C_i <= D_i]) / (sum_i w_i)",
+    "horizon_dependence": "unfinished/dropped requests at terminal evaluation count as zero; if continuation drains all work before deadlines, ANWG can saturate at one",
+    "latency_dependence": "binary only through whether completion_time <= slo_deadline; no continuous latency sensitivity once deadlines are met",
+    "normalization": "arrival-normalized by total arriving request weight, not only completed request weight",
+    "numerator": "priority-weighted count of completed-on-time requests",
+    "queueing_dependence": "indirect only if queueing causes missed deadlines or unfinished requests",
+    "request_ordering_dependence": "indirect only through completion/deadline success",
+    "source_files": [
+      "src/llmserveopt/core/metrics.py:73",
+      "src/llmserveopt/core/metrics.py:210",
+      "src/llmserveopt/core/metrics.py:221",
+      "scripts/industry_realism_causal_headroom_phase_d_v1_execute.py:233"
+    ],
+    "terminal_state_dependence": "computed from completed and dropped requests at continuation termination",
+    "tpOT_dependence": "none except through deadline miss or unfinished work",
+    "ttft_dependence": "none except through deadline miss or unfinished work",
+    "when_equals_one": "all positive-weight arriving requests complete and every completion_time is <= slo_deadline"
+  },
+  "bug_audit": {
+    "branch_rows_not_copied_from_reference": true,
+    "counterfactual_latency_fields_change": true,
+    "fallback_or_default_one_found": false,
+    "field_lookup": "q_sbs_anwg reads metrics_to_dict(metrics)['arrival_normalized_weighted_goodput']",
+    "floating_point_clipping_found": false,
+    "implementation_bug_found": false,
+    "phase_d_rows_algebraically_imply_anwg_one": {
+      "completion_fraction_unique": [
+        1.0
+      ],
+      "num_completed_unique": [
+        200
+      ],
+      "num_dropped_unique": [
+        0
+      ],
+      "num_total_unique": [
+        200
+      ],
+      "q_sbs_anwg_unique": [
+        1.0
+      ],
+      "slo_violation_rate_unique": [
+        0.0
+      ],
+      "weighted_completion_fraction_unique": [
+        1.0
+      ]
+    },
+    "serialization_or_parsing_error_found": false,
+    "verdict": "PASS"
+  },
+  "classification": {
+    "causal_headroom_gate": "UNRESOLVED_METRIC_SATURATION",
+    "phase_d2_required": true,
+    "phase_d_v1_interpretability": "METRIC_SATURATION_LIMITS_IDENTIFIABILITY",
+    "phase_d_v1_result": "ZERO_ADVANTAGE_UNDER_FROZEN_TERMINAL_ANWG"
+  },
+  "phase_d_v1_preservation": {
+    "aggregation_hashes_preserved": true,
+    "completed_non_sbs_branches": 12169,
+    "completed_sbs_references": 11328,
+    "completed_total_continuations": 23497,
+    "exact_zero_advantages": true,
+    "phase_d_result_commit": "3d59065f16d5379d67d295329a0a5c99b8dc9342",
+    "preregistration_commit": "540aeedaff1fc53f79cb034899859e162dd9c242",
+    "raw_continuation_hash_manifest": "experiments/industry_realism_causal_headroom_phase_d_v1/PHASE_D_ARTIFACT_HASHES_V1.json"
+  },
+  "schema_version": "phase_d_causal_objective_identifiability_audit_v1.0.0",
+  "trajectory_difference_audit": {
+    "branches_with_nonzero_extra_steps_delta": 418,
+    "branches_with_nonzero_mean_latency_delta": 11935,
+    "branches_with_nonzero_p95_latency_delta": 2433,
+    "branches_with_nonzero_sim_duration_delta": 418,
+    "total_counterfactual_branches": 12169,
+    "trajectories_differ_but_terminal_anwg_collapses": true
+  }
+}
