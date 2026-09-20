@@ -1,25 +1,42 @@
-# Current Documentation
+# Current Documentation Index
 
-This directory contains operational status and supporting current-work docs. It
-is not the top-level roadmap.
+Use [`FGCS_CURRENT_STATUS.md`](FGCS_CURRENT_STATUS.md) as the sole current
+status authority.
 
-Read in this order:
+## Current canonical status
 
-1. [`RESUME_HERE.md`](RESUME_HERE.md) - shortest operational handoff.
-2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md) - canonical research roadmap.
-3. [`WORK_STATUS.md`](WORK_STATUS.md) - current workstream status.
-4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md) - prioritized next actions.
-5. [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md) - external-baseline status.
+- [`FGCS_CURRENT_STATUS.md`](FGCS_CURRENT_STATUS.md)
+- [`FGCS_PROVENANCE_PROTECTION_V1.md`](FGCS_PROVENANCE_PROTECTION_V1.md)
+- [`PRIMARY_WORKTREE_PROTECTION_MANIFEST_V1.md`](PRIMARY_WORKTREE_PROTECTION_MANIFEST_V1.md)
 
-Supporting current references:
+## Manuscript
 
-- [`PROJECT_MAP.md`](PROJECT_MAP.md) - repository/code navigation map, not the
-  research roadmap.
-- [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md)
-- [`SCIENTIFIC_DECISIONS.md`](SCIENTIFIC_DECISIONS.md)
-- [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- [`BASELINES.md`](BASELINES.md)
+- [`FGCS_MANUSCRIPT_CLAIM_MAP_V1.md`](FGCS_MANUSCRIPT_CLAIM_MAP_V1.md)
+- [`FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md`](FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md)
+- [`FGCS_REPRODUCIBILITY_MATRIX_V1.md`](FGCS_REPRODUCIBILITY_MATRIX_V1.md)
+- [`../../paper/llm2026/FGCS_MANUSCRIPT_STATUS.md`](../../paper/llm2026/FGCS_MANUSCRIPT_STATUS.md)
+- [`../../paper/llm2026/FGCS_SUBMISSION_PACKAGE_MANIFEST_V1.md`](../../paper/llm2026/FGCS_SUBMISSION_PACKAGE_MANIFEST_V1.md)
 
-Historical or superseded status docs in this directory are retained for
-provenance and should not be used as live status authorities unless explicitly
-linked from the current files above.
+## Canonical scientific evidence
+
+- [Phase A](../../experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_NATIVE_REPLAY_REPORT_V1.md)
+- [Phase B](../../experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_PRESSURE_REPORT.md)
+- [Fresh causal confirmation](../../experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CONFIRMATORY_REPORT_V1.md)
+- [Phase-D objective audit](PHASE_D_CAUSAL_OBJECTIVE_IDENTIFIABILITY_AUDIT_V1.md)
+- [Real-vLLM validation](REAL_VLLM_PRESSURE_ACTION_VALIDATION_REPORT.md)
+- [Latest literature](LATEST_LITERATURE_DIFFERENTIATION_AUDIT_V2.md)
+
+## Reproducibility and release boundaries
+
+- [`FGCS_REPRODUCIBILITY_MATRIX_V1.md`](FGCS_REPRODUCIBILITY_MATRIX_V1.md)
+- [`FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md`](FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md)
+- [`FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md`](FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md)
+- [`../DATA_RELEASE_POLICY.md`](../DATA_RELEASE_POLICY.md)
+- [`../PUBLIC_RELEASE_MANIFEST.md`](../PUBLIC_RELEASE_MANIFEST.md)
+
+## Historical development
+
+`RESUME_HERE.md`, `WORK_STATUS.md`, `NEXT_ACTIONS.md`, `NEXT_STEPS.md`,
+`ACTIVE_JOBS.md`, selector reports, older handoffs, and older readiness
+checkpoints remain available as historical or operational provenance. They are
+not current-status authorities.

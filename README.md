@@ -15,14 +15,25 @@ Documentation authority is intentionally narrow:
 
 1. [`README.md`](README.md) - public project overview and navigation.
 2. [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) - canonical long-term roadmap.
-3. [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md) - shortest current operational handoff.
-4. [`docs/current/WORK_STATUS.md`](docs/current/WORK_STATUS.md) - detailed current status table.
-5. [`docs/current/NEXT_ACTIONS.md`](docs/current/NEXT_ACTIONS.md) - prioritized next actions.
+3. [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md) - canonical current FGCS status.
+4. [`docs/current/README.md`](docs/current/README.md) - current evidence and documentation index.
+5. [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) - reproducibility entry point.
 6. [`docs/BASELINE_STATUS.md`](docs/BASELINE_STATUS.md) - external-baseline status index.
 7. [`docs/audits/`](docs/audits/) - immutable point-in-time audit trail.
 
 If a status claim elsewhere conflicts with these files, treat it as historical
 until reconciled.
+
+## Current FGCS Manuscript / Project Status
+
+The current scientific status is maintained in
+[`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md).
+The canonical manuscript is [`paper/llm2026/main.tex`](paper/llm2026/main.tex);
+the directory retains its historical name for reproducibility even though the
+manuscript is now the FGCS journal version. Reproduction entry points are in
+[`REPRODUCIBILITY.md`](REPRODUCIBILITY.md), and data/release boundaries are
+documented in [`docs/DATA_RELEASE_POLICY.md`](docs/DATA_RELEASE_POLICY.md) and
+[`docs/PUBLIC_RELEASE_MANIFEST.md`](docs/PUBLIC_RELEASE_MANIFEST.md).
 
 ## Research Objective
 
@@ -53,7 +64,7 @@ secondary diagnostic.
 
 Current branch: `contextual-compositional-heuristics-20260731`.
 
-**For current operational state, always read [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md).**
+**For current project state, read [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md).**
 
 The apt_serve_phase_g_analysis_20260809.md section below is superseded by the current operational doc. Keep for historical context only:
 
@@ -78,9 +89,10 @@ The canonical next task is to reconcile the completed Phase G interpretation
 into the broader module-decomposition and library-envelope roadmap, then return
 to contextual composition work rather than launching another Apt-Serve sweep.
 
-> **Current checkpoint has moved beyond Apt-Serve.** The full current state
-> (Family-B replication prep, Public Trace Corpus v1, decision-criticality
-> analysis) is in [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md).
+> Historical operational handoffs remain available under `docs/current/`, but
+> they are not current-status authorities. The FGCS manuscript and final
+> submission-audit state are indexed by
+> [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md).
 
 ## Repository Layout
 

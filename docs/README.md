@@ -7,9 +7,11 @@ limited to the files listed below.
 
 - [`../README.md`](../README.md) - public overview.
 - [`PROJECT_MAP.md`](PROJECT_MAP.md) - canonical research roadmap.
-- [`current/RESUME_HERE.md`](current/RESUME_HERE.md) - shortest operational handoff.
-- [`current/WORK_STATUS.md`](current/WORK_STATUS.md) - detailed current status.
-- [`current/NEXT_ACTIONS.md`](current/NEXT_ACTIONS.md) - prioritized next actions.
+- [`current/FGCS_CURRENT_STATUS.md`](current/FGCS_CURRENT_STATUS.md) - canonical current FGCS status.
+- [`current/README.md`](current/README.md) - current evidence and documentation index.
+- [`current/RESUME_HERE.md`](current/RESUME_HERE.md) - historical operational handoff.
+- [`current/WORK_STATUS.md`](current/WORK_STATUS.md) - historical current-status snapshot.
+- [`current/NEXT_ACTIONS.md`](current/NEXT_ACTIONS.md) - historical prioritized actions.
 - [`BASELINE_STATUS.md`](BASELINE_STATUS.md) - external-baseline status index.
 
 ## Architecture / Design
