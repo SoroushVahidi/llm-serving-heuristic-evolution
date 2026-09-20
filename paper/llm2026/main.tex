@@ -44,7 +44,7 @@ constraints, rather than arrival scaling through $8\times$, created
 disagreement. On untouched fresh windows, the confirmatory latency study found
 720 disagreement states, 590 with a beneficial alternative,
 $P(B_{\mathrm{LAT}}\mid D)=0.8194$, and mean oracle headroom of 1.9958 ms
-with a clustered 95\% confidence interval $[0.1846,3.4974]$ ms. Terminal ANWG
+with a clustered 95\% confidence interval $[0.1909,3.5462]$ ms. Terminal ANWG
 saturated at one and therefore concealed latency differences in the earlier
 pressure study. A bounded real-vLLM validation showed that resource pressure
 changes observable queue and scheduler-trace behavior, supporting the
@@ -306,9 +306,10 @@ coexist with a tiny overall opportunity.
 
 The confirmatory mean uses a faithful-window clustered bootstrap with 2,000
 replicates and seed 20260920. The cluster unit is the original fresh trace
-window contributing disagreement states, so multiple states from one window
-do not become independent experimental units. Its verdict requires positive
-mean headroom and a clustered 95\% lower endpoint above zero.
+window, identified by workload source and window index, contributing
+disagreement states, so multiple states from one window do not become
+independent experimental units. Its verdict requires positive mean headroom
+and a clustered 95\% lower endpoint above zero.
 
 A resource-pressure regime is a workload window plus one frozen one-axis
 intervention, such as a KV-capacity cap, active-sequence cap, or arrival-rate
@@ -428,7 +429,7 @@ states (Table~\ref{tab:fresh}; Figure~\ref{fig:fresh}), giving
  P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194444444.
 \end{equation*}
 Mean oracle latency headroom was 0.001995791 s (1.9958 ms), with a clustered
-95\% CI of [0.000184589, 0.003497418] s ([0.1846, 3.4974] ms). The frozen
+95\% CI of [0.000190884, 0.003546196] s ([0.1909, 3.5462] ms). The frozen
 verdict was \texttt{LATENCY\_HEADROOM\_CONFIRMED}. This is statistically
 supported but operationally modest. It establishes measurable local
 default-relative latency opportunity in the disagreement-support regime, not
@@ -450,13 +451,15 @@ The oracle is a non-deployable opportunity bound over observed alternatives.}
 \centering
 \scriptsize
 \caption{Fresh causal characterization. $P(D)$ uses all valid SBS decision
-states; $P(B_{\mathrm{LAT}}\mid D)$ uses only the disagreement states. The
-total row reports the 26 bootstrap clusters (fresh windows); the sum of the
-row windows (67) is not an independent count.}
+states; $P(B_{\mathrm{LAT}}\mid D)$ uses only the disagreement states.
+Per-regime source-window counts report distinct fresh trace windows with at
+least one disagreement state in that regime. The same source window may
+contribute to multiple regimes, so the row counts are not additive; the 36
+distinct workload-window pairs form the clusters used by the bootstrap.}
 \label{tab:fresh}
 \begin{tabular}{@{}lrrrcr@{}}
 \toprule
-Workload/regime & States & $P(D)$ & $P(B_{\mathrm{LAT}}\mid D)$ & Mean $H_{\mathrm{LAT}}$ (ms) & Windows \\
+Workload/regime & States & $P(D)$ & $P(B_{\mathrm{LAT}}\mid D)$ & Mean $H_{\mathrm{LAT}}$ (ms) & Source windows \\
 \midrule
 Azure code, active\_8 & 10 & 0.000106 & 0.400 & 0.033 & 2 \\
 Azure code, active\_4 & 122 & 0.001290 & 0.525 & 0.077 & 15 \\
@@ -464,7 +467,7 @@ Azure code, kv\_16000 & 431 & 0.004561 & 0.923 & 3.227 & 14 \\
 Azure conversation, active\_4 & 64 & 0.000108 & 0.484 & 0.217 & 17 \\
 Azure conversation, kv\_16000 & 93 & 0.000157 & 1.000 & 0.241 & 1 \\
 \midrule
-All selected fresh states & 720 & --- & 0.819 & 1.996 & 26 bootstrap clusters \\
+All selected fresh states & 720 & --- & 0.819 & 1.996 & 36 distinct \\
 \bottomrule
 \end{tabular}
 \end{table*}
