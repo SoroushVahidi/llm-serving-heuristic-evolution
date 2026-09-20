@@ -35,12 +35,12 @@ save("fgcs_pipeline")
 phase_a = {"Azure code": 0.0, "Azure conversation": 0.0, "BurstGPT": 0.0}
 phase_b = {"Azure code\nactive_4": 0.0009987, "Azure code\nKV 16k": 0.0059532,
            "Azure conv.\nactive_4": 0.0000670, "BurstGPT\nactive_8": 0.0003}
-fig, ax = plt.subplots(figsize=(7.2, 3.0))
+fig, ax = plt.subplots(figsize=(8.0, 3.8))
 names = list(phase_a) + list(phase_b)
 vals = list(phase_a.values()) + list(phase_b.values())
 colors = ["#9aa7b2"] * 3 + ["#2d6a9f"] * 4
 ax.bar(np.arange(len(names)), vals, color=colors)
-ax.set_xticks(np.arange(len(names)), names, rotation=25, ha="right")
+ax.set_xticks(np.arange(len(names)), names, rotation=35, ha="right")
 ax.set_ylabel("Canonical disagreement rate")
 ax.set_title("Native replay is action-null; binding pressure creates opportunity")
 ax.set_ylim(0, max(vals) * 1.25)
@@ -82,18 +82,22 @@ ax1.set_title("Fresh untouched-window causal headroom")
 save("fgcs_fresh_headroom")
 
 # Figure 5: practitioner map, opportunity prevalence versus conditional benefit.
-fig, ax = plt.subplots(figsize=(5.8, 4.0))
+fig, ax = plt.subplots(figsize=(6.8, 4.5))
 for r in fresh:
     pd = float(r["P_D"]) * 100
     pb = float(r["P_B_given_D"]) * 100
     size = max(35, float(r["mean_oracle_headroom"]) * 100000)
-    label = f"{r['source_dataset'].replace('azure_2023_', 'Azure ')} {r['condition_id']}"
+    label = f"{r['source_dataset'].replace('azure_2023_', 'Azure ')}\n{r['condition_id']}"
     ax.scatter(pd, pb, s=size, alpha=0.8, label=label)
-    ax.annotate(label, (pd, pb), xytext=(4, 3), textcoords="offset points", fontsize=7)
+    x_offset = -8 if pd > 0.3 else 8
+    y_offset = -12 if pb > 90 else 8
+    ha = "right" if pd > 0.3 else "left"
+    ax.annotate(label, (pd, pb), xytext=(x_offset, y_offset), textcoords="offset points", fontsize=9, ha=ha)
 ax.set_xscale("log")
 ax.set_xlabel("P(D) among all SBS decision states (%)")
 ax.set_ylabel("P(B_LAT | D) (%)")
-ax.set_ylim(0, 105)
+ax.set_ylim(0, 115)
+ax.set_xlim(0.005, 1.5)
 ax.set_title("Opportunity is a product of prevalence and conditional value")
 ax.grid(alpha=0.25)
 save("fgcs_regime_map")
