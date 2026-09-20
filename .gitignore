@@ -52,6 +52,14 @@ hf_datasets_cache/
 hf_home/
 dataset_staging/
 
+# Local-only Family-A provenance restored from the Query-3 archive for
+# historical validation tests. These artifacts are retained/indexed outside Git.
+datasets/family_a_oracle_policy_pilot_v1/
+datasets/family_a_oracle_policy_v1/
+experiments/family_a_contested_request_value_diagnosis/
+experiments/family_a_horizon_stability_v1/
+experiments/family_a_observability_continuation_v1/
+
 # Experiment logs (runtime output; not source code)
 logs/
 *.out
@@ -107,6 +115,13 @@ experiments/selector_v2_calibrated_pilot_*/window_features.csv
 .coverage
 htmlcov/
 
+# LaTeX build intermediates; source, figures, and canonical PDFs remain trackable
+*.aux
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
 # OS / editor
 .DS_Store
 Thumbs.db
@@ -137,3 +152,4 @@ llmserveopt-data/
 .env.*
 !.env.example
 .local_data/
+*.spl

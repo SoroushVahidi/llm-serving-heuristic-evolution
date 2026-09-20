@@ -1,0 +1,22 @@
+{
+  "schema_version": "fgcs_readiness_checkpoint_real_vllm_v1.0",
+  "prior_score": 87,
+  "prior_confidence_percent": 82,
+  "updated_score": 88,
+  "updated_confidence_percent": 84,
+  "dimensions": {
+    "technical_depth": 89,
+    "industry_realism": 84,
+    "experimental_rigor": 93,
+    "practitioner_value": 86,
+    "causal_headroom_hard_gate": 100
+  },
+  "real_system_credibility": "PARTIAL_SUPPORT",
+  "fourth_trace_required": false,
+  "full_manuscript_rewrite_authorized": true,
+  "remaining_hard_gates": [
+    "manuscript transformation",
+    "artifact packaging and final consistency checks"
+  ],
+  "rationale": "R1/R2 are supported by a valid native vLLM run and scheduler traces; exact one-step causal intervention and direct simulator Family-B reversal were not established."
+}

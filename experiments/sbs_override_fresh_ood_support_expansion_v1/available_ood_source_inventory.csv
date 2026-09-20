@@ -1,0 +1,6 @@
+source,classification,path,prior_evidence,replay_compatibility
+TraceLab,RELATED_BUT_NOT_EQUIVALENT,not locally staged as raw replay data; prior HF-derived 512-window sweep documented elsewhere,near-saturated policy separation/oracle goodput around 1.0 in derived sweep; not equivalent SBS support,requires fresh adapter/re-derivation from raw TraceLab
+SwissAI/OpenTela,NOT_PREVIOUSLY_SCANNED,not found in local/Wulver staged paths during targeted search,none found,unknown
+Mooncake/Kimi,UNUSABLE_FOR_THIS_REPLAY,loaders/fixtures exist; trace license/data-provenance caveat,related only,internal-only until data license/schema verified
+BurstGPT v2,RELATED_BUT_NOT_EQUIVALENT,/mmfs1/project/ikoutis/sv96/llmserveopt-data/staging/sbs_override_fresh_confirmatory_corpus_v1/pilot_v2_windows_full_cache.json,public replay/load-scaling policy outcomes exist; no equivalent SBS trajectory support manifest found,compatible via existing LSSP controlled annotations
+Azure 2023,RELATED_BUT_NOT_EQUIVALENT,/mmfs1/project/ikoutis/sv96/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1-src/data/public_trace_corpus_v1,public trace replay trajectories exist; no equivalent SBS trajectory support manifest found,compatible via public_trace_replay_v1 augmented view

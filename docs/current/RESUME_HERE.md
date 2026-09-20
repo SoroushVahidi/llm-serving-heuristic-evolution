@@ -1,9 +1,64 @@
 # Resume Here
 
+## 2026-09-19 SBS Override Current Entrypoint
+
+The current active line is the SBS-relative override selector and fresh
+confirmatory protocol, not the older August manuscript-production status below.
+
+Read first:
+
+1. [`SBS_OVERRIDE_FINAL_HANDOFF_20260919.md`](SBS_OVERRIDE_FINAL_HANDOFF_20260919.md)
+   for the canonical SBS-override project map and pause state.
+2. [`ACTIVE_JOBS.md`](ACTIVE_JOBS.md) for the protected running tmux job
+   `sbs_cons_selector_v1`.
+3. [`SBS_OVERRIDE_STATUS.md`](SBS_OVERRIDE_STATUS.md) for the lineage,
+   confirmatory-blindness boundary, fresh clean-vs-raw counts, OOD null result,
+   and source/generated-artifact split.
+4. [`SBS_OVERRIDE_QUERY3_PREP.md`](SBS_OVERRIDE_QUERY3_PREP.md) for the commit
+   grouping plan used before this final handoff.
+
+Fresh confirmatory terminal labels exist but remain scientifically blind.
+Do not open fresh outcome contents, compute fresh `Q_SBS`/`A_SBS`, or evaluate
+any selector on fresh labels until the final selector freeze has been committed
+and the one-shot confirmation task is explicitly authorized.
+
 **Shortest current operational entrypoint.** For the research roadmap, read
 [`docs/PROJECT_MAP.md`](../PROJECT_MAP.md). For detailed status, read
 [`WORK_STATUS.md`](WORK_STATUS.md). For ordered next actions, read
 [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md).
+
+## Wulver / SLURM access (do not misread `ssh wulver`)
+
+**Authoritative note:** [`WULVER_ACCESS_20260825.md`](WULVER_ACCESS_20260825.md).
+
+- Bare `ssh wulver` **fails by design here** (no `Host wulver` alias; bare DNS
+  `wulver` does not resolve). That is **not** evidence that Wulver is down.
+- Valid targets: `ssh login02` → `login02.tartan.njit.edu` as user `sv96`; also
+  `ssh sv96@wulver.njit.edu`.
+- When live: `ssh -S ~/.ssh/cm/wulver.sock sv96@wulver.njit.edu …`
+- Prefer Wulver/SLURM for long experiments; local tmux only if access genuinely
+  fails after testing `login02` and/or the control socket. Distinguish GSSAPI /
+  BatchMode auth failure from cluster unavailability.
+
+## 2026-08-24 Publication-Stage Entry Point
+
+The project is now in **LLM 2026 MANUSCRIPT PRODUCTION**. Do not launch new
+scientific experiments by default. Priority 1 real-vLLM validation and Priority
+2 joint multi-mechanism generalization are complete; no additional
+pre-submission science is currently required.
+
+Start writing from:
+
+- `docs/current/llm2026_full_manuscript_architecture_20260824.md`
+- `paper/llm2026/main.tex`
+- `docs/current/llm2026_manuscript_plan_20260824.md`
+- `docs/current/llm2026_claim_evidence_ledger_20260824.md`
+- `docs/current/llm2026_number_source_of_truth_20260824.md`
+- `docs/current/llm2026_figure_table_manifest_20260824.md`
+
+The current manuscript architecture is a seven-section plan under an
+eight-page two-column full/regular-paper budget. First writing task: align the
+scaffold with verified venue constraints, then draft Sections 1-2.
 
 ## Current State
 

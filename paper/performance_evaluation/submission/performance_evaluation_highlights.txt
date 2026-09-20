@@ -1,0 +1,5 @@
+- Native LLM workload replay is canonically action-null under abundant resources.
+- KV capacity and active-sequence resource pressure expose executable alternatives.
+- In touched regimes, 82% of disagreement states show latency-beneficial choices.
+- The mean one-step oracle latency headroom is 2.0 ms with a clustered positive CI.
+- Adaptation requires both executable opportunity and measured causal value.

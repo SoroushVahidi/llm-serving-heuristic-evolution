@@ -1,0 +1,26 @@
+{
+  "contribution_strength_confidence_percent": 74,
+  "dimension_scores": {
+    "experimental_rigor": 17,
+    "industry_realism": 16,
+    "practitioner_value": 7,
+    "reproducibility_community_value": 8,
+    "scientific_novelty": 17,
+    "technical_depth": 15
+  },
+  "hard_gates": {
+    "causal_headroom": "FAIL",
+    "literature_novelty": "PASS",
+    "practitioner_value": "PARTIAL",
+    "real_world_evidence": "PARTIAL",
+    "reproducibility": "PASS",
+    "systems_regime_characterization": "PASS"
+  },
+  "remaining_path_to_90": [
+    "Restructure the FGCS manuscript around Phase A/B/D.",
+    "Run one bounded real-vLLM pressure/action validation.",
+    "Polish public artifact package and current citations."
+  ],
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.results.0.0",
+  "total_score": 80
+}

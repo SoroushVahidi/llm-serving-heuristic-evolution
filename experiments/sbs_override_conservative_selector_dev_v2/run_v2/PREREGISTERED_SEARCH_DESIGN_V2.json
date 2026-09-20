@@ -1,0 +1,84 @@
+{
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "created_at_unix": 1789847653.3572137,
+  "development_input_integrity": {
+    "action_features": 70,
+    "all_rows": 30746,
+    "folds": 5,
+    "map_path": "/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1/experiments/joint240_sbs_targeted_terminal_label_full_v1/full_v1/analysis_v1/state_policy_action_map_full.csv",
+    "map_sha256": "7a4118b65e4222e189aa1139ba548ade99951ae285a50b7b193fec6ef55d1324",
+    "map_sha256_matches": true,
+    "non_sbs_rows": 21858,
+    "non_sbs_states": 8888,
+    "policy_action_map_columns": [
+      "schema_version",
+      "state_id",
+      "scenario_id",
+      "fold",
+      "step",
+      "policy_id",
+      "policy_index",
+      "canonical_action_id",
+      "canonical_action_full",
+      "canonical_action_admit",
+      "sbs_canonical_action_id",
+      "action_equal_to_sbs",
+      "is_sbs_policy"
+    ],
+    "rows_path": "/home/soroush/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1/experiments/joint240_sbs_targeted_terminal_label_full_v1/full_v1/analysis_v1/state_action_rows_full.csv",
+    "rows_sha256": "a96af891b70bcd0895440207df6febb5d1c1545af4eaaf455367e56152950dca",
+    "rows_sha256_matches": true,
+    "scenarios": 236,
+    "state_features": 95,
+    "states": 8888
+  },
+  "feature_count": 165,
+  "feature_set": "STATE_ACTION_V1",
+  "final_fit": "after candidate/gate freeze, fit selected estimator(s) on all development rows",
+  "final_selection_objective": [
+    "maximize minimum fold mean realized gain",
+    "maximize overall mean realized gain",
+    "minimize number of negative aggregate-gain scenarios",
+    "minimize number of harmful overrides",
+    "minimize override rate",
+    "deterministic stable-key tie-break"
+  ],
+  "fresh_confirmatory_outcomes_used": false,
+  "gate_calibration": "OOF residual margins only from full-development grouped-crossfit predictions",
+  "git_branch": "contextual-compositional-heuristics-20260731",
+  "git_sha": "daf093acc552932f7ac7a7e74263956ed4af5c74",
+  "grouped_cv_folds": "existing five scenario folds from joint240 development corpus",
+  "model_families": [
+    "EXTRA_TREES",
+    "HIST_GRADIENT_BOOSTING",
+    "ENSEMBLE_50_50"
+  ],
+  "outer_oof_results_used_for_final_selection": false,
+  "package_versions": {
+    "joblib": "1.5.3",
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "scikit_learn": "1.8.0"
+  },
+  "purpose": "V2 development-only final selector selection after V1 preregistration ambiguity",
+  "residual_quantiles": {
+    "q90": 0.9,
+    "q95": 0.95
+  },
+  "schema_version": "sbs_override_conservative_selector_dev_v2.0.0",
+  "tau_grid": [
+    0.0,
+    0.001,
+    0.0025,
+    0.005,
+    0.01,
+    0.02
+  ],
+  "v1_status": "HISTORICAL_DEVELOPMENT_SELECTOR_WITH_AMBIGUOUS_FINAL_SELECTION_PREREGISTRATION",
+  "weight_strategies": [
+    "STATE_EQUAL",
+    "SCENARIO_EQUAL"
+  ]
+}

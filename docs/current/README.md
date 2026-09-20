@@ -1,25 +1,42 @@
-# Current Documentation
+# Performance Evaluation Current Documentation Index
 
-This directory contains operational status and supporting current-work docs. It
-is not the top-level roadmap.
+This directory serves as the documentation index for the "Performance Evaluation" (Elsevier) submission.
 
-Read in this order:
+## Current Canonical Status & Roadmap
 
-1. [`RESUME_HERE.md`](RESUME_HERE.md) - shortest operational handoff.
-2. [`../PROJECT_MAP.md`](../PROJECT_MAP.md) - canonical research roadmap.
-3. [`WORK_STATUS.md`](WORK_STATUS.md) - current workstream status.
-4. [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md) - prioritized next actions.
-5. [`../BASELINE_STATUS.md`](../BASELINE_STATUS.md) - external-baseline status.
+The single authoritative source of truth for the current submission is:
+- [PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md](PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
 
-Supporting current references:
+## Active Manuscript
 
-- [`PROJECT_MAP.md`](PROJECT_MAP.md) - repository/code navigation map, not the
-  research roadmap.
-- [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md)
-- [`SCIENTIFIC_DECISIONS.md`](SCIENTIFIC_DECISIONS.md)
-- [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- [`BASELINES.md`](BASELINES.md)
+- **Manuscript Source:** [paper/performance_evaluation/](../../paper/performance_evaluation/)
+- **Author-Review PDF:** [paper/llm_scheduler_adaptation_causal_headroom.pdf](../../paper/llm_scheduler_adaptation_causal_headroom.pdf)
+- **Highlights:** [paper/performance_evaluation_highlights.txt](../../paper/performance_evaluation_highlights.txt)
 
-Historical or superseded status docs in this directory are retained for
-provenance and should not be used as live status authorities unless explicitly
-linked from the current files above.
+## Canonical Scientific Evidence & Reports
+
+- [Phase A Native Replay Report](../../experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_NATIVE_REPLAY_REPORT_V1.md)
+- [Phase B V2 Pressure Report](../../experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_PRESSURE_REPORT.md)
+- [Fresh Latency Confirmatory Report](../../experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CONFIRMATORY_REPORT_V1.md)
+- [Phase-D Objective Identifiability Audit](PHASE_D_CAUSAL_OBJECTIVE_IDENTIFIABILITY_AUDIT_V1.md)
+- [Real-vLLM Pressure Action Validation Report](REAL_VLLM_PRESSURE_ACTION_VALIDATION_REPORT.md)
+- [Latest Literature Audit](LATEST_LITERATURE_DIFFERENTIATION_AUDIT_V2.md)
+
+## Reproducibility Guide
+
+The reproducibility entry point for this study is:
+- [PERFORMANCE_EVALUATION_REPRODUCIBILITY.md](PERFORMANCE_EVALUATION_REPRODUCIBILITY.md)
+
+## Historical Reference Documents (Superseded)
+
+These documents tracking the prior "Future Generation Computer Systems" (FGCS) effort are retained solely for provenance:
+- [FGCS_CURRENT_STATUS.md](FGCS_CURRENT_STATUS.md) (Superseded)
+- [FGCS_REPOSITORY_FINALIZATION_REPORT.md](FGCS_REPOSITORY_FINALIZATION_REPORT.md) (Superseded)
+- [FGCS_PROVENANCE_PROTECTION_V1.md](FGCS_PROVENANCE_PROTECTION_V1.md) (Superseded)
+- [FGCS_MANUSCRIPT_CLAIM_MAP_V1.md](FGCS_MANUSCRIPT_CLAIM_MAP_V1.md) (Superseded)
+- [FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md](FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md) (Superseded)
+- [FGCS_REPRODUCIBILITY_MATRIX_V1.md](FGCS_REPRODUCIBILITY_MATRIX_V1.md) (Superseded)
+- [FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md](FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md) (Superseded)
+- [FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md](FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md) (Superseded)
+- [Historical FGCS Manuscript Status](../../paper/history/fgcs/FGCS_MANUSCRIPT_STATUS.md) (Superseded)
+- [Historical FGCS Submission Package Manifest](../../paper/history/fgcs/FGCS_SUBMISSION_PACKAGE_MANIFEST_V1.md) (Superseded)

@@ -1,0 +1,15 @@
+{
+  "schema_version": "fgcs_manuscript_build_v1.0",
+  "source": "paper/llm2026/main.tex",
+  "bibliography": "paper/llm2026/references.bib",
+  "compiled_pdf": "paper/llm2026/main.pdf",
+  "compiler": "latexmk -pdf -interaction=nonstopmode -halt-on-error",
+  "pages": 13,
+  "page_size": "letter",
+  "main_tex_sha256": "066f0e549ec31f00fade4313d081e2e67373d1266a3a78c74217008f34cf516e",
+  "pdf_sha256": "f8b5cdd6a4594b49e0be0b5f8cc2b808247056a77d039f7eb35dcc740c5efb48",
+  "references_sha256": "21784f39eab1c87a4a4f280af545c927a898517ce9402eab520a41dbe958fdff",
+  "undefined_citations": false,
+  "compile_status": "PASS_WITH_LAYOUT_WARNINGS",
+  "layout_warning_summary": "Small residual overfull/underfull boxes remain; no compilation errors or undefined citations."
+}

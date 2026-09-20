@@ -24,7 +24,7 @@ research article**, and currently in the pre-submission / author-review stage.
 - Current author-review PDF:
   [`paper/llm_scheduler_adaptation_causal_headroom.pdf`](paper/llm_scheduler_adaptation_causal_headroom.pdf)
   (review copy — not yet the final submission artifact)
-- The historical LLM 2026 manuscript in [`paper/llm2026/`](paper/llm2026/) is
+- The historical LLM 2026 manuscript in [`paper/history/llm2026/`](paper/history/llm2026/) is
   retained for provenance. That conference submission was withdrawn before
   publication and is **not** the active submission.
 - The earlier FGCS submission roadmap
@@ -102,7 +102,7 @@ experiments/        committed experiment artifacts and curated provenance
 docs/               roadmap, current status, design docs, historical audits
 data/               local datasets; raw/processed data are gitignored
 results/            local generated outputs; gitignored except selected provenance
-paper/llm2026/      finalized manuscript package (LaTeX source, PDF, figures)
+paper/performance_evaluation/ finalized manuscript package (LaTeX source, PDF, figures)
 ```
 
 See [`docs/README.md`](docs/README.md), [`scripts/README.md`](scripts/README.md),
@@ -172,8 +172,8 @@ CI deliberately does **not** cover:
 - Status consistency check: `python scripts/check_project_handoff_consistency.py`
 - General smoke test: `python scripts/smoke_test.py`
 - Paper figures (from frozen artifacts, no new experiments):
-  `python3 paper/llm2026/scripts/plot_joint_complementarity.py` and
-  `python3 paper/llm2026/scripts/plot_vllm_semantic_validation.py`
+  `python3 paper/performance_evaluation/scripts/plot_joint_complementarity.py` and
+  `python3 paper/performance_evaluation/scripts/plot_vllm_semantic_validation.py`
 
 Most full experiment runs write to `results/` and should be launched in tmux or
 the cluster scheduler. See the relevant audit under `docs/audits/` before

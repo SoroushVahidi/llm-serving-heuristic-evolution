@@ -1,0 +1,47 @@
+{
+  "schema_version": "sbs_override_fresh_id_confirmatory_result_freeze_v2.0.0",
+  "canonical_pre_confirmation_commit": "4b1cbb6ef0000618afce78e4948b42ae3a53172f",
+  "stage_b_git_head_at_execution": "4b1cbb6ef0000618afce78e4948b42ae3a53172f",
+  "stage_b_result_directory": "experiments/sbs_override_fresh_id_confirmatory_v2/stage_b/one_shot_20260919",
+  "label_source_provenance": {
+    "wulver_job": "1299925",
+    "remote_run_root": "/mmfs1/scratch/ikoutis/sv96/sbs_override_fresh_id_confirmatory_terminal_label_v1/run_v1",
+    "staged_label_source": ".confirmatory_label_staging/v2_1299925/state_action_rows.all_shards.csv",
+    "staged_label_source_sha256": "c083b57079c49e94c50403b257e64f3effd7dc1a2d45f368ee4256607c6171bd",
+    "staged_line_count_including_header": 9859
+  },
+  "command": "PYTHONPATH=src python scripts/sbs_override_fresh_id_confirmatory_evaluate_v2.py --expected-protocol-sha256 0e769f74d7c08c5deb19a0e8bb59ee4485045ad5a598a2c80b73b1e87b22187d --expected-stage-a-freeze-sha256 1e32420f9588c7a00dcc38213bb03f831e557066c6f407018d23d89fe97055cb --label-source .confirmatory_label_staging/v2_1299925/state_action_rows.all_shards.csv --result-dir experiments/sbs_override_fresh_id_confirmatory_v2/stage_b/one_shot_20260919",
+  "input_hashes": {
+    "selector_json": "1fdd2c0a19234bafd679a2678664119328fa37ae7d51c0178359640c2955de35",
+    "selector_joblib": "f882a54b808d9ab8f2c4ec139e19e3096ea5e3152cadf4c0badaa55c9644cfcd",
+    "canonical_preregistration": "1923cc19f41166769620e7dee17246d52e9e2c7310367a1d365309c57e22e4a8",
+    "structural_universe_freeze": "e79eeac33f70820f60a772c2ba183803342baf17cba00425cd7cce2bf52bad2f",
+    "stage_a_predictions": "fb3526428f4c92b215b553585545b097adaa067a15ee2fb12b038d01d1b71537",
+    "stage_a_freeze": "1e32420f9588c7a00dcc38213bb03f831e557066c6f407018d23d89fe97055cb",
+    "confirmatory_protocol": "0e769f74d7c08c5deb19a0e8bb59ee4485045ad5a598a2c80b73b1e87b22187d",
+    "stage_b_evaluator": "e92ec23d80727a6d272d9a73ba7d988e9162f5c65981d1947b98b90006a25754",
+    "environment_provenance": "419931d6b73c5c111c68f17795a0dced4d3dd296a1ca071027657ef6cf23c031"
+  },
+  "output_hashes_pre_manifest": {
+    "CONFIRMATORY_RESULT_V2.json": "edf7feb8b521c7b9b26e20eeb898e7608f27e5e3b7e726c5f7a73d26131bde7a",
+    "COMPLETE": "883c68b1a62b63df4d4e5ec14004fa0478bb794d42345c75eff6e7529ec64078",
+    "EVALUATOR_STDOUT.json": "c485d0be0ae57a7c62e85775f43a35c0b6e6a1199f3fdccd4312364618c98dbe"
+  },
+  "primary_result": {
+    "frozen_disagreement_states": 2862,
+    "frozen_overrides": 356,
+    "frozen_abstentions": 2506,
+    "total_realized_gain": -0.7450120737870998,
+    "primary_mean_realized_gain": -0.0002603116959423829,
+    "scenario_clustered_ci95_low": -0.0010167976331709404,
+    "scenario_clustered_ci95_high": 0.0005637780765335589,
+    "primary_verdict": "POSITIVE_GENERALIZATION_NOT_CONFIRMED"
+  },
+  "status": {
+    "stage_a_predictions_changed": false,
+    "v2_selector_changed": false,
+    "confirmatory_label_access": "ACCESSED_ONCE_FOR_FROZEN_STAGE_B",
+    "fresh_confirmation_executed": true,
+    "stage_b_executed_again": false
+  }
+}

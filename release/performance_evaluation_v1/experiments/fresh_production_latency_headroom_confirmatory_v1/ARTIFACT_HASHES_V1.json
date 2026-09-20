@@ -1,0 +1,17 @@
+{
+  "schema_version": "fresh_production_latency_headroom_confirmatory_v1.artifact_hashes.0.0",
+  "status": "FROZEN_BEFORE_FRESH_SUPPORT_OR_CAUSAL_OUTCOMES",
+  "hash_algorithm": "sha256",
+  "artifacts": {
+    "docs/design/FRESH_PRODUCTION_LATENCY_HEADROOM_CONFIRMATORY_V1.md": "c75647e9c0105278533a9d1631b9c91d7dac73c7358e66d9d7f6a6d664c2ee79",
+    "docs/current/FRESH_LATENCY_HEADROOM_CONFIRMATORY_DESIGN_REPORT.md": "62deebd0a89faef04f84f18cb951136b7c5b651f781b4d5cab21ced82b213051",
+    "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_WINDOW_UNIVERSE_V1.json": "9e3b8cd3183afabd243e47c9eef3a863d64663ba9ce2689c0defea17a308228d",
+    "experiments/fresh_production_latency_headroom_confirmatory_v1/OVERLAP_AUDIT_V1.json": "1cdcca971d39ca3adc6599c8f0d79bfb899eea9c05846f45bee12a92a2c85881",
+    "experiments/fresh_production_latency_headroom_confirmatory_v1/SUPPORT_PROTOCOL_V1.json": "86eba31e4de30753cee7cf51495301272860daadf12d783ee278b2d4e1506e2e",
+    "experiments/fresh_production_latency_headroom_confirmatory_v1/CAUSAL_PROTOCOL_V1.json": "136bcc8aefa0589238f6fd7feecea8eeafa7aedd0e48b90168e57381e6e05e71",
+    "experiments/fresh_production_latency_headroom_confirmatory_v1/METRIC_PROTOCOL_V1.json": "aa71789590740553a3128062860066d2c51ff5c7940aed51a944f836817dc48e",
+    "experiments/fresh_production_latency_headroom_confirmatory_v1/PREREGISTRATION_V1.json": "2fe1abb3d220050a69208eb93aeb19ac297785a5770d4d3c4196fb26691f4ed2",
+    "docs/design/INDUSTRY_REALISM_CAUSAL_HEADROOM_PHASE_D2_V1.md": "5106ce16ca52b2c74c7c50ad9d89e1ddf8b2cf64c7157c58d8a5d2724785d474",
+    "experiments/industry_realism_causal_headroom_phase_d2_v1/PREREGISTRATION_DRAFT_V1.json": "ff49f268bc1a3b4cbde9db5595d0ac969ab9e7a2811d733b264e113109a9b7d1"
+  }
+}

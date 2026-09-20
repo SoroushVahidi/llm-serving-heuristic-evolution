@@ -1,0 +1,11 @@
+{
+  "disagreement_states": 720,
+  "labeling_scope": "EXHAUSTIVE",
+  "latency_outcomes_used_for_regime_selection": false,
+  "population": "all canonical disagreement states in selected fresh regimes",
+  "sampling_outcome_blind": true,
+  "sbs_reference_branches": 720,
+  "status": "FROZEN_NOT_EXECUTED",
+  "total_planned_continuations": 1551,
+  "unique_non_sbs_branches": 831
+}

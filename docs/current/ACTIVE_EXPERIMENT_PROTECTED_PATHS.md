@@ -1,5 +1,19 @@
 # Active Experiment Protected Paths
 
+## 2026-09-19 Active Local Writer
+
+The active writer list has changed since the 2026-08-19 text below.
+
+Current active writer:
+
+| Workflow | Protected root | Status |
+| --- | --- | --- |
+| `SBS_OVERRIDE_CONSERVATIVE_SELECTOR_DEV_V1` | `experiments/sbs_override_conservative_selector_dev_v1/run_v1/` | Running in tmux session `sbs_cons_selector_v1`; see `ACTIVE_JOBS.md` |
+
+Do not delete, move, rename, compress, rewrite, or otherwise modify this run
+root while the tmux session is active. Do not stop or restart the tmux session
+as part of cleanup.
+
 Refreshed 2026-08-19 (previously refreshed 2026-07-22). Local-machine section
 added; cluster section below is carried forward from the 2026-07-22 pass and
 has not been independently re-verified against a fresh `squeue` this pass.

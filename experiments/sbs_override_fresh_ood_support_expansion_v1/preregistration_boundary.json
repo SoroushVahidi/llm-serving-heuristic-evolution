@@ -1,0 +1,33 @@
+{
+  "binding_capacity_definition": "waiting_queue_count > total_free_sequence_slots",
+  "candidate_count": 160,
+  "choice_state_rate_definition": "fraction of SBS decision states with waiting_queue_count >= 2",
+  "confirmatory_blindness": {
+    "forbidden": [
+      "terminal counterfactual labels",
+      "Q_SBS",
+      "A_SBS",
+      "selector training/tuning",
+      "closed loop"
+    ],
+    "permitted": [
+      "source metadata",
+      "arrivals and online request attributes",
+      "SBS trajectories",
+      "P6 native actions and canonical action equality",
+      "state/choice structural diagnostics"
+    ]
+  },
+  "created_utc": "2026-09-19T16:14:28Z",
+  "git": {
+    "branch": "experiment/joint240-sbs-targeted-terminal-label-full-v1",
+    "head": "ff34f6fa0303b6f21e13277553f2d5da789b01d4"
+  },
+  "manifest": "/mmfs1/project/ikoutis/sv96/llm-serving-heuristic-evolution-joint240-sbs-targeted-terminal-label-full-v1-src/experiments/sbs_override_fresh_ood_support_expansion_v1/fresh_ood_expansion_candidate_manifest.csv",
+  "schema_version": "sbs_override_fresh_ood_support_expansion_v1.0.0",
+  "source_counts": {
+    "azure_2023_code": 40,
+    "azure_2023_conv": 40,
+    "burstgpt_v2_lssp_cache": 80
+  }
+}

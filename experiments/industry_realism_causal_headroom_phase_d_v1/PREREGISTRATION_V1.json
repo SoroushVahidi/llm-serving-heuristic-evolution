@@ -1,0 +1,547 @@
+{
+  "artifact_hashes_excluding_self": {
+    "compute_budget": "87d66c18b8d002b190162915027ef0be52ae152b1441bf927eb172b20f467876",
+    "eligible_branches_csv": "a774db6e8c969f010c89e7673bac355c9bf7f28b5a191f125f727f1d205fc5fe",
+    "eligible_states_csv": "2a3224c4942dd0a0ecbae4b03f28879dfdffaecd0a7d08cdb5329b3bd6c3fa0c",
+    "eligible_universe": "4b992e4dc7199147bd2e69615577bf0579baf82ae1f3e1f5aa7c60eace5c1b1d",
+    "implementation_reuse_audit": "7183f9e137654603c60ae01ea3cf5fc42dbb21928646ccf1865f9677d9938c39",
+    "metric_protocol": "503dd9b427898c332457eb519ed17699ba8ab6806e55679259aea1c5aa86b1ad",
+    "regime_selection": "27f34ff44705de48a8ed08bf03838b122addfa47ba1986025edf4c060aebb316",
+    "sampling_or_exhaustive_plan": "53c757d7ea41bc0a29d298b9851f8c60eff185b6fc9b175c89857b143ee058b7"
+  },
+  "causal_labeling_executed": false,
+  "claim_boundaries": {
+    "allowed": [
+      "production-derived workload traces",
+      "real workload structure",
+      "resource-constrained replay",
+      "causal simulator headroom under the modeled serving semantics"
+    ],
+    "forbidden_until_real_system_validation": [
+      "real production deployment effects",
+      "measured production latency improvement",
+      "real-vLLM improvement"
+    ]
+  },
+  "compute_budget": {
+    "cpu_time_estimate": {
+      "basis": "scaled from prior fresh targeted-label campaign size of 9,858 continuations; exact runtime depends on constrained-regime drain lengths",
+      "planning_walltime_guidance": "start with 64-128 array tasks; inspect smoke runtime before full submission",
+      "relative_to_fresh_confirmatory_campaign": 2.384
+    },
+    "exhaustive_labeling_recommended": true,
+    "gpu_required": false,
+    "recommended_wulver_array_tasks": 94,
+    "sbs_reference_branches": 11328,
+    "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+    "selected_states": 11328,
+    "status": "PLANNING_ESTIMATE_NOT_EXECUTED",
+    "storage_estimate_mb": 93.99,
+    "total_terminal_continuations": 23497,
+    "unique_alternative_branches": 12169
+  },
+  "created_utc": "2026-09-20T00:42:31Z",
+  "fgcs_readiness_forecast": {
+    "causal_headroom_gate": "PENDING_UNTIL_PHASE_D_EXECUTION",
+    "current_contribution_strength_confidence": "62%",
+    "current_score": "70/100",
+    "limited_headroom_pattern": "would still support a rigorous characterization/negative-result paper showing scheduler diversity need not imply useful optimization headroom",
+    "not_resolved_by_design": [
+      "broader real-world workload coverage",
+      "literature novelty positioning",
+      "real-system validation"
+    ],
+    "strong_practical_headroom_pattern": "would materially strengthen the contribution if nontrivial P(B|D) and meaningful headroom appear across multiple workloads/regimes"
+  },
+  "forbidden": [
+    "terminal counterfactual execution during preregistration",
+    "selector training",
+    "Phase-B grid changes",
+    "post-outcome sampling changes",
+    "policy-forever switching",
+    "learned continuation"
+  ],
+  "git": {
+    "branch": "contextual-compositional-heuristics-20260731",
+    "head": "d1228605e3e12ce0cdb89ccf9018e9c0721c3d5f"
+  },
+  "implementation_plan": {
+    "causal_correctness_tests_required_before_full_execution": [
+      "exactly one forced intervention",
+      "subsequent policy is SBS",
+      "original live state is not mutated",
+      "future arrivals identical across branches",
+      "random state identical across branches",
+      "SBS reference replay matches native SBS continuation",
+      "canonical action branch is feasible",
+      "duplicate canonical actions are not relabeled",
+      "same state/action replay is deterministic",
+      "pressure configuration persists identically in reference and counterfactual branches"
+    ],
+    "pilot_policy": "engineering smoke may use deterministic states, but any inspected outcome-bearing pilot rows must be quarantined and excluded from final inference",
+    "required_adaptations": [
+      "load Phase-D state/action manifest keyed by faithful public-trace window and Phase-B pressure condition",
+      "replay SBS trajectory to target steps under exact Phase-B pressure settings",
+      "force each unique non-SBS canonical action once and compute SBS-reference continuation once per state",
+      "write sharded state-action outcome rows only in Phase-D execution task"
+    ],
+    "reuse_targets": [
+      "llmserveopt.analysis.joint240_dense_sbs_state_action_v1.run_one_step_then_sbs_terminal",
+      "llmserveopt.analysis.decision_criticality_timescale_trainval_v1.fork_from_live_simulator",
+      "Simulator.continue_run",
+      "Phase-A canonical_action/state_pressure_features",
+      "Phase-B transformed_scenario and frozen pressure-condition generation"
+    ],
+    "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+    "status": "PREREGISTERED_NOT_EXECUTED"
+  },
+  "labeling_scope": {
+    "chosen_path": "EXHAUSTIVE_SELECTED_REGIME_LABELING",
+    "decision_rule": "Use exhaustive selected-regime labeling when expected terminal continuations <= 50000; otherwise deterministic stratified sampling.",
+    "outcome_files_created": false,
+    "sampling_fallback": {
+      "forbidden_sampling_inputs": [
+        "predicted gain",
+        "V2 score",
+        "proxy scheduler ranking",
+        "action interestingness",
+        "future outcomes"
+      ],
+      "seed": 20260920,
+      "sparse_onset_rule": "do not undersample sparse onset cells; include all sparse onset states before applying caps to dense strata",
+      "strata": [
+        "source_dataset",
+        "axis",
+        "regime_stage",
+        "condition_id",
+        "window_index"
+      ]
+    },
+    "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+    "selected_disagreement_states": 11328,
+    "selected_sbs_reference_branches": 11328,
+    "selected_unique_non_sbs_branches": 12169,
+    "status": "PREREGISTERED_NOT_EXECUTED",
+    "total_expected_terminal_continuations": 23497
+  },
+  "metric_protocol": {
+    "actionable_headroom_index": "(P(D), P(B|D), mean_oracle_headroom), optionally accompanied by binding rate and downside prevalence",
+    "causal_population": "canonical disagreement states from selected valid Phase-D regimes, used for P(B|D) and headroom metrics",
+    "estimand": {
+      "advantage": "A_SBS(s,a) = Q_SBS(s,a) - Q_SBS(s,SBS)",
+      "forbidden": [
+        "policy-forever switching",
+        "learned continuation",
+        "alternative-policy continuation",
+        "closed-loop adaptive selector continuation"
+      ],
+      "q_sbs": "terminal utility after forcing exactly one canonical action at live state s and then reverting immediately to fixed kv_constrained_online",
+      "reference": "Q_SBS(s,SBS)"
+    },
+    "industry_linkage": [
+      "P(D) from Phase B",
+      "P(B|D) from Phase D",
+      "mean_oracle_headroom",
+      "achieved KV pressure",
+      "achieved active pressure",
+      "binding frequency",
+      "P(D) x P(B|D)",
+      "P(D) x mean_oracle_headroom"
+    ],
+    "prevalence_population": "all SBS decision states from Phase A/B, used for P(D)",
+    "primary_state_metrics": [
+      "P(B|D), where B(s)=1 iff at least one non-SBS canonical action has A_SBS(s,a)>0",
+      "oracle_headroom(s)=max(0,max_a A_SBS(s,a))",
+      "mean_oracle_headroom over all disagreement states, including zeros",
+      "mean and median positive oracle gain among B(s)=1 states",
+      "states where every alternative is harmful",
+      "states where all alternatives are zero",
+      "states containing both beneficial and harmful alternatives"
+    ],
+    "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+    "secondary_action_metrics": [
+      "positive/negative/zero advantage fractions",
+      "mean and median advantage",
+      "quantiles",
+      "worst harm",
+      "best gain"
+    ],
+    "statistical_protocol": {
+      "bootstrap_replicates": 2000,
+      "bootstrap_seed": 20260920,
+      "ci": "percentile 95%",
+      "cluster_unit": "faithful window",
+      "minimum_clusters_for_ci": 5,
+      "resampling_rule": "sample faithful windows with replacement and retain all state/action rows belonging to sampled windows with multiplicity",
+      "sparse_rule": "if contributing independent windows < minimum_clusters_for_ci, report descriptive estimates without inferential CI"
+    },
+    "status": "PREREGISTERED_NOT_EXECUTED",
+    "zero_policy": {
+      "advantage_zero": "exact floating zero is zero, matching prior SBS-relative labeling unless a pre-execution numerical repeatability test requires a tolerance",
+      "epsilon": null,
+      "tolerance_change_rule": "any epsilon must be frozen from numerical repeatability tests before Phase-D execution and not from observed advantage distributions"
+    }
+  },
+  "new_selector_training_authorized": false,
+  "outcomes_accessed": false,
+  "package_versions": {
+    "joblib": "1.5.3",
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "scikit-learn": "1.8.0"
+  },
+  "phase_a_result_commit": "416e1403a5111ac0a421785b2c4a28ef2a485937",
+  "phase_b_result_commit": "d1228605e3e12ce0cdb89ccf9018e9c0721c3d5f",
+  "phase_b_verification": {
+    "all_disagreement_states_including_invalid": 6281700,
+    "causal_labeling_executed": false,
+    "invalid_window_conditions": 20,
+    "new_selector_training_executed": false,
+    "phase_b_result_commit": "d1228605e3e12ce0cdb89ccf9018e9c0721c3d5f",
+    "phase_b_result_summary_sha256": "89e2bba78205372c09acaabdb71a6906590e4fc0b437e3edeb344ba143de2391",
+    "phase_b_transition_map_sha256": "7c333afa5b1f61a37ddb20f59184414602366c9c8c595724ae1aa00b39dcdd72",
+    "phase_b_window_condition_summary_sha256": "018974356844a711e8c4bffd0039bc40acc4132131543278a5ffc93519c2f0a8",
+    "phase_b_workload_axis_summary_sha256": "f3f22339669dd5163cb314ef762797ff19b683c1c939ac4b46ff217692d1611c",
+    "real_trace_structure_preserved": true,
+    "transition_rows": 9,
+    "valid_disagreement_states": 11328,
+    "window_conditions": 1080,
+    "workload_axis_rows": 54
+  },
+  "regime_selection": [
+    {
+      "achieved_max_active_pressure": 1.0,
+      "achieved_max_kv_pressure": 0.0027155,
+      "active_sequence_capacity_binding_states": 86,
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 8.0,
+      "condition_id": "active_8",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 8,
+      "max_kv_tokens_param": 8000000,
+      "phase_b_decision_states": 99992,
+      "phase_b_disagreement_rate": 1.000080006400512e-05,
+      "phase_b_disagreement_states": 1,
+      "phase_b_windows_with_disagreement": 1,
+      "pressure_order": 4,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "azure_2023_code",
+      "stage_label": "onset",
+      "stage_labels": [
+        "onset"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 1.0,
+      "achieved_max_kv_pressure": 0.00270125,
+      "active_sequence_capacity_binding_states": 3613,
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 4.0,
+      "condition_id": "active_4",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 4,
+      "max_kv_tokens_param": 8000000,
+      "phase_b_decision_states": 100127,
+      "phase_b_disagreement_rate": 0.0009987316108542,
+      "phase_b_disagreement_states": 100,
+      "phase_b_windows_with_disagreement": 16,
+      "pressure_order": 5,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "azure_2023_code",
+      "stage_label": "sustained+high_valid_pressure",
+      "stage_labels": [
+        "sustained",
+        "high_valid_pressure"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 0.015625,
+      "achieved_max_kv_pressure": 1.35775,
+      "active_sequence_capacity_binding_states": 0,
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 16000.0,
+      "condition_id": "kv_16000",
+      "kv_capacity_binding_or_over_requested_states": 225,
+      "max_active_sequences_param": 512,
+      "max_kv_tokens_param": 16000,
+      "phase_b_decision_states": 100115,
+      "phase_b_disagreement_rate": 0.0059531538730459,
+      "phase_b_disagreement_states": 596,
+      "phase_b_windows_with_disagreement": 13,
+      "pressure_order": 5,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "azure_2023_code",
+      "stage_label": "onset+sustained+high_valid_pressure",
+      "stage_labels": [
+        "onset",
+        "sustained",
+        "high_valid_pressure"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 1.0,
+      "achieved_max_kv_pressure": 0.00172775,
+      "active_sequence_capacity_binding_states": 25935,
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 4.0,
+      "condition_id": "active_4",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 4,
+      "max_kv_tokens_param": 8000000,
+      "phase_b_decision_states": 462751,
+      "phase_b_disagreement_rate": 6.699067100881468e-05,
+      "phase_b_disagreement_states": 31,
+      "phase_b_windows_with_disagreement": 11,
+      "pressure_order": 5,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "azure_2023_conv",
+      "stage_label": "onset+sustained+high_valid_pressure",
+      "stage_labels": [
+        "onset",
+        "sustained",
+        "high_valid_pressure"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 0.013671875,
+      "achieved_max_kv_pressure": 0.7161875,
+      "active_sequence_capacity_binding_states": 0,
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 16000.0,
+      "condition_id": "kv_16000",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 512,
+      "max_kv_tokens_param": 16000,
+      "phase_b_decision_states": 461985,
+      "phase_b_disagreement_rate": 3.896230397090815e-05,
+      "phase_b_disagreement_states": 18,
+      "phase_b_windows_with_disagreement": 1,
+      "pressure_order": 5,
+      "pressure_regime_class": "VALID_UNCONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "azure_2023_conv",
+      "stage_label": "onset",
+      "stage_labels": [
+        "onset"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 0.01171875,
+      "achieved_max_kv_pressure": 1.358625,
+      "active_sequence_capacity_binding_states": 0,
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 8000.0,
+      "condition_id": "kv_8000",
+      "kv_capacity_binding_or_over_requested_states": 6548,
+      "max_active_sequences_param": 512,
+      "max_kv_tokens_param": 8000,
+      "phase_b_decision_states": 463652,
+      "phase_b_disagreement_rate": 0.021826714863734,
+      "phase_b_disagreement_states": 10120,
+      "phase_b_windows_with_disagreement": 17,
+      "pressure_order": 6,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "azure_2023_conv",
+      "stage_label": "sustained+high_valid_pressure",
+      "stage_labels": [
+        "sustained",
+        "high_valid_pressure"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 1.0,
+      "achieved_max_kv_pressure": 0.003670625,
+      "active_sequence_capacity_binding_states": 1473,
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 16.0,
+      "condition_id": "active_16",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 16,
+      "max_kv_tokens_param": 8000000,
+      "phase_b_decision_states": 440691,
+      "phase_b_disagreement_rate": 3.1768291160926815e-05,
+      "phase_b_disagreement_states": 14,
+      "phase_b_windows_with_disagreement": 1,
+      "pressure_order": 3,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "burstgpt",
+      "stage_label": "onset",
+      "stage_labels": [
+        "onset"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 1.0,
+      "achieved_max_kv_pressure": 0.002449625,
+      "active_sequence_capacity_binding_states": 5673,
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 8.0,
+      "condition_id": "active_8",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 8,
+      "max_kv_tokens_param": 8000000,
+      "phase_b_decision_states": 444469,
+      "phase_b_disagreement_rate": 0.0001709905527719,
+      "phase_b_disagreement_states": 76,
+      "phase_b_windows_with_disagreement": 2,
+      "pressure_order": 4,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "burstgpt",
+      "stage_label": "sustained",
+      "stage_labels": [
+        "sustained"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 1.0,
+      "achieved_max_kv_pressure": 0.0015645,
+      "active_sequence_capacity_binding_states": 25650,
+      "arrival_multiplier": 1.0,
+      "axis": "active_sequence_capacity",
+      "axis_value": 4.0,
+      "condition_id": "active_4",
+      "kv_capacity_binding_or_over_requested_states": 0,
+      "max_active_sequences_param": 4,
+      "max_kv_tokens_param": 8000000,
+      "phase_b_decision_states": 455652,
+      "phase_b_disagreement_rate": 0.000535496387594,
+      "phase_b_disagreement_states": 244,
+      "phase_b_windows_with_disagreement": 8,
+      "pressure_order": 5,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "burstgpt",
+      "stage_label": "high_valid_pressure",
+      "stage_labels": [
+        "high_valid_pressure"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 0.060546875,
+      "achieved_max_kv_pressure": 1.9009375,
+      "active_sequence_capacity_binding_states": 0,
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 16000.0,
+      "condition_id": "kv_16000",
+      "kv_capacity_binding_or_over_requested_states": 2,
+      "max_active_sequences_param": 512,
+      "max_kv_tokens_param": 16000,
+      "phase_b_decision_states": 440464,
+      "phase_b_disagreement_rate": 2.7243997239274943e-05,
+      "phase_b_disagreement_states": 12,
+      "phase_b_windows_with_disagreement": 4,
+      "pressure_order": 5,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "burstgpt",
+      "stage_label": "onset+sustained",
+      "stage_labels": [
+        "onset",
+        "sustained"
+      ],
+      "token_budget_binding_proxy_states": 0
+    },
+    {
+      "achieved_max_active_pressure": 0.060546875,
+      "achieved_max_kv_pressure": 3.80175,
+      "active_sequence_capacity_binding_states": 0,
+      "arrival_multiplier": 1.0,
+      "axis": "kv_capacity",
+      "axis_value": 8000.0,
+      "condition_id": "kv_8000",
+      "kv_capacity_binding_or_over_requested_states": 388,
+      "max_active_sequences_param": 512,
+      "max_kv_tokens_param": 8000,
+      "phase_b_decision_states": 440490,
+      "phase_b_disagreement_rate": 0.0002633430951894,
+      "phase_b_disagreement_states": 116,
+      "phase_b_windows_with_disagreement": 6,
+      "pressure_order": 6,
+      "pressure_regime_class": "VALID_STRONGLY_CONSTRAINED",
+      "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+      "source_dataset": "burstgpt",
+      "stage_label": "high_valid_pressure",
+      "stage_labels": [
+        "high_valid_pressure"
+      ],
+      "token_budget_binding_proxy_states": 0
+    }
+  ],
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+  "scientific_question": "When real production-derived workloads enter regimes where SBS and the P6 portfolio take different canonical actions, how often is SBS locally causally suboptimal, how much one-step headroom exists, and how does that headroom vary with workload and resource pressure?",
+  "self_hash_record": "PREREGISTRATION_V1.json SHA-256 is recorded externally in ARTIFACT_HASHES_V1.json and the design report to avoid self-referential hashing.",
+  "status": "PHASE_D_V1_PREREGISTERED_NOT_EXECUTED",
+  "universe_summary": {
+    "distribution_by_axis": {
+      "active_sequence_capacity": 466,
+      "kv_capacity": 10862
+    },
+    "distribution_by_regime_stage": {
+      "high_valid_pressure": 360,
+      "onset": 33,
+      "onset+sustained": 12,
+      "onset+sustained+high_valid_pressure": 627,
+      "sustained": 76,
+      "sustained+high_valid_pressure": 10220
+    },
+    "distribution_by_workload": {
+      "azure_2023_code": 697,
+      "azure_2023_conv": 10169,
+      "burstgpt": 462
+    },
+    "phase_b_valid_disagreement_states_expected": 11328,
+    "reconciles_to_phase_b_valid_disagreement_states": true,
+    "selected_contributing_windows": 80,
+    "selected_distribution_by_axis": {
+      "active_sequence_capacity": 466,
+      "kv_capacity": 10862
+    },
+    "selected_distribution_by_regime_stage": {
+      "high_valid_pressure": 360,
+      "onset": 33,
+      "onset+sustained": 12,
+      "onset+sustained+high_valid_pressure": 627,
+      "sustained": 76,
+      "sustained+high_valid_pressure": 10220
+    },
+    "selected_distribution_by_workload": {
+      "azure_2023_code": 697,
+      "azure_2023_conv": 10169,
+      "burstgpt": 462
+    },
+    "selected_phase_d_sbs_reference_branches": 11328,
+    "selected_phase_d_states": 11328,
+    "selected_phase_d_total_terminal_continuations": 23497,
+    "selected_phase_d_unique_non_sbs_branches": 12169,
+    "total_eligible_states_all_valid_phase_b_support": 11328,
+    "unique_non_sbs_state_action_branches_all_valid_phase_b_support": 12169,
+    "unique_states_all_valid_phase_b_support": 11328
+  }
+}

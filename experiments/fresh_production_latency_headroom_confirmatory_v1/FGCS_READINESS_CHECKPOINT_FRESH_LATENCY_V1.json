@@ -1,0 +1,21 @@
+{
+  "anwg_reporting_limitation": "fresh causal ANWG not captured in execution output",
+  "causal_headroom_gate": "PASS",
+  "contribution_strength_confidence_percent": 82,
+  "dimension_scores": {
+    "experimental_rigor": 18,
+    "industry_realism": 17,
+    "practitioner_value": 8,
+    "reproducibility_community_value": 8,
+    "scientific_novelty": 18,
+    "technical_depth": 18
+  },
+  "literature_novelty_gate": "PASS",
+  "ready_for_real_system_validation": true,
+  "remaining_hard_gates": [
+    "bounded real-vLLM validation",
+    "manuscript rewrite"
+  ],
+  "schema_version": "fresh_latency_confirmatory_v1.fgcs_readiness.0.0",
+  "total_score": 87
+}

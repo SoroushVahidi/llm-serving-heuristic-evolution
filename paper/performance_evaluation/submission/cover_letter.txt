@@ -1,0 +1,22 @@
+Dear Editor,
+
+Please find enclosed our manuscript, "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay," for consideration as an Original research article in Performance Evaluation.
+
+This manuscript evaluates a foundational premise of LLM-serving schedulers: before proposing complex adaptive mechanisms, does a strong default scheduler possess a genuinely useful alternative action? Rather than introducing a new system, we contribute a trace-driven performance-evaluation methodology that isolates canonical action opportunity from deployed measurement noise. Through a sequence of rigorous workload replays—spanning Azure and BurstGPT traces—we demonstrate that resource pressure must first create executable alternatives, which must then yield causal latency headroom to justify adaptation. Our confirmatory causal study bounds this mean oracle headroom at 2.0 ms for our evaluated systems.
+
+We believe this aligns strongly with the scope of Performance Evaluation by providing a systematic, statistical evaluation of computer-system scheduling behavior using production-derived traces.
+
+Disclosure of Prior Submissions:
+An earlier manuscript titled "The Exploitability Gap in LLM-Serving Scheduler Portfolios" was submitted to LLM 2026, accepted, and subsequently withdrawn before publication. No proceedings/DOI publication resulted. The current manuscript is substantially revised and scientifically redirected toward performance-evaluation methodology.
+
+Funding and Support:
+This work received in-kind computational support through the Google Cloud Research Credits Program (USD 1,000 in cloud credits) and computational/tooling support from CloudRift Inc. Neither organization had any role in the study design or the decision to submit.
+
+Data and Code Availability:
+All code, experiment configurations, derived research artifacts, and reproducibility materials are publicly available and permanently archived.
+
+This manuscript is not currently under consideration for publication elsewhere.
+
+Sincerely,
+Soroush Vahidi
+New Jersey Institute of Technology

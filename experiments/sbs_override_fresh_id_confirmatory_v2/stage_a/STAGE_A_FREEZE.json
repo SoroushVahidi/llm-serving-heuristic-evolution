@@ -1,0 +1,34 @@
+{
+  "abstention_count": 2506,
+  "command": "scripts/sbs_override_fresh_id_stage_a_predict_v2.py execute",
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "created_utc": "2026-09-19T22:07:07Z",
+  "feature_list_sha256": "11fd0c6082301dd6c3faee23117abe027ae0841633c2df7c90ba3640b6a128ce",
+  "fresh_confirmation_executed": false,
+  "git": {
+    "branch": "contextual-compositional-heuristics-20260731",
+    "head": "22e54f6ae50e84280cd333f68b0e974c6410d055",
+    "status_short": "## contextual-compositional-heuristics-20260731...origin/contextual-compositional-heuristics-20260731\n M .gitignore\n M CITATION.cff\n M CONTRIBUTING.md\n M LICENSE\n M README.md\n M docs/PROJECT_MAP.md\n M docs/README.md\n M docs/current/PROJECT_MAP.md\n M scripts/phase17c_postprocess.sh\n?? REPRODUCIBILITY.md\n?? artifacts/\n?? datasets/\n?? docs/current/WULVER_ACCESS_20260825.md\n?? docs/current/family_a_config_state_surrogate_v1_analysis_20260823.md\n?? docs/current/family_a_dagger_d1_v1_analysis_20260823.md\n?? docs/current/family_a_joint_feature_scenario_pilot_v1_analysis_20260823.md\n?? docs/current/family_a_pi0_closed_loop_final_v1_analysis_20260823.md\n?? docs/current/family_a_scientific_evidence_audit_20260823.md\n?? docs/current/family_a_v2_learning_pipeline_v1_analysis_20260823.md\n?? docs/current/family_a_wulver_medium_sweep_v1_analysis_20260823.md\n?? docs/current/family_a_wulver_medium_sweep_v1_analysis_20260824.md\n?? docs/current/family_a_wulver_smoke_repro_diagnosis_v1.md\n?? docs/design/DECISION_CRITICALITY_TERMINAL_UTILITY_JOINT240_V1.md\n?? docs/design/JOINT240_ALIVE_UNDERPERFORMANCE_DECOMPOSITION_V1.md\n?? docs/design/JOINT240_GUARDED_ABSTAINING_SELECTOR_V1.md\n?? docs/design/SBS_OVERRIDE_FRESH_ID_CONFIRMATORY_V2.md\n?? experiments/decision_criticality_terminal_utility_joint240_v1/\n?? experiments/decision_criticality_timescale_trainval_v1/\n?? experiments/family_a_analytic_index_feasibility/\n?? experiments/family_a_config_state_surrogate_v1/\n?? experiments/family_a_contested_request_value_diagnosis/\n?? experiments/family_a_dagger_d1_v1/\n?? experiments/family_a_feature_gap_design_v1/\n?? experiments/family_a_horizon_stability_v1/\n?? experiments/family_a_horizon_stability_v1_rerun/\n?? experiments/family_a_joint_feature_scenario_pilot_v1/\n?? experiments/family_a_observability_continuation_v1/\n?? experiments/family_a_observability_continuation_v1_invalid_pre_snapshot_fix_20260820/\n?? experiments/family_a_oracle_v2_validation/\n?? experiments/family_a_oracle_v2_validation_rerun/\n?? experiments/family_a_pi0_closed_loop_final_v1/\n?? experiments/family_a_receding_horizon_oracle_v1/\n?? experiments/family_a_receding_horizon_terminal_value_v1/\n?? experiments/family_a_scientific_evidence_audit_v1/\n?? experiments/family_a_stateful_controller_v1/\n?? experiments/family_a_v2_learning_pipeline_v1/\n?? experiments/family_a_wulver_medium_sweep_v1/\n?? experiments/family_a_wulver_smoke_repro_diagnosis_v1/\n?? experiments/infrastructure/\n?? experiments/joint240_alive_underperformance_decomposition_v1/\n?? experiments/joint240_guarded_abstaining_selector_v1/\n?? experiments/sbs_override_conservative_selector_dev_v1/run_v1/\n?? experiments/sbs_override_conservative_selector_dev_v2/run_v2/PREREGISTERED_SEARCH_DESIGN_V2_CANONICAL_DAF093A.json\n?? experiments/sbs_override_fresh_confirmatory_corpus_v1/support_scan/\n?? experiments/sbs_override_fresh_id_confirmatory_v2/\n?? experiments/sbs_override_fresh_ood_support_expansion_v1/support_scan/\n?? experiments/sbs_override_fresh_ood_support_expansion_v1/zero_support_diagnosis/\n?? experiments/sbs_override_fresh_ood_support_expansion_v1/zero_support_diagnosis_disagreement_state_manifest.csv\n?? experiments/sbs_override_fresh_ood_support_expansion_v1/zero_support_diagnosis_state_policy_action_map.csv\n?? paper/llm2026/archive/\n?? paper/llm2026/figures/joint_complementarity.png\n?? paper/llm2026/figures/joint_complementarity_layout_A.png\n?? paper/llm2026/figures/joint_complementarity_layout_B.png\n?? paper/llm2026/figures/joint_complementarity_layout_B_h2.35.png\n?? paper/llm2026/figures/joint_complementarity_layout_B_h2.55.png\n?? paper/llm2026/figures/joint_complementarity_layout_B_h2.75.png\n?? paper/llm2026/figures/joint_complementarity_layout_C.png\n?? paper/llm2026/figures/vllm_semantic_validation.png\n?? paper/llm2026/main.blg\n?? paper/llm2026/template/official/\n?? paper/llm2026/template/source/\n?? scripts/family_a_config_state_surrogate_v1.py\n?? scripts/family_a_dagger_d1_v1.py\n?? scripts/family_a_joint_feature_scenario_pilot_v1.py\n?? scripts/family_a_oracle_v2_full_relabel.py\n?? scripts/family_a_oracle_v2_validation.py\n?? scripts/family_a_pi0_closed_loop_final_v1.py\n?? scripts/family_a_v2_postrelabel_pipeline.py\n?? scripts/run_family_a_v2_postrelabel_overnight.sh\n?? scripts/sbs_override_fresh_id_confirmatory_evaluate_v2.py\n?? scripts/sbs_override_fresh_id_stage_a_predict_v2.py\n?? src/llmserveopt/analysis/joint240_dense_sbs_state_action_v1.py\n?? tests/test_family_a_dagger_d1_recapture.py\n?? tests/test_family_a_joint_feature_scenario_pilot_v1.py\n?? tests/test_family_a_oracle_v2_validation.py\n?? tests/test_family_a_pi0_closed_loop_final_v1.py\n?? tests/test_family_a_v2_postrelabel_feature_contract.py\n?? tests/test_sbs_override_confirmatory_v2_hardening.py"
+  },
+  "override_count": 356,
+  "package_versions": {
+    "joblib": "1.5.3",
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "scikit_learn": "1.8.0"
+  },
+  "prediction_path": "/home/soroush/llm-serving-heuristic-evolution/experiments/sbs_override_fresh_id_confirmatory_v2/stage_a/FROZEN_PREDICTIONS_V2.csv",
+  "prediction_sha256": "fb3526428f4c92b215b553585545b097adaa067a15ee2fb12b038d01d1b71537",
+  "row_count": 2862,
+  "schema_version": "sbs_override_fresh_id_stage_a_predict_v2.0.0",
+  "selector_joblib_sha256": "f882a54b808d9ab8f2c4ec139e19e3096ea5e3152cadf4c0badaa55c9644cfcd",
+  "selector_json_sha256": "1fdd2c0a19234bafd679a2678664119328fa37ae7d51c0178359640c2955de35",
+  "stage_a_source": "scripts/sbs_override_fresh_id_stage_a_predict_v2.py",
+  "stage_a_source_sha256": "842223001c4e3d7f48662ce0285caf188babbe3bb6732d4fac60d04977f8bc20",
+  "structural_universe_freeze": "/home/soroush/llm-serving-heuristic-evolution/experiments/sbs_override_fresh_id_confirmatory_v2/stage_a/STRUCTURAL_UNIVERSE_FREEZE_V2.json",
+  "structural_universe_sha256": "e79eeac33f70820f60a772c2ba183803342baf17cba00425cd7cce2bf52bad2f",
+  "supported_scenarios": 78,
+  "unique_state_count": 2862
+}

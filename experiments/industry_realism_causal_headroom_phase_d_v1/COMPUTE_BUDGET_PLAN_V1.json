@@ -1,0 +1,17 @@
+{
+  "cpu_time_estimate": {
+    "basis": "scaled from prior fresh targeted-label campaign size of 9,858 continuations; exact runtime depends on constrained-regime drain lengths",
+    "planning_walltime_guidance": "start with 64-128 array tasks; inspect smoke runtime before full submission",
+    "relative_to_fresh_confirmatory_campaign": 2.384
+  },
+  "exhaustive_labeling_recommended": true,
+  "gpu_required": false,
+  "recommended_wulver_array_tasks": 94,
+  "sbs_reference_branches": 11328,
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+  "selected_states": 11328,
+  "status": "PLANNING_ESTIMATE_NOT_EXECUTED",
+  "storage_estimate_mb": 93.99,
+  "total_terminal_continuations": 23497,
+  "unique_alternative_branches": 12169
+}

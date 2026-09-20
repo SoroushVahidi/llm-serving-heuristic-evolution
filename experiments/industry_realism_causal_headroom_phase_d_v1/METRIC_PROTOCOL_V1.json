@@ -1,0 +1,58 @@
+{
+  "actionable_headroom_index": "(P(D), P(B|D), mean_oracle_headroom), optionally accompanied by binding rate and downside prevalence",
+  "causal_population": "canonical disagreement states from selected valid Phase-D regimes, used for P(B|D) and headroom metrics",
+  "estimand": {
+    "advantage": "A_SBS(s,a) = Q_SBS(s,a) - Q_SBS(s,SBS)",
+    "forbidden": [
+      "policy-forever switching",
+      "learned continuation",
+      "alternative-policy continuation",
+      "closed-loop adaptive selector continuation"
+    ],
+    "q_sbs": "terminal utility after forcing exactly one canonical action at live state s and then reverting immediately to fixed kv_constrained_online",
+    "reference": "Q_SBS(s,SBS)"
+  },
+  "industry_linkage": [
+    "P(D) from Phase B",
+    "P(B|D) from Phase D",
+    "mean_oracle_headroom",
+    "achieved KV pressure",
+    "achieved active pressure",
+    "binding frequency",
+    "P(D) x P(B|D)",
+    "P(D) x mean_oracle_headroom"
+  ],
+  "prevalence_population": "all SBS decision states from Phase A/B, used for P(D)",
+  "primary_state_metrics": [
+    "P(B|D), where B(s)=1 iff at least one non-SBS canonical action has A_SBS(s,a)>0",
+    "oracle_headroom(s)=max(0,max_a A_SBS(s,a))",
+    "mean_oracle_headroom over all disagreement states, including zeros",
+    "mean and median positive oracle gain among B(s)=1 states",
+    "states where every alternative is harmful",
+    "states where all alternatives are zero",
+    "states containing both beneficial and harmful alternatives"
+  ],
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.0.0",
+  "secondary_action_metrics": [
+    "positive/negative/zero advantage fractions",
+    "mean and median advantage",
+    "quantiles",
+    "worst harm",
+    "best gain"
+  ],
+  "statistical_protocol": {
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci": "percentile 95%",
+    "cluster_unit": "faithful window",
+    "minimum_clusters_for_ci": 5,
+    "resampling_rule": "sample faithful windows with replacement and retain all state/action rows belonging to sampled windows with multiplicity",
+    "sparse_rule": "if contributing independent windows < minimum_clusters_for_ci, report descriptive estimates without inferential CI"
+  },
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "zero_policy": {
+    "advantage_zero": "exact floating zero is zero, matching prior SBS-relative labeling unless a pre-execution numerical repeatability test requires a tolerance",
+    "epsilon": null,
+    "tolerance_change_rule": "any epsilon must be frozen from numerical repeatability tests before Phase-D execution and not from observed advantage distributions"
+  }
+}

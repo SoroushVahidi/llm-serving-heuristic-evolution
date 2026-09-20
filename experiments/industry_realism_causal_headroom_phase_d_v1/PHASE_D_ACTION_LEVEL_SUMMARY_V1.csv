@@ -1,0 +1,12 @@
+axis,best_action_gain,branches,condition_id,mean_advantage,median_advantage,negative_advantage_fraction,positive_advantage_fraction,q05_advantage,q25_advantage,q50_advantage,q75_advantage,q95_advantage,schema_version,source_dataset,worst_action_harm,zero_advantage_fraction
+active_sequence_capacity,0.0,113,active_4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,azure_2023_code,0.0,1.0
+active_sequence_capacity,0.0,1,active_8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,azure_2023_code,0.0,1.0
+kv_capacity,0.0,741,kv_16000,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,azure_2023_code,0.0,1.0
+active_sequence_capacity,0.0,31,active_4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,azure_2023_conv,0.0,1.0
+kv_capacity,0.0,18,kv_16000,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,azure_2023_conv,0.0,1.0
+kv_capacity,0.0,10506,kv_8000,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,azure_2023_conv,0.0,1.0
+active_sequence_capacity,0.0,27,active_16,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,burstgpt,0.0,1.0
+active_sequence_capacity,0.0,398,active_4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,burstgpt,0.0,1.0
+active_sequence_capacity,0.0,127,active_8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,burstgpt,0.0,1.0
+kv_capacity,0.0,15,kv_16000,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,burstgpt,0.0,1.0
+kv_capacity,0.0,192,kv_8000,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,industry_realism_causal_headroom_phase_d_v1.results.0.0,burstgpt,0.0,1.0

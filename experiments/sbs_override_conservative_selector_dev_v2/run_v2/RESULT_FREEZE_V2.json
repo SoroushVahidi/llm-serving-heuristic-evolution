@@ -1,0 +1,23 @@
+{
+  "analysis_git_branch": "contextual-compositional-heuristics-20260731",
+  "analysis_git_sha_at_run": "daf093acc552932f7ac7a7e74263956ed4af5c74",
+  "artifact_sha256": {
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/FINAL_CONFIRMATORY_SELECTOR_V2.joblib": "f882a54b808d9ab8f2c4ec139e19e3096ea5e3152cadf4c0badaa55c9644cfcd",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/FINAL_CONFIRMATORY_SELECTOR_V2.json": "1fdd2c0a19234bafd679a2678664119328fa37ae7d51c0178359640c2955de35",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/FINAL_CONFIRMATORY_SELECTOR_V2_DESIGN.md": "11abc3efadcd905eeb31c3972e5da0667904bbf2376582ca639ed3e80d1a2bc8",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/PREREGISTERED_SEARCH_DESIGN_V2.json": "9d9c86c38f9252ba979a97111f9a78396ba15622ff55e90359ca236fc124a356",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/RUN_SUMMARY_V2.json": "df7a5e3b6a3fedb59d3cef55f9b6c3a428026ecc1ecb32e7edf675ca28d3766b",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/SOURCE_FREEZE_V2.json": "1c1cf66d44c023f7d1090ee15b3beb00f2a0197fc2ecc44453a91efa86fa298f",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/confirmatory_protocol_and_verdict_freeze_v2.json": "3b900e75008800280ba7c195e7b01eed85c5d69348c30e45fde62455bfcd33dc",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/development_full_cv_candidate_results_v2.csv": "255259f1e9d3103a3d625f117fa5ca5e1ddfaf630a3100cb0761762a082f1b35",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/final_development_oof_result_v2.json": "166798b9d578106f8b8ee6fb6b769dc946640fd7d3b3b6cd405638327a8e0ee5",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/logs/run.log": "194ff5bca66278888f0f00be5c7ca523d15098ece958b14952533811089f6106",
+    "experiments/sbs_override_conservative_selector_dev_v2/run_v2/reload_prediction_test_v2.json": "cd56dcbd132430689d03114770fc7c3e8ba5ccd3aa885198d64658ac1274bfb8"
+  },
+  "confirmatory_label_access": "NOT_ACCESSED",
+  "fresh_confirmation_executed": false,
+  "fresh_confirmatory_outcomes_used": false,
+  "pre_run_preregistration_commit": "daf093acc552932f7ac7a7e74263956ed4af5c74",
+  "schema_version": "sbs_override_conservative_selector_dev_v2.result_freeze.v1",
+  "status": "V2_DEVELOPMENT_SELECTOR_FROZEN_CONFIRMATORY_NOT_RUN"
+}

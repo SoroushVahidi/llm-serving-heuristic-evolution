@@ -1,0 +1,74 @@
+{
+  "schema_version": "fresh_production_latency_headroom_confirmatory_v1.support_protocol.0.0",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "purpose": "Map SBS-vs-P6 canonical action opportunity on fresh, non-overlapping production-derived windows before causal latency labeling.",
+  "input_windows": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_WINDOW_UNIVERSE_V1.json",
+  "inherited_from": {
+    "phase_b_v2_preregistration": "experiments/industry_realism_action_opportunity_v1/PHASE_B_V2_PREREGISTRATION.json",
+    "one_axis_isolation": true,
+    "validity_semantics": "same as Phase-B V2",
+    "canonical_disagreement_semantics": "same as Phase-B V2",
+    "denominator": "total SBS decision states in the corresponding workload/window/condition"
+  },
+  "native_controls": {
+    "arrival_multiplier": 1.0,
+    "max_kv_tokens": 8000000,
+    "max_active_sequences": 512,
+    "scheduler_reference": "SBS / kv_constrained_online",
+    "alternative_portfolio": "frozen P6"
+  },
+  "pressure_grid": {
+    "arrival_pressure": [
+      {"condition_id": "arrival_x0p5", "arrival_multiplier": 0.5, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 0},
+      {"condition_id": "arrival_x1p0", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 1},
+      {"condition_id": "arrival_x2p0", "arrival_multiplier": 2.0, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 2},
+      {"condition_id": "arrival_x4p0", "arrival_multiplier": 4.0, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 3},
+      {"condition_id": "arrival_x8p0", "arrival_multiplier": 8.0, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 4}
+    ],
+    "kv_capacity": [
+      {"condition_id": "kv_8000000", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 0},
+      {"condition_id": "kv_240000", "arrival_multiplier": 1.0, "max_kv_tokens": 240000, "max_active_sequences": 512, "pressure_order": 1},
+      {"condition_id": "kv_120000", "arrival_multiplier": 1.0, "max_kv_tokens": 120000, "max_active_sequences": 512, "pressure_order": 2},
+      {"condition_id": "kv_60000", "arrival_multiplier": 1.0, "max_kv_tokens": 60000, "max_active_sequences": 512, "pressure_order": 3},
+      {"condition_id": "kv_32000", "arrival_multiplier": 1.0, "max_kv_tokens": 32000, "max_active_sequences": 512, "pressure_order": 4},
+      {"condition_id": "kv_16000", "arrival_multiplier": 1.0, "max_kv_tokens": 16000, "max_active_sequences": 512, "pressure_order": 5},
+      {"condition_id": "kv_8000", "arrival_multiplier": 1.0, "max_kv_tokens": 8000, "max_active_sequences": 512, "pressure_order": 6}
+    ],
+    "active_sequence_capacity": [
+      {"condition_id": "active_512", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 512, "pressure_order": 0},
+      {"condition_id": "active_64", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 64, "pressure_order": 1},
+      {"condition_id": "active_32", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 32, "pressure_order": 2},
+      {"condition_id": "active_16", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 16, "pressure_order": 3},
+      {"condition_id": "active_8", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 8, "pressure_order": 4},
+      {"condition_id": "active_4", "arrival_multiplier": 1.0, "max_kv_tokens": 8000000, "max_active_sequences": 4, "pressure_order": 5}
+    ]
+  },
+  "validity_classes": [
+    "VALID_UNCONSTRAINED",
+    "VALID_PARTIALLY_CONSTRAINED",
+    "VALID_STRONGLY_CONSTRAINED",
+    "INVALID_RESOURCE_INFEASIBLE",
+    "INVALID_HORIZON_TRUNCATED",
+    "INVALID_OTHER"
+  ],
+  "expected_conditions": {
+    "workloads": 3,
+    "fresh_windows_per_workload": 20,
+    "pressure_conditions_per_window": 18,
+    "total_window_conditions": 1080
+  },
+  "support_outputs_to_create_later": [
+    "fresh support per-condition table",
+    "canonical disagreement state manifest for selected regimes",
+    "regime transition table",
+    "validity and completion audit"
+  ],
+  "forbidden": [
+    "latency effect inspection before this protocol is committed",
+    "regime selection based on latency outcome",
+    "new pressure levels",
+    "joint pressure combinations",
+    "new scheduler or P6 extension",
+    "selector training"
+  ]
+}
