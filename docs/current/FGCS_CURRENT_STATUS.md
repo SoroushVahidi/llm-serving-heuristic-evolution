@@ -24,11 +24,18 @@ The directory name is retained for history and reproducibility.
 - [Manuscript build manifest](../../experiments/FGCS_MANUSCRIPT_BUILD_V1.json)
 - [Readiness checkpoint](../../experiments/FGCS_READINESS_CHECKPOINT_MANUSCRIPT_REWRITE_V1.json)
 
+## Current repository state
+
+Repository finalization is complete. The local primary-worktree reconciliation
+archive is maintained outside Git under the local provenance convention
+described by `LOCAL_PROVENANCE_ARCHIVE_MANIFEST_V1.md` in the finalization
+archive root. It is not part of the public repository deliverable.
+
 ## Current next stage
 
-The next stage is repository finalization followed by the final FGCS
-compliance/submission audit. No additional major scientific experiment is
-currently required or authorized by the project status.
+The next stage is the final FGCS journal-format and submission-compliance
+audit. No additional major scientific experiment is currently required or
+authorized by the project status.
 
 Older readiness scores in historical experiment, design, and audit reports are
 intentionally preserved. They must not be interpreted as the current project

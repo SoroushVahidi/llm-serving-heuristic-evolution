@@ -15,3 +15,11 @@ repository cleanup.
 | `worktrees/fresh-latency-execution-v1/` raw staging | local worktree-sized | Fresh causal execution provenance | Canonical compact result exists | KEEP_LOCAL_PROVENANCE |
 
 No listed artifact is copied into Git or deleted by Query 2.
+
+## Query-3 archival convention
+
+The Query-3 local archive is outside the repository at a machine-local path
+named `llm-serving-heuristic-evolution-local-provenance/fgcs-finalization-20260920/`.
+Its `LOCAL_PROVENANCE_ARCHIVE_MANIFEST_V1.json`, file inventory, and SHA-256
+lists are the authoritative records for the archived copies. Exact local paths
+are intentionally kept outside Git.
