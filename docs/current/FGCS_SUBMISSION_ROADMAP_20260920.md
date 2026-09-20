@@ -1,5 +1,15 @@
 # FGCS Submission Roadmap and Handoff
 
+> **SUPERSEDED — 2026-09-20**
+>
+> The active journal target changed from Future Generation Computer Systems
+> (FGCS) to Performance Evaluation (Elsevier, ISSN 0166-5316).
+>
+> This roadmap is retained for provenance only.
+>
+> Current roadmap:
+> `docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`
+
 STATUS: ACTIVE / AUTHOR-REVIEW STAGE
 
 **CANONICAL CURRENT-STATE DOCUMENT:**

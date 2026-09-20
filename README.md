@@ -12,21 +12,24 @@ real-vLLM mechanism validation. The primary metric throughout is
 `arrival_normalized_weighted_goodput` (ANWG): weighted SLO goodput normalized
 by all arriving requests.
 
-## Current FGCS Journal Manuscript
+## Current Journal Manuscript
 
 The active manuscript is **"When Does LLM-Serving Scheduler Adaptation Matter?
 Action Opportunity and Causal Headroom in Production-Derived Replay"**, targeted
-at **Future Generation Computer Systems (FGCS)** and currently in the
-pre-submission / author-review stage.
+at **Performance Evaluation** (Elsevier, ISSN 0166-5316) as an **Original
+research article**, and currently in the pre-submission / author-review stage.
 
 - Canonical submission roadmap (source of truth):
-  [`docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`](docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md)
+  [`docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
 - Current author-review PDF:
   [`paper/llm_scheduler_adaptation_causal_headroom.pdf`](paper/llm_scheduler_adaptation_causal_headroom.pdf)
   (review copy — not yet the final submission artifact)
 - The historical LLM 2026 manuscript in [`paper/llm2026/`](paper/llm2026/) is
   retained for provenance. That conference submission was withdrawn before
   publication and is **not** the active submission.
+- The earlier FGCS submission roadmap
+  ([`docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`](docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md))
+  is superseded and retained for provenance only.
 
 ## Research Problem
 

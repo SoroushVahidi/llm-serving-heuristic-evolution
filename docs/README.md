@@ -6,7 +6,8 @@ limited to the files listed below.
 ## Start Here
 
 - [`../README.md`](../README.md) - public overview.
-- [`current/FGCS_SUBMISSION_ROADMAP_20260920.md`](current/FGCS_SUBMISSION_ROADMAP_20260920.md) - canonical FGCS journal-submission roadmap and handoff (current submission authority).
+- [`current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md) - canonical Performance Evaluation journal-submission roadmap and handoff (current submission authority).
+- [`current/FGCS_SUBMISSION_ROADMAP_20260920.md`](current/FGCS_SUBMISSION_ROADMAP_20260920.md) - historical / superseded FGCS venue roadmap (provenance only).
 - [`PROJECT_MAP.md`](PROJECT_MAP.md) - canonical research roadmap.
 - [`current/RESUME_HERE.md`](current/RESUME_HERE.md) - shortest operational handoff.
 - [`current/WORK_STATUS.md`](current/WORK_STATUS.md) - detailed current status.
