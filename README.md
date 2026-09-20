@@ -22,7 +22,7 @@ research article**, and currently in the pre-submission / author-review stage.
 - Canonical submission roadmap (source of truth):
   [`docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
 - Current author-review PDF:
-  [`paper/llm_scheduler_adaptation_causal_headroom.pdf`](paper/llm_scheduler_adaptation_causal_headroom.pdf)
+  [`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`](paper/when_does_llm_serving_scheduler_adaptation_matter.pdf)
   (review copy — not yet the final submission artifact)
 - The historical LLM 2026 manuscript in [`paper/history/llm2026/`](paper/history/llm2026/) is
   retained for provenance. That conference submission was withdrawn before

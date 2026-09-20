@@ -121,6 +121,8 @@ htmlcov/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+paper/performance_evaluation/main.pdf
+paper/performance_evaluation/submission/main.pdf
 
 # OS / editor
 .DS_Store

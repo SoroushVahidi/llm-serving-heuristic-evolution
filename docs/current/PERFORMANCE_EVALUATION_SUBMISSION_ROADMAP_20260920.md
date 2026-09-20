@@ -9,7 +9,7 @@ The following Query 2 completions are officially executed and verified:
 - **Reproducibility Document:** Converted the general reproducibility outline into a dedicated, thorough guide `docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`.
 - **Google Cloud Research Credits:** Verified that Vertex AI Gemini API calls in this research successfully utilized project `hypnotic-surge-492117-c4` linked to the sv96@njit.edu account, which received a $1,000 credit award. Updated the `Funding and Support` section of the manuscript to accurately disclose this support.
 - **Reproducibility Archive:** Structured and packaged a clean reproducibility archive under `release/performance_evaluation_v1/`, complete with LICENSE, CITATION.cff, pyproject.toml, figure-plotting script, frozen result tables, a metadata-compliant `.zenodo.json` file, and an automated manifest JSON summarizing paths and SHA256 hashes of all 41 files in the package.
-- **Manuscript Rebuild & Visual Check:** Created a command script `scripts/build_performance_evaluation_manuscript.sh` that reproducibly regenerates the figures, builds the PDF via pdflatex/bibtex, and copies the output to the canonical review copy `paper/llm_scheduler_adaptation_causal_headroom.pdf` (verified as 20 pages).
+- **Manuscript Rebuild & Visual Check:** Created a command script `scripts/build_performance_evaluation_manuscript.sh` that reproducibly regenerates the figures, builds the PDF via pdflatex/bibtex, and copies the output to the canonical review copy `paper/when_does_llm_serving_scheduler_adaptation_matter.pdf` (verified as 20 pages).
 - **Secret & Privacy Audits:** Performed safe audits of tracked content. No plain text tracked secrets, billing account IDs, or private data exist in the repository.
 
 
@@ -52,7 +52,7 @@ docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md
 | Canonical scientific branch | `contextual-compositional-heuristics-20260731` @ `a8fd735addc9d2f7c602e73a48c8757e1f9791ba` (in sync with origin) |
 | Active PE manuscript revision branch | `revise/performance-evaluation-submission-20260920` @ `a4823a4938ebb7ec6f00817c37d6b597900bac06` (pushed to origin) |
 | Historical FGCS revision branch | `revise/fgcs-prior-reviewer-risk-closure-20260920` @ `a4823a4938ebb7ec6f00817c37d6b597900bac06` (HISTORICAL_PREDECESSOR_BRANCH; kept intact for provenance) |
-| Author-review PDF on `main` | YES — `paper/llm_scheduler_adaptation_causal_headroom.pdf`, SHA-256 `e67763f7320c2d56d0c1641d7bce8d3292fea7c0ab342cdabecc69407c4ffb86`, 15 pages, built from revision commit `a4823a4` |
+| Author-review PDF on `main` | YES — `paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`, SHA-256 `1d24dc830eee1aeb8cea1cd69afeeaeb2619b2fc2224ca96396212cf15bc774c`, 20 pages, built from PE-submission branch merge |
 
 Branch roles:
 
@@ -422,12 +422,11 @@ withdrawn predecessor in the cover letter for transparency.
 
 ## Author-Review PDF
 
-AUTHOR_REVIEW_PDF = paper/llm_scheduler_adaptation_causal_headroom.pdf
+AUTHOR_REVIEW_PDF = paper/when_does_llm_serving_scheduler_adaptation_matter.pdf
 
 STATUS = SUBMISSION_READY_EXCEPT_PORTAL_ACTIONS
 
-It is NOT the final Performance Evaluation submission PDF. Do not regenerate or
-rename it during the retargeting step.
+It is the final descriptive Performance Evaluation manuscript PDF. Do not create any other renamed copies.
 
 ---
 

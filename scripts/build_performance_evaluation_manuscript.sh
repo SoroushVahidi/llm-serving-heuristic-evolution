@@ -18,6 +18,6 @@ pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
 
 echo "=== 3. Updating Canonical Review PDF ==="
-cp main.pdf "$ROOT_DIR/paper/llm_scheduler_adaptation_causal_headroom.pdf"
+cp main.pdf "$ROOT_DIR/paper/when_does_llm_serving_scheduler_adaptation_matter.pdf"
 
 echo "=== Rebuild Complete Successfully! ==="

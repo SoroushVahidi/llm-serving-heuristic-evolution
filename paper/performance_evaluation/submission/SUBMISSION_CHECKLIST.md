@@ -1,7 +1,7 @@
 # Performance Evaluation Submission Checklist
 
 - [x] Manuscript source: `main.tex`, `references.bib`, etc. (READY)
-- [x] PDF: `main.pdf` (READY)
+- [x] PDF: `paper/when_does_llm_serving_scheduler_adaptation_matter.pdf` (READY - tracked at root paper/ directory)
 - [x] References: `main.bbl` included (READY)
 - [x] Separate figures: `figures/` folder included (READY)
 - [x] Highlights: `performance_evaluation_highlights.txt` (READY)

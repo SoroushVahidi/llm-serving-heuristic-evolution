@@ -10,7 +10,7 @@ The single authoritative source of truth for the current submission is:
 ## Active Manuscript
 
 - **Manuscript Source:** [paper/performance_evaluation/](../../paper/performance_evaluation/)
-- **Author-Review PDF:** [paper/llm_scheduler_adaptation_causal_headroom.pdf](../../paper/llm_scheduler_adaptation_causal_headroom.pdf)
+- **Author-Review PDF:** [paper/when_does_llm_serving_scheduler_adaptation_matter.pdf](../../paper/when_does_llm_serving_scheduler_adaptation_matter.pdf)
 - **Highlights:** [paper/performance_evaluation_highlights.txt](../../paper/performance_evaluation_highlights.txt)
 
 ## Canonical Scientific Evidence & Reports
