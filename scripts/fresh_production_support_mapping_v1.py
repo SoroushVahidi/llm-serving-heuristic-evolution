@@ -280,6 +280,10 @@ def select_regimes(aggregate_rows: Sequence[Mapping[str, Any]]) -> list[dict[str
         roles: dict[str, list[str]] = {}
         onset = valid_rows[valid_rows["canonical_disagreement_states"] > 0]
         sustained = valid_rows[valid_rows["windows_with_disagreement"] >= SUSTAINED_MIN_WINDOWS]
+        # Arrival and resource axes with no valid support remain structural
+        # controls; strongest-valid is selected only after support exists.
+        if not len(onset):
+            continue
         strongest = valid_rows.tail(1)
         for role, subset in (("onset", onset), ("sustained", sustained), ("strongest-valid", strongest)):
             if len(subset):
@@ -395,13 +399,95 @@ def _run_observation(job: Mapping[str, Any]) -> dict[str, Any]:
     return {"record": rec, "condition": condition, "selected_row": job["selected_row"], "state_rows": obs.state_rows, "policy_rows": obs.policy_rows}
 
 
+def rebuild_selection_from_support(n_jobs: int) -> None:
+    """Repair/finalize selection from an already complete support table.
+
+    This path never reruns the 1,080 support conditions.  It exists so a
+    support-only implementation correction cannot silently reinterpret a
+    completed matrix or require latency data.
+    """
+    preflight = verify_preflight()
+    records = fresh_records()
+    support_path = OUT_DIR / "FRESH_SUPPORT_WINDOW_CONDITIONS_V1.csv"
+    if not support_path.exists():
+        raise FileNotFoundError(support_path)
+    rows = list(csv.DictReader(support_path.open(newline="")))
+    if len(rows) != EXPECTED:
+        raise AssertionError(f"existing support table is incomplete: {len(rows)} != {EXPECTED}")
+    numeric = {
+        "pressure_order", "axis_value", "arrival_multiplier", "max_active_sequences_param",
+        "max_kv_tokens_param", "sbs_decision_states", "disagreement_states",
+        "windows_with_disagreement", "max_active_sequences", "mean_active_sequences",
+        "max_queue_length", "mean_queue_length", "max_kv_utilization", "mean_kv_utilization",
+        "max_active_pressure", "mean_active_pressure", "max_kv_pressure", "mean_kv_pressure",
+        "active_sequence_capacity_binding_states", "kv_capacity_binding_or_over_requested_states",
+        "kv_capacity_near_binding_states", "token_budget_binding_proxy_states",
+        "no_policy_choice_states", "canonical_action_collapse_states",
+        "policy_ranking_proxy_difference_states", "distinct_alternative_action_hashes",
+        "completion_fraction", "unfinished_request_count", "requests",
+    }
+    for row in rows:
+        for key in numeric:
+            if key in row:
+                row[key] = float(row[key]) if any(token in key for token in ("mean_", "max_", "pressure", "fraction", "axis_value", "multiplier")) else int(float(row[key]))
+    aggregate_rows = aggregate(rows)
+    selected = select_regimes(aggregate_rows)
+    states, branches = selected_state_manifest(records, selected, max(1, n_jobs))
+    result_path = OUT_DIR / "FRESH_SUPPORT_RESULT_V1.json"
+    result = json.loads(result_path.read_text())
+    result["status"] = "SUPPORT_COMPLETE_CAUSAL_UNIVERSE_FROZEN_NO_LATENCY_OUTCOMES"
+    result["selected_regimes"] = selected
+    result["causal_universe"] = {
+        "disagreement_states": len(states),
+        "unique_non_sbs_branches": len(branches),
+        "sbs_reference_branches": len(states),
+        "total_planned_continuations": len(states) + len(branches),
+        "labeling_scope": "EXHAUSTIVE" if len(states) + len(branches) <= 50000 else "SAMPLED",
+    }
+    result["preflight"] = preflight
+    result["selection_rebuilt_from_immutable_support_table"] = True
+    result["latency_outcomes_used_for_regime_selection"] = False
+    (OUT_DIR / "FRESH_SUPPORT_RESULT_V1.json").write_text(stable_json(result))
+    write_csv(OUT_DIR / "FRESH_SUPPORT_WORKLOAD_AXIS_SUMMARY_V1.csv", aggregate_rows)
+    write_csv(OUT_DIR / "FRESH_REGIME_SELECTION_V1.csv", selected)
+    (OUT_DIR / "FRESH_REGIME_SELECTION_V1.json").write_text(stable_json({
+        "status": "FROZEN_FROM_SUPPORT_ONLY",
+        "selected_regimes": selected,
+        "sustained_rule": "windows_with_disagreement >= 2",
+        "latency_outcomes_used_for_regime_selection": False,
+    }))
+    write_csv(OUT_DIR / "FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv", states)
+    write_csv(OUT_DIR / "FRESH_ELIGIBLE_DISAGREEMENT_BRANCHES_V1.csv", branches)
+    (OUT_DIR / "FRESH_ELIGIBLE_DISAGREEMENT_UNIVERSE_V1.json").write_text(stable_json({
+        "status": "OUTCOME_FREEZE_BEFORE_CAUSAL_LABELING",
+        "disagreement_states": states,
+        "unique_non_sbs_branches": branches,
+        "latency_outcomes_used_for_regime_selection": False,
+    }))
+    (OUT_DIR / "FRESH_CAUSAL_LABELING_PLAN_V1.json").write_text(stable_json({
+        "status": "FROZEN_NOT_EXECUTED",
+        "population": "all canonical disagreement states in selected fresh regimes",
+        "disagreement_states": len(states),
+        "unique_non_sbs_branches": len(branches),
+        "sbs_reference_branches": len(states),
+        "total_planned_continuations": len(states) + len(branches),
+        "labeling_scope": "EXHAUSTIVE" if len(states) + len(branches) <= 50000 else "SAMPLED",
+        "sampling_outcome_blind": True,
+        "latency_outcomes_used_for_regime_selection": False,
+    }))
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--rebuild-selection", action="store_true")
     parser.add_argument("--n-jobs", type=int, default=1)
     args = parser.parse_args(argv)
+    if args.rebuild_selection:
+        rebuild_selection_from_support(max(1, args.n_jobs))
+        return 0
     if not args.execute:
-        parser.error("support execution requires --execute")
+        parser.error("support execution requires --execute or --rebuild-selection")
     preflight = verify_preflight()
     records = fresh_records()
     rows = execute_support(records, max(1, args.n_jobs))
