@@ -3,7 +3,8 @@
 This is the canonical current-status entry point for the repository.
 
 - Canonical branch: `contextual-compositional-heuristics-20260731`
-- Canonical commit at this cleanup: `e71e538301350b089be591e0cb1b91ed3476e750`
+- Canonical commit at this cleanup: see
+  [`FGCS_REPOSITORY_FINALIZATION_REPORT.md`](FGCS_REPOSITORY_FINALIZATION_REPORT.md)
 - Canonical manuscript: [`paper/llm2026/main.tex`](../../paper/llm2026/main.tex)
 - Compiled PDF: [`paper/llm2026/main.pdf`](../../paper/llm2026/main.pdf)
 - Readiness: **92/100**
@@ -26,10 +27,14 @@ The directory name is retained for history and reproducibility.
 
 ## Current repository state
 
-Repository finalization is complete. The local primary-worktree reconciliation
-archive is maintained outside Git under the local provenance convention
-described by `LOCAL_PROVENANCE_ARCHIVE_MANIFEST_V1.md` in the finalization
-archive root. It is not part of the public repository deliverable.
+Repository finalization is complete with retained local scientific provenance.
+The local primary-worktree reconciliation archive is maintained outside Git
+under the local provenance convention described by
+`LOCAL_PROVENANCE_ARCHIVE_MANIFEST_V1.md` in the finalization archive root. It
+is not part of the public repository deliverable.
+
+The authoritative repository-finalization record is
+[`FGCS_REPOSITORY_FINALIZATION_REPORT.md`](FGCS_REPOSITORY_FINALIZATION_REPORT.md).
 
 ## Current next stage
 
