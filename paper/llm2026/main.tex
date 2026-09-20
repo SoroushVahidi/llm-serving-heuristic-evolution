@@ -46,7 +46,7 @@ disagreement. On untouched fresh windows, the confirmatory latency study found
 $P(B_{\mathrm{LAT}}\mid D)=0.8194$, and mean oracle headroom of 1.9958 ms
 with a clustered 95\% confidence interval $[0.1846,3.4974]$ ms. Terminal ANWG
 saturated at one and therefore concealed latency differences in the earlier
-pressure study. A bounded local vLLM validation showed that resource pressure
+pressure study. A bounded real-vLLM validation showed that resource pressure
 changes observable queue and scheduler-trace behavior, supporting the
 pressure/action-opportunity mechanism, but it did not implement a controlled
 one-step intervention or establish deployed latency/SLO/throughput gains.
@@ -330,8 +330,10 @@ universe.
 \section{Results: Native Action Opportunity}
 \label{sec:phasea}
 
-Under the frozen abundant-resource baseline, all three production-derived
-workloads were canonically action-null. Azure code had 0 disagreements in
+Under the frozen abundant-resource baseline, all three
+production-derived workloads were canonically action-null (Figure~\ref{fig:pipeline}
+summarizes the evidence chain; Figure~\ref{fig:disagreement} gives the rates).
+Azure code had 0 disagreements in
 99,992 SBS decision states; Azure conversation had 0/461,985; and BurstGPT
 had 0/440,461. The corresponding maximum KV utilizations were 0.002716,
 0.001728, and 0.003802, with no active-cap binding states. Policy-ranking
@@ -364,7 +366,8 @@ not evidence of selector benefit by itself.}
 
 The Phase-B V2 map evaluated 1,080 one-axis conditions: 20 windows across
 three workload families, with active-sequence, KV-capacity, and arrival
-pressure axes. There were 926 valid unconstrained, 38 partially constrained,
+pressure axes (Figure~\ref{fig:transition}; Table~\ref{tab:transition}). There
+were 926 valid unconstrained, 38 partially constrained,
 96 strongly constrained, and 20 horizon-invalid conditions. Across valid
 conditions, 11,328 canonical disagreement states were observed.
 
@@ -405,7 +408,7 @@ BurstGPT & KV cap & kv\_16000 & kv\_16000 & kv\_16000 \\
 \end{tabular}
 \end{table}
 
-The transition is the main regime result: pressure does not automatically
+The transition (Table~\ref{tab:transition}) is the main regime result: pressure does not automatically
 create useful diversity, but concrete resource binding can turn a collapsed
 action set into a nontrivial one. In the studied traces, arrival-rate scaling
 alone did not create support through the tested range; tight KV capacity and
@@ -419,7 +422,8 @@ protocol. The causal labeling plan selected five Azure code/conversation
 active/KV regimes and 720 disagreement states. BurstGPT contributed no
 selected causal regime, an important limitation rather than a missing result.
 
-The confirmatory intervention found 590 beneficial states, giving
+The confirmatory intervention found 590 beneficial
+states (Table~\ref{tab:fresh}; Figure~\ref{fig:fresh}), giving
 \begin{equation*}
  P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194444444.
 \end{equation*}
@@ -446,7 +450,9 @@ The oracle is a non-deployable opportunity bound over observed alternatives.}
 \centering
 \scriptsize
 \caption{Fresh causal characterization. $P(D)$ uses all valid SBS decision
-states; $P(B_{\mathrm{LAT}}\mid D)$ uses only the disagreement states.}
+states; $P(B_{\mathrm{LAT}}\mid D)$ uses only the disagreement states. The
+total row reports the 26 bootstrap clusters (fresh windows); the sum of the
+row windows (67) is not an independent count.}
 \label{tab:fresh}
 \begin{tabular}{@{}lrrrcr@{}}
 \toprule
@@ -458,7 +464,7 @@ Azure code, kv\_16000 & 431 & 0.004561 & 0.923 & 3.227 & 14 \\
 Azure conversation, active\_4 & 64 & 0.000108 & 0.484 & 0.217 & 17 \\
 Azure conversation, kv\_16000 & 93 & 0.000157 & 1.000 & 0.241 & 1 \\
 \midrule
-All selected fresh states & 720 & --- & 0.819 & 1.996 & 26 clusters \\
+All selected fresh states & 720 & --- & 0.819 & 1.996 & 26 bootstrap clusters \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -472,7 +478,8 @@ opportunity prevalence is small; point size is proportional to mean headroom.}
 \end{figure}
 
 \subsection{Opportunity decomposition}
-The fresh results make the distinction between prevalence and value concrete.
+Figure~\ref{fig:regimemap} makes the distinction between prevalence and value
+concrete.
 Azure-code kv\_16000 has the largest selected $P(D)$ and the largest mean
 headroom; active-cap regimes have much smaller $P(D)$ and correspondingly
 smaller aggregate opportunity even when some disagreement states are
@@ -514,11 +521,11 @@ metric yields the more favorable conclusion.
 \section{Bounded Real-vLLM Validation}
 \label{sec:real}
 
-The bounded systems validation used one RTX 5060 Ti, vLLM 0.27.1,
+The bounded real-vLLM validation used one RTX 5060 Ti, vLLM 0.27.1,
 Qwen2.5-0.5B-Instruct, and deterministic token-shape replay. It completed
 40 full/chunked runs and a 20-run native chunked-prefill budget probe.
 Queueing and scheduler traces were retained. The verdict
-\path{PARTIAL_SUPPORT} means support for the mechanism but not for the full
+\texttt{PARTIAL\_SUPPORT} means support for the mechanism but not for the full
 causal or deployment claim. Level 1 is demonstrated only in controlled
 replay/intervention: at disagreement states, changing the canonical action can
 expose one-step latency headroom. Level 2 is supported in real vLLM:
@@ -536,7 +543,7 @@ prompt-heavy E2E tradeoff; the high-late regime showed a smaller late-TTFT
 difference and a 23.3 ms prompt-heavy E2E tradeoff.
 
 The direct FULL-versus-CHUNKED comparison did not reproduce the simulator's
-qualitative reversal. KV utilization and preemption metrics were unavailable
+qualitative reversal (Table~\ref{tab:real}). KV utilization and preemption metrics were unavailable
 in the native probe because its metric parser returned empty dictionaries.
 The real result therefore supports the narrower statement that concrete
 serving pressure can alter observable scheduling behavior and latency. It is
