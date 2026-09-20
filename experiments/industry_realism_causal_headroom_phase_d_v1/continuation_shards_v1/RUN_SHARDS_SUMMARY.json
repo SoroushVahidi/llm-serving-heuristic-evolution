@@ -1,0 +1,584 @@
+{
+  "nonempty_shards": 96,
+  "num_shards": 96,
+  "schema_version": "industry_realism_causal_headroom_phase_d_v1.results.0.0",
+  "shard_results": [
+    {
+      "duration_s": 100.9231469631195,
+      "rows": 257,
+      "shard_index": 0,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 101.74250340461731,
+      "rows": 261,
+      "shard_index": 1,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 102.72383904457092,
+      "rows": 262,
+      "shard_index": 2,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 87.40762257575989,
+      "rows": 215,
+      "shard_index": 3,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 91.55640935897827,
+      "rows": 229,
+      "shard_index": 4,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 110.53532528877258,
+      "rows": 265,
+      "shard_index": 5,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 105.50180006027222,
+      "rows": 256,
+      "shard_index": 6,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 101.4621353149414,
+      "rows": 273,
+      "shard_index": 7,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 85.97925734519958,
+      "rows": 211,
+      "shard_index": 8,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 83.89783716201782,
+      "rows": 215,
+      "shard_index": 9,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 91.33649826049805,
+      "rows": 256,
+      "shard_index": 10,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 91.26283597946167,
+      "rows": 217,
+      "shard_index": 11,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 92.71789789199829,
+      "rows": 248,
+      "shard_index": 12,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 92.9283390045166,
+      "rows": 241,
+      "shard_index": 13,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 98.56421709060669,
+      "rows": 245,
+      "shard_index": 14,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 90.23238015174866,
+      "rows": 264,
+      "shard_index": 15,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 97.78834176063538,
+      "rows": 253,
+      "shard_index": 16,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 99.79162192344666,
+      "rows": 272,
+      "shard_index": 17,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 94.36158275604248,
+      "rows": 235,
+      "shard_index": 18,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 101.27186274528503,
+      "rows": 260,
+      "shard_index": 19,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.8022186756134,
+      "rows": 219,
+      "shard_index": 20,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 92.19945287704468,
+      "rows": 231,
+      "shard_index": 21,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 86.44344091415405,
+      "rows": 251,
+      "shard_index": 22,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 95.28486824035645,
+      "rows": 270,
+      "shard_index": 23,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 101.95679211616516,
+      "rows": 253,
+      "shard_index": 24,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 102.18802905082703,
+      "rows": 247,
+      "shard_index": 25,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 104.68499374389648,
+      "rows": 276,
+      "shard_index": 26,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 96.77515482902527,
+      "rows": 237,
+      "shard_index": 27,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 82.33031678199768,
+      "rows": 214,
+      "shard_index": 28,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 102.88319039344788,
+      "rows": 255,
+      "shard_index": 29,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 92.43728470802307,
+      "rows": 234,
+      "shard_index": 30,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 97.29085922241211,
+      "rows": 244,
+      "shard_index": 31,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 84.56399869918823,
+      "rows": 235,
+      "shard_index": 32,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 90.52627348899841,
+      "rows": 232,
+      "shard_index": 33,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 98.83703279495239,
+      "rows": 251,
+      "shard_index": 34,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 100.32276797294617,
+      "rows": 275,
+      "shard_index": 35,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.8397011756897,
+      "rows": 219,
+      "shard_index": 36,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 89.18304538726807,
+      "rows": 238,
+      "shard_index": 37,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 89.981764793396,
+      "rows": 221,
+      "shard_index": 38,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 91.61478567123413,
+      "rows": 240,
+      "shard_index": 39,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 89.62228631973267,
+      "rows": 260,
+      "shard_index": 40,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 87.641361951828,
+      "rows": 233,
+      "shard_index": 41,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 84.9244441986084,
+      "rows": 206,
+      "shard_index": 42,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 105.36613154411316,
+      "rows": 256,
+      "shard_index": 43,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 108.32109832763672,
+      "rows": 284,
+      "shard_index": 44,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 82.93820285797119,
+      "rows": 206,
+      "shard_index": 45,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.1876950263977,
+      "rows": 242,
+      "shard_index": 46,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 89.94878363609314,
+      "rows": 212,
+      "shard_index": 47,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 85.39662718772888,
+      "rows": 234,
+      "shard_index": 48,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 77.44376397132874,
+      "rows": 210,
+      "shard_index": 49,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 96.21170473098755,
+      "rows": 242,
+      "shard_index": 50,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 93.96873259544373,
+      "rows": 248,
+      "shard_index": 51,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 101.9447557926178,
+      "rows": 289,
+      "shard_index": 52,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 89.24085521697998,
+      "rows": 208,
+      "shard_index": 53,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 111.8997015953064,
+      "rows": 291,
+      "shard_index": 54,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 102.96369361877441,
+      "rows": 271,
+      "shard_index": 55,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 90.37722873687744,
+      "rows": 245,
+      "shard_index": 56,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 89.02777886390686,
+      "rows": 242,
+      "shard_index": 57,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 102.80359649658203,
+      "rows": 277,
+      "shard_index": 58,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 94.74680352210999,
+      "rows": 227,
+      "shard_index": 59,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 99.44466209411621,
+      "rows": 246,
+      "shard_index": 60,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.9217164516449,
+      "rows": 243,
+      "shard_index": 61,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 83.34870791435242,
+      "rows": 191,
+      "shard_index": 62,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 94.41991448402405,
+      "rows": 242,
+      "shard_index": 63,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.77031064033508,
+      "rows": 234,
+      "shard_index": 64,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 84.76020908355713,
+      "rows": 233,
+      "shard_index": 65,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 85.38914895057678,
+      "rows": 215,
+      "shard_index": 66,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 100.1352002620697,
+      "rows": 240,
+      "shard_index": 67,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 84.3575131893158,
+      "rows": 256,
+      "shard_index": 68,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 104.59102964401245,
+      "rows": 267,
+      "shard_index": 69,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 96.33181524276733,
+      "rows": 241,
+      "shard_index": 70,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 101.97703552246094,
+      "rows": 261,
+      "shard_index": 71,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 81.31603837013245,
+      "rows": 230,
+      "shard_index": 72,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 85.39184951782227,
+      "rows": 239,
+      "shard_index": 73,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 91.85655164718628,
+      "rows": 237,
+      "shard_index": 74,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 92.27044248580933,
+      "rows": 253,
+      "shard_index": 75,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 96.49368262290955,
+      "rows": 265,
+      "shard_index": 76,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 84.3671863079071,
+      "rows": 218,
+      "shard_index": 77,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 104.00564956665039,
+      "rows": 276,
+      "shard_index": 78,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 96.4293303489685,
+      "rows": 275,
+      "shard_index": 79,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 96.199054479599,
+      "rows": 244,
+      "shard_index": 80,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 91.39891123771667,
+      "rows": 247,
+      "shard_index": 81,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 87.53386306762695,
+      "rows": 239,
+      "shard_index": 82,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.54874801635742,
+      "rows": 236,
+      "shard_index": 83,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 93.83247685432434,
+      "rows": 243,
+      "shard_index": 84,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 94.40751123428345,
+      "rows": 250,
+      "shard_index": 85,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 87.60997581481934,
+      "rows": 236,
+      "shard_index": 86,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 92.86500525474548,
+      "rows": 277,
+      "shard_index": 87,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 100.361980676651,
+      "rows": 285,
+      "shard_index": 88,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 100.48451137542725,
+      "rows": 261,
+      "shard_index": 89,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 90.01791024208069,
+      "rows": 242,
+      "shard_index": 90,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 90.71221351623535,
+      "rows": 244,
+      "shard_index": 91,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 86.36372470855713,
+      "rows": 232,
+      "shard_index": 92,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 88.02625274658203,
+      "rows": 246,
+      "shard_index": 93,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 95.70606708526611,
+      "rows": 277,
+      "shard_index": 94,
+      "status": "DONE"
+    },
+    {
+      "duration_s": 67.44595623016357,
+      "rows": 216,
+      "shard_index": 95,
+      "status": "DONE"
+    }
+  ],
+  "workers": 8
+}

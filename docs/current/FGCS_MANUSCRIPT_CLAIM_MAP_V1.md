@@ -76,3 +76,7 @@ The revised manuscript must not imply that learned override selection has establ
 The revised manuscript may claim production-derived replay, resource-constrained simulation under modeled serving semantics, canonical SBS-vs-P6 action opportunity, and preregistered one-step default-relative causal headroom after Phase D executes.
 
 It must not claim production deployment effects, measured production latency improvement, or real-vLLM improvement.
+
+## Phase D Execution Addendum
+
+Phase D executed at git `c2eda156bfebe721cc970c2c73c347244425889b`. Causal integrity: `PASS`. Causal headroom gate: `FAIL`. Overall P(B|D): `0`. Overall mean oracle headroom: `0`. RQ3 is now evidence-complete under the SBS-vs-P6 modeled replay scope. RQ4 remains a non-model-based gate only; no selector was trained.

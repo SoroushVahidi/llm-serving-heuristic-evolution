@@ -106,3 +106,7 @@ Optional future baseline: an LMetric-style KV/load policy in a separately prereg
 PHASE_D_V1_STATUS = EXECUTE_AS_PREREGISTERED
 
 Reason: the literature narrows but does not invalidate the causal-headroom question. No audited work measures canonical SBS-vs-alternative action prevalence and one-step default-relative causal advantage under production-derived constrained replay. Adding modern policies would change the `D` population and belongs to a future, separately preregistered extension, not a silent edit to V1.
+
+## Phase D Execution Addendum
+
+Phase D executed at git `c2eda156bfebe721cc970c2c73c347244425889b`. Causal integrity: `PASS`. Causal headroom gate: `FAIL`. Overall P(B|D): `0`. Overall mean oracle headroom: `0`. RQ3 is now evidence-complete under the SBS-vs-P6 modeled replay scope. RQ4 remains a non-model-based gate only; no selector was trained.

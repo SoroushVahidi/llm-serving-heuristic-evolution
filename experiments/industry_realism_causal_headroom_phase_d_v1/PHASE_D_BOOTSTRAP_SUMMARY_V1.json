@@ -1,0 +1,87 @@
+{
+  "azure_2023_code::active_sequence_capacity::active_4": {
+    "P_B_given_D_ci95_high": 0.0,
+    "P_B_given_D_ci95_low": 0.0,
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci_available": true,
+    "clusters": 16,
+    "mean_oracle_headroom_ci95_high": 0.0,
+    "mean_oracle_headroom_ci95_low": 0.0
+  },
+  "azure_2023_code::active_sequence_capacity::active_8": {
+    "ci_available": false,
+    "clusters": 1,
+    "reason": "fewer than 5 contributing windows"
+  },
+  "azure_2023_code::kv_capacity::kv_16000": {
+    "P_B_given_D_ci95_high": 0.0,
+    "P_B_given_D_ci95_low": 0.0,
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci_available": true,
+    "clusters": 13,
+    "mean_oracle_headroom_ci95_high": 0.0,
+    "mean_oracle_headroom_ci95_low": 0.0
+  },
+  "azure_2023_conv::active_sequence_capacity::active_4": {
+    "P_B_given_D_ci95_high": 0.0,
+    "P_B_given_D_ci95_low": 0.0,
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci_available": true,
+    "clusters": 11,
+    "mean_oracle_headroom_ci95_high": 0.0,
+    "mean_oracle_headroom_ci95_low": 0.0
+  },
+  "azure_2023_conv::kv_capacity::kv_16000": {
+    "ci_available": false,
+    "clusters": 1,
+    "reason": "fewer than 5 contributing windows"
+  },
+  "azure_2023_conv::kv_capacity::kv_8000": {
+    "P_B_given_D_ci95_high": 0.0,
+    "P_B_given_D_ci95_low": 0.0,
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci_available": true,
+    "clusters": 17,
+    "mean_oracle_headroom_ci95_high": 0.0,
+    "mean_oracle_headroom_ci95_low": 0.0
+  },
+  "burstgpt::active_sequence_capacity::active_16": {
+    "ci_available": false,
+    "clusters": 1,
+    "reason": "fewer than 5 contributing windows"
+  },
+  "burstgpt::active_sequence_capacity::active_4": {
+    "P_B_given_D_ci95_high": 0.0,
+    "P_B_given_D_ci95_low": 0.0,
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci_available": true,
+    "clusters": 8,
+    "mean_oracle_headroom_ci95_high": 0.0,
+    "mean_oracle_headroom_ci95_low": 0.0
+  },
+  "burstgpt::active_sequence_capacity::active_8": {
+    "ci_available": false,
+    "clusters": 2,
+    "reason": "fewer than 5 contributing windows"
+  },
+  "burstgpt::kv_capacity::kv_16000": {
+    "ci_available": false,
+    "clusters": 4,
+    "reason": "fewer than 5 contributing windows"
+  },
+  "burstgpt::kv_capacity::kv_8000": {
+    "P_B_given_D_ci95_high": 0.0,
+    "P_B_given_D_ci95_low": 0.0,
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260920,
+    "ci_available": true,
+    "clusters": 6,
+    "mean_oracle_headroom_ci95_high": 0.0,
+    "mean_oracle_headroom_ci95_low": 0.0
+  }
+}
