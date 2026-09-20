@@ -12,14 +12,21 @@ real-vLLM mechanism validation. The primary metric throughout is
 `arrival_normalized_weighted_goodput` (ANWG): weighted SLO goodput normalized
 by all arriving requests.
 
-## Manuscript
+## Current FGCS Journal Manuscript
 
-A finalized 15-page LNCS manuscript, **"The Exploitability Gap in
-LLM-Serving Scheduler Portfolios"**, is included at
-[`paper/llm2026/`](paper/llm2026/) (source, PDF, figures, and figure
-regeneration scripts). The manuscript was submitted to the LLM 2026
-conference on August 25, 2026. The paper's core
-results are summarized under *Key Findings* below.
+The active manuscript is **"When Does LLM-Serving Scheduler Adaptation Matter?
+Action Opportunity and Causal Headroom in Production-Derived Replay"**, targeted
+at **Future Generation Computer Systems (FGCS)** and currently in the
+pre-submission / author-review stage.
+
+- Canonical submission roadmap (source of truth):
+  [`docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`](docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md)
+- Current author-review PDF:
+  [`paper/llm_scheduler_adaptation_causal_headroom.pdf`](paper/llm_scheduler_adaptation_causal_headroom.pdf)
+  (review copy — not yet the final submission artifact)
+- The historical LLM 2026 manuscript in [`paper/llm2026/`](paper/llm2026/) is
+  retained for provenance. That conference submission was withdrawn before
+  publication and is **not** the active submission.
 
 ## Research Problem
 
