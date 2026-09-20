@@ -624,7 +624,8 @@ causal headroom automatically justifies deployment.
 \section{Reproducibility and Artifact Scope}
 \label{sec:repro}
 
-The public artifact records trace provenance, frozen manifests, support grids,
+The public artifact (the public repository, see Data and Code
+Availability) records trace provenance, frozen manifests, support grids,
 fresh non-overlap proofs, causal state and action manifests, source hashes,
 bootstrap seed 20260920, and the real-vLLM environment. The principal result
 packages are Phase A native replay, Phase B pressure mapping, fresh
@@ -656,11 +657,12 @@ selector or broad trace experiment.
 The author thanks Professor Ioannis Koutis for guidance and support.
 
 \subsubsection{Data and Code Availability}
-Code, workload generators, configurations, and derived artifacts are publicly
-available at
+Code, derived datasets, experiment configurations, and reproducibility
+artifacts for this study are available at
 \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}.
-Raw third-party traces are obtained from their upstream sources; derived
-windows and manifests are documented in the repository.
+Raw third-party workload traces are obtained from their original upstream
+sources; the repository documents the derived windows and associated
+manifests used in this study.
 
 \subsubsection{Generative AI Use}
 The author used language models and coding assistants for organization,
