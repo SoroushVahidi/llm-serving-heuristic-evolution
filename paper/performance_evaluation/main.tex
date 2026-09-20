@@ -5,9 +5,13 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{array}
+\usepackage{tools/array}
 \usepackage{url}
 \usepackage{xcolor}
+\usepackage{tabularx}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \def\UrlBreaks{\do\/\do-\do_}
 
 \begin{document}
@@ -179,9 +183,9 @@ action or one-step estimand.
 omit pressure, production-derived traces, or adaptive mechanisms; the distinction is
 the action-level and default-relative causal measurement question.}
 \label{tab:closest}
-\setlength{\tabcolsep}{6pt}
+\setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}p{0.18\textwidth}p{0.14\textwidth}p{0.12\textwidth}p{0.14\textwidth}p{0.14\textwidth}p{0.14\textwidth}p{0.12\textwidth}@{}}
+\begin{tabular}{@{}P{0.14\linewidth}P{0.14\linewidth}P{0.09\linewidth}P{0.12\linewidth}P{0.13\linewidth}P{0.13\linewidth}P{0.10\linewidth}@{}}
 \toprule
 Work & Prod.-derived workloads & Pressure sweep & Proposes system & Canonical disagreement & One-step default intervention & Real system \\
 \midrule
@@ -370,9 +374,9 @@ active cap binds the trace, after which canonical disagreement increases.}
 \caption{Pressure-to-disagreement transition summary. ``Sustained'' means at
 least two windows with disagreement.}
 \label{tab:transition}
-\setlength{\tabcolsep}{8pt}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}lllrr@{}}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{@{}llLLL@{}}
 \toprule
 Workload & Axis & First binding & First disagreement & Sustained \\
 \midrule
@@ -383,7 +387,7 @@ Azure conversation & KV cap & KV capacity = 8,000 & KV capacity = 16,000 & KV ca
 BurstGPT & Active cap & active-sequence cap = 16 & active-sequence cap = 16 & active-sequence cap = 8 \\
 BurstGPT & KV cap & KV capacity = 16,000 & KV capacity = 16,000 & KV capacity = 16,000 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 The transition (Table~\ref{tab:transition}) is the main regime result: pressure does not automatically
@@ -434,9 +438,9 @@ least one disagreement state in that regime. The same source window may
 contribute to multiple regimes, so the row counts are not additive; the 36
 distinct workload-window pairs form the clusters used by the bootstrap.}
 \label{tab:fresh}
-\setlength{\tabcolsep}{8pt}
+\setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}lrrrcr@{}}
+\begin{tabular}{@{}P{0.32\linewidth} R{0.07\linewidth} R{0.10\linewidth} R{0.13\linewidth} R{0.11\linewidth} R{0.10\linewidth}@{}}
 \toprule
 Workload/regime & States & $P(D)$ & $P(B_{\mathrm{LAT}}\mid D)$ & Mean $H_{\mathrm{LAT}}$ (ms) & Source windows \\
 \midrule
