@@ -1,99 +1,93 @@
 # llm-serving-heuristic-evolution
 
-Research code for **contextual, compositional scheduler synthesis for LLM
-inference serving**.
+Research code for **online LLM-inference serving scheduler portfolios**: when
+should a serving system switch between (rather than re-combine) scheduling
+policies as workload pressure changes?
 
-The repository studies when a serving system should select, combine, or
-synthesize scheduling policies under changing workload pressure. It includes a
-GPU-calibrated discrete-event simulator, a library of internal policies,
-faithful external scheduler integrations, a typed scheduling DSL, contextual
-performance models, and reproducible experiment/audit artifacts.
-
-## Start Here
-
-Documentation authority is intentionally narrow:
-
-1. [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md) - canonical operational entry point.
-2. [`README.md`](README.md) - public project overview and navigation.
-3. [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) - canonical long-term roadmap.
-4. [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md) - canonical current FGCS status.
-5. [`docs/current/README.md`](docs/current/README.md) - current evidence and documentation index.
-6. [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) - reproducibility entry point.
-7. [`docs/BASELINE_STATUS.md`](docs/BASELINE_STATUS.md) - external-baseline status index.
-8. [`docs/audits/`](docs/audits/) - immutable point-in-time audit trail.
-
-If a status claim elsewhere conflicts with these files, treat it as historical
-until reconciled.
-
-## Current FGCS Manuscript / Project Status
-
-The current scientific status is maintained in
-[`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md).
-The canonical manuscript is [`paper/llm2026/main.tex`](paper/llm2026/main.tex);
-the directory retains its historical name for reproducibility even though the
-manuscript is now the FGCS journal version. Reproduction entry points are in
-[`REPRODUCIBILITY.md`](REPRODUCIBILITY.md), and data/release boundaries are
-documented in [`docs/DATA_RELEASE_POLICY.md`](docs/DATA_RELEASE_POLICY.md) and
-[`docs/PUBLIC_RELEASE_MANIFEST.md`](docs/PUBLIC_RELEASE_MANIFEST.md).
-
-## Research Objective
-
-The project is not just a fixed-policy benchmark and not just an Apt-Serve
-reproduction. The target system is a verified contextual compositional
-hyper-heuristic:
-
-```text
-workload/state context
-  -> policy/module performance modeling
-  -> uncertainty, pairwise advantage, marginal contribution
-  -> typed DSL / AST
-  -> parent and module selection
-  -> structural composition / symbolic synthesis
-  -> verification
-  -> evaluation
-  -> policy-library envelope expansion
-  -> iteration
-  -> real-system validation
-```
-
-The primary metric for current work is
+The repository contains a GPU-calibrated discrete-event simulator, a library of
+internal scheduling policies, faithful external-scheduler integrations
+(Apt-Serve, VTC, PARS, and others), trace-based counterfactual evaluation on
+public workload corpora, contextual policy-selection models, and instrumented
+real-vLLM mechanism validation. The primary metric throughout is
 `arrival_normalized_weighted_goodput` (ANWG): weighted SLO goodput normalized
-by all arriving requests. Completion-conditioned quality is tracked only as a
-secondary diagnostic.
+by all arriving requests.
 
-## Current Checkpoint
+## Current Journal Manuscript
 
-Current branch: `contextual-compositional-heuristics-20260731`.
+The active manuscript is **"When Does LLM-Serving Scheduler Adaptation Matter?
+Action Opportunity and Causal Headroom in Production-Derived Replay"**, targeted
+at **Performance Evaluation** (Elsevier, ISSN 0166-5316) as an **Original
+research article**, and currently in the pre-submission / author-review stage.
 
-**For current project state, read [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md).**
+- Canonical submission roadmap (source of truth):
+  [`docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
+- Current author-review PDF:
+  [`paper/llm_scheduler_adaptation_causal_headroom.pdf`](paper/llm_scheduler_adaptation_causal_headroom.pdf)
+  (review copy — not yet the final submission artifact)
+- The historical LLM 2026 manuscript in [`paper/history/llm2026/`](paper/history/llm2026/) is
+  retained for provenance. That conference submission was withdrawn before
+  publication and is **not** the active submission.
+- The earlier FGCS submission roadmap
+  ([`docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`](docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md))
+  is superseded and retained for provenance only.
 
-The apt_serve_phase_g_analysis_20260809.md section below is superseded by the current operational doc. Keep for historical context only:
+## Research Problem
 
-As of the latest reconciliation, the most recent major local experiment is
-**Apt-Serve Phase G**:
+LLM serving workloads stress different scheduling mechanisms — prompt
+processing, urgent-deadline protection, KV-cache capacity — so no single
+simple rule dominates all regimes. This project asks, in the language of
+algorithm selection:
 
-- collection: complete;
-- posthoc analysis: complete with exit code 0;
-- canonical analysis artifact:
-  `results/apt_serve_phase_g_analysis_20260809_190000/`;
-- scientific audit:
-  [`docs/audits/apt_serve_phase_g_analysis_20260809.md`](docs/audits/apt_serve_phase_g_analysis_20260809.md).
+1. How much headroom does a scheduler **portfolio** (virtual-best per-scenario
+   choice, VBS) hold over the best fixed single policy (SBS) on realistic
+   joint workloads?
+2. Can lightweight **online contextual selectors** capture that headroom
+   without per-request overhead or unsafe policy switching?
+3. Does **within-scenario composition/synthesis** of parent policies add
+   value beyond scenario-level selection?
+4. Do simulator-based conclusions transfer to a **real serving engine**?
 
-The supported Phase G result is deliberately narrow: Apt-Serve has a positive
-leave-one-out marginal contribution to the policy portfolio with a bootstrap CI
-excluding zero, but global superiority over the best fixed baseline is **not**
-established because the Apt-vs-best-fixed CI crosses zero. Apt-Serve remains one
-external scheduler family and a source of cache/tier-transition mechanisms, not
-the whole project or proof that compositional synthesis works.
+## Key Findings
 
-The canonical next task is to reconcile the completed Phase G interpretation
-into the broader module-decomposition and library-envelope roadmap, then return
-to contextual composition work rather than launching another Apt-Serve sweep.
+From the joint-240 scenario suite (paper and `docs/audits/`):
 
-> Historical operational handoffs remain available under `docs/current/`, but
-> they are not current-status authorities. The FGCS manuscript and final
-> submission-audit state are indexed by
-> [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md).
+- Per-scenario best-policy choice improves ANWG by **0.0190 over the best
+  fixed policy (SBS)**; lightweight online adapters fall *below* SBS, and a
+  stronger nonlinear cost-sensitive utility selector reaches near-SBS ANWG
+  but recovers only ~2.5% of the SBS→VBS headroom (gain CI includes zero).
+- Terminal one-step counterfactuals are sparse and concentrated, and native
+  policy disagreement predicts them only moderately; exact critical-state
+  identity is not invariant across continuation policies.
+- **Within-scenario composition was demoted after a structural reassessment**
+  (2026-08-17 audit): for the policy families studied, a scenario-level
+  selector matched the parent oracle (Families A/B), while the only
+  composition gain observed (KV family) relied on violating parent safety
+  invariants and vanished once safety constraints were enforced. Composition
+  and typed-DSL synthesis remain exploratory future work, not the central
+  hypothesis.
+- The revised roadmap is: policy-separating workloads → complementary policy
+  library → contextual selection (multi-family) → mechanism attribution →
+  bounded envelope.
+- Apt-Serve shows a positive leave-one-out marginal contribution to the
+  policy portfolio (bootstrap CI excluding zero), but global superiority over
+  the best fixed baseline is **not** established.
+
+## Evidence Types
+
+The repository deliberately separates two kinds of evidence:
+
+- **Trace-based counterfactual evaluation** — GPU-calibrated discrete-event
+  simulation and replay of public trace corpora (e.g., Public Trace Corpus
+  v1) under alternative scheduler policies. Cheap, controlled, and
+  reproducible, but simulator-based.
+- **Real-system validation** — instrumented local vLLM runs (e.g., Qwen2.5
+  models under vLLM) checking whether simulator-level mechanism conclusions
+  hold on a real engine. These runs revealed a simulator–engine semantic
+  mismatch and a native token-budget tradeoff, so simulator results are not
+  presented as production measurements.
+
+Calibration provenance (cluster GPU profiles) is documented under
+`configs/calibration/`.
 
 ## Repository Layout
 
@@ -104,11 +98,11 @@ scripts/            experiment runners, analysis scripts, maintenance tools
 configs/            YAML/JSON experiment and calibration configs
 baselines/          official-code adapters and provenance for external baselines
 benchmarks/         canonical workload suites
-experiments/        small committed experiment artifacts and curated provenance
+experiments/        committed experiment artifacts and curated provenance
 docs/               roadmap, current status, design docs, historical audits
 data/               local datasets; raw/processed data are gitignored
 results/            local generated outputs; gitignored except selected provenance
-logs/               local runtime logs; gitignored
+paper/performance_evaluation/ finalized manuscript package (LaTeX source, PDF, figures)
 ```
 
 See [`docs/README.md`](docs/README.md), [`scripts/README.md`](scripts/README.md),
@@ -144,16 +138,59 @@ GPU/checkpoint tests are opt-in:
 LLMSERVEOPT_RUN_GPU_TESTS=1 python3 -m pytest -m gpu
 ```
 
+## Continuous Integration (CI)
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the **deterministic,
+CPU-only test subset** on every push/PR to `main` (Python 3.12, `pip install
+-e ".[dev,selector]"`, no GPU, no paid credentials, no API keys, no network
+beyond package installation). This is the subset that passes offline on a
+clean machine: simulator and policy-library unit/integration tests, external
+scheduler adapters (mocked/offline), selector tooling, analysis/report
+consistency checks, and repository handoff-consistency checks (~4.1k tests).
+
+CI deliberately does **not** cover:
+
+- **Artifact/dataset-reconstruction tests** (13 test modules excluded via
+  `--ignore`, e.g. `test_public_trace_replay_v1.py`,
+  `test_public_replay_load_scaling_v1/v2.py`,
+  `test_unified_utility_matrix_v1.py`, `test_family_*_v1.py`). These require
+  large datasets that are not committed to the repository: the public trace
+  corpus parquet files under `data/public_trace_corpus_v1/` and the staged
+  BurstGPT dataset (HPC-staged, deliberately *not* substituted with synthetic
+  fallback). Their failures/errors in a full local run without those datasets
+  are expected and are availability failures, not code defects. One excluded
+  module additionally asserts on a historical working-branch state.
+- **GPU/checkpoint tests** (`-m gpu`): opt-in via
+  `LLMSERVEOPT_RUN_GPU_TESTS=1` and a CUDA-capable GPU.
+- **HPC/SLURM, real-vLLM serving, and external-API runs**: these execute on
+  Wulver/GPU infrastructure or need credentials and are outside CI scope.
+
 ## Reproduce Key Workflows
 
 - Phase G collection runner: `python scripts/run_apt_serve_phase_g.py --help`
 - Phase G analysis runner: `python scripts/analyze_apt_serve_phase_g.py --help`
 - Status consistency check: `python scripts/check_project_handoff_consistency.py`
 - General smoke test: `python scripts/smoke_test.py`
+- Paper figures (from frozen artifacts, no new experiments):
+  `python3 paper/performance_evaluation/scripts/plot_joint_complementarity.py` and
+  `python3 paper/performance_evaluation/scripts/plot_vllm_semantic_validation.py`
 
 Most full experiment runs write to `results/` and should be launched in tmux or
-the cluster scheduler. See the relevant audit before rerunning any major
-experiment; generated results are intentionally not version-controlled.
+the cluster scheduler. See the relevant audit under `docs/audits/` before
+rerunning any major experiment; generated results are intentionally not
+version-controlled. A template for API credentials is provided in
+`.env.example`; real credentials are never committed.
+
+## Documentation
+
+Long-term roadmap: [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md). The
+shortest current operational entry point is
+[`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md); detailed
+status, next actions, and the working-branch audit trail live under
+[`docs/current/`](docs/current/) and [`docs/audits/`](docs/audits/). If a
+status claim elsewhere conflicts with those files, treat it as historical
+until reconciled. External-baseline status:
+[`docs/BASELINE_STATUS.md`](docs/BASELINE_STATUS.md).
 
 ## License
 

@@ -1,43 +1,42 @@
-# Current Documentation Index
+# Performance Evaluation Current Documentation Index
 
-Use [`FGCS_CURRENT_STATUS.md`](FGCS_CURRENT_STATUS.md) as the sole current
-status authority.
+This directory serves as the documentation index for the "Performance Evaluation" (Elsevier) submission.
 
-## Current canonical status
+## Current Canonical Status & Roadmap
 
-- [`FGCS_CURRENT_STATUS.md`](FGCS_CURRENT_STATUS.md)
-- [`FGCS_REPOSITORY_FINALIZATION_REPORT.md`](FGCS_REPOSITORY_FINALIZATION_REPORT.md)
-- [`FGCS_PROVENANCE_PROTECTION_V1.md`](FGCS_PROVENANCE_PROTECTION_V1.md)
-- [`PRIMARY_WORKTREE_PROTECTION_MANIFEST_V1.md`](PRIMARY_WORKTREE_PROTECTION_MANIFEST_V1.md)
+The single authoritative source of truth for the current submission is:
+- [PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md](PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
 
-## Manuscript
+## Active Manuscript
 
-- [`FGCS_MANUSCRIPT_CLAIM_MAP_V1.md`](FGCS_MANUSCRIPT_CLAIM_MAP_V1.md)
-- [`FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md`](FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md)
-- [`FGCS_REPRODUCIBILITY_MATRIX_V1.md`](FGCS_REPRODUCIBILITY_MATRIX_V1.md)
-- [`../../paper/llm2026/FGCS_MANUSCRIPT_STATUS.md`](../../paper/llm2026/FGCS_MANUSCRIPT_STATUS.md)
-- [`../../paper/llm2026/FGCS_SUBMISSION_PACKAGE_MANIFEST_V1.md`](../../paper/llm2026/FGCS_SUBMISSION_PACKAGE_MANIFEST_V1.md)
+- **Manuscript Source:** [paper/performance_evaluation/](../../paper/performance_evaluation/)
+- **Author-Review PDF:** [paper/llm_scheduler_adaptation_causal_headroom.pdf](../../paper/llm_scheduler_adaptation_causal_headroom.pdf)
+- **Highlights:** [paper/performance_evaluation_highlights.txt](../../paper/performance_evaluation_highlights.txt)
 
-## Canonical scientific evidence
+## Canonical Scientific Evidence & Reports
 
-- [Phase A](../../experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_NATIVE_REPLAY_REPORT_V1.md)
-- [Phase B](../../experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_PRESSURE_REPORT.md)
-- [Fresh causal confirmation](../../experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CONFIRMATORY_REPORT_V1.md)
-- [Phase-D objective audit](PHASE_D_CAUSAL_OBJECTIVE_IDENTIFIABILITY_AUDIT_V1.md)
-- [Real-vLLM validation](REAL_VLLM_PRESSURE_ACTION_VALIDATION_REPORT.md)
-- [Latest literature](LATEST_LITERATURE_DIFFERENTIATION_AUDIT_V2.md)
+- [Phase A Native Replay Report](../../experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_NATIVE_REPLAY_REPORT_V1.md)
+- [Phase B V2 Pressure Report](../../experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_PRESSURE_REPORT.md)
+- [Fresh Latency Confirmatory Report](../../experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CONFIRMATORY_REPORT_V1.md)
+- [Phase-D Objective Identifiability Audit](PHASE_D_CAUSAL_OBJECTIVE_IDENTIFIABILITY_AUDIT_V1.md)
+- [Real-vLLM Pressure Action Validation Report](REAL_VLLM_PRESSURE_ACTION_VALIDATION_REPORT.md)
+- [Latest Literature Audit](LATEST_LITERATURE_DIFFERENTIATION_AUDIT_V2.md)
 
-## Reproducibility and release boundaries
+## Reproducibility Guide
 
-- [`FGCS_REPRODUCIBILITY_MATRIX_V1.md`](FGCS_REPRODUCIBILITY_MATRIX_V1.md)
-- [`FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md`](FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md)
-- [`FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md`](FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md)
-- [`../DATA_RELEASE_POLICY.md`](../DATA_RELEASE_POLICY.md)
-- [`../PUBLIC_RELEASE_MANIFEST.md`](../PUBLIC_RELEASE_MANIFEST.md)
+The reproducibility entry point for this study is:
+- [PERFORMANCE_EVALUATION_REPRODUCIBILITY.md](PERFORMANCE_EVALUATION_REPRODUCIBILITY.md)
 
-## Historical development
+## Historical Reference Documents (Superseded)
 
-`RESUME_HERE.md`, `WORK_STATUS.md`, `NEXT_ACTIONS.md`, `NEXT_STEPS.md`,
-`ACTIVE_JOBS.md`, selector reports, older handoffs, and older readiness
-checkpoints remain available as historical or operational provenance. They are
-not current-status authorities.
+These documents tracking the prior "Future Generation Computer Systems" (FGCS) effort are retained solely for provenance:
+- [FGCS_CURRENT_STATUS.md](FGCS_CURRENT_STATUS.md) (Superseded)
+- [FGCS_REPOSITORY_FINALIZATION_REPORT.md](FGCS_REPOSITORY_FINALIZATION_REPORT.md) (Superseded)
+- [FGCS_PROVENANCE_PROTECTION_V1.md](FGCS_PROVENANCE_PROTECTION_V1.md) (Superseded)
+- [FGCS_MANUSCRIPT_CLAIM_MAP_V1.md](FGCS_MANUSCRIPT_CLAIM_MAP_V1.md) (Superseded)
+- [FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md](FGCS_MANUSCRIPT_TRANSFORMATION_PLAN_V1.md) (Superseded)
+- [FGCS_REPRODUCIBILITY_MATRIX_V1.md](FGCS_REPRODUCIBILITY_MATRIX_V1.md) (Superseded)
+- [FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md](FGCS_ARTIFACT_RELEASE_BOUNDARY_V1.md) (Superseded)
+- [FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md](FGCS_LOCAL_ARTIFACT_RETENTION_INDEX_V1.md) (Superseded)
+- [Historical FGCS Manuscript Status](../../paper/history/fgcs/FGCS_MANUSCRIPT_STATUS.md) (Superseded)
+- [Historical FGCS Submission Package Manifest](../../paper/history/fgcs/FGCS_SUBMISSION_PACKAGE_MANIFEST_V1.md) (Superseded)

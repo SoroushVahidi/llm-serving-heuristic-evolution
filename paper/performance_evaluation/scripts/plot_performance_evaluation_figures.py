@@ -1,4 +1,4 @@
-"""Generate the FGCS manuscript figures from frozen result artifacts."""
+"""Generate the Performance Evaluation manuscript figures from frozen result artifacts."""
 from pathlib import Path
 import csv
 import json
@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
-FIG = ROOT / "paper" / "llm2026" / "figures"
+FIG = ROOT / "paper" / "performance_evaluation" / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"font.size": 9, "axes.titlesize": 10, "figure.dpi": 150})
 
@@ -29,7 +29,7 @@ for a, b in zip(xs[:-1], xs[1:]):
     ax.annotate("", xy=(b - 0.075, 0.5), xytext=(a + 0.075, 0.5),
                 xycoords=ax.transAxes, arrowprops=dict(arrowstyle="->", lw=1.4))
 ax.set_title("A staged test of whether adaptive scheduling is actionable")
-save("fgcs_pipeline")
+save("pe_pipeline")
 
 # Figure 2: native null support versus pressure-induced support.
 phase_a = {"Azure code": 0.0, "Azure conversation": 0.0, "BurstGPT": 0.0}
@@ -45,7 +45,7 @@ ax.set_ylabel("Canonical disagreement rate")
 ax.set_title("Native replay is action-null; binding pressure creates opportunity")
 ax.set_ylim(0, max(vals) * 1.25)
 ax.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-save("fgcs_disagreement_rates")
+save("pe_disagreement_rates")
 
 # Figure 3: pressure axis transition for the clearest Azure-code windows.
 rows = list(csv.DictReader((ROOT / "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv").open()))
@@ -61,7 +61,7 @@ ax.set_xlabel("Active-sequence cap (larger to smaller)")
 ax.set_ylabel("Canonical disagreement rate")
 ax.set_title("Azure-code active-cap transition")
 ax.grid(axis="y", alpha=0.3)
-save("fgcs_pressure_transition")
+save("pe_pressure_transition")
 
 # Figure 4: fresh causal headroom by selected regime.
 fresh = list(csv.DictReader((ROOT / "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_WORKLOAD_REGIME_V1.csv").open()))
@@ -79,7 +79,7 @@ ax2.plot(idx, benefit, color="#b36b00", marker="o", lw=1.8)
 ax2.set_ylabel("P(B_LAT | D) (%)")
 ax2.set_ylim(0, 105)
 ax1.set_title("Fresh untouched-window causal headroom")
-save("fgcs_fresh_headroom")
+save("pe_fresh_headroom")
 
 # Figure 5: practitioner map, opportunity prevalence versus conditional benefit.
 fig, ax = plt.subplots(figsize=(6.8, 4.5))
@@ -100,4 +100,4 @@ ax.set_ylim(0, 115)
 ax.set_xlim(0.005, 1.5)
 ax.set_title("Opportunity is a product of prevalence and conditional value")
 ax.grid(alpha=0.25)
-save("fgcs_regime_map")
+save("pe_regime_map")

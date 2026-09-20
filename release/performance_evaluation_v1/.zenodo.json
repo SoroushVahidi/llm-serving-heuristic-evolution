@@ -1,0 +1,15 @@
+{
+  "title": "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay (Reproducibility Package)",
+  "description": "This is the reproducibility package containing code, experimental results, and manuscript sources to accompany the paper 'When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay'. It contains the frozen result CSVs, figure-plotting scripts, and LaTeX sources required to verify and build the findings of the study.",
+  "creators": [
+    {
+      "name": "Vahidi, Soroush",
+      "affiliation": "New Jersey Institute of Technology",
+      "orcid": "0000-0002-3909-5633"
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": ["LLM serving", "scheduling", "resource pressure", "causal headroom", "performance evaluation"],
+  "upload_type": "dataset"
+}
