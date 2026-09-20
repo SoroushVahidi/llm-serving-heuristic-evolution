@@ -1,0 +1,50 @@
+{
+  "schema_version": "latest_literature_differentiation_v1.0.0",
+  "phase_d_outcomes_accessed": false,
+  "must_run": [],
+  "must_discuss": [
+    {
+      "work": "LMetric / Simple Is Better",
+      "reason": "Closest KV-aware scheduling and load-balancing work with production deployment and failure-condition analysis.",
+      "scientific_question_answered_by_discussion": "Shows that the paper cannot claim novelty for KV/load-aware scheduling or practical failure-condition detection."
+    },
+    {
+      "work": "ServeGen",
+      "reason": "Closest production workload characterization/generation paper.",
+      "scientific_question_answered_by_discussion": "Separates workload realism from the new action-opportunity/headroom chain."
+    },
+    {
+      "work": "A Year in LLM Serving",
+      "reason": "Most recent production trace/cache/load-balancing characterization found through 2026-09-19.",
+      "scientific_question_answered_by_discussion": "Narrows claims around production trace realism and cache/load balancing."
+    },
+    {
+      "work": "OpenTela",
+      "reason": "Operational OSDI 2026 system with released production trace.",
+      "scientific_question_answered_by_discussion": "Clarifies that production-deployed serving traces are no longer rare enough to be novelty by themselves."
+    },
+    {
+      "work": "Libra, Llumnix, MorphServe, Strata, Mooncake, SOLA, FastServe, Sarathi-Serve, DistServe",
+      "reason": "Representative modern adaptive/resource-aware serving systems.",
+      "scientific_question_answered_by_discussion": "Shows that the paper is a characterization/headroom paper, not a new-scheduler paper."
+    }
+  ],
+  "optional": [
+    {
+      "baseline": "LMetric-style KV/load multiplicative policy",
+      "when_to_add": "Only if the manuscript wants a broader modern-portfolio opportunity claim beyond the explicitly scoped SBS-vs-P6 characterization.",
+      "cost_and_implication": "Would require a new preregistered support phase because P(D) depends on the policy set; it should not be silently inserted into Phase-D V1."
+    },
+    {
+      "baseline": "FastServe-style preemptive priority policy",
+      "when_to_add": "If reviewers demand a token-preemption class beyond P6's simpler local policies.",
+      "cost_and_implication": "Likely changes action semantics and may not be compatible with existing canonical action hashes without a new adapter."
+    },
+    {
+      "baseline": "SOLA-style state-aware scheduler",
+      "when_to_add": "If the FGCS paper expands from default-relative headroom to comparing explicit adaptive controllers.",
+      "cost_and_implication": "Belongs after Phase D or in a separately preregistered baseline appendix."
+    }
+  ],
+  "decision": "No additional baseline is required before executing Phase-D V1, provided manuscript claims remain scoped to SBS-vs-P6 action opportunity and causal headroom rather than state-of-the-art scheduler superiority."
+}
