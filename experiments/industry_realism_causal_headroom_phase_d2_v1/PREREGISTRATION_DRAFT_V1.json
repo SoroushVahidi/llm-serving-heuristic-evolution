@@ -48,7 +48,17 @@
     "oracle_headroom": "H_latency(s)=max(0,max_a A_latency(s,a))",
     "reason": "request latency/flow time is an operational serving objective represented by the simulator and stored in Phase-D V1 continuation rows"
   },
-  "schema_version": "industry_realism_causal_headroom_phase_d2_v1.preregistration_draft.0.0",
+  "methodological_status": {
+    "allowed_role": "POST_HOC_REANALYSIS",
+    "forbidden_role": [
+      "fresh preregistered confirmation",
+      "statistically independent validation",
+      "fresh evidence of generalization"
+    ],
+    "reason": "mean latency was selected after Phase-D V1 outputs established that latency varies",
+    "status": "POST_HOC_OBJECTIVE_REANALYSIS_DESIGN"
+  },
+  "schema_version": "industry_realism_causal_headroom_phase_d2_v1.preregistration_draft.0.1",
   "secondary_metrics": [
     "p95_latency_improvement = p95_latency_ref - p95_latency_cf",
     "sim_duration_improvement = sim_duration_ref - sim_duration_cf"
@@ -61,5 +71,5 @@
     "minimum_clusters_for_ci": 5,
     "sparse_rule": "descriptive only when contributing windows < 5"
   },
-  "status": "DRAFT_NOT_EXECUTED"
+  "status": "POST_HOC_OBJECTIVE_REANALYSIS_DESIGN_NOT_EXECUTED"
 }

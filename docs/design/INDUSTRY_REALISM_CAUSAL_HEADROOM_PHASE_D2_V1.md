@@ -1,10 +1,22 @@
 # INDUSTRY_REALISM_CAUSAL_HEADROOM_PHASE_D2_V1
 
-Status: design draft only. Do not execute in the objective-identifiability audit task.
+Status: `EXISTING_D2_STATUS = POST_HOC_OBJECTIVE_REANALYSIS_DESIGN`.
+
+This design is not a fresh preregistered confirmation. Mean latency was selected
+after Phase-D V1 outputs had already established that latency varies in the
+existing continuation table. It may be used for exploratory effect
+characterization, ANWG-saturation mechanism analysis, and hypothesis generation.
+It must not be represented as statistically independent validation,
+generalization evidence, or fresh confirmation.
 
 ## Motivation
 
-Phase-D V1 correctly measured one-step SBS-relative causal headroom for frozen terminal ANWG and found exact-zero advantage in every branch. However, ANWG was saturated at `1.0` for every SBS reference and counterfactual continuation, while existing branch artifacts show latency/duration differences. Phase-D2 asks whether the same forced one-step alternatives affect operational latency objectives.
+Phase-D V1 correctly measured one-step SBS-relative causal headroom for frozen
+terminal ANWG and found exact-zero advantage in every branch. However, ANWG was
+saturated at `1.0` for every SBS reference and counterfactual continuation,
+while existing branch artifacts show latency/duration differences. Phase-D2
+asks, post hoc, whether the same forced one-step alternatives affect
+operational latency objectives in the already-executed Phase-D V1 population.
 
 Phase-D2 is not a rescue of Phase-D V1. Phase-D V1 remains the canonical result for terminal ANWG:
 
@@ -56,7 +68,11 @@ Beneficial latency opportunity:
 B_{latency}(s)=1 \iff max_a A_{latency}(s,a) > 0
 \]
 
-The primary metric is selected because request latency/flow time is an operational serving objective represented by the simulator and already stored in Phase-D continuation rows. It is not selected by inspecting favorable cells.
+The primary metric is selected because request latency/flow time is an
+operational serving objective represented by the simulator and already stored in
+Phase-D continuation rows. However, because the latency objective was selected
+after learning that latency varies in those rows, this analysis is exploratory
+and post hoc.
 
 ## Secondary Objectives
 
@@ -113,8 +129,12 @@ Report zeroes and harms. Do not select only positive regimes.
 
 ## Claim Boundaries
 
-D2 can support claims about modeled one-step local latency headroom under the frozen Phase-D causal population. It cannot establish:
+D2 can support exploratory claims about modeled one-step local latency headroom
+under the frozen Phase-D causal population. It cannot establish:
 
+- fresh confirmation;
+- statistically independent validation;
+- generalization to unused production windows;
 - learned-policy gains;
 - closed-loop selector gains;
 - production deployment improvements;
