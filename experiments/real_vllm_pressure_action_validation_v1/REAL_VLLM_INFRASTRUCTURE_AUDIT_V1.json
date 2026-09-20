@@ -1,0 +1,55 @@
+{
+  "schema_version": "real_vllm_infrastructure_audit_v1.0",
+  "audit_status": "COMPLETE",
+  "starting_commit": "b196c3e27d1e5a0d43fd0664e24e51090ec8e442",
+  "clean_execution_worktree": true,
+  "primary_dirty_worktree_preserved": true,
+  "hardware": {
+    "compute_capability": [
+      12,
+      0
+    ],
+    "count": 1,
+    "cuda_driver_reported": "13.0",
+    "driver": "580.173.02",
+    "name": "NVIDIA GeForce RTX 5060 Ti",
+    "vram_total_mib": 16311
+  },
+  "software": {
+    "cuda_python": "13.3.1",
+    "flashinfer_python": "0.6.16.post3",
+    "torch": "2.13.0+cu130",
+    "transformers": "5.15.1",
+    "triton": "3.7.1",
+    "uv": "0.12.5",
+    "vllm": "0.27.1"
+  },
+  "model": {
+    "local_only_config_tokenizer_loaded": true,
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "snapshot": "/home/soroush/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "snapshot_size_bytes": 999586347
+  },
+  "existing_capabilities": {
+    "vllm_startup": true,
+    "request_replay": true,
+    "ttft_and_completion_latency": true,
+    "scheduler_trace": true,
+    "queue_and_running_trace": true,
+    "kv_telemetry_parser": false,
+    "exact_one_step_action_hook": false,
+    "selector_training": false
+  },
+  "existing_runs": {
+    "prefill_decode_local_v1": "COMPLETE_INTEGRITY_PASS",
+    "native_vllm_chunk_budget_semantics_probe_v1": "COMPLETE_INTEGRITY_PASS"
+  },
+  "active_local_vllm_process": false,
+  "active_wulver_job_for_this_project": false,
+  "latest_literature_audit": {
+    "official_vllm_scheduler_docs": "https://docs.vllm.ai/en/stable/api/vllm/config/scheduler/",
+    "official_vllm_optimization_docs": "https://docs.vllm.ai/en/latest/configuration/optimization/",
+    "checked": "2026-09-20"
+  },
+  "decision": "Use existing completed local validation; do not launch another experiment in this task."
+}
