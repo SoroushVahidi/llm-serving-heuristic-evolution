@@ -1,0 +1,22 @@
+# Performance Evaluation Submission Checklist
+
+- [x] **Manuscript source (`main.tex`)**: READY
+- [x] **Author-review PDF (`main.pdf`)**: READY
+- [x] **References (`references.bib`)**: READY
+- [x] **Compiled bibliography (`main.bbl`)**: READY
+- [x] **Separate figures (`pe_*.pdf`)**: READY
+- [x] **Highlights (`performance_evaluation_highlights.txt`)**: READY
+- [x] **Cover letter (`cover_letter.txt`)**: READY
+- [x] **Funding statement**: READY (Included in manuscript)
+- [x] **Acknowledgements**: READY (Included in manuscript)
+- [x] **AI declaration**: READY (Included in manuscript)
+- [x] **Competing interests**: READY (Included in manuscript)
+- [x] **Data Availability + DOI**: READY (Included in manuscript, DOI minted: 10.5281/zenodo.22865294)
+- [ ] **Elsevier declarations-tool action**: PORTAL_ONLY
+- [ ] **Suggested reviewers**: PORTAL_ONLY (If requested by Editorial Manager)
+- [ ] **ORCID integration**: PORTAL_ONLY
+- [ ] **Corresponding-author metadata**: PORTAL_ONLY
+- [x] **Article type**: Original research article (READY)
+- [x] **Abstract word count**: <= 250 words (READY)
+- [x] **Keywords**: 1-7 keywords (READY)
+- [x] **Graphical abstract**: NOT_APPLICABLE (Deliberately skipped)

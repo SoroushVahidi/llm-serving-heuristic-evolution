@@ -1,0 +1,19 @@
+Dear Editor,
+
+Please find enclosed our manuscript, "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay," for consideration as an Original Research Article in Performance Evaluation.
+
+In this work, we present a performance-evaluation methodology to assess whether adaptive scheduling for Large Language Model (LLM) serving is actionable before introducing complex controllers. Using a GPU-calibrated discrete-event simulator and faithful replay of production-derived traces (Azure 2023 and BurstGPT), we demonstrate that under abundant resources, default scheduling rules produce the optimal action 100% of the time, resulting in zero action opportunity. However, we identify that specific resource pressures—namely, active-sequence constraints and KV-cache capacity—create "disagreement states" where alternative scheduling decisions become executable.
+
+By rigorously evaluating a confirmatory subset of 720 fresh, untouched disagreement states, we establish that 590 of these states yield beneficial latency headroom (conditional probability ~82%). Our clustered bootstrap analysis establishes a modest but statistically positive 95% confidence interval for this oracle headroom ([0.1909, 3.5462] ms). Crucially, we distinguish between theoretical oracle headroom and practical deployment gain, offering a conservative framework for future adaptive scheduler evaluations.
+
+We disclose that an earlier manuscript describing a predecessor study, titled "The Exploitability Gap in LLM-Serving Scheduler Portfolios," was submitted to LLM 2026, accepted, but subsequently withdrawn before publication. No proceedings or DOI publication resulted from that version. The current manuscript is substantially revised, mathematically corrected, and scientifically redirected toward performance evaluation. 
+
+This research received in-kind computational support through the Google Cloud Research Credits Program (USD 1,000) and computational/tooling support from CloudRift Inc. The sponsors had no role in the study design or the decision to submit. The work is not under consideration elsewhere.
+
+A comprehensive reproducibility archive, including all derived trace configurations and frozen result tables required to replicate our findings, is publicly available at DOI: 10.5281/zenodo.22865294.
+
+Thank you for considering our manuscript.
+
+Sincerely,
+Soroush Vahidi
+New Jersey Institute of Technology
