@@ -43,15 +43,17 @@ one-axis pressure map then showed that KV-capacity and active-sequence
 constraints, rather than arrival scaling through $8\times$, created
 disagreement. On untouched fresh windows, the confirmatory latency study found
 720 disagreement states, 590 with a beneficial alternative,
-$P(B_{\mathrm{LAT}}\mid D)=0.8194$, and mean oracle headroom of 1.996 ms
-with a clustered 95\% confidence interval $[0.185,3.497]$ ms. Terminal ANWG
+$P(B_{\mathrm{LAT}}\mid D)=0.8194$, and mean oracle headroom of 1.9958 ms
+with a clustered 95\% confidence interval $[0.1846,3.4974]$ ms. Terminal ANWG
 saturated at one and therefore concealed latency differences in the earlier
-pressure study. A bounded local vLLM validation supported the pressure/action
-mechanism at the observable queue and scheduler-trace levels, but did not
-implement a controlled one-step intervention and did not reproduce the
-simulator's qualitative reversal. Thus adaptive scheduling is conditional:
-resource pressure must first create action opportunity, and opportunity must
-then be tested for causal value; neither step establishes a learned deployable
+pressure study. A bounded local vLLM validation showed that resource pressure
+changes observable queue and scheduler-trace behavior, supporting the
+pressure/action-opportunity mechanism, but it did not implement a controlled
+one-step intervention or establish deployed latency/SLO/throughput gains.
+Thus adaptive scheduling is conditional: resource pressure must first create
+action support, and that support must then show causal value large enough to
+justify control overhead. This paper characterizes those support conditions;
+it does not propose a new scheduler or establish a learned deployable
 selector.
 
 \keywords{LLM serving \and scheduling \and resource pressure \and causal
@@ -71,13 +73,15 @@ motivated adaptation.
 
 We therefore ask a prior question to scheduler design: \emph{when is there
 actually a different useful action to take?} This question complements
-systems that improve routing, caching, preemption, batching, or resource
-configuration. ServeGen demonstrates why production-shaped workloads matter
-for serving evaluation~\cite{servegen2025}; LMetric demonstrates that simple
-KV-aware and load-aware routing can materially improve latency on real
-workloads~\cite{lmetric2026}. We do not replace these systems. We measure a
-different layer of the argument: the transition from resource pressure to
-canonical executable choice, and then from choice to local causal value.
+systems that design better schedulers, migrate or rebalance requests,
+optimize batching, disaggregate prefill from decode, predict policy choices,
+or orchestrate resources. ServeGen demonstrates why production-shaped
+workloads matter for serving evaluation~\cite{servegen2025}; LMetric
+demonstrates that simple KV-aware and load-aware routing can materially
+improve latency on real workloads~\cite{lmetric2026}. We do not replace these
+systems or claim scheduler superiority over them. We measure a different
+layer of the argument: the transition from resource pressure to canonical
+executable choice, and then from choice to local causal value.
 
 The paper follows the decomposition
 \begin{equation}
@@ -94,24 +98,36 @@ SBS, while $B_{\mathrm{LAT}}$ means that at least one such action improves
 one-step SBS-relative mean latency. The last arrow is deliberately left
 unclaimed: a causal opportunity is not a learned controller.
 
-We answer four research questions.
+The contribution is not the observation that pressure can make policies
+differ. The contribution is the empirical characterization of when a default
+has no executable alternative in the studied serving replay, which pressure
+dimensions create action support, whether that support reproduces on fresh
+windows, whether disagreement states contain default-relative latency
+headroom, whether the conclusion depends on the objective, and how far a
+bounded real serving engine supports the same mechanism.
+
+We answer six empirical questions.
 \begin{description}
-\item[RQ1 -- Action opportunity.] Under faithful production-derived replay,
+\item[RQ1 -- Abundance.] Under faithful production-derived replay,
 how often do SBS and the P6 portfolio produce genuinely different canonical
 executable actions?
-\item[RQ2 -- Resource-regime transition.] How does resource pressure govern
-the transition from scheduler agreement to disagreement?
-\item[RQ3 -- Causal headroom.] When disagreement exists, how often is SBS
+\item[RQ2 -- Pressure support.] Which pressure dimensions create executable
+disagreement, and which do not?
+\item[RQ3 -- Fresh support.] Does the agreement-to-disagreement transition
+reproduce on untouched non-overlapping production-derived windows?
+\item[RQ4 -- Causal headroom.] Conditional on disagreement, how often is SBS
 locally suboptimal for operational latency, and how large is one-step oracle
 headroom?
-\item[RQ4 -- Objective and system validity.] How sensitive are conclusions
-to the objective, and does the pressure/action mechanism appear in a bounded
-real-vLLM deployment?
+\item[RQ5 -- Objective.] Does the conclusion depend on measuring
+deadline goodput or latency?
+\item[RQ6 -- Real system.] Does a bounded real-vLLM deployment show
+the corresponding pressure/action mechanism, without claiming real causal
+headroom?
 \end{description}
 
 The central result is conditional rather than universal. Native replay is
 action-null under the abundant-resource baseline. Concrete KV and active
-sequence pressure creates executable alternatives. Among selected untouched
+sequence pressures create executable alternatives. Among selected untouched
 fresh disagreement states, most contain positive local mean-latency
 headroom, but the mean is modest and the opportunity prevalence can be tiny.
 The real-system result supports the structural pressure/action mechanism only
@@ -125,13 +141,16 @@ This paper makes four contributions:
   ranking differences.
   \item A production-derived regime characterization showing action collapse
   under native resource abundance and disagreement onset under concrete KV or
-  active-sequence pressure.
+  active-sequence pressure, with the support transition repeated on untouched
+  windows.
   \item A fresh default-relative one-step causal analysis that confirms
   positive mean-latency headroom on untouched disagreement states while
-  retaining the full-state opportunity denominator.
+  retaining the full-state opportunity denominator and treating the oracle as
+  an opportunity bound rather than a scheduler.
   \item An objective and systems qualification: terminal ANWG can saturate
-  while latency changes, and bounded vLLM evidence supports R1/R2 pressure
-  and action differentiation without supplying R3 causal intervention.
+  while latency changes, and bounded vLLM evidence supports the pressure and
+  action-differentiation mechanism without supplying real-system causal
+  latency magnitude or deployed-policy evidence.
 \end{enumerate}
 
 \section{Related Work and Positioning}
@@ -154,7 +173,7 @@ evidence~\cite{burstgpt2025,azurepublicdataset2023}; the recent longitudinal
 study by Nixon et al. further emphasizes workload evolution, caching, and
 load-balancing over a year of production traffic~\cite{yearllmserving2026}.
 
-ServeGen and OpenTela narrow any generic claim that production realism or
+ServeGen and OpenTela narrow any generic claim that workload realism or
 operational trace infrastructure is itself novel~\cite{servegen2025,opentela2026}.
 LMetric is especially close: it combines a KV-aware indicator with an
 instance-load indicator, reports production-style workloads, and derives
@@ -164,6 +183,15 @@ is complementary: in a fixed workload/resource regime, do the default and
 alternatives expose different canonical actions at all, and does forcing one
 alternative action have default-relative causal value?
 
+For this reason, systems such as ServeGen, Libra, Llumnix, MorphServe,
+Strata, LMetric, and OpenTela are related work and design context, not
+unimplemented baselines for a superiority claim. Reproducing each system
+would be necessary for a paper claiming that a new scheduler beats them. This
+paper instead asks whether an executable action opportunity and local
+default-relative headroom exist before building an adaptive selector. The
+SBS/VBS-style quantities used below are non-deployable references for
+opportunity measurement, not schedulers proposed for production.
+
 Table~\ref{tab:closest} records the scope honestly. A ``partial'' entry means
 that a work contains related evidence but does not use the paper's canonical
 action or one-step estimand.
@@ -172,7 +200,7 @@ action or one-step estimand.
 \centering
 \scriptsize
 \caption{Closest-work differentiation. We do not claim that other systems
-omit pressure, production traces, or adaptive mechanisms; the distinction is
+omit pressure, production-derived traces, or adaptive mechanisms; the distinction is
 the action-level and default-relative causal measurement question.}
 \label{tab:closest}
 \setlength{\tabcolsep}{3pt}
@@ -181,11 +209,11 @@ the action-level and default-relative causal measurement question.}
 \toprule
 Work & Prod.-derived workloads & Pressure sweep & Proposes system & Canonical disagreement & One-step default intervention & Real system \\
 \midrule
-ServeGen & Yes & No & Generator & No & No & Production workload study \\
+ServeGen & Yes & No & Generator & No & No & Workload study \\
 LMetric & Yes & Implicit & Yes & No & No & Yes \\
 OpenTela & Operational traces & No & Control plane & No & No & Yes \\
 Llumnix / SOLA & Selected regimes & Partial & Yes & No & No & System evaluation \\
-Mooncake / Strata & Cache/resource regimes & Partial & Yes & No & No & Yes / production \\
+Mooncake / Strata & Cache/resource regimes & Partial & Yes & No & No & Yes / operational \\
 This work & Yes & Yes & No & Yes, $P(D)$ & Yes, simulator only & Bounded partial \\
 \bottomrule
 \end{tabular}
@@ -201,7 +229,7 @@ general. It is the narrow serving characterization in Eq.~\ref{eq:chain}.
 \label{sec:methods}
 
 \subsection{Evidence hierarchy and workload inventory}
-We report four evidence tiers. Tier 1 is native production-trace replay.
+We report four evidence tiers. Tier 1 is native production-derived trace replay.
 Tier 2 is production-derived aggregate or window validation. Tier 3 is a
 controlled transformation of a real trace, such as one-axis resource caps.
 Tier 4 is synthetic or mechanistic workload construction. RQ1 uses Tier 1;
@@ -225,8 +253,12 @@ default-relative characterization, not an exhaustive set of 2026 schedulers.
 
 \subsection{Canonical action opportunity}
 Let $\mathcal{A}_6(s)$ be the set of canonical executable actions produced by
-the six portfolio policies at state $s$, after action deduplication. Let
-$a_{\sbs}(s)$ be SBS's action. We define
+the six portfolio policies at state $s$, after action deduplication. A
+canonical action is the simulator-executable admission, batch, and request
+ordering decision after infeasible or semantically identical variants have
+been collapsed. The default scheduler is SBS, the fixed single best policy
+used as the canonical baseline for the frozen replay protocol; it is not
+refit per state. Let $a_{\sbs}(s)$ be SBS's action. We define
 \begin{equation}
   D(s) = \mathbf{1}\left[\exists a\in\mathcal{A}_6(s):
   a\ne a_{\sbs}(s)\right].
@@ -236,6 +268,8 @@ The opportunity prevalence is $P(D)=\sum_sD(s)/|\mathcal{S}_{\mathrm{all}}|$,
 where the denominator is every valid SBS decision state, not only states
 where policy scores differ. A policy ranking change that produces the same
 admission, batch, and request order is action collapse, not opportunity.
+An alternative action is any executable member of $\mathcal{A}_6(s)$ that is
+not equal to $a_{\sbs}(s)$.
 
 This definition matters operationally. Whole-policy comparisons can show a
 latency or goodput difference accumulated over many decisions, but cannot say
@@ -246,7 +280,8 @@ action diversity alone says nothing about usefulness.
 For every disagreement state $s$ and canonical alternative $a$, we clone the
 state, force exactly one action, and return to SBS for the continuation. Denote
 the resulting continuation value by $Q_{\sbs}(s,a)$. This is a local
-counterfactual, not selector performance.
+counterfactual, not selector performance: it estimates the one-step effect of
+changing the current action while holding the subsequent default policy fixed.
 
 For the fresh primary latency endpoint, continuation mean latency includes
 active, queued, and future requests belonging to the continuation, excluding
@@ -270,9 +305,16 @@ not an exact deployable-performance equation. A high conditional benefit can
 coexist with a tiny overall opportunity.
 
 The confirmatory mean uses a faithful-window clustered bootstrap with 2,000
-replicates and seed 20260920. Its verdict requires positive mean headroom and
-a clustered 95\% lower endpoint above zero. State counts are not treated as
-independent samples.
+replicates and seed 20260920. The cluster unit is the original fresh trace
+window contributing disagreement states, so multiple states from one window
+do not become independent experimental units. Its verdict requires positive
+mean headroom and a clustered 95\% lower endpoint above zero.
+
+A resource-pressure regime is a workload window plus one frozen one-axis
+intervention, such as a KV-capacity cap, active-sequence cap, or arrival-rate
+scaling factor. ``Support'' and ``opportunity'' refer only to the existence
+of executable non-SBS actions under that regime; usefulness requires the
+separate causal latency test above.
 
 \subsection{Objective audit}
 The historical objective is arrival-normalized weighted goodput,
@@ -302,7 +344,8 @@ action.
 \centering
 \includegraphics[width=0.98\linewidth]{figures/fgcs_pipeline.pdf}
 \caption{The paper's evidence chain. A predictor is downstream of both
-action opportunity and causal value; it is not assumed by the characterization.}
+action opportunity and causal value; deployment benefit is not assumed by the
+characterization.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -311,7 +354,8 @@ action opportunity and causal value; it is not assumed by the characterization.}
 \includegraphics[width=0.98\linewidth]{figures/fgcs_disagreement_rates.pdf}
 \caption{Native production-derived replay is action-null. Selected pressure
 conditions create nonzero canonical disagreement, with rates depending on
-workload and pressure axis.}
+workload and pressure axis. This is support for adaptive action selection,
+not evidence of selector benefit by itself.}
 \label{fig:disagreement}
 \end{figure}
 
@@ -363,7 +407,9 @@ BurstGPT & KV cap & kv\_16000 & kv\_16000 & kv\_16000 \\
 
 The transition is the main regime result: pressure does not automatically
 create useful diversity, but concrete resource binding can turn a collapsed
-action set into a nontrivial one.
+action set into a nontrivial one. In the studied traces, arrival-rate scaling
+alone did not create support through the tested range; tight KV capacity and
+active-sequence limits were the operative dimensions.
 
 \section{Results: Fresh Support and Causal Latency Headroom}
 \label{sec:fresh}
@@ -377,19 +423,22 @@ The confirmatory intervention found 590 beneficial states, giving
 \begin{equation*}
  P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194444444.
 \end{equation*}
-Mean oracle latency headroom was 0.001995791 s (1.996 ms), with a clustered
-95\% CI of [0.000184589, 0.003497418] s ([0.185, 3.497] ms). The frozen
+Mean oracle latency headroom was 0.001995791 s (1.9958 ms), with a clustered
+95\% CI of [0.000184589, 0.003497418] s ([0.1846, 3.4974] ms). The frozen
 verdict was \texttt{LATENCY\_HEADROOM\_CONFIRMED}. This is statistically
-supported but operationally modest. It is not the claim that 81.9\% of all
-scheduler decisions can be improved: $P(D)$ is often below one percent in
-the selected regimes and the conditional statistic is defined only on
-disagreement states.
+supported but operationally modest. It establishes measurable local
+default-relative latency opportunity in the disagreement-support regime, not
+that the magnitude exceeds the engineering cost of adaptation. It is also
+not the claim that 81.9\% of all scheduler decisions can be improved: $P(D)$
+is often below one percent in the selected regimes and the conditional
+statistic is defined only on disagreement states.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/fgcs_fresh_headroom.pdf}
 \caption{Fresh causal result by selected workload/regime. Bars show mean
-oracle headroom in milliseconds; the line shows $P(B_{\mathrm{LAT}}\mid D)$.}
+oracle headroom in milliseconds; the line shows $P(B_{\mathrm{LAT}}\mid D)$.
+The oracle is a non-deployable opportunity bound over observed alternatives.}
 \label{fig:fresh}
 \end{figure}
 
@@ -432,11 +481,19 @@ Eq.~\ref{eq:decomposition}: whether a different action exists, whether it
 helps conditional on existing, and whether its effect is large enough to
 matter relative to system noise and control overhead.
 
+The practical reading is deliberately staged. Under abundant resources, this
+study observed no canonical disagreement and therefore no demonstrated action
+support for adaptive selection. Under constrained KV or active-sequence
+regimes, disagreement emerges and creates an executable opportunity. Within
+those disagreement states, fresh causal evidence shows frequent
+latency-beneficial alternatives. Opportunity and headroom still do not prove
+that a deployed adaptive selector is worthwhile.
+
 \section{Objective Sensitivity: ANWG Saturation}
 \label{sec:anwg}
 
 The earlier Phase-D V1 pressure study completed with causal integrity and
-complete branch coverage, but all terminal ANWG values were one and all ANWG
+complete branch coverage, but all terminal ANWG values were 1.0 and all ANWG
 advantages were zero. An identifiability audit found no implementation bug:
 requests completed within deadlines and the objective saturated. Simple
 sensitivity cases confirmed that ANWG distinguishes missed deadlines or
@@ -458,12 +515,17 @@ metric yields the more favorable conclusion.
 \label{sec:real}
 
 The bounded systems validation used one RTX 5060 Ti, vLLM 0.27.1,
-Qwen2.5-0.5B-Instruct, and deterministic token-shape replay. It completed 40
-FULL-versus-CHUNKED runs and a 20-run native chunked-prefill budget probe.
-Queueing and scheduler traces were retained. The validation is classified
-\texttt{PARTIAL\_SUPPORT}: R1 pressure validation and R2 observable action
-differentiation passed; R3 exact one-step controlled intervention was not
-available.
+Qwen2.5-0.5B-Instruct, and deterministic token-shape replay. It completed
+40 full/chunked runs and a 20-run native chunked-prefill budget probe.
+Queueing and scheduler traces were retained. The verdict
+\path{PARTIAL_SUPPORT} means support for the mechanism but not for the full
+causal or deployment claim. Level 1 is demonstrated only in controlled
+replay/intervention: at disagreement states, changing the canonical action can
+expose one-step latency headroom. Level 2 is supported in real vLLM:
+resource pressure changes observable queue and scheduling behavior. Level 3
+is not demonstrated: the paper does not show that a deployed adaptive
+selector on real vLLM would recover 1.9958 ms or improve end-to-end latency,
+SLOs, or throughput.
 
 The native budget probe held chunked prefill fixed and varied the token budget.
 T512 produced 1,680 scheduler steps, 165 mixed prefill/decode steps, and 194
@@ -483,7 +545,8 @@ not real-system causal confirmation of Eq.~\ref{eq:latency}.
 \begin{table}[t]
 \centering
 \scriptsize
-\caption{Simulator-to-real-system correspondence.}
+\caption{Simulator-to-real-system correspondence. The real-system column
+supports pressure/action correspondence, not one-step causal headroom.}
 \label{tab:real}
 \begin{tabular}{@{}p{0.26\linewidth}p{0.29\linewidth}p{0.29\linewidth}@{}}
 \toprule
@@ -513,7 +576,11 @@ This matters because scheduler diversity is not scheduler value. A system
 that produces many distinct actions may still optimize the wrong objective;
 a system with high conditional benefit may have too few disagreement states to
 justify a router. The decomposition in Eq.~\ref{eq:decomposition} is a
-practical diagnostic, not a promise of deployment gain.
+practical diagnostic, not a promise of deployment gain. The measured 1.9958
+ms mean headroom is therefore evidence that causal opportunity exists in the
+sampled disagreement-support regime; deciding whether that opportunity
+exceeds selector latency, engineering complexity, and operational risk is a
+separate deployment question.
 
 \subsection{Relation to modern adaptive systems}
 LMetric, SOLA, Llumnix, MorphServe, Strata, Libra, FastServe, and related
@@ -523,20 +590,29 @@ trace studies answer how to obtain or operate on realistic workload evidence.
 Our measurement asks when adaptation is unnecessary because canonical actions
 collapse, and when a local alternative is causally useful relative to a
 strong default. The questions are complementary; the present P6 study does
-not claim to replace or exhaust modern schedulers.
+not claim to replace or exhaust modern schedulers, nor does the literature
+comparison substitute for a benchmark when making a direct performance claim.
 
 \subsection{Limitations}
-The P6 portfolio is not the universe of 2026 schedulers. The study uses three
-principal production-derived trace families and a simulator/replay semantic
-model. BurstGPT did not contribute a selected fresh causal regime. Fresh
-headroom is a mean-latency one-step oracle result, not a learned selector or
-production improvement; its mean effect is modest. The real-vLLM validation
-uses one model, GPU, and mechanism family, uses token-shape replay rather
-than exact private prompts, and supports R1/R2 only. It has no exact
+The supported scope is the studied production-derived trace families, the
+specific pressure regimes tested, the controlled replay/intervention
+framework, and the bounded real-vLLM configuration. The P6 portfolio is not
+the universe of 2026 schedulers, and different portfolios may expose
+different support. BurstGPT did not contribute a selected fresh causal
+regime. Fresh headroom is a mean-latency one-step oracle result, not a
+learned selector or production improvement; its mean effect is modest and may
+or may not exceed selector overhead. Fresh non-overlapping windows provide
+robustness within the trace families, not universal external validity. The
+real-vLLM validation uses one model, one RTX 5060 Ti GPU, vLLM 0.27.1, and
+one mechanism family, uses token-shape replay rather than exact private
+prompts, and supports the pressure/action mechanism only. It has no exact
 one-step real-system intervention, and the simulator-to-vLLM action mapping
 is imperfect. ANWG saturation limits conclusions under that objective.
-Finally, we make no claim of learned predictability, cross-distribution
-generalization, universal scheduler superiority, or acceptance probability.
+Finally, we make no claim over all LLM-serving workloads, GPU architectures,
+model sizes, scheduler portfolios, serving systems, or forms of resource
+pressure; no claim of learned predictability, universal adaptive benefit,
+universal scheduler superiority, or impossibility; and no claim that measured
+causal headroom automatically justifies deployment.
 
 \section{Reproducibility and Artifact Scope}
 \label{sec:repro}
@@ -544,28 +620,23 @@ generalization, universal scheduler superiority, or acceptance probability.
 The public artifact records trace provenance, frozen manifests, support grids,
 fresh non-overlap proofs, causal state and action manifests, source hashes,
 bootstrap seed 20260920, and the real-vLLM environment. The principal result
-artifacts are:
-\begin{itemize}
-  \item Phase A native replay: \texttt{phase\_a\_v1}
-  \item Phase B pressure map: \texttt{phase\_b\_v2}
-  \item Fresh causal latency: \texttt{fresh\_production\_latency\_headroom\_confirmatory\_v1}
-  \item Real vLLM package: \texttt{real\_vllm\_pressure\_action\_validation\_v1}
-\end{itemize}
+packages are Phase A native replay, Phase B pressure mapping, fresh
+confirmatory causal latency, and real-vLLM pressure/action validation.
 Historical selector and joint-240 artifacts remain available but are not
 treated as evidence of learned deployment readiness.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-Adaptive LLM-serving scheduling should be evaluated in stages. Faithful
+Adaptive LLM serving should be evaluated in stages. Faithful
 production-derived replay can be action-null under abundant resources;
 resource pressure can create canonical executable alternatives; and fresh
 one-step replay can show that some alternatives contain positive local
 mean-latency headroom. In this study, the fresh confirmation found 590
-beneficial states among 720 disagreement states, with 1.996 ms mean oracle
-headroom and a positive clustered confidence interval. The result is
-conditional and modest: $P(B_{\mathrm{LAT}}\mid D)$ is not $P(B_{\mathrm{LAT}})$,
-and neither is a deployable selector.
+beneficial states among 720 disagreement states. Mean oracle headroom was
+1.9958 ms, with a positive clustered confidence interval. The result is
+conditional and modest: $P(B_{\mathrm{LAT}}\mid D)$ is not
+$P(B_{\mathrm{LAT}})$, and neither is a deployable selector.
 
 Terminal ANWG saturation demonstrates why objective choice matters, while
 bounded vLLM evidence provides partial real-system support for pressure and
