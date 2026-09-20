@@ -1,6 +1,6 @@
 # FGCS Submission Roadmap and Handoff
 
-**STATUS:** ACTIVE / AUTHOR-REVIEW STAGE
+STATUS: ACTIVE / AUTHOR-REVIEW STAGE
 
 **CANONICAL CURRENT-STATE DOCUMENT:**
 `docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`
@@ -23,7 +23,7 @@ Action Opportunity and Causal Headroom in Production-Derived Replay
 
 | Item | Value |
 |---|---|
-| Default branch | `main` @ `617d6dce` |
+| Default branch | `main` @ `dc66d253` |
 | Canonical historical/scientific integration branch | `contextual-compositional-heuristics-20260731` @ `76a3cf3e` (in sync with origin) |
 | Current FGCS manuscript revision branch | `revise/fgcs-prior-reviewer-risk-closure-20260920` @ `b5ffe4f5` |
 | Revision branch pushed? | **NO** (local only, 3 commits ahead of the canonical branch) |
