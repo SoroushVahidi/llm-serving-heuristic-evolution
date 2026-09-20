@@ -23,16 +23,16 @@ Action Opportunity and Causal Headroom in Production-Derived Replay
 
 | Item | Value |
 |---|---|
-| Default branch | `main` @ `dc66d253` |
-| Canonical historical/scientific integration branch | `contextual-compositional-heuristics-20260731` @ `76a3cf3e` (in sync with origin) |
-| Current FGCS manuscript revision branch | `revise/fgcs-prior-reviewer-risk-closure-20260920` @ `b5ffe4f5` |
-| Revision branch pushed? | **NO** (local only, 3 commits ahead of the canonical branch) |
+| Default branch | `main` @ `4e868d8` (review PDF refreshed post-correction; see below) |
+| Canonical historical/scientific integration branch | `contextual-compositional-heuristics-20260731` @ `a8fd735` (in sync with origin; bootstrap cluster-key correction) |
+| Current FGCS manuscript revision branch | `revise/fgcs-prior-reviewer-risk-closure-20260920` @ `a4823a4` (rebased onto `a8fd735`; pushed to origin) |
+| Revision branch pushed? | **YES** (origin/revise/fgcs-prior-reviewer-risk-closure-20260920) |
 | Revision worktree | `/home/soroush/llm-serving-heuristic-evolution-worktrees/fgcs-prior-reviewer-risk-closure-20260920` (clean) |
-| Author-review PDF on `main` | YES — `paper/llm_scheduler_adaptation_causal_headroom.pdf` (commit `617d6dce`), SHA-256 `c810cfb1b1dd41d086810f9806fcd5fd91ff1730e0638e6600c741255f581fda`, 15 pages, built from revision commit `b5ffe4f5` |
+| Author-review PDF on `main` | YES — `paper/llm_scheduler_adaptation_causal_headroom.pdf`, refreshed from the corrected revision build, SHA-256 `e67763f7320c2d56d0c1641d7bce8d3292fea7c0ab342cdabecc69407c4ffb86`, 15 pages, built from revision commit `a4823a4` |
 
 The revision branch contains the manuscript source (`paper/llm2026/main.tex`),
 the direct public-repository-link update, and all reviewer-risk-audit fixes.
-It has **not** been merged into `main` and **not** been pushed.
+It has **not** been merged into `main`.
 
 ---
 
@@ -80,7 +80,12 @@ paper that ships a new scheduler. The paper does **not** primarily propose:
   disagreement** (arrival scaling up to 8x does not).
 - **Fresh untouched-window causal study:** 720 disagreement states; 590
   beneficial states; P(B_LAT | D) = 0.8194; mean oracle latency headroom
-  1.9958 ms; clustered 95% CI [0.1846, 3.4974] ms; bootstrap seed 20260920.
+  1.9958 ms; clustered 95% CI [0.1909, 3.5462] ms over 36 faithful source
+  windows; bootstrap seed 20260920. (Cluster key corrected 2026-09-20 from
+  bare `window_index` — 26 merged integer clusters — to
+  `(source_dataset, window_index)` = 36 clusters, implementing the
+  pre-registered "faithful source window" unit; see
+  `experiments/fresh_production_latency_headroom_confirmatory_v1/BOOTSTRAP_CLUSTER_KEY_CORRECTION_20260920.md`.)
 - **ANWG objective sensitivity:** terminal ANWG saturated at 1.0 in the earlier
   objective study, demonstrating objective choice matters — not intervention
   failure.
@@ -156,10 +161,8 @@ Stage 8 cover letter).
 
 - **Path (public):** `paper/llm_scheduler_adaptation_causal_headroom.pdf`
 - **Branch:** `main`
-- **Commit:** `617d6dce`
-- **SHA-256:** `c810cfb1b1dd41d086810f9806fcd5fd91ff1730e0638e6600c741255f581fda`
+- **Source build:** revision commit `a4823a4` (post-correction build; PDF byte-identical to `paper/llm2026/main.pdf` on the revision branch)
 - **Pages:** 15
-- **Built from:** revision commit `b5ffe4f5`
 
 > **AUTHOR-REVIEW PDF ≠ FINAL SUBMISSION PDF.** This review copy still precedes
 > final disclosures/acknowledgments, FGCS template conversion, and visual
@@ -177,7 +180,8 @@ one issue at a time.
 
 | ID | Issue | Priority | Next action |
 |---|---|---|---|
-| A1 | **Table 3 window-count discrepancy:** visible per-row windows are 2, 15, 14, 17, 1 (sum = 49), but the caption reportedly states row-window sum = 67. | HIGH | Verify against the canonical artifact **before** changing anything; do not guess the correct value. |
+| A1 | **Table 3 window-count discrepancy — RESOLVED (DONE, 2026-09-20).** Verified meanings: per-regime window *appearances* sum to 49 (2+15+14+17+1; a source window may contribute to multiple regimes, so rows are not additive); **36** distinct physical source windows (19 Azure-code + 17 Azure-conversation) are the faithful-window bootstrap clusters; the previously reported 67 was stale/invalid; the frozen code had mistakenly produced 26 integer-`window_index` clusters because `window_index` is source-local. Table 3 now reports "Source windows" per regime with total row "36 distinct" and an explanatory caption. | DONE | — |
+| A1b | **Bootstrap cluster-key correction (DONE, 2026-09-20).** Corrected key = `(source_dataset, window_index)` (pre-registered "faithful source window" unit; bug fix, not a method change). 36 clusters; CI [0.184589, 3.497418] ms → [0.190884, 3.546196] ms; all point estimates, regimes, 720/590/0.8194, and the POSITIVE confirmatory verdict unchanged. Canonical correction commit `a8fd735`; manuscript revision commit `a4823a4`; provenance note: `experiments/fresh_production_latency_headroom_confirmatory_v1/BOOTSTRAP_CLUSTER_KEY_CORRECTION_20260920.md`. | DONE | — |
 | A2 | Clarify pooled weighting/composition of the 720-state causal aggregate if needed for reviewer clarity. | MEDIUM | Check against `FRESH_LATENCY_CAUSAL_RESULT_V1.json` / bootstrap artifact. |
 
 ### B. Venue / template compliance
@@ -229,7 +233,7 @@ one issue at a time.
 |---|---|---|---|
 | G21 | Table 2 too compressed; header columns run together; increase row spacing + column clarity; replace raw config IDs. | MEDIUM | Stage 5. |
 | G22 | Table 1 small/dense; consider full-width in final Elsevier layout. | MEDIUM | Stage 5/6. |
-| G23 | Table 3: resolve 49-vs-67 discrepancy first, then row spacing. | HIGH (depends on A1) | After A1. |
+| G23 | Table 3: window-count semantics resolved (see A1/A1b); remaining row-spacing polish deferred to the visual pass. | LOW | After A1. |
 | G24 | Apply adequate row spacing consistently (e.g., appropriate `\arraystretch`) without wasting page space. | LOW | Stage 5. |
 
 ### H. Equations
@@ -401,7 +405,7 @@ claims. A new agent should jump directly to these instead of searching:
 3. **Do not merge branches yet.** The revision branch stays separate until author approval (Stage 9).
 4. **Do not trust old "FINAL" labels** in historical LLM 2026 docs as current submission status. They are HISTORICAL_ONLY.
 5. **Verify actual Git state before changes** (`git fetch --prune`, `git status`, `git worktree list`).
-6. **The next substantive task is the Table 3 numeric discrepancy / factual consistency check** (Stage 1, item A1). Verify against the canonical artifact before changing anything; do not guess.
+6. **Stage 1 factual/numeric blockers (A1, A1b) are DONE** (2026-09-20); the next substantive task follows the ordered roadmap below.
 7. **Work one issue at a time.**
 8. **Preserve the one-query-at-a-time workflow with the user.**
 9. **After every substantive change:** build the PDF, verify affected numbers, record the branch/SHA, and update this roadmap.
