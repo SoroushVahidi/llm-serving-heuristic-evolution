@@ -1,0 +1,29 @@
+{
+  "schema_version": "fgcs_readiness_checkpoint_manuscript_rewrite_v1.0",
+  "starting_commit": "ba739597a076e7468b957ccd1080054a31b15cd8",
+  "manuscript": "paper/llm2026/main.tex",
+  "compiled_pdf": "paper/llm2026/main.pdf",
+  "dimensions": {
+    "novelty": 18,
+    "technical_depth": 17,
+    "experimental_rigor": 19,
+    "industry_realism": 16,
+    "practitioner_value": 18,
+    "reproducibility": 19
+  },
+  "score": 92,
+  "confidence_percent": 91,
+  "hard_gates": {
+    "literature_novelty": "PASS",
+    "system_regime_characterization": "PASS",
+    "causal_headroom": "PASS",
+    "real_system_credibility": "PARTIAL_SUPPORT",
+    "manuscript_transformation": "PASS",
+    "reproducibility": "PASS"
+  },
+  "fourth_trace_required": false,
+  "new_selector_training": false,
+  "full_rewrite_authorized": true,
+  "stop_decision": "FGCS_RESEARCH_PACKAGE = READY_FOR_FINAL_SUBMISSION_AUDIT",
+  "remaining_action": "Perform one final citation, visual, artifact-release, and claim-consistency audit before submission."
+}
