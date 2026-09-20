@@ -321,9 +321,14 @@ def completeness(rows, correctness):
 
 
 def bootstrap(df: pd.DataFrame):
-    windows = sorted(df["window_index"].astype(int).unique())
+    # window_index is source-local (assigned independently per workload); the
+    # pre-registered cluster unit is the faithful source window, i.e. the
+    # (source_dataset, window_index) pair. Clustering on window_index alone
+    # would conflate distinct cross-workload windows sharing an index.
+    cluster = list(zip(df["source_dataset"].astype(str), df["window_index"].astype(int)))
+    windows = sorted(set(cluster))
     if len(windows) < MIN_WINDOWS: return {"ci_available": False, "clusters": len(windows), "reason": "fewer than 5 contributing windows"}
-    groups = {w: df[df.window_index.astype(int) == w] for w in windows}
+    groups = {w: df[pd.Series(cluster) == w] for w in windows}
     rng = np.random.default_rng(BOOTSTRAP_SEED)
     vals = []
     for _ in range(BOOTSTRAP_REPLICATES):

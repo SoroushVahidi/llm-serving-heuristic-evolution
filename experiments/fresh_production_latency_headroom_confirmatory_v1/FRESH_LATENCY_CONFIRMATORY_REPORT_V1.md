@@ -15,7 +15,7 @@ Execution commit: `38e02bcdaeb8f9cec2289b05dea9a1406318d14f`
 - Beneficial states: 590
 - P(B_LAT|D): 0.819444444
 - Mean oracle latency headroom (s): 0.00199579117
-- Clustered 95% CI (s): [0.00018458898060051367, 0.003497418373764222]
+- Clustered 95% CI (s): [0.00019088421760325944, 0.003546195777055185]
 - Primary verdict: **LATENCY_HEADROOM_CONFIRMED**
 
 ## Workload-Regime Map
@@ -34,7 +34,7 @@ The fresh primary endpoint is continuation-population mean latency. Phase-D V1 A
 
 ## Causal Headroom Gate
 
-PASS: the frozen primary mean-headroom endpoint is positive and its clustered 95% CI lower endpoint is positive across 26 independent fresh windows.
+PASS: the frozen primary mean-headroom endpoint is positive and its clustered 95% CI lower endpoint is positive across 36 independent fresh source windows.
 
 ## Boundaries
 
