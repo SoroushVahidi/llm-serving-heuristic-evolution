@@ -14,7 +14,7 @@ The following Query 2 completions are officially executed and verified:
 
 
 
-STATUS: ACTIVE / PRE-SUBMISSION REVISION
+STATUS: SUBMISSION_READY_EXCEPT_PORTAL_ACTIONS
 
 TARGET JOURNAL:
 Performance Evaluation
@@ -424,7 +424,7 @@ withdrawn predecessor in the cover letter for transparency.
 
 AUTHOR_REVIEW_PDF = paper/llm_scheduler_adaptation_causal_headroom.pdf
 
-STATUS = CURRENT SCIENTIFIC CONTENT / PRE-PE-EDITORIAL REVISION
+STATUS = SUBMISSION_READY_EXCEPT_PORTAL_ACTIONS
 
 It is NOT the final Performance Evaluation submission PDF. Do not regenerate or
 rename it during the retargeting step.

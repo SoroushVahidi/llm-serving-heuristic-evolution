@@ -32,6 +32,10 @@ Action Opportunity and Causal Headroom in Production-Derived Replay}
 Adaptive scheduling in Large Language Model (LLM) serving is often justified by heterogeneous workloads and competing objectives. We evaluate a foundational premise: before introducing scheduler complexity, does a strong default actually possess a different useful executable action? We define canonical action opportunity as the prevalence of states where a fixed portfolio produces an executable action different from the single best scheduler, separating it from default-relative one-step causal headroom. Faithful replay of 60 windows from Azure 2023 code, Azure 2023 conversation, and BurstGPT traces was action-null under abundant resources: the workloads produced 0/99,992, 0/461,985, and 0/440,461 canonical disagreements, respectively. A frozen resource-pressure mapping demonstrated that key-value (KV) capacity and active-sequence constraints, rather than arrival scaling, expose disagreement. A confirmatory causal study on untouched fresh windows found 720 disagreement states, of which 590 were beneficial (conditional probability 0.8194). The pooled mean oracle latency headroom was 1.9958 ms, with a corrected clustered 95\% confidence interval of [0.1909, 3.5462] ms across 36 distinct source-window clusters. We also show that terminal arrival-normalized weighted goodput can saturate at 1.0, concealing latency differences. Finally, a bounded real-vLLM validation confirms that resource pressure alters observable queue and scheduler behavior, providing mechanism evidence, though deployment benefit is not established. We conclude that adaptive scheduling is conditional: resource pressure must first create executable action support, and that support must then yield causal value justifying control overhead. This performance-evaluation methodology characterizes these support conditions without proposing a new scheduler.
 \end{abstract}
 
+\begin{keyword}
+LLM serving \sep scheduling \sep resource pressure \sep causal headroom \sep performance evaluation
+\end{keyword}
+
 \section{Introduction}
 \label{sec:introduction}
 
@@ -633,7 +637,7 @@ The author gratefully acknowledges Professor Ioannis Koutis for his research gui
 This work received in-kind computational support through the Google Cloud Research Credits Program (USD 1,000 in cloud credits) and computational/tooling support from CloudRift Inc. Neither Google nor CloudRift Inc. had any role in the study design, data collection, analysis, interpretation, manuscript preparation decisions, or the decision to submit the article for publication. No monetary research grant was received from these organizations.
 
 \section*{Data and Code Availability}
-Code, derived research artifacts, experiment configurations, and reproducibility artifacts for this study are available at \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}. Raw third-party workload traces are obtained from their original upstream sources. A persistent data DOI is currently missing and needs to be archived (DATA\_DOI\_STATUS = MISSING\_NEEDS\_ARCHIVE).
+Code, derived research artifacts, experiment configurations, and reproducibility artifacts for this study are available at \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}. Raw third-party workload traces are obtained from their original upstream sources. The derived research data and reproducibility package have been permanently archived at DOI: \url{https://doi.org/10.5281/zenodo.22865294}.
 
 \bibliographystyle{elsarticle-num}
 

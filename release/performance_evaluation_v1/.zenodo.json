@@ -4,12 +4,17 @@
   "creators": [
     {
       "name": "Vahidi, Soroush",
-      "affiliation": "New Jersey Institute of Technology",
-      "orcid": "0000-0002-3909-5633"
+      "affiliation": "New Jersey Institute of Technology"
     }
   ],
   "access_right": "open",
   "license": "MIT",
-  "keywords": ["LLM serving", "scheduling", "resource pressure", "causal headroom", "performance evaluation"],
+  "keywords": [
+    "LLM serving",
+    "scheduling",
+    "resource pressure",
+    "causal headroom",
+    "performance evaluation"
+  ],
   "upload_type": "dataset"
 }

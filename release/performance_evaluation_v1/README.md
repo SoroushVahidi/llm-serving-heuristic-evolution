@@ -6,6 +6,8 @@ This archive contains the frozen experimental results, plotting scripts, and LaT
 
 ---
 
+**DOI:** 10.5281/zenodo.22865294
+
 ## Archive Structure
 
 - **`main.tex`**: The Performance Evaluation manuscript LaTeX source (Elsevier `elsarticle` format).
