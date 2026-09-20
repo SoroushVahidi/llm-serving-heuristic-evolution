@@ -13,13 +13,14 @@ performance models, and reproducible experiment/audit artifacts.
 
 Documentation authority is intentionally narrow:
 
-1. [`README.md`](README.md) - public project overview and navigation.
-2. [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) - canonical long-term roadmap.
-3. [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md) - canonical current FGCS status.
-4. [`docs/current/README.md`](docs/current/README.md) - current evidence and documentation index.
-5. [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) - reproducibility entry point.
-6. [`docs/BASELINE_STATUS.md`](docs/BASELINE_STATUS.md) - external-baseline status index.
-7. [`docs/audits/`](docs/audits/) - immutable point-in-time audit trail.
+1. [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md) - canonical operational entry point.
+2. [`README.md`](README.md) - public project overview and navigation.
+3. [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) - canonical long-term roadmap.
+4. [`docs/current/FGCS_CURRENT_STATUS.md`](docs/current/FGCS_CURRENT_STATUS.md) - canonical current FGCS status.
+5. [`docs/current/README.md`](docs/current/README.md) - current evidence and documentation index.
+6. [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) - reproducibility entry point.
+7. [`docs/BASELINE_STATUS.md`](docs/BASELINE_STATUS.md) - external-baseline status index.
+8. [`docs/audits/`](docs/audits/) - immutable point-in-time audit trail.
 
 If a status claim elsewhere conflicts with these files, treat it as historical
 until reconciled.
