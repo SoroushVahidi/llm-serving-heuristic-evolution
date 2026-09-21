@@ -7,6 +7,7 @@ This is an index, not a roadmap. Current status authority is intentionally limit
 - [`../README.md`](../README.md) - Public overview of the repository.
 - [`current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md) - Canonical current roadmap for Performance Evaluation.
 - [`current/README.md`](current/README.md) - Current evidence and documentation index.
+- [`current/RESUME_HERE.md`](current/RESUME_HERE.md) - Canonical resume entry point for the post-submission SBS-override selector research line; the Performance Evaluation roadmap above governs the manuscript.
 - [`BASELINE_STATUS.md`](BASELINE_STATUS.md) - External-baseline status index.
 
 ## Architecture / Design

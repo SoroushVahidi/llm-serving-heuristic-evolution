@@ -7,6 +7,10 @@ This directory serves as the documentation index for the "Performance Evaluation
 The single authoritative source of truth for the current submission is:
 - [PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md](PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
 
+## Resume Entry Point
+
+- [RESUME_HERE.md](RESUME_HERE.md) - canonical resume entry point for the post-submission SBS-override selector research line. It does not govern the manuscript; the roadmap above does.
+
 ## Active Manuscript
 
 - **Manuscript Source:** [paper/performance_evaluation/](../../paper/performance_evaluation/)
