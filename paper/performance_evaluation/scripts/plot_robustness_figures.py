@@ -56,7 +56,7 @@ def main() -> None:
     ax[0].set_xticks([0, 0.01, 0.1, 1, 10])
     ax[0].set_xticklabels(["0", "0.01", "0.1", "1", "10"])
     ax[0].set_ylim(0, 1)
-    ax[0].set_xlabel("Oracle headroom $H_{\\mathrm{LAT}}$ (ms)")
+    ax[0].set_xlabel("Oracle headroom $H_{\\mathrm{LAT}}$ (sim. ms)")
     ax[0].set_ylabel("Share of states with $H_{\\mathrm{LAT}} \\leq x$")
     ax[0].set_title("(a) Distribution across states")
     ax[0].legend(loc="lower right", frameon=True, framealpha=0.95, edgecolor="0.7")

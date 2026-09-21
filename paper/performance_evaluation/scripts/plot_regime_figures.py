@@ -61,7 +61,7 @@ def figure4(R):
     for yi, r in zip(y, R):
         ax[0].text(r["mean_ms"] + 0.06, yi, f"{r['mean_ms']:.2f}", va="center", fontsize=7.5)
     ax[0].set_xlim(0, 4.1)
-    ax[0].set_xlabel("$\\bar{H}_{\\mathrm{LAT}}$ (ms)")
+    ax[0].set_xlabel("$\\bar{H}_{\\mathrm{LAT}}$ (sim. ms)")
     ax[0].set_title("(a) Mean oracle headroom")
     ax[1].barh(y, [100 * r["P_B"] for r in R], height=h, color=[face(r) for r in R], edgecolor="black", linewidth=0.8)
     for yi, r in zip(y, R):

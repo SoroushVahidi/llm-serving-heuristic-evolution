@@ -44,7 +44,7 @@ New Jersey Institute of Technology, University Heights,\\
 Newark, NJ 07102, USA}
 
 \begin{abstract}
-Adaptive scheduling for large language model (LLM) serving pays off only if the system reaches states with a different executable action that improves performance. We measure that opportunity before designing any adaptive scheduler. In a deterministic simulator replaying production-derived traces (Azure code, Azure conversation, BurstGPT), we count how often six policies propose an action different from a fixed reference and, on fresh windows, force one alternative for one step. With abundant resources, none of about one million decision states offered a different executable action. Capping key-value (KV) cache capacity or concurrent sequences created such states; scaling arrival rates up to eight times left the system lightly loaded and created none. This held on fresh windows for the Azure traces but not BurstGPT, which never queued enough for the caps to bind. In a pre-specified analysis of 720 fresh disagreement states, 590 (81.9\%) had positive latency headroom (state-weighted mean 2.00 ms; 95\% window-clustered confidence interval 0.19--3.55 ms). The sign is stable; the magnitude is not: the median is 0.20 ms, one of 36 windows holds 88\% of the total, and in 14\% of states every alternative is worse. About 95\% of the headroom lies where all five other policies differ from the reference. A bounded vLLM probe shows that pressure changes scheduler behavior but does not validate the simulated latency effect. The opportunity is real but sparse, concentrated, and reference-conditional; finding it does not show that adaptation is worthwhile.
+Adaptive scheduling for large language model (LLM) serving pays off only if the system reaches states with a different executable action that improves performance. We measure that opportunity before designing any adaptive scheduler. In a deterministic simulator replaying production-derived traces (Azure code, Azure conversation, BurstGPT), we count how often six policies propose an action different from a fixed reference and, on fresh windows, force one alternative for one step. With abundant resources, none of about one million decision states offered a different executable action. Capping key-value (KV) cache capacity or concurrent sequences created such states; scaling arrival rates up to eight times left the system lightly loaded and created none. This held on fresh windows for the Azure traces but not BurstGPT, which never queued enough for the caps to bind. In a pre-specified analysis of 720 fresh disagreement states, 590 (81.9\%) had positive latency headroom (state-weighted mean simulated headroom 2.00 ms; 95\% window-clustered confidence interval 0.19--3.55 ms). The sign is stable; the magnitude is not: the median is 0.20 ms, one of 36 windows holds 88\% of the total, and in 14\% of states every alternative is worse. About 95\% of the headroom lies where all five other policies differ from the reference. A bounded vLLM probe shows that pressure changes scheduler behavior but does not validate the simulated latency effect. The opportunity is real but sparse, concentrated, and reference-conditional; finding it does not show that adaptation is worthwhile.
 \end{abstract}
 
 \begin{keyword}
@@ -272,8 +272,11 @@ The faithful corpus contains 20 windows of 200 requests from each of Azure 2023
 code, Azure 2023 conversation, and BurstGPT, with source order and token-length
 and arrival structure retained. Every replay runs on one simulated GPU (512
 active-sequence slots, a 512-token batch budget, 8,000,000 KV tokens by default)
-with a 1~ms step, so absolute latencies are in simulator units, not calibrated
-to hardware. Each request carries a loose service-level objective (SLO) deadline
+with a 1~ms step. The simulator clock has a physical-time interpretation
+(arrivals and deadlines are in seconds), but the step is nominal, so the absolute
+latencies reported for the replay experiments are simulator-time milliseconds and
+are not calibrated to measured hardware service times. GPU-calibrated service
+curves available elsewhere in the project were not used in these experiments. Each request carries a loose service-level objective (SLO) deadline
 of arrival plus 1000~s, a uniform priority of 1.0, and a single class, and
 policies observe a predicted output length equal to the true length. No request
 therefore approaches its deadline (the largest mean continuation latency in any
@@ -566,9 +569,10 @@ causal intervention covers five selected Azure regimes
 The confirmatory intervention found 590 beneficial
 states (Table~\ref{tab:fresh}; Figure~\ref{fig:regimemap}), giving
 $P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194\ (81.9\%)$.
-Mean oracle latency headroom was 0.001995791 s (1.9958 ms), with a clustered
-95\% confidence interval (CI) of [0.000190884, 0.003546196] s
-([0.1909, 3.5462] ms). The pre-specified decision rule was met. The conditional
+Mean oracle latency headroom, in simulator time, was 0.001995791 s (1.9958 ms),
+with a clustered 95\% confidence interval (CI) of [0.000190884, 0.003546196] s
+([0.1909, 3.5462] ms) on the same simulated clock; none of these values is a
+measured hardware latency. The pre-specified decision rule was met. The conditional
 share is defined on disagreement states only; because $P(D)$ is below 0.5\% in
 every selected regime (Table~\ref{tab:fresh}), it is not the share of all
 scheduler decisions that could be improved.
@@ -587,16 +591,16 @@ Figure~\ref{fig:regimemap} (conv. = conversation; active cap
 = active-sequence cap; KV = KV capacity in tokens). $P(D)$ is the percentage of
 valid SBS decision states in the regime's conditions that are disagreement
 states, $P(B_{\mathrm{LAT}}\mid D)$ the percentage with positive oracle headroom,
-and mean $H_{\mathrm{LAT}}$ the state-weighted mean. Windows can contribute to
+and mean $H_{\mathrm{LAT}}$ the state-weighted mean in simulated milliseconds (sim.~ms). Windows can contribute to
 several regimes, so window counts are not additive; the 36 distinct
 workload--window pairs are the bootstrap clusters.}
 \label{tab:fresh}
 \footnotesize
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\linewidth}{@{}LR{0.075\linewidth}R{0.11\linewidth}R{0.085\linewidth}R{0.145\linewidth}R{0.095\linewidth}R{0.12\linewidth}@{}}
+\begin{tabularx}{\linewidth}{@{}LR{0.075\linewidth}R{0.11\linewidth}R{0.085\linewidth}R{0.145\linewidth}R{0.115\linewidth}R{0.12\linewidth}@{}}
 \toprule
-Regime & States & Windows & $P(D)$ (\%) & $P(B_{\mathrm{LAT}}\mid D)$ (\%) & Mean $H_{\mathrm{LAT}}$ (ms) & Headroom share (\%) \\
+Regime & States & Windows & $P(D)$ (\%) & $P(B_{\mathrm{LAT}}\mid D)$ (\%) & Mean $H_{\mathrm{LAT}}$ (sim.~ms) & Headroom share (\%) \\
 \midrule
 (1) Azure code,\newline active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\
 (2) Azure code,\newline active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\
@@ -761,11 +765,12 @@ under the strict $>0$ criterion. The state-weighted interval is the
 confirmatory one (2,000 replicates); the others are window-clustered
 percentile bootstrap intervals with 200,000 replicates (Section~\ref{sec:posthoc}).}
 \label{tab:sensitivity}
+\footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{@{}llccc@{}}
 \toprule
-Estimand & Units & Mean (ms) & 95\% CI (ms) & Share \\
+Estimand & Units & Mean (sim.~ms) & 95\% CI (sim.~ms) & Share \\
 \midrule
 State-weighted (pre-specified) & 720 states & 1.996 & [0.191, 3.546] & 0.819 \\
 Equal-workload & 2 workloads & 1.360 & [0.184, 2.094] & 0.809 \\
@@ -828,7 +833,7 @@ The native budget probe held chunked prefill fixed and varied the per-step
 token budget (512 tokens, T512, versus 4,096 tokens, T4096). T512 produced
 1,680 scheduler steps, 165 mixed prefill/decode steps, and 194 partial-prefill
 items; T4096 produced 1,536, 55, and 9. Waiting queues reached lengths of 7 and
-5, respectively, while running sequences reached 4 in both cases. The low-load
+5, respectively, while running sequences reached 4 in both cases. In measured vLLM latency, the low-load
 regime showed a 30.6~ms difference in late time to first token and a 16.3~ms
 prompt-heavy end-to-end tradeoff; the high-load regime showed a smaller
 time-to-first-token difference and a 23.3~ms prompt-heavy end-to-end tradeoff.
@@ -968,7 +973,7 @@ mechanism.
 
 This paper asked whether an LLM-serving scheduler ever faces an executable alternative worth taking before any adaptive scheduler is built. In production-derived replay with abundant resources it did not: none of about one million decision states offered an action different from the single best scheduler (SBS), a fixed reference. Capacity caps on active sequences or KV cache created such states, whereas lightly loaded arrival-rate scaling did not. On the Azure traces, forcing an alternative once lowered latency in most of these states (590 of 720 under the pre-specified criterion).
 
-The opportunity is nonetheless small, concentrated, and conditional. The state-weighted mean of 2.00~ms is not a typical effect: the median disagreement state offers 0.20~ms, and one trace window holds 88.4\% of the total headroom. Most of the headroom lies where all five other policies differ from the reference, so it measures room to improve on that reference rather than a general property of LLM serving.
+The opportunity is nonetheless small, concentrated, and conditional. The state-weighted mean simulated headroom of 2.00~ms is not a typical effect: the median disagreement state offers 0.20~ms, and one trace window holds 88.4\% of the total headroom. Most of the headroom lies where all five other policies differ from the reference, so it measures room to improve on that reference rather than a general property of LLM serving.
 
 The lesson for performance evaluation is to establish, stage by stage, that executable disagreement, causal benefit, and a material effect exist before adding selector complexity, and to report the reference, the portfolio, the load range, and the distribution of effects with any measured opportunity. Adaptation is justified by where the measured opportunity lies, not by its average.
 
