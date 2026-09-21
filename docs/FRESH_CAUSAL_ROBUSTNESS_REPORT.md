@@ -62,7 +62,7 @@ Canonical files were hashed before and after the analysis run and were byte-iden
 
 **Two artifact-level observations (documented, not fixed; canonical data must not be modified).**
 
-1. **State-level `mean_ref_latency` and `p95_ref_latency` are mislabeled.** In the executor, `meta = g.iloc[0]` is taken from the *counterfactual* group, so these columns hold the *first counterfactual branch's* values, not the SBS reference. They match the first counterfactual branch exactly (max diff 0.0) and differ from the true SBS reference in 692 of 720 states. **The primary endpoint is unaffected**, because `a_lat` was computed from the separate `ref` frame. The regime-level `p95_effect_mean` also uses the correct `ref`. I recovered the true reference exactly as `cf_mean_latency + a_lat` (constant within each state to 2.2e-16 s) and used that for the supplementary relative-headroom numbers only.
+1. **State-level `mean_ref_latency` and `p95_ref_latency` are mislabeled.** In the executor, `meta = g.iloc[0]` is taken from the *counterfactual* group, so these columns hold the *first counterfactual branch's* values, not the SBS reference. They match the first counterfactual branch exactly (max diff 0.0) and differ from the true SBS reference in 694 of 720 states for `mean_ref_latency` (692 by more than 1e-12 s) and 224 of 720 for `p95_ref_latency`; see `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`, which supersedes this note. **The primary endpoint is unaffected**, because `a_lat` was computed from the separate `ref` frame. The regime-level `p95_effect_mean` also uses the correct `ref`. I recovered the true reference as `cf_mean_latency + a_lat` (constant within each state to 2.2e-16 s; max 1.9e-16 s from the true SBS reference rows in the shards) and used that for the supplementary relative-headroom numbers only.
 2. **The canonical strict `> 0` rule counts one floating-point-residue state as beneficial** (see section 3 for the tolerance audit).
 
 **Compute estimate.** All analyses are vectorised numpy on 720 rows and 36 clusters. The heaviest step (3 x 10^6 bootstrap replicates plus 1,000 x 2,000 Monte-Carlo-noise replicates plus 200,000-replicate stages) took about 8 s of wall-clock time in total. This is far below the "few minutes" threshold, so no tmux session and no Wulver/SLURM job was launched (see the final response).
@@ -71,12 +71,12 @@ Canonical files were hashed before and after the analysis run and were byte-iden
 
 ## 2. REPRODUCTION_CHECK
 
-**Result: REPRODUCED. 42 checks, 32 bit-exact, 10 within floating-point summation-order tolerance (max difference 5.6e-17 s), 0 failed.** The analysis is coded to refuse to run the sensitivity analyses if this check fails.
+**Result: REPRODUCED. 42 checks, 32 bit-exact, 10 within floating-point tolerance (max difference 5.6e-17 s; cause: pandas' default CSV float parser is not correctly rounded, see `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`), 0 failed.** The analysis is coded to refuse to run the sensitivity analyses if this check fails.
 
 | Reported (manuscript / frozen result) | Recomputed from canonical artifact | Status |
 |---|---|---|
 | 720 states; 590 beneficial; P = 590/720 = 0.8194 | 720; 590 (`beneficial_opportunity`); 590 (from `H > 0`) | exact |
-| Mean H = 0.001995791 s = **1.9958 ms** | 0.0019957911708132692 s | within 2.9e-17 s (summation order); 4-dp ms value exact |
+| Mean H = 0.001995791 s = **1.9958 ms** | 0.0019957911708132692 s | within 2.9e-17 s (CSV float-parse rounding; bit-exact with `float_precision="round_trip"`); 4-dp ms value exact |
 | Clustered 95% CI [0.1909, 3.5462] ms; 36 clusters | canonical loop re-run: [0.00019088421760325944, 0.003546195777055185] s, **bit-exact**; vectorised engine within 2e-18 s | exact / within tolerance |
 | Positive-headroom mean 2.4355 ms, median 0.2879 ms | reproduced | within tolerance |
 | 102 all-harmful / 26 all-zero / 22 mixed | reproduced | exact |
