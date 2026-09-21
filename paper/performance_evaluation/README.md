@@ -5,8 +5,9 @@
 Target journal: *Performance Evaluation* (Elsevier). The class is `elsarticle` (`preprint`, 12 pt) with the
 numbered `elsarticle-num` bibliography style.
 
-Status: the manuscript text, figures and tables are frozen for archive and packaging
-(`docs/PEVA_PREPACKAGE_READINESS.md`). The Zenodo version, the submission package and the merge to `main` are still open.
+Status: the manuscript text, figures, tables, claim manifest, and canonical PDF
+candidate are frozen for integration. The Zenodo v1.1.0 archive, submission
+package, and merge to `main` are still open.
 
 ## Canonical source
 
@@ -92,13 +93,15 @@ readiness checklist. After any edit of `main.tex` that changes a number, regener
 
 ## Awaiting archive and submission packaging
 
-TODO(QUERY_8): the existing Zenodo record (DOI 10.5281/zenodo.22865294, tag `performance-evaluation-v1.0.0`) predates
+The existing Zenodo record (DOI 10.5281/zenodo.22865294, tag `performance-evaluation-v1.0.0`) predates
 the robustness outputs, the corrected derivative and the final figure code. The Data Availability paragraph is
 worded to say so. After the new version is published, update the DOI, add the dataset/software reference and
 regenerate the claim manifest; the exact list is in `docs/PEVA_PREPACKAGE_READINESS.md`.
+TODO(QUERY_8): ZENODO_NEW_VERSION remains open until the archive is updated.
 
-`submission/` holds an earlier packaging snapshot (source zip, highlights, cover letter, checklist). It has **not**
-been regenerated from the current `main.tex` and must not be uploaded as is; it is rebuilt in the packaging step.
+The stale `submission/` snapshot and v1.1.0 release package were removed from the
+branch during manuscript freeze. They must be regenerated from the frozen source
+in the packaging step.
 `scripts/plot_joint_complementarity.py`, `scripts/plot_vllm_semantic_validation.py` and the corresponding
 `figures/joint_complementarity.pdf` and `figures/vllm_semantic_validation.pdf` are legacy files that the current
 manuscript does not use.

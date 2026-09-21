@@ -1,5 +1,0 @@
-Abundant-resource replay of production traces is action-null for LLM schedulers
-KV and active-sequence caps, not load scaling, expose scheduler disagreement
-Fresh one-step interventions lower latency in most disagreement states
-Headroom is small (median 0.2 ms) and concentrated in a few trace windows
-Show opportunity and its distribution before designing an adaptive scheduler

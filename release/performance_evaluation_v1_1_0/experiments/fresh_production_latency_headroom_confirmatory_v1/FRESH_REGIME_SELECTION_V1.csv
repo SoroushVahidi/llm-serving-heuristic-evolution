@@ -1,6 +1,0 @@
-axis,canonical_disagreement_states,condition_id,latency_outcomes_used_for_regime_selection,pressure_order,roles,source_dataset,validity_classes
-active_sequence_capacity,10,active_8,False,4,"['onset', 'sustained']",azure_2023_code,"VALID_PARTIALLY_CONSTRAINED,VALID_STRONGLY_CONSTRAINED,VALID_UNCONSTRAINED"
-active_sequence_capacity,122,active_4,False,5,['strongest-valid'],azure_2023_code,VALID_STRONGLY_CONSTRAINED
-kv_capacity,431,kv_16000,False,5,"['onset', 'strongest-valid', 'sustained']",azure_2023_code,"VALID_PARTIALLY_CONSTRAINED,VALID_STRONGLY_CONSTRAINED,VALID_UNCONSTRAINED"
-active_sequence_capacity,64,active_4,False,5,"['onset', 'strongest-valid', 'sustained']",azure_2023_conv,VALID_STRONGLY_CONSTRAINED
-kv_capacity,93,kv_16000,False,5,"['onset', 'strongest-valid']",azure_2023_conv,VALID_UNCONSTRAINED

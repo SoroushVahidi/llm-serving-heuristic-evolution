@@ -17,13 +17,14 @@ by all arriving requests.
 The active manuscript is **"When Does LLM-Serving Scheduler Adaptation Matter?
 Action Opportunity and Causal Headroom in Production-Derived Replay"**, targeted
 at **Performance Evaluation** (Elsevier, ISSN 0166-5316) as an **Original
-research article**, and currently in the pre-submission / author-review stage.
+research article**. The manuscript source and PDF candidate are frozen on the
+release branch; submission and archive packages are regenerated later.
 
 - Canonical submission roadmap (source of truth):
   [`docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
-- Current author-review PDF:
+- Canonical frozen PDF candidate:
   [`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`](paper/when_does_llm_serving_scheduler_adaptation_matter.pdf)
-  (review copy — not yet the final submission artifact)
+  (not yet the regenerated submission or Zenodo artifact)
 - The historical LLM 2026 manuscript in [`paper/history/llm2026/`](paper/history/llm2026/) is
   retained for provenance. That conference submission was withdrawn before
   publication and is **not** the active submission.
