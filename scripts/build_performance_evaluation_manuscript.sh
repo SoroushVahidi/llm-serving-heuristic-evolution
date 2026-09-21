@@ -11,6 +11,9 @@ python3 "$PAPER_DIR/scripts/plot_performance_evaluation_figures.py"
 python3 "$PAPER_DIR/scripts/plot_regime_figures.py"
 python3 "$PAPER_DIR/scripts/plot_robustness_figures.py"
 
+echo "=== 1b. Verifying the Quantitative Claims Against the Canonical Artifacts ==="
+python3 "$PAPER_DIR/scripts/build_claim_manifest.py" --check
+
 echo "=== 2. Rebuilding LaTeX Manuscript ==="
 cd "$PAPER_DIR"
 

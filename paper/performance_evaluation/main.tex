@@ -13,6 +13,8 @@
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \def\UrlBreaks{\do\/\do-\do_}
+\def\UrlBigBreaks{}
+\urlstyle{same}
 \setlength{\emergencystretch}{2em}
 
 \begin{document}
@@ -238,7 +240,7 @@ This study & Existence and one-step causal value of alternative actions & Produc
 \end{tabularx}
 \end{table*}
 
-The SBS and virtual best solver (VBS) quantities used
+The SBS and VBS quantities used
 below are non-deployable reference points for measuring opportunity, in the
 tradition of algorithm portfolios and selection
 \cite{rice1976algorithmselection,gomes2001portfolios,satzilla2008,autofolio2015}.
@@ -257,7 +259,7 @@ RQ2 uses Tiers 2--3; fresh causal headroom uses a preregistered Tier-3
 intervention over untouched windows; the vLLM result is a bounded system
 correspondence probe.
 
-The faithful corpus contains 20 windows each from Azure 2023 code, Azure 2023
+The faithful corpus contains 20 windows from each of Azure 2023 code, Azure 2023
 conversation, and BurstGPT. Source order and token-length/arrival structure
 are retained. Service-level objective (SLO) and class overlays are
 deterministic simulator inputs;
@@ -269,7 +271,7 @@ contribute a selected fresh causal disagreement regime.
 The historical six-policy portfolio contains full prefill, small-chunk prefill,
 estimated-service-first (ESTF), weighted fair sharing (WFS), least-laxity
 first (LLF), and a KV-constrained policy. The six-policy portfolio is fixed for
-a default-relative characterization; it is not an exhaustive set of 2026
+a default-relative characterization; it is not an exhaustive set of current
 schedulers.
 
 \subsection{Canonical action opportunity}
@@ -308,9 +310,10 @@ For the fresh primary latency endpoint, continuation mean latency includes
 active, queued, and future requests belonging to the continuation, excluding
 requests completed before $s$. We define
 \begin{equation}
- A_{\mathrm{LAT}}(s,a)=L_{\sbs}(s)-L_{\mathrm{CF}}(s,a),
- \qquad
- H_{\mathrm{LAT}}(s)=\max\left(0,\max_aA_{\mathrm{LAT}}(s,a)\right),
+ \begin{aligned}
+ A_{\mathrm{LAT}}(s,a)&=L_{\sbs}(s)-L_{\mathrm{CF}}(s,a),\\
+ H_{\mathrm{LAT}}(s)&=\max\left(0,\max_aA_{\mathrm{LAT}}(s,a)\right),
+ \end{aligned}
  \label{eq:latency}
 \end{equation}
 where positive values reduce mean latency. The beneficial-state indicator is
@@ -350,7 +353,7 @@ windows (five selected regimes).
 
 \emph{Practical thresholds.} For $\epsilon\in\{0.1,0.25,0.5,1,2,5\}$~ms we
 report the number and share of disagreement states with
-$H_{\mathrm{LAT}}(s)>\epsilon$, that is $P(H_{\mathrm{LAT}}>\epsilon\mid D)$,
+$H_{\mathrm{LAT}}(s)>\epsilon$, that is \mbox{$P(H_{\mathrm{LAT}}>\epsilon\mid D)$},
 and the number of windows that contain at least one such state.
 
 \emph{Numerical residue.} The preregistered criterion is applied unchanged in
@@ -414,21 +417,24 @@ offered no executable alternative.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.98\linewidth]{figures/pe_pipeline.pdf}
-\caption{Staged evidence chain: resource pressure, canonical action
-disagreement $P(D)$, beneficial disagreement $P(B_{\mathrm{LAT}}\mid D)$,
-headroom magnitude, and predictability/deployability. The study measures the
-first four stages.}
+\includegraphics[scale=1]{figures/pe_pipeline.pdf}
+\caption{Staged evidence chain (Eq.~\ref{eq:chain}): resource pressure,
+canonical action disagreement $P(D)$, beneficial disagreement
+$P(B_{\mathrm{LAT}}\mid D)$, headroom magnitude $H_{\mathrm{LAT}}$, and
+predictability and deployability. The study measures the first four stages
+(solid boxes); the fifth (dashed box) is not measured.}
 \label{fig:pipeline}
 \end{figure}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.98\linewidth]{figures/pe_disagreement_rates.pdf}
-\caption{Canonical disagreement rate $P(D)$ (fraction of SBS decision states)
-for native replay of the three workloads and for selected pressure conditions:
-Azure code with active-sequence cap 4 and with KV capacity 16,000 tokens (16k),
-Azure conversation with cap 4, and BurstGPT with cap 8.}
+\includegraphics[scale=1]{figures/pe_disagreement_rates.pdf}
+\caption{Disagreement prevalence $P(D)$, the percentage of SBS decision states
+that are disagreement states (counts in the axis labels), for native replay of
+the three workloads and for selected pressure conditions: Azure code with
+active-sequence cap 4 and with KV capacity 16,000 tokens, Azure conversation
+(conv.) with cap 4, and BurstGPT with cap 8. Native replay produced no
+disagreement state. Fill denotes the pressure axis.}
 \label{fig:disagreement}
 \end{figure}
 
@@ -443,20 +449,22 @@ constrained, 96 strongly constrained, and 20 horizon-invalid. Across valid
 conditions, 11,328 canonical disagreement states were observed.
 
 Arrival scaling through $8\times$ remained action-null for all three workload
-families. Active-sequence pressure created disagreement at active-cap 8 or 4
-depending on workload; KV pressure created disagreement at the first binding
-or near-binding capacities. For Azure code, the first active-cap disagreement
-appeared at active-sequence cap = 8 and became sustained at active-sequence cap = 4. KV disagreement began
-at KV capacity = 16,000. Azure conversation first disagreed at active-sequence cap = 4 and showed KV
-disagreement at KV capacity = 16,000; BurstGPT showed active disagreement at active-sequence cap = 16,
-sustained at active-sequence cap = 8, and KV disagreement at KV capacity = 16,000.
+families. Active-sequence pressure created disagreement at a cap of 16
+(BurstGPT), 8 (Azure code), or 4 (Azure conversation), and KV pressure created
+it at a capacity of 16,000 tokens in all three workloads
+(Table~\ref{tab:transition}). Disagreement became sustained, in at
+least two windows, at caps of 8 (BurstGPT) and 4 (Azure code and conversation)
+and at KV capacities of 16,000 (Azure code and BurstGPT) and 8,000 (Azure
+conversation).
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.92\linewidth]{figures/pe_pressure_transition.pdf}
-\caption{Canonical disagreement rate $P(D)$ (fraction of SBS decision states)
-for Azure code as the active-sequence cap is tightened; the horizontal axis is
-logarithmic and reversed, so tighter caps lie to the right.}
+\includegraphics[scale=1]{figures/pe_pressure_transition.pdf}
+\caption{Disagreement prevalence $P(D)$ (percentage of SBS decision states,
+pooled over the 20 windows) for Azure code as the active-sequence cap is
+tightened. The horizontal axis is logarithmic and deliberately reversed, so
+pressure increases from left to right; the six points are the frozen cap
+settings.}
 \label{fig:transition}
 \end{figure}
 
@@ -526,7 +534,7 @@ completing the same requests; a post hoc guard of $10^{-12}$~s gives
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.98\linewidth]{figures/pe_fresh_headroom.pdf}
+\includegraphics[scale=1]{figures/pe_fresh_headroom.pdf}
 \caption{Fresh causal characterization of the five selected regimes,
 numbered as in Table~\ref{tab:fresh} (conv. = conversation; active cap =
 active-sequence cap; KV = KV capacity in tokens). (a) State-weighted mean oracle
@@ -543,8 +551,8 @@ windows.}
 \centering
 \small
 \caption{Fresh causal characterization by selected regime, numbered as in
-Figures~\ref{fig:fresh} and~\ref{fig:regimemap}; ``active cap'' is the
-active-sequence cap and ``KV'' the KV capacity in tokens. $P(D)$ is the
+Figures~\ref{fig:fresh} and~\ref{fig:regimemap}; ``conv.'' is conversation, ``active cap'' the
+active-sequence cap, and ``KV'' the KV capacity in tokens. $P(D)$ is the
 percentage of valid SBS decision states in the regime's conditions that are
 disagreement states, and $P(B_{\mathrm{LAT}}\mid D)$ the percentage of
 disagreement states with positive oracle headroom (strict criterion). Mean
@@ -556,15 +564,15 @@ distinct workload--window pairs are the bootstrap clusters.}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\linewidth}{@{}LR{0.075\linewidth}R{0.10\linewidth}R{0.085\linewidth}R{0.155\linewidth}R{0.095\linewidth}R{0.12\linewidth}@{}}
+\begin{tabularx}{\linewidth}{@{}LR{0.075\linewidth}R{0.11\linewidth}R{0.085\linewidth}R{0.145\linewidth}R{0.095\linewidth}R{0.12\linewidth}@{}}
 \toprule
 Regime & States & Windows & $P(D)$ (\%) & $P(B_{\mathrm{LAT}}\mid D)$ (\%) & Mean $H_{\mathrm{LAT}}$ (ms) & Headroom share (\%) \\
 \midrule
-(1) Azure code, active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\
-(2) Azure code, active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\
-(3) Azure code, KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\
-(4) Azure conversation, active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\
-(5) Azure conversation, KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\
+(1) Azure code,\newline active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\
+(2) Azure code,\newline active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\
+(3) Azure code,\newline KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\
+(4) Azure conv.,\newline active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\
+(5) Azure conv.,\newline KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\
 \midrule
 All selected regimes & 720 & 36 & --- & 81.9 & 1.996 & 100.00 \\
 \bottomrule
@@ -573,7 +581,7 @@ All selected regimes & 720 & 36 & --- & 81.9 & 1.996 & 100.00 \\
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.92\linewidth]{figures/pe_regime_map.pdf}
+\includegraphics[scale=1]{figures/pe_regime_map.pdf}
 \caption{Regime map for the five selected regimes, numbered as in
 Figure~\ref{fig:fresh} and Table~\ref{tab:fresh}. Horizontal axis: disagreement prevalence $P(D)$, the
 percentage of SBS decision states that are disagreement states (logarithmic
@@ -660,10 +668,10 @@ is 12.1~ms. A further 130 states (18.1\%) have exactly zero headroom. Among the
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.98\linewidth]{figures/pe_robustness.pdf}
+\includegraphics[scale=1]{figures/pe_robustness.pdf}
 \caption{Distribution and concentration of oracle headroom over the 720
 disagreement states. (a) Empirical distribution of $H_{\mathrm{LAT}}$ with and
-without window w11; zero headroom is the intercept at $x=0$, and the axis is
+without Azure-code window w11; zero headroom is the intercept at $x=0$, and the axis is
 linear below 0.01~ms and logarithmic above. The dotted and dash-dotted lines
 mark the median and the state-weighted mean. (b) Share of the 720 states
 (hatched) and of the total summed headroom (solid) for the three windows with
@@ -684,7 +692,7 @@ interchangeable with it.
 
 Leaving one unit out gives the same picture. All 36 single-window and 5
 single-regime omissions leave a positive mean, and every corresponding
-bootstrap interval excludes zero. Omitting window w11 leaves 0.365~ms
+bootstrap interval excludes zero. Omitting Azure-code window w11 leaves 0.365~ms
 (95\% CI [0.158, 0.682]~ms); omitting the Azure-code KV-capacity = 16,000 regime leaves
 0.159~ms (95\% CI [0.058, 0.234]~ms). Omitting any other window changes the mean only to between
 2.00 and 2.26~ms, and omitting any other regime to between 2.02 and 2.39~ms.
@@ -716,7 +724,7 @@ Equal-regime & 5 regimes & 0.759 & [0.145, 1.161] & 0.666 \\
 Equal-window & 36 windows & 0.327 & [0.114, 0.644] & 0.632 \\
 \midrule
 \multicolumn{5}{@{}l}{\emph{Leave one out: state-weighted mean of the remaining states}} \\
-Omit window w11 & 457 states & 0.365 & [0.158, 0.682] & 0.821 \\
+Omit Azure-code window w11 & 457 states & 0.365 & [0.158, 0.682] & 0.821 \\
 Omit Azure-code KV 16,000 & 289 states & 0.159 & [0.058, 0.234] & 0.664 \\
 \bottomrule
 \end{tabular}
@@ -808,7 +816,7 @@ one-step causal headroom.}
 \label{tab:real}
 \setlength{\tabcolsep}{8pt}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}P{0.26\linewidth}P{0.29\linewidth}P{0.29\linewidth}@{}}
+\begin{tabular}{@{}P{0.25\linewidth}P{0.33\linewidth}P{0.30\linewidth}@{}}
 \toprule
 Property & Simulator/replay & Real vLLM \\
 \midrule
@@ -925,10 +933,10 @@ BurstGPT, the Azure traces, OpenTela, and longitudinal trace studies address
 how to obtain and operate on realistic workload evidence. The staged
 measurement here is complementary. It identifies the operating regions in which
 such mechanisms have an executable alternative to exploit, and it quantifies
-what a strong default leaves on the table there.
+the headroom that a strong default leaves there.
 
 \subsection{Limitations and threats to validity}
-Each limitation below is paired with what the design still establishes.
+The limitations below bound what the evidence supports.
 \begin{description}
   \item[Policy portfolio.] The six policies are not the universe of
   schedulers, and other portfolios may expose different action support. The
@@ -968,14 +976,13 @@ accounting of adaptation overhead.
 \section{Reproducibility and Artifact Scope}
 \label{sec:repro}
 
-The public artifact (the public repository, see Data and Code
-Availability) records trace provenance, frozen manifests, support grids,
-fresh non-overlap proofs, causal state and action manifests, source hashes,
-bootstrap seed 20260920, and the vLLM environment. The principal result
-packages are Phase A native replay, Phase B pressure mapping, fresh
-confirmatory causal latency, and the bounded vLLM system correspondence probe.
-Historical selector and joint-240 artifacts remain available but are not
-treated as evidence of learned deployment readiness.
+The public artifact described under Data and Code Availability records trace
+provenance, frozen manifests, support grids, fresh non-overlap proofs, causal
+state and action manifests, source hashes, bootstrap seed 20260920, and the vLLM
+environment. It covers the four result groups reported here: native replay,
+pressure mapping, fresh confirmatory causal latency, and the bounded vLLM
+system correspondence probe. Artifacts from earlier selector studies remain in
+the repository but are not treated as evidence of learned deployment readiness.
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -987,22 +994,24 @@ The headroom is positive but small and concentrated. The state-weighted mean of 
 The broader lesson is that scheduler adaptation should be justified stage by stage, from resource pressure through executable disagreement and causal benefit to the distribution and prevalence of the effect, before selector complexity is added. Reporting concentration and aggregation sensitivity, and not only a mean, distinguishes a localized opportunity from a general one. Adaptation is justified by where the measured opportunity lies, not by its average.
 
 \section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
-During the preparation of this work, the author used ChatGPT (OpenAI), OpenAI Codex, Google Gemini, and Claude (Anthropic) in order to assist with organization, language editing, literature-search planning, and drafting analysis, figure, and test code. After using these tools, the author reviewed and edited the content as needed and takes full responsibility for the content of the publication.
+During the preparation of this work, the author used ChatGPT (OpenAI), Codex (OpenAI), Gemini (Google), and Claude (Anthropic) in order to assist with organization, language editing, literature-search planning, and drafting analysis, figure, and test code. After using these tools, the author reviewed and edited the content as needed and takes full responsibility for the content of the publication.
 
 \section*{Declaration of Competing Interest}
 The author declares that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 \section*{Acknowledgements}
-The author gratefully acknowledges Professor Ioannis Koutis for his research guidance and scientific feedback. The author thanks the NJIT Wulver HPC for providing computational resources for the fresh confirmatory computation, and Anders Borum (Secure ShellFish) for providing tools that enabled remote research access. Finally, the author thanks his mother for her continued support.
+The author gratefully acknowledges Professor Ioannis Koutis for research guidance and scientific feedback. The author thanks the NJIT Wulver HPC for providing computational resources for the fresh confirmatory computation, and Anders Borum (Secure ShellFish) for providing tools that enabled remote research access. Finally, the author thanks his mother for her continued support.
 
 \section*{Funding and Support}
 This work received in-kind computational support through the Google Cloud Research Credits Program (USD 1,000 in cloud credits) and computational/tooling support from CloudRift Inc. Neither Google nor CloudRift Inc. had any role in the study design, data collection, analysis, interpretation, manuscript preparation decisions, or the decision to submit the article for publication. No monetary research grant was received from these organizations.
 
 \section*{Data and Code Availability}
-Code, derived research artifacts, experiment configurations, and reproducibility artifacts for this study are available at \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}. Raw third-party workload traces are obtained from their original upstream sources. The derived research data and reproducibility package have been permanently archived at DOI: \url{https://doi.org/10.5281/zenodo.22865294}.
+{\leavevmode\raggedright Code, derived research artifacts, experiment configurations, and reproducibility artifacts for this study are available at \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}. Raw third-party workload traces are obtained from their original upstream sources. The frozen confirmatory result artifacts (native replay, pressure mapping, and fresh causal latency headroom) are archived at DOI: \url{https://doi.org/10.5281/zenodo.22865294}. That archive predates the post hoc robustness analysis (Section~\ref{sec:robust}), a corrected derivative of two descriptive state-level columns, and the final figure code, which are available in the GitHub repository only.\par}
 
 \bibliographystyle{elsarticle-num}
 
+{\raggedright
 \bibliography{references}
+}
 
 \end{document}

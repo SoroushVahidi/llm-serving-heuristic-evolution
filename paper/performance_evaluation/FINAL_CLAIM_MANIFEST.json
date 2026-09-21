@@ -1,0 +1,1318 @@
+{
+ "schema": "peva_final_claim_manifest_v1",
+ "purpose": "Provenance/verification metadata for the manuscript's quantitative claims; contains no independent scientific data. Values are recomputed from the canonical artifacts by scripts/build_claim_manifest.py.",
+ "manuscript": "paper/performance_evaluation/main.tex",
+ "manuscript_sha256_at_generation": "9a946593dfb1010a9132e7a53cc1562779bafc3c319c1277caa03052eed640f8",
+ "n_claims": 46,
+ "claims": [
+  {
+   "id": "native.azure_2023_code.action_null",
+   "claim": "Azure code: native replay has 0 canonical disagreement states",
+   "value": {
+    "disagreement_states": 0,
+    "sbs_decision_states": 99992
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_WORKLOAD_SUMMARY_V1.csv",
+   "source_field": "row source_dataset=azure_2023_code: true_canonical_disagreement_states, sbs_decision_states",
+   "manuscript_text": [
+    "Azure code had 0 disagreements in 99,992"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 4 (Results: Native Action Opportunity)",
+     "line": 410,
+     "text": "Azure code had 0 disagreements in 99,992"
+    }
+   ]
+  },
+  {
+   "id": "native.azure_2023_conv.action_null",
+   "claim": "Azure conversation: native replay has 0 canonical disagreement states",
+   "value": {
+    "disagreement_states": 0,
+    "sbs_decision_states": 461985
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_WORKLOAD_SUMMARY_V1.csv",
+   "source_field": "row source_dataset=azure_2023_conv: true_canonical_disagreement_states, sbs_decision_states",
+   "manuscript_text": [
+    "Azure conversation had 0 in 461,985"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 4 (Results: Native Action Opportunity)",
+     "line": 411,
+     "text": "Azure conversation had 0 in 461,985"
+    }
+   ]
+  },
+  {
+   "id": "native.burstgpt.action_null",
+   "claim": "BurstGPT: native replay has 0 canonical disagreement states",
+   "value": {
+    "disagreement_states": 0,
+    "sbs_decision_states": 440461
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_WORKLOAD_SUMMARY_V1.csv",
+   "source_field": "row source_dataset=burstgpt: true_canonical_disagreement_states, sbs_decision_states",
+   "manuscript_text": [
+    "BurstGPT had 0 in 440,461"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 4 (Results: Native Action Opportunity)",
+     "line": 411,
+     "text": "BurstGPT had 0 in 440,461"
+    }
+   ]
+  },
+  {
+   "id": "native.total_decision_states",
+   "claim": "about one million action-null decision states in native replay",
+   "value": 1002438,
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_WORKLOAD_SUMMARY_V1.csv",
+   "source_field": "sum of sbs_decision_states over the three workloads",
+   "manuscript_text": [
+    "about one million"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "about one million"
+    }
+   ]
+  },
+  {
+   "id": "native.max_kv_utilization",
+   "claim": "maximum KV utilization of native replay (Azure code, Azure conversation, BurstGPT)",
+   "value": [
+    0.0027155,
+    0.00172775,
+    0.003802
+   ],
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_WORKLOAD_SUMMARY_V1.csv",
+   "source_field": "max_kv_utilization, rounded to 4 decimals",
+   "manuscript_text": [
+    "0.0027, 0.0017, and 0.0038"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 4 (Results: Native Action Opportunity)",
+     "line": 412,
+     "text": "0.0027, 0.0017, and 0.0038"
+    }
+   ]
+  },
+  {
+   "id": "native.no_active_cap_binding",
+   "claim": "no active-cap binding states in native replay",
+   "value": 0,
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_a_v1/PHASE_A_WORKLOAD_SUMMARY_V1.csv",
+   "source_field": "active_sequence_capacity_binding_states == 0 for all three rows",
+   "manuscript_text": [
+    "no active-cap binding states"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 4 (Results: Native Action Opportunity)",
+     "line": 413,
+     "text": "no active-cap binding states"
+    }
+   ]
+  },
+  {
+   "id": "pressure.conditions",
+   "claim": "pressure map evaluated 1,080 one-axis window conditions",
+   "value": 1080,
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv; experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_RESULT_SUMMARY.json",
+   "source_field": "row count; completed_window_conditions == expected_window_conditions",
+   "manuscript_text": [
+    "evaluated 1,080 one-axis conditions"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 5 (Results: Pressure-Induced Disagreement)",
+     "line": 444,
+     "text": "evaluated 1,080 one-axis conditions"
+    }
+   ]
+  },
+  {
+   "id": "pressure.condition_classes",
+   "claim": "926 valid unconstrained, 38 partially constrained, 96 strongly constrained, 20 horizon-invalid conditions",
+   "value": {
+    "VALID_UNCONSTRAINED": 926,
+    "VALID_PARTIALLY_CONSTRAINED": 38,
+    "VALID_STRONGLY_CONSTRAINED": 96,
+    "INVALID_HORIZON_TRUNCATED": 20
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv",
+   "source_field": "count by pressure_regime_class",
+   "manuscript_text": [
+    "926 conditions were valid and unconstrained, 38 partially constrained, 96 strongly constrained, and 20 horizon-invalid"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 5 (Results: Pressure-Induced Disagreement)",
+     "line": 447,
+     "text": "926 conditions were valid and unconstrained, 38 partially constrained, 96 strongly constrained, and 20 horizon-invalid"
+    }
+   ]
+  },
+  {
+   "id": "pressure.disagreement_states",
+   "claim": "11,328 canonical disagreement states across valid conditions",
+   "value": 11328,
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv",
+   "source_field": "sum of true_canonical_disagreement_states over pressure_regime_class starting VALID",
+   "manuscript_text": [
+    "11,328 canonical disagreement states"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 5 (Results: Pressure-Induced Disagreement)",
+     "line": 449,
+     "text": "11,328 canonical disagreement states"
+    }
+   ]
+  },
+  {
+   "id": "pressure.arrival_scaling_action_null",
+   "claim": "arrival scaling through 8x is action-null for all three workloads",
+   "value": {
+    "max_multiplier": 8.0,
+    "conditions": 300,
+    "disagreement_states": 0
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv",
+   "source_field": "axis == arrival_pressure: max arrival_multiplier, sum of true_canonical_disagreement_states",
+   "manuscript_text": [
+    "Arrival scaling through $8\\times$ remained action-null",
+    "up to eight times"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 5 (Results: Pressure-Induced Disagreement)",
+     "line": 451,
+     "text": "Arrival scaling through $8\\times$ remained action-null"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "up to eight times"
+    }
+   ]
+  },
+  {
+   "id": "pressure.transition_table",
+   "claim": "Table 2: first binding, first disagreement and sustained disagreement settings per workload and pressure axis",
+   "value": [
+    "Azure code & Active-sequence cap & 8 & 8 & 4 \\\\",
+    "Azure code & KV capacity & 16,000 & 16,000 & 16,000 \\\\",
+    "Azure conversation & Active-sequence cap & 4 & 4 & 4 \\\\",
+    "Azure conversation & KV capacity & 8,000 & 16,000 & 8,000 \\\\",
+    "BurstGPT & Active-sequence cap & 16 & 16 & 8 \\\\",
+    "BurstGPT & KV capacity & 16,000 & 16,000 & 16,000 \\\\"
+   ],
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_TRANSITION_MAP.csv",
+   "source_field": "first_binding_point, first_disagreement_point, sustained_disagreement_point (sustained: windows_with_disagreement >= 2)",
+   "manuscript_text": [
+    "Azure code & Active-sequence cap & 8 & 8 & 4 \\\\",
+    "Azure code & KV capacity & 16,000 & 16,000 & 16,000 \\\\",
+    "Azure conversation & Active-sequence cap & 4 & 4 & 4 \\\\",
+    "Azure conversation & KV capacity & 8,000 & 16,000 & 8,000 \\\\",
+    "BurstGPT & Active-sequence cap & 16 & 16 & 8 \\\\",
+    "BurstGPT & KV capacity & 16,000 & 16,000 & 16,000 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 2",
+     "line": 486,
+     "text": "Azure code & Active-sequence cap & 8 & 8 & 4 \\\\"
+    },
+    {
+     "section": "Table 2",
+     "line": 487,
+     "text": "Azure code & KV capacity & 16,000 & 16,000 & 16,000 \\\\"
+    },
+    {
+     "section": "Table 2",
+     "line": 488,
+     "text": "Azure conversation & Active-sequence cap & 4 & 4 & 4 \\\\"
+    },
+    {
+     "section": "Table 2",
+     "line": 489,
+     "text": "Azure conversation & KV capacity & 8,000 & 16,000 & 8,000 \\\\"
+    },
+    {
+     "section": "Table 2",
+     "line": 490,
+     "text": "BurstGPT & Active-sequence cap & 16 & 16 & 8 \\\\"
+    },
+    {
+     "section": "Table 2",
+     "line": 491,
+     "text": "BurstGPT & KV capacity & 16,000 & 16,000 & 16,000 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "figure2.pressure_conditions",
+   "claim": "Figure 2 pressure-condition prevalences (read from the artifact, not typed into the plot script)",
+   "value": {
+    "azure_2023_code|active_sequence_capacity|4": {
+     "disagreement_rate": 0.0009987316108542152,
+     "disagreement_states": 100,
+     "sbs_decision_states": 100127
+    },
+    "azure_2023_code|kv_capacity|16000": {
+     "disagreement_rate": 0.005953153873045997,
+     "disagreement_states": 596,
+     "sbs_decision_states": 100115
+    },
+    "azure_2023_conv|active_sequence_capacity|4": {
+     "disagreement_rate": 6.699067100881468e-05,
+     "disagreement_states": 31,
+     "sbs_decision_states": 462751
+    },
+    "burstgpt|active_sequence_capacity|8": {
+     "disagreement_rate": 0.00017099055277195935,
+     "disagreement_states": 76,
+     "sbs_decision_states": 444469
+    }
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv",
+   "source_field": "disagreement_rate = true_canonical_disagreement_states / sbs_decision_states for the four plotted rows",
+   "manuscript_text": [
+    "figures/pe_disagreement_rates.pdf"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Figure 2",
+     "line": 431,
+     "text": "figures/pe_disagreement_rates.pdf"
+    }
+   ]
+  },
+  {
+   "id": "figure3.azure_code_active_cap",
+   "claim": "Figure 3 disagreement prevalence versus active-sequence cap (Azure code)",
+   "value": {
+    "512": 0.0,
+    "64": 0.0,
+    "32": 0.0,
+    "16": 0.0,
+    "8": 1.000080006400512e-05,
+    "4": 0.0009987316108542152
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv",
+   "source_field": "disagreement_rate for source_dataset=azure_2023_code, axis=active_sequence_capacity, ordered by pressure_order (cap decreasing = pressure increasing)",
+   "manuscript_text": [
+    "figures/pe_pressure_transition.pdf"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Figure 3",
+     "line": 462,
+     "text": "figures/pe_pressure_transition.pdf"
+    }
+   ]
+  },
+  {
+   "id": "fresh.states",
+   "claim": "720 fresh disagreement states",
+   "value": 720,
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CAUSAL_RESULT_V1.json",
+   "source_field": "primary.states (== rows of FRESH_LATENCY_STATE_LEVEL_V1.csv)",
+   "manuscript_text": [
+    "720 fresh disagreement states"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "720 fresh disagreement states"
+    }
+   ]
+  },
+  {
+   "id": "fresh.beneficial_preregistered",
+   "claim": "590 of 720 states have positive one-step latency headroom (strict preregistered criterion), 81.9%",
+   "value": {
+    "beneficial": 590,
+    "share": 0.8194444444444444
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CAUSAL_RESULT_V1.json",
+   "source_field": "primary.beneficial_states; share = beneficial / states",
+   "manuscript_text": [
+    "590/720=0.8194\\ (81.9\\%)",
+    "590 (81.9\\%)"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 513,
+     "text": "590/720=0.8194\\ (81.9\\%)"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "590 (81.9\\%)"
+    }
+   ]
+  },
+  {
+   "id": "fresh.beneficial_guarded",
+   "claim": "589 of 720 states exceed the 1e-12 s floating-point guard, 81.8%",
+   "value": {
+    "guarded": 589,
+    "share": 0.8180555555555555
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv",
+   "source_field": "count of oracle_headroom > 1e-12 s",
+   "manuscript_text": [
+    "589/720 (81.8\\%)",
+    "589 excluding one floating-point-residue state"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 533,
+     "text": "589/720 (81.8\\%)"
+    },
+    {
+     "section": "Section 1 (Introduction)",
+     "line": 114,
+     "text": "589 excluding one floating-point-residue state"
+    }
+   ]
+  },
+  {
+   "id": "fresh.mean_headroom",
+   "claim": "state-weighted mean oracle headroom 0.001995791 s = 1.9958 ms",
+   "value": {
+    "seconds": 0.0019957911708132978,
+    "ms": 1.9957911708132978
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_CAUSAL_RESULT_V1.json",
+   "source_field": "primary.mean_oracle_headroom",
+   "manuscript_text": [
+    "0.001995791 s (1.9958 ms)",
+    "2.00 ms"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 515,
+     "text": "0.001995791 s (1.9958 ms)"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "2.00 ms"
+    }
+   ]
+  },
+  {
+   "id": "fresh.mean_headroom_ci",
+   "claim": "95% window-clustered percentile-bootstrap CI [0.1909, 3.5462] ms",
+   "value": {
+    "seconds": [
+     0.00019088421760325944,
+     0.003546195777055185
+    ],
+    "ms": [
+     0.19088421760325944,
+     3.546195777055185
+    ]
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_BOOTSTRAP_V1.json",
+   "source_field": "mean_oracle_headroom_ci95_low / _high",
+   "manuscript_text": [
+    "[0.000190884, 0.003546196] s",
+    "[0.1909, 3.5462] ms",
+    "0.19--3.55"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 516,
+     "text": "[0.000190884, 0.003546196] s"
+    },
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 517,
+     "text": "[0.1909, 3.5462] ms"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "0.19--3.55"
+    }
+   ]
+  },
+  {
+   "id": "fresh.bootstrap_design",
+   "claim": "2,000 replicates, seed 20260920, 36 clusters (windows)",
+   "value": {
+    "replicates": 2000,
+    "seed": 20260920,
+    "clusters": 36
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_BOOTSTRAP_V1.json",
+   "source_field": "bootstrap_replicates, bootstrap_seed, clusters",
+   "manuscript_text": [
+    "2,000 replicates and seed 20260920",
+    "36 windows"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 3 (Methods), subsection 3.3 (One-step causal headroom)",
+     "line": 332,
+     "text": "2,000 replicates and seed 20260920"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "36 windows"
+    }
+   ]
+  },
+  {
+   "id": "fresh.regime_table",
+   "claim": "Table 3: per-regime states, windows, P(D), P(B|D), mean headroom and headroom share",
+   "value": [
+    "(1) Azure code,\\newline active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\\\",
+    "(2) Azure code,\\newline active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\\\",
+    "(3) Azure code,\\newline KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\\\",
+    "(4) Azure conv.,\\newline active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\\\",
+    "(5) Azure conv.,\\newline KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\\\"
+   ],
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_WORKLOAD_REGIME_V1.csv; experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv",
+   "source_field": "robustness_numbers.compute()['regimes'] (asserted equal to the regime CSV and to state-level aggregation)",
+   "manuscript_text": [
+    "(1) Azure code,\\newline active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\\\",
+    "(2) Azure code,\\newline active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\\\",
+    "(3) Azure code,\\newline KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\\\",
+    "(4) Azure conv.,\\newline active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\\\",
+    "(5) Azure conv.,\\newline KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 3",
+     "line": 571,
+     "text": "(1) Azure code,\\newline active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\\\"
+    },
+    {
+     "section": "Table 3",
+     "line": 572,
+     "text": "(2) Azure code,\\newline active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\\\"
+    },
+    {
+     "section": "Table 3",
+     "line": 573,
+     "text": "(3) Azure code,\\newline KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\\\"
+    },
+    {
+     "section": "Table 3",
+     "line": 574,
+     "text": "(4) Azure conv.,\\newline active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\\\"
+    },
+    {
+     "section": "Table 3",
+     "line": 575,
+     "text": "(5) Azure conv.,\\newline KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "fresh.floating_point_residue",
+   "claim": "one beneficial state has advantage 5.6e-17 s (1 ulp at 0.357 s); guard changes the mean by < 1e-19 s",
+   "value": {
+    "advantage_s": 5.551115123125783e-17,
+    "ulps": 1.0,
+    "ref_latency_s": 0.3571018052261875,
+    "smallest_genuine_s": 5.154639175247722e-06,
+    "identical_completed_requests": true,
+    "mean_effect_s": 7.709882115452476e-20
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/numerical_tolerance_audit.json; experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/ROBUSTNESS_AND_590_589_RECHECK_V1.json",
+   "source_field": "residue advantage, reference latency, mean effect",
+   "manuscript_text": [
+    "$5.6\\times10^{-17}$~s",
+    "0.357~s",
+    "less than $10^{-19}$~s"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 530,
+     "text": "$5.6\\times10^{-17}$~s"
+    },
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 531,
+     "text": "0.357~s"
+    },
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 533,
+     "text": "less than $10^{-19}$~s"
+    }
+   ]
+  },
+  {
+   "id": "robust.median",
+   "claim": "median headroom 0.197 ms",
+   "value": 0.19694804531999316,
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "distribution_summary.csv median_ms",
+   "manuscript_text": [
+    "0.197~ms",
+    "median is 0.20 ms",
+    "median 0.20~ms"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 663,
+     "text": "0.197~ms"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "median is 0.20 ms"
+    },
+    {
+     "section": "Section 6 (Results: Fresh Support and Causal Latency Headroom)",
+     "line": 529,
+     "text": "median 0.20~ms"
+    }
+   ]
+  },
+  {
+   "id": "robust.distribution",
+   "claim": "quartiles, 90th/95th percentiles, maximum, zero and positive-state statistics of headroom",
+   "value": {
+    "p25_ms": 0.02279693486590198,
+    "p75_ms": 1.1863636363638272,
+    "p90_ms": 8.405454545454578,
+    "p95_ms": 11.304347826086984,
+    "max_ms": 12.115384615384626,
+    "n_zero": 130,
+    "frac_zero": 0.18055555555555555,
+    "pos_median_ms": 0.28865979381443446,
+    "n_pos": 589,
+    "frac_le_mean": 0.7736111111111111
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "distribution_summary.csv; quantiles via numpy 'linear' method",
+   "manuscript_text": [
+    "0.023 and 1.19~ms",
+    "8.4 and 11.3~ms",
+    "12.1~ms",
+    "130 states (18.1\\%)",
+    "the median is 0.29~ms",
+    "77.4\\% of states lie at or below that mean"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 664,
+     "text": "0.023 and 1.19~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 665,
+     "text": "8.4 and 11.3~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 666,
+     "text": "12.1~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 666,
+     "text": "130 states (18.1\\%)"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 667,
+     "text": "the median is 0.29~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.1 (Effect scale and distribution)",
+     "line": 664,
+     "text": "77.4\\% of states lie at or below that mean"
+    }
+   ]
+  },
+  {
+   "id": "robust.equal_window",
+   "claim": "Equal-window mean headroom 0.327 ms with window-clustered 200,000-replicate CI",
+   "value": {
+    "units": 36,
+    "mean_ms": 0.32734542822782287,
+    "share": 0.6323037456829561,
+    "ci_ms": [
+     0.1135100281485884,
+     0.643843124229515
+    ]
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/weighting_sensitivity.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/weighting_sensitivity_ci.csv",
+   "source_field": "equal-weight mean over units of the per-unit mean H_LAT",
+   "manuscript_text": [
+    "Equal-window & 36 windows & 0.327 & [0.114, 0.644] & 0.632 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 5",
+     "line": 724,
+     "text": "Equal-window & 36 windows & 0.327 & [0.114, 0.644] & 0.632 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.equal_regime",
+   "claim": "Equal-regime mean headroom 0.759 ms with window-clustered 200,000-replicate CI",
+   "value": {
+    "units": 5,
+    "mean_ms": 0.7591081303343488,
+    "share": 0.6664798077288806,
+    "ci_ms": [
+     0.14493810612488056,
+     1.161020915829752
+    ]
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/weighting_sensitivity.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/weighting_sensitivity_ci.csv",
+   "source_field": "equal-weight mean over units of the per-unit mean H_LAT",
+   "manuscript_text": [
+    "Equal-regime & 5 regimes & 0.759 & [0.145, 1.161] & 0.666 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 5",
+     "line": 723,
+     "text": "Equal-regime & 5 regimes & 0.759 & [0.145, 1.161] & 0.666 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.equal_workload",
+   "claim": "Equal-workload mean headroom 1.360 ms with window-clustered 200,000-replicate CI",
+   "value": {
+    "units": 2,
+    "mean_ms": 1.3595856890912852,
+    "share": 0.8087588102861152,
+    "ci_ms": [
+     0.1844036982031228,
+     2.0938521582479486
+    ]
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/weighting_sensitivity.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/weighting_sensitivity_ci.csv",
+   "source_field": "equal-weight mean over units of the per-unit mean H_LAT",
+   "manuscript_text": [
+    "Equal-workload & 2 workloads & 1.360 & [0.184, 2.094] & 0.809 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 5",
+     "line": 722,
+     "text": "Equal-workload & 2 workloads & 1.360 & [0.184, 2.094] & 0.809 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.aggregation_ratio",
+   "claim": "abstract/discussion: equal-window 0.33 ms, equal-regime 0.76 ms, equal-workload 1.36 ms",
+   "value": [
+    0.32734542822782287,
+    0.7591081303343488,
+    1.3595856890912852
+   ],
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "see robust.equal_*",
+   "manuscript_text": [
+    "1.36, 0.76, and 0.33~ms",
+    "from 1.996~ms (state-weighted) to 0.327~ms (equal-window)"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 10 (Discussion), subsection 10.1 (Sign and magnitude of the headroom)",
+     "line": 843,
+     "text": "1.36, 0.76, and 0.33~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.2 (Sensitivity to aggregation and to individual windows and regimes)",
+     "line": 684,
+     "text": "from 1.996~ms (state-weighted) to 0.327~ms (equal-window)"
+    }
+   ]
+  },
+  {
+   "id": "robust.threshold_0.1ms",
+   "claim": "states with H_LAT > 0.1 ms: 432 (60.0%), in 17 windows, 327 in Azure-code KV 16,000",
+   "value": {
+    "n": 432,
+    "share": 0.6,
+    "windows": 17,
+    "in_code_kv": 327
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/practical_thresholds.csv",
+   "source_field": "n_exceed, n_windows_with_exceedance; threshold tau + 1e-12 s guard",
+   "manuscript_text": [
+    "$>0.1$~ms & 432 & 60.0\\% & 17 & 327 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 4",
+     "line": 652,
+     "text": "$>0.1$~ms & 432 & 60.0\\% & 17 & 327 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.threshold_0.25ms",
+   "claim": "states with H_LAT > 0.25 ms: 322 (44.7%), in 16 windows, 259 in Azure-code KV 16,000",
+   "value": {
+    "n": 322,
+    "share": 0.44722222222222224,
+    "windows": 16,
+    "in_code_kv": 259
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/practical_thresholds.csv",
+   "source_field": "n_exceed, n_windows_with_exceedance; threshold tau + 1e-12 s guard",
+   "manuscript_text": [
+    "$>0.25$~ms & 322 & 44.7\\% & 16 & 259 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 4",
+     "line": 653,
+     "text": "$>0.25$~ms & 322 & 44.7\\% & 16 & 259 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.threshold_0.5ms",
+   "claim": "states with H_LAT > 0.5 ms: 212 (29.4%), in 9 windows, 201 in Azure-code KV 16,000",
+   "value": {
+    "n": 212,
+    "share": 0.29444444444444445,
+    "windows": 9,
+    "in_code_kv": 201
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/practical_thresholds.csv",
+   "source_field": "n_exceed, n_windows_with_exceedance; threshold tau + 1e-12 s guard",
+   "manuscript_text": [
+    "$>0.5$~ms & 212 & 29.4\\% & 9 & 201 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 4",
+     "line": 654,
+     "text": "$>0.5$~ms & 212 & 29.4\\% & 9 & 201 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.threshold_1ms",
+   "claim": "states with H_LAT > 1 ms: 188 (26.1%), in 7 windows, 185 in Azure-code KV 16,000",
+   "value": {
+    "n": 188,
+    "share": 0.2611111111111111,
+    "windows": 7,
+    "in_code_kv": 185
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/practical_thresholds.csv",
+   "source_field": "n_exceed, n_windows_with_exceedance; threshold tau + 1e-12 s guard",
+   "manuscript_text": [
+    "$>1$~ms & 188 & 26.1\\% & 7 & 185 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 4",
+     "line": 655,
+     "text": "$>1$~ms & 188 & 26.1\\% & 7 & 185 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.threshold_2ms",
+   "claim": "states with H_LAT > 2 ms: 162 (22.5%), in 4 windows, 161 in Azure-code KV 16,000",
+   "value": {
+    "n": 162,
+    "share": 0.225,
+    "windows": 4,
+    "in_code_kv": 161
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/practical_thresholds.csv",
+   "source_field": "n_exceed, n_windows_with_exceedance; threshold tau + 1e-12 s guard",
+   "manuscript_text": [
+    "$>2$~ms & 162 & 22.5\\% & 4 & 161 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 4",
+     "line": 656,
+     "text": "$>2$~ms & 162 & 22.5\\% & 4 & 161 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.threshold_5ms",
+   "claim": "states with H_LAT > 5 ms: 129 (17.9%), in 2 windows, 128 in Azure-code KV 16,000",
+   "value": {
+    "n": 129,
+    "share": 0.17916666666666667,
+    "windows": 2,
+    "in_code_kv": 128
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/practical_thresholds.csv",
+   "source_field": "n_exceed, n_windows_with_exceedance; threshold tau + 1e-12 s guard",
+   "manuscript_text": [
+    "$>5$~ms & 129 & 17.9\\% & 2 & 128 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 4",
+     "line": 657,
+     "text": "$>5$~ms & 129 & 17.9\\% & 2 & 128 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.thresholds_used",
+   "claim": "practical thresholds epsilon in {0.1, 0.25, 0.5, 1, 2, 5} ms",
+   "value": [
+    0.1,
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    5.0
+   ],
+   "source_artifact": "paper/performance_evaluation/scripts/robustness_numbers.py::THRESHOLDS_MS",
+   "source_field": "constant",
+   "manuscript_text": [
+    "$\\epsilon\\in\\{0.1,0.25,0.5,1,2,5\\}$~ms"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 3 (Methods), subsection 3.4 (Post hoc robustness analyses)",
+     "line": 354,
+     "text": "$\\epsilon\\in\\{0.1,0.25,0.5,1,2,5\\}$~ms"
+    }
+   ]
+  },
+  {
+   "id": "robust.w11_headroom_share",
+   "claim": "Azure-code window w11 carries 88.4% of total headroom with 36.5% of the states (263 of 720)",
+   "value": {
+    "headroom_share": 0.8840174431425584,
+    "state_share": 0.36527777777777776,
+    "states": 263
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "composition_window.csv / composition_summary.json: share of sum(H_LAT) by window",
+   "manuscript_text": [
+    "36.5\\%",
+    "88.4\\%",
+    "263 of the 720 states",
+    "88\\%"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 734,
+     "text": "36.5\\%"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 735,
+     "text": "88.4\\%"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 734,
+     "text": "263 of the 720 states"
+    },
+    {
+     "section": "Abstract",
+     "line": 39,
+     "text": "88\\%"
+    }
+   ]
+  },
+  {
+   "id": "robust.regime_headroom_share",
+   "claim": "Azure-code KV 16,000 regime carries 96.8% of headroom and 59.9% of states; contributes 1.93 ms of the 2.00 ms mean",
+   "value": {
+    "headroom_share": 0.9679811351709093,
+    "state_share": 0.5986111111111111,
+    "contrib_ms": 1.9318882030879343
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "composition_regime.csv: share of sum(H_LAT) by regime",
+   "manuscript_text": [
+    "59.9\\% of the states and 96.8\\% of the headroom",
+    "1.93 of the 2.00~ms"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 738,
+     "text": "59.9\\% of the states and 96.8\\% of the headroom"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 738,
+     "text": "1.93 of the 2.00~ms"
+    }
+   ]
+  },
+  {
+   "id": "robust.concentration_other",
+   "claim": "top-3 window share 95.3%; effective number of windows 1.27 (5.7 by state count); 205 w11 KV states average 6.16 ms; 128 of 129 states >5 ms and 140 of 162 states >2 ms in w11",
+   "value": {
+    "top3_share": 0.9531630535167204,
+    "eff_windows": 1.2739857459329211,
+    "eff_windows_by_states": 5.6803488856260005,
+    "w11_code_kv_states": 205,
+    "w11_code_kv_mean_ms": 6.159981202633787,
+    "n_gt5": 129,
+    "n_gt5_in_w11": 128,
+    "n_gt2": 162,
+    "n_gt2_in_w11": 140
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "composition_window.csv / composition_regime.csv / composition_summary.json; effective windows = 1 / sum(p_w^2)",
+   "manuscript_text": [
+    "95.3\\%",
+    "1.27 (5.7 by state count)",
+    "205 states of that regime average 6.16~ms",
+    "Of the 129 states above 5~ms, 128 are in w11, as are 140 of the 162"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 736,
+     "text": "95.3\\%"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 737,
+     "text": "1.27 (5.7 by state count)"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 739,
+     "text": "205 states of that regime average 6.16~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.3 (Concentration of headroom)",
+     "line": 740,
+     "text": "Of the 129 states above 5~ms, 128 are in w11, as are 140 of the 162"
+    }
+   ]
+  },
+  {
+   "id": "robust.leave_one_out_w11",
+   "claim": "omit Azure-code w11: 457 states, mean 0.365 ms, CI [0.158, 0.682], share 0.821",
+   "value": {
+    "n": 457,
+    "mean_ms": 0.3646901823194575,
+    "P": 0.8205689277899344,
+    "ci_ms": [
+     0.15783406633359676,
+     0.6823701247955324
+    ]
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/leave_one_window_out.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/leave_one_window_out_remainder_ci.csv",
+   "source_field": "state-weighted mean of the remaining states",
+   "manuscript_text": [
+    "Omit Azure-code window w11 & 457 states & 0.365 & [0.158, 0.682] & 0.821 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 5",
+     "line": 727,
+     "text": "Omit Azure-code window w11 & 457 states & 0.365 & [0.158, 0.682] & 0.821 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.leave_one_out_code_kv",
+   "claim": "omit Azure-code KV 16,000: 289 states, mean 0.159 ms, CI [0.058, 0.234], share 0.664",
+   "value": {
+    "n": 289,
+    "mean_ms": 0.1592046254749544,
+    "P": 0.6643598615916955,
+    "ci_ms": [
+     0.05847761450758993,
+     0.23406048476154984
+    ]
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/leave_one_regime_out.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/leave_one_regime_out_remainder_ci.csv",
+   "source_field": "state-weighted mean of the remaining states",
+   "manuscript_text": [
+    "Omit Azure-code KV 16,000 & 289 states & 0.159 & [0.058, 0.234] & 0.664 \\\\"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Table 5",
+     "line": 728,
+     "text": "Omit Azure-code KV 16,000 & 289 states & 0.159 & [0.058, 0.234] & 0.664 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "robust.leave_one_out_ranges",
+   "claim": "all 36 + 5 omissions positive with CI excluding zero; other windows 2.00-2.26 ms, other regimes 2.02-2.39 ms",
+   "value": {
+    "other_windows_range_ms": [
+     1.9978028654652644,
+     2.2632391052241827
+    ],
+    "other_regimes_range_ms": [
+     2.0234301066380302,
+     2.3873145105175295
+    ],
+    "all_ci_exclude_zero": true,
+    "n_windows": 36,
+    "n_regimes": 5
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "min/max of leave-one-out means excluding w11 / the Azure-code KV regime",
+   "manuscript_text": [
+    "between 2.00 and 2.26~ms",
+    "between 2.02 and 2.39~ms",
+    "all 41 omissions"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.2 (Sensitivity to aggregation and to individual windows and regimes)",
+     "line": 697,
+     "text": "between 2.00 and 2.26~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.2 (Sensitivity to aggregation and to individual windows and regimes)",
+     "line": 698,
+     "text": "between 2.02 and 2.39~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.2 (Sensitivity to aggregation and to individual windows and regimes)",
+     "line": 699,
+     "text": "all 41 omissions"
+    }
+   ]
+  },
+  {
+   "id": "robust.interval_diagnostics",
+   "claim": "10^6-replicate percentile CI [0.184, 3.543] ms; BCa [0.239, 4.049]; jackknife t [-1.36, 5.35], SE 1.65; MC sd 0.004 ms over 1000 seeds; 36% of replicates omit w11 (mean 0.36 vs 2.43 ms)",
+   "value": {
+    "large_ci_ms": [
+     0.18430313436443643,
+     3.5427543161730175
+    ],
+    "bca_ci_ms": [
+     0.23908084672811167,
+     4.048905997123921
+    ],
+    "jack_ci_ms": [
+     -1.3559635206049008,
+     5.347545862231436
+    ],
+    "jack_se_ms": 1.6510229061106578,
+    "mc_low_sd_ms": 0.004067560137193092,
+    "mc_seeds": 1000,
+    "frac_without_w11": 0.361385,
+    "mean_without_w11_ms": 0.3623830224920922,
+    "mean_with_w11_ms": 2.4333925043382445
+   },
+   "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)",
+   "source_field": "cluster_robustness.json: bootstrap 1e6, BCa, delete-one-window jackknife t, 1000 seed replications",
+   "manuscript_text": [
+    "[0.184, 3.543]~ms",
+    "[0.239, 4.049]~ms",
+    "[$-1.36$, 5.35]~ms",
+    "(1.65~ms)",
+    "0.004~ms (standard deviation) across 1000 seeds",
+    "36\\% of replicates do not draw window w11",
+    "2.43~ms for those that do"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 747,
+     "text": "[0.184, 3.543]~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 750,
+     "text": "[0.239, 4.049]~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 754,
+     "text": "[$-1.36$, 5.35]~ms"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 755,
+     "text": "(1.65~ms)"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 749,
+     "text": "0.004~ms (standard deviation) across 1000 seeds"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 750,
+     "text": "36\\% of replicates do not draw window w11"
+    },
+    {
+     "section": "Section 7 (Results: Robustness and Concentration of Causal Headroom), subsection 7.4 (Uncertainty diagnostics)",
+     "line": 752,
+     "text": "2.43~ms for those that do"
+    }
+   ]
+  },
+  {
+   "id": "vllm.setup",
+   "claim": "one RTX 5060 Ti GPU, vLLM 0.27.1, Qwen2.5-0.5B-Instruct",
+   "value": {
+    "gpu": "NVIDIA GeForce RTX 5060 Ti",
+    "vllm": "0.27.1",
+    "model": "Qwen2.5-0.5B-Instruct"
+   },
+   "source_artifact": "experiments/real_vllm_mechanism_validation_v1/{runtime_environment,vllm_install,probe_config}.json",
+   "source_field": "gpu.name; versions.vllm; model_path",
+   "manuscript_text": [
+    "RTX 5060 Ti GPU, vLLM 0.27.1, Qwen2.5-0.5B-Instruct"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 784,
+     "text": "RTX 5060 Ti GPU, vLLM 0.27.1, Qwen2.5-0.5B-Instruct"
+    }
+   ]
+  },
+  {
+   "id": "vllm.run_counts",
+   "claim": "40 full-versus-chunked runs and a 20-run native chunked-prefill budget probe",
+   "value": {
+    "prefill_decode": 40,
+    "native_budget": 20
+   },
+   "source_artifact": "experiments/real_vllm_pressure_action_validation_v1/REAL_VLLM_VALIDATION_RESULT_V1.json",
+   "source_field": "prefill_decode.measured_runs; native_budget_probe.measured_runs",
+   "manuscript_text": [
+    "40 full-versus-chunked runs and a 20-run native chunked-prefill budget probe"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 785,
+     "text": "40 full-versus-chunked runs and a 20-run native chunked-prefill budget probe"
+    }
+   ]
+  },
+  {
+   "id": "vllm.trace_counts",
+   "claim": "T512: 1,680 scheduler steps, 165 mixed prefill/decode steps, 194 partial-prefill items; T4096: 1,536, 55, 9",
+   "value": {
+    "T512": [
+     1680,
+     165,
+     194
+    ],
+    "T4096": [
+     1536,
+     55,
+     9
+    ]
+   },
+   "source_artifact": "experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/mechanism_summary.json",
+   "source_field": "trace_summary_by_treatment.{T512,T4096}.{scheduled_steps,mixed_prefill_decode_steps,partial_prefill_items}",
+   "manuscript_text": [
+    "1,680 scheduler steps, 165 mixed prefill/decode steps, and 194 partial-prefill items; T4096 produced 1,536, 55, and 9"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 796,
+     "text": "1,680 scheduler steps, 165 mixed prefill/decode steps, and 194 partial-prefill items; T4096 produced 1,536, 55, and 9"
+    }
+   ]
+  },
+  {
+   "id": "vllm.queue_lengths",
+   "claim": "waiting queues reached 7 (T512) and 5 (T4096); running sequences reached 4 in both",
+   "value": {
+    "waiting": [
+     7,
+     5
+    ],
+    "running": [
+     4,
+     4
+    ]
+   },
+   "source_artifact": "experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/mechanism_summary.json",
+   "source_field": "trace_summary_by_treatment.*.max_{waiting,running}_after_schedule",
+   "manuscript_text": [
+    "lengths of 7 and 5, respectively, while running sequences reached 4 in both cases"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 797,
+     "text": "lengths of 7 and 5, respectively, while running sequences reached 4 in both cases"
+    }
+   ]
+  },
+  {
+   "id": "vllm.latency_differences",
+   "claim": "low load: 30.6 ms late-TTFT difference, 16.3 ms prompt-heavy end-to-end; high load: smaller TTFT difference (2.5 ms, CI includes 0), 23.3 ms end-to-end",
+   "value": {
+    "low_late_ttft_ms": -30.61976432800294,
+    "low_hog_e2e_ms": 16.33640925089519,
+    "high_late_ttft_ms": -2.547454833984375,
+    "high_late_ttft_ci_ms": [
+     -7.694228490193633,
+     1.8129110336303267
+    ],
+    "high_hog_e2e_ms": 23.32291603088381
+   },
+   "source_artifact": "experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/statistical_summary.json",
+   "source_field": "comparisons.<regime>.{late_ttft,hog_e2e}_T4096_minus_T512_s_mean",
+   "manuscript_text": [
+    "a 30.6~ms difference in late time to first token",
+    "a 16.3~ms prompt-heavy end-to-end tradeoff",
+    "a 23.3~ms prompt-heavy end-to-end"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 799,
+     "text": "a 30.6~ms difference in late time to first token"
+    },
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 799,
+     "text": "a 16.3~ms prompt-heavy end-to-end tradeoff"
+    },
+    {
+     "section": "Section 9 (Results: Bounded vLLM System Correspondence Probe)",
+     "line": 801,
+     "text": "a 23.3~ms prompt-heavy end-to-end"
+    }
+   ]
+  }
+ ]
+}

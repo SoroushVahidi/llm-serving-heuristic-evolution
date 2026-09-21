@@ -10,9 +10,6 @@ import importlib.util
 import math
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -20,9 +17,11 @@ HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location("robustness_numbers", HERE / "robustness_numbers.py")
 rn = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rn)
+_fs = importlib.util.spec_from_file_location("figstyle", HERE / "figstyle.py")
+fs = importlib.util.module_from_spec(_fs)
+_fs.loader.exec_module(fs)
 
-OUT = HERE.parent / "figures"
-LABELS = {"azure_2023_code": "Azure code", "azure_2023_conv": "Azure conv."}
+LABELS = fs.WORKLOAD
 
 
 def window_label(wid: str) -> str:
@@ -37,10 +36,8 @@ def main() -> None:
     H = np.array([s["H"] for s in S]) * 1e3
     H_wo = np.array([s["H"] for s in S if s["window"] != rn.W11]) * 1e3
 
-    plt.rcParams.update({"font.size": 8, "axes.labelsize": 8, "axes.titlesize": 8.5, "legend.fontsize": 7, "xtick.labelsize": 7.5,
-                         "ytick.labelsize": 7.5, "pdf.fonttype": 42, "ps.fonttype": 42, "axes.spines.top": False, "axes.spines.right": False,
-                         "axes.grid": True, "grid.color": "0.9", "grid.linewidth": 0.5})
-    fig, ax = plt.subplots(1, 2, figsize=(5.4, 2.7), gridspec_kw={"width_ratios": [1.05, 1]})
+    fs.apply()
+    fig, ax = plt.subplots(1, 2, figsize=(fs.TEXT_WIDTH_IN, 2.75), gridspec_kw={"width_ratios": [1.05, 1]})
 
     # ---------------------------------------------------------------- (a) ECDF
     def ecdf(a, x, **kw):
@@ -76,8 +73,8 @@ def main() -> None:
     assert abs(hd_share[0] - 100 * N["conc"]["w11_headroom_share"]) < 1e-9 and abs(st_share[0] - 100 * N["conc"]["w11_state_share"]) < 1e-9
     y = np.arange(len(labels))[::-1]
     h = 0.36
-    ax[1].barh(y + h / 2, st_share, height=h, color="white", edgecolor="black", hatch="///", linewidth=0.8, label="Share of states")
-    ax[1].barh(y - h / 2, hd_share, height=h, color="0.25", edgecolor="black", linewidth=0.8, label="Share of headroom")
+    ax[1].barh(y + h / 2, st_share, height=h, color="white", edgecolor="black", hatch="///", linewidth=0.8, label="states")
+    ax[1].barh(y - h / 2, hd_share, height=h, color="0.25", edgecolor="black", linewidth=0.8, label="headroom")
     for yi, a_, b_ in zip(y, st_share, hd_share):
         ax[1].text(a_ + 1.5, yi + h / 2, f"{a_:.1f}%", va="center", fontsize=7)
         ax[1].text(b_ + 1.5, yi - h / 2, f"{b_:.1f}%", va="center", fontsize=7)
@@ -86,14 +83,10 @@ def main() -> None:
     ax[1].set_xlim(0, 118)
     ax[1].set_xlabel("Share (%)")
     ax[1].set_title("(b) Concentration by trace window")
-    ax[1].legend(loc="center right", bbox_to_anchor=(1.0, 0.42), frameon=True, framealpha=0.95, edgecolor="0.7")
+    ax[1].legend(title="Share of", loc="center right", bbox_to_anchor=(1.0, 0.42), title_fontsize=7.5, handlelength=1.4)
 
-    fig.tight_layout()
-    OUT.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT / "pe_robustness.pdf", bbox_inches="tight")
-    fig.savefig(OUT / "pe_robustness.png", dpi=300, bbox_inches="tight")
-    print("wrote", OUT / "pe_robustness.pdf")
-
+    fs.fit(fig)
+    fs.save(fig, "pe_robustness")
 
 if __name__ == "__main__":
     main()

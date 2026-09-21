@@ -5,29 +5,57 @@
 Target journal: *Performance Evaluation* (Elsevier). The class is `elsarticle` (`preprint`, 12 pt) with the
 numbered `elsarticle-num` bibliography style.
 
+Status: the manuscript text, figures and tables are frozen for archive and packaging
+(`docs/PEVA_PREPACKAGE_READINESS.md`). The Zenodo version, the submission package and the merge to `main` are still open.
+
 ## Canonical source
 
 | Path | Content |
 |---|---|
 | `main.tex` | Manuscript source (canonical). |
 | `references.bib` | Bibliography; `main.bbl` is the compiled bibliography that is tracked with the source. |
-| `figures/` | Figure files (vector PDF plus PNG preview). Figures 1-3 come from `scripts/plot_performance_evaluation_figures.py`, Figures 4-5 from `scripts/plot_regime_figures.py`, Figure 6 from `scripts/plot_robustness_figures.py`. |
+| `figures/` | Figures 1-6 as vector PDF (fonts embedded, drawn at final size) plus 300 dpi PNG preview. |
+| `scripts/figstyle.py` | Shared typography, grayscale encoding, size and export rules of all six figures. |
+| `scripts/plot_performance_evaluation_figures.py` | Figures 1-3 (Figures 2-3 read the frozen Phase A / Phase B CSVs; no value is typed in). |
+| `scripts/plot_regime_figures.py` | Figures 4-5. |
+| `scripts/plot_robustness_figures.py` | Figure 6. |
 | `scripts/robustness_numbers.py` | Recomputes every number used in Table 3, Tables 4-5 and Figures 4-6 from the frozen artifacts and asserts agreement with the robustness outputs. |
-| `../when_does_llm_serving_scheduler_adaptation_matter.pdf` | Compiled review copy. |
+| `scripts/build_claim_manifest.py` | Recomputes the paper's quantitative claims from the canonical artifacts and checks them against `main.tex`. |
+| `FINAL_CLAIM_MANIFEST.json` | Provenance/verification metadata: for each major claim its value, source artifact, source field or calculation, and manuscript location. It holds no independent scientific data. |
+| `../when_does_llm_serving_scheduler_adaptation_matter.pdf` | Compiled review copy (written by the build script). |
 
-Scientific inputs are read-only: `experiments/fresh_production_latency_headroom_confirmatory_v1/` (frozen
-confirmatory artifacts), `..._robustness/` (post hoc robustness outputs) and `..._corrected/` (corrected
-derivative of two descriptive state-level columns; see `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`).
+## Required local artifacts
+
+Everything the build reads is tracked in this repository, so no download is needed. All are read-only:
+
+* `experiments/industry_realism_action_opportunity_phase_a_v1/` (native replay) and `..._phase_b_v2/` (pressure map);
+* `experiments/fresh_production_latency_headroom_confirmatory_v1/` (frozen preregistered artifacts),
+  `..._robustness/` (post hoc robustness outputs) and `..._corrected/` (corrected derivative of two descriptive
+  state-level columns; see `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`);
+* `experiments/real_vllm_mechanism_validation_v1/` and `experiments/real_vllm_pressure_action_validation_v1/`
+  (vLLM probe summaries, used only by the claim manifest).
+
+The build needs `pdflatex`, `bibtex` (with `elsarticle-num`), Python 3 with `matplotlib` and `numpy`. The tests
+additionally use `pytest`, `pymupdf` and `pillow`.
 
 ## Build
 
-From the repository root, regenerate figures from the frozen artifacts and rebuild the PDF:
+From the repository root, regenerate the figures from the frozen artifacts, check the claim manifest, rebuild the
+PDF and refresh the review copy:
 
 ```bash
 scripts/build_performance_evaluation_manuscript.sh
 ```
 
-or, for the manuscript only:
+Figures only:
+
+```bash
+python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py   # Figures 1-3
+python3 paper/performance_evaluation/scripts/plot_regime_figures.py                   # Figures 4-5
+python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # Figure 6
+```
+
+Manuscript only:
 
 ```bash
 cd paper/performance_evaluation
@@ -35,27 +63,42 @@ pdflatex -interaction=nonstopmode main.tex && bibtex main
 pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
 ```
 
-No new experiments are run by the build.
+The output is `paper/performance_evaluation/main.pdf` (30 pages), copied to
+`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`. No experiment is run by the build.
 
 ## Checks
 
 ```bash
-python -m pytest tests/test_manuscript_front_matter.py tests/test_manuscript_robustness_numbers.py \
-  tests/test_manuscript_discussion_conclusion.py tests/test_manuscript_presentation.py
+python3 -m pytest tests/test_manuscript_front_matter.py tests/test_manuscript_robustness_numbers.py \
+  tests/test_manuscript_discussion_conclusion.py tests/test_manuscript_presentation.py \
+  tests/test_manuscript_figures.py tests/test_manuscript_claim_manifest.py tests/test_peva_prepackage_readiness.py
+python3 paper/performance_evaluation/scripts/build_claim_manifest.py --check
 ```
 
 These guard journal limits (abstract length, keyword count), the numbers quoted in the abstract, Results and
-Discussion against the frozen artifacts, table and figure structure, terminology, and reference metadata.
+Discussion against the frozen artifacts, table and figure structure (vector, embedded fonts, size, legibility,
+grayscale), terminology, reference metadata, the generative-AI declaration, the Data Availability wording, and the
+readiness checklist. After any edit of `main.tex` that changes a number, regenerate the manifest with
+`python3 paper/performance_evaluation/scripts/build_claim_manifest.py`.
 
 ## Related documentation
 
+* `docs/PEVA_PREPACKAGE_READINESS.md`: pre-package readiness checklist, deferred packaging items and the entries the
+  archive step must add.
 * `docs/FRESH_CAUSAL_ROBUSTNESS_REPORT.md`: post hoc robustness analysis behind Section 7.
 * `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`: artifact defect and corrected derivative.
+* `docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`: environment and reproduction guide.
 * `docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`: journal requirements and submission status.
 
-## Submission package
+## Awaiting archive and submission packaging
+
+TODO(QUERY_8): the existing Zenodo record (DOI 10.5281/zenodo.22865294, tag `performance-evaluation-v1.0.0`) predates
+the robustness outputs, the corrected derivative and the final figure code. The Data Availability paragraph is
+worded to say so. After the new version is published, update the DOI, add the dataset/software reference and
+regenerate the claim manifest; the exact list is in `docs/PEVA_PREPACKAGE_READINESS.md`.
 
 `submission/` holds an earlier packaging snapshot (source zip, highlights, cover letter, checklist). It has **not**
-been regenerated from the current `main.tex` and should not be uploaded as is; it is rebuilt in the packaging step.
+been regenerated from the current `main.tex` and must not be uploaded as is; it is rebuilt in the packaging step.
 `scripts/plot_joint_complementarity.py`, `scripts/plot_vllm_semantic_validation.py` and the corresponding
-`figures/*.pdf` are legacy files that the current manuscript does not use.
+`figures/joint_complementarity.pdf` and `figures/vllm_semantic_validation.pdf` are legacy files that the current
+manuscript does not use.

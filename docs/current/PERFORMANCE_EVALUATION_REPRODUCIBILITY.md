@@ -20,12 +20,16 @@ pdflatex main.tex
 The output is written as `main.pdf`.
 
 ### Regenerate Manuscript Figures
-The figures can be regenerated instantly from the frozen, verified results JSON/CSV files using our visualization scripts:
+The six figures are regenerated from the frozen, verified result files by three scripts that share one style module
+(`figstyle.py`); each writes a vector PDF and a 300 dpi PNG into `paper/performance_evaluation/figures/`:
 ```bash
-# Regenerate Figures 2, 3, 4, 5
-python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py
+python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py   # Figures 1-3
+python3 paper/performance_evaluation/scripts/plot_regime_figures.py                   # Figures 4-5
+python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # Figure 6
 ```
-This script reads the frozen results in `paper/performance_evaluation/` and writes updated PDF and PNG vectors directly into `paper/performance_evaluation/figures/`.
+`scripts/build_performance_evaluation_manuscript.sh` runs all three, verifies the claim manifest
+(`paper/performance_evaluation/FINAL_CLAIM_MANIFEST.json`) and rebuilds the PDF. See
+`paper/performance_evaluation/README.md` for the inputs each script reads.
 
 ---
 
@@ -69,11 +73,12 @@ The core scientific computations in this paper are **frozen**. Running the full 
 | **Phase A Replay** (0/99,992, etc.) | `scripts/industry_realism_action_opportunity_phase_a_v1.py` | Local or HPC | Frozen (Re-run optional) |
 | **Phase B Pressure** | `scripts/industry_realism_action_opportunity_phase_b_v2.py` | Local or HPC | Frozen (Re-run optional) |
 | **Fresh Causal Headroom** | `scripts/fresh_latency_causal_confirmatory_v1.py` | HPC (Wulver Cluster) | Frozen |
-| **Figure 2** (Disagreement) | `paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py` | Local | Instant from frozen JSON |
-| **Figure 5** (Opportunity Map) | `paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py` | Local | Instant from frozen JSON |
+| **Figures 1-3** (evidence chain, native/pressure prevalence, active-cap transition) | `paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py` | Local | Instant from frozen CSVs (Phase A / Phase B) |
+| **Figures 4-5** (regime characterization and map) | `paper/performance_evaluation/scripts/plot_regime_figures.py` | Local | Instant from frozen artifacts |
+| **Figure 6** (distribution and concentration) | `paper/performance_evaluation/scripts/plot_robustness_figures.py` | Local | Instant from frozen artifacts and robustness outputs |
 | **Table 1** (Closest-work) | (Static synthesis) | N/A | Analytical mapping |
 | **Table 2** (Transition) | (Static synthesis) | N/A | Analytical mapping |
-| **Table 3** (Causal characterization) | (Static synthesis) | N/A | Scripted from frozen CSVs |
+| **Tables 3-5** (regime characterization, thresholds, sensitivity) | `paper/performance_evaluation/scripts/robustness_numbers.py` | Local | Recomputed from frozen CSVs and asserted against the robustness outputs |
 
 ---
 
@@ -100,5 +105,5 @@ python3 -m pytest -m gpu          # GPU-only tests (requires a CUDA-capable GPU)
 
 We validate simulator fidelity on a real serving platform (vLLM) under resource pressure.
 - Real-system verification requires a dedicated GPU (local RTX 5060 Ti or Wulver HPC A100 node).
-- To view real-system logs and outputs, refer to: `experiments/real_llm/vllm_healthcheck_20260703T171021Z/server.log` and `experiments/real_llm/vllm_baseline_comparison_pilot_20260703T165438Z/server.log`.
+- The manuscript's vLLM numbers come from `experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/` (`mechanism_summary.json`, `statistical_summary.json`) and `experiments/real_vllm_pressure_action_validation_v1/REAL_VLLM_VALIDATION_RESULT_V1.json`; each is checked by `paper/performance_evaluation/scripts/build_claim_manifest.py`.
 - No monetary API calls are performed; mock modes are used by default unless `--allow-live-api` is supplied with correct credentials.
