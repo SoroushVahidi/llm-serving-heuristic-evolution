@@ -1,0 +1,100 @@
+{
+  "beneficial_states_with_eps_guard": 589,
+  "canonical_beneficial_states_strict_gt0": 590,
+  "eps_justification": "all genuine |A| are >= step/N_max ~ 5.0e-6 s while FP residue is ~5.6e-17 s; any eps in [1e-15, 1e-7] s yields identical classifications; eps=1e-12 s (1e-9 ms) is used",
+  "epsilon_s": 1e-12,
+  "grid_claim": "each A(s,a) equals integer * step / N_s  (N_s = state request population); confirmed if grid_dev ~ FP",
+  "largest_step_over_N_s": 5.025125628140704e-06,
+  "max_grid_deviation_in_grid_units": 3.76001452195851e-11,
+  "n_actions_off_grid_by_more_than_1e-6_units": 0,
+  "n_states_H_positive_but_le_eps": 1,
+  "noise_floor_ratio_smallest_genuine_over_eps": 5154639.175247721,
+  "noise_negative_max_states (counted all-harmful by canonical rule)": [
+    {
+      "max_a_lat_s": -5.551115123125783e-17,
+      "state_id": "phase_a::FRESH_LATENCY_SUPPORT::azure_2023_conv::w26::faithful::active_4::step25692"
+    }
+  ],
+  "noise_positive_states": [
+    {
+      "H_s": 5.551115123125783e-17,
+      "state_id": "phase_a::FRESH_LATENCY_SUPPORT::azure_2023_conv::w6::faithful::active_4::step22320"
+    }
+  ],
+  "population_count_range": [
+    5,
+    199
+  ],
+  "recommendation": "An epsilon guard is warranted for ANY threshold comparison (one canonical 'beneficial' state has H=5.55e-17 s and one state at 0.5 ms exceeds the threshold by 1e-16 s). The canonical result is NOT altered; guarded counts are reported as a clearly labelled sensitivity.",
+  "smallest_genuine_nonzero_abs_A_ms": 0.005154639175247722,
+  "smallest_genuine_nonzero_abs_A_s": 5.154639175247722e-06,
+  "step_s": 0.001,
+  "sub_1e-9_nonzero_advantages": [
+    {
+      "a_lat_s": -5.551115123125783e-17,
+      "population_count": 80,
+      "state_id": "phase_a::FRESH_LATENCY_SUPPORT::azure_2023_conv::w26::faithful::active_4::step25692"
+    },
+    {
+      "a_lat_s": 5.551115123125783e-17,
+      "population_count": 89,
+      "state_id": "phase_a::FRESH_LATENCY_SUPPORT::azure_2023_conv::w6::faithful::active_4::step22320"
+    }
+  ],
+  "threshold_ties_within_1e-9_s": {
+    "0.1": {
+      "H_values_repr": [
+        "0.0001"
+      ],
+      "n_ties": 1,
+      "raw_fp_strict_counts_as_exceeding": [
+        false
+      ]
+    },
+    "0.25": {
+      "H_values_repr": [
+        "0.0002499999999999",
+        "0.0002499999999998"
+      ],
+      "n_ties": 2,
+      "raw_fp_strict_counts_as_exceeding": [
+        false,
+        false
+      ]
+    },
+    "0.5": {
+      "H_values_repr": [
+        "0.0005000000000001"
+      ],
+      "n_ties": 1,
+      "raw_fp_strict_counts_as_exceeding": [
+        true
+      ]
+    },
+    "1.0": {
+      "H_values_repr": [
+        "0.0009999999999998",
+        "0.0009999999999996"
+      ],
+      "n_ties": 2,
+      "raw_fp_strict_counts_as_exceeding": [
+        false,
+        false
+      ]
+    },
+    "2.0": {
+      "H_values_repr": [
+        "0.0019999999999995"
+      ],
+      "n_ties": 1,
+      "raw_fp_strict_counts_as_exceeding": [
+        false
+      ]
+    },
+    "5.0": {
+      "H_values_repr": [],
+      "n_ties": 0,
+      "raw_fp_strict_counts_as_exceeding": []
+    }
+  }
+}

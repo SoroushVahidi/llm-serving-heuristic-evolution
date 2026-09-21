@@ -1,0 +1,121 @@
+{
+  "classification": "DERIVED_COLUMN_LABELING_DEFECT (no effect on primary endpoint, regime CSV, bootstrap, or manuscript numbers)",
+  "defect": {
+    "bootstrap_key_fix_commit": "a8fd735",
+    "cause": "analyze(): state loop iterates counterfactual rows only; meta = g.iloc[0]; float(meta['mean_latency']) / float(meta['p95_latency'])",
+    "columns": [
+      "mean_ref_latency",
+      "p95_ref_latency"
+    ],
+    "execution_commit": "38e02bcdaeb8f9cec2289b05dea9a1406318d14f",
+    "executor_script": "scripts/fresh_latency_causal_confirmatory_v1.py",
+    "executor_script_sha256_at_execution": "e4ef52c38ce0412674319cdf2997f1934ab5385c031b227010eb6a913f24815b",
+    "file": "FRESH_LATENCY_STATE_LEVEL_V1.csv",
+    "robustness_commit": "5c8a78c4f1f4c9e92546c71bd3c0367cbb25b13a"
+  },
+  "frozen_directory_unchanged_by_run": true,
+  "frozen_inputs_sha256": {
+    "ARTIFACT_HASHES_V1.json": "ae845d235f066b2238c0258eb34df4233a997f01c13aeaa9cc218286285b64b0",
+    "FRESH_LATENCY_ACTION_LEVEL_V1.csv": "36f9105516a399cc41cac18867f0df18702170e52bc25477da5cab700d7c9dd4",
+    "FRESH_LATENCY_ARTIFACT_HASHES_V1.json": "3e3c8a7a11e6d33abf9934f220dc6b4af7653c83fcf0246b64a162d019f7b0ee",
+    "FRESH_LATENCY_BOOTSTRAP_V1.json": "92588fccfdb32b75c14804ed05068b9d102ee92ecc5975a23c32f2cee3096da2",
+    "FRESH_LATENCY_CAUSAL_RESULT_V1.json": "c7104c50075ffefab87c2784adbe94fcc546cd220a9db69ac74dd46992cf57da",
+    "FRESH_LATENCY_EXECUTION_PROVENANCE_V1.json": "beec10ab87bb082bc89f8d6829a8849dd8dfea153ab12d428b67db39ff030800",
+    "FRESH_LATENCY_STATE_LEVEL_V1.csv": "d6c459ba382e0d8fdf5447d6b051aad878f7635b5dc348939b50418b851a7d8d",
+    "FRESH_LATENCY_WORKLOAD_REGIME_V1.csv": "503f2ba1b7a686b487f21deb2b920de3798332931e55a8f7323f0871b369a4dd",
+    "FRESH_REGIME_SELECTION_V1.json": "d2e176a3e3d74090f0674ba141f60cbbdb0b53f6cad185126e927e71b82f45e7",
+    "FRESH_SUPPORT_WORKLOAD_AXIS_SUMMARY_V1.csv": "86b13c987bbbee6d510fca0cf768e8a7aff3bf64cf7452d274a2bd994dd328f4",
+    "METRIC_PROTOCOL_V1.json": "aa71789590740553a3128062860066d2c51ff5c7940aed51a944f836817dc48e",
+    "PREREGISTRATION_V1.json": "2fe1abb3d220050a69208eb93aeb19ac297785a5770d4d3c4196fb26691f4ed2"
+  },
+  "generator": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.2",
+    "python": "3.12.3",
+    "script": "scripts/fresh_causal_correct_state_level_v1.py",
+    "script_sha256": "620c7787ec7623c63c7898ee1186b6221d6bb8100598ec470f89751b376f319b"
+  },
+  "outputs_sha256": {
+    "FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv": "23377f400426cc0f72911668a171e7da8ad5bc03c6f5620d294153bc98248242",
+    "SBS_REFERENCE_ROWS_V1.csv": "7ed502941e9994f1685c87a6ae3afdba705947e2d9c49c12d3452ad5d81d4d0a",
+    "STATE_LEVEL_CORRECTION_AUDIT_V1.csv": "da63788bdc11d16815281952b8c55940e627a1d92c1e9787c5962c71fa8c784f"
+  },
+  "replay_proof": {
+    "_notes": {
+      "bootstrap_ci_from_in_memory_floats_s": [
+        0.0001908842176032857,
+        0.0035461957770552156
+      ],
+      "explanation": "pandas default read_csv float parser is not correctly rounded (448/720 oracle_headroom values differ from float() by <=7.7e-13 relative); float_precision='round_trip' reproduces the frozen mean/positive-mean/median bit-exactly",
+      "max_abs_diff_in_memory_vs_frozen_ci_endpoints_s": 3.0357660829594124e-17
+    },
+    "action_level_replay_is_byte_identical_to_frozen": true,
+    "bootstrap_ci_from_frozen_csv_without_ref_columns_equals_frozen_bit_exact": true,
+    "corrected_replay_differs_from_defective_only_in_the_two_columns": true,
+    "defective_state_level_replay_is_byte_identical_to_frozen": true,
+    "primary_overall_replay_without_ref_columns_equals_frozen": true,
+    "regime_csv_replay_without_ref_columns_is_byte_identical_to_frozen": true
+  },
+  "schema_version": "fresh_latency_causal_confirmatory_v1.state_level_correction.0.0",
+  "sources": {
+    "frozen_action_level_sha256": "36f9105516a399cc41cac18867f0df18702170e52bc25477da5cab700d7c9dd4",
+    "frozen_hash_file_sha256": "3e3c8a7a11e6d33abf9934f220dc6b4af7653c83fcf0246b64a162d019f7b0ee",
+    "frozen_state_level_sha256": "d6c459ba382e0d8fdf5447d6b051aad878f7635b5dc348939b50418b851a7d8d",
+    "sbs_reference_source": "SBS_REFERENCE rows of the 96 continuation shards (local provenance archive, fresh-latency-execution-v1)",
+    "shard_manifest_entries_sha256_of_sorted_items": "92fb31bf75cf353d1e2a238ba0a5578666b350e88c672084dda9c25295f0498a",
+    "shards_verified_against_frozen_manifest": {
+      "all_match": true,
+      "checked": 289,
+      "expected": 289,
+      "mismatched": [],
+      "missing": []
+    }
+  },
+  "status": "CORRECTED_DERIVATIVE_OF_FROZEN_ARTIFACT (frozen original unchanged and remains the confirmatory record)",
+  "validation": {
+    "corrected_columns": [
+      "mean_ref_latency",
+      "p95_ref_latency"
+    ],
+    "corrected_equals_sbs_reference_rows": true,
+    "identical_column_order": true,
+    "identical_state_id_sequence": true,
+    "n_original_values_equal_first_cf_branch_value": 720,
+    "n_rows_either_changed": 696,
+    "n_rows_mean_changed_by_more_than_1e-12_s": 692,
+    "n_rows_mean_ref_latency_changed": 694,
+    "n_rows_p95_changed_by_more_than_1e-12_s": 224,
+    "n_rows_p95_ref_latency_changed": 224,
+    "primary_endpoint_original_vs_corrected": {
+      "beneficial_states": [
+        590,
+        590
+      ],
+      "mean_oracle_headroom_s": [
+        0.0019957911708132978,
+        0.0019957911708132978
+      ],
+      "oracle_headroom_column_identical": true
+    },
+    "row_count_original_corrected": [
+      720,
+      720
+    ],
+    "unchanged_columns": [
+      "all_alternatives_harmful",
+      "all_alternatives_zero",
+      "axis",
+      "beneficial_opportunity",
+      "condition_id",
+      "max_a_lat",
+      "mixed_beneficial_and_harmful",
+      "num_non_sbs_branches",
+      "oracle_headroom",
+      "regime_stage",
+      "source_dataset",
+      "state_id",
+      "window_index"
+    ],
+    "unchanged_columns_byte_identical_as_text": true
+  }
+}

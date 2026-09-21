@@ -1,0 +1,5 @@
+Abundant-resource replay is action-null for LLM schedulers
+Resource caps, not light-load arrival scaling, expose disagreement
+Fresh Azure interventions show small, concentrated latency headroom
+Opportunity is reference-dependent and sparse across trace windows
+Measure action opportunity before designing adaptive selectors

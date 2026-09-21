@@ -1,0 +1,36 @@
+{
+  "common_flags": [
+    "--served-model-name qwen05b-local",
+    "--host 127.0.0.1",
+    "--gpu-memory-utilization 0.35",
+    "--max-model-len 4096",
+    "--max-num-seqs 4",
+    "--block-size 16",
+    "--no-enable-prefix-caching",
+    "--enforce-eager"
+  ],
+  "disabled_mode": {
+    "flags": [
+      "--no-enable-chunked-prefill",
+      "--max-num-batched-tokens 4096"
+    ],
+    "note": "512 failed validation because current vLLM requires max_num_batched_tokens >= max_model_len when chunking is disabled.",
+    "port": 8051
+  },
+  "enabled_mode": {
+    "flags": [
+      "--enable-chunked-prefill",
+      "--max-num-batched-tokens 512"
+    ],
+    "port": 8052
+  },
+  "model": "qwen05b-local",
+  "model_path": "/home/soroush/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "requests": {
+    "disabled": 5,
+    "enabled_basic": 5,
+    "enabled_queue": 5,
+    "total": 15
+  },
+  "scientific_comparison": false
+}

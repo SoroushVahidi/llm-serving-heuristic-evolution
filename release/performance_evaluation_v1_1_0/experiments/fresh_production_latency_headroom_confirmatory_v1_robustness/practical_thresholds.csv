@@ -1,0 +1,57 @@
+scope,scope_id,scope_label,threshold_ms,n_exceed,n_states,fraction,n_exceed_raw_fp_strict,n_ties_within_1e-9s,n_windows_with_exceedance,n_windows,low_support
+global,all,all,0.0,589,720,0.8180555555555555,590,131,32,36,False
+global,all,all,0.1,432,720,0.6,432,1,17,36,False
+global,all,all,0.25,322,720,0.44722222222222224,322,2,16,36,False
+global,all,all,0.5,212,720,0.29444444444444445,213,1,9,36,False
+global,all,all,1.0,188,720,0.2611111111111111,188,2,7,36,False
+global,all,all,2.0,162,720,0.225,162,1,4,36,False
+global,all,all,5.0,129,720,0.17916666666666667,129,0,2,36,False
+workload,azure_2023_code,Azure code,0.0,466,563,0.827708703374778,466,97,18,19,False
+workload,azure_2023_code,Azure code,0.1,348,563,0.6181172291296625,348,1,9,19,False
+workload,azure_2023_code,Azure code,0.25,269,563,0.477797513321492,269,2,9,19,False
+workload,azure_2023_code,Azure code,0.5,207,563,0.36767317939609234,208,1,5,19,False
+workload,azure_2023_code,Azure code,1.0,185,563,0.3285968028419183,185,2,4,19,False
+workload,azure_2023_code,Azure code,2.0,161,563,0.28596802841918295,161,1,3,19,False
+workload,azure_2023_code,Azure code,5.0,128,563,0.22735346358792186,128,0,1,19,False
+workload,azure_2023_conv,Azure conversation,0.0,123,157,0.7834394904458599,124,34,14,17,False
+workload,azure_2023_conv,Azure conversation,0.1,84,157,0.535031847133758,84,0,8,17,False
+workload,azure_2023_conv,Azure conversation,0.25,53,157,0.3375796178343949,53,0,7,17,False
+workload,azure_2023_conv,Azure conversation,0.5,5,157,0.03184713375796178,5,0,4,17,False
+workload,azure_2023_conv,Azure conversation,1.0,3,157,0.01910828025477707,3,0,3,17,False
+workload,azure_2023_conv,Azure conversation,2.0,1,157,0.006369426751592357,1,0,1,17,False
+workload,azure_2023_conv,Azure conversation,5.0,1,157,0.006369426751592357,1,0,1,17,False
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",0.0,4,10,0.4,4,6,1,2,True
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",0.1,2,10,0.2,2,0,1,2,True
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",0.25,0,10,0.0,0,0,0,2,True
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",0.5,0,10,0.0,0,0,0,2,True
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",1.0,0,10,0.0,0,0,0,2,True
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",2.0,0,10,0.0,0,0,0,2,True
+regime,azure_2023_code|active_sequence_capacity|active_8,"Code, active cap 8",5.0,0,10,0.0,0,0,0,2,True
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",0.0,64,122,0.5245901639344263,64,58,14,15,False
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",0.1,19,122,0.1557377049180328,19,0,6,15,False
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",0.25,10,122,0.08196721311475409,10,0,3,15,False
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",0.5,6,122,0.04918032786885246,6,0,1,15,False
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",1.0,0,122,0.0,0,0,0,15,False
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",2.0,0,122,0.0,0,0,0,15,False
+regime,azure_2023_code|active_sequence_capacity|active_4,"Code, active cap 4",5.0,0,122,0.0,0,0,0,15,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",0.0,398,431,0.9234338747099768,398,33,12,14,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",0.1,327,431,0.7587006960556845,327,1,7,14,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",0.25,259,431,0.6009280742459396,259,2,7,14,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",0.5,201,431,0.46635730858468677,202,1,5,14,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",1.0,185,431,0.42923433874709976,185,2,4,14,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",2.0,161,431,0.37354988399071926,161,1,3,14,False
+regime,azure_2023_code|kv_capacity|kv_16000,"Code, KV 16,000",5.0,128,431,0.29698375870069604,128,0,1,14,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",0.0,30,64,0.46875,31,34,13,17,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",0.1,10,64,0.15625,10,0,7,17,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",0.25,8,64,0.125,8,0,6,17,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",0.5,5,64,0.078125,5,0,4,17,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",1.0,3,64,0.046875,3,0,3,17,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",2.0,1,64,0.015625,1,0,1,17,False
+regime,azure_2023_conv|active_sequence_capacity|active_4,"Conv, active cap 4",5.0,1,64,0.015625,1,0,1,17,False
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",0.0,93,93,1.0,93,0,1,1,True
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",0.1,74,93,0.7956989247311828,74,0,1,1,True
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",0.25,45,93,0.4838709677419355,45,0,1,1,True
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",0.5,0,93,0.0,0,0,0,1,True
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",1.0,0,93,0.0,0,0,0,1,True
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",2.0,0,93,0.0,0,0,0,1,True
+regime,azure_2023_conv|kv_capacity|kv_16000,"Conv, KV 16,000",5.0,0,93,0.0,0,0,0,1,True

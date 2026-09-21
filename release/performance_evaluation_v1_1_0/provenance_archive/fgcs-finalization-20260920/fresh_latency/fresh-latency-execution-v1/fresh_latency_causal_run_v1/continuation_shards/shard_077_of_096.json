@@ -1,0 +1,63 @@
+{
+  "continuations": 20,
+  "correctness_rows": 10,
+  "correctness_sha256": "39b24e27b352acb37778ac73a9eed88ebba33b9c64e5e83e5e28d120fdb17d8c",
+  "duration_s": 5.360408067703247,
+  "git_head": "38e02bcdaeb8f9cec2289b05dea9a1406318d14f",
+  "group_reports": [
+    {
+      "key": "azure_2023_code::1::kv_capacity::kv_16000",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_code::11::kv_capacity::kv_16000",
+      "missing_state_ids": [],
+      "states_expected": 2,
+      "states_hit": 2,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_code::13::kv_capacity::kv_16000",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_code::31::kv_capacity::kv_16000",
+      "missing_state_ids": [],
+      "states_expected": 2,
+      "states_hit": 2,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_code::33::active_sequence_capacity::active_4",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_conv::11::active_sequence_capacity::active_4",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_conv::18::kv_capacity::kv_16000",
+      "missing_state_ids": [],
+      "states_expected": 2,
+      "states_hit": 2,
+      "states_missing": 0
+    }
+  ],
+  "num_shards": 96,
+  "output_sha256": "567979b75a5709ac10db1d3bb12d3b79fd1f845de71e99501a7d8db2d4b49990",
+  "schema_version": "fresh_latency_causal_confirmatory_v1.shard.0.0",
+  "shard_index": 77,
+  "states": 10
+}

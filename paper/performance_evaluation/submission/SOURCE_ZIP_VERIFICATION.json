@@ -1,0 +1,35 @@
+{
+ "zip": "performance_evaluation_submission_sources.zip",
+ "sha256": "d2c6ee1518816e0ebb6684d6cd8db1fc1466bd8cce1a92261502e34709fc16e2",
+ "files": 8,
+ "uncompressed_bytes": 174772,
+ "build_command": "pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex",
+ "all_ok": true,
+ "checks": {
+  "no absolute local paths in any file": {
+   "ok": true,
+   "detail": "offending=[]"
+  },
+  "every figure resolves": {
+   "ok": true,
+   "detail": "missing=[]"
+  },
+  "clean pdflatex/bibtex build succeeds": {
+   "ok": true,
+   "detail": "Output written on main.pdf (30 pages, 470857 bytes)."
+  },
+  "no undefined references or citations": {
+   "ok": true,
+   "detail": "final pass"
+  },
+  "text of the built PDF equals the canonical review PDF": {
+   "ok": true,
+   "detail": "1238 vs 1238 lines"
+  },
+  "abstract renders": {
+   "ok": true,
+   "detail": ""
+  }
+ },
+ "summary": "no absolute local paths in any file: ok; every figure resolves: ok; clean pdflatex/bibtex build succeeds: ok; no undefined references or citations: ok; text of the built PDF equals the canonical review PDF: ok; abstract renders: ok"
+}

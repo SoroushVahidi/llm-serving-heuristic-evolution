@@ -1,0 +1,35 @@
+{
+  "continuations": 7,
+  "correctness_rows": 3,
+  "correctness_sha256": "eb46cfdee5a400da3180f6378834b303f0b7668f5959336f638040312f263e03",
+  "duration_s": 0.9141116142272949,
+  "git_head": "38e02bcdaeb8f9cec2289b05dea9a1406318d14f",
+  "group_reports": [
+    {
+      "key": "azure_2023_code::5::active_sequence_capacity::active_4",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_code::21::kv_capacity::kv_16000",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    },
+    {
+      "key": "azure_2023_code::39::active_sequence_capacity::active_4",
+      "missing_state_ids": [],
+      "states_expected": 1,
+      "states_hit": 1,
+      "states_missing": 0
+    }
+  ],
+  "num_shards": 96,
+  "output_sha256": "0c6667b5c54297c2002c2fd64cc1edddc2470517b4304d38613899bc203b2f23",
+  "schema_version": "fresh_latency_causal_confirmatory_v1.shard.0.0",
+  "shard_index": 13,
+  "states": 3
+}
