@@ -1,0 +1,262 @@
+{
+  "classification": "POST_HOC_DENOMINATOR_COMPLETION",
+  "derivations": {
+    "P_D": "disagreement_states / total_reference_decision_states",
+    "beneficial_decision_rate": "beneficial_states / total_reference_decision_states",
+    "opportunity_weighted_headroom_sim_ms_per_decision": "total_headroom_mass_sim_ms / total_reference_decision_states",
+    "total_headroom_mass_sim_ms": "math.fsum(oracle_headroom over disagreement_states.csv rows) * 1000"
+  },
+  "gates": {
+    "DENOMINATOR_REPRODUCTION_GATE": {
+      "canonical_sources": [
+        "FRESH_SUPPORT_WINDOW_CONDITIONS_V1.csv",
+        "FRESH_LATENCY_WORKLOAD_REGIME_V1.csv"
+      ],
+      "max_abs_P_D_difference": 0.0,
+      "missing_in_canonical": [],
+      "n_window_level_mismatches": 0,
+      "regime_level_mismatches": [],
+      "scenarios_compared": 100,
+      "status": "PASS",
+      "total_decisions_canonical": 1470515,
+      "total_decisions_new": 1470515,
+      "window_level_mismatches": []
+    },
+    "DENOMINATOR_TRAJECTORY_INTEGRITY_GATE": "PASS",
+    "disagreement_gate_by_reserve": {
+      "0.82": {
+        "decision_vs_step_call_mismatches": [],
+        "n_per_scenario_mismatches": 0,
+        "per_scenario_mismatches": [],
+        "scenarios": 100,
+        "status": "PASS",
+        "total_counted": 720,
+        "total_expected": 720
+      },
+      "0.90": {
+        "decision_vs_step_call_mismatches": [],
+        "n_per_scenario_mismatches": 0,
+        "per_scenario_mismatches": [],
+        "scenarios": 100,
+        "status": "PASS",
+        "total_counted": 466,
+        "total_expected": 466
+      },
+      "1.00": {
+        "decision_vs_step_call_mismatches": [],
+        "n_per_scenario_mismatches": 0,
+        "per_scenario_mismatches": [],
+        "scenarios": 100,
+        "status": "PASS",
+        "total_counted": 198,
+        "total_expected": 198
+      }
+    }
+  },
+  "protocol_sha256": "97b06cf1c96fe6b3f84aaf4355643192a0b400ce206f4c7c041b95d6bc417439",
+  "reserves": {
+    "0.82": {
+      "P_B_given_D": 0.8194444444444444,
+      "P_D": 0.000489624383294288,
+      "P_D_percent": 0.04896243832942881,
+      "beneficial_decision_rate": 0.0004012199807550416,
+      "beneficial_decision_rate_percent": 0.04012199807550416,
+      "beneficial_states": 590,
+      "disagreement_states": 720,
+      "opportunity_weighted_headroom_sim_ms_per_decision": 0.000977188021193646,
+      "per_regime": [
+        {
+          "P_D": 0.0012897087583910354,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_4",
+          "decision_states": 94595,
+          "disagreement_states": 122,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.00010592434883006557,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_8",
+          "decision_states": 94407,
+          "disagreement_states": 10,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.004561087888248055,
+          "axis": "kv_capacity",
+          "condition_id": "kv_16000",
+          "decision_states": 94495,
+          "disagreement_states": 431,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.00010759159575147686,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_4",
+          "decision_states": 594842,
+          "disagreement_states": 64,
+          "source_dataset": "azure_2023_conv"
+        },
+        {
+          "P_D": 0.00015704790467698792,
+          "axis": "kv_capacity",
+          "condition_id": "kv_16000",
+          "decision_states": 592176,
+          "disagreement_states": 93,
+          "source_dataset": "azure_2023_conv"
+        }
+      ],
+      "total_headroom_mass_sim_ms": 1436.9696429855744,
+      "total_reference_decision_states": 1470515
+    },
+    "0.90": {
+      "P_B_given_D": 0.7575107296137339,
+      "P_D": 0.00031691043607828096,
+      "P_D_percent": 0.031691043607828095,
+      "beneficial_decision_rate": 0.0002400630556558652,
+      "beneficial_decision_rate_percent": 0.02400630556558652,
+      "beneficial_states": 353,
+      "disagreement_states": 466,
+      "opportunity_weighted_headroom_sim_ms_per_decision": 0.0009575906992022435,
+      "per_regime": [
+        {
+          "P_D": 0.0012897087583910354,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_4",
+          "decision_states": 94595,
+          "disagreement_states": 122,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.00010592434883006557,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_8",
+          "decision_states": 94407,
+          "disagreement_states": 10,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.0023722028657057834,
+          "axis": "kv_capacity",
+          "condition_id": "kv_16000",
+          "decision_states": 94427,
+          "disagreement_states": 224,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.00010759159575147686,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_4",
+          "decision_states": 594842,
+          "disagreement_states": 64,
+          "source_dataset": "azure_2023_conv"
+        },
+        {
+          "P_D": 7.767960876496177e-05,
+          "axis": "kv_capacity",
+          "condition_id": "kv_16000",
+          "decision_states": 592176,
+          "disagreement_states": 46,
+          "source_dataset": "azure_2023_conv"
+        }
+      ],
+      "relative_to_082": {
+        "P_D_ratio": 0.6472521526522963,
+        "beneficial_decision_rate_ratio": 0.5983327530301434,
+        "decision_states_ratio": 0.9999537576971333,
+        "opportunity_weighted_headroom_ratio": 0.9799451880637423
+      },
+      "total_headroom_mass_sim_ms": 1408.0863708698414,
+      "total_reference_decision_states": 1470447
+    },
+    "1.00": {
+      "P_B_given_D": 0.5,
+      "P_D": 0.00013465476354827544,
+      "P_D_percent": 0.013465476354827545,
+      "beneficial_decision_rate": 6.732738177413772e-05,
+      "beneficial_decision_rate_percent": 0.006732738177413772,
+      "beneficial_states": 99,
+      "disagreement_states": 198,
+      "opportunity_weighted_headroom_sim_ms_per_decision": 1.6025912569479293e-05,
+      "per_regime": [
+        {
+          "P_D": 0.0012897087583910354,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_4",
+          "decision_states": 94595,
+          "disagreement_states": 122,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.00010592434883006557,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_8",
+          "decision_states": 94407,
+          "disagreement_states": 10,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 2.1184869766013114e-05,
+          "axis": "kv_capacity",
+          "condition_id": "kv_16000",
+          "decision_states": 94407,
+          "disagreement_states": 2,
+          "source_dataset": "azure_2023_code"
+        },
+        {
+          "P_D": 0.00010759159575147686,
+          "axis": "active_sequence_capacity",
+          "condition_id": "active_4",
+          "decision_states": 594842,
+          "disagreement_states": 64,
+          "source_dataset": "azure_2023_conv"
+        },
+        {
+          "P_D": 0.0,
+          "axis": "kv_capacity",
+          "condition_id": "kv_16000",
+          "decision_states": 592176,
+          "disagreement_states": 0,
+          "source_dataset": "azure_2023_conv"
+        }
+      ],
+      "relative_to_082": {
+        "P_D_ratio": 0.2750164578044337,
+        "beneficial_decision_rate_ratio": 0.16780665221965446,
+        "decision_states_ratio": 0.9999401570198196,
+        "opportunity_weighted_headroom_ratio": 0.016400029699405714
+      },
+      "total_headroom_mass_sim_ms": 23.564934541801726,
+      "total_reference_decision_states": 1470427
+    }
+  },
+  "schema_version": "reference_reserve_denominator_completion_v1.0.0",
+  "sources": {
+    "decision_states": "denominator count stage (counts_reserve_XXX.csv)",
+    "disagreement_states_beneficial_states_headroom": "completed sensitivity results (hash-verified)",
+    "existing_result_sha256": {
+      "reserve_082/action_effects.csv": "349ca8e5eb0541c53dc5e5bbbcc477e60d751e2bf09469c8224be184c711f911",
+      "reserve_082/bootstrap_summary.json": "7754ec20bd7a89d4e4dbfe4ab5c6a7fa18be80dffd896db7bafbc9f73c328e6e",
+      "reserve_082/disagreement_states.csv": "2eb9b0b0cd112be7a634cba4e203ee0b385540b7ebf01169870bb809df964684",
+      "reserve_082/execution_provenance.json": "dd23593fc6f54b3b2e496362c347d9ce301fa3dcd625abf8f749cbe06aab53c8",
+      "reserve_082/regime_summary.csv": "f8421d8f1acf2b3f66590ca7721d3b63c34f9770137e304dcabfbe9975a4c1e6",
+      "reserve_082/result_summary.json": "683b7d0d3f960c857920695fce32b3282dc5f2be76a0972829b5df7b01cb4b2f",
+      "reserve_082/window_summary.csv": "f5a53658dbdcf821d2ad17ba864d01749db205ac35ff75f0ab288176f12213ea",
+      "reserve_090/action_effects.csv": "1aa173680c6e0b9d0f237b243804fe4873cbc54be4c67928c5111fc48aab0a5b",
+      "reserve_090/bootstrap_summary.json": "7c2aef595281e625da26fb8ca315ee542ecb287a7b33b7ee9c7f84cfba6b906a",
+      "reserve_090/disagreement_states.csv": "a043490952a423012368b79ed6851b4eab21a16a93d0987b501c811588f23095",
+      "reserve_090/execution_provenance.json": "c2421325ad0000cbec139db849b69e4620af07d1b0bb37f58e499b9eb98e45db",
+      "reserve_090/regime_summary.csv": "34754282ae4d29b2c21b419d970d71c45334a263cb03bb7d5966038819b75eef",
+      "reserve_090/result_summary.json": "d4ccadb1123014d730cb45c0661dfb2e4ac85c57da75a5bdfd73b8b434f27f15",
+      "reserve_090/window_summary.csv": "8d82889f80b26cc318fc4f39507f279b185f85a06abb37d53d61174467c77557",
+      "reserve_100/action_effects.csv": "87e3c04a399dd6c81a4ad53e6521829cbdabb3a4748a05dc75ed2f87d201f0c4",
+      "reserve_100/bootstrap_summary.json": "4938a4066dfc953588b6c21a576dc412347ce53218820209aed0b81134414eed",
+      "reserve_100/disagreement_states.csv": "cd80b744eb0c00d06d5400c204e03684a401372b6596d1e1c9408b845d6126e4",
+      "reserve_100/execution_provenance.json": "2f86e4ac19097fd94985643afb7e3539b7fbdbd9fb23d6141f032a0e480b7032",
+      "reserve_100/regime_summary.csv": "e84facefff0c16f75ad02045cfffe48f387bce7ad109ecfe713e322c3851e96c",
+      "reserve_100/result_summary.json": "62f3ad8666f87a1ae06176458dc6bdd16e6cbbfe3e19d66e9bec5b3fed664ef0",
+      "reserve_100/window_summary.csv": "fa392b515c2776da34b62ce531835f4cdb6144fa91e6e10b342120efa72cb8ab"
+    }
+  },
+  "status": "DENOMINATOR_COMPLETION_SUCCESS"
+}

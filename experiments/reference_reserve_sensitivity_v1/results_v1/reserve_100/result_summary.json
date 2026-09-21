@@ -1,0 +1,22 @@
+{
+  "bootstrap": {
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 42,
+    "ci_available": true,
+    "clusters": 32,
+    "mean_oracle_headroom_ci95_high": 0.0002323866232386388,
+    "mean_oracle_headroom_ci95_low": 4.182182764894477e-05
+  },
+  "primary": {
+    "P_B_given_D": 0.5,
+    "all_harmful_states": 82,
+    "all_zero_states": 15,
+    "beneficial_states": 99,
+    "mean_oracle_headroom": 0.00011901482091819054,
+    "mixed_states": 18,
+    "positive_headroom_mean": 0.0002380296418363811,
+    "positive_headroom_median": 4.999999999999449e-05,
+    "states": 198
+  },
+  "reserve": 1.0
+}

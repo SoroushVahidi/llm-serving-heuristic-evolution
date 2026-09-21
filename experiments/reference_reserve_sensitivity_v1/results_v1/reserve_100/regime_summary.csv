@@ -1,0 +1,6 @@
+P_B_given_D,axis,condition_id,contributing_windows,mean_oracle_headroom,source_dataset,states
+0.4,active_sequence_capacity,active_8,2,3.3426727257301196e-05,azure_2023_code,10
+0.5245901639344263,active_sequence_capacity,active_4,15,7.668496472206383e-05,azure_2023_code,122
+0.0,kv_capacity,kv_16000,2,0.0,azure_2023_code,2
+0.484375,active_sequence_capacity,active_4,17,0.0002167984620802645,azure_2023_conv,64
+0.0,kv_capacity,kv_16000,0,0.0,azure_2023_conv,0

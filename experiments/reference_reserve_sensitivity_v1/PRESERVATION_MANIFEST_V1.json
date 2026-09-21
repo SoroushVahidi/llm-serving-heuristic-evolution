@@ -1,0 +1,91 @@
+{
+  "schema_version": "reference_reserve_sensitivity_v1.preservation_manifest.0.0",
+  "protocol_sha256": "97b06cf1c96fe6b3f84aaf4355643192a0b400ce206f4c7c041b95d6bc417439",
+  "sensitivity_implementation_commit": "8addcdb1368f9cb3057d5d3823c8a273e52dcc1f",
+  "denominator_implementation_commit": "ec1996354de0304dd6ea521c5d584a838401b06a",
+  "slurm_jobs": {
+    "sensitivity": {
+      "0.82": {
+        "job": 1303715,
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:12:29"
+      },
+      "0.90": {
+        "job": 1303716,
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:10:43"
+      },
+      "1.00": {
+        "job": 1303717,
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:09:19"
+      }
+    },
+    "denominator": {
+      "job": 1303832,
+      "state": "COMPLETED",
+      "exit": "0:0",
+      "elapsed": "00:22:40",
+      "maxrss_kb": 257640
+    }
+  },
+  "cluster_scratch_root": "/mmfs1/scratch/ikoutis/sv96/reference_reserve_sensitivity_v1",
+  "hash_only_not_copied": [
+    "results/reserve_082/action_effects.csv",
+    "results/reserve_090/action_effects.csv",
+    "results/reserve_100/action_effects.csv"
+  ],
+  "gates": {
+    "DENOMINATOR_TRAJECTORY_INTEGRITY_GATE": "PASS",
+    "DENOMINATOR_REPRODUCTION_GATE": "PASS"
+  },
+  "sha256": {
+    "DENOMINATOR_COMPLETION_RESULT_V1.md": "984f864b479cff58aa55f1752c58db3f41842fa47a73527879c3653e7a8fd01c",
+    "DENOMINATOR_COMPLETION_V1.md": "c58734e974b8c2cbfca8cb3dcdff5a3aac392abe2e99d5f035427cce13793073",
+    "IMPLEMENTATION_V1.md": "4f05992ca0edb9c2c0e755dcb74fa04744c755cbc6b776e91ad6fc503dd1a4fe",
+    "PROTOCOL_V1.json": "97b06cf1c96fe6b3f84aaf4355643192a0b400ce206f4c7c041b95d6bc417439",
+    "denominator_completion_v1/DENOMINATOR_BY_REGIME_V1.csv": "03629e88cc0d6a26d64bbf8a001f5b8393d8b0c8891796157c455f65cfc3e8f4",
+    "denominator_completion_v1/DENOMINATOR_BY_WINDOW_V1.csv": "cce5d7894ebd1da6dc534a86ee4876d2b1e732eddc6ee8554881aa89b0b0a9b7",
+    "denominator_completion_v1/DENOMINATOR_EXECUTION_PROVENANCE_V1.json": "80c7ca3e1e31e535f7c5c40780966c219e93ce8a89fe301d7bd04fd852c7107e",
+    "denominator_completion_v1/DENOMINATOR_SUMMARY_V1.json": "545e8f15b71b09d1bf8470ffa4f6b9240725e0f8430fd4ec229ae5e6519dbfe2",
+    "denominator_completion_v1/EXISTING_SENSITIVITY_RESULT_HASHES_V1.json": "9bd8677933e0818f58d53ed8c102af8124399a5467a96c044aa1453560b9aa05",
+    "denominator_completion_v1/FINAL_RESERVE_METRICS_BY_REGIME_V1.csv": "e25d518f99e0b478b6e8548183ab4e4e056a82aa849c69968ef32a9882552408",
+    "denominator_completion_v1/FINAL_RESERVE_METRICS_V1.json": "628b0218eb1a7a3930874c83f56716d1e38b23445268f343d1fc210b88f805f2",
+    "denominator_completion_v1/count_execution_provenance.json": "5bda6de84a7755ad60049a20b3f9afc98fd5761c552f034b651dbe90cb3080a8",
+    "denominator_completion_v1/counts_reserve_082.csv": "5152017d8ec078ee0516dfd8d8102287fc775dce5db4f16ac3c895170bbd2cbf",
+    "denominator_completion_v1/counts_reserve_090.csv": "b9e74b8c45a6a9044f026e7fd74c0e0d61d215526f52c7ef99c082119dca26d2",
+    "denominator_completion_v1/counts_reserve_100.csv": "6b9677a73d789fd95ffd490ad589371807284fdf4253fb32f656b068eb1ecd7e",
+    "denominator_completion_v1/final_metric_table_v1.py": "646a5e10887a26e59ea3deca527a420979f2db32e9886f4e11a9bc470c7ad762",
+    "results_v1/reserve_082/bootstrap_summary.json": "7754ec20bd7a89d4e4dbfe4ab5c6a7fa18be80dffd896db7bafbc9f73c328e6e",
+    "results_v1/reserve_082/disagreement_states.csv": "2eb9b0b0cd112be7a634cba4e203ee0b385540b7ebf01169870bb809df964684",
+    "results_v1/reserve_082/execution_provenance.json": "dd23593fc6f54b3b2e496362c347d9ce301fa3dcd625abf8f749cbe06aab53c8",
+    "results_v1/reserve_082/regime_summary.csv": "f8421d8f1acf2b3f66590ca7721d3b63c34f9770137e304dcabfbe9975a4c1e6",
+    "results_v1/reserve_082/result_summary.json": "683b7d0d3f960c857920695fce32b3282dc5f2be76a0972829b5df7b01cb4b2f",
+    "results_v1/reserve_082/window_summary.csv": "f5a53658dbdcf821d2ad17ba864d01749db205ac35ff75f0ab288176f12213ea",
+    "results_v1/reserve_090/bootstrap_summary.json": "7c2aef595281e625da26fb8ca315ee542ecb287a7b33b7ee9c7f84cfba6b906a",
+    "results_v1/reserve_090/disagreement_states.csv": "a043490952a423012368b79ed6851b4eab21a16a93d0987b501c811588f23095",
+    "results_v1/reserve_090/execution_provenance.json": "c2421325ad0000cbec139db849b69e4620af07d1b0bb37f58e499b9eb98e45db",
+    "results_v1/reserve_090/regime_summary.csv": "34754282ae4d29b2c21b419d970d71c45334a263cb03bb7d5966038819b75eef",
+    "results_v1/reserve_090/result_summary.json": "d4ccadb1123014d730cb45c0661dfb2e4ac85c57da75a5bdfd73b8b434f27f15",
+    "results_v1/reserve_090/window_summary.csv": "8d82889f80b26cc318fc4f39507f279b185f85a06abb37d53d61174467c77557",
+    "results_v1/reserve_100/bootstrap_summary.json": "4938a4066dfc953588b6c21a576dc412347ce53218820209aed0b81134414eed",
+    "results_v1/reserve_100/disagreement_states.csv": "cd80b744eb0c00d06d5400c204e03684a401372b6596d1e1c9408b845d6126e4",
+    "results_v1/reserve_100/execution_provenance.json": "2f86e4ac19097fd94985643afb7e3539b7fbdbd9fb23d6141f032a0e480b7032",
+    "results_v1/reserve_100/regime_summary.csv": "e84facefff0c16f75ad02045cfffe48f387bce7ad109ecfe713e322c3851e96c",
+    "results_v1/reserve_100/result_summary.json": "62f3ad8666f87a1ae06176458dc6bdd16e6cbbfe3e19d66e9bec5b3fed664ef0",
+    "results_v1/reserve_100/window_summary.csv": "fa392b515c2776da34b62ce531835f4cdb6144fa91e6e10b342120efa72cb8ab",
+    "slurm/logs/denominator_1303832.err": "ad512a9e3d1a5f8e5975066f847db96ab983db9ed20ab32e9650100c080110d0",
+    "slurm/logs/denominator_1303832.out": "07e28756bd5f7b4dd7a2bbc560799e2f8383a69d681b67ad23c5435ef3fadd70",
+    "slurm/logs/reserve_1303715.err": "7c04090ceae046a45065d0353111848e62385ec8ab16f81a971e4dce12dae6c1",
+    "slurm/logs/reserve_1303715.out": "bc1d5545f0e47c60f46bf838b0c9795bcffef44129f2cb8ef1a6e9961b6e6e2f",
+    "slurm/logs/reserve_1303716.err": "86bc1b77eee833b79a0a2843ebaecb1d5532bfe2b8223e7a1a5d56a7aa0c47b9",
+    "slurm/logs/reserve_1303716.out": "49d87693e22675d00c8b645d1a069619a81c564a5f58d4441e2b186c8c6bcdaa",
+    "slurm/logs/reserve_1303717.err": "2f962d79899f7d1457e8c570f95975531714294033ff07c6f28c6a552ecce9c4",
+    "slurm/logs/reserve_1303717.out": "d1ab32ab7ea1ee3313a0f4fa5454b44584fcced1e42f087098695ca107f5b040",
+    "slurm/run_denominator.sbatch": "388aa17a0e331d4301533bb6d51f202c5a4850cac770890529c83421def4682e",
+    "slurm/run_reserve.sbatch": "2de414e56c58ff4c8966856b2dc0a3459017326681821e22026a97b6ea846192"
+  }
+}
