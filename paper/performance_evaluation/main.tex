@@ -391,11 +391,14 @@ $B_{\mathrm{LAT}}(s)=1$ iff $\max_aA_{\mathrm{LAT}}(s,a)>0$. We report
 $P(B_{\mathrm{LAT}}\mid D)$ and mean $H_{\mathrm{LAT}}$ separately from $P(D)$,
 so the conceptual aggregate opportunity is
 \begin{equation}
- P(D)\times P(B_{\mathrm{LAT}}\mid D)\times
- \text{effect magnitude},
+ P(D)\times P(B_{\mathrm{LAT}}\mid D)\times\bar H_{B},
  \label{eq:decomposition}
 \end{equation}
-not an exact deployable-performance equation. A high conditional benefit can
+where $\bar H_{B}$ is the mean $H_{\mathrm{LAT}}$ over beneficial states (the mean
+over all disagreement states, reported below, also counts the non-beneficial
+states as zeros). The product is the opportunity-weighted headroom defined in
+Section~\ref{sec:posthoc}, an oracle measure and not an exact
+deployable-performance equation. A high conditional benefit can
 coexist with a tiny overall opportunity. ``Support'' and ``opportunity'' refer
 only to the existence of executable non-SBS actions under a condition;
 usefulness requires the causal latency test above.
@@ -489,7 +492,8 @@ completion that replays the reference trajectories without executing any
 counterfactual branch; it reproduced the disagreement counts (720, 466, 198) and
 the confirmatory analysis's reserve-0.82 counts exactly. \emph{Opportunity-weighted
 headroom} is the total $H_{\mathrm{LAT}}$ over disagreement states divided by the
-number of reference decision states (simulated ms per decision), and the
+number of reference decision states (simulated ms per decision; it equals the
+product in Eq.~\ref{eq:decomposition}), and the
 \emph{beneficial-decision rate} is the number of beneficial states over the same
 denominator. Neither is a realized gain.
 
@@ -649,8 +653,9 @@ oracle headroom; fill denotes the pressure axis.}
 \label{fig:regimemap}
 \end{figure}
 
-Figure~\ref{fig:regimemap} separates prevalence from value, two of the three
-factors of Eq.~\ref{eq:decomposition}. Azure-code KV
+Figure~\ref{fig:regimemap} separates prevalence from value: it shows $P(D)$, $P(B_{\mathrm{LAT}}\mid D)$,
+and the mean $H_{\mathrm{LAT}}$ over disagreement states, which determine the
+three factors of Eq.~\ref{eq:decomposition}. Azure-code KV
 capacity = 16,000 has the largest selected $P(D)$ and the largest mean headroom;
 the active-cap regimes have much smaller $P(D)$ and correspondingly smaller
 aggregate opportunity even when some states are beneficial.
@@ -854,12 +859,13 @@ and invariance to other reference schedulers is not shown.
 \centering
 \small
 \caption{Post hoc reference-reserve sensitivity: only the reference's KV reserve
-varies, on the same 100 fresh scenarios. States are disagreement states; reference
-decision states number 1,470,515, 1,470,447, and 1,470,427. Opportunity-weighted
+varies, on the same 100 fresh scenarios. States are disagreement states, and mean
+$H_{\mathrm{LAT}}$ is taken over them; reference decision states number 1,470,515, 1,470,447, and 1,470,427. Opportunity-weighted
 $H_{\mathrm{LAT}}$ is total $H_{\mathrm{LAT}}$ over decision states, and the
 beneficial-decision rate is beneficial states over decision states.
-Sensitivity-run 95\% intervals for the mean (seed 42) are [0.182, 3.563],
-[0.067, 4.547], and [0.042, 0.232]~sim.~ms; the primary confirmatory interval at
+Sensitivity-run window-clustered 95\% intervals for the mean (2,000
+replicates, seed 42) are [0.182, 3.563], [0.067, 4.547], and
+[0.042, 0.232]~sim.~ms; the primary confirmatory interval at
 0.82 remains \mbox{[0.1909, 3.5462]}~sim.~ms (Section~\ref{sec:fresh}).}
 \label{tab:reserve}
 \footnotesize
@@ -1078,7 +1084,7 @@ The author declares no known competing financial interests or personal relations
 This work received in-kind computational support through the Google Cloud Research Credits Program (USD 1,000 in cloud credits) and computational/tooling support from CloudRift Inc. Neither Google nor CloudRift Inc. had any role in the study design, data collection, analysis, interpretation, manuscript preparation decisions, or the decision to submit the article for publication. No monetary research grant was received from these organizations.
 
 \section*{Data and Code Availability}
-{\leavevmode\raggedright Code, derived research artifacts, experiment configurations, and reproducibility materials for this study are available in the GitHub repository \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution} and are archived on Zenodo \cite{vahidi2026archive}. The v1.1.0 manuscript release package archives the confirmatory artifacts, robustness outputs, continuation shards, figure code, claim manifest, simulator, and analysis code. Raw third-party workload traces are not redistributed and are obtained from their original upstream sources.\par}
+{\leavevmode\raggedright Code, derived research artifacts, experiment configurations, and reproducibility materials for this study are available in the GitHub repository \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}; the v1.1.0 manuscript release package is archived on Zenodo \cite{vahidi2026archive}. That archive contains the confirmatory artifacts, robustness outputs, continuation shards, figure code, claim manifest, simulator, and analysis code. The post hoc reference-reserve sensitivity analysis and its denominator completion post-date that archive: their protocol, results, and provenance records are available in the GitHub repository only, under \texttt{experiments/reference\_reserve\_sensitivity\_v1/}. Raw third-party workload traces are not redistributed and are obtained from their original upstream sources.\par}
 
 \section*{Acknowledgements}
 The author gratefully acknowledges Professor Ioannis Koutis for research guidance and scientific feedback. The author thanks the NJIT Wulver HPC for providing computational resources for the fresh confirmatory computation, and Anders Borum (Secure ShellFish) for providing tools that enabled remote research access. Finally, the author thanks the author's mother for continued support.

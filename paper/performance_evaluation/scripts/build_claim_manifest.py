@@ -16,7 +16,9 @@ import csv
 import hashlib
 import importlib.util
 import json
+import math
 import re
+import statistics
 import sys
 from collections import Counter
 from pathlib import Path
@@ -42,6 +44,8 @@ FROZEN = "experiments/fresh_production_latency_headroom_confirmatory_v1"
 ROBUST = "experiments/fresh_production_latency_headroom_confirmatory_v1_robustness"
 VLLM_PROBE = EXP / "real_vllm_mechanism_validation_v1" / "native_vllm_chunk_budget_semantics_probe_v1"
 VLLM_RESULT = EXP / "real_vllm_pressure_action_validation_v1" / "REAL_VLLM_VALIDATION_RESULT_V1.json"
+RESERVE = EXP / "reference_reserve_sensitivity_v1"
+PHASE_D = EXP / "industry_realism_causal_headroom_phase_d_v1"
 
 
 def rel(p: Path) -> str:
@@ -353,7 +357,196 @@ def build_claims():
     assert vr["direct_simulator_family_b_reversal"] == "NO_GO"
     C.add("vllm.direct_comparison", "direct full-versus-chunked comparison did not reproduce the simulator's predicted class reversal (verdict NO_GO)", {"verdict": vr["direct_simulator_family_b_reversal"]},
           ["vLLM did not reproduce this reversal"], rel(VLLM_RESULT), "direct_simulator_family_b_reversal")
+    add_reserve_claims(C)
+    add_design_claims(C)
     return C.items
+
+
+def _sig3(x: float) -> str:
+    """Three significant digits with fixed decimals (0.04012 -> 0.0401, 0.024006 -> 0.0240, 0.006733 -> 0.00673)."""
+    return f"{x:.{max(0, 2 - math.floor(math.log10(x)))}f}"
+
+
+def _sci(x: float) -> str:
+    m, e = f"{x:.2e}".split("e")
+    return f"${m}\\times10^{{{int(e)}}}$"
+
+
+def add_reserve_claims(C):
+    """Reference-reserve sensitivity (post hoc) and its denominator completion, recomputed from the preserved raw artifacts."""
+    RES = {"0.82": "082", "0.90": "090", "1.00": "100"}
+    src_states = "experiments/reference_reserve_sensitivity_v1/results_v1/reserve_{}/disagreement_states.csv"
+    src_counts = "experiments/reference_reserve_sensitivity_v1/denominator_completion_v1/counts_reserve_{}.csv"
+    R = {}
+    for r, d in RES.items():
+        st = csv_rows(RESERVE / "results_v1" / f"reserve_{d}" / "disagreement_states.csv")
+        cn = csv_rows(RESERVE / "denominator_completion_v1" / f"counts_reserve_{d}.csv")
+        H = [float(x["oracle_headroom"]) * 1000.0 for x in st]      # simulated ms
+        dec = sum(int(x["decision_states"]) for x in cn)
+        assert len(cn) == 100 and sum(int(x["disagreement_states"]) for x in cn) == len(st)
+        ben = sum(int(x["beneficial_opportunity"]) for x in st)
+        mass = math.fsum(H)
+        by_reg = {}
+        for x, h in zip(st, H):
+            g = by_reg.setdefault((x["source_dataset"], x["condition_id"], x["axis"]), {"states": 0, "beneficial": 0, "mass": []})
+            g["states"] += 1; g["beneficial"] += int(x["beneficial_opportunity"]); g["mass"].append(h)
+        dec_reg = {}
+        for x in cn:
+            k = (x["source_dataset"], x["condition_id"], x["axis"])
+            dec_reg[k] = dec_reg.get(k, 0) + int(x["decision_states"])
+        boot = json.loads((RESERVE / "results_v1" / f"reserve_{d}" / "bootstrap_summary.json").read_text())
+        R[r] = {"decisions": dec, "states": len(st), "beneficial": ben, "P_D_pct": 100 * len(st) / dec, "P_B_given_D_pct": 100 * ben / len(st),
+                "mean_H_ms": mass / len(st), "mass_ms": mass, "BDR_pct": 100 * ben / dec, "OWH_ms_per_decision": mass / dec,
+                "all_harmful": sum(int(x["all_alternatives_harmful"]) for x in st), "by_regime": by_reg, "dec_regime": dec_reg, "boot": boot}
+    a, b, c = R["0.82"], R["0.90"], R["1.00"]
+    S = json.loads((RESERVE / "denominator_completion_v1" / "DENOMINATOR_SUMMARY_V1.json").read_text())
+    assert S["gates"]["DENOMINATOR_TRAJECTORY_INTEGRITY_GATE"] == "PASS" and S["gates"]["DENOMINATOR_REPRODUCTION_GATE"]["status"] == "PASS" and S["status"] == "DENOMINATOR_COMPLETION_SUCCESS"
+    for r in R:  # the denominator-summary derivations agree with the independent recomputation from the raw files
+        assert R[r]["decisions"] == S["reserves"][r]["total_reference_decision_states"] and R[r]["states"] == S["reserves"][r]["disagreement_states"]
+        assert abs(R[r]["OWH_ms_per_decision"] - S["reserves"][r]["opportunity_weighted_headroom_sim_ms_per_decision"]) < 1e-12
+    src = "; ".join([src_states.format(d) for d in RES.values()] + [src_counts.format(d) for d in RES.values()]
+                     + ["experiments/reference_reserve_sensitivity_v1/denominator_completion_v1/DENOMINATOR_SUMMARY_V1.json"])
+    fmt3 = lambda n: f"{n:,}"
+
+    # denominators
+    spread = 100 * (max(x["decisions"] for x in R.values()) - min(x["decisions"] for x in R.values())) / max(x["decisions"] for x in R.values())
+    assert spread < 0.006
+    C.add("reserve.decision_denominators", "total reference decision states 1,470,515 / 1,470,447 / 1,470,427 at reserves 0.82 / 0.90 / 1.00; spread < 0.006%",
+          {"decisions": {r: R[r]["decisions"] for r in R}, "spread_pct": spread},
+          [f"{fmt3(a['decisions'])}, {fmt3(b['decisions'])}, and {fmt3(c['decisions'])}", "under 0.006\\%"], src, "sum of decision_states over the 100 scenarios per reserve; (max-min)/max")
+    # Table 7 rows
+    rows = []
+    for r in R:
+        x = R[r]
+        rows.append(f"{r} & {x['states']} & {_sig3(x['P_D_pct'])} & {x['P_B_given_D_pct']:.1f} & {x['mean_H_ms']:.3f} & {_sig3(x['BDR_pct'])} & {_sci(x['OWH_ms_per_decision'])}")
+    C.add("reserve.table7_rows", "Table 7: states, P(D), P(B|D), mean H_LAT, beneficial-decision rate and opportunity-weighted headroom per reserve",
+          {r: {k: R[r][k] for k in ("states", "beneficial", "P_D_pct", "P_B_given_D_pct", "mean_H_ms", "BDR_pct", "OWH_ms_per_decision")} for r in R}, rows, src,
+          "P(D)=states/decisions; P(B|D)=beneficial/states; mean=fsum(H)/states; BDR=beneficial/decisions; OWH=fsum(H)/decisions (simulated ms)")
+    # counts and gates
+    C.add("reserve.counts_and_gates", "disagreement 720/466/198 and beneficial 590/353/99 at 0.82/0.90/1.00; the denominator completion passed both integrity gates, replayed 100 scenarios per reserve and reproduced the counts",
+          {"states": {r: R[r]["states"] for r in R}, "beneficial": {r: R[r]["beneficial"] for r in R}, "scenarios_per_reserve": 100, "gates": {"trajectory": S["gates"]["DENOMINATOR_TRAJECTORY_INTEGRITY_GATE"], "reproduction_0.82": S["gates"]["DENOMINATOR_REPRODUCTION_GATE"]["status"]}},
+          [f"reproduced the disagreement\ncounts ({a['states']}, {b['states']}, {c['states']})".replace("\n", " "), f"({b['states']} and {b['beneficial']}\nstates versus {a['states']} and {a['beneficial']})".replace("\n", " "), "replays the same 100 fresh scenarios"], src,
+          "counts: rows of disagreement_states.csv and beneficial_opportunity flags; gates: DENOMINATOR_SUMMARY_V1.json")
+    # normalized ratios
+    pdr, bdr = 100 * b["P_D_pct"] / a["P_D_pct"], 100 * b["BDR_pct"] / a["BDR_pct"]
+    owh90, owh100 = 100 * b["OWH_ms_per_decision"] / a["OWH_ms_per_decision"], 100 * c["OWH_ms_per_decision"] / a["OWH_ms_per_decision"]
+    C.add("reserve.normalized_ratios", "reserve 0.90 vs 0.82: P(D) x0.647, beneficial-decision rate x0.598, opportunity-weighted headroom x0.980; reserve 1.00 opportunity-weighted headroom x0.0164",
+          {"P_D_ratio_090": pdr / 100, "BDR_ratio_090": bdr / 100, "OWH_ratio_090": owh90 / 100, "OWH_ratio_100": owh100 / 100, "P_D_ratio_100": 100 * c["P_D_pct"] / a["P_D_pct"] / 100, "BDR_ratio_100": 100 * c["BDR_pct"] / a["BDR_pct"] / 100},
+          [f"fall to {pdr:.0f}\\% and {bdr:.0f}\\% of their 0.82 values", f"keeps {owh90:.0f}\\%", f"leaving {owh100:.1f}\\% of the 0.82"], src, "ratios of the recomputed rates to their reserve-0.82 values")
+    C.add("reserve.conditional_mean_caveat", "reserve 0.90 conditional mean H_LAT rises to 3.02 ms (0.82: 2.00 ms) while opportunity-weighted headroom is 98% of the 0.82 value",
+          {"mean_H_ms": {r: R[r]["mean_H_ms"] for r in R}, "OWH_ratio_090": owh90 / 100}, [f"rises to {b['mean_H_ms']:.2f}~ms", f"({b['mean_H_ms']:.2f}~ms) is not more opportunity"], src, "mean = fsum(H)/states; OWH ratio as above")
+    # KV regimes and active-cap invariance
+    kc, kv_c = ("azure_2023_code", "kv_16000", "kv_capacity"), ("azure_2023_conv", "kv_16000", "kv_capacity")
+    g = lambda r, k: R[r]["by_regime"].get(k, {"states": 0, "beneficial": 0, "mass": []})
+    mean_kc = {r: (math.fsum(g(r, kc)["mass"]) / g(r, kc)["states"]) if g(r, kc)["states"] else 0.0 for r in R}
+    assert [g(r, kc)["states"] for r in R] == [431, 224, 2] and [g(r, kv_c)["states"] for r in R] == [93, 46, 0] and g("1.00", kc)["beneficial"] == 0 and g("1.00", kv_c)["beneficial"] == 0
+    C.add("reserve.kv_regimes", "Azure-code KV 16,000 disagreement states 431 / 224 / 2 (mean 3.23 / 6.16 / 0 ms; none beneficial at 1.00); Azure-conversation KV 16,000 93 / 46 / 0",
+          {"code_kv_states": [g(r, kc)["states"] for r in R], "code_kv_mean_ms": mean_kc, "code_kv_beneficial": [g(r, kc)["beneficial"] for r in R], "conv_kv_states": [g(r, kv_c)["states"] for r in R]},
+          [f"Azure code {g('0.82', kc)['states']} to {g('0.90', kc)['states']} states, mean {mean_kc['0.82']:.2f} to {mean_kc['0.90']:.2f}~ms", "two Azure-code states (neither beneficial)", "none in Azure conversation"], src,
+          "per-regime rows of disagreement_states.csv (source_dataset, condition_id, axis)")
+    act = [("azure_2023_code", "active_8", "active_sequence_capacity"), ("azure_2023_code", "active_4", "active_sequence_capacity"), ("azure_2023_conv", "active_4", "active_sequence_capacity")]
+    inv = {}
+    for k in act:
+        tup = {r: (R[r]["dec_regime"][k], g(r, k)["states"], g(r, k)["beneficial"], round(math.fsum(g(r, k)["mass"]), 9)) for r in R}
+        assert len(set(tup.values())) == 1, (k, tup)
+        inv["/".join(k[:2])] = list(tup["0.82"])
+    kv_mass_100 = math.fsum(g("1.00", kc)["mass"]) + math.fsum(g("1.00", kv_c)["mass"])
+    act_mass_100 = math.fsum(x for k in act for x in g("1.00", k)["mass"])
+    assert kv_mass_100 == 0.0 and abs(act_mass_100 - c["mass_ms"]) < 1e-9
+    C.add("reserve.active_cap_invariance", "the three active-sequence-cap regimes are identical at every reserve (decisions, disagreements, beneficial, headroom mass) and supply all of the 23.6 ms remaining at reserve 1.00",
+          {"active_regimes_decisions_states_beneficial_mass": inv, "mass_1.00_ms": c["mass_ms"], "kv_regime_mass_1.00_ms": kv_mass_100}, ["identical at every reserve", f"remaining {c['mass_ms']:.1f}~ms"], src,
+          "per-regime tuples compared across the three reserves; sum of H over active-cap regimes == total mass at reserve 1.00")
+    # sensitivity-run intervals (seed 42) kept distinct from the canonical primary interval
+    ci = {r: [R[r]["boot"]["mean_oracle_headroom_ci95_low"] * 1000, R[r]["boot"]["mean_oracle_headroom_ci95_high"] * 1000] for r in R}
+    assert all(R[r]["boot"]["bootstrap_seed"] == 42 and R[r]["boot"]["bootstrap_replicates"] == 2000 for r in R)
+    fr = json.loads((EXP / "fresh_production_latency_headroom_confirmatory_v1" / "FRESH_LATENCY_BOOTSTRAP_V1.json").read_text())
+    C.add("reserve.sensitivity_intervals_distinct_from_primary", "sensitivity-run window-clustered 95% intervals (2,000 replicates, seed 42) [0.182,3.563] / [0.067,4.547] / [0.042,0.232]; the primary confirmatory interval [0.1909, 3.5462] uses its own seed and is unchanged",
+          {"sensitivity_ci_ms": ci, "sensitivity_seed": 42, "sensitivity_clusters": {r: R[r]["boot"]["clusters"] for r in R}, "primary_bootstrap_file": "FRESH_LATENCY_BOOTSTRAP_V1.json"},
+          [f"(2,000\nreplicates, seed 42) are [{ci['0.82'][0]:.3f}, {ci['0.82'][1]:.3f}], [{ci['0.90'][0]:.3f}, {ci['0.90'][1]:.3f}], and\n[{ci['1.00'][0]:.3f}, {ci['1.00'][1]:.3f}]".replace("\n", " "), "primary confirmatory interval at 0.82 remains"], "; ".join(f"experiments/reference_reserve_sensitivity_v1/results_v1/reserve_{d}/bootstrap_summary.json" for d in RES.values()) + f"; {FROZEN}/FRESH_LATENCY_BOOTSTRAP_V1.json",
+          "bootstrap_summary.json: mean_oracle_headroom_ci95_{low,high} * 1000; seed and replicates asserted")
+
+
+def add_design_claims(C):
+    """Setup statements not covered elsewhere, recomputed from the frozen artifacts and code."""
+    wl = {r["source_dataset"]: r for r in csv_rows(PHASE_A / "PHASE_A_WORKLOAD_SUMMARY_V1.csv")}
+    src_a = rel(PHASE_A / "PHASE_A_WORKLOAD_SUMMARY_V1.csv")
+    assert all(int(v["windows"]) == 20 and int(v["requests"]) == 4000 for v in wl.values()) and len(wl) == 3
+    C.add("design.native_windows", "faithful corpus: 20 windows of 200 requests from each of three workloads (60 windows, 4,000 requests per workload)",
+          {"windows_per_workload": 20, "requests_per_window": 200, "workloads": 3}, ["20 windows of 200 requests from each of Azure 2023 code, Azure 2023 conversation, and BurstGPT"], src_a, "windows and requests columns")
+    # prose restatements of Table 2 (onset / sustained settings) in Sections 4.2 and 5.1
+    tmap = csv_rows(PHASE_B / "PHASE_B_V2_TRANSITION_MAP.csv")
+    T = {(x["source_dataset"], x["axis"]): x for x in tmap}
+    pt = lambda w, ax, col: int(T[(w, ax)][col].split("_")[1])
+    A, K = "active_sequence_capacity", "kv_capacity"
+    first_a = {w: pt(w, A, "first_disagreement_point") for w in wl}
+    first_k = {pt(w, K, "first_disagreement_point") for w in wl}
+    sus_a = {w: pt(w, A, "sustained_disagreement_point") for w in wl}
+    sus_k = {w: pt(w, K, "sustained_disagreement_point") for w in wl}
+    bind_conv_k = pt("azure_2023_conv", K, "first_binding_point")
+    assert first_k == {16000} and sus_a["azure_2023_code"] == sus_a["azure_2023_conv"] and sus_k["azure_2023_code"] == sus_k["burstgpt"]
+    C.add("pressure.onset_and_sustained_prose", "first disagreement at active-sequence cap 16 (BurstGPT) / 8 (Azure code) / 4 (Azure conversation) and KV capacity 16,000 in all three; sustained at caps 8 (BurstGPT), 4 (Azure code and conversation) and KV 16,000 (Azure code, BurstGPT) / 8,000 (Azure conversation); Azure-conversation KV binds first at 8,000",
+          {"first_disagreement_active_cap": first_a, "first_disagreement_kv": sorted(first_k), "sustained_active_cap": sus_a, "sustained_kv": sus_k, "azure_conv_kv_first_binding": bind_conv_k},
+          [f"active-sequence cap of {first_a['burstgpt']} (BurstGPT), {first_a['azure_2023_code']} (Azure code), or {first_a['azure_2023_conv']} (Azure conversation), and at a KV\ncapacity of {comma(first_k.copy().pop())} tokens in all three workloads".replace("\n", " "),
+           f"at caps of {sus_a['burstgpt']} (BurstGPT) and {sus_a['azure_2023_code']} (Azure code and conversation)\nand at KV capacities of {comma(sus_k['azure_2023_code'])} (Azure code and BurstGPT) and {comma(sus_k['azure_2023_conv'])} (Azure\nconversation)".replace("\n", " "),
+           f"disagreement appears at {comma(first_k.copy().pop())} tokens, before the constraint physically binds at {comma(bind_conv_k)}"],
+          rel(PHASE_B / "PHASE_B_V2_TRANSITION_MAP.csv"), "first_disagreement_point / sustained_disagreement_point / first_binding_point by (source_dataset, axis)")
+    q = int(wl["burstgpt"]["max_queue_length"])
+    assert q == 31
+    C.add("design.burstgpt_native_queue", "native replay of the original BurstGPT windows reached a queue of 31 requests", q, ["reached a queue of 31 requests"], src_a, "row source_dataset=burstgpt: max_queue_length")
+    # smallest genuine advantage: one decode step over the largest continuation population
+    fresh = csv_rows(EXP / "fresh_production_latency_headroom_confirmatory_v1" / "FRESH_LATENCY_STATE_LEVEL_V1.csv")
+    H = [float(r["oracle_headroom"]) for r in fresh]
+    pos = [h for h in H if h > 1e-12]
+    floor = min(pos)
+    assert f"{floor:.2e}".startswith("5.15e-06") and round(0.001 / floor) == 194
+    C.add("design.numerical_floor", "no genuine advantage is smaller than about 5.2e-6 s (one 1 ms decode step over at most 194 requests)", {"min_positive_advantage_s": floor, "implied_population": round(0.001 / floor)},
+          ["smaller than about $5.2\\times10^{-6}$~s"], f"{FROZEN}/FRESH_LATENCY_STATE_LEVEL_V1.csv", "min oracle_headroom above the 1e-12 guard; 0.001 / that")
+    wins = {(r["source_dataset"], r["window_index"]) for r in fresh}
+    wpos = {(r["source_dataset"], r["window_index"]) for r in fresh if float(r["oracle_headroom"]) > 0}
+    assert (len(wins), len(wpos)) == (36, 32)
+    C.add("design.windows_with_positive_headroom", "32 of the 36 windows contain a state with positive headroom", {"windows": len(wins), "positive": len(wpos)},
+          ["32 of the 36 windows contain a state with positive headroom"], f"{FROZEN}/FRESH_LATENCY_STATE_LEVEL_V1.csv", "distinct (source_dataset, window_index) with oracle_headroom > 0")
+    reg = csv_rows(EXP / "fresh_production_latency_headroom_confirmatory_v1" / "FRESH_LATENCY_WORKLOAD_REGIME_V1.csv")
+    mx = max(float(r["P_D"]) for r in reg)
+    assert mx < 0.005
+    C.add("design.pd_below_half_percent", "P(D) is below 0.5% in every selected regime (maximum 0.456%)", {"max_P_D_pct": 100 * mx}, ["is below 0.5\\% in every selected regime"],
+          f"{FROZEN}/FRESH_LATENCY_WORKLOAD_REGIME_V1.csv", "max P_D over the five regimes")
+    # pilot ANWG saturation (Phase D, original windows)
+    cont = csv_rows(PHASE_D / "PHASE_D_CONTINUATION_RESULTS_V1.csv")
+    anwg = [float(r["q_sbs_anwg"]) for r in cont]
+    assert anwg and all(abs(v - 1.0) < 1e-12 for v in anwg)
+    ref, alts = {}, {}
+    for r in cont:
+        k = (r["state_id"],)
+        if r["is_sbs_reference_branch"] in ("True", "true", "1"):
+            ref[k] = float(r["mean_latency"])
+    n = changed = 0
+    for r in cont:
+        k = (r["state_id"],)
+        if r["is_sbs_reference_branch"] in ("True", "true", "1") or k not in ref:
+            continue
+        n += 1; changed += abs(float(r["mean_latency"]) - ref[k]) > 1e-12
+    assert n > 0 and changed / n > 0.9
+    C.add("design.pilot_anwg_saturation", "pilot causal analysis on the original windows: every terminal ANWG value is 1.0 although most counterfactual branches changed mean latency",
+          {"anwg_values": len(anwg), "all_equal_1": True, "branches_compared": n, "share_changed_latency": changed / n}, ["every\nterminal ANWG value was 1.0".replace("\n", " "), "most counterfactual branches changed latency"],
+          rel(PHASE_D / "PHASE_D_CONTINUATION_RESULTS_V1.csv"), "q_sbs_anwg over all continuation rows; per state_id, non-reference mean_latency vs the SBS reference branch")
+    src_txt = (ROOT / "src" / "llmserveopt" / "policies" / "prefill_control_variants.py").read_text()
+    chunk = int(re.search(r"^DEFAULT_CHUNK_SMALL\s*=\s*(\d+)", src_txt, re.M).group(1))
+    assert chunk == 64
+    C.add("design.small_chunk_size", "small-chunk prefill uses 64-token chunks", chunk, ["small-chunk prefill (64-token chunks)"],
+          rel(PHASE_A / "PHASE_A_NATIVE_CONFIG_FREEZE_V1.json") + " (portfolio policy chunked_prefill_small); src/llmserveopt/policies/prefill_control_variants.py", "DEFAULT_CHUNK_SMALL; policy listed in p6_policy_portfolio")
+    cfg = json.loads((PHASE_A / "PHASE_A_NATIVE_CONFIG_FREEZE_V1.json").read_text())
+    g = cfg["gpu_config"]
+    assert (g["max_active_sequences"], g["max_batch_tokens"], g["max_kv_tokens"], cfg["gpu_server_count"], cfg["service_model_kwargs"]["step_size"]) == (512, 512, 8_000_000, 1, 0.001)
+    assert len(cfg["p6_policy_portfolio"]) == 6 and cfg["scheduler"] == "kv_constrained_online"
+    C.add("design.gpu_config_and_portfolio", "one simulated GPU: 512 active-sequence slots, 512-token batch budget, 8,000,000 KV tokens, 1 ms step; six-policy portfolio with kv_constrained_online as reference",
+          {"gpu_config": g, "gpu_server_count": 1, "step_size_s": cfg["service_model_kwargs"]["step_size"], "portfolio": cfg["p6_policy_portfolio"], "reference": cfg["scheduler"]},
+          ["a 512-token batch budget", "The portfolio contains six policies implemented in the simulator"], rel(PHASE_A / "PHASE_A_NATIVE_CONFIG_FREEZE_V1.json"), "gpu_config, gpu_server_count, service_model_kwargs.step_size, p6_policy_portfolio, scheduler")
+    proto = json.loads((EXP / "fresh_production_latency_headroom_confirmatory_v1" / "CAUSAL_PROTOCOL_V1.json").read_text())
+    ptxt = json.dumps(proto)
+    assert "exactly one forced alternative action" in ptxt and "immediately revert to fixed SBS" in ptxt
+    C.add("design.one_step_forcing", "counterfactual = exactly one forced alternative action, then immediate reversion to the fixed SBS", {"protocol_phrases": ["exactly one forced alternative action", "immediately revert to fixed SBS"]},
+          ["force exactly one action, and return to the SBS for the continuation"], f"{FROZEN}/CAUSAL_PROTOCOL_V1.json", "protocol text contains both phrases")
 
 
 # ------------------------------------------------------------------------------------------ manuscript location
