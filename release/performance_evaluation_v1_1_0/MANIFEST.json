@@ -4,21 +4,21 @@
  "release": {
   "version": "1.1.0",
   "tag": "performance-evaluation-v1.1.0",
-  "git_commit": "e6fe60ac759b197cdbec0b92e4b3f9143a5ee0df",
-  "git_commit_date": "2026-09-21T13:58:50-04:00",
+  "git_commit": "25da82338d13f4268e2053291f82603cb37aeefe",
+  "git_commit_date": "2026-09-21T14:51:20-04:00",
   "built_from_branch": "release/peva-v1-20260920",
-  "included_paths_clean_at_build": false
+  "included_paths_clean_at_build": true
  },
  "identifiers": {
   "v1_doi": "10.5281/zenodo.22865294",
   "concept_doi": "10.5281/zenodo.22865293 (concept of record 22865294)",
-  "v1_1_doi": "pending Zenodo publication",
+  "v1_1_doi": "10.5281/zenodo.22866983",
   "repository": "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution"
  },
  "title": "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay",
  "builder": {
   "script": "scripts/build_performance_evaluation_release.py",
-  "script_sha256": "786abd55fded7f6b490f8e8a8f4cd00faf3e6c841ce7e19e64eb982e7d716033",
+  "script_sha256": "9fc4752e8ec026c62151da48b8e3f444ab7e2db99757bcbac2416eff601e1a92",
   "python": "3.12.3"
  },
  "excluded_by_design": [
@@ -32,14 +32,14 @@
  "files": [
   {
    "path": ".zenodo.json",
-   "size_bytes": 2405,
-   "sha256": "a42a579d74841a07d61514f102a50cd7ae6a0f5907c1d6228a392065b3618dc6",
+   "size_bytes": 2396,
+   "sha256": "ffa3a54e622ac36366031b8ca7df16d3cbdf26751edf2c9be3c946ca22dd9aad",
    "role": "archive_metadata"
   },
   {
    "path": "CITATION.cff",
    "size_bytes": 1169,
-   "sha256": "ba448963003ea3519401585b48c57e503ce67bac451309073b215fc4b30e1281",
+   "sha256": "4d0234b24d8025529e8dc4a1964d643634328f93e1a5b8425d97fbaf70492671",
    "role": "citation_metadata"
   },
   {
@@ -57,13 +57,13 @@
   {
    "path": "PROVENANCE_MAP.md",
    "size_bytes": 1920,
-   "sha256": "fcfff0cbb33fd6ef651ae0540cbe27e1d7393919dddc66735cb70708b8f3b74f",
+   "sha256": "2a8dbce9416e1366f722418f20d1cf39abbcda4fab1224fc111848a7f95bab1b",
    "role": "documentation"
   },
   {
    "path": "README.md",
-   "size_bytes": 6187,
-   "sha256": "f845885c5db5db5ec186a4870a9ec2fb7540d54c7845af516fafcc19c665d6c3",
+   "size_bytes": 6106,
+   "sha256": "b6429f022295a6f2c00eeb09a9c1bcd92f8ec3edc571c3e352bea568e9492f8a",
    "role": "release_readme"
   },
   {
@@ -650,8 +650,8 @@
   },
   {
    "path": "paper/performance_evaluation/README.md",
-   "size_bytes": 6706,
-   "sha256": "19cfb8c04d29c82d8a75b47067bc887423df4525364f1c0c94684b365177576b",
+   "size_bytes": 7215,
+   "sha256": "10100158950471cbe300b9d8aec6292ef7153f4de060ad15e23cecaa514c55a1",
    "role": "documentation"
   },
   {
@@ -740,20 +740,20 @@
   },
   {
    "path": "paper/performance_evaluation/main.bbl",
-   "size_bytes": 10225,
-   "sha256": "b0906df78b7487f67e4cc2e79008ee677cd6fc47856c6a437945f30bb47d1c62",
+   "size_bytes": 10243,
+   "sha256": "c443edccf9df489ee11abc4009a36f62068247678e6d9f73d0b12a7545e96ba4",
    "role": "manuscript_source"
   },
   {
    "path": "paper/performance_evaluation/main.tex",
-   "size_bytes": 60021,
-   "sha256": "a28aeccb210182eb3554238303dc534adfdc4951cb2b1f202f3c8a41cff5742f",
+   "size_bytes": 59954,
+   "sha256": "d8ced7b07b30cbe6ffc0d75c510b33857867dab4476eba14d384160ce703f830",
    "role": "manuscript_source"
   },
   {
    "path": "paper/performance_evaluation/references.bib",
-   "size_bytes": 13337,
-   "sha256": "efec5b72080f4fd294ecb00ec188bcba9415b7bb66a60a24ecebdeb7a20fc22e",
+   "size_bytes": 13353,
+   "sha256": "a5b95131e7008af336cc4d854c0f6573275f92bb0b2f4a84df97fa6ca5392293",
    "role": "manuscript_source"
   },
   {

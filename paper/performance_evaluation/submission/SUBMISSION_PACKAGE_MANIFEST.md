@@ -6,10 +6,10 @@ Regenerated from the canonical manuscript source; see `SUBMISSION_CHECKLIST.md`.
 |---|---|---|
 | `README_BUILD.txt` | Build instructions | `ba758905921ee0fd4fc844220fd5977955eb2de19a99b01cf8b104e93da1f21a` |
 | `SOURCE_ZIP_VERIFICATION.json` | Result of the clean-extraction build check | `21882fb050ab91c529ba6520483ae9d9276ec48671b127e3403586449e9d9b4c` |
-| `SUBMISSION_CHECKLIST.md` | Checklist | `68943bcf36a2ab0fc14b0faa40103178f2905c2688689fbd12e3b32a59a523df` |
+| `SUBMISSION_CHECKLIST.md` | Checklist | `7eceda819157b2f0ce12b183869c08012d2d5a4e120b6b62896cfc61a952c46b` |
 | `cover_letter.txt` | Cover letter | `0f305836586b7bf1cee2944581c349302fb421a27ec4f86e1b6e1098789232e5` |
 | `credit_authorship_statement.txt` | CRediT statement (candidate; author to confirm) | `fba46a3e67945fc1b02d241b2c28ebe35c55e72904610aa515db5cf136f3c9b5` |
-| `declarations.md` | Declarations text for the Elsevier declarations tool | `4fddec77f22a64fde8113017cd7b20bed94f217193c3a8e28015df66cd7902a5` |
+| `declarations.md` | Declarations text for the Elsevier declarations tool | `da6152195686301e0a9fdd89fd1a6572b1c97e21957be2b801ada77538a0bde5` |
 | `figures/pe_disagreement_rates.pdf` | Figure (vector PDF) | `aab918f3615fef33f1b059a8b436fcb7c6d9b049cd68a5a41fc94cc151f83bb4` |
 | `figures/pe_pipeline.pdf` | Figure (vector PDF) | `8368eae19749014ccc5a92e603038ba6dcf7294d753c63460300dfb60243095c` |
 | `figures/pe_regime_map.pdf` | Figure (vector PDF) | `2e1f060a9e033caa92df4ea16207bc9545aac7c9bf921830689a875a383a8256` |

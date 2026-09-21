@@ -15,8 +15,8 @@ identifiers:
     value: "10.5281/zenodo.22865294"
     description: "Published v1.0.0 record (Zenodo); v1.1.0 is archived in the same concept record only after Zenodo publication succeeds"
   - type: url
-    value: "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/tree/e6fe60ac759b197cdbec0b92e4b3f9143a5ee0df"
-    description: "Git commit e6fe60ac759b197cdbec0b92e4b3f9143a5ee0df (branch release/peva-v1-20260920; final tag not yet created)"
+    value: "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/tree/25da82338d13f4268e2053291f82603cb37aeefe"
+    description: "Git commit 25da82338d13f4268e2053291f82603cb37aeefe (branch release/peva-v1-20260920; final tag not yet created)"
 keywords:
   - LLM serving
   - request scheduling

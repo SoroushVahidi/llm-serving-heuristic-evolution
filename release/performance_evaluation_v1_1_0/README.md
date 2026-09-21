@@ -3,9 +3,9 @@
 When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay
 
 * v1.0.0 (published record): [10.5281/zenodo.22865294](https://doi.org/10.5281/zenodo.22865294)
-* v1.1.0 persistent DOI: assigned by Zenodo only if publication of the v1.1.0 version succeeds (concept DOI 10.5281/zenodo.22865293); this bundle is the intended upload payload
+* v1.1.0 (published record): [10.5281/zenodo.22866983](https://doi.org/10.5281/zenodo.22866983)
 * Source repository: https://github.com/SoroushVahidi/llm-serving-heuristic-evolution
-* Built from git commit `e6fe60ac759b197cdbec0b92e4b3f9143a5ee0df` on branch `release/peva-v1-20260920` (final Git tag not yet created)
+* Built from git commit `25da82338d13f4268e2053291f82603cb37aeefe` on branch `release/peva-v1-20260920` (final Git tag not yet created)
 * Author: Soroush Vahidi, New Jersey Institute of Technology
 * License: MIT (see `LICENSE`). Values derived from third-party traces keep the upstream attribution terms below.
 

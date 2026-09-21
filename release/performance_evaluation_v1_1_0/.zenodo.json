@@ -23,10 +23,10 @@
   "related_identifiers": [
     {
       "relation": "isSupplementTo",
-      "identifier": "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/tree/e6fe60ac759b197cdbec0b92e4b3f9143a5ee0df",
+      "identifier": "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/tree/25da82338d13f4268e2053291f82603cb37aeefe",
       "resource_type": "software",
       "scheme": "url"
     }
   ],
-  "notes": "Built from git commit e6fe60ac759b197cdbec0b92e4b3f9143a5ee0df (branch release/peva-v1-20260920; final Git tag not yet created). v1.0.0 is 10.5281/zenodo.22865294; this bundle is the v1.1.0 version of the same record (record 22865294, concept DOI 10.5281/zenodo.22865293)."
+  "notes": "Built from git commit 25da82338d13f4268e2053291f82603cb37aeefe (branch release/peva-v1-20260920; final Git tag not yet created). v1.0.0 is 10.5281/zenodo.22865294; this bundle is the published v1.1.0 version (record 22866983, concept DOI 10.5281/zenodo.22865293)."
 }

@@ -19,5 +19,4 @@ The author gratefully acknowledges Professor Ioannis Koutis for research guidanc
 ## Data availability
 Code, derived research artifacts, experiment configurations, and reproducibility materials for this study are available in the GitHub repository https://github.com/SoroushVahidi/llm-serving-heuristic-evolution and are archived on Zenodo [28]. The v1.1.0 manuscript release package archives the confirmatory artifacts, robustness outputs, continuation shards, figure code, claim manifest, simulator, and analysis code. Raw third-party workload traces are not redistributed and are obtained from their original upstream sources.
 
-Archive: Zenodo record 22865294 (published v1.0.0: https://doi.org/10.5281/zenodo.22865294; concept DOI 10.5281/zenodo.22865293).
-The v1.1.0 version DOI is assigned by Zenodo when the v1.1.0 version is published.
+Archive: Zenodo record 22866983 (published v1.1.0: https://doi.org/10.5281/zenodo.22866983; concept DOI 10.5281/zenodo.22865293).
