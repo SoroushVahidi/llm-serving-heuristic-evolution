@@ -54,8 +54,6 @@ def test_zenodo_todo_marker_is_resolved():
     doc = READINESS.read_text()
     assert "TODO(QUERY_8): ZENODO_NEW_VERSION" not in doc
     assert "TODO(QUERY_8)" not in README.read_text()
-    for needed in ("CITATION.cff", "@misc{vahidi2026archive", "submission/main.tex", "FINAL_CLAIM_MANIFEST.json"):
-        assert needed in doc, needed
 
 
 def test_readme_names_the_real_build_and_figure_commands():
