@@ -17,20 +17,33 @@ by all arriving requests.
 The active manuscript is **"When Does LLM-Serving Scheduler Adaptation Matter?
 Action Opportunity and Causal Headroom in Production-Derived Replay"**, targeted
 at **Performance Evaluation** (Elsevier, ISSN 0166-5316) as an **Original
-research article**. The manuscript source and PDF candidate are frozen on the
-release branch; submission and archive packages are regenerated later.
+research article**. The manuscript source and canonical PDF are frozen; the
+Elsevier submission package and the v1.1.0 reproducibility archive are
+regenerated in this repository and verified against the frozen manuscript.
 
 - Canonical submission roadmap (source of truth):
   [`docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`](docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md)
-- Canonical frozen PDF candidate:
+- Canonical frozen manuscript PDF (the single tracked full-manuscript PDF for this work):
   [`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`](paper/when_does_llm_serving_scheduler_adaptation_matter.pdf)
-  (not yet the regenerated submission or Zenodo artifact)
+- Regenerated Elsevier submission package (highlights, cover letter,
+  declarations, CRediT, checklist, source ZIP):
+  [`paper/performance_evaluation/submission/`](paper/performance_evaluation/submission/)
+- Regenerated v1.1.0 reproducibility archive (frozen artifacts, corrected
+  derivative, robustness outputs, shards, claim manifest, code, verification):
+  [`release/performance_evaluation_v1_1_0/`](release/performance_evaluation_v1_1_0/) and
+  [`release/performance_evaluation_v1_1_0.zip`](release/performance_evaluation_v1_1_0.zip)
 - The historical LLM 2026 manuscript in [`paper/history/llm2026/`](paper/history/llm2026/) is
   retained for provenance. That conference submission was withdrawn before
   publication and is **not** the active submission.
 - The earlier FGCS submission roadmap
   ([`docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`](docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md))
   is superseded and retained for provenance only.
+- Zenodo: the v1.0.0 archive is published at `10.5281/zenodo.22865294`
+  (concept `10.5281/zenodo.22865293`). The v1.1.0 version is staged in the
+  Zenodo concept record (draft `22866983`, full metadata set); its publication
+  was pending on the Zenodo file-upload service at finalization time, so no
+  v1.1.0 version DOI is asserted here. The v1.1.0 version DOI will be recorded
+  only after Zenodo publication succeeds and the DOI resolves publicly.
 
 ## Research Problem
 
@@ -103,7 +116,9 @@ experiments/        committed experiment artifacts and curated provenance
 docs/               roadmap, current status, design docs, historical audits
 data/               local datasets; raw/processed data are gitignored
 results/            local generated outputs; gitignored except selected provenance
-paper/performance_evaluation/ finalized manuscript package (LaTeX source, PDF, figures)
+paper/performance_evaluation/ finalized manuscript package (LaTeX source, canonical PDF, figures)
+paper/performance_evaluation/submission/ regenerated Elsevier submission package (highlights, cover letter, checklist, source ZIP)
+release/performance_evaluation_v1_1_0/ regenerated v1.1.0 reproducibility archive (source tree + ZIP + verification)
 ```
 
 See [`docs/README.md`](docs/README.md), [`scripts/README.md`](scripts/README.md),

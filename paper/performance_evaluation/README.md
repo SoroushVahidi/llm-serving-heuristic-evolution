@@ -6,8 +6,11 @@ Target journal: *Performance Evaluation* (Elsevier). The class is `elsarticle` (
 numbered `elsarticle-num` bibliography style.
 
 Status: the manuscript text, figures, tables, claim manifest, and canonical PDF
-candidate are frozen for integration. The Zenodo v1.1.0 archive, submission
-package, and merge to `main` are still open.
+are frozen. The Elsevier submission package (in `submission/`) and the v1.1.0
+reproducibility archive (in `release/performance_evaluation_v1_1_0/`) are
+regenerated from this source and verified. The Zenodo v1.1.0 version is staged
+in the concept record; its publication was pending on the Zenodo file-upload
+service at finalization time, so no v1.1.0 version DOI is asserted.
 
 ## Canonical source
 
@@ -91,17 +94,23 @@ readiness checklist. After any edit of `main.tex` that changes a number, regener
 * `docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`: environment and reproduction guide.
 * `docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`: journal requirements and submission status.
 
-## Awaiting archive and submission packaging
+## Archive and submission packaging (current state)
 
-The existing Zenodo record (DOI 10.5281/zenodo.22865294, tag `performance-evaluation-v1.0.0`) predates
-the robustness outputs, the corrected derivative and the final figure code. The Data Availability paragraph is
-worded to say so. After the new version is published, update the DOI, add the dataset/software reference and
-regenerate the claim manifest; the exact list is in `docs/PEVA_PREPACKAGE_READINESS.md`.
-TODO(QUERY_8): ZENODO_NEW_VERSION remains open until the archive is updated.
+The Elsevier submission package in `submission/` and the v1.1.0 reproducibility
+archive in `release/performance_evaluation_v1_1_0/` were regenerated from this
+frozen source and verified (clean-extraction build of the source ZIP, and the
+release verification script, all passing).
 
-The stale `submission/` snapshot and v1.1.0 release package were removed from the
-branch during manuscript freeze. They must be regenerated from the frozen source
-in the packaging step.
+The published v1.0.0 archive (DOI `10.5281/zenodo.22865294`, tag
+`performance-evaluation-v1.0.0`) predates the robustness outputs, the corrected
+derivative and the final figure code; the Data Availability paragraph is worded
+to say so. The v1.1.0 version is staged in the Zenodo concept record
+(`10.5281/zenodo.22865293`, draft `22866983`, full metadata set) and its
+publication was pending on the Zenodo file-upload service at finalization time,
+so no v1.1.0 version DOI is asserted here. Once publication succeeds and the
+DOI resolves publicly, update the DOI, add/confirm the dataset-software
+reference and regenerate the claim manifest.
+
 `scripts/plot_joint_complementarity.py`, `scripts/plot_vllm_semantic_validation.py` and the corresponding
 `figures/joint_complementarity.pdf` and `figures/vllm_semantic_validation.pdf` are legacy files that the current
 manuscript does not use.

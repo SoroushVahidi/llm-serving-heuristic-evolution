@@ -86,3 +86,34 @@ Only rebuilds, hashes, citation/reference checks, tests, and inspection of exist
 - Published v1.0 DOI: 10.5281/zenodo.22865294
 - Invalid/fake DOI checked and absent from live repository references: YES
 - v1.1.0 DOI/archive: not yet published in this query.
+
+## Post-Freeze Addendum (Query 3 of 4: package/regeneration + integration)
+
+The frozen hashes above (source, canonical PDF, counts, 111 passing tests) are
+unchanged; no scientific experiment was run. The administrative state moved as
+follows:
+
+- Submission package regenerated from the frozen source into
+  `paper/performance_evaluation/submission/` (highlights, cover letter,
+  declarations, CRediT, checklist, source ZIP). **Submission package current: YES.**
+  The source ZIP was re-extracted and rebuilt in a clean directory (30 pages, no
+  undefined references; rendered text identical to the canonical PDF).
+- v1.1.0 reproducibility archive regenerated from current evidence into
+  `release/performance_evaluation_v1_1_0/` and
+  `release/performance_evaluation_v1_1_0.zip` (682 files; frozen artifacts
+  byte-identical, corrected derivative preserved as a derivative, claim manifest
+  at 62 claims). Release verification passes 8/8, including a clean-extraction
+  rebuild. **Release package current: YES.**
+- Stale full-manuscript PDF audit: exactly one tracked full-manuscript PDF for
+  this work remains (`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`).
+  A stale historical copy of the unrelated "Exploitability Gap in LLM-Serving
+  Scheduler Portfolios" (FGCS/LNCS) manuscript PDF was removed from the tracked
+  tree; its canonical copy and source records are preserved.
+- Zenodo v1.1.0: full metadata set on the existing concept-record draft
+  `22866983`; a stray empty draft `22867549` was removed. Publication was
+  **blocked by a Zenodo file-upload service outage** (HTTP 405 on add, 500 on
+  delete, reproduced on a throwaway draft), so **no v1.1.0 version DOI is
+  asserted.** The reserved draft DOI is not treated as published. **Zenodo v1.1
+  published: NO.**
+- The final `performance-evaluation-v1.1.0` Git tag is intentionally not created
+  here; it is owned by the independent post-push verification query.
