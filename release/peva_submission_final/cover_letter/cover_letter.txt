@@ -1,0 +1,23 @@
+Soroush Vahidi
+New Jersey Institute of Technology, Newark, NJ, USA
+sv96@njit.edu
+
+The Editors
+Performance Evaluation
+
+Dear Editors,
+
+Please consider the enclosed manuscript, "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay," for publication in Performance Evaluation as an Original Research Article.
+
+Adaptive schedulers for large language model (LLM) serving are usually motivated by the premise that a portfolio of scheduling policies can do better than the best single policy. The manuscript measures that premise before any adaptive scheduler is designed. It is a staged performance evaluation: it asks whether a six-policy portfolio ever proposes an action different from the best fixed scheduler, which resource pressures create such disagreement, whether taking the alternative action for one step lowers latency on fresh non-overlapping windows, and how that effect is distributed. The evidence comes from deterministic simulator replay of production-derived traces (Azure code, Azure conversation and BurstGPT), a preregistered fresh causal analysis, post hoc robustness and concentration analyses, and a bounded vLLM probe.
+
+Under abundant resources, replay is action-null in about one million decision states. Capping key-value cache capacity or concurrent sequences creates disagreement, whereas scaling arrival rates does not. In the preregistered analysis of 720 fresh disagreement states, one-step latency headroom is positive in most states, but it is modest and highly concentrated: the median is 0.20 ms and a single trace window holds most of the total. The vLLM probe shows that resource pressure changes scheduler behavior but does not validate the simulated latency magnitudes. The paper therefore concludes that adaptation opportunity is real but sparse and pressure-dependent, and that detecting it is not evidence that a deployed adaptive scheduler is worthwhile. It makes no deployment claim.
+
+We believe the work fits Performance Evaluation because its contribution is methodological: how to measure, stage by stage, whether a scheduling decision has anything to act on, and how to report the size, sign and distribution of an effect rather than a single mean, using production-derived workloads.
+
+All code, frozen preregistered artifacts, robustness outputs and a manifest that recomputes every quoted number are archived on Zenodo (record 22865294; v1.0.0: https://doi.org/10.5281/zenodo.22865294; the v1.1.0 version covering the robustness analysis and the corrected derivative is published in the same record under its Zenodo-assigned DOI) and available on GitHub; raw third-party traces are obtained from their upstream sources. The archive also supplies a corrected derivative of two descriptive columns of one frozen file, alongside the unchanged original; no reported result depends on those columns.
+
+This manuscript is not under consideration for publication elsewhere. I am the sole author and the corresponding author.
+
+Sincerely,
+Soroush Vahidi
