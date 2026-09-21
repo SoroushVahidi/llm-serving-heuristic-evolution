@@ -8,9 +8,7 @@ numbered `elsarticle-num` bibliography style.
 Status: the manuscript text, figures, tables, claim manifest, and canonical PDF
 are frozen. The Elsevier submission package (in `submission/`) and the v1.1.0
 reproducibility archive (in `release/performance_evaluation_v1_1_0/`) are
-regenerated from this source and verified. The Zenodo v1.1.0 version is staged
-in the concept record; its publication was pending on the Zenodo file-upload
-service at finalization time, so no v1.1.0 version DOI is asserted.
+regenerated from this source and verified. The Zenodo v1.1.0 version is published at 10.5281/zenodo.22866983.
 
 ## Canonical source
 
@@ -105,7 +103,7 @@ The published v1.0.0 archive (DOI `10.5281/zenodo.22865294`, tag
 `performance-evaluation-v1.0.0`) predates the robustness outputs, the corrected
 derivative and the final figure code; the Data Availability paragraph is worded
 to say so. The v1.1.0 version is staged in the Zenodo concept record
-(`10.5281/zenodo.22865293`, draft `22866983`, full metadata set) and its
+(`10.5281/zenodo.22865293`, staged as an unsubmitted draft with full metadata set) and its
 publication was pending on the Zenodo file-upload service at finalization time,
 so no v1.1.0 version DOI is asserted here. Once publication succeeds and the
 DOI resolves publicly, update the DOI, add/confirm the dataset-software
