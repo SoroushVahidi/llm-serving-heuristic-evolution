@@ -43,7 +43,7 @@ def _ws(s):
 
 @pytest.fixture(scope="module")
 def discussion(tex):
-    return _ws(tex[tex.index(r"\section{Discussion}"):tex.index(r"\section{Reproducibility and Artifact Scope}")])
+    return _ws(tex[tex.index(r"\section{Discussion}"):tex.index(r"\section{Conclusion}")])
 
 
 @pytest.fixture(scope="module")
@@ -57,10 +57,10 @@ def pct(x):
 
 def test_discussion_structure(discussion):
     for h in ("Sign and magnitude of the headroom", "Opportunity, prediction, and deployment", "Resource pressure and action support",
-              "System correspondence", "Implications for practice", "Relation to modern adaptive systems", "Limitations and threats to validity"):
+              "System correspondence", "Implications for practice", "Limitations and threats to validity"):
         assert r"\subsection{" + h + "}" in discussion, h
     for lim in ("Policy portfolio", "Workloads", "Controlled interventions", "One-step oracle", "Concentration", "System correspondence",
-                "Objective", "External validity"):
+                "Objective", "External validity", "Reference scheduler", "Workload overlays"):
         assert r"\item[" + lim + ".]" in discussion, lim
 
 
@@ -78,7 +78,6 @@ def test_discussion_numbers_match_artifacts(discussion, N):
         f"carries {pct(c['w11_headroom_share'])}", f"carries {pct(c['code_kv_headroom_share'])}", f"is {c['eff_windows']:.2f}",
         f"{w11['mean_ms']:.2f}~ms (95\\% CI [{w11['ci_ms'][0]:.2f}, {w11['ci_ms'][1]:.2f}]~ms)",
         f"{kv['mean_ms']:.2f}~ms (95\\% CI [{kv['ci_ms'][0]:.2f}, {kv['ci_ms'][1]:.2f}]~ms)",
-        f"([{g['large_ci_ms'][0]:.2f}, {g['large_ci_ms'][1]:.2f}]~ms)", f"([{g['bca_ci_ms'][0]:.2f}, {g['bca_ci_ms'][1]:.2f}]~ms)",
         f"{N['thresholds'][0]['windows']} of the 36 windows contain a state with positive headroom",
         f"the median disagreement state offers only {D['median_ms']:.2f}~ms",
     ]
@@ -123,8 +122,7 @@ def test_vllm_characterized_as_probe_not_validation(discussion, conclusion, tex)
     assert "vllm validation" not in low
     for s in ("did not reproduce the simulator", "does not validate the simulated headroom magnitude"):
         assert s in discussion, s
-    repro = _ws(tex[tex.index(r"\section{Reproducibility and Artifact Scope}"):tex.index(r"\section{Conclusion}")])
-    assert "vLLM system correspondence probe" in repro and "vLLM pressure/action validation" not in repro
+    assert "vLLM pressure/action validation" not in tex
 
 
 def test_terminology_and_scope_definitions(discussion, conclusion):

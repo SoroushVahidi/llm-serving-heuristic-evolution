@@ -37,33 +37,6 @@ D.~Zhang, J.~Han, K.~Zhang, X.~Wei, S.~Shen, C.~Fang, W.~Yu, J.~Zhou, R.~Chen,
   request scheduling, in: 20th USENIX Symposium on Operating Systems Design and
   Implementation (OSDI 26), USENIX Association, 2026.
 
-\bibitem{choudhury2025job}
-T.~Choudhury, G.~Joshi, W.~Wang, Job assignment in machine learning inference
-  systems with accuracy constraints, Performance Evaluation 167 (2025) 102463.
-\newblock \href {https://doi.org/10.1016/j.peva.2024.102463}
-  {\path{doi:10.1016/j.peva.2024.102463}}.
-
-\bibitem{yildiz2026dispatching}
-M.~Yildiz, A.~Rolich, A.~Baiocchi, Dispatching policies in data center
-  clusters: Insights from {Google} and {Alibaba} workloads, Performance
-  Evaluation 172 (2026) 102551.
-\newblock \href {https://doi.org/10.1016/j.peva.2026.102551}
-  {\path{doi:10.1016/j.peva.2026.102551}}.
-
-\bibitem{liang2026lilou}
-Q.~Liang, H.~Wang, P.~Shenoy, Lilou: Resource-aware model-driven latency
-  prediction for {GPU}-accelerated model serving, Performance Evaluation 171
-  (2026) 102539.
-\newblock \href {https://doi.org/10.1016/j.peva.2025.102539}
-  {\path{doi:10.1016/j.peva.2025.102539}}.
-
-\bibitem{ali2025enabling}
-A.~Ali, X.~Ma, S.~Zawad, P.~Aditya, I.~E. Akkus, R.~Chen, L.~Yang, F.~Yan,
-  Enabling scalable and adaptive machine learning training via serverless
-  computing on public cloud, Performance Evaluation 167 (2025) 102451.
-\newblock \href {https://doi.org/10.1016/j.peva.2024.102451}
-  {\path{doi:10.1016/j.peva.2024.102451}}.
-
 \bibitem{azurepublicdataset2023}
 {Microsoft Azure}, {Azure} {LLM} inference trace 2023,
   \url{https://github.com/Azure/AzurePublicDataset/blob/master/AzureLLMInferenceDataset2023.md},
@@ -110,11 +83,16 @@ B.~Wu, Y.~Zhong, Z.~Zhang, S.~Liu, F.~Liu, Y.~Sun, G.~Huang, X.~Liu, X.~Jin,
   inference, in: 23rd USENIX Symposium on Networked Systems Design and
   Implementation (NSDI 26), USENIX Association, 2026, pp. 57--74.
 
+\bibitem{preble2025}
+V.~Srivatsa, Z.~He, R.~Abhyankar, D.~Li, Y.~Zhang, Preble: Efficient
+  distributed prompt scheduling for {LLM} serving, in: The Thirteenth
+  International Conference on Learning Representations (ICLR 2025), 2025.
+
 \bibitem{libra2026}
 C.~Ruan, Y.~Chen, D.~Tian, Y.~Shi, Y.~Wu, J.~Li, C.~Li, Libra: Flexible request
   partitioning and scheduling for serving unbalanced and dynamic {LLM}
   workloads, in: 23rd USENIX Symposium on Networked Systems Design and
-  Implementation (NSDI 26), USENIX Association, 2026.
+  Implementation (NSDI 26), USENIX Association, 2026, pp. 1243--1258.
 
 \bibitem{mooncake2025}
 R.~Qin, Z.~Li, W.~He, J.~Cui, F.~Ren, M.~Zhang, Y.~Wu, W.~Zheng, X.~Xu,
@@ -128,9 +106,9 @@ Z.~Xie, Z.~Xu, M.~Zhao, Y.~An, V.~S. Mailthody, S.~Mahlke, M.~Garland,
   model serving, arXiv preprint arXiv:2508.18572 (2025).
 
 \bibitem{morphserve2025}
-Z.~Su, T.~Lan, Z.~Wang, J.~Yang, Y.~Cheng, Efficient and workload-aware {LLM}
-  serving via runtime layer swapping and {KV} cache resizing, arXiv preprint
-  arXiv:2506.02006 (2025).
+Z.~Su, Z.~Zhang, T.~Lan, Z.~Wang, H.~Shen, J.~Yang, Y.~Cheng, {MorphServe}:
+  Efficient and workload-aware {LLM} serving via runtime quantized layer
+  swapping and {KV} cache resizing, arXiv preprint arXiv:2506.02006 (2025).
 
 \bibitem{dynamollm2025}
 J.~Stojkovic, C.~Zhang, I.~Goiri, J.~Torrellas, E.~Choukse, {DynamoLLM}:
@@ -146,10 +124,10 @@ W.~Nixon, J.~Durbin, F.~Standhartinger, H.~S. Gunawi, J.~Yang, A year in {LLM}
   arXiv:2608.13573 (2026).
 
 \bibitem{servegen2025}
-Y.~Xiang, X.~Li, K.~Qian, W.~Yu, E.~Zhai, X.~Jin, {ServeGen}: Workload
-  characterization and generation of large language model serving in
-  production, in: 23rd USENIX Symposium on Networked Systems Design and
-  Implementation (NSDI 26), USENIX Association, 2026.
+Y.~Xiang, X.~Li, K.~Qian, Y.~Zhang, W.~Yu, E.~Zhai, X.~Jin, J.~Zhou,
+  {ServeGen}: Workload characterization and generation of large language model
+  serving in production, in: 23rd USENIX Symposium on Networked Systems Design
+  and Implementation (NSDI 26), USENIX Association, 2026, pp. 1845--1859.
 
 \bibitem{opentela2026}
 X.~Yao, Y.~Jiang, I.~Badanin, Q.~Hu, R.~M. Smith, B.~Yuan, I.~Schlag,
@@ -157,6 +135,49 @@ X.~Yao, Y.~Jiang, I.~Badanin, Q.~Hu, R.~M. Smith, B.~Yuan, I.~Schlag,
   resources for heterogeneous {LLM} serving, in: 20th USENIX Symposium on
   Operating Systems Design and Implementation (OSDI 26), USENIX Association,
   2026, pp. 1821--1838.
+
+\bibitem{jaillet2025online}
+P.~Jaillet, J.~Jiang, K.~Mellou, M.~Molinaro, C.~Podimata, Z.~Zhou, Online
+  scheduling for {LLM} inference with {KV} cache constraints, arXiv preprint
+  arXiv:2502.07115 (2025).
+
+\bibitem{mitzenmacher2025queueing}
+M.~Mitzenmacher, R.~Shahout, Queueing, predictions, and large language models:
+  Challenges and open problems, Stochastic Systems 15~(3) (2025) 195--219.
+\newblock \href {https://doi.org/10.1287/stsy.2025.0106}
+  {\path{doi:10.1287/stsy.2025.0106}}.
+
+\bibitem{vidur2024}
+A.~Agrawal, N.~Kedia, J.~Mohan, A.~Panwar, N.~Kwatra, B.~S. Gulavani,
+  R.~Ramjee, A.~Tumanov, {VIDUR}: A large-scale simulation framework for {LLM}
+  inference, in: Proceedings of Machine Learning and Systems, Vol.~6, 2024.
+
+\bibitem{choudhury2025job}
+T.~Choudhury, G.~Joshi, W.~Wang, Job assignment in machine learning inference
+  systems with accuracy constraints, Performance Evaluation 167 (2025) 102463.
+\newblock \href {https://doi.org/10.1016/j.peva.2024.102463}
+  {\path{doi:10.1016/j.peva.2024.102463}}.
+
+\bibitem{yildiz2026dispatching}
+M.~Yildiz, A.~Rolich, A.~Baiocchi, Dispatching policies in data center
+  clusters: Insights from {Google} and {Alibaba} workloads, Performance
+  Evaluation 172 (2026) 102551.
+\newblock \href {https://doi.org/10.1016/j.peva.2026.102551}
+  {\path{doi:10.1016/j.peva.2026.102551}}.
+
+\bibitem{liang2026lilou}
+Q.~Liang, H.~Wang, P.~Shenoy, Lilou: Resource-aware model-driven latency
+  prediction for {GPU}-accelerated model serving, Performance Evaluation 171
+  (2026) 102539.
+\newblock \href {https://doi.org/10.1016/j.peva.2025.102539}
+  {\path{doi:10.1016/j.peva.2025.102539}}.
+
+\bibitem{ali2025enabling}
+A.~Ali, X.~Ma, S.~Zawad, P.~Aditya, I.~E. Akkus, R.~Chen, L.~Yang, F.~Yan,
+  Enabling scalable and adaptive machine learning training via serverless
+  computing on public cloud, Performance Evaluation 167 (2025) 102451.
+\newblock \href {https://doi.org/10.1016/j.peva.2024.102451}
+  {\path{doi:10.1016/j.peva.2024.102451}}.
 
 \bibitem{satzilla2008}
 L.~Xu, F.~Hutter, H.~H. Hoos, K.~Leyton-Brown, {SATzilla}: Portfolio-based

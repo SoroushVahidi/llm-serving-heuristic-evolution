@@ -56,8 +56,8 @@ Our work utilizes production-derived traces from real-world deployments:
 1. **Microsoft Azure LLM serving traces (2023):** Contains `azure_2023_code` and `azure_2023_conversation` workloads.
    - Upstream URL: `https://github.com/Azure/AzurePublicDataset/blob/master/AzureLLMInferenceDataset2023.md`
    - Redistribution status: Raw trace is obtained upstream; we include the derived, sampled simulation windows in this repository for reproducibility.
-2. **BurstGPT workload trace (2025/2026):** Production-scale dataset.
-   - Upstream URL: `https://github.com/SoroushVahidi/BurstGPT`
+2. **BurstGPT workload trace:** Wang et al., KDD 2025 (10.31 M requests from regional Azure OpenAI GPT services over 213 days).
+   - Upstream URL (dataset owner): `https://github.com/HPMLL/BurstGPT` (CC-BY-4.0). This is the dataset owner's repository, not a fork.
    - Redistribution status: Raw trace is obtained upstream; the specific derived simulation windows used for replay are redistributed in `data/`.
 
 All pre-processed, derived workload windows used in our simulations are stored under `data/public_trace_corpus_v1/`.
@@ -76,6 +76,7 @@ The core scientific computations in this paper are **frozen**. Running the full 
 | **Figures 1-3** (evidence chain, native/pressure prevalence, active-cap transition) | `paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py` | Local | Instant from frozen CSVs (Phase A / Phase B) |
 | **Figures 4-5** (regime characterization and map) | `paper/performance_evaluation/scripts/plot_regime_figures.py` | Local | Instant from frozen artifacts |
 | **Figure 6** (distribution and concentration) | `paper/performance_evaluation/scripts/plot_robustness_figures.py` | Local | Instant from frozen artifacts and robustness outputs |
+| **Reference-policy, load-range, overlay and secondary-outcome numbers** (Sec. 3, 5, 6.1, 6.4, 7.5, 9) | `paper/performance_evaluation/scripts/reference_policy_numbers.py` (recomputed from completed artifacts; no simulation) | Local | Instant; checked by `build_claim_manifest.py --check` and `tests/test_manuscript_scientific_corrections.py` |
 | **Table 1** (Closest-work) | (Static synthesis) | N/A | Analytical mapping |
 | **Table 2** (Transition) | (Static synthesis) | N/A | Analytical mapping |
 | **Tables 3-5** (regime characterization, thresholds, sensitivity) | `paper/performance_evaluation/scripts/robustness_numbers.py` | Local | Recomputed from frozen CSVs and asserted against the robustness outputs |
@@ -107,3 +108,13 @@ We validate simulator fidelity on a real serving platform (vLLM) under resource 
 - Real-system verification requires a dedicated GPU (local RTX 5060 Ti or Wulver HPC A100 node).
 - The manuscript's vLLM numbers come from `experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/` (`mechanism_summary.json`, `statistical_summary.json`) and `experiments/real_vllm_pressure_action_validation_v1/REAL_VLLM_VALIDATION_RESULT_V1.json`; each is checked by `paper/performance_evaluation/scripts/build_claim_manifest.py`.
 - No monetary API calls are performed; mock modes are used by default unless `--allow-live-api` is supplied with correct credentials.
+
+---
+
+## 5. Known documentation corrections
+
+- The BurstGPT upstream URL above was corrected on 2026-09-21 (it previously named an author fork).
+- `docs/current/FRESH_PRODUCTION_SUPPORT_MAPPING_REPORT_V1.md` (a stage record, preserved unchanged) wrongly says BurstGPT `kv_8000` was
+  invalid; see `docs/current/FRESH_PRODUCTION_SUPPORT_MAPPING_REPORT_V1_ERRATUM_20260921.md`. The CSV governs.
+- The frozen state-level file `FRESH_LATENCY_STATE_LEVEL_V1.csv` has mislabeled `mean_ref_latency`/`p95_ref_latency` columns; use
+  `experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/` for the SBS-reference latency.

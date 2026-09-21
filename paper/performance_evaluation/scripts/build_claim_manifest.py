@@ -32,6 +32,10 @@ _spec = importlib.util.spec_from_file_location("robustness_numbers", HERE / "rob
 rn = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(rn)
 
+_spec2 = importlib.util.spec_from_file_location("reference_policy_numbers", HERE / "reference_policy_numbers.py")
+rp = importlib.util.module_from_spec(_spec2)
+_spec2.loader.exec_module(rp)
+
 PHASE_A = EXP / "industry_realism_action_opportunity_phase_a_v1"
 PHASE_B = EXP / "industry_realism_action_opportunity_phase_b_v2"
 FROZEN = "experiments/fresh_production_latency_headroom_confirmatory_v1"
@@ -149,6 +153,85 @@ def build_claims():
     src_res = f"{FROZEN}/FRESH_LATENCY_CAUSAL_RESULT_V1.json"
     src_state = f"{FROZEN}/FRESH_LATENCY_STATE_LEVEL_V1.csv"
     assert P["n"] == res["states"] == 720 and P["beneficial"] == res["beneficial_states"] == 590 and P["guarded_beneficial"] == 589
+    # support transfer: the pressure matrix repeated on untouched windows (recomputed from the frozen support conditions)
+    src_sup = f"{FROZEN}/FRESH_SUPPORT_WINDOW_CONDITIONS_V1.csv"
+    sup = [r for r in csv_rows(ROOT / src_sup) if r["validity_class"].startswith("VALID")]
+    all_sup = csv_rows(ROOT / src_sup)
+    onset = {}
+    for wlname in ("azure_2023_code", "azure_2023_conv", "burstgpt"):
+        for axis in ("active_sequence_capacity", "kv_capacity", "arrival_pressure"):
+            rows = [r for r in sup if r["source_dataset"] == wlname and r["axis"] == axis and int(r["true_canonical_disagreement_states"]) > 0]
+            onset[f"{wlname}:{axis}"] = None if not rows else min(rows, key=lambda r: float(r["pressure_order"]))["axis_value"]
+    burst = [r for r in sup if r["source_dataset"] == "burstgpt"]
+    assert len(all_sup) == 1080 and len(burst) == 360 and {r["source_dataset"] for r in burst} == {"burstgpt"}
+    assert sum(int(r["true_canonical_disagreement_states"]) for r in burst) == 0
+    assert onset["azure_2023_code:kv_capacity"] == "16000" and onset["azure_2023_conv:kv_capacity"] == "16000"
+    assert onset["azure_2023_code:active_sequence_capacity"] == "8" and onset["azure_2023_conv:active_sequence_capacity"] == "4"
+    assert all(onset[f"{w}:arrival_pressure"] is None for w in ("azure_2023_code", "azure_2023_conv", "burstgpt"))
+    C.add("fresh.support_transfer", "pressure matrix repeated on 60 untouched windows: Azure onsets reproduce (KV 16,000; active cap 8 code, 4 conversation), arrival scaling action-null, BurstGPT has 0 disagreement states in all 360 (valid) conditions",
+          {"conditions": len(all_sup), "onset_by_workload_axis": onset, "burstgpt_valid_conditions": len(burst), "burstgpt_disagreement_states": 0},
+          ["repeated on 60 untouched windows", "reproduced for both Azure traces", "All 360 untouched BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"],
+          src_sup, "true_canonical_disagreement_states summed over valid conditions per workload/axis; onset = lowest-pressure setting with any disagreement")
+    # ------------------------------------------------------------------ reference policy, load range, overlays, secondary outcomes
+    R = rp.compute()
+    B, AF, AO, NQ, OV, RF, ST, RL, WW = (R[k] for k in ("burst", "arrival_fresh", "arrival_original", "native_mean_queue", "overlay", "reference", "structure", "relative", "whole_window"))
+    src_sup2 = f"{FROZEN}/FRESH_SUPPORT_WINDOW_CONDITIONS_V1.csv"
+    assert (B["conditions"], B["valid"], B["windows"], B["disagreement_states"], B["binding_states"], B["max_queue_length"]) == (360, 360, 20, 0, 0, 3)
+    C.add("burstgpt.fresh_mechanism", "BurstGPT fresh support: 360/360 conditions valid, 0 disagreement, 0 binding, max queue length 3 (caps never reached)", B,
+          ["never queued more than three requests", "even the tightest caps (four active sequences, 8,000 KV tokens) were never reached"], src_sup2,
+          "rows with source_dataset=burstgpt: validity_class, true_canonical_disagreement_states, active/kv binding states, max_queue_length")
+    assert AO["peak_kv_utilization"] < 0.0071 and AO["max_workload_mean_queue"] < 0.09 and AO["max_active_sequences"] == 46 and AO["binding_states"] == 0 and AO["disagreement_states"] == 0
+    C.add("arrival.original_light_load", "arrival scaling through 8x on the original windows: peak KV utilization < 0.71% of default capacity, <= 46 active sequences (limit 512), workload mean queue < 0.09, no binding",
+          AO, ["peak KV utilization stayed below 0.71\\% of the default capacity", "at most 46 sequences were active against a limit of 512", "the mean queue length per workload stayed below 0.09"],
+          rel(PHASE_B / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"), "rows with axis containing 'arrival': max_kv_utilization, mean_queue_length, max_active_sequences, binding states")
+    assert AF["peak_kv_utilization"] < 0.0045 and AF["max_workload_mean_queue"] < 0.091 and AF["binding_states"] == 0 and AF["disagreement_states"] == 0 and AF["default_active_cap"] == 512 and AF["default_kv_tokens"] == 8000000
+    C.add("arrival.fresh_light_load", "arrival scaling through 8x on the untouched windows: peak KV utilization < 0.45%, no binding, no disagreement (default 512 sequences, 8,000,000 KV tokens)",
+          AF, ["peak KV utilization below 0.45\\%", "peak KV utilization below 1\\% of the default capacity"], src_sup2, "valid arrival_pressure rows: max_kv_utilization, mean_queue_length, binding states, true_canonical_disagreement_states")
+    assert [round(NQ[k], 4) for k in ("azure_2023_code", "azure_2023_conv", "burstgpt")] == [0.04, 0.0087, 0.0091]
+    C.add("native.mean_queue_length", "native replay mean queue lengths 0.040 / 0.0087 / 0.0091 (Azure code / conversation / BurstGPT)", NQ,
+          ["mean queue lengths were 0.040, 0.0087, and 0.0091 requests"], src_a, "mean_queue_length of PHASE_A_WORKLOAD_SUMMARY_V1.csv")
+    C.add("overlay.faithful_view", "faithful view: deadline = arrival + 1000 s, uniform priority 1.0, single class, predicted output length = true length, one GPU (512 sequences, 512-token batch, 8,000,000 KV tokens), 1 ms step",
+          OV, ["deadline of arrival plus 1000~s", "a uniform priority of 1.0, and a single class", "predicted output length equal to the true length", "512 active-sequence slots", "8,000,000 KV tokens by default", "with a 1~ms step"],
+          rel(PHASE_A / "PHASE_A_REPLAY_SEMANTICS_V1.json"), "faithful_view.slo_deadline/priority/class_id/predicted_output_tokens/capacity_assignment/service_rate_assumptions")
+    assert abs(RL["max_mean_reference_latency_s"] - 0.36) < 0.005
+    C.add("overlay.max_mean_latency", "largest mean continuation latency L_SBS(s) over the 720 states is 0.36 s (far below the 1000 s deadline)", RL["max_mean_reference_latency_s"],
+          ["the largest mean continuation latency in any causal population is 0.36~s"], "experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv",
+          "max of mean_ref_latency (SBS-reference branch, corrected derivative)")
+    # SBS selection provenance: best single policy by mean ANWG over the 240 joint-benchmark scenarios
+    j = csv_rows(EXP / "joint240_same_distribution_adaptive_exploitability_v1" / "per_scenario_oof_results.csv")
+    pol6 = ["full_prefill", "chunked_prefill_small", "estimated_service_time_first", "weighted_fair_share", "least_laxity_first", "kv_constrained_online"]
+    means = {q: sum(float(r[q]) for r in j) / len(j) for q in pol6}
+    assert len(j) == 240 and max(means, key=means.get) == "kv_constrained_online"
+    C.add("reference.sbs_selection", "SBS = kv_constrained_online = best single policy (highest mean goodput) over 240 joint-benchmark scenarios; reserve 0.82, urgency slack 0.25 s", {"scenarios": len(j), "mean_anwg_by_policy": means, "target_kv_utilization": 0.82, "urgent_laxity_seconds": 0.25},
+          ["best single policy on an earlier, unrelated benchmark of 240 scenarios under a goodput objective", "reserve of 0.82 of the configured capacity", "slack under 0.25~s"],
+          "experiments/joint240_same_distribution_adaptive_exploitability_v1/per_scenario_oof_results.csv; src/llmserveopt/policies/kv_constrained_online.py", "mean over scenarios of each policy column; defaults of KVConstrainedOnlinePolicy")
+    assert (RF["all_five_differ"], RF["kv_states"], RF["kv_without_kv_binding"], RF["all_five_in_kv_regimes"], RF["all_five_single_alternative"]) == (512, 524, 414, 511, 445)
+    assert abs(RF["all_five_headroom_share"] - 0.948) < 5e-4 and abs(RF["kv_nobind_headroom_share_of_kv"] - 0.896) < 5e-4
+    C.add("reference.all_five_differ", "512/720 states have all five non-SBS policies differing; they carry 94.8% of headroom; 511 in the KV regimes; 445 with a single alternative action", 
+          {k: RF[k] for k in ("all_five_differ", "all_five_headroom_share", "all_five_in_kv_regimes", "all_five_single_alternative")},
+          ["In 512 of the 720 disagreement states (71\\%) all five other policies differ from the SBS", "these states carry 94.8\\% of the total headroom", "511 of them lie in the two KV-capacity regimes", "in 445 the five policies agree on a single alternative action",
+           "95\\% of the headroom lies where all five other policies differ from it"],
+          f"{FROZEN}/FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv", "p6_policies_with_non_sbs_action (count of policies), n_unique_non_sbs_actions, oracle_headroom")
+    C.add("reference.kv_without_physical_binding", "524 KV-regime disagreement states, 414 without physical KV binding (waiting prompt tokens <= free KV tokens), holding 89.6% of the KV regimes' headroom",
+          {k: RF[k] for k in ("kv_states", "kv_without_kv_binding", "kv_nobind_headroom_share_of_kv")},
+          ["The KV-capacity regimes contain 524 disagreement states, of which 414 occur without physical KV binding", "hold 89.6\\% of those regimes' headroom", "414 of 524 disagreement states occur without physical binding"],
+          f"{FROZEN}/FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv", "kv_binding = kv_capacity_binding_or_over_requested (waiting_prompt_token_mass > total_free_kv_tokens; scripts/industry_realism_action_opportunity_phase_a_v1.py)")
+    assert RF["differs"]["estimated_service_time_first"] == RF["differs"]["weighted_fair_share"] == 519 and abs(RF["mean_distinct_alternatives"] - 1.15) < 0.005 and RF["single_alternative_states"] == 610
+    C.add("portfolio.functional_diversity", "ESTF and WFS differ from SBS in the same 519 states; on average 1.15 distinct alternative actions per disagreement state; 610 states have exactly one", {k: RF[k] for k in ("differs", "mean_distinct_alternatives", "single_alternative_states")},
+          ["exactly the same 519 states as ESTF", "1.15 distinct alternative actions", "610 states have exactly one"], f"{FROZEN}/FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv", "p6_policies_with_non_sbs_action; n_unique_non_sbs_actions")
+    assert (ST["beneficial"], ST["mixed_beneficial_and_harmful"], ST["all_harmful"], ST["zero_headroom_other"], ST["positive"], ST["negative"], ST["zero"], ST["branches"]) == (590, 22, 102, 28, 660, 141, 30, 831)
+    C.add("secondary.state_and_action_structure", "preregistered secondary outcomes: 590 beneficial (22 mixed), 102 all-harmful (14.2%), 28 zero-headroom; 831 alternatives: 660 reduce, 141 increase, 30 unchanged", ST,
+          ["Some alternative reduces latency & 590 (81.9\\%)", "of which some alternative also increases it & 22", "Every alternative increases latency & 102 (14.2\\%)", "Zero headroom, not every alternative harmful & 28 (3.9\\%)",
+           "Reduce latency & 660 (79.4\\%)", "Increase latency & 141 (17.0\\%)", "Leave latency unchanged & 30 (3.6\\%)", "in 14.2\\% of the disagreement states every alternative is worse than the reference"],
+          f"{FROZEN}/FRESH_LATENCY_ACTION_LEVEL_V1.csv", "per-state max/min of a_lat over counterfactual branches; per-branch sign of a_lat")
+    assert abs(RL["median"] - 0.0021) < 5e-5 and abs(RL["p90"] - 0.113) < 5e-4 and abs(RL["kv_code_p90"] - 0.161) < 5e-4 and (RL["gt1"], RL["gt5"], RL["gt10"], RL["kv_code_gt10"], RL["kv_code_states"]) == (211, 133, 92, 92, 431)
+    C.add("secondary.relative_headroom", "H_REL = H_LAT / L_SBS: median 0.21%, p90 11.3% (Azure-code KV-16,000: 16.1%), 211/133/92 states above 1/5/10%, all 92 above 10% in the Azure-code KV-16,000 regime (21.3% of its 431 states)", RL,
+          ["Median & 0.21\\%", "11.3\\% (16.1\\%)", "211 (29.3\\%), 133 (18.5\\%), 92 (12.8\\%)", "92 states (12.8\\%) exceed 10\\% of the reference's mean latency", "where they are 21.3\\% of the states"],
+          "experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv; " + f"{FROZEN}/FRESH_LATENCY_CAUSAL_RESULT_V1.json",
+          "oracle_headroom / mean_ref_latency (SBS reference); cross-checked against action-level L_SBS = mean_latency + a_lat and the preregistered per-regime mean_relative_headroom")
+    assert WW["windows"] == 60 and WW["chunked_slower_windows"] == 60 and abs(WW["median"] - 0.142) < 5e-4 and WW["policies_in_faithful_view"] == ["chunked_prefill_small", "full_prefill"]
+    C.add("vbs.whole_window_illustration", "60 native windows: small-chunk prefill has higher whole-window mean latency than full prefill in 60/60 (median +14.2%); only these two policies were run whole-window in the faithful view", WW,
+          ["small-chunk prefill has a higher whole-window mean latency than full prefill in all 60 (median 14.2\\%)"], "experiments/public_trace_replay_v1/layer3_checkpoint.jsonl", "faithful-view rows: mean_latency of chunked_prefill_small vs full_prefill per window")
     C.add("fresh.states", "720 fresh disagreement states", 720, ["720 fresh disagreement states"], src_res, "primary.states (== rows of FRESH_LATENCY_STATE_LEVEL_V1.csv)")
     C.add("fresh.beneficial_preregistered", "590 of 720 states have positive one-step latency headroom (strict preregistered criterion), 81.9%", {"beneficial": 590, "share": 590 / 720},
           ["590/720=0.8194\\ (81.9\\%)", "590 (81.9\\%)"], src_res, "primary.beneficial_states; share = beneficial / states")

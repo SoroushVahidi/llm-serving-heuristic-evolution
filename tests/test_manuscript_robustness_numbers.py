@@ -37,7 +37,7 @@ def tex():
 
 @pytest.fixture(scope="module")
 def robust_section(tex):
-    s = tex[tex.index(r"\section{Results: Robustness and Concentration"):tex.index(r"\section{Objective Sensitivity")]
+    s = tex[tex.index(r"\section{Results: Robustness and Concentration"):tex.index(r"\section{Results: Bounded vLLM System Correspondence Probe")]
     return re.sub(r"\s+", " ", s)  # LaTeX source wraps lines mid-phrase
 
 
@@ -152,7 +152,7 @@ def test_diagnostics_prose(robust_section, N):
 # ----------------------------------------------------------------------------- structure and editorial artifacts
 def test_section_order_and_references(tex):
     order = [r"\section{Results: Native", r"\section{Results: Pressure-Induced Disagreement", r"\section{Results: Fresh Support",
-             r"\section{Results: Robustness and Concentration", r"\section{Objective Sensitivity", r"\section{Results: Bounded vLLM System Correspondence Probe"]
+             r"\section{Results: Robustness and Concentration", r"\section{Results: Bounded vLLM System Correspondence Probe"]
     pos = [tex.index(o) for o in order]
     assert pos == sorted(pos)
     labels = set(re.findall(r"\\label\{([^}]+)\}", tex))
@@ -162,7 +162,7 @@ def test_section_order_and_references(tex):
 
 
 def test_methods_define_posthoc_analyses(tex):
-    m = re.sub(r"\s+", " ", tex[tex.index(r"\subsection{Post hoc robustness analyses}"):tex.index(r"\subsection{Objective audit}")]).lower()
+    m = re.sub(r"\s+", " ", tex[tex.index(r"\subsection{Post hoc robustness analyses}"):tex.index(r"\section{Results: Native")]).lower()
     for s in ("state-weighted mean", "equal-window", "equal-regime", "equal-workload", "leave-one-out", "bca", "jackknife", "10^{-12}", "0.1,0.25,0.5,1,2,5",
               "not alternative estimates", "diagnostics, not replacements", "weight $1/u$", "weight $1/|d|$"):
         assert s in m, s
