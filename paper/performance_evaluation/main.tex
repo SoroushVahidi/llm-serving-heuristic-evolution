@@ -5,7 +5,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{tools/array}
+\usepackage{array}
 \usepackage{url}
 \usepackage{xcolor}
 \usepackage{tabularx}
@@ -13,6 +13,7 @@
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \def\UrlBreaks{\do\/\do-\do_}
+\setlength{\emergencystretch}{2em}
 
 \begin{document}
 
@@ -69,13 +70,13 @@ We answer it with a staged decomposition,
   \begin{aligned}
   \text{resource pressure}&\longrightarrow P(D)\longrightarrow
   P(B_{\mathrm{LAT}}\mid D)\\
-  &\longrightarrow\text{headroom magnitude}
-  \longrightarrow\text{predictability and deployment}.
+  &\longrightarrow\text{headroom magnitude}\\
+  &\longrightarrow\text{predictability and deployment}.
   \end{aligned}
   \label{eq:chain}
 \end{equation}
 Here $D$ means that at least one canonical executable alternative differs from
-the default single best scheduler, and $B_{\mathrm{LAT}}$ that at least one
+the default single best scheduler (SBS), and $B_{\mathrm{LAT}}$ that at least one
 such alternative lowers one-step mean latency relative to that default. These
 are distinct quantities: pressure can make policies disagree often without the
 disagreement being useful, and useful disagreement can be rare or small. The
@@ -86,12 +87,13 @@ This is a performance-evaluation question: at which operating points does
 scheduler choice have causal performance consequences? Answering it takes
 workload characterization, controlled resource interventions, replay-based
 simulation, and inference that respects the dependence among states from one
-trace window. Recent work in \emph{Performance Evaluation} analyzes job
-assignment in machine-learning inference systems under accuracy
-constraints~\cite{choudhury2025job} and adaptive machine-learning training on
-serverless clouds~\cite{ali2025enabling}; our measurement-first view
-characterizes the region in which such mechanisms have something to choose
-between.
+trace window. Recent work in \emph{Performance Evaluation} treats job
+assignment for machine-learning inference~\cite{choudhury2025job}, dispatching
+policies on Google and Alibaba workloads~\cite{yildiz2026dispatching}, latency
+prediction for GPU-accelerated model serving~\cite{liang2026lilou}, and
+adaptive machine-learning training on serverless
+clouds~\cite{ali2025enabling}; our measurement-first view characterizes the
+region in which such mechanisms have something to choose between.
 
 We replay production-derived traces (Azure 2023 code and
 conversation~\cite{azurepublicdataset2023}, BurstGPT~\cite{burstgpt2025}) in a
@@ -123,9 +125,9 @@ single model and GPU; the oracle is an opportunity bound, not a scheduler.
 
 The study addresses five research questions, ordered along the decomposition.
 \begin{description}
-\item[RQ1 -- Native opportunity.] How often does the single best scheduler
-face a different executable action from the six-policy portfolio, in faithful
-replay of production-derived traces with abundant resources?
+\item[RQ1 -- Native opportunity.] How often does the SBS face a different
+executable action from the six-policy portfolio, in faithful replay of
+production-derived traces with abundant resources?
 \item[RQ2 -- Pressure-induced opportunity.] Which resource-pressure dimensions
 create action disagreement, and does the transition reproduce on untouched
 windows?
@@ -135,8 +137,8 @@ the objective?
 \item[RQ4 -- Magnitude and concentration.] How large is the headroom, is it
 typical or concentrated, and how sensitive is it to weighting and to individual
 windows or regimes?
-\item[RQ5 -- System correspondence.] Does a bounded real vLLM deployment show
-the corresponding pressure and scheduling mechanism?
+\item[RQ5 -- System correspondence.] Does a bounded vLLM probe show the
+corresponding pressure and scheduling mechanism?
 \end{description}
 
 \subsection{Contributions}
@@ -173,7 +175,7 @@ implications, and its limits before Section~\ref{sec:conclusion} concludes.
 \section{Related Work and Positioning}
 \label{sec:related}
 
-This section positions the paper against LLM-serving systems, workload studies, and algorithm-selection work. LLM-serving research spans model execution, prefill/decode scheduling,
+LLM-serving research spans model execution, prefill/decode scheduling,
 resource management, routing, caching, and cluster control. Orca and vLLM
 established iteration-level serving and paged KV management
 \cite{orca2022,vllm2023}. Sarathi-Serve, DistServe, Splitwise, and FastServe
@@ -185,82 +187,84 @@ SOLA adapt scheduling or state-aware service to dynamic conditions
 context caching~\cite{mooncake2025,strata2025}; MorphServe changes model
 precision and KV capacity under pressure~\cite{morphserve2025}; and DynamoLLM
 reconfigures cluster resources for performance and energy
-\cite{dynamollm2025}. BurstGPT and Azure traces provide important workload
-evidence~\cite{burstgpt2025,azurepublicdataset2023}; the recent longitudinal
-study by Nixon et al. further emphasizes workload evolution, caching, and
-load-balancing over a year of production traffic~\cite{yearllmserving2026}.
+\cite{dynamollm2025}. BurstGPT and the Azure traces provide workload
+evidence~\cite{burstgpt2025,azurepublicdataset2023}, and a recent longitudinal
+study by Nixon et al. examines workload evolution, caching, and load balancing
+over a year of production traffic~\cite{yearllmserving2026}.
 
-ServeGen and OpenTela narrow any generic claim that workload realism or
-operational trace infrastructure is itself novel~\cite{servegen2025,opentela2026}.
-LMetric is especially close: it combines a KV-aware indicator with an
-instance-load indicator, reports production-style workloads, and derives
-conditions under which its multiplication can fail~\cite{lmetric2026}. These
-works answer how to build or evaluate better serving mechanisms. Our question
-is complementary: in a fixed workload/resource regime, do the default and
-alternatives expose different canonical actions at all, and does forcing one
-alternative action have default-relative causal value?
+ServeGen characterizes and generates production LLM
+workloads~\cite{servegen2025}, and OpenTela unifies decentralized computing
+resources for heterogeneous LLM serving~\cite{opentela2026}. LMetric combines a
+KV-aware indicator with an instance-load indicator, reports production-style
+workloads, and derives conditions under which its multiplicative combination
+can fail~\cite{lmetric2026}. These works address how to build, evaluate, or
+operate serving mechanisms. The question here precedes them: in a fixed
+workload and resource regime, do the default and its alternatives expose
+different executable actions at all, and does forcing one alternative have
+default-relative causal value?
 
-For this reason, systems such as ServeGen, Libra, Llumnix, MorphServe,
-Strata, LMetric, and OpenTela are related work and design context, not
-unimplemented baselines for a superiority claim. Reproducing each system
-would be necessary for a paper claiming that a new scheduler beats them. This
-paper instead asks whether an executable action opportunity and local
-default-relative headroom exist before building an adaptive selector. The
-single best scheduler/VBS-style quantities used below are non-deployable references for
-opportunity measurement, not schedulers proposed for production.
-
-Table~\ref{tab:closest} records the scope honestly. A ``partial'' entry means
-that a work contains related evidence but does not use the paper's canonical
-action or one-step estimand.
+Recent papers in \emph{Performance Evaluation} address neighboring problems:
+job assignment in machine-learning inference systems with accuracy
+constraints~\cite{choudhury2025job}, dispatching policies in data-center
+clusters studied on Google and Alibaba workloads~\cite{yildiz2026dispatching},
+resource-aware latency prediction for GPU-accelerated model
+serving~\cite{liang2026lilou}, and adaptive machine-learning training on
+serverless clouds~\cite{ali2025enabling}. They concern the design, evaluation,
+or performance prediction of assignment, dispatching, and resource-management
+mechanisms. This paper asks whether, in a given workload and resource state, an
+alternative scheduling action exists and has causal one-step value relative to
+a strong default, before a mechanism for choosing among actions is designed.
+Table~\ref{tab:closest} summarizes the systems closest to this measurement.
 
 \begin{table*}[t]
 \centering
 \small
-\caption{Closest-work differentiation. We do not claim that other systems
-omit pressure, production-derived traces, or adaptive mechanisms; the distinction is
-the action-level and default-relative causal measurement question.}
+\caption{Systems closest to this study, by focus and evaluation setting, and
+their relation to the present measurement.}
 \label{tab:closest}
 \setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}P{0.14\linewidth}P{0.14\linewidth}P{0.09\linewidth}P{0.12\linewidth}P{0.13\linewidth}P{0.13\linewidth}P{0.10\linewidth}@{}}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}P{0.17\linewidth}P{0.24\linewidth}P{0.24\linewidth}L@{}}
 \toprule
-Work & Prod.-derived workloads & Pressure sweep & Proposes system & Canonical disagreement & One-step default intervention & Real system \\
+Work & Focus & Workloads and setting & Relation to this study \\
 \midrule
-ServeGen & Yes & No & Generator & No & No & Workload study \\
-LMetric & Yes & Implicit & Yes & No & No & Yes \\
-OpenTela & Operational traces & No & Control plane & No & No & Yes \\
-Llumnix / SOLA & Selected regimes & Partial & Yes & No & No & System evaluation \\
-Mooncake / Strata & Cache/resource regimes & Partial & Yes & No & No & Yes / operational \\
-This work & Yes & Yes & No & Yes, $P(D)$ & Yes, simulator only & Bounded partial \\
+ServeGen~\cite{servegen2025} & Workload characterization and generation & Production workloads & Workload realism; no scheduler-action measurement \\
+LMetric~\cite{lmetric2026} & KV- and load-aware request scheduling & Production-style workloads; real system & Mechanism whose decision states this measurement could examine \\
+OpenTela~\cite{opentela2026} & Control plane for decentralized serving & Operational traces; real system & Operation, not action opportunity \\
+Llumnix, SOLA~\cite{llumnix2024,sola2025} & Dynamic, state-aware scheduling & Selected load regimes; systems & Adaptation whose opportunity is measured here \\
+Mooncake, Strata~\cite{mooncake2025,strata2025} & KV-centric context caching & Cache and resource regimes; real systems & Addresses KV capacity, a pressure axis studied here \\
+This study & Existence and one-step causal value of alternative actions & Production-derived replay under controlled interventions; vLLM probe & --- \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table*}
 
-Our use of single best scheduler/VBS is rooted in algorithm portfolios and selection
+The SBS and virtual best solver (VBS) quantities used
+below are non-deployable reference points for measuring opportunity, in the
+tradition of algorithm portfolios and selection
 \cite{rice1976algorithmselection,gomes2001portfolios,satzilla2008,autofolio2015}.
-The novelty claim is not the envelope itself, nor counterfactual reasoning in
-general. It is the narrow serving characterization in Eq.~\ref{eq:chain}.
+The contribution is their application to executable scheduler actions in the
+staged characterization of Eq.~\ref{eq:chain}.
 
 \section{Methods}
 \label{sec:methods}
 
 \subsection{Evidence hierarchy and workload inventory}
 We report four evidence tiers. Tier 1 is native production-derived trace replay.
-Tier 2 is production-derived aggregate or window validation. Tier 3 is a
+Tier 2 is production-derived aggregate or window-level evaluation. Tier 3 is a
 controlled transformation of a real trace, such as one-axis resource caps.
 Tier 4 is synthetic or mechanistic workload construction. RQ1 uses Tier 1;
 RQ2 uses Tiers 2--3; fresh causal headroom uses a preregistered Tier-3
-intervention over untouched windows; the real-vLLM result is a bounded system
-validation rather than a claim of production deployment.
+intervention over untouched windows; the vLLM result is a bounded system
+correspondence probe.
 
 The faithful corpus contains 20 windows each from Azure 2023 code, Azure 2023
 conversation, and BurstGPT. Source order and token-length/arrival structure
-are retained. SLO and class overlays are deterministic simulator inputs;
+are retained. Service-level objective (SLO) and class overlays are
+deterministic simulator inputs;
 future actual output lengths are hidden from policies. The fresh confirmatory
 campaign uses 20 untouched windows per workload family for support mapping,
 with causal labeling limited to the frozen selected regimes. BurstGPT did not
-contribute a selected fresh causal disagreement regime, which is retained as
-an explicit heterogeneity limitation.
+contribute a selected fresh causal disagreement regime.
 
 The historical six-policy portfolio contains full prefill, small-chunk prefill,
 estimated-service-first (ESTF), weighted fair sharing (WFS), least-laxity
@@ -273,16 +277,16 @@ Let $\mathcal{A}_6(s)$ be the set of canonical executable actions produced by
 the six portfolio policies at state $s$, after action deduplication. A
 canonical action is the simulator-executable admission, batch, and request
 ordering decision after infeasible or semantically identical variants have
-been collapsed. The default scheduler is the single best scheduler (SBS), the
-fixed best single policy used as the canonical baseline for the frozen replay
-protocol; it is not refit per state. Let $a_{\sbs}(s)$ be its action. We define
+been collapsed. The default scheduler is the SBS, the fixed best single policy
+used as the canonical baseline for the frozen replay protocol; it is not refit
+per state. Let $a_{\sbs}(s)$ be its action. We define
 \begin{equation}
   D(s) = \mathbf{1}\left[\exists a\in\mathcal{A}_6(s):
   a\ne a_{\sbs}(s)\right].
   \label{eq:disagreement}
 \end{equation}
 The opportunity prevalence is $P(D)=\sum_sD(s)/|\mathcal{S}_{\mathrm{all}}|$,
-where the denominator is every valid single best scheduler decision state, not only states
+where the denominator is every valid SBS decision state, not only states
 where policy scores differ. A policy ranking change that produces the same
 admission, batch, and request order is action collapse, not opportunity.
 An alternative action is any executable member of $\mathcal{A}_6(s)$ that is
@@ -295,7 +299,7 @@ action diversity alone says nothing about usefulness.
 
 \subsection{One-step causal headroom}
 For every disagreement state $s$ and canonical alternative $a$, we clone the
-state, force exactly one action, and return to single best scheduler for the continuation. Denote
+state, force exactly one action, and return to the SBS for the continuation. Denote
 the resulting continuation value by $Q_{\sbs}(s,a)$. This is a local
 counterfactual, not selector performance: it estimates the one-step effect of
 changing the current action while holding the subsequent default policy fixed.
@@ -328,10 +332,10 @@ disagreement states, so multiple states from one window do not become
 independent experimental units. Its verdict requires positive mean headroom
 and a clustered 95\% lower endpoint above zero.
 
-A resource-pressure regime is a workload window plus one frozen one-axis
+A pressure condition is a workload window plus one frozen one-axis
 intervention, such as a KV-capacity cap, active-sequence cap, or arrival-rate
-scaling factor. ``Support'' and ``opportunity'' refer only to the existence
-of executable non-single best scheduler actions under that regime; usefulness requires the
+scaling factor. ``Support'' and ``opportunity'' refer only to the existence of
+executable non-SBS actions under that condition; usefulness requires the
 separate causal latency test above.
 
 \subsection{Post hoc robustness analyses}
@@ -341,8 +345,8 @@ outcomes were known. They qualify the preregistered result and do not replace
 it: the endpoint $H_{\mathrm{LAT}}$, the strict criterion $B_{\mathrm{LAT}}$,
 the 720 states, and the selected regimes are unchanged. A \emph{window} is a
 workload source and window index (36 windows contribute states); a
-\emph{regime} is a workload, pressure axis, and pressure setting (five
-selected regimes).
+\emph{regime} is a workload, pressure axis, and pressure setting pooled over
+windows (five selected regimes).
 
 \emph{Practical thresholds.} For $\epsilon\in\{0.1,0.25,0.5,1,2,5\}$~ms we
 report the number and share of disagreement states with
@@ -401,41 +405,41 @@ Under the frozen abundant-resource baseline, all three
 production-derived workloads were canonically action-null (Figure~\ref{fig:pipeline}
 summarizes the evidence chain; Figure~\ref{fig:disagreement} gives the rates).
 Azure code had 0 disagreements in
-99,992 single best scheduler decision states; Azure conversation had 0/461,985; and BurstGPT
-had 0/440,461. The corresponding maximum KV utilizations were 0.002716,
-0.001728, and 0.003802, with no active-cap binding states. Policy-ranking
-proxy differences existed in a small number of states, but canonical actions
-collapsed. This is not evidence that adaptive scheduling never matters; it
-is evidence that this resource regime offered no different executable six-policy
-action.
+99,992 SBS decision states; Azure conversation had 0 in 461,985; and BurstGPT
+had 0 in 440,461. The corresponding maximum KV utilizations were 0.0027,
+0.0017, and 0.0038, with no active-cap binding states. Policy-ranking proxy
+scores differed in a small number of states, but the canonical actions
+collapsed to the SBS action. In this resource regime the six-policy portfolio
+offered no executable alternative.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/pe_pipeline.pdf}
-\caption{The paper's evidence chain. A predictor is downstream of both
-action opportunity and causal value; deployment benefit is not assumed by the
-characterization.}
+\caption{Staged evidence chain: resource pressure, canonical action
+disagreement $P(D)$, beneficial disagreement $P(B_{\mathrm{LAT}}\mid D)$,
+headroom magnitude, and predictability/deployability. The study measures the
+first four stages.}
 \label{fig:pipeline}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/pe_disagreement_rates.pdf}
-\caption{Native production-derived replay is action-null. Selected pressure
-conditions create nonzero canonical disagreement, with rates depending on
-workload and pressure axis. This is support for adaptive action selection,
-not evidence of selector benefit by itself.}
+\caption{Canonical disagreement rate $P(D)$ (fraction of SBS decision states)
+for native replay of the three workloads and for selected pressure conditions:
+Azure code with active-sequence cap 4 and with KV capacity 16,000 tokens (16k),
+Azure conversation with cap 4, and BurstGPT with cap 8.}
 \label{fig:disagreement}
 \end{figure}
 
-\section{Results: Resource-Regime Transition}
+\section{Results: Pressure-Induced Disagreement}
 \label{sec:phaseb}
 
-The Resource-Regime map evaluated 1,080 one-axis conditions: 20 windows across
-three workload families, with active-sequence, KV-capacity, and arrival
-pressure axes (Figure~\ref{fig:transition}; Table~\ref{tab:transition}). There
-were 926 valid unconstrained, 38 partially constrained,
-96 strongly constrained, and 20 horizon-invalid conditions. Across valid
+The pressure map evaluated 1,080 one-axis conditions: 20 windows per workload
+family, each under settings on the active-sequence, KV-capacity, and
+arrival-rate axes (Figure~\ref{fig:transition}; Table~\ref{tab:transition}).
+Of these, 926 conditions were valid and unconstrained, 38 partially
+constrained, 96 strongly constrained, and 20 horizon-invalid. Across valid
 conditions, 11,328 canonical disagreement states were observed.
 
 Arrival scaling through $8\times$ remained action-null for all three workload
@@ -450,29 +454,33 @@ sustained at active-sequence cap = 8, and KV disagreement at KV capacity = 16,00
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.92\linewidth]{figures/pe_pressure_transition.pdf}
-\caption{Azure-code active-sequence transition. Agreement persists until the
-active cap binds the trace, after which canonical disagreement increases.}
+\caption{Canonical disagreement rate $P(D)$ (fraction of SBS decision states)
+for Azure code as the active-sequence cap is tightened; the horizontal axis is
+logarithmic and reversed, so tighter caps lie to the right.}
 \label{fig:transition}
 \end{figure}
 
 \begin{table}[t]
 \centering
 \small
-\caption{Pressure-to-disagreement transition summary. ``Sustained'' means at
-least two windows with disagreement.}
+\caption{Pressure settings at which canonical disagreement first appears.
+Settings are the active-sequence cap (concurrent sequences) and the KV
+capacity (tokens). ``First binding'' is the first setting at which the
+constraint binds; ``sustained'' is the first setting with disagreement in at
+least two windows.}
 \label{tab:transition}
 \setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\linewidth}{@{}llLLL@{}}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}lLR{0.13\linewidth}R{0.16\linewidth}R{0.12\linewidth}@{}}
 \toprule
-Workload & Axis & First binding & First disagreement & Sustained \\
+Workload & Pressure axis & First binding & First disagreement & Sustained \\
 \midrule
-Azure code & Active cap & active-sequence cap = 8 & active-sequence cap = 8 & active-sequence cap = 4 \\
-Azure code & KV cap & KV capacity = 16,000 & KV capacity = 16,000 & KV capacity = 16,000 \\
-Azure conversation & Active cap & active-sequence cap = 4 & active-sequence cap = 4 & active-sequence cap = 4 \\
-Azure conversation & KV cap & KV capacity = 8,000 & KV capacity = 16,000 & KV capacity = 8,000 \\
-BurstGPT & Active cap & active-sequence cap = 16 & active-sequence cap = 16 & active-sequence cap = 8 \\
-BurstGPT & KV cap & KV capacity = 16,000 & KV capacity = 16,000 & KV capacity = 16,000 \\
+Azure code & Active-sequence cap & 8 & 8 & 4 \\
+Azure code & KV capacity & 16,000 & 16,000 & 16,000 \\
+Azure conversation & Active-sequence cap & 4 & 4 & 4 \\
+Azure conversation & KV capacity & 8,000 & 16,000 & 8,000 \\
+BurstGPT & Active-sequence cap & 16 & 16 & 8 \\
+BurstGPT & KV capacity & 16,000 & 16,000 & 16,000 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -487,24 +495,25 @@ active-sequence limits were the operative dimensions.
 \label{sec:fresh}
 
 The fresh support mapping used untouched windows and the frozen pressure
-protocol. The causal labeling plan selected five Azure code/conversation
-active/KV regimes and 720 disagreement states. BurstGPT contributed no
-selected causal regime, an important limitation rather than a missing result.
+protocol. The causal labeling plan selected five Azure code and conversation
+regimes (active-sequence and KV-capacity caps) with 720 disagreement states.
+BurstGPT contributed no selected causal regime.
 
 The confirmatory intervention found 590 beneficial
 states (Table~\ref{tab:fresh}; Figure~\ref{fig:fresh}), giving
 \begin{equation*}
- P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194444444.
+ P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194\ (81.9\%).
 \end{equation*}
 Mean oracle latency headroom was 0.001995791 s (1.9958 ms), with a clustered
-95\% CI of [0.000190884, 0.003546196] s ([0.1909, 3.5462] ms). The
-preregistered verdict was positive. The result is statistically
-supported but operationally modest. It establishes measurable local
-default-relative latency opportunity in the disagreement-support regime, not
-that the magnitude exceeds the engineering cost of adaptation. It is also
-not the claim that 81.9\% of all scheduler decisions can be improved: $P(D)$
-is often below one percent in the selected regimes and the conditional
-statistic is defined only on disagreement states.
+95\% confidence interval (CI) of [0.000190884, 0.003546196] s
+([0.1909, 3.5462] ms). The
+preregistered verdict was positive. The result is statistically supported but
+operationally modest: it establishes measurable default-relative latency
+opportunity at disagreement states, whereas whether its magnitude exceeds the
+engineering cost of adaptation is a separate question. The conditional share is
+defined on disagreement states only, and because $P(D)$ is often below one
+percent in the selected regimes it is not the share of all scheduler decisions
+that could be improved.
 
 These preregistered values are state-weighted over disagreement states drawn
 from 36 windows, and they should be read with the post hoc analyses of
@@ -518,50 +527,61 @@ completing the same requests; a post hoc guard of $10^{-12}$~s gives
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/pe_fresh_headroom.pdf}
-\caption{Fresh causal result by selected workload/regime. Bars show mean
-oracle headroom in milliseconds; the line shows $P(B_{\mathrm{LAT}}\mid D)$.
-The Azure-code KV-capacity = 16,000 regime holds 59.9\% of the 720 states and
-96.8\% of the total headroom. The oracle is a non-deployable opportunity bound
-over observed alternatives.}
+\caption{Fresh causal characterization of the five selected regimes,
+numbered as in Table~\ref{tab:fresh} (conv. = conversation; active cap =
+active-sequence cap; KV = KV capacity in tokens). (a) State-weighted mean oracle
+headroom $\bar H_{\mathrm{LAT}}$ within each regime (ms). (b) Beneficial share
+$P(B_{\mathrm{LAT}}\mid D)$: the percentage of the regime's disagreement
+states with positive headroom under the preregistered criterion. Fill denotes
+the pressure axis. State and window counts are shown in place of intervals,
+because window-clustered intervals are undefined for regimes with one or two
+windows.}
 \label{fig:fresh}
 \end{figure}
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 \small
-\caption{Fresh causal characterization. $P(D)$ uses all valid single best scheduler decision
-states; $P(B_{\mathrm{LAT}}\mid D)$ uses only the disagreement states.
-Per-regime source-window counts report distinct fresh trace windows with at
-least one disagreement state in that regime. The same source window may
-contribute to multiple regimes, so the row counts are not additive; the 36
-distinct workload-window pairs form the clusters used by the bootstrap.}
+\caption{Fresh causal characterization by selected regime, numbered as in
+Figures~\ref{fig:fresh} and~\ref{fig:regimemap}; ``active cap'' is the
+active-sequence cap and ``KV'' the KV capacity in tokens. $P(D)$ is the
+percentage of valid SBS decision states in the regime's conditions that are
+disagreement states, and $P(B_{\mathrm{LAT}}\mid D)$ the percentage of
+disagreement states with positive oracle headroom (strict criterion). Mean
+$H_{\mathrm{LAT}}$ is the state-weighted mean within the regime. A window is
+counted in a regime if it has at least one disagreement state there; windows
+can contribute to several regimes, so counts are not additive, and the 36
+distinct workload--window pairs are the bootstrap clusters.}
 \label{tab:fresh}
+\footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}P{0.32\linewidth} R{0.07\linewidth} R{0.10\linewidth} R{0.13\linewidth} R{0.11\linewidth} R{0.10\linewidth}@{}}
+\begin{tabularx}{\linewidth}{@{}LR{0.075\linewidth}R{0.10\linewidth}R{0.085\linewidth}R{0.155\linewidth}R{0.095\linewidth}R{0.12\linewidth}@{}}
 \toprule
-Workload/regime & States & $P(D)$ & $P(B_{\mathrm{LAT}}\mid D)$ & Mean $H_{\mathrm{LAT}}$ (ms) & Source windows \\
+Regime & States & Windows & $P(D)$ (\%) & $P(B_{\mathrm{LAT}}\mid D)$ (\%) & Mean $H_{\mathrm{LAT}}$ (ms) & Headroom share (\%) \\
 \midrule
-Azure code, active-sequence cap = 8 & 10 & 0.000106 & 0.400 & 0.033 & 2 \\
-Azure code, active-sequence cap = 4 & 122 & 0.001290 & 0.525 & 0.077 & 15 \\
-Azure code, KV capacity = 16,000 & 431 & 0.004561 & 0.923 & 3.227 & 14 \\
-Azure conversation, active-sequence cap = 4 & 64 & 0.000108 & 0.484 & 0.217 & 17 \\
-Azure conversation, KV capacity = 16,000 & 93 & 0.000157 & 1.000 & 0.241 & 1 \\
+(1) Azure code, active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\
+(2) Azure code, active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\
+(3) Azure code, KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\
+(4) Azure conversation, active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\
+(5) Azure conversation, KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\
 \midrule
-All selected fresh states & 720 & --- & 0.819 & 1.996 & 36 distinct \\
+All selected regimes & 720 & 36 & --- & 81.9 & 1.996 & 100.00 \\
 \bottomrule
-\end{tabular}
-\end{table*}
+\end{tabularx}
+\end{table}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.92\linewidth]{figures/pe_regime_map.pdf}
-\caption{Regime map of opportunity prevalence $P(D)$ (over single best scheduler
-decision states) against conditional benefit $P(B_{\mathrm{LAT}}\mid D)$ for
-the five selected regimes; point size is proportional to the regime's mean
-oracle headroom. $P(B_{\mathrm{LAT}}\mid D)$ counts any positive headroom,
-however small: the regime at 100\% (Azure conversation, KV-capacity = 16,000)
-never exceeds 0.48~ms of headroom.}
+\caption{Regime map for the five selected regimes, numbered as in
+Figure~\ref{fig:fresh} and Table~\ref{tab:fresh}. Horizontal axis: disagreement prevalence $P(D)$, the
+percentage of SBS decision states that are disagreement states (logarithmic
+scale). Vertical axis: beneficial share $P(B_{\mathrm{LAT}}\mid D)$. Marker
+area is proportional to the regime's mean oracle headroom (key in the plot), and
+fill denotes the pressure axis. $P(B_{\mathrm{LAT}}\mid D)$ counts any positive
+headroom: regime 5, at 100\%, has a mean headroom of 0.24~ms and a maximum
+below 0.48~ms.}
 \label{fig:regimemap}
 \end{figure}
 
@@ -750,53 +770,52 @@ This is objective sensitivity, not evidence that ANWG is invalid. It is an appro
 different operational objective. A serving paper should not promote whichever
 metric yields the more favorable conclusion.
 
-\section{Bounded Real-vLLM Validation}
+\section{Results: Bounded vLLM System Correspondence Probe}
 \label{sec:real}
 
-The bounded real-vLLM validation used one RTX 5060 Ti, vLLM 0.27.1,
-Qwen2.5-0.5B-Instruct, and deterministic token-shape replay. It completed
-40 full/chunked runs and a 20-run native chunked-prefill budget probe.
-Queueing and scheduler traces were retained. The verdict
-partially supported means support for the mechanism but not for the full
-causal or deployment claim. Level 1 is demonstrated only in controlled
-replay/intervention: at disagreement states, changing the canonical action can
-expose one-step latency headroom. Level 2 is supported in real vLLM:
-resource pressure changes observable queue and scheduling behavior. Level 3
-is not demonstrated: the paper does not show that a deployed adaptive
-selector on real vLLM would recover 1.9958 ms or improve end-to-end latency,
-SLOs, or throughput.
+The probe used one RTX 5060 Ti GPU, vLLM 0.27.1, Qwen2.5-0.5B-Instruct, and
+deterministic token-shape replay. It comprised 40 full-versus-chunked runs and
+a 20-run native chunked-prefill budget probe, with queueing and scheduler
+traces retained. It separates three levels of evidence. Level 1, one-step
+headroom at disagreement states, is established only in the controlled replay.
+Level 2, that resource pressure changes observable queueing and scheduling
+behavior, is supported in vLLM. Level 3, that a deployed adaptive selector
+would recover the simulated headroom or improve end-to-end latency, SLOs, or
+throughput, is not established.
 
-The native budget probe held chunked prefill fixed and varied the token budget.
-T512 produced 1,680 scheduler steps, 165 mixed prefill/decode steps, and 194
-partial-prefill items. T4096 produced 1,536, 55, and 9. Waiting queues reached
-7 and 5, respectively, while running sequences reached 4 in both cases. The
-low-load regime showed a 30.6 ms late-time-to-first-token difference and a 16.3 ms
-prompt-heavy end-to-end tradeoff; the high-load regime showed a smaller late-time-to-first-token
-difference and a 23.3 ms prompt-heavy end-to-end tradeoff.
+The native budget probe held chunked prefill fixed and varied the per-step
+token budget (512 tokens, T512, versus 4,096 tokens, T4096). T512 produced
+1,680 scheduler steps, 165 mixed prefill/decode steps, and 194 partial-prefill
+items; T4096 produced 1,536, 55, and 9. Waiting queues reached lengths of 7 and
+5, respectively, while running sequences reached 4 in both cases. The low-load
+regime showed a 30.6~ms difference in late time to first token and a 16.3~ms
+prompt-heavy end-to-end tradeoff; the high-load regime showed a smaller
+time-to-first-token difference and a 23.3~ms prompt-heavy end-to-end tradeoff.
 
-The direct FULL-versus-CHUNKED comparison did not reproduce the simulator's
-qualitative reversal (Table~\ref{tab:real}). KV utilization and preemption metrics were unavailable
-in the native probe because its metric parser returned empty dictionaries.
-The real result therefore supports the narrower statement that concrete
-serving pressure can alter observable scheduling behavior and latency. It is
-not real-system causal confirmation of Eq.~\ref{eq:latency}.
+The direct full-versus-chunked comparison did not reproduce the simulator's
+qualitative reversal (Table~\ref{tab:real}). KV utilization and preemption
+metrics were unavailable in the native probe because its metric parser returned
+empty dictionaries. The probe therefore shows that concrete serving pressure
+alters observable scheduling behavior and latency; it does not estimate
+Eq.~\ref{eq:latency} in the real system.
 
 \begin{table}[t]
 \centering
 \small
-\caption{Simulator-to-real-system correspondence. The real-system column
-supports pressure/action correspondence, not one-step causal headroom.}
+\caption{Correspondence between the simulator and the vLLM probe. The vLLM
+column reflects pressure and action correspondence; it does not estimate
+one-step causal headroom.}
 \label{tab:real}
 \setlength{\tabcolsep}{8pt}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}p{0.26\linewidth}p{0.29\linewidth}p{0.29\linewidth}@{}}
+\begin{tabular}{@{}P{0.26\linewidth}P{0.29\linewidth}P{0.29\linewidth}@{}}
 \toprule
 Property & Simulator/replay & Real vLLM \\
 \midrule
 Low pressure & Canonical collapse & Low queue baseline \\
 Resource binding & KV/active caps induce $D$ & Queue and active-sequence pressure observed \\
-Action difference & single best scheduler/six-policy canonical action & Native token-budget trace signature \\
-Latency consequence & One-step single best scheduler-relative & Whole-run budget tradeoff \\
+Action difference & SBS versus six-policy canonical action & Native token-budget trace signature \\
+Latency consequence & One-step, SBS-relative & Whole-run budget tradeoff \\
 Exact intervention & Available & Not available \\
 \bottomrule
 \end{tabular}
@@ -810,10 +829,10 @@ The fresh study establishes that positive one-step headroom exists: under the
 preregistered criterion, forcing an alternative action lowers mean latency in
 590 of 720 disagreement states (81.9\%). The sign is stable across the
 aggregations and leave-one-out analyses of Section~\ref{sec:robust}. The
-magnitude is not. The preregistered state-weighted mean of 1.9958~ms (95\%
-window-clustered CI [0.1909, 3.5462]~ms) estimates the expected headroom at a
+magnitude is not. The preregistered state-weighted mean of 2.00~ms (95\%
+window-clustered CI [0.19, 3.55]~ms) estimates the expected headroom at a
 state drawn from this sample, not the headroom of a typical state: the median
-is 0.197~ms, and the mean falls to 1.360, 0.759, and 0.327~ms when workloads,
+is 0.20~ms, and the mean falls to 1.36, 0.76, and 0.33~ms when workloads,
 regimes, or windows receive equal weight (Table~\ref{tab:sensitivity}).
 ``Beneficial'' is a criterion on the sign of the causal effect, not on its
 operational size: 29.4\% of disagreement states offer more than 0.5~ms and
@@ -822,16 +841,16 @@ operational size: 29.4\% of disagreement states offer more than 0.5~ms and
 The mean reflects where the headroom lies. One Azure-code window carries 88.4\%
 of the total headroom, the Azure-code KV-capacity = 16,000 regime carries
 96.8\%, and the effective number of windows by headroom mass is 1.27
-(Figure~\ref{fig:robust}). Without that window the mean is 0.365~ms (95\% CI
-[0.158, 0.682]~ms); without that regime it is 0.159~ms (95\% CI [0.058,
-0.234]~ms). The window is part of the valid fresh sample. It shows that an
+(Figure~\ref{fig:robust}). Without that window the mean is 0.36~ms (95\% CI
+[0.16, 0.68]~ms); without that regime it is 0.16~ms (95\% CI [0.06,
+0.23]~ms). The window is part of the valid fresh sample. It shows that an
 aggregate mean can conceal highly localized scheduling opportunity, so the
 distribution of effects, the prevalence of material effects, and the
 sensitivity to aggregation belong next to any overall mean.
 
 The interval diagnostics agree. A $10^6$-replicate percentile interval
-([0.184, 3.543]~ms) matches the preregistered one, and the BCa interval
-([0.239, 4.049]~ms) stays positive, so Monte Carlo error does not limit the
+([0.18, 3.54]~ms) matches the preregistered one, and the BCa interval
+([0.24, 4.05]~ms) stays positive, so Monte Carlo error does not limit the
 inference. The delete-one-window jackknife interval includes zero, and the
 bootstrap distribution is bimodal according to whether window w11 is drawn.
 Both reflect dependence on one cluster: with 36 windows but only about one
@@ -894,7 +913,7 @@ For a system designer, the evidence supports five practices.
   \item Report the distribution of effect sizes, the prevalence of the states
   where they occur, and their concentration, alongside the oracle mean.
   \item Weigh the recoverable gain against selector, monitoring, and
-  switching costs; the median disagreement state offers only 0.197~ms.
+  switching costs; the median disagreement state offers only 0.20~ms.
   \item Outside the few regimes with material opportunity, staying with a fixed
   scheduler may be the appropriate policy.
 \end{itemize}
@@ -952,7 +971,7 @@ accounting of adaptation overhead.
 The public artifact (the public repository, see Data and Code
 Availability) records trace provenance, frozen manifests, support grids,
 fresh non-overlap proofs, causal state and action manifests, source hashes,
-bootstrap seed 20260920, and the real-vLLM environment. The principal result
+bootstrap seed 20260920, and the vLLM environment. The principal result
 packages are Phase A native replay, Phase B pressure mapping, fresh
 confirmatory causal latency, and the bounded vLLM system correspondence probe.
 Historical selector and joint-240 artifacts remain available but are not
@@ -963,12 +982,12 @@ treated as evidence of learned deployment readiness.
 
 This paper asked when adaptive scheduling has anything to act on in LLM serving, before any adaptive scheduler is built. Replay of production-derived traces under abundant resources offered essentially nothing: none of about one million decision states had an executable alternative to the single best scheduler (SBS). Controlled active-sequence and KV-capacity caps, but not arrival-rate scaling up to eight times, created such states, and fresh one-step interventions showed that forcing an alternative there lowers latency in most of them (590 of 720 under the preregistered criterion). A bounded vLLM probe supports the qualitative link between pressure and scheduling behavior without validating the simulated magnitudes.
 
-The headroom is positive but small and concentrated. The state-weighted mean of 1.9958~ms is not a typical effect: the median disagreement state offers 0.197~ms, the mean falls to 0.327~ms when windows are weighted equally, and one trace window holds 88.4\% of the total. Adaptation opportunity is therefore real, sparse, pressure-dependent, and generally modest, and its existence does not imply deployment value.
+The headroom is positive but small and concentrated. The state-weighted mean of 2.00~ms is not a typical effect: the median disagreement state offers 0.20~ms, the mean falls to 0.33~ms when windows are weighted equally, and one trace window holds 88.4\% of the total. Adaptation opportunity is therefore real, sparse, pressure-dependent, and generally modest, and its existence does not imply deployment value.
 
 The broader lesson is that scheduler adaptation should be justified stage by stage, from resource pressure through executable disagreement and causal benefit to the distribution and prevalence of the effect, before selector complexity is added. Reporting concentration and aggregation sensitivity, and not only a mean, distinguishes a localized opportunity from a general one. Adaptation is justified by where the measured opportunity lies, not by its average.
 
 \section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
-During the preparation of this work, the author used ChatGPT by OpenAI, OpenAI Codex, and Google Gemini in order to assist with organization, language refinement, literature-search planning, software development, and workflow support. After using these tools, the author reviewed and edited the content as needed and takes full responsibility for the content of the publication.
+During the preparation of this work, the author used ChatGPT (OpenAI), OpenAI Codex, Google Gemini, and Claude (Anthropic) in order to assist with organization, language editing, literature-search planning, and drafting analysis, figure, and test code. After using these tools, the author reviewed and edited the content as needed and takes full responsibility for the content of the publication.
 
 \section*{Declaration of Competing Interest}
 The author declares that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.

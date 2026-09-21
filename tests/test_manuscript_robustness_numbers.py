@@ -53,7 +53,7 @@ def pct(x):
 
 # ----------------------------------------------------------------------------- preregistered result preserved
 def test_primary_result_unchanged_and_stated_first(fresh_section, N):
-    assert "590/720=0.8194444444" in fresh_section
+    assert "590/720=0.8194\\ (81.9\\%)" in fresh_section
     assert "0.001995791 s (1.9958 ms)" in fresh_section
     assert "[0.000190884, 0.003546196] s ([0.1909, 3.5462] ms)" in fresh_section
     assert N["primary"]["beneficial"] == 590 and abs(N["primary"]["mean_ms"] - 1.9958) < 5e-5
@@ -151,8 +151,8 @@ def test_diagnostics_prose(robust_section, N):
 
 # ----------------------------------------------------------------------------- structure and editorial artifacts
 def test_section_order_and_references(tex):
-    order = [r"\section{Results: Native", r"\section{Results: Resource-Regime", r"\section{Results: Fresh Support",
-             r"\section{Results: Robustness and Concentration", r"\section{Objective Sensitivity", r"\section{Bounded Real-vLLM"]
+    order = [r"\section{Results: Native", r"\section{Results: Pressure-Induced Disagreement", r"\section{Results: Fresh Support",
+             r"\section{Results: Robustness and Concentration", r"\section{Objective Sensitivity", r"\section{Results: Bounded vLLM System Correspondence Probe"]
     pos = [tex.index(o) for o in order]
     assert pos == sorted(pos)
     labels = set(re.findall(r"\\label\{([^}]+)\}", tex))

@@ -43,6 +43,20 @@ T.~Choudhury, G.~Joshi, W.~Wang, Job assignment in machine learning inference
 \newblock \href {https://doi.org/10.1016/j.peva.2024.102463}
   {\path{doi:10.1016/j.peva.2024.102463}}.
 
+\bibitem{yildiz2026dispatching}
+M.~Yildiz, A.~Rolich, A.~Baiocchi, Dispatching policies in data center
+  clusters: Insights from {Google} and {Alibaba} workloads, Performance
+  Evaluation 172 (2026) 102551.
+\newblock \href {https://doi.org/10.1016/j.peva.2026.102551}
+  {\path{doi:10.1016/j.peva.2026.102551}}.
+
+\bibitem{liang2026lilou}
+Q.~Liang, H.~Wang, P.~Shenoy, Lilou: Resource-aware model-driven latency
+  prediction for {GPU}-accelerated model serving, Performance Evaluation 171
+  (2026) 102539.
+\newblock \href {https://doi.org/10.1016/j.peva.2025.102539}
+  {\path{doi:10.1016/j.peva.2025.102539}}.
+
 \bibitem{ali2025enabling}
 A.~Ali, X.~Ma, S.~Zawad, P.~Aditya, I.~E. Akkus, R.~Chen, L.~Yang, F.~Yan,
   Enabling scalable and adaptive machine learning training via serverless

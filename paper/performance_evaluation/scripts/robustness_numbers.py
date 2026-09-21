@@ -202,6 +202,22 @@ def compute():
     assert comp["top_window"] == W11 and comp["dominant_regime"] == CODE_KV
     assert N["conc"]["w11_states"] == 263 and N["conc"]["n_gt5_in_w11"] == 128 and N["conc"]["n_gt5"] == 129
 
+    # ---------------------------------------------------------------- regime-level table (Table 3, Figures 4 and 5)
+    reg_csv = _read(FROZEN / "FRESH_LATENCY_WORKLOAD_REGIME_V1.csv")
+    regimes = []
+    for r in reg_csv:
+        key = f"{r['source_dataset']}|{r['axis']}|{r['condition_id']}"
+        g = [s for s in S if s["regime"] == key]
+        assert len(g) == int(r["states"]) and len({s["window"] for s in g}) == int(r["contributing_windows"])
+        assert abs(_mean([s["H"] for s in g]) - float(r["mean_oracle_headroom"])) < 1e-15
+        assert abs(sum(s["beneficial"] for s in g) / len(g) - float(r["P_B_given_D"])) < 1e-15
+        regimes.append({"key": key, "workload": r["source_dataset"], "axis": r["axis"], "setting": r["condition_id"], "states": len(g),
+                        "windows": int(r["contributing_windows"]), "P_D": float(r["P_D"]), "P_B": float(r["P_B_given_D"]),
+                        "mean_ms": 1e3 * float(r["mean_oracle_headroom"]), "share": math.fsum(s["H"] for s in g) / total,
+                        "max_ms": 1e3 * max(s["H"] for s in g)})
+    assert sum(x["states"] for x in regimes) == n and abs(sum(x["share"] for x in regimes) - 1) < 1e-12
+    N["regimes"] = regimes
+
     # ---------------------------------------------------------------- interval diagnostics
     cl = json.loads((ROBUST / "cluster_robustness.json").read_text())
     big = cl["large_bootstrap"][str(20260920)]
