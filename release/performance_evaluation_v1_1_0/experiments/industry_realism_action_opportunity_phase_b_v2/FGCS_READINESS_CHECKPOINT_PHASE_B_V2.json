@@ -1,0 +1,57 @@
+{
+  "contribution_strength_confidence_percent": 62,
+  "hard_gates": {
+    "causal_headroom": "FAIL_UNTIL_PHASE_D",
+    "literature_novelty": "PARTIAL",
+    "practitioner_value": "PARTIAL",
+    "real_world_evidence": "PARTIAL",
+    "reproducibility": "PASS_FOR_PHASE_B",
+    "systems_regime_characterization": "PASS"
+  },
+  "remaining_evidence_to_exceed_90": [
+    "Phase-D causal headroom labels on coverage-selected regimes",
+    "Phase-C small joint-regime map if Phase B shows interactions are likely",
+    "broader production trace coverage or explicit scope statement"
+  ],
+  "rubric": {
+    "experimental_rigor": {
+      "full_points_requires": "Final causal-labeling preregistration and uncertainty/concentration analysis.",
+      "max": 20,
+      "points": 15,
+      "why": "Versioned grid, pre-outcome freeze, full reporting of null/extreme/invalid conditions, and deterministic tests."
+    },
+    "industry_realism": {
+      "full_points_requires": "More production traces and prefix/cache-heavy workloads.",
+      "max": 20,
+      "points": 13,
+      "why": "Uses three Tier-1 traces and preserves request identities under system-pressure transformations."
+    },
+    "practitioner_value": {
+      "full_points_requires": "Headroom magnitudes and actionable operating thresholds.",
+      "max": 10,
+      "points": 6,
+      "why": "Begins to map when scheduler choice can exist, but does not yet quantify benefit."
+    },
+    "reproducibility_community_value": {
+      "full_points_requires": "Packaged run instructions and external validation.",
+      "max": 10,
+      "points": 8,
+      "why": "Public-trace matrix, hashes, and compact artifacts are reproducible."
+    },
+    "scientific_novelty": {
+      "full_points_requires": "Causal headroom and broader trace classes.",
+      "max": 20,
+      "points": 15,
+      "why": "The project now separates native null support from pressure-induced action opportunity."
+    },
+    "technical_depth": {
+      "full_points_requires": "Joint-regime Phase C and causal-headroom Phase D.",
+      "max": 20,
+      "points": 13,
+      "why": "Adds one-axis operating-regime characterization with normalized pressure and validity guards."
+    }
+  },
+  "schema_version": "industry_realism_action_opportunity_fgcs_readiness_checkpoint_phase_b_v2.0.0",
+  "status": "POST_PHASE_B_V2_CHECKPOINT",
+  "total_score": 70
+}

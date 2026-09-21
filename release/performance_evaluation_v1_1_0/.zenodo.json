@@ -1,0 +1,32 @@
+{
+  "title": "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay (Reproducibility Package)",
+  "upload_type": "dataset",
+  "description": "<p>Reproducibility package for the paper <em>When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay</em> (submitted to <em>Performance Evaluation</em>).</p><p>The package supports a trace-driven performance evaluation of when scheduler adaptation matters in LLM serving: a deterministic simulator replaying production-derived workloads (Azure LLM inference 2023, BurstGPT), a resource-pressure map, and a preregistered fresh causal study of one-step latency headroom. It contains the <strong>frozen confirmatory artifacts</strong> (unchanged from v1.0.0), the <strong>post hoc robustness and concentration analysis</strong>, a <strong>corrected derivative</strong> of two descriptive state-level columns (the original frozen file is preserved; no reported result depended on those columns), the 96 hash-verified continuation shards from which the derivative is computed, the simulator, experiment, robustness, correction and figure code, the claim manifest that recomputes every quoted number, and the manuscript source.</p><p>Raw third-party traces are not redistributed; see README.md. Run <code>python3 verify_release.py</code> from the archive root to check the package.</p>",
+  "creators": [
+    {
+      "name": "Vahidi, Soroush",
+      "affiliation": "New Jersey Institute of Technology"
+    }
+  ],
+  "access_right": "open",
+  "license": "mit-license",
+  "keywords": [
+    "LLM serving",
+    "request scheduling",
+    "performance evaluation",
+    "workload replay",
+    "causal headroom",
+    "resource pressure",
+    "reproducibility",
+    "robustness analysis"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution/tree/performance-evaluation-v1.1.0",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Built from git tag performance-evaluation-v1.1.0. v1.0.0 is 10.5281/zenodo.22865294; this bundle is the v1.1.0 version of the same record (record 22865294, concept DOI 10.5281/zenodo.22865293)."
+}

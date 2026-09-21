@@ -1,0 +1,6 @@
+estimand,n_units,mean_H_ms,P_beneficial_canonical,P_beneficial_eps_guarded,note
+state-weighted (canonical primary),1,1.9957911708132692,0.8194444444444444,0.8180555555555555,ratio of totals; each of 720 states weight 1/720
+equal-window,36,0.3273454282278093,0.6323037456829561,0.6295259679051783,each of 36 windows weight 1/36; window mean pools all its states across regimes
+equal-regime,5,0.7591081303343294,0.6664798077288806,0.6633548077288806,each of 5 regimes weight 1/5
+equal-workload (supplementary),2,1.359585689091257,0.8087588102861152,0.8055740969103189,each of 2 workloads weight 1/2
+equal window x regime cell (supplementary),49,0.2900684201781051,0.587394116069886,0.5853532997433555,each of 49 window-regime cells weight 1/49

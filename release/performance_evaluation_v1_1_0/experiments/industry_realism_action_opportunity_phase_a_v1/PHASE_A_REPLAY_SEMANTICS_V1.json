@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-09-19T22:37:30Z",
+  "faithful_view": {
+    "capacity_assignment": "single GPU with 512 active sequence cap, 512 max batch tokens, 8,000,000 KV tokens",
+    "class_id": "default",
+    "conversation_session_structure": "not available for Azure 2023; BurstGPT session_id may exist in corpus but PolicySeparationScenario requests do not expose it",
+    "evidence_class": "PUBLIC_TRACE_FAITHFUL",
+    "generated_output_tokens": "native output_tokens, fill missing with 1 and clip lower bound at 1",
+    "interarrival_timing": "preserved within window after rebasing first arrival to t=0",
+    "original_burstiness": "preserved within selected windows",
+    "predicted_output_tokens": "set equal to actual_output_tokens; inert for full_prefill/chunked_prefill, visible to ESTF/KV when Phase A evaluates full P6",
+    "priority": "uniform 1.0",
+    "prompt_input_tokens": "native prompt_tokens, fill missing with 1 and clip lower bound at 1",
+    "request_ordering": "preserved within each selected source window after source-level chronological normalization",
+    "service_rate_assumptions": "step_size=0.001, prefill modeling enabled, prefill_cost_per_token=1.0, step_token_budget=512, decode/prefill contention enabled, decode_first=False",
+    "slo_deadline": "arrival + 1000.0 in faithful view; inert for faithful-view policies, visible to LLF if full P6 is queried",
+    "time_shift": "each window is rebased so first arrival is 0.0",
+    "timestamp_spacing": "preserved as relative_arrival_time differences",
+    "window_boundaries": "deterministic 200-request windows selected by public_trace_replay_v1.select_window_indices"
+  },
+  "forbidden_phase_a_inputs": [
+    "augmented windows",
+    "load-scaled windows",
+    "synthetic scenarios",
+    "joint240",
+    "Family-A stress cases"
+  ],
+  "schema_version": "industry_realism_action_opportunity_phase_a_v1.0.0.replay_semantics"
+}

@@ -222,7 +222,8 @@ window/state identifiers, not trace content. Please credit the trace authors whe
 
 ## How to cite
 
-Cite the version DOI above (`CITATION.cff` is included). The paper's reference list uses the same entry.
+Cite this archive by its Zenodo persistent DOI (v1.0.0: `10.5281/zenodo.22865294`; the v1.1.0 version DOI is
+assigned by Zenodo on publication and is recorded in `CITATION.cff`). The paper's reference list uses the same entry.
 
 ## Contents
 
@@ -284,9 +285,8 @@ def build(a: argparse.Namespace) -> None:
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(src, dst)
     n_shards = sum(1 for _, _, r in files if r == "continuation_shard")
-    n_payload = len(files)
-
-    (out / "README.md").write_text(release_readme(a, commit, n_payload - 3, n_shards))
+    n_generated = 7
+    (out / "README.md").write_text(release_readme(a, commit, len(files) - n_generated, n_shards))
     (out / "PROVENANCE_MAP.md").write_text(provenance_map(a))
     (out / "SHARD_PUBLICATION_DECISION.md").write_text(shard_decision(n_shards))
     (out / "ENVIRONMENT.json").write_text(json.dumps(environment(), indent=1) + "\n")
@@ -315,7 +315,7 @@ def build(a: argparse.Namespace) -> None:
                     "script_sha256": sha256_file(Path(__file__)), "python": platform.python_version()},
         "excluded_by_design": ["fresh-latency-confirmatory-v1 (partial, non-canonical provenance directory)", "raw third-party traces",
                                "credentials and logs", "untracked files", "unrelated worktrees and selector-study artifacts"],
-        "total_files": len(entries) + 2,
+        "total_files": len(entries),
         "files": entries,
     }
     (out / "MANIFEST.json").write_text(json.dumps(manifest, indent=1) + "\n")

@@ -1,0 +1,66 @@
+{
+  "schema_version": "fresh_production_latency_headroom_confirmatory_v1.causal_protocol.0.0",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "causal_population_rule": "After fresh support mapping, include all canonical SBS-vs-P6 disagreement states in mechanically selected valid fresh regimes.",
+  "regime_selection_rule": {
+    "scope": "per workload and pressure axis",
+    "stages": [
+      "first valid pressure setting where canonical disagreement appears",
+      "first sustained-disagreement pressure setting under the Phase-B sustained rule",
+      "strongest valid preregistered pressure setting before invalidity/truncation"
+    ],
+    "deduplication": "If onset, sustained, and high-valid are the same cell, label it once.",
+    "arrival_axis": "Arrival-pressure cells remain structural controls if no canonical disagreement occurs; they are not causal-label cells without support.",
+    "outcome_blind": true
+  },
+  "labeling_scope_rule": {
+    "preferred": "EXHAUSTIVE_SELECTED_REGIME_LABELING",
+    "exhaustive_if_total_continuations_lte": 50000,
+    "continuation_count_definition": "one SBS reference per disagreement state plus one continuation per unique non-SBS canonical branch",
+    "fallback": "DETERMINISTIC_STRATIFIED_SAMPLING",
+    "sampling_seed": 20260920,
+    "sampling_strata": ["workload", "axis", "regime_stage", "source_window"],
+    "sampling_forbidden_basis": [
+      "latency sign",
+      "latency magnitude",
+      "ANWG effect",
+      "predicted gain",
+      "proxy scheduler ranking",
+      "action interestingness"
+    ]
+  },
+  "one_step_intervention": {
+    "reference": "SBS branch from the same live state",
+    "counterfactual": "force exactly one unique non-SBS canonical action once",
+    "continuation": "immediately revert to fixed SBS / kv_constrained_online",
+    "preserve_future_arrivals": true,
+    "preserve_random_state": true,
+    "preserve_pressure_configuration": true,
+    "preserve_workload_window_identity": true,
+    "policy_forever_switch": false,
+    "learned_continuation": false,
+    "selector_training": false,
+    "new_scheduler": false
+  },
+  "integrity_requirements": [
+    "exactly one forced alternative action",
+    "subsequent scheduler is SBS",
+    "original live simulator/state is not mutated",
+    "future arrivals identical across reference and counterfactual",
+    "random/common-random state identical across branches",
+    "SBS reference continuation reproduces native SBS continuation",
+    "forced canonical action is feasible",
+    "duplicate canonical alternatives are not relabeled",
+    "same state/action replay is deterministic",
+    "pressure configuration persists identically across branches",
+    "workload/window identity is preserved",
+    "no policy-forever continuation occurs"
+  ],
+  "forbidden": [
+    "using Phase-D V1 state list",
+    "using Phase-D V1 latency signs or magnitudes",
+    "causally labeling null-support states",
+    "changing regime selection after causal outcomes",
+    "training a predictor or selector"
+  ]
+}

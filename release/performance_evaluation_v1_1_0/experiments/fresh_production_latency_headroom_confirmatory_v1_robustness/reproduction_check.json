@@ -1,0 +1,400 @@
+{
+  "canonical_bootstrap_loop": {
+    "clusters": 36,
+    "hi": 0.003546195777055185,
+    "lo": 0.00019088421760325944
+  },
+  "checks": [
+    {
+      "abs_diff": 0,
+      "quantity": "states",
+      "recomputed": 720,
+      "reported": 720,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "beneficial_states (canonical rule max_a A > 0)",
+      "recomputed": 590,
+      "reported": 590,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "beneficial_states recomputed from oracle_headroom > 0",
+      "recomputed": 590,
+      "reported": 590,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "P(B_LAT|D)",
+      "recomputed": 0.8194444444444444,
+      "reported": 0.8194444444444444,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": ""
+    },
+    {
+      "abs_diff": 2.862293735361732e-17,
+      "quantity": "mean oracle headroom (s)",
+      "recomputed": 0.001995791170813269,
+      "reported": 0.0019957911708132978,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 3.5128150388530344e-17,
+      "quantity": "positive-headroom mean (s)",
+      "recomputed": 0.002435541767772125,
+      "reported": 0.00243554176777216,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 4.824699667560495e-17,
+      "quantity": "positive-headroom median (s)",
+      "recomputed": 0.00028791964049689996,
+      "reported": 0.0002879196404969482,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "all-harmful states",
+      "recomputed": 102,
+      "reported": 102,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "all-zero states",
+      "recomputed": 26,
+      "reported": 26,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "mixed states",
+      "recomputed": 22,
+      "reported": 22,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "max |H_state - H recomputed from action-level a_lat| (s)",
+      "recomputed": 0.0,
+      "reported": 0.0,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "action-level branches",
+      "recomputed": 831,
+      "reported": 831,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "distinct clusters (source_dataset, window_index)",
+      "recomputed": 36,
+      "reported": 36,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "bootstrap clusters (loop)",
+      "recomputed": 36,
+      "reported": 36,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "bootstrap CI low (s) [canonical loop re-run]",
+      "recomputed": 0.00019088421760325944,
+      "reported": 0.00019088421760325944,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "bootstrap CI high (s) [canonical loop re-run]",
+      "recomputed": 0.003546195777055185,
+      "reported": 0.003546195777055185,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 2.710505431213761e-20,
+      "quantity": "bootstrap CI low (s) [vectorised engine]",
+      "recomputed": 0.00019088421760325946,
+      "reported": 0.00019088421760325944,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 2.168404344971009e-18,
+      "quantity": "bootstrap CI high (s) [vectorised engine]",
+      "recomputed": 0.003546195777055183,
+      "reported": 0.003546195777055185,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Code, active cap 8: states",
+      "recomputed": 10,
+      "reported": 10,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "regime Code, active cap 8: P(B|D)",
+      "recomputed": 0.4,
+      "reported": 0.4,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": ""
+    },
+    {
+      "abs_diff": 4.946672411965114e-18,
+      "quantity": "regime Code, active cap 8: mean H (s)",
+      "recomputed": 3.3426727257296256e-05,
+      "reported": 3.34267272573012e-05,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Code, active cap 8: contributing windows",
+      "recomputed": 2,
+      "reported": 2,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Code, active cap 4: states",
+      "recomputed": 122,
+      "reported": 122,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "regime Code, active cap 4: P(B|D)",
+      "recomputed": 0.5245901639344263,
+      "reported": 0.5245901639344263,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": ""
+    },
+    {
+      "abs_diff": 6.396792817664476e-18,
+      "quantity": "regime Code, active cap 4: mean H (s)",
+      "recomputed": 7.668496472205743e-05,
+      "reported": 7.668496472206383e-05,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Code, active cap 4: contributing windows",
+      "recomputed": 15,
+      "reported": 15,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Code, KV 16,000: states",
+      "recomputed": 431,
+      "reported": 431,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "regime Code, KV 16,000: P(B|D)",
+      "recomputed": 0.9234338747099768,
+      "reported": 0.9234338747099768,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": ""
+    },
+    {
+      "abs_diff": 2.2985086056692694e-17,
+      "quantity": "regime Code, KV 16,000: mean H (s)",
+      "recomputed": 0.0032272842371770228,
+      "reported": 0.003227284237177,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Code, KV 16,000: contributing windows",
+      "recomputed": 14,
+      "reported": 14,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Conv, active cap 4: states",
+      "recomputed": 64,
+      "reported": 64,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "regime Conv, active cap 4: P(B|D)",
+      "recomputed": 0.484375,
+      "reported": 0.484375,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": ""
+    },
+    {
+      "abs_diff": 5.624298769768554e-17,
+      "quantity": "regime Conv, active cap 4: mean H (s)",
+      "recomputed": 0.00021679846208025625,
+      "reported": 0.0002167984620802,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Conv, active cap 4: contributing windows",
+      "recomputed": 17,
+      "reported": 17,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Conv, KV 16,000: states",
+      "recomputed": 93,
+      "reported": 93,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "regime Conv, KV 16,000: P(B|D)",
+      "recomputed": 1.0,
+      "reported": 1.0,
+      "status": "EXACT",
+      "tolerance": 1e-15,
+      "unit": ""
+    },
+    {
+      "abs_diff": 1.441988889405721e-17,
+      "quantity": "regime Conv, KV 16,000: mean H (s)",
+      "recomputed": 0.00024134626043501443,
+      "reported": 0.000241346260435,
+      "status": "WITHIN_TOLERANCE",
+      "tolerance": 1e-15,
+      "unit": "s"
+    },
+    {
+      "abs_diff": 0,
+      "quantity": "regime Conv, KV 16,000: contributing windows",
+      "recomputed": 1,
+      "reported": 1,
+      "status": "EXACT",
+      "tolerance": 0.0,
+      "unit": ""
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "manuscript: mean headroom (ms, 4 dp)",
+      "recomputed": 1.9958,
+      "reported": 1.9958,
+      "status": "EXACT",
+      "tolerance": 5e-05,
+      "unit": "ms"
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "manuscript: CI low (ms, 4 dp)",
+      "recomputed": 0.1909,
+      "reported": 0.1909,
+      "status": "EXACT",
+      "tolerance": 5e-05,
+      "unit": "ms"
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "manuscript: CI high (ms, 4 dp)",
+      "recomputed": 3.5462,
+      "reported": 3.5462,
+      "status": "EXACT",
+      "tolerance": 5e-05,
+      "unit": "ms"
+    },
+    {
+      "abs_diff": 0.0,
+      "quantity": "manuscript: P(B|D) (4 dp)",
+      "recomputed": 0.8194,
+      "reported": 0.8194,
+      "status": "EXACT",
+      "tolerance": 5e-05,
+      "unit": ""
+    }
+  ],
+  "n_checks": 42,
+  "n_exact": 32,
+  "n_failed": 0,
+  "n_within_tolerance": 10,
+  "original_pre_correction_key_check": {
+    "clusters": 26,
+    "documented_hi_ms": 3.497418,
+    "documented_lo_ms": 0.184589,
+    "hi_s": 0.003497418373764192,
+    "lo_s": 0.00018458898060048624,
+    "matches_documented_to_1e-6_ms": true
+  },
+  "overall": "WITHIN_TOLERANCE"
+}
