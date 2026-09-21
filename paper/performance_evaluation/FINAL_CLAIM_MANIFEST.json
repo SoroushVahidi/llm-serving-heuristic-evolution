@@ -2,7 +2,7 @@
  "schema": "peva_final_claim_manifest_v1",
  "purpose": "Provenance/verification metadata for the manuscript's quantitative claims; contains no independent scientific data. Values are recomputed from the canonical artifacts by scripts/build_claim_manifest.py.",
  "manuscript": "paper/performance_evaluation/main.tex",
- "manuscript_sha256_at_generation": "9a946593dfb1010a9132e7a53cc1562779bafc3c319c1277caa03052eed640f8",
+ "manuscript_sha256_at_generation": "a4ad8565052346568cfa59b3d8284ab231c2e358c4cbca60b2b68ae7a8654a6a",
  "n_claims": 46,
  "claims": [
   {

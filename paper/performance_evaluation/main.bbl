@@ -168,4 +168,11 @@ M.~Lindauer, H.~H. Hoos, F.~Hutter, T.~Schaub, {AutoFolio}: An automatically
   configured algorithm selector, Journal of Artificial Intelligence Research 53
   (2015) 745--778.
 
+\bibitem{vahidi2026archive}
+{[dataset] S. Vahidi}, Reproducibility package for ``{When Does LLM-Serving
+  Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in
+  Production-Derived Replay}'': data, code and manuscript sources, Zenodo
+  dataset and software archive, version 1.1.0,
+  \url{https://doi.org/10.5281/zenodo.22866983} (2026).
+
 \end{thebibliography}
