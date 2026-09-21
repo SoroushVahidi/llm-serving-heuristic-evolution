@@ -75,7 +75,7 @@ def test_table3_rows_match_verified_regime_numbers(flat):
 
 def test_table_and_figure_style(tex):
     tables = re.findall(r"\\begin\{table\*?\}.*?\\end\{table\*?\}", tex, re.S)
-    assert len(tables) == 6
+    assert len(tables) == 7
     for t in tables:
         assert r"\caption{" in t and r"\label{" in t and r"\toprule" in t and r"\bottomrule" in t
         assert "|" not in re.search(r"\\begin\{tabular[x]?\}.*?\n", t).group(0).replace(r"\mid", "")  # no vertical rules

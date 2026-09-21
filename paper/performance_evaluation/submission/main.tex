@@ -480,6 +480,19 @@ $10^6$ replicates and add a bias-corrected and accelerated (BCa) interval and a
 delete-one-window jackknife $t$ interval; these are diagnostics, not
 replacements.
 
+\emph{Reference-reserve sensitivity.} A post hoc sensitivity analysis, whose
+protocol was frozen before execution, raises the reference's KV reserve
+(Section~\ref{sec:policies}) from 0.82 to 0.90 and 1.00 and replays the same 100
+fresh scenarios, changing nothing else. Its runner did not count reference
+decision states, so after its outcomes were observed we ran a denominator-only
+completion that replays the reference trajectories without executing any
+counterfactual branch; it reproduced the disagreement counts (720, 466, 198) and
+the confirmatory analysis's reserve-0.82 counts exactly. \emph{Opportunity-weighted
+headroom} is the total $H_{\mathrm{LAT}}$ over disagreement states divided by the
+number of reference decision states (simulated ms per decision), and the
+\emph{beneficial-decision rate} is the number of beneficial states over the same
+denominator. Neither is a realized gain.
+
 \section{Where Disagreement Appears}
 \label{sec:disagreement}
 
@@ -819,9 +832,49 @@ disagreement states, of which 414 occur without physical KV binding (the waiting
 prompt tokens fit in the free capacity) and hold 89.6\% of those regimes'
 headroom. These are valid observations: the reference reorders or withholds
 admissions there although capacity is not exhausted, so physical exhaustion does
-not explain them. The reference's 0.82 reserve and its KV-footprint ordering,
-which no other portfolio policy uses, are the candidate sources, and this
-analysis does not separate the two.
+not explain them.
+
+Varying the reserve (Section~\ref{sec:posthoc}) barely changes the number of
+reference decision states (under 0.006\%) but changes the opportunity a great
+deal (Table~\ref{tab:reserve}). At reserve 0.90, $P(D)$ and the
+beneficial-decision rate fall to 65\% and 60\% of their 0.82 values (466 and 353
+states versus 720 and 590), yet the opportunity-weighted headroom keeps 98\% of
+its value: fewer states carry larger effects, so the conditional mean rises to
+3.02~ms without indicating more opportunity. The shift comes from the
+KV-capacity regimes (Azure code 431 to 224 states, mean 3.23 to 6.16~ms). At
+reserve 1.00 they nearly vanish, with two Azure-code states (neither beneficial)
+and none in Azure conversation, leaving 1.6\% of the 0.82 opportunity-weighted
+headroom. The three active-sequence-cap regimes are identical at every reserve
+and supply all of the remaining 23.6~ms. The dominant KV-capacity opportunity is
+therefore not specific to 0.82, but it depends strongly on a sub-capacity
+reserve. Only the reserve changed, so the KV-footprint ordering is not isolated
+and invariance to other reference schedulers is not shown.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Post hoc reference-reserve sensitivity: only the reference's KV reserve
+varies, on the same 100 fresh scenarios. States are disagreement states; reference
+decision states number 1,470,515, 1,470,447, and 1,470,427. Opportunity-weighted
+$H_{\mathrm{LAT}}$ is total $H_{\mathrm{LAT}}$ over decision states, and the
+beneficial-decision rate is beneficial states over decision states.
+Sensitivity-run 95\% intervals for the mean (seed 42) are [0.182, 3.563],
+[0.067, 4.547], and [0.042, 0.232]~sim.~ms; the primary confirmatory interval at
+0.82 remains \mbox{[0.1909, 3.5462]}~sim.~ms (Section~\ref{sec:fresh}).}
+\label{tab:reserve}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}R{0.085\linewidth}R{0.10\linewidth}R{0.10\linewidth}R{0.15\linewidth}R{0.12\linewidth}R{0.13\linewidth}R{0.18\linewidth}@{}}
+\toprule
+Reserve & States & $P(D)$ (\%) & \mbox{$P(B_{\mathrm{LAT}}\mid D)$} (\%) & Mean $H_{\mathrm{LAT}}$ (sim.~ms) & Beneficial decisions (\%) & Opportunity-weighted $H_{\mathrm{LAT}}$ (sim.~ms per decision) \\
+\midrule
+0.82 & 720 & 0.0490 & 81.9 & 1.996 & 0.0401 & $9.77\times10^{-4}$ \\
+0.90 & 466 & 0.0317 & 75.8 & 3.022 & 0.0240 & $9.58\times10^{-4}$ \\
+1.00 & 198 & 0.0135 & 50.0 & 0.119 & 0.00673 & $1.60\times10^{-5}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{A Bounded vLLM System Correspondence Probe}
 \label{sec:real}
@@ -893,13 +946,20 @@ observed, so it answers whether a useful action existed at $s$, not whether an
 online system could have identified it, and it does not measure a selector,
 longer-horizon switching, or adaptation overhead.
 
-Each stage is also measured against one fixed reference and one portfolio.
-Because about 95\% of the headroom lies where all five other policies differ
-from the reference, and most KV-regime disagreement occurs without physical KV
-binding (Section~\ref{sec:refdep}), the measurement is largely the room to
-improve on this reference's reserve and ordering under a capped KV capacity. It
-is neither evidence that the portfolio is complementary nor a general property
-of KV-limited serving. Score-level complementarity is a separate question: on
+Each stage is also measured against one fixed reference and one portfolio, and
+the dependence is substantive. About 95\% of the headroom lies where all five
+other policies differ from the reference, and most KV-regime disagreement occurs
+without physical KV binding; varying the reference's reserve
+(Section~\ref{sec:refdep}) shows the dominant KV-capacity opportunity persisting
+at 0.90 but largely disappearing at 1.00, while the active-sequence-cap
+opportunity is unchanged. The measurement is therefore largely the room to
+improve on this reference's sub-capacity reserve under a capped KV capacity; the
+contribution of its KV-footprint ordering is not isolated. Prevalence and
+conditional magnitude are different quantities: the larger conditional mean at
+0.90 (3.02~ms) is not more opportunity, because the opportunity-weighted headroom
+is nearly that of 0.82. The result is neither
+evidence that the portfolio is complementary nor a general property of
+KV-limited serving. Score-level complementarity is a separate question: on
 the 60 native windows, small-chunk prefill has a higher whole-window mean
 latency than full prefill in all 60 (median 14.2\%), yet the two issue the same
 action from any state and differ only in execution chunk size, so no per-state
@@ -946,9 +1006,12 @@ capacity-planning gain, or universal scheduling recommendation.
 The findings are conditional on the following boundaries.
 
 \emph{Reference and portfolio.} The SBS is a fixed heuristic chosen on a separate
-benchmark, and its hard-coded 0.82 KV reserve partly explains the
-measured headroom (Section~\ref{sec:refdep}). Conclusions are conditional on it,
-and a differently tuned reference could shrink or shift the opportunity. The six policies are simple heuristics,
+benchmark; conclusions are conditional on it, and a differently tuned reference
+could shrink or shift the opportunity. Its hard-coded 0.82 KV reserve was varied
+in a post hoc analysis whose denominator completion followed the observation of
+its outcomes (Section~\ref{sec:refdep}). Only that one parameter changed: the
+KV-footprint ordering was held fixed, so the analysis does not isolate it or show
+robustness to other reference schedulers. The six policies are simple heuristics,
 two of which coincide in action and two of which reduce to one ranking under the
 overlays, so other portfolios may expose different action support. Four policies
 use exact output lengths, so length-aware rules face no prediction error, and
@@ -983,7 +1046,7 @@ mechanism.
 
 This paper asked whether an LLM-serving scheduler ever faces an executable alternative worth taking before any adaptive scheduler is built. In production-derived replay with abundant resources it did not: none of about one million decision states offered an action different from the single best scheduler (SBS), a fixed reference. Capacity caps on active sequences or KV cache created such states, whereas lightly loaded arrival-rate scaling did not. On the Azure traces, forcing an alternative once lowered latency in most of these states (590 of 720 under the pre-specified criterion).
 
-The opportunity is nonetheless small, concentrated, and conditional. The state-weighted mean simulated headroom of 2.00~ms is not a typical effect: the median disagreement state offers 0.20~ms, and one trace window holds 88.4\% of the total headroom. Most of the headroom lies where all five other policies differ from the reference, so it measures room to improve on that reference rather than a general property of LLM serving.
+The opportunity is nonetheless small, concentrated, and conditional. The state-weighted mean simulated headroom of 2.00~ms is not a typical effect: the median disagreement state offers 0.20~ms, and one trace window holds 88.4\% of the total headroom. Most of the headroom lies where all five other policies differ from the reference, so it measures room to improve on that reference rather than a general property of LLM serving. A post hoc sensitivity analysis found the dominant KV-capacity headroom surviving a change of the reference's KV reserve from 0.82 to 0.90 and largely vanishing at 1.00, while active-sequence-cap opportunity was unchanged.
 
 The lesson for performance evaluation is to establish, stage by stage, that executable disagreement, causal benefit, and a material effect exist before adding selector complexity, and to report the reference, the portfolio, the load range, and the distribution of effects with any measured opportunity. Adaptation is justified by where the measured opportunity lies, not by its average.
 
