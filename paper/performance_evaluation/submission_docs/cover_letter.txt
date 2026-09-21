@@ -15,7 +15,7 @@ The principal result is that scheduler adaptation opportunity is real but sparse
 
 The contribution is methodological rather than a new scheduler or deployment claim. It shows how to separate score diversity from executable action diversity, disagreement from causal benefit, and mean headroom from its distribution before investing in adaptive selector design. This framing fits Performance Evaluation's scope in workload replay, scheduling/resource evaluation, causal measurement, and statistically bounded system-performance interpretation.
 
-All code, frozen confirmatory artifacts, robustness outputs, correction documentation, and the claim manifest are available in the public GitHub repository and are being packaged for the v1.1.0 Zenodo archive under concept DOI 10.5281/zenodo.22865293. The currently published v1.0.0 archive is 10.5281/zenodo.22865294; the v1.1.0 version DOI will be used only after Zenodo publication succeeds. Raw third-party traces are obtained from their upstream sources.
+All code, frozen confirmatory artifacts, robustness outputs, correction documentation, and the claim manifest are available in the public GitHub repository and are archived in the published v1.1.0 Zenodo dataset (DOI 10.5281/zenodo.22866983, concept DOI 10.5281/zenodo.22865293). Raw third-party traces are obtained from their upstream sources.
 
 This manuscript is not under consideration for publication elsewhere. I am the sole author and the corresponding author.
 

@@ -5,7 +5,7 @@ When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal
 * v1.0.0 (published record): [10.5281/zenodo.22865294](https://doi.org/10.5281/zenodo.22865294)
 * v1.1.0 (published record): [10.5281/zenodo.22866983](https://doi.org/10.5281/zenodo.22866983)
 * Source repository: https://github.com/SoroushVahidi/llm-serving-heuristic-evolution
-* Built from git commit `25da82338d13f4268e2053291f82603cb37aeefe` on branch `release/peva-v1-20260920` (final Git tag not yet created)
+* Built from git commit `99e03f63daf51ae29ea02af96488b88efac1dcf8` on branch `release/peva-v1-20260920` (final Git tag not yet created)
 * Author: Soroush Vahidi, New Jersey Institute of Technology
 * License: MIT (see `LICENSE`). Values derived from third-party traces keep the upstream attribution terms below.
 

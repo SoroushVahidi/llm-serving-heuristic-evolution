@@ -4,9 +4,9 @@
  "release": {
   "version": "1.1.0",
   "tag": "performance-evaluation-v1.1.0",
-  "git_commit": "25da82338d13f4268e2053291f82603cb37aeefe",
-  "git_commit_date": "2026-09-21T14:51:20-04:00",
-  "built_from_branch": "release/peva-v1-20260920",
+  "git_commit": "99e03f63daf51ae29ea02af96488b88efac1dcf8",
+  "git_commit_date": "2026-09-21T15:03:05-04:00",
+  "built_from_branch": "main",
   "included_paths_clean_at_build": true
  },
  "identifiers": {
@@ -33,13 +33,13 @@
   {
    "path": ".zenodo.json",
    "size_bytes": 2396,
-   "sha256": "ffa3a54e622ac36366031b8ca7df16d3cbdf26751edf2c9be3c946ca22dd9aad",
+   "sha256": "0671b3d1af136ba32c87ecb488b1a36b7ddd19a38af59f5d76c762f67a97ad0a",
    "role": "archive_metadata"
   },
   {
    "path": "CITATION.cff",
    "size_bytes": 1169,
-   "sha256": "4d0234b24d8025529e8dc4a1964d643634328f93e1a5b8425d97fbaf70492671",
+   "sha256": "f6f877c9fc64bcb946dde00e0182540ca0f1e94052e984b40e2e96aa68286bd3",
    "role": "citation_metadata"
   },
   {
@@ -57,13 +57,13 @@
   {
    "path": "PROVENANCE_MAP.md",
    "size_bytes": 1920,
-   "sha256": "2a8dbce9416e1366f722418f20d1cf39abbcda4fab1224fc111848a7f95bab1b",
+   "sha256": "a602c47402a72a627c5c30ca0afa5b77afa2407b1a4c73e6a10155d7ee829c78",
    "role": "documentation"
   },
   {
    "path": "README.md",
    "size_bytes": 6106,
-   "sha256": "b6429f022295a6f2c00eeb09a9c1bcd92f8ec3edc571c3e352bea568e9492f8a",
+   "sha256": "a28bb74ae2f09942355efeabda72b79d33cf3d28478c9867f130847214e7da25",
    "role": "release_readme"
   },
   {
@@ -650,8 +650,8 @@
   },
   {
    "path": "paper/performance_evaluation/README.md",
-   "size_bytes": 7215,
-   "sha256": "10100158950471cbe300b9d8aec6292ef7153f4de060ad15e23cecaa514c55a1",
+   "size_bytes": 6721,
+   "sha256": "eadcb556be2cc47a475a26399352222b5f8bbbb59fdf9b8d9ebfcecec6e95a53",
    "role": "documentation"
   },
   {

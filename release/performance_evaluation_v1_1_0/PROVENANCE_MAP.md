@@ -11,5 +11,5 @@
 | vLLM correspondence probe (Section 9) | (probe summaries only) | `experiments/real_vllm_*` | claim manifest `vllm.*` |
 | All 62 quoted numbers | `paper/performance_evaluation/scripts/build_claim_manifest.py` | all of the above | `build_claim_manifest.py --check` |
 
-Built from git commit `25da82338d13f4268e2053291f82603cb37aeefe` (branch `release/peva-v1-20260920`). Original execution commit of the fresh causal run: `38e02bcdaeb8f9cec2289b05dea9a1406318d14f`
+Built from git commit `99e03f63daf51ae29ea02af96488b88efac1dcf8` (branch `release/peva-v1-20260920`). Original execution commit of the fresh causal run: `38e02bcdaeb8f9cec2289b05dea9a1406318d14f`
 (executor script sha256 `e4ef52c38ce0412674319cdf2997f1934ab5385c031b227010eb6a913f24815b`).
