@@ -8,7 +8,7 @@ zip timestamps and metadata carry no wall-clock time.  Only *tracked* repository
 
     python3 scripts/build_performance_evaluation_release.py \
         --version 1.1.0 --tag performance-evaluation-v1.1.0 \
-        --version-doi 10.5281/zenodo.22866983 --archive-root ../llm-serving-heuristic-evolution-local-provenance
+        --archive-root ../llm-serving-heuristic-evolution-local-provenance
 
 Writes ``release/performance_evaluation_v<version>/`` and ``release/performance_evaluation_v<version>.zip``.
 Excluded on purpose: the partial ``fresh-latency-confirmatory-v1`` provenance directory (not canonical), raw

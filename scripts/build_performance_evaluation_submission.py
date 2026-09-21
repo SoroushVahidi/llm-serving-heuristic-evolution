@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate the Performance Evaluation submission package from the canonical manuscript source.
 
-    python3 scripts/build_performance_evaluation_submission.py [--version-doi 10.5281/zenodo.22866983]
+    python3 scripts/build_performance_evaluation_submission.py 
 
 The package directory ``paper/performance_evaluation/submission/`` is DELETED and rebuilt from
 
