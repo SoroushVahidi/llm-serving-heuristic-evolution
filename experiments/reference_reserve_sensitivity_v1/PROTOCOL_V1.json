@@ -1,0 +1,55 @@
+{
+    "experiment_name": "reference_reserve_sensitivity_v1",
+    "type": "pre-specified post hoc reference-reserve sensitivity analysis",
+    "description": "Sensitivity analysis of the KV reserve parameter on the fresh production latency headroom results. Evaluates reserves 0.82, 0.90, and 1.00.",
+    "baseline_reproduction_gate": {
+        "mandatory": true,
+        "reference_reserve": 0.82,
+        "expected_disagreement_states": 720,
+        "expected_beneficial_states": 590
+    },
+    "independent_recomputation": true,
+    "reserves": [0.82, 0.90, 1.00],
+    "metrics": [
+        "total_reference_decision_states",
+        "canonical_disagreement_states",
+        "P(D)",
+        "beneficial_disagreement_states",
+        "P(B_LAT | D)",
+        "state_weighted_mean_H_LAT",
+        "median_H_LAT",
+        "positive_state_median_H_LAT",
+        "equal_window_mean_H_LAT",
+        "percent_disagreement_all_alternative_harmful",
+        "action_level_positive_count",
+        "action_level_negative_count",
+        "action_level_zero_count",
+        "headroom_concentration_by_source_window",
+        "headroom_concentration_by_regime",
+        "opportunity_weighted_headroom",
+        "beneficial_decision_rate"
+    ],
+    "bootstrap": {
+        "cluster_unit": ["source_dataset", "window_index"],
+        "replicates": 2000,
+        "seed": 42
+    },
+    "interpretation_rules": [
+        "A. If 0.90 and/or 1.00 largely eliminate both P(D) and unconditional opportunity-weighted headroom: -> evidence that the original result is strongly reserve-specific.",
+        "B. If positive opportunity/headroom remains materially present: -> evidence that the result is not solely an artifact of reserve=0.82.",
+        "C. Do NOT define a numerical 'success' threshold after results. Report the complete sensitivity curve and effect sizes.",
+        "D. This experiment varies reserve only. It does NOT isolate KV-footprint ordering. Therefore do not claim it completely solves reference dependence."
+    ],
+    "artifacts_source": "experiments/fresh_production_latency_headroom_confirmatory_v1",
+    "policies": {
+        "reference": "kv_constrained_online",
+        "continuation": "kv_constrained_online",
+        "portfolio": [
+            "estimated_service_time_first",
+            "weighted_fair_share",
+            "least_laxity_first",
+            "full_prefill",
+            "chunked_prefill_small"
+        ]
+    }
+}
