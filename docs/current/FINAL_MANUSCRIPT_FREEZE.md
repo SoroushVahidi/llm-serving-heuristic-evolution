@@ -110,7 +110,7 @@ follows:
   Scheduler Portfolios" (FGCS/LNCS) manuscript PDF was removed from the tracked
   tree; its canonical copy and source records are preserved.
 - Zenodo v1.1.0: full metadata set on the existing concept-record draft
-  `22866983`; a stray empty draft `22867549` was removed. Publication was
+  `10.5281/zenodo.22865293` as an unsubmitted draft; a stray empty draft was removed. Publication was
   **blocked by a Zenodo file-upload service outage** (HTTP 405 on add, 500 on
   delete, reproduced on a throwaway draft), so **no v1.1.0 version DOI is
   asserted.** The reserved draft DOI is not treated as published. **Zenodo v1.1
