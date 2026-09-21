@@ -19,12 +19,6 @@ B.~Sun, Z.~Huang, H.~Zhao, W.~Xiao, X.~Zhang, Y.~Li, W.~Lin, Llumnix: Dynamic
   Operating Systems Design and Implementation (OSDI 24), USENIX Association,
   2024, pp. 173--191.
 
-\bibitem{sola2025}
-K.~Hong, X.~Li, L.~Chen, Q.~Mao, G.~Dai, X.~Ning, S.~Yan, Y.~Liang, Y.~Wang,
-  {SOLA}: Optimizing {SLO} attainment for large language model serving with
-  state-aware scheduling, in: Proceedings of Machine Learning and Systems,
-  Vol.~7, 2025.
-
 \bibitem{preble2025}
 V.~Srivatsa, Z.~He, R.~Abhyankar, D.~Li, Y.~Zhang, Preble: Efficient
   distributed prompt scheduling for {LLM} serving, in: The Thirteenth
@@ -35,6 +29,27 @@ D.~Zhang, J.~Han, K.~Zhang, X.~Wei, S.~Shen, C.~Fang, W.~Yu, J.~Zhou, R.~Chen,
   {LMetric}: Simple is better -- multiplication may be all you need for {LLM}
   request scheduling, in: 20th USENIX Symposium on Operating Systems Design and
   Implementation (OSDI 26), USENIX Association, 2026.
+
+\bibitem{sola2025}
+K.~Hong, X.~Li, L.~Chen, Q.~Mao, G.~Dai, X.~Ning, S.~Yan, Y.~Liang, Y.~Wang,
+  {SOLA}: Optimizing {SLO} attainment for large language model serving with
+  state-aware scheduling, in: Proceedings of Machine Learning and Systems,
+  Vol.~7, 2025.
+
+\bibitem{jitserve2026}
+W.~Zhang, Z.~Wu, Y.~Mu, R.~Ning, B.~Liu, N.~Sarda, M.~Lee, F.~Lai, {JITServe}:
+  {SLO-aware} {LLM} serving with imprecise request information, in: 23rd USENIX
+  Symposium on Networked Systems Design and Implementation (NSDI 26), USENIX
+  Association, 2026, pp. 825--848.
+
+\bibitem{adaserve2026}
+Z.~Li, Z.~Chen, R.~Delacourt, G.~Oliaro, Z.~Wang, Q.~Chen, S.~Lin, A.~Yang,
+  Z.~Zhang, Z.~Chen, Y.-H. Lai, X.~Cheng, X.~Miao, Z.~Jia, {AdaServe}:
+  Accelerating multi-{SLO} {LLM} serving with {SLO}-customized speculative
+  decoding, in: Proceedings of the 21st European Conference on Computer Systems
+  (EuroSys 26), ACM, 2026.
+\newblock \href {https://doi.org/10.1145/3767295.3769315}
+  {\path{doi:10.1145/3767295.3769315}}.
 
 \bibitem{azurepublicdataset2023}
 {Microsoft Azure}, {Azure} {LLM} inference trace 2023,

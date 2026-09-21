@@ -66,10 +66,10 @@ algorithm portfolios~\cite{rice1976algorithmselection,gomes2001portfolios},
 shows that policies differ but aggregates thousands of decisions; it cannot say
 whether an alternative was available at a given state. Policies with different
 scores can issue the same batch, and an alternative that exists may not reduce
-latency. Recent systems propose mechanisms that adapt scheduling and routing to request and
-system state~\cite{llumnix2024,sola2025,preble2025,lmetric2026}. We ask the prior
-question: \emph{when is there a different useful action to take, and how much
-is it worth?}
+latency. Recent systems propose mechanisms that adapt scheduling and routing to
+request, cache, and load state~\cite{llumnix2024,preble2025,lmetric2026}, and
+others optimize serving under request and SLO state~\cite{sola2025,jitserve2026,adaserve2026}. We ask the prior question: \emph{when is
+there a different useful action to take, and how much is it worth?}
 
 We answer it with a staged decomposition,
 \begin{equation}
@@ -181,10 +181,12 @@ preempted~\cite{sarathi2024,distserve2024,splitwise2024,fastserve2026}. Across
 instances, Llumnix migrates requests at run time, Preble and LMetric route
 requests using KV-reuse and load indicators, and Libra partitions requests into
 micro-requests~\cite{llumnix2024,preble2025,lmetric2026,libra2026}. Within an
-engine, SOLA schedules with awareness of request-level and system-level
-state~\cite{sola2025}, while Mooncake, Strata, and MorphServe address KV capacity
-through a KV-centric architecture, hierarchical context caching, and run-time
-cache resizing~\cite{mooncake2025,strata2025,morphserve2025}. DynamoLLM and
+engine, SOLA schedules with awareness of request-level and system-level state,
+JITServe allocates bandwidth just in time under imprecise request information,
+and AdaServe uses SLO-customized speculative decoding for multi-SLO
+serving~\cite{sola2025,jitserve2026,adaserve2026}. Mooncake, Strata, and
+MorphServe address KV capacity through a KV-centric architecture, hierarchical
+context caching, and run-time cache resizing~\cite{mooncake2025,strata2025,morphserve2025}. DynamoLLM and
 OpenTela operate at cluster scale, reconfiguring inference clusters to reduce
 energy and cost under latency objectives and unifying decentralized computing
 resources for LLM serving~\cite{dynamollm2025,opentela2026}.
@@ -233,8 +235,8 @@ Work & Focus & Level & Relation to this study \\
 \midrule
 ServeGen~\cite{servegen2025} & Characterization and generation of production LLM workloads & Workload model & Complements the replay traces used here; measures no scheduling action \\
 LMetric, Preble~\cite{lmetric2026,preble2025} & KV-aware and load-aware request routing & Across instances & Mechanisms whose routing states this measurement could examine \\
-OpenTela~\cite{opentela2026} & Orchestration of decentralized clusters for LLM serving & Across clusters & Operation of the serving fabric, not action opportunity \\
-Llumnix, SOLA~\cite{llumnix2024,sola2025} & Cross-instance rescheduling; state-aware iteration scheduling & Across and within instances & Adaptive mechanisms whose opportunity this measurement targets \\
+Llumnix~\cite{llumnix2024} & Cross-instance request rescheduling and migration & Across instances & Adaptive mechanism whose opportunity this measurement targets \\
+SOLA, JITServe, AdaServe~\cite{sola2025,jitserve2026,adaserve2026} & SLO-aware or state-aware scheduling and decoding & Within an engine or request & This study uses loose uniform SLOs and measures action opportunity rather than SLO-system gain \\
 Mooncake, Strata~\cite{mooncake2025,strata2025} & KV-centric architecture and scheduling; hierarchical context caching & KV placement, scheduling & KV capacity is also a pressure axis studied here \\
 Jaillet et al.~\cite{jaillet2025online} & Online scheduling under a KV-cache memory limit, with competitive-ratio analysis & Within an engine & Analytical counterpart of the KV axis; hindsight benchmark \\
 This study & Existence and one-step counterfactual value of alternative actions & Within one engine, per step & --- \\
