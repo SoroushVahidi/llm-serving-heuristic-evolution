@@ -1,0 +1,34 @@
+{
+  "cluster_results_dir": "/mmfs1/scratch/ikoutis/sv96/reference_reserve_sensitivity_v1/results",
+  "description": "sha256 of the completed reference_reserve_sensitivity_v1 result files (Slurm jobs 1303715/1303716/1303717, implementation commit 8addcdb1368f9cb3057d5d3823c8a273e52dcc1f). Recorded before the denominator-completion pass; identical on the cluster and in the local copy.",
+  "protocol_sha256": "97b06cf1c96fe6b3f84aaf4355643192a0b400ce206f4c7c041b95d6bc417439",
+  "schema_version": "reference_reserve_sensitivity_v1.existing_result_hashes.0.0",
+  "sha256_by_relative_path": {
+    "reserve_082/action_effects.csv": "349ca8e5eb0541c53dc5e5bbbcc477e60d751e2bf09469c8224be184c711f911",
+    "reserve_082/bootstrap_summary.json": "7754ec20bd7a89d4e4dbfe4ab5c6a7fa18be80dffd896db7bafbc9f73c328e6e",
+    "reserve_082/disagreement_states.csv": "2eb9b0b0cd112be7a634cba4e203ee0b385540b7ebf01169870bb809df964684",
+    "reserve_082/execution_provenance.json": "dd23593fc6f54b3b2e496362c347d9ce301fa3dcd625abf8f749cbe06aab53c8",
+    "reserve_082/regime_summary.csv": "f8421d8f1acf2b3f66590ca7721d3b63c34f9770137e304dcabfbe9975a4c1e6",
+    "reserve_082/result_summary.json": "683b7d0d3f960c857920695fce32b3282dc5f2be76a0972829b5df7b01cb4b2f",
+    "reserve_082/window_summary.csv": "f5a53658dbdcf821d2ad17ba864d01749db205ac35ff75f0ab288176f12213ea",
+    "reserve_090/action_effects.csv": "1aa173680c6e0b9d0f237b243804fe4873cbc54be4c67928c5111fc48aab0a5b",
+    "reserve_090/bootstrap_summary.json": "7c2aef595281e625da26fb8ca315ee542ecb287a7b33b7ee9c7f84cfba6b906a",
+    "reserve_090/disagreement_states.csv": "a043490952a423012368b79ed6851b4eab21a16a93d0987b501c811588f23095",
+    "reserve_090/execution_provenance.json": "c2421325ad0000cbec139db849b69e4620af07d1b0bb37f58e499b9eb98e45db",
+    "reserve_090/regime_summary.csv": "34754282ae4d29b2c21b419d970d71c45334a263cb03bb7d5966038819b75eef",
+    "reserve_090/result_summary.json": "d4ccadb1123014d730cb45c0661dfb2e4ac85c57da75a5bdfd73b8b434f27f15",
+    "reserve_090/window_summary.csv": "8d82889f80b26cc318fc4f39507f279b185f85a06abb37d53d61174467c77557",
+    "reserve_100/action_effects.csv": "87e3c04a399dd6c81a4ad53e6521829cbdabb3a4748a05dc75ed2f87d201f0c4",
+    "reserve_100/bootstrap_summary.json": "4938a4066dfc953588b6c21a576dc412347ce53218820209aed0b81134414eed",
+    "reserve_100/disagreement_states.csv": "cd80b744eb0c00d06d5400c204e03684a401372b6596d1e1c9408b845d6126e4",
+    "reserve_100/execution_provenance.json": "2f86e4ac19097fd94985643afb7e3539b7fbdbd9fb23d6141f032a0e480b7032",
+    "reserve_100/regime_summary.csv": "e84facefff0c16f75ad02045cfffe48f387bce7ad109ecfe713e322c3851e96c",
+    "reserve_100/result_summary.json": "62f3ad8666f87a1ae06176458dc6bdd16e6cbbfe3e19d66e9bec5b3fed664ef0",
+    "reserve_100/window_summary.csv": "fa392b515c2776da34b62ce531835f4cdb6144fa91e6e10b342120efa72cb8ab"
+  },
+  "slurm_jobs": {
+    "0.82": 1303715,
+    "0.90": 1303716,
+    "1.00": 1303717
+  }
+}
