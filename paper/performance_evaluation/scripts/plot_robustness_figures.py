@@ -45,7 +45,7 @@ def main() -> None:
         a.step(np.concatenate([[0], xs]), np.concatenate([[0], np.arange(1, len(xs) + 1) / len(xs)]), where="post", **kw)
 
     ecdf(ax[0], H, color="black", lw=1.8, label=f"All {n} states")
-    ecdf(ax[0], H_wo, color="0.45", lw=1.6, ls="--", label=f"Without w11 ({len(H_wo)} states)")
+    ecdf(ax[0], H_wo, color="0.35", lw=1.7, ls=(0, (4.5, 2.2)), label=f"Without w11 ({len(H_wo)} states)")
     med, mean = N["dist"]["median_ms"], N["dist"]["mean_ms"]
     ax[0].axvline(med, color="black", lw=1.0, ls=":")
     ax[0].axvline(mean, color="black", lw=1.0, ls="-.")
@@ -59,7 +59,7 @@ def main() -> None:
     ax[0].set_xlabel("Oracle headroom $H_{\\mathrm{LAT}}$ (sim. ms)")
     ax[0].set_ylabel("Share of states with $H_{\\mathrm{LAT}} \\leq x$")
     ax[0].set_title("(a) Distribution across states")
-    ax[0].legend(loc="lower right", frameon=True, framealpha=0.95, edgecolor="0.7")
+    ax[0].legend(loc="lower right", frameon=True, framealpha=0.95, edgecolor="0.7", borderpad=0.4, labelspacing=0.3, handlelength=1.8, borderaxespad=0.3)
 
     # ---------------------------------------------------------------- (b) concentration by window
     top = [r for r in cw[:3]]

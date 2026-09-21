@@ -103,11 +103,11 @@ def figure5(R):
                      title_fontsize=7, borderpad=0.7, labelspacing=0.5)
     ax.add_artist(leg1)
     # explicit marker-area key drawn in axes coordinates (circle area = area * headroom)
-    ax.add_patch(Rectangle((0.27, 0.69), 0.38, 0.30, transform=ax.transAxes, facecolor="white", edgecolor="0.7", linewidth=0.8, zorder=2))
-    ax.text(0.46, 0.955, "Marker area = mean headroom", transform=ax.transAxes, ha="center", va="center", fontsize=7, zorder=3)
+    ax.add_patch(Rectangle((0.27, 0.62), 0.38, 0.37, transform=ax.transAxes, facecolor="white", edgecolor="0.7", linewidth=0.8, zorder=2))
+    ax.text(0.46, 0.925, "Marker area = mean\nheadroom (sim. ms)", transform=ax.transAxes, ha="center", va="center", fontsize=7, linespacing=1.15, zorder=3)
     for xc, v in zip((0.34, 0.46, 0.58), (0.1, 1.0, 3.0)):
-        ax.scatter([xc], [0.85], s=area * v, transform=ax.transAxes, facecolor="0.75", edgecolor="black", linewidth=0.9, zorder=3, clip_on=False)
-        ax.text(xc, 0.735, f"{v:g} ms", transform=ax.transAxes, ha="center", va="center", fontsize=7, zorder=3)
+        ax.scatter([xc], [0.775], s=area * v, transform=ax.transAxes, facecolor="0.75", edgecolor="black", linewidth=0.9, zorder=3, clip_on=False)
+        ax.text(xc, 0.655, f"{v:g}", transform=ax.transAxes, ha="center", va="center", fontsize=7, zorder=3)
     fs.fit(fig)
     fs.save(fig, "pe_regime_map")
 

@@ -249,11 +249,11 @@ act, and their relation to the present measurement.}
 Work & Focus & Level & Relation to this study \\
 \midrule
 ServeGen~\cite{servegen2025} & Characterization and generation of production LLM workloads & Workload model & Complements the replay traces used here; measures no scheduling action \\
-LMetric, Preble~\cite{lmetric2026,preble2025} & KV-aware and load-aware request routing & Across instances & Mechanisms whose routing states this measurement could examine \\
+LMetric, Preble \mbox{\cite{lmetric2026,preble2025}} & KV-aware and load-aware request routing & Across instances & Mechanisms whose routing states this measurement could examine \\
 Llumnix~\cite{llumnix2024} & Cross-instance request rescheduling and migration & Across instances & Adaptive mechanism whose opportunity this measurement targets \\
-SOLA, JITServe, AdaServe~\cite{sola2025,jitserve2026,adaserve2026} & SLO-aware or state-aware scheduling and decoding & Within an engine or request & This study uses loose uniform SLOs and measures action opportunity rather than SLO-system gain \\
-Mooncake, Strata~\cite{mooncake2025,strata2025} & KV-centric architecture and scheduling; hierarchical context caching & KV placement, scheduling & KV capacity is also a pressure axis studied here \\
-Jaillet et al.~\cite{jaillet2025online} & Online scheduling under a KV-cache memory limit, with competitive-ratio analysis & Within an engine & Analytical counterpart of the KV axis; hindsight benchmark \\
+SOLA, JITServe, AdaServe \mbox{\cite{sola2025,jitserve2026,adaserve2026}} & SLO-aware or state-aware scheduling and decoding & Within an engine or request & This study uses loose uniform SLOs and measures action opportunity rather than SLO-system gain \\
+Mooncake, Strata \mbox{\cite{mooncake2025,strata2025}} & KV-centric architecture and scheduling; hierarchical context caching & KV placement, scheduling & KV capacity is also a pressure axis studied here \\
+Jaillet et~al. \mbox{\cite{jaillet2025online}} & Online scheduling under a KV-cache memory limit, with competitive-ratio analysis & Within an engine & Analytical counterpart of the KV axis; hindsight benchmark \\
 This study & Existence and one-step counterfactual value of alternative actions & Within one engine, per step & --- \\
 \bottomrule
 \end{tabularx}
@@ -631,7 +631,7 @@ All selected regimes & 720 & 36 & --- & 81.9 & 1.996 & 100.00 \\
 Table~\ref{tab:fresh}. Horizontal axis: disagreement prevalence $P(D)$ in
 percent (logarithmic scale). Vertical axis: beneficial share
 $P(B_{\mathrm{LAT}}\mid D)$, which counts any positive headroom (regime 5, at
-100\%, has a mean headroom of 0.24~ms). Marker area is proportional to the mean
+100\%, has a mean headroom of 0.24~sim.~ms). Marker area is proportional to the mean
 oracle headroom; fill denotes the pressure axis.}
 \label{fig:regimemap}
 \end{figure}
@@ -708,7 +708,7 @@ and a few windows (last two columns).
 \centering
 \small
 \caption{Post hoc practical-effect thresholds: disagreement states whose oracle
-headroom $H_{\mathrm{LAT}}$ exceeds each threshold. The first row is the
+headroom $H_{\mathrm{LAT}}$ exceeds each threshold (simulated ms). The first row is the
 pre-specified criterion; the second excludes one floating-point-residue state
 with a $10^{-12}$~s guard. ``Windows'' counts the windows (of 36) with at least
 one such state; ``In KV 16,000'' counts states from the Azure-code
@@ -776,12 +776,11 @@ under the strict $>0$ criterion. The state-weighted interval is the
 confirmatory one (2,000 replicates); the others are window-clustered
 percentile bootstrap intervals with 200,000 replicates (Section~\ref{sec:posthoc}).}
 \label{tab:sensitivity}
-\footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{@{}llccc@{}}
 \toprule
-Estimand & Units & Mean (sim.~ms) & 95\% CI (sim.~ms) & Share \\
+Estimand & Units & \shortstack{Mean\\(sim.~ms)} & \shortstack{95\% CI\\(sim.~ms)} & Share \\
 \midrule
 State-weighted (pre-specified) & 720 states & 1.996 & [0.191, 3.546] & 0.819 \\
 Equal-workload & 2 workloads & 1.360 & [0.184, 2.094] & 0.809 \\
