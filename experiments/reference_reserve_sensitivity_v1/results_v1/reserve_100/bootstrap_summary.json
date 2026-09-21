@@ -1,0 +1,8 @@
+{
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 42,
+  "ci_available": true,
+  "clusters": 32,
+  "mean_oracle_headroom_ci95_high": 0.0002323866232386388,
+  "mean_oracle_headroom_ci95_low": 4.182182764894477e-05
+}

@@ -1,0 +1,59 @@
+{
+  "amendment_sha256": "c58734e974b8c2cbfca8cb3dcdff5a3aac392abe2e99d5f035427cce13793073",
+  "classification": "POST_HOC_DENOMINATOR_COMPLETION",
+  "disagreement_gate_by_reserve": {
+    "0.82": {
+      "decision_vs_step_call_mismatches": [],
+      "n_per_scenario_mismatches": 0,
+      "per_scenario_mismatches": [],
+      "scenarios": 100,
+      "status": "PASS",
+      "total_counted": 720,
+      "total_expected": 720
+    },
+    "0.90": {
+      "decision_vs_step_call_mismatches": [],
+      "n_per_scenario_mismatches": 0,
+      "per_scenario_mismatches": [],
+      "scenarios": 100,
+      "status": "PASS",
+      "total_counted": 466,
+      "total_expected": 466
+    },
+    "1.00": {
+      "decision_vs_step_call_mismatches": [],
+      "n_per_scenario_mismatches": 0,
+      "per_scenario_mismatches": [],
+      "scenarios": 100,
+      "status": "PASS",
+      "total_counted": 198,
+      "total_expected": 198
+    }
+  },
+  "duration_by_reserve_s": {
+    "0.82": 450.2,
+    "0.90": 449.2,
+    "1.00": 449.4
+  },
+  "duration_s": 1349.0,
+  "existing_results_dir": "/mmfs1/scratch/ikoutis/sv96/reference_reserve_sensitivity_v1/results",
+  "existing_results_verified_files": 21,
+  "git_dirty_tracked_files": [],
+  "git_head": "ec1996354de0304dd6ea521c5d584a838401b06a",
+  "hostname": "n0006",
+  "no_counterfactual_execution": true,
+  "platform": "Linux-5.14.0-503.11.1.el9_5.x86_64-x86_64-with-glibc2.34",
+  "protocol_sha256": "97b06cf1c96fe6b3f84aaf4355643192a0b400ce206f4c7c041b95d6bc417439",
+  "python": "3.11.16",
+  "reserves": [
+    0.82,
+    0.9,
+    1.0
+  ],
+  "runner_sha256": "d7c2b2985828a9eef52e1067ad12fd6a945da77c49f0e15cc797eed90e7c2427",
+  "schema_version": "reference_reserve_denominator_completion_v1.0.0",
+  "sensitivity_runner_sha256": "555337c1435200a1af082a814ffd518c072f3cdce9d7bc18c4e183798f75e56c",
+  "slurm_job_id": "1303832",
+  "stage": "count",
+  "started_epoch": 1790028576.6992493
+}

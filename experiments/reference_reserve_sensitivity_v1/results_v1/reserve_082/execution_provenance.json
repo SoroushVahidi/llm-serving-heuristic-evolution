@@ -1,0 +1,8 @@
+{
+  "duration_s": 742.3405859470367,
+  "git_head": "8addcdb1368f9cb3057d5d3823c8a273e52dcc1f",
+  "platform": "Linux-5.14.0-503.11.1.el9_5.x86_64-x86_64-with-glibc2.34",
+  "python": "3.11.16",
+  "reserve": 0.82,
+  "schema_version": "reference_reserve_sensitivity_v1.provenance.0.0"
+}
