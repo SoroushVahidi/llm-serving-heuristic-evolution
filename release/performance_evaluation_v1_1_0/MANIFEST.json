@@ -4,10 +4,10 @@
  "release": {
   "version": "1.1.0",
   "tag": "performance-evaluation-v1.1.0",
-  "git_commit": "bba9269d7346d606243210dc574c7d7d59a37341",
-  "git_commit_date": "2026-09-20T23:50:41-04:00",
+  "git_commit": "531e3611815a40a19faca3a3544e2a0892a4fd58",
+  "git_commit_date": "2026-09-20T23:56:05-04:00",
   "built_from_branch": "release/peva-v1-20260920",
-  "included_paths_clean_at_build": true
+  "included_paths_clean_at_build": false
  },
  "identifiers": {
   "v1_doi": "10.5281/zenodo.22865294",
@@ -63,7 +63,7 @@
   {
    "path": "README.md",
    "size_bytes": 6266,
-   "sha256": "bdc5ec33990cf6847f54df0d45a21d8ac76654203311d6ea7665be08d686379a",
+   "sha256": "be1f442b12dc5c5242946e8899a091cee22e77a708c4fbce2588462d4ae4d9c9",
    "role": "release_readme"
   },
   {
@@ -728,20 +728,20 @@
   },
   {
    "path": "paper/performance_evaluation/main.bbl",
-   "size_bytes": 8377,
-   "sha256": "8930510a3ef708816c71a1d8cf17c691440e3c2d2178bf1d0089953b719e09ab",
+   "size_bytes": 8489,
+   "sha256": "b2b99e1f682d2e1e93a70054e3a82efb12b450d44b371d4883aad25f4f13b215",
    "role": "manuscript_source"
   },
   {
    "path": "paper/performance_evaluation/main.tex",
-   "size_bytes": 59166,
-   "sha256": "c3f4b01676e519d88a1ba473c6304fb69201b09344edfe78e57e4710b5811c23",
+   "size_bytes": 59221,
+   "sha256": "e97b5a645cb267a1d64f397518980558449b7ad09faa49c3b5f104fb58733e42",
    "role": "manuscript_source"
   },
   {
    "path": "paper/performance_evaluation/references.bib",
-   "size_bytes": 11037,
-   "sha256": "c244370c47c8ea3d9d92a61aec21786a6c6667f1bbd1975505aeabbed16419c5",
+   "size_bytes": 10972,
+   "sha256": "fbae5cb48b7a41ffe5e2bdcc139d478ed2150426d11ebb10f47eb68611303fdd",
    "role": "manuscript_source"
   },
   {
@@ -794,8 +794,8 @@
   },
   {
    "path": "paper/when_does_llm_serving_scheduler_adaptation_matter.pdf",
-   "size_bytes": 523947,
-   "sha256": "00a43fb428f61bdbc86db6dd1accd79598c74fcbfd4672cff48a03a11cf8fdf1",
+   "size_bytes": 524092,
+   "sha256": "985e085de8ffce5301bef947c9921a8b23d488d9938b81803c4d75324b4d9d27",
    "role": "manuscript_pdf"
   },
   {
