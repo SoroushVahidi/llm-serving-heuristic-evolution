@@ -15,7 +15,7 @@ Under abundant resources, replay is action-null in about one million decision st
 
 We believe the work fits Performance Evaluation because its contribution is methodological: how to measure, stage by stage, whether a scheduling decision has anything to act on, and how to report the size, sign and distribution of an effect rather than a single mean, using production-derived workloads.
 
-All code, frozen preregistered artifacts, robustness outputs and a manifest that recomputes every quoted number are archived on Zenodo (https://doi.org/10.5281/zenodo.22866983) and available on GitHub; raw third-party traces are obtained from their upstream sources. The archive also supplies a corrected derivative of two descriptive columns of one frozen file, alongside the unchanged original; no reported result depends on those columns.
+All code, frozen preregistered artifacts, robustness outputs and a manifest that recomputes every quoted number are archived on Zenodo (record 22865294; v1.0.0: https://doi.org/10.5281/zenodo.22865294; the v1.1.0 version covering the robustness analysis and the corrected derivative is published in the same record under its Zenodo-assigned DOI) and available on GitHub; raw third-party traces are obtained from their upstream sources. The archive also supplies a corrected derivative of two descriptive columns of one frozen file, alongside the unchanged original; no reported result depends on those columns.
 
 This manuscript is not under consideration for publication elsewhere. I am the sole author and the corresponding author.
 
