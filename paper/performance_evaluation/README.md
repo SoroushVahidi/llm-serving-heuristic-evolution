@@ -11,6 +11,11 @@ reproducibility archive (in `release/performance_evaluation_v1_1_0/`) are
 regenerated from this source and verified. The Zenodo v1.1.0 version is staged
 in the concept record; its publication was pending on the Zenodo file-upload
 service at finalization time, so no v1.1.0 version DOI is asserted.
+TODO(QUERY_8): ZENODO_NEW_VERSION remains open: the v1.1.0 version is staged in the
+concept record but not yet published (publication was blocked by a Zenodo
+file-upload service outage at finalization). Once it publishes and the version DOI
+resolves publicly, update the DOI, add/confirm the dataset-software reference and
+regenerate the claim manifest.
 
 ## Canonical source
 
