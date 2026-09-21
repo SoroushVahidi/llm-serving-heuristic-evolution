@@ -101,8 +101,7 @@ def test_peva_references_present_cited_and_metadata_pinned(tex):
     bib = BIB.read_text()
     for key, vol, page, doi in (("yildiz2026dispatching", "172", "102551", "10.1016/j.peva.2026.102551"),
                                 ("liang2026lilou", "171", "102539", "10.1016/j.peva.2025.102539"),
-                                ("choudhury2025job", "167", "102463", "10.1016/j.peva.2024.102463"),
-                                ("ali2025enabling", "167", "102451", "10.1016/j.peva.2024.102451")):
+                                ("choudhury2025job", "167", "102463", "10.1016/j.peva.2024.102463")):
         entry = re.search(r"@article\{" + key + r",(.*?)\n\}", bib, re.S).group(1)
         assert "Performance Evaluation" in entry and f"volume = {{{vol}}}" in entry and f"pages = {{{page}}}" in entry and doi in entry, key
         assert f"\\cite{{{key}}}" in tex or key in ",".join(re.findall(r"\\cite\{([^}]*)\}", tex)), key

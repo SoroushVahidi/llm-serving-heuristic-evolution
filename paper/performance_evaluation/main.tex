@@ -190,7 +190,12 @@ JITServe allocates bandwidth just in time under imprecise request information,
 and AdaServe uses SLO-customized speculative decoding for multi-SLO
 serving~\cite{sola2025,jitserve2026,adaserve2026}. Mooncake, Strata, and
 MorphServe address KV capacity through a KV-centric architecture, hierarchical
-context caching, and run-time cache resizing~\cite{mooncake2025,strata2025,morphserve2025}. DynamoLLM and
+context caching, and run-time cache resizing~\cite{mooncake2025,strata2025,morphserve2025}.
+Three recent mechanisms tie the scheduling decision to memory or load pressure:
+Apt-Serve changes batch composition over a hybrid KV and hidden-state cache under
+GPU-memory limits, PKAS regulates admission using predicted future KV-cache
+demand, and P-PAS adapts vLLM's batched-token budget to concurrent prefill and
+decode pressure~\cite{aptserve2025,pkas2026,ppas2026}. DynamoLLM and
 OpenTela operate at cluster scale, reconfiguring inference clusters to reduce
 energy and cost under latency objectives and unifying decentralized computing
 resources for LLM serving~\cite{dynamollm2025,opentela2026}.
@@ -198,31 +203,37 @@ resources for LLM serving~\cite{dynamollm2025,opentela2026}.
 \emph{Workloads.} BurstGPT and the Azure traces are the production-derived
 workloads replayed here~\cite{burstgpt2025,azurepublicdataset2023}. ServeGen
 characterizes production LLM workloads and generates new
-ones~\cite{servegen2025}, and Nixon et al. study workload evolution, caching, and
+ones~\cite{servegen2025}, and Nixon et al.\ study workload evolution, caching, and
 load balancing over a year of production traffic~\cite{yearllmserving2026}.
 
 \emph{Analysis and simulation.} Analytical work studies online scheduling under
 a KV-cache memory limit, with competitive-ratio analysis and a hindsight-optimal
-benchmark~\cite{jaillet2025online}, and the use of service-time predictions in
-queueing-based scheduling, with LLM serving as a central
-application~\cite{mitzenmacher2025queueing}. Simulators such as Vidur predict
+benchmark~\cite{jaillet2025online}; throughput-optimal and SLO-aware scheduler
+design for two-phase LLM inference~\cite{bari2025optimal}; and the use of
+service-time predictions in queueing-based scheduling, with LLM serving as a
+central application~\cite{mitzenmacher2025queueing}. Beyond Prediction studies
+tail-aware scheduling that is robust to prediction error, burstiness, and memory
+pressure~\cite{beyondprediction2026}; this study takes mean latency as its
+primary endpoint and gives several policies exact output lengths, so it does not
+evaluate that problem. Simulators such as Vidur predict
 latency from profiled operator costs~\cite{vidur2024}; the simulator used here
 is not calibrated in that way (Section~\ref{sec:workloads}).
 
-The question here precedes these works: in a fixed workload and resource regime,
-do a fixed reference scheduler and its alternatives expose different executable
-actions at all, and does forcing one alternative have reference-relative causal
-value? The hindsight benchmark of Jaillet et al. is the closest analytical
-counterpart; it compares an online algorithm with a hindsight-optimal integer
-program, whereas the measurement here is empirical, one-step, and tied to the
-states a specific reference visits in replay. Recent papers in
-\emph{Performance Evaluation} address neighboring problems: job assignment in
-machine-learning inference systems with accuracy
+The question here is upstream of policy design. The systems above design
+mechanisms that exploit state or resource dependence, and the analytical works
+analyze or optimize scheduling policies; Jaillet et al.\ are especially close on
+KV-cache-constrained online scheduling and hindsight comparison, and Bari et al.\ on
+throughput-optimal, SLO-aware scheduler design. This study instead measures,
+in a fixed workload and resource regime, whether a fixed reference scheduler and
+its alternatives expose different executable actions at all, and whether forcing
+one alternative has reference-relative causal value; the measurement is
+empirical, one-step, and tied to the states a specific reference visits in
+replay. Recent papers in \emph{Performance Evaluation} address neighboring
+problems: job assignment in machine-learning inference systems with accuracy
 constraints~\cite{choudhury2025job}, dispatching policies in data-center
 clusters studied on Google and Alibaba workloads~\cite{yildiz2026dispatching},
-resource-aware latency prediction for GPU-accelerated model
-serving~\cite{liang2026lilou}, and adaptive machine-learning training on
-serverless clouds~\cite{ali2025enabling}. Table~\ref{tab:closest} summarizes the
+and resource-aware latency prediction for GPU-accelerated model
+serving~\cite{liang2026lilou}. Table~\ref{tab:closest} summarizes the
 systems closest to this measurement.
 
 \begin{table*}[tbp]

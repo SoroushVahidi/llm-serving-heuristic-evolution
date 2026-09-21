@@ -26,9 +26,9 @@ V.~Srivatsa, Z.~He, R.~Abhyankar, D.~Li, Y.~Zhang, Preble: Efficient
 
 \bibitem{lmetric2026}
 D.~Zhang, J.~Han, K.~Zhang, X.~Wei, S.~Shen, C.~Fang, W.~Yu, J.~Zhou, R.~Chen,
-  {LMetric}: Simple is better -- multiplication may be all you need for {LLM}
-  request scheduling, in: 20th USENIX Symposium on Operating Systems Design and
-  Implementation (OSDI 26), USENIX Association, 2026.
+  Simple is better: Multiplication may be all you need for {LLM} request
+  scheduling, in: 20th USENIX Symposium on Operating Systems Design and
+  Implementation (OSDI 26), USENIX Association, 2026, pp. 55--73.
 
 \bibitem{sola2025}
 K.~Hong, X.~Li, L.~Chen, Q.~Mao, G.~Dai, X.~Ning, S.~Yan, Y.~Liang, Y.~Wang,
@@ -118,12 +118,33 @@ R.~Qin, Z.~Li, W.~He, J.~Cui, F.~Ren, M.~Zhang, Y.~Wu, W.~Zheng, X.~Xu,
 \bibitem{strata2025}
 Z.~Xie, Z.~Xu, M.~Zhao, Y.~An, V.~S. Mailthody, S.~Mahlke, M.~Garland,
   C.~Kozyrakis, Strata: Hierarchical context caching for long context language
-  model serving, arXiv preprint arXiv:2508.18572 (2025).
+  model serving, in: 20th USENIX Symposium on Operating Systems Design and
+  Implementation (OSDI 26), USENIX Association, 2026, pp. 1--16.
 
 \bibitem{morphserve2025}
 Z.~Su, Z.~Zhang, T.~Lan, Z.~Wang, H.~Shen, J.~Yang, Y.~Cheng, {MorphServe}:
   Efficient and workload-aware {LLM} serving via runtime quantized layer
-  swapping and {KV} cache resizing, arXiv preprint arXiv:2506.02006 (2025).
+  swapping and {KV} cache resizing, in: Proceedings of Machine Learning and
+  Systems, Vol.~8, 2026.
+
+\bibitem{aptserve2025}
+S.~Gao, X.~Zhang, Y.~Shen, L.~Chen, {Apt-Serve}: Adaptive request scheduling on
+  hybrid cache for scalable {LLM} inference serving, Proceedings of the ACM on
+  Management of Data 3~(3) (2025) 1--28.
+\newblock \href {https://doi.org/10.1145/3725394} {\path{doi:10.1145/3725394}}.
+
+\bibitem{pkas2026}
+J.~Ye, A.~Maurya, K.~T. Chitty-Venkata, B.~Nicolae, A.~Kougkas, X.-H. Sun,
+  {PKAS}: Predictive {KVCache-Aware} scheduling for faster {LLM} and
+  transformer inferences, in: Proceedings of the 35th International Symposium
+  on High-Performance Parallel and Distributed Computing (HPDC 26), ACM, 2026,
+  pp. 402--414.
+\newblock \href {https://doi.org/10.1145/3806645.3807819}
+  {\path{doi:10.1145/3806645.3807819}}.
+
+\bibitem{ppas2026}
+T.~S{\"a}mann, {P-PAS}: Prefill-pressure adaptive scheduling for long-context
+  {LLM} serving, arXiv preprint arXiv:2608.15171 (2026).
 
 \bibitem{dynamollm2025}
 J.~Stojkovic, C.~Zhang, I.~Goiri, J.~Torrellas, E.~Choukse, {DynamoLLM}:
@@ -156,11 +177,23 @@ P.~Jaillet, J.~Jiang, K.~Mellou, M.~Molinaro, C.~Podimata, Z.~Zhou, Online
   scheduling for {LLM} inference with {KV} cache constraints, arXiv preprint
   arXiv:2502.07115 (2025).
 
+\bibitem{bari2025optimal}
+A.~Bari, P.~Hegde, G.~de~Veciana, Optimal scheduling algorithms for {LLM}
+  inference: Theory and practice, Proceedings of the ACM on Measurement and
+  Analysis of Computing Systems 9~(3) (2025) 1--43.
+\newblock \href {https://doi.org/10.1145/3771574} {\path{doi:10.1145/3771574}}.
+
 \bibitem{mitzenmacher2025queueing}
 M.~Mitzenmacher, R.~Shahout, Queueing, predictions, and large language models:
   Challenges and open problems, Stochastic Systems 15~(3) (2025) 195--219.
 \newblock \href {https://doi.org/10.1287/stsy.2025.0106}
   {\path{doi:10.1287/stsy.2025.0106}}.
+
+\bibitem{beyondprediction2026}
+Y.~Li, Y.~Chen, J.~Chen, E.~Choukse, H.~Qiu, G.~E. Suh, R.~Fonseca, Z.~Scully,
+  U.~Gupta, Beyond prediction: Tail-aware scheduling for {LLM} inference, in:
+  Proceedings of the 43rd International Conference on Machine Learning (ICML
+  2026), 2026, also available as arXiv:2606.18431.
 
 \bibitem{vidur2024}
 A.~Agrawal, N.~Kedia, J.~Mohan, A.~Panwar, N.~Kwatra, B.~S. Gulavani,
@@ -186,13 +219,6 @@ Q.~Liang, H.~Wang, P.~Shenoy, Lilou: Resource-aware model-driven latency
   (2026) 102539.
 \newblock \href {https://doi.org/10.1016/j.peva.2025.102539}
   {\path{doi:10.1016/j.peva.2025.102539}}.
-
-\bibitem{ali2025enabling}
-A.~Ali, X.~Ma, S.~Zawad, P.~Aditya, I.~E. Akkus, R.~Chen, L.~Yang, F.~Yan,
-  Enabling scalable and adaptive machine learning training via serverless
-  computing on public cloud, Performance Evaluation 167 (2025) 102451.
-\newblock \href {https://doi.org/10.1016/j.peva.2024.102451}
-  {\path{doi:10.1016/j.peva.2024.102451}}.
 
 \bibitem{satzilla2008}
 L.~Xu, F.~Hutter, H.~H. Hoos, K.~Leyton-Brown, {SATzilla}: Portfolio-based
