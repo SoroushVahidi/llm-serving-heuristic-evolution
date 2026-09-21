@@ -4,13 +4,16 @@ Research code for **online LLM-inference serving scheduler portfolios**: when
 should a serving system switch between (rather than re-combine) scheduling
 policies as workload pressure changes?
 
-The repository contains a GPU-calibrated discrete-event simulator, a library of
+The repository contains a discrete-event serving simulator with several
+service-model configurations (including GPU-calibrated variants), a library of
 internal scheduling policies, faithful external-scheduler integrations
 (Apt-Serve, VTC, PARS, and others), trace-based counterfactual evaluation on
 public workload corpora, contextual policy-selection models, and instrumented
-real-vLLM mechanism validation. The primary metric throughout is
-`arrival_normalized_weighted_goodput` (ANWG): weighted SLO goodput normalized
-by all arriving requests.
+real-vLLM mechanism validation. The scheduler-selection studies in this project
+use `arrival_normalized_weighted_goodput` (ANWG), weighted SLO goodput
+normalized by all arriving requests, as their primary metric. The Performance
+Evaluation manuscript described below is a separate study with its own
+simulator configuration and endpoint (see its scope note).
 
 ## Current Journal Manuscript
 
@@ -41,6 +44,20 @@ regenerated in this repository and verified against the frozen manuscript.
 - Zenodo: the v1.0.0 archive is published at `10.5281/zenodo.22865294`
   (concept `10.5281/zenodo.22865293`). The v1.1.0 reproducibility archive is
   published at `10.5281/zenodo.22866983`.
+- Scope of the manuscript's simulator and metric. This repository contains
+  multiple simulator configurations, including GPU-calibrated variants. The
+  Performance Evaluation study uses the specific configuration described in its
+  Methods: one simulated GPU with a fixed 1 ms step and no hardware-calibrated
+  service curves, so its absolute latencies (for example the 1.9958 ms mean
+  headroom) are simulator time, not hardware latency measurements. Its primary
+  confirmatory endpoint is one-step continuation latency headroom; ANWG is the
+  primary metric of the earlier selector studies and was not recorded in the
+  fresh causal execution.
+- Terminology: the manuscript calls the fresh causal protocol *pre-specified*,
+  not *preregistered*, because it was time-stamped in an author-controlled Git
+  repository rather than in an external registry. The artifact file names
+  `PREREGISTRATION_V1.json` and `PHASE_B_V2_PREREGISTRATION.json` keep their
+  historical names so that frozen provenance is not altered.
 
 ## Research Problem
 
@@ -87,8 +104,8 @@ From the joint-240 scenario suite (paper and `docs/audits/`):
 
 The repository deliberately separates two kinds of evidence:
 
-- **Trace-based counterfactual evaluation** — GPU-calibrated discrete-event
-  simulation and replay of public trace corpora (e.g., Public Trace Corpus
+- **Trace-based counterfactual evaluation** — discrete-event simulation
+  (including GPU-calibrated configurations) and replay of public trace corpora (e.g., Public Trace Corpus
   v1) under alternative scheduler policies. Cheap, controlled, and
   reproducible, but simulator-based.
 - **Real-system validation** — instrumented local vLLM runs (e.g., Qwen2.5

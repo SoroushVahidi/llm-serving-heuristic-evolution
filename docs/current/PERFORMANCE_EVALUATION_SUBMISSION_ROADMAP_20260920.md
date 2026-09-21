@@ -104,7 +104,7 @@ These results are frozen. No new experiments are required for PE submission.
 - **Bootstrap correction (complete):** cluster key corrected from bare
   `window_index` (26 merged integer clusters) to
   `(source_dataset, window_index)` (36 clusters) to implement the
-  pre-registered "faithful source window" unit. All point estimates, regimes,
+  pre-specified "faithful source window" unit. All point estimates, regimes,
   seed, replicates, and the confirmatory verdict are unchanged. See
   `experiments/fresh_production_latency_headroom_confirmatory_v1/BOOTSTRAP_CLUSTER_KEY_CORRECTION_20260920.md`.
 - **ANWG objective sensitivity:** terminal ANWG saturated at 1.0, demonstrating

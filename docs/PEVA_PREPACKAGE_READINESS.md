@@ -5,7 +5,7 @@ Audit date: 2026-09-20. Branch `manuscript/peva-final-visual-freeze-20260920`, c
 Target journal: *Performance Evaluation* (Elsevier). Source: `paper/performance_evaluation/main.tex`
 (`elsarticle`, preprint, 12 pt; 30 pages, letter paper, text width 390 pt = 5.40 in).
 
-No experiment was run, no scientific result, artifact or preregistered analysis was changed, and neither Zenodo, `main`
+No experiment was run, no scientific result, artifact or pre-specified analysis was changed, and neither Zenodo, `main`
 nor the submission package was touched.
 
 FINAL_VERDICT: MANUSCRIPT_READY_FOR_ARCHIVE_AND_PACKAGING

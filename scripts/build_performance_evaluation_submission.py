@@ -102,7 +102,7 @@ def checklist(tex: str, f: dict, hl: list[str], version_doi: str, zip_sha: str, 
     missing = sorted(f["cited"] - f["bib"]), sorted(f["bib"] - f["cited"])
     rows = [
         ("Title", "READY", f["title"]),
-        ("Corresponding author details", "USER_CONFIRM", "Name and affiliation are in the manuscript; the corresponding-author email is entered in the portal and appears in `cover_letter.txt` (sv96@njit.edu, taken from the repository author metadata; confirm). ORCID is optional and portal-only."),
+        ("Corresponding author details", "USER_CONFIRM", "Name, affiliation with postal address, corresponding-author mark and email (sv96@njit.edu) are on the manuscript title page and in `cover_letter.txt`; the address is taken from the repository author metadata (git identity and the earlier LLM 2026 manuscript), so confirm it is the address to use in the portal. ORCID is optional and portal-only."),
         ("Abstract", "READY", f"{f['abstract_words']} words (limit 250); renders in the PDF (verified in the extracted-source build)"),
         ("Keywords", "READY", f"{len(f['keywords'])} keywords (limit 7): " + "; ".join(f["keywords"])),
         ("Highlights", "READY", f"`performance_evaluation_highlights.txt`: {len(hl)} bullets, character counts {lens} (limit {HIGHLIGHT_MAX}); separate editable file"),

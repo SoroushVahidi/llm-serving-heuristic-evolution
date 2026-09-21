@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this research software, cite the repository."
+message: "This file describes the research software repository as a whole (project-level version 0.1.0). To cite the Performance Evaluation manuscript's reproducibility package instead, cite its Zenodo record: https://doi.org/10.5281/zenodo.22866983 (v1.1.0; concept DOI 10.5281/zenodo.22865293). Otherwise, cite the repository."
 type: software
 title: "llm-serving-heuristic-evolution"
 authors:

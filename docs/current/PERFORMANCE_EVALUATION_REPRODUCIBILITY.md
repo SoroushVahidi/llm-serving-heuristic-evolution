@@ -85,9 +85,9 @@ The core scientific computations in this paper are **frozen**. Running the full 
 
 ## 5. Bootstrap Clustered Correction Provenance
 
-Our fresh causal headroom points are evaluated using a pre-registered bootstrap clustered analysis to estimate the 95% confidence interval of the latency headroom accurately.
+Our fresh causal headroom points are evaluated using a pre-specified bootstrap clustered analysis to estimate the 95% confidence interval of the latency headroom accurately.
 - **The bootstrap unit:** `(source_dataset, window_index)` representing 36 distinct source-window clusters.
-- **Correction details:** Corrected an earlier implementation that incorrectly merged separate datasets sharing identical window indexes (26 clusters) into the pre-registered 36-cluster key. Point estimates, seeds, and the confirmatory POSITIVE verdict remained unaffected.
+- **Correction details:** Corrected an earlier implementation that incorrectly merged separate datasets sharing identical window indexes (26 clusters) into the pre-specified 36-cluster key. Point estimates, seeds, and the confirmatory POSITIVE verdict remained unaffected.
 - **Detailed Audit:** See `experiments/fresh_production_latency_headroom_confirmatory_v1/BOOTSTRAP_CLUSTER_KEY_CORRECTION_20260920.md` for the step-by-step mathematical and code audit.
 
 ---

@@ -1,8 +1,8 @@
 {
  "zip": "performance_evaluation_submission_sources.zip",
- "sha256": "02548fe7a8e51893b371fa8b8f5f1fe2a57b7896e68b9234261990b98e139d44",
+ "sha256": "a7427d19787fa3ff7ebe997fb4df244e15377cf8d013c37c07ec26b45fafa414",
  "files": 8,
- "uncompressed_bytes": 174739,
+ "uncompressed_bytes": 174836,
  "build_command": "pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex",
  "all_ok": true,
  "checks": {
@@ -16,7 +16,7 @@
   },
   "clean pdflatex/bibtex build succeeds": {
    "ok": true,
-   "detail": "Output written on main.pdf (30 pages, 470813 bytes)."
+   "detail": "Output written on main.pdf (30 pages, 498500 bytes)."
   },
   "no undefined references or citations": {
    "ok": true,
@@ -24,7 +24,7 @@
   },
   "text of the built PDF equals the canonical review PDF": {
    "ok": true,
-   "detail": "1237 vs 1237 lines"
+   "detail": "1239 vs 1239 lines"
   },
   "abstract renders": {
    "ok": true,

@@ -35,9 +35,11 @@ Adaptation Matter?\\
 Action Opportunity and Causal Headroom\\
 in Production-Derived Replay}
 
-\author{Soroush Vahidi}
+\author{Soroush Vahidi\corref{cor1}}
+\ead{sv96@njit.edu}
+\cortext[cor1]{Corresponding author.}
 
-\address{New Jersey Institute of Technology, Newark, NJ, USA}
+\address{New Jersey Institute of Technology, University Heights, Newark, NJ 07102, USA}
 
 \begin{abstract}
 Adaptive scheduling for large language model (LLM) serving pays off only if the system reaches states with a different executable action that improves performance. We measure that opportunity before designing any adaptive scheduler. In a deterministic simulator replaying production-derived traces (Azure code, Azure conversation, BurstGPT), we count how often six policies propose an action different from a fixed reference and, on fresh windows, force one alternative for one step. With abundant resources, none of about one million decision states offered a different executable action. Capping key-value (KV) cache capacity or concurrent sequences created such states; scaling arrival rates up to eight times left the system lightly loaded and created none. This held on fresh windows for the Azure traces but not BurstGPT, which never queued enough for the caps to bind. In a pre-specified analysis of 720 fresh disagreement states, 590 (81.9\%) had positive latency headroom (state-weighted mean 2.00 ms; 95\% window-clustered confidence interval 0.19--3.55 ms). The sign is stable; the magnitude is not: the median is 0.20 ms, one of 36 windows holds 88\% of the total, and in 14\% of states every alternative is worse. About 95\% of the headroom lies where all five other policies differ from the reference. A bounded vLLM probe shows that pressure changes scheduler behavior but does not validate the simulated latency effect. The opportunity is real but sparse, concentrated, and reference-conditional; finding it does not show that adaptation is worthwhile.
@@ -992,14 +994,14 @@ During the preparation of this work, the author used ChatGPT (OpenAI), Codex (Op
 \section*{Declaration of Competing Interest}
 The author declares no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
-\section*{Acknowledgements}
-The author gratefully acknowledges Professor Ioannis Koutis for research guidance and scientific feedback. The author thanks the NJIT Wulver HPC for providing computational resources for the fresh confirmatory computation, and Anders Borum (Secure ShellFish) for providing tools that enabled remote research access. Finally, the author thanks the author's mother for continued support.
-
 \section*{Funding and Support}
 This work received in-kind computational support through the Google Cloud Research Credits Program (USD 1,000 in cloud credits) and computational/tooling support from CloudRift Inc. Neither Google nor CloudRift Inc. had any role in the study design, data collection, analysis, interpretation, manuscript preparation decisions, or the decision to submit the article for publication. No monetary research grant was received from these organizations.
 
 \section*{Data and Code Availability}
 {\leavevmode\raggedright Code, derived research artifacts, experiment configurations, and reproducibility materials for this study are available in the GitHub repository \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution} and are archived on Zenodo \cite{vahidi2026archive}. The v1.1.0 manuscript release package archives the confirmatory artifacts, robustness outputs, continuation shards, figure code, claim manifest, simulator, and analysis code. Raw third-party workload traces are not redistributed and are obtained from their original upstream sources.\par}
+
+\section*{Acknowledgements}
+The author gratefully acknowledges Professor Ioannis Koutis for research guidance and scientific feedback. The author thanks the NJIT Wulver HPC for providing computational resources for the fresh confirmatory computation, and Anders Borum (Secure ShellFish) for providing tools that enabled remote research access. Finally, the author thanks the author's mother for continued support.
 
 \bibliographystyle{elsarticle-num}
 

@@ -15,7 +15,7 @@ current status, see `docs/current/RESUME_HERE.md` and
 
 ## Core simulator
 
-- **Purpose:** GPU-calibrated discrete-event simulator for LLM inference serving (admission, batching, KV-cache, preemption/migration).
+- **Purpose:** Discrete-event simulator for LLM inference serving, with optional GPU-calibrated service models (the Performance Evaluation study uses the uncalibrated 1 ms-step configuration) (admission, batching, KV-cache, preemption/migration).
 - **Path:** `src/llmserveopt/simulator/` (`gpu.py`, `kv_block_manager.py`, `calibrated_service_model.py`, `service_model_factory.py`, `constraints.py`, `contention_diagnostics.py`, `request.py`)
 - **Maturity:** Mature, heavily tested, foundation for everything else.
 - **Look here first for:** simulator semantics, `Action` verbs (including `Action.migrate` for Llumnix), GPU/KV state model.

@@ -93,13 +93,13 @@ Commits: original execution `38e02bcdaeb8f9cec2289b05dea9a1406318d14f` (executor
 
 Independent verification from the raw shards (`A = SBS_REFERENCE.mean_latency - COUNTERFACTUAL.mean_latency`), agreeing with the state-level and action-level files:
 
-* **Preregistered rule, strict floating-point `max_a A > 0`: 590 / 720 = 0.819444.** This is the confirmatory result and is unchanged.
+* **Pre-specified rule, strict floating-point `max_a A > 0`: 590 / 720 = 0.819444.** This is the confirmatory result and is unchanged.
 * One of the 590 states (`azure_2023_conv::w6::faithful::active_4::step22320`, one alternative) has `A = 5.551115123125783e-17` s. That is exactly **one unit in the last place** (`np.spacing`) of the 0.3571 s mean latencies being compared (SBS 0.3571018052261875 vs counterfactual 0.35710180522618745), and both branches complete the identical request set (same completed-ID hash). A second state has `A = -5.55e-17` s (residue of the same size).
 * Latency differences in this simulator lie on a grid of `step/N` (step 0.001 s, N = 5 to 199 requests): the largest deviation of any branch from that grid is 3.8e-11 grid units, and the smallest genuine non-zero `|A|` is 5.15e-6 s. The residue is 11 orders of magnitude below it.
 * Guarded count, `max_a A > 1e-12` s (post hoc numerical tolerance): **589 / 720 = 0.818056.** The residue's effect on the mean headroom is 7.7e-20 s.
 
-**Recommended manuscript wording** (preserves both facts; the preregistered analysis is reported as run):
+**Recommended manuscript wording** (preserves both facts; the pre-specified analysis is reported as run):
 
-> "Under the preregistered criterion (strict `max_a A(s,a) > 0` in double precision), 590 of 720 disagreement states were beneficial (P = 0.8194). One of these 590 has an advantage of 5.6×10⁻¹⁷ s, a single unit in the last place of the latencies compared (both branches complete identical requests); all other non-zero advantages exceed 5×10⁻⁶ s. Excluding it with a post hoc numerical tolerance of 10⁻¹² s gives 589/720 (0.8181). The primary endpoint, mean oracle headroom, is unaffected (1.9958 ms)."
+> "Under the pre-specified criterion (strict `max_a A(s,a) > 0` in double precision), 590 of 720 disagreement states were beneficial (P = 0.8194). One of these 590 has an advantage of 5.6×10⁻¹⁷ s, a single unit in the last place of the latencies compared (both branches complete identical requests); all other non-zero advantages exceed 5×10⁻⁶ s. Excluding it with a post hoc numerical tolerance of 10⁻¹² s gives 589/720 (0.8181). The primary endpoint, mean oracle headroom, is unaffected (1.9958 ms)."
 
 Report 590/720 as the headline in the abstract and results; give 589/720 only in this sentence or a table footnote, labeled post hoc.
