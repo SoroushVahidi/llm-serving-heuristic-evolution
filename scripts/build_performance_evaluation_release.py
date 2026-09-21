@@ -150,9 +150,8 @@ def release_readme(a: argparse.Namespace, commit: str, n_files: int, n_shards: i
 
 {TITLE}
 
-* Version DOI: [{a.version_doi}](https://doi.org/{a.version_doi})
-* Concept DOI (always the latest version): [{a.concept_doi}](https://doi.org/{a.concept_doi})
-* Previous version (v1.0.0): [{a.prior_doi}](https://doi.org/{a.prior_doi})
+* v1.0.0 (published record): [10.5281/zenodo.22865294](https://doi.org/10.5281/zenodo.22865294)
+* v1.1.0 persistent DOI: assigned by Zenodo on publication of the v1.1.0 version of record 22865294 (concept DOI 10.5281/zenodo.22865293); this bundle is the exact upload payload
 * Source repository: {GITHUB}
 * Git tag: `{a.tag}`; commit `{commit}`
 * Author: Soroush Vahidi, New Jersey Institute of Technology
@@ -287,7 +286,7 @@ def build(a: argparse.Namespace) -> None:
     n_shards = sum(1 for _, _, r in files if r == "continuation_shard")
     n_payload = len(files)
 
-    (out / "README.md").write_text(release_readme(a, commit, n_payload, n_shards))
+    (out / "README.md").write_text(release_readme(a, commit, n_payload - 3, n_shards))
     (out / "PROVENANCE_MAP.md").write_text(provenance_map(a))
     (out / "SHARD_PUBLICATION_DECISION.md").write_text(shard_decision(n_shards))
     (out / "ENVIRONMENT.json").write_text(json.dumps(environment(), indent=1) + "\n")
@@ -310,7 +309,7 @@ def build(a: argparse.Namespace) -> None:
         "archive_name": out.name,
         "release": {"version": a.version, "tag": a.tag, "git_commit": commit, "git_commit_date": commit_date, "built_from_branch": branch,
                     "included_paths_clean_at_build": not a.allow_dirty},
-        "identifiers": {"version_doi": a.version_doi, "concept_doi": a.concept_doi, "previous_version_doi": a.prior_doi, "repository": GITHUB},
+        "identifiers": {"v1_doi": a.prior_doi, "concept_doi": "10.5281/zenodo.22865293 (concept of record 22865294)", "v1_1_doi": "assigned by Zenodo on publication of this version", "repository": GITHUB},
         "title": TITLE,
         "builder": {"script": "scripts/build_performance_evaluation_release.py",
                     "script_sha256": sha256_file(Path(__file__)), "python": platform.python_version()},
@@ -344,11 +343,10 @@ def make_zip(out: Path, zip_path: Path, commit_date: str) -> None:
 
 def citation_cff(a: argparse.Namespace) -> str:
     return f"""cff-version: 1.2.0
-message: "If you use this archive, please cite the paper's reproducibility package (version DOI below)."
+message: "If you use this archive, please cite the paper's reproducibility package (Zenodo record below)."
 type: dataset
 title: "Reproducibility package for \\"{TITLE}\\""
 version: "{a.version}"
-doi: "{a.version_doi}"
 date-released: "{a.release_date}"
 license: MIT
 repository-code: "{GITHUB}"
@@ -358,11 +356,8 @@ authors:
     affiliation: "New Jersey Institute of Technology"
 identifiers:
   - type: doi
-    value: "{a.concept_doi}"
-    description: "Concept DOI (all versions)"
-  - type: doi
     value: "{a.prior_doi}"
-    description: "Previous version (v1.0.0)"
+    description: "Published v1.0.0 record (Zenodo); v1.1.0 is archived in the same record under its persistent DOI"
   - type: url
     value: "{GITHUB}/tree/{a.tag}"
     description: "Git tag {a.tag}"
@@ -396,14 +391,12 @@ def zenodo_metadata(a: argparse.Namespace) -> dict:
         "creators": [{"name": "Vahidi, Soroush", "affiliation": "New Jersey Institute of Technology"}],
         "access_right": "open",
         "license": "mit-license",
-        "version": a.version,
         "keywords": ["LLM serving", "request scheduling", "performance evaluation", "workload replay", "causal headroom",
                      "resource pressure", "reproducibility", "robustness analysis"],
         "related_identifiers": [
             {"relation": "isSupplementTo", "identifier": f"{GITHUB}/tree/{a.tag}", "resource_type": "software", "scheme": "url"},
-            {"relation": "isNewVersionOf", "identifier": a.prior_doi, "resource_type": "dataset", "scheme": "doi"},
         ],
-        "notes": f"Built from git tag {a.tag}. Concept DOI {a.concept_doi}.",
+        "notes": f"Built from git tag {a.tag}. v1.0.0 is {a.prior_doi}; this bundle is the v1.1.0 version of the same record (record 22865294, concept DOI 10.5281/zenodo.22865293).",
     }
 
 
@@ -411,7 +404,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--version", default="1.1.0")
     ap.add_argument("--tag", default="performance-evaluation-v1.1.0")
-    ap.add_argument("--version-doi", required=True)
+    ap.add_argument("--version-doi", default=None)
     ap.add_argument("--concept-doi", default="10.5281/zenodo.22865293")
     ap.add_argument("--prior-doi", default="10.5281/zenodo.22865294")
     ap.add_argument("--release-date", default="2026-09-21")
