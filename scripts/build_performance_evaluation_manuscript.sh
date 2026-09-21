@@ -8,6 +8,7 @@ PAPER_DIR="$ROOT_DIR/paper/performance_evaluation"
 
 echo "=== 1. Regenerating Manuscript Figures from Frozen Artifacts ==="
 python3 "$PAPER_DIR/scripts/plot_performance_evaluation_figures.py"
+python3 "$PAPER_DIR/scripts/plot_robustness_figures.py"
 
 echo "=== 2. Rebuilding LaTeX Manuscript ==="
 cd "$PAPER_DIR"

@@ -16,8 +16,8 @@
 
 \begin{document}
 
-\newcommand{\anwg}{\mathrm{arrival-normalized weighted goodput}}
-\newcommand{\sbs}{\mathrm{single best scheduler}}
+\newcommand{\anwg}{\mathrm{ANWG}}
+\newcommand{\sbs}{\mathrm{SBS}}
 \newcommand{\vbs}{\mathrm{VBS}}
 \newcommand{\policy}[1]{\texttt{\detokenize{#1}}}
 
@@ -164,7 +164,8 @@ This paper makes five contributions.
 
 Section~\ref{sec:related} positions the work, and Section~\ref{sec:methods}
 defines the estimands and evidence design. Sections~\ref{sec:phasea}--\ref{sec:fresh}
-report the native, pressure, and fresh causal results, Sections~\ref{sec:anwg}
+report the native, pressure, and fresh causal results, Section~\ref{sec:robust}
+tests their robustness and concentration, Sections~\ref{sec:anwg}
 and~\ref{sec:real} cover objective sensitivity and the vLLM probe, and
 Section~\ref{sec:discussion} discusses when adaptation is justified.
 
@@ -262,17 +263,18 @@ an explicit heterogeneity limitation.
 
 The historical six-policy portfolio contains full prefill, small-chunk prefill,
 estimated-service-first (ESTF), weighted fair sharing (WFS), least-laxity
-first (LLF), and a KV-constrained policy. six-policy is a fixed portfolio for a
-default-relative characterization, not an exhaustive set of 2026 schedulers.
+first (LLF), and a KV-constrained policy. The six-policy portfolio is fixed for
+a default-relative characterization; it is not an exhaustive set of 2026
+schedulers.
 
 \subsection{Canonical action opportunity}
 Let $\mathcal{A}_6(s)$ be the set of canonical executable actions produced by
 the six portfolio policies at state $s$, after action deduplication. A
 canonical action is the simulator-executable admission, batch, and request
 ordering decision after infeasible or semantically identical variants have
-been collapsed. The default scheduler is single best scheduler, the fixed single best policy
-used as the canonical baseline for the frozen replay protocol; it is not
-refit per state. Let $a_{\sbs}(s)$ be single best scheduler's action. We define
+been collapsed. The default scheduler is the single best scheduler (SBS), the
+fixed best single policy used as the canonical baseline for the frozen replay
+protocol; it is not refit per state. Let $a_{\sbs}(s)$ be its action. We define
 \begin{equation}
   D(s) = \mathbf{1}\left[\exists a\in\mathcal{A}_6(s):
   a\ne a_{\sbs}(s)\right].
@@ -318,8 +320,8 @@ $P(D)$. The conceptual aggregate opportunity is therefore
 not an exact deployable-performance equation. A high conditional benefit can
 coexist with a tiny overall opportunity.
 
-The confirmatory mean uses a faithful-window clustered bootstrap with 2,000
-replicates and seed 20260920. The cluster unit is the original fresh trace
+The confirmatory mean uses a faithful-window clustered percentile bootstrap
+with 2,000 replicates and seed 20260920. The cluster unit is the original fresh trace
 window, identified by workload source and window index, contributing
 disagreement states, so multiple states from one window do not become
 independent experimental units. Its verdict requires positive mean headroom
@@ -331,14 +333,63 @@ scaling factor. ``Support'' and ``opportunity'' refer only to the existence
 of executable non-single best scheduler actions under that regime; usefulness requires the
 separate causal latency test above.
 
+\subsection{Post hoc robustness analyses}
+\label{sec:posthoc}
+The analyses in Section~\ref{sec:robust} were specified after the fresh
+outcomes were known. They qualify the preregistered result and do not replace
+it: the endpoint $H_{\mathrm{LAT}}$, the strict criterion $B_{\mathrm{LAT}}$,
+the 720 states, and the selected regimes are unchanged. A \emph{window} is a
+workload source and window index (36 windows contribute states); a
+\emph{regime} is a workload, pressure axis, and pressure setting (five
+selected regimes).
+
+\emph{Practical thresholds.} For $\epsilon\in\{0.1,0.25,0.5,1,2,5\}$~ms we
+report the number and share of disagreement states with
+$H_{\mathrm{LAT}}(s)>\epsilon$, that is $P(H_{\mathrm{LAT}}>\epsilon\mid D)$,
+and the number of windows that contain at least one such state.
+
+\emph{Numerical residue.} The preregistered criterion is applied unchanged in
+double precision. Simulated latency differences are integer multiples of the
+decode step divided by the request population, so no genuine advantage is
+smaller than about $5.2\times10^{-6}$~s. Only to identify floating-point
+residue, we also count states whose best advantage exceeds $10^{-12}$~s.
+
+\emph{Aggregation.} For a unit $u$ (a window, regime, or workload source) let
+$D_u$ be its disagreement states and
+$\bar H_u=|D_u|^{-1}\sum_{s\in D_u}H_{\mathrm{LAT}}(s)$. The preregistered
+estimate is the \emph{state-weighted mean}
+$\bar H=|D|^{-1}\sum_{s\in D}H_{\mathrm{LAT}}(s)$, in which every state has
+weight $1/|D|$. The \emph{equal-window}, \emph{equal-regime}, and
+\emph{equal-workload} means are $U^{-1}\sum_u\bar H_u$ over the 36 windows,
+five regimes, or two workloads, so every unit has weight $1/U$ however many
+states it contains. These are different estimands, not alternative estimates
+of one quantity; the beneficial share is aggregated in the same way. Intervals
+for the alternative means use the same window-clustered percentile bootstrap
+with 200,000 replicates. For the equal-regime and equal-workload means, regimes
+and workloads are fixed strata and window--regime cells are resampled within
+each stratum, which ignores dependence between regimes that share a window.
+
+\emph{Leave-one-out and concentration.} For each window (36) and each regime
+(5) we recompute the state-weighted mean and beneficial share from the
+remaining states, with a window-clustered bootstrap interval (200,000
+replicates). Concentration is the share of the total summed headroom
+$\sum_sH_{\mathrm{LAT}}(s)$ contributed by each window and regime, and the
+effective number of windows $1/\sum_wp_w^2$, where $p_w$ is the share of
+window $w$.
+
+\emph{Interval diagnostics.} To check the preregistered interval we repeat the
+percentile bootstrap with $10^6$ replicates, add a bias-corrected and
+accelerated (BCa) interval, and compute a delete-one-window jackknife $t$
+interval. These are diagnostics, not replacements.
+
 \subsection{Objective audit}
-The historical objective is arrival-normalized weighted goodput,
+The historical objective is arrival-normalized weighted goodput (ANWG),
 \begin{equation}
  \anwg = \frac{\sum_iw_i\mathbf{1}[i\text{ completes by its SLO}]}{\sum_iw_i}.
  \label{eq:anwg}
 \end{equation}
-The earlier's all-terminal-arrival-normalized weighted goodput result is retained as an objective audit, not
-as fresh latency evidence. The latency study uses Eq.~\ref{eq:latency}; its
+The earlier terminal arrival-normalized weighted goodput result is retained as
+an objective audit, not as fresh latency evidence. The latency study uses Eq.~\ref{eq:latency}; its
 mean-latency result is confirmatory only for the fresh untouched causal
 universe.
 
@@ -445,8 +496,8 @@ states (Table~\ref{tab:fresh}; Figure~\ref{fig:fresh}), giving
  P(B_{\mathrm{LAT}}\mid D)=590/720=0.8194444444.
 \end{equation*}
 Mean oracle latency headroom was 0.001995791 s (1.9958 ms), with a clustered
-95\% CI of [0.000190884, 0.003546196] s ([0.1909, 3.5462] ms). The frozen
-verdict was statistically supported. This is statistically
+95\% CI of [0.000190884, 0.003546196] s ([0.1909, 3.5462] ms). The
+preregistered verdict was positive. The result is statistically
 supported but operationally modest. It establishes measurable local
 default-relative latency opportunity in the disagreement-support regime, not
 that the magnitude exceeds the engineering cost of adaptation. It is also
@@ -454,12 +505,23 @@ not the claim that 81.9\% of all scheduler decisions can be improved: $P(D)$
 is often below one percent in the selected regimes and the conditional
 statistic is defined only on disagreement states.
 
+These preregistered values are state-weighted over disagreement states drawn
+from 36 windows, and they should be read with the post hoc analyses of
+Section~\ref{sec:robust}: the typical state has a much smaller headroom
+(median 0.20~ms), and the mean is highly concentrated in one window. One of the
+590 beneficial states has an advantage of $5.6\times10^{-17}$~s, exactly one
+unit in the last place of the 0.357~s latencies compared, with both branches
+completing the same requests; a post hoc guard of $10^{-12}$~s gives
+589/720 (81.8\%) and changes the mean by less than $10^{-19}$~s.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.98\linewidth]{figures/pe_fresh_headroom.pdf}
 \caption{Fresh causal result by selected workload/regime. Bars show mean
 oracle headroom in milliseconds; the line shows $P(B_{\mathrm{LAT}}\mid D)$.
-The oracle is a non-deployable opportunity bound over observed alternatives.}
+The Azure-code KV-capacity = 16,000 regime holds 59.9\% of the 720 states and
+96.8\% of the total headroom. The oracle is a non-deployable opportunity bound
+over observed alternatives.}
 \label{fig:fresh}
 \end{figure}
 
@@ -493,8 +555,12 @@ All selected fresh states & 720 & --- & 0.819 & 1.996 & 36 distinct \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.92\linewidth]{figures/pe_regime_map.pdf}
-\caption{Practitioner regime map. Conditional benefit can be high while
-opportunity prevalence is small; point size is proportional to mean headroom.}
+\caption{Regime map of opportunity prevalence $P(D)$ (over single best scheduler
+decision states) against conditional benefit $P(B_{\mathrm{LAT}}\mid D)$ for
+the five selected regimes; point size is proportional to the regime's mean
+oracle headroom. $P(B_{\mathrm{LAT}}\mid D)$ counts any positive headroom,
+however small: the regime at 100\% (Azure conversation, KV-capacity = 16,000)
+never exceeds 0.48~ms of headroom.}
 \label{fig:regimemap}
 \end{figure}
 
@@ -513,29 +579,173 @@ The practical reading is deliberately staged. Under abundant resources, this
 study observed no canonical disagreement and therefore no demonstrated action
 support for adaptive selection. Under constrained KV or active-sequence
 regimes, disagreement emerges and creates an executable opportunity. Within
-those disagreement states, fresh causal evidence shows frequent
-latency-beneficial alternatives. Opportunity and headroom still do not prove
-that a deployed adaptive selector is worthwhile.
+those disagreement states, alternatives with positive headroom are frequent
+but mostly small (Section~\ref{sec:robust}). Opportunity and headroom still do
+not prove that a deployed adaptive selector is worthwhile.
 
-\section{Objective Sensitivity: arrival-normalized weighted goodput Saturation}
+\section{Results: Robustness and Concentration of Causal Headroom}
+\label{sec:robust}
+
+The preregistered result of Section~\ref{sec:fresh} is a state-weighted mean
+over 720 disagreement states drawn from 36 windows. This section asks, post
+hoc, how large the headroom is in a typical state and how far the mean depends
+on which windows and regimes contribute (Section~\ref{sec:posthoc}). The
+preregistered criterion and estimate are not modified.
+
+\subsection{Effect scale and distribution}
+Table~\ref{tab:thresholds} counts the states whose headroom exceeds each
+practical threshold. The 81.9\% beneficial share is not the share of states
+that offer material gains: 60.0\% of states exceed 0.1~ms, 29.4\% exceed 0.5~ms, 22.5\%
+exceed 2~ms, and 17.9\% exceed 5~ms. The larger effects are also concentrated.
+Above 0.5~ms, 201 of the 212 states belong to the Azure-code KV-capacity = 16,000
+regime, and only 4 of the 36 windows contain a state above 2~ms.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Post hoc practical-effect thresholds: disagreement states whose oracle
+headroom $H_{\mathrm{LAT}}$ exceeds each threshold. The first row is the
+preregistered criterion; the second excludes one floating-point-residue state
+with a $10^{-12}$~s guard. ``Share'' is of the 720 states; ``Windows'' counts
+the windows (of 36) that contain at least one such state; ``In KV 16,000''
+counts states from the Azure-code KV-capacity = 16,000 regime, which contributes
+431 of the 720 states.}
+\label{tab:thresholds}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Criterion & States & Share & Windows & In KV 16,000 \\
+\midrule
+Preregistered ($>0$, strict) & 590 & 81.9\% & 32 & 398 \\
+Guarded ($>10^{-12}$~s) & 589 & 81.8\% & 32 & 398 \\
+\midrule
+$>0.1$~ms & 432 & 60.0\% & 17 & 327 \\
+$>0.25$~ms & 322 & 44.7\% & 16 & 259 \\
+$>0.5$~ms & 212 & 29.4\% & 9 & 201 \\
+$>1$~ms & 188 & 26.1\% & 7 & 185 \\
+$>2$~ms & 162 & 22.5\% & 4 & 161 \\
+$>5$~ms & 129 & 17.9\% & 2 & 128 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The distribution is strongly right-skewed (Figure~\ref{fig:robust}a). The
+median headroom is 0.197~ms, about one tenth of the 1.996~ms state-weighted mean,
+and 77.4\% of states lie at or below that mean. The quartiles are 0.023 and
+1.19~ms, the 90th and 95th percentiles are 8.4 and 11.3~ms, and the maximum
+is 12.1~ms. A further 130 states (18.1\%) have exactly zero headroom. Among the
+589 states with positive headroom the median is 0.29~ms.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/pe_robustness.pdf}
+\caption{Distribution and concentration of oracle headroom over the 720
+disagreement states. (a) Empirical distribution of $H_{\mathrm{LAT}}$ with and
+without window w11; zero headroom is the intercept at $x=0$, and the axis is
+linear below 0.01~ms and logarithmic above. The dotted and dash-dotted lines
+mark the median and the state-weighted mean. (b) Share of the 720 states
+(hatched) and of the total summed headroom (solid) for the three windows with
+the largest headroom and for the remaining 33 windows.}
+\label{fig:robust}
+\end{figure}
+
+\subsection{Sensitivity to aggregation and to individual windows and regimes}
+Every aggregation of Table~\ref{tab:sensitivity} yields a positive mean whose
+interval excludes zero, but the magnitude depends on what is weighted: from
+1.996~ms (state-weighted) to 0.327~ms (equal-window), a factor of about six. The
+beneficial share is likewise composition-sensitive, from 0.819 (state-weighted)
+to 0.632 (equal-window). The state-weighted mean is the preregistered
+estimand and answers ``what is the expected headroom at a disagreement state
+drawn from this sample''; the equal-window and equal-regime means answer the
+same question for a typical window or regime, and they are not
+interchangeable with it.
+
+Leaving one unit out gives the same picture. All 36 single-window and 5
+single-regime omissions leave a positive mean, and every corresponding
+bootstrap interval excludes zero. Omitting window w11 leaves 0.365~ms
+(95\% CI [0.158, 0.682]~ms); omitting the Azure-code KV-capacity = 16,000 regime leaves
+0.159~ms (95\% CI [0.058, 0.234]~ms). Omitting any other window changes the mean only to between
+2.00 and 2.26~ms, and omitting any other regime to between 2.02 and 2.39~ms.
+The sign therefore survives all 41 omissions, whereas the headline magnitude
+does not survive the omission of the two dominant units.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Post hoc sensitivity of the mean oracle headroom to the aggregation
+rule and to leaving out the two dominant units. In the first block each
+workload, regime, or window receives equal weight, except in the state-weighted
+row, where each state does. ``Share'' is the beneficial share under the strict
+$>0$ criterion. The state-weighted row is the preregistered estimate and
+interval (2,000 replicates); all other intervals are window-clustered
+percentile bootstrap intervals with 200,000 replicates (equal-regime and
+equal-workload treat regimes and workloads as fixed strata;
+Section~\ref{sec:posthoc}).}
+\label{tab:sensitivity}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Estimand & Units & Mean (ms) & 95\% CI (ms) & Share \\
+\midrule
+State-weighted (preregistered) & 720 states & 1.996 & [0.191, 3.546] & 0.819 \\
+Equal-workload & 2 workloads & 1.360 & [0.184, 2.094] & 0.809 \\
+Equal-regime & 5 regimes & 0.759 & [0.145, 1.161] & 0.666 \\
+Equal-window & 36 windows & 0.327 & [0.114, 0.644] & 0.632 \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{Leave one out: state-weighted mean of the remaining states}} \\
+Omit window w11 & 457 states & 0.365 & [0.158, 0.682] & 0.821 \\
+Omit Azure-code KV 16,000 & 289 states & 0.159 & [0.058, 0.234] & 0.664 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Concentration of headroom}
+Window w11 of the Azure-code trace contains 263 of the 720 states (36.5\%) but
+contributes 88.4\% of the total summed headroom; the three largest windows
+contribute 95.3\%, and the effective number of windows by headroom mass is
+1.27 (5.7 by state count). At regime level, Azure-code KV-capacity = 16,000
+holds 59.9\% of the states and 96.8\% of the headroom, contributing 1.93 of
+the 2.00~ms state-weighted mean. Within w11, 205 states of that regime average
+6.16~ms. Of the 129 states above 5~ms, 128 are in w11, as are 140 of the 162
+states above 2~ms (Figure~\ref{fig:robust}b). The state-weighted mean is thus
+highly concentrated in a narrow high-headroom subset of states and should not
+be read as the typical benefit of a disagreement state.
+
+\subsection{Uncertainty diagnostics}
+Monte Carlo error does not explain the width of the preregistered interval.
+With $10^6$ replicates the percentile interval is [0.184, 3.543]~ms, no
+replicate has a nonpositive mean, and the lower endpoint of the 2,000-replicate
+procedure varies by only 0.004~ms (standard deviation) across 1000 seeds. The BCa
+interval is [0.239, 4.049]~ms. The bootstrap distribution is bimodal: 36\% of
+replicates do not draw window w11 and have a mean of about 0.36~ms, against
+2.43~ms for those that do, so the percentile interval spans the gap between
+two populations of replicates. The delete-one-window jackknife $t$ interval,
+[$-1.36$, 5.35]~ms, includes zero because one influential window inflates its
+standard error (1.65~ms); all 36 delete-one estimates are positive, and we
+treat the jackknife interval as a diagnostic of this dependence rather than as
+a competing interval. Uncertainty about the magnitude of the headroom thus
+reflects its concentration in few windows, not simulation noise.
+
+\section{Objective Sensitivity: Arrival-Normalized Weighted Goodput Saturation}
 \label{sec:anwg}
 
-The earlier The earlier pressure study completed with causal integrity and
-complete branch coverage, but all terminal arrival-normalized weighted goodput values were 1.0 and all arrival-normalized weighted goodput
+The earlier pressure study completed with causal integrity and
+complete branch coverage, but all terminal ANWG values were 1.0 and all ANWG
 advantages were zero. An identifiability audit found no implementation bug:
 requests completed within deadlines and the objective saturated. Simple
-sensitivity cases confirmed that arrival-normalized weighted goodput distinguishes missed deadlines or
+sensitivity cases confirmed that ANWG distinguishes missed deadlines or
 unfinished work, but not different latency or queueing when all requests
 still meet a loose deadline.
 
-Most counterfactual branches nevertheless changed latency. Thus zero arrival-normalized weighted goodput
-headroom does not imply zero latency headroom. We do not use the old The earlier
-post-hoc latency analysis as confirmatory evidence. The fresh untouched study
+Most counterfactual branches nevertheless changed latency. Thus zero ANWG
+headroom does not imply zero latency headroom. We do not use the earlier post hoc latency analysis as confirmatory
+evidence. The fresh untouched study
 in Section~\ref{sec:fresh} is the confirmatory latency result, with its own
 pre-frozen primary endpoint and clustered bootstrap.
 
-This is objective sensitivity, not evidence that arrival-normalized weighted goodput is invalid. arrival-normalized weighted goodput is an
-appropriate deadline-goodput objective for one question; mean latency is a
+This is objective sensitivity, not evidence that ANWG is invalid. It is an appropriate deadline-goodput objective for one question; mean latency is a
 different operational objective. A serving paper should not promote whichever
 metric yields the more favorable conclusion.
 
