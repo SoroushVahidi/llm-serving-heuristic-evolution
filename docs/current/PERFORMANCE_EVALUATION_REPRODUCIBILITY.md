@@ -118,3 +118,10 @@ We validate simulator fidelity on a real serving platform (vLLM) under resource 
   invalid; see `docs/current/FRESH_PRODUCTION_SUPPORT_MAPPING_REPORT_V1_ERRATUM_20260921.md`. The CSV governs.
 - The frozen state-level file `FRESH_LATENCY_STATE_LEVEL_V1.csv` has mislabeled `mean_ref_latency`/`p95_ref_latency` columns; use
   `experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/` for the SBS-reference latency.
+- **Terminology: "pre-specified", not "preregistered".** The confirmatory protocol (`experiments/fresh_production_latency_headroom_confirmatory_v1/PREREGISTRATION_V1.json`,
+  `METRIC_PROTOCOL_V1.json`, `CAUSAL_PROTOCOL_V1.json`, `SUPPORT_PROTOCOL_V1.json`) was committed to the project's version-controlled repository
+  (commit `b4e6c60`, 2026-09-19 22:12 EDT) and the results were committed at `b196c3e` (2026-09-20 00:26 EDT), 2 h 14 min later. The protocol was not
+  deposited in an external or public registry, the author controlled the repository, and the time a push reached the remote could not be verified
+  independently. The manuscript therefore says "pre-specified"; the file names keep the historical word "PREREGISTRATION". One post-outcome correction is
+  disclosed in the manuscript: the first bootstrap clustered on a bare `window_index` (26 clusters) and was corrected to the source window (36 clusters);
+  see `experiments/fresh_production_latency_headroom_confirmatory_v1/BOOTSTRAP_CLUSTER_KEY_CORRECTION_20260920.md`.

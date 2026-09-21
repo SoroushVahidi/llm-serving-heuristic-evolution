@@ -40,15 +40,16 @@ def test_no_unsupported_strength_or_load_claims(flat):
 
 
 def test_reference_scheduler_is_described_and_conditional(flat):
-    methods = _section(flat, r"\section{Methods}", r"\section{Results: Native")
-    for s in ("KV-constrained online policy", "reserve of 0.82", "not tuned to these workloads or to latency", "not re-selected on the fresh outcomes",
+    methods = _section(flat, r"\section{Methods}", r"\section{Where Disagreement Appears}")
+    for s in ("KV-constrained online policy", "reserve of 0.82", "not tuned to these workloads or to latency", "not selected, tuned, or changed using fresh outcomes",
+              "not claimed to be optimal or strong here", "earlier benchmark of 240 multi-mechanism scenarios",
               "imposed capacity setting", "physical binding", "reference's own reserve threshold"):
         assert s in methods, s
-    assert "conditional on it" in flat and "reference-dependent" in flat
+    assert "conditional on it" in flat and ("reference-conditional" in flat or "reference dependence" in flat.lower())
 
 
 def test_overlays_and_capacity_are_disclosed_in_methods_and_limitations(flat):
-    methods = _section(flat, r"\section{Methods}", r"\section{Results: Native")
+    methods = _section(flat, r"\section{Methods}", r"\section{Where Disagreement Appears}")
     for s in ("loose service-level objective (SLO) deadline of arrival plus 1000~s", "uniform priority of 1.0", "a single class",
               "predicted output length equal to the true length", "a 1~ms step"):
         assert s in methods, s
@@ -58,7 +59,7 @@ def test_overlays_and_capacity_are_disclosed_in_methods_and_limitations(flat):
 
 
 def test_burstgpt_mechanism_is_explained_not_merely_unselected(flat):
-    fresh = _section(flat, r"\section{Results: Fresh Support", r"\section{Results: Robustness")
+    fresh = _section(flat, r"\section{Causal Headroom on Untouched Windows}", r"\section{Concentration, Sensitivity")
     for s in ("All 360 untouched BurstGPT conditions were valid", "none had a binding capacity constraint", "never queued more than three requests"):
         assert s in fresh, s
     assert "contributed no selected regime" not in flat

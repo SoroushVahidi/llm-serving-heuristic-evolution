@@ -142,11 +142,8 @@ def build_claims():
         fig2[f"{w}|{ax}|{v}"] = {"disagreement_rate": float(r["disagreement_rate"]), "disagreement_states": int(r["true_canonical_disagreement_states"]), "sbs_decision_states": int(r["sbs_decision_states"])}
     C.add("figure2.pressure_conditions", "Figure 2 pressure-condition prevalences (read from the artifact, not typed into the plot script)", fig2, ["figures/pe_disagreement_rates.pdf"],
           rel(PHASE_B / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"), "disagreement_rate = true_canonical_disagreement_states / sbs_decision_states for the four plotted rows")
-    f3 = {int(float(r["axis_value"])): float(r["disagreement_rate"]) for r in axis_rows if r["source_dataset"] == "azure_2023_code" and r["axis"] == "active_sequence_capacity"}
-    C.add("figure3.azure_code_active_cap", "Figure 3 disagreement prevalence versus active-sequence cap (Azure code)", {str(k): v for k, v in sorted(f3.items(), reverse=True)}, ["figures/pe_pressure_transition.pdf"],
-          rel(PHASE_B / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"), "disagreement_rate for source_dataset=azure_2023_code, axis=active_sequence_capacity, ordered by pressure_order (cap decreasing = pressure increasing)")
 
-    # ------------------------------------------------------------------ fresh causal (preregistered)
+    # ------------------------------------------------------------------ fresh causal (pre-specified)
     P = N["primary"]
     res = json.loads((ROOT / FROZEN / "FRESH_LATENCY_CAUSAL_RESULT_V1.json").read_text())["primary"]
     boot = json.loads((ROOT / FROZEN / "FRESH_LATENCY_BOOTSTRAP_V1.json").read_text())
@@ -203,37 +200,42 @@ def build_claims():
     means = {q: sum(float(r[q]) for r in j) / len(j) for q in pol6}
     assert len(j) == 240 and max(means, key=means.get) == "kv_constrained_online"
     C.add("reference.sbs_selection", "SBS = kv_constrained_online = best single policy (highest mean goodput) over 240 joint-benchmark scenarios; reserve 0.82, urgency slack 0.25 s", {"scenarios": len(j), "mean_anwg_by_policy": means, "target_kv_utilization": 0.82, "urgent_laxity_seconds": 0.25},
-          ["best single policy on an earlier, unrelated benchmark of 240 scenarios under a goodput objective", "reserve of 0.82 of the configured capacity", "slack under 0.25~s"],
+          ["highest mean goodput among the six policies on an earlier benchmark of 240 multi-mechanism scenarios", "reserve of 0.82 of the configured capacity", "slack under 0.25~s"],
           "experiments/joint240_same_distribution_adaptive_exploitability_v1/per_scenario_oof_results.csv; src/llmserveopt/policies/kv_constrained_online.py", "mean over scenarios of each policy column; defaults of KVConstrainedOnlinePolicy")
     assert (RF["all_five_differ"], RF["kv_states"], RF["kv_without_kv_binding"], RF["all_five_in_kv_regimes"], RF["all_five_single_alternative"]) == (512, 524, 414, 511, 445)
     assert abs(RF["all_five_headroom_share"] - 0.948) < 5e-4 and abs(RF["kv_nobind_headroom_share_of_kv"] - 0.896) < 5e-4
     C.add("reference.all_five_differ", "512/720 states have all five non-SBS policies differing; they carry 94.8% of headroom; 511 in the KV regimes; 445 with a single alternative action", 
           {k: RF[k] for k in ("all_five_differ", "all_five_headroom_share", "all_five_in_kv_regimes", "all_five_single_alternative")},
           ["In 512 of the 720 disagreement states (71\\%) all five other policies differ from the SBS", "these states carry 94.8\\% of the total headroom", "511 of them lie in the two KV-capacity regimes", "in 445 the five policies agree on a single alternative action",
-           "95\\% of the headroom lies where all five other policies differ from it"],
+           "95\\% of the headroom lies where all five other policies differ from the reference"],
           f"{FROZEN}/FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv; experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv", "p6_policies_with_non_sbs_action (count of policies), n_unique_non_sbs_actions, oracle_headroom")
     C.add("reference.kv_without_physical_binding", "524 KV-regime disagreement states, 414 without physical KV binding (waiting prompt tokens <= free KV tokens), holding 89.6% of the KV regimes' headroom",
           {k: RF[k] for k in ("kv_states", "kv_without_kv_binding", "kv_nobind_headroom_share_of_kv")},
-          ["The KV-capacity regimes contain 524 disagreement states, of which 414 occur without physical KV binding", "hold 89.6\\% of those regimes' headroom", "414 of 524 disagreement states occur without physical binding"],
+          ["The KV-capacity regimes contain 524 disagreement states, of which 414 occur without physical KV binding", "hold 89.6\\% of those regimes' headroom"],
           f"{FROZEN}/FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv", "kv_binding = kv_capacity_binding_or_over_requested (waiting_prompt_token_mass > total_free_kv_tokens; scripts/industry_realism_action_opportunity_phase_a_v1.py)")
     assert RF["differs"]["estimated_service_time_first"] == RF["differs"]["weighted_fair_share"] == 519 and abs(RF["mean_distinct_alternatives"] - 1.15) < 0.005 and RF["single_alternative_states"] == 610
     C.add("portfolio.functional_diversity", "ESTF and WFS differ from SBS in the same 519 states; on average 1.15 distinct alternative actions per disagreement state; 610 states have exactly one", {k: RF[k] for k in ("differs", "mean_distinct_alternatives", "single_alternative_states")},
           ["exactly the same 519 states as ESTF", "1.15 distinct alternative actions", "610 states have exactly one"], f"{FROZEN}/FRESH_ELIGIBLE_DISAGREEMENT_STATES_V1.csv", "p6_policies_with_non_sbs_action; n_unique_non_sbs_actions")
     assert (ST["beneficial"], ST["mixed_beneficial_and_harmful"], ST["all_harmful"], ST["zero_headroom_other"], ST["positive"], ST["negative"], ST["zero"], ST["branches"]) == (590, 22, 102, 28, 660, 141, 30, 831)
-    C.add("secondary.state_and_action_structure", "preregistered secondary outcomes: 590 beneficial (22 mixed), 102 all-harmful (14.2%), 28 zero-headroom; 831 alternatives: 660 reduce, 141 increase, 30 unchanged", ST,
+    C.add("secondary.state_and_action_structure", "pre-specified secondary outcomes: 590 beneficial (22 mixed), 102 all-harmful (14.2%), 28 zero-headroom; 831 alternatives: 660 reduce, 141 increase, 30 unchanged", ST,
           ["Some alternative reduces latency & 590 (81.9\\%)", "of which some alternative also increases it & 22", "Every alternative increases latency & 102 (14.2\\%)", "Zero headroom, not every alternative harmful & 28 (3.9\\%)",
-           "Reduce latency & 660 (79.4\\%)", "Increase latency & 141 (17.0\\%)", "Leave latency unchanged & 30 (3.6\\%)", "in 14.2\\% of the disagreement states every alternative is worse than the reference"],
+           "Reduce latency & 660 (79.4\\%)", "Increase latency & 141 (17.0\\%)", "Leave latency unchanged & 30 (3.6\\%)", "in 14.2\\% every alternative is worse than the reference"],
           f"{FROZEN}/FRESH_LATENCY_ACTION_LEVEL_V1.csv", "per-state max/min of a_lat over counterfactual branches; per-branch sign of a_lat")
     assert abs(RL["median"] - 0.0021) < 5e-5 and abs(RL["p90"] - 0.113) < 5e-4 and abs(RL["kv_code_p90"] - 0.161) < 5e-4 and (RL["gt1"], RL["gt5"], RL["gt10"], RL["kv_code_gt10"], RL["kv_code_states"]) == (211, 133, 92, 92, 431)
     C.add("secondary.relative_headroom", "H_REL = H_LAT / L_SBS: median 0.21%, p90 11.3% (Azure-code KV-16,000: 16.1%), 211/133/92 states above 1/5/10%, all 92 above 10% in the Azure-code KV-16,000 regime (21.3% of its 431 states)", RL,
-          ["Median & 0.21\\%", "11.3\\% (16.1\\%)", "211 (29.3\\%), 133 (18.5\\%), 92 (12.8\\%)", "92 states (12.8\\%) exceed 10\\% of the reference's mean latency", "where they are 21.3\\% of the states"],
+          ["Median & 0.21\\%", "90th percentile & 11.3\\%", "90th percentile, Azure-code KV 16,000 only & 16.1\\%", "States above 1\\% & 211 (29.3\\%)", "States above 5\\% & 133 (18.5\\%)", "States above 10\\% & 92 (12.8\\%)", "92 states (12.8\\%) exceed 10\\% of the reference's mean latency", "where they are 21.3\\% of the states"],
           "experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv; " + f"{FROZEN}/FRESH_LATENCY_CAUSAL_RESULT_V1.json",
-          "oracle_headroom / mean_ref_latency (SBS reference); cross-checked against action-level L_SBS = mean_latency + a_lat and the preregistered per-regime mean_relative_headroom")
+          "oracle_headroom / mean_ref_latency (SBS reference); cross-checked against action-level L_SBS = mean_latency + a_lat and the pre-specified per-regime mean_relative_headroom")
+    PS = R["prespec"]
+    C.add("prespec.protocol_timeline_and_cluster_correction", "protocol committed 2026-09-19 (b4e6c60), results committed ~2 h 14 min later (b196c3e); first bootstrap used 26 index clusters, corrected to 36 source windows", PS,
+          ["on 19 September 2026", "committed 2 h 14 min later", "index shared across workloads (26 clusters)", "specified source window (36 clusters)"],
+          f"{FROZEN}/PREREGISTRATION_V1.json (git history); experiments/fresh_production_latency_headroom_confirmatory_v1_corrected/FRESH_LATENCY_STATE_LEVEL_V1_CORRECTED.csv",
+          "commit timestamps of the protocol-freeze and result commits; distinct window_index vs distinct (source_dataset, window_index) among the 720 states")
     assert WW["windows"] == 60 and WW["chunked_slower_windows"] == 60 and abs(WW["median"] - 0.142) < 5e-4 and WW["policies_in_faithful_view"] == ["chunked_prefill_small", "full_prefill"]
     C.add("vbs.whole_window_illustration", "60 native windows: small-chunk prefill has higher whole-window mean latency than full prefill in 60/60 (median +14.2%); only these two policies were run whole-window in the faithful view", WW,
           ["small-chunk prefill has a higher whole-window mean latency than full prefill in all 60 (median 14.2\\%)"], "experiments/public_trace_replay_v1/layer3_checkpoint.jsonl", "faithful-view rows: mean_latency of chunked_prefill_small vs full_prefill per window")
     C.add("fresh.states", "720 fresh disagreement states", 720, ["720 fresh disagreement states"], src_res, "primary.states (== rows of FRESH_LATENCY_STATE_LEVEL_V1.csv)")
-    C.add("fresh.beneficial_preregistered", "590 of 720 states have positive one-step latency headroom (strict preregistered criterion), 81.9%", {"beneficial": 590, "share": 590 / 720},
+    C.add("fresh.beneficial_preregistered", "590 of 720 states have positive one-step latency headroom (strict pre-specified criterion), 81.9%", {"beneficial": 590, "share": 590 / 720},
           ["590/720=0.8194\\ (81.9\\%)", "590 (81.9\\%)"], src_res, "primary.beneficial_states; share = beneficial / states")
     C.add("fresh.beneficial_guarded", "589 of 720 states exceed the 1e-12 s floating-point guard, 81.8%", {"guarded": 589, "share": 589 / 720},
           ["589/720 (81.8\\%)", "589 excluding one floating-point-residue state"], src_state, "count of oracle_headroom > 1e-12 s")
@@ -268,7 +270,7 @@ def build_claims():
     C.add("robust.median", "median headroom 0.197 ms", D["median_ms"], [f"{ms(D['median_ms'], 3)}~ms", f"median\nis {ms(D['median_ms'], 2)} ms".replace("\n", " "), f"median 0.20~ms"], src_rob, "distribution_summary.csv median_ms")
     C.add("robust.distribution", "quartiles, 90th/95th percentiles, maximum, zero and positive-state statistics of headroom",
           {k: D[k] for k in ("p25_ms", "p75_ms", "p90_ms", "p95_ms", "max_ms", "n_zero", "frac_zero", "pos_median_ms", "n_pos", "frac_le_mean")},
-          [f"{ms(D['p25_ms'], 3)} and {ms(D['p75_ms'], 2)}~ms", f"{ms(D['p90_ms'], 1)} and {ms(D['p95_ms'], 1)}~ms", f"{ms(D['max_ms'], 1)}~ms",
+          [f"{ms(D['p90_ms'], 1)} and {ms(D['p95_ms'], 1)}~ms", f"{ms(D['max_ms'], 1)}~ms",
            f"{D['n_zero']} states ({pct(D['frac_zero'])}\\%)", f"the median is {ms(D['pos_median_ms'], 2)}~ms", f"{pct(D['frac_le_mean'])}\\% of states lie at or below that mean"],
           src_rob, "distribution_summary.csv; quantiles via numpy 'linear' method")
     W = {w["name"]: w for w in N["weighting"]}
@@ -278,7 +280,7 @@ def build_claims():
               [f"{key} & {w['units']} {'windows' if w['units'] == 36 else 'regimes' if w['units'] == 5 else 'workloads'} & {ms(w['mean_ms'], 3)} & [{ms(w['ci_ms'][0], 3)}, {ms(w['ci_ms'][1], 3)}] & {ms(w['P'], 3)} \\\\"],
               f"{ROBUST}/weighting_sensitivity.csv; {ROBUST}/weighting_sensitivity_ci.csv", "equal-weight mean over units of the per-unit mean H_LAT")
     C.add("robust.aggregation_ratio", "abstract/discussion: equal-window 0.33 ms, equal-regime 0.76 ms, equal-workload 1.36 ms", [eqw["mean_ms"], eqr["mean_ms"], eqk["mean_ms"]],
-          [f"{ms(eqk['mean_ms'], 2)}, {ms(eqr['mean_ms'], 2)}, and {ms(eqw['mean_ms'], 2)}~ms", f"from\n1.996~ms (state-weighted) to {ms(eqw['mean_ms'], 3)}~ms (equal-window)".replace("\n", " ")], src_rob, "see robust.equal_*")
+          [f"falls to {ms(eqw['mean_ms'], 2)}~ms when windows receive equal weight", f"from\n1.996~ms (state-weighted) to {ms(eqw['mean_ms'], 3)}~ms (equal-window)".replace("\n", " ")], src_rob, "see robust.equal_*")
     thr = {t["label"]: t for t in N["thresholds"]}
     for lab, tau in ((">0.1", "0.1"), (">0.25", "0.25"), (">0.5", "0.5"), (">1.0", "1"), (">2.0", "2"), (">5.0", "5")):
         t = thr[lab]

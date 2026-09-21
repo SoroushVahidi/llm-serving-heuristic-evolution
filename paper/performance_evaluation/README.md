@@ -29,7 +29,7 @@ Status: the manuscript text, figures and tables are frozen for archive and packa
 Everything the build reads is tracked in this repository, so no download is needed. All are read-only:
 
 * `experiments/industry_realism_action_opportunity_phase_a_v1/` (native replay) and `..._phase_b_v2/` (pressure map);
-* `experiments/fresh_production_latency_headroom_confirmatory_v1/` (frozen preregistered artifacts),
+* `experiments/fresh_production_latency_headroom_confirmatory_v1/` (frozen, pre-specified artifacts),
   `..._robustness/` (post hoc robustness outputs) and `..._corrected/` (corrected derivative of two descriptive
   state-level columns; see `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`);
 * `experiments/real_vllm_mechanism_validation_v1/` and `experiments/real_vllm_pressure_action_validation_v1/`

@@ -45,15 +45,15 @@ def test_no_terminology_drift(tex):
 
 
 def test_vllm_named_as_system_correspondence_probe(tex, flat):
-    assert r"\section{Results: Bounded vLLM System Correspondence Probe}" in tex
-    sec = _sect(flat, r"\section{Results: Bounded vLLM", r"\section{Discussion}")
+    assert r"\section{A Bounded vLLM System Correspondence Probe}" in tex
+    sec = _sect(flat, r"\section{A Bounded vLLM", r"\section{Discussion}")
     assert "did not reproduce the simulator's qualitative reversal" in sec
     assert "does not estimate Eq.~\\ref{eq:latency} in the real system" in sec
     assert "Level 3" in sec and "is not established" in sec
 
 
 def test_regime_and_condition_defined_consistently(flat):
-    assert "A pressure condition is a workload window plus one frozen one-axis intervention" in flat
+    assert "A pressure condition is a workload window plus one fixed one-axis intervention" in flat
     assert "pooled over windows (five selected regimes)" in flat
 
 
@@ -75,7 +75,7 @@ def test_table3_rows_match_verified_regime_numbers(flat):
 
 def test_table_and_figure_style(tex):
     tables = re.findall(r"\\begin\{table\*?\}.*?\\end\{table\*?\}", tex, re.S)
-    assert len(tables) == 7
+    assert len(tables) == 6
     for t in tables:
         assert r"\caption{" in t and r"\label{" in t and r"\toprule" in t and r"\bottomrule" in t
         assert "|" not in re.search(r"\\begin\{tabular[x]?\}.*?\n", t).group(0).replace(r"\mid", "")  # no vertical rules
@@ -85,13 +85,13 @@ def test_table_and_figure_style(tex):
 
 def test_figure_files_exist_are_vector_and_embed_fonts(tex):
     files = re.findall(r"\\includegraphics\[[^\]]*\]\{([^}]+)\}", tex)
-    assert len(files) == 6
+    assert len(files) == 4
     for f in files:
         pdf = PAPER / f
         assert pdf.exists() and pdf.suffix == ".pdf", f
         assert pdf.with_suffix(".png").exists(), f
     if shutil.which("pdffonts"):
-        for f in ("figures/pe_fresh_headroom.pdf", "figures/pe_regime_map.pdf", "figures/pe_robustness.pdf"):
+        for f in ("figures/pe_pipeline.pdf", "figures/pe_regime_map.pdf", "figures/pe_robustness.pdf"):
             out = subprocess.check_output(["pdffonts", str(PAPER / f)], text=True).splitlines()[2:]
             assert out and all(line.split()[-5] == "yes" for line in out if line.strip()), f"unembedded fonts in {f}"
 

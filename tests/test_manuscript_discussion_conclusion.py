@@ -48,7 +48,7 @@ def discussion(tex):
 
 @pytest.fixture(scope="module")
 def conclusion(tex):
-    return _ws(tex[tex.index(r"\section{Conclusion}"):tex.index(r"\section*{Declaration of generative")])
+    return _ws(tex[tex.index(r"\section{Conclusion}"):tex.index(r"\section*{Appendix A.")])
 
 
 def pct(x):
@@ -57,7 +57,7 @@ def pct(x):
 
 def test_discussion_structure(discussion):
     for h in ("Sign and magnitude of the headroom", "Opportunity, prediction, and deployment", "Resource pressure and action support",
-              "System correspondence", "Implications for practice", "Limitations and threats to validity"):
+              "Implications for practice", "Limitations and threats to validity"):
         assert r"\subsection{" + h + "}" in discussion, h
     for lim in ("Policy portfolio", "Workloads", "Controlled interventions", "One-step oracle", "Concentration", "System correspondence",
                 "Objective", "External validity", "Reference scheduler", "Workload overlays"):
@@ -73,11 +73,9 @@ def test_discussion_numbers_match_artifacts(discussion, N):
     expect = [
         f"{P['beneficial']} of {P['n']} disagreement states ({pct(P['beneficial'] / P['n'])})",
         f"{P['mean_ms']:.2f}~ms", f"[{P['ci_ms'][0]:.2f}, {P['ci_ms'][1]:.2f}]~ms", f"is {D['median_ms']:.2f}~ms",
-        f"{W['equal-workload']['mean_ms']:.2f}, {W['equal-regime']['mean_ms']:.2f}, and {W['equal-window']['mean_ms']:.2f}~ms",
-        f"{pct(th[0.5]['share'])} of disagreement states offer more than 0.5~ms", f"{pct(th[2.0]['share'])} more than 2~ms",
+        f"falls to {W['equal-window']['mean_ms']:.2f}~ms when windows receive equal weight",
+        f"{pct(th[2.0]['share'])} of disagreement states offer more than 2~ms",
         f"carries {pct(c['w11_headroom_share'])}", f"carries {pct(c['code_kv_headroom_share'])}", f"is {c['eff_windows']:.2f}",
-        f"{w11['mean_ms']:.2f}~ms (95\\% CI [{w11['ci_ms'][0]:.2f}, {w11['ci_ms'][1]:.2f}]~ms)",
-        f"{kv['mean_ms']:.2f}~ms (95\\% CI [{kv['ci_ms'][0]:.2f}, {kv['ci_ms'][1]:.2f}]~ms)",
         f"{N['thresholds'][0]['windows']} of the 36 windows contain a state with positive headroom",
         f"the median disagreement state offers only {D['median_ms']:.2f}~ms",
     ]
@@ -89,12 +87,12 @@ def test_discussion_numbers_match_artifacts(discussion, N):
 def test_conclusion_numbers_and_ending(conclusion, N):
     P, D, c = N["primary"], N["dist"], N["conc"]
     W = {w["name"].split(" (")[0]: w for w in N["weighting"]}
-    for s in (f"{P['beneficial']} of {P['n']} under the preregistered criterion", f"{P['mean_ms']:.2f}~ms", f"offers {D['median_ms']:.2f}~ms",
+    for s in (f"{P['beneficial']} of {P['n']} under the pre-specified criterion", f"{P['mean_ms']:.2f}~ms", f"offers {D['median_ms']:.2f}~ms",
               f"{W['equal-window']['mean_ms']:.2f}~ms when windows are weighted equally", f"holds {pct(c['w11_headroom_share'])} of the total"):
         assert s in conclusion, s
     last = re.split(r"(?<=\.) ", conclusion.strip())[-1].lower()
     assert "not by its average" in last and "future work" not in last
-    paragraphs = [p for p in re.split(r"\n\s*\n", re.sub(r"[ \t]+", " ", TEX.read_text()[TEX.read_text().index(r"\section{Conclusion}"):TEX.read_text().index(r"\section*{Declaration of generative")])) if p.strip()]
+    paragraphs = [p for p in re.split(r"\n\s*\n", re.sub(r"[ \t]+", " ", TEX.read_text()[TEX.read_text().index(r"\section{Conclusion}"):TEX.read_text().index(r"\section*{Appendix A.")])) if p.strip()]
     assert 3 <= len(paragraphs) - 1 <= 4  # heading block + 3 paragraphs
 
 

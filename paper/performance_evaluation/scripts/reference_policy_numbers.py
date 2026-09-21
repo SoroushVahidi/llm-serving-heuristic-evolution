@@ -6,14 +6,16 @@ state-level derivative, Phase A/B summaries and the whole-window replay checkpoi
 Evidence hierarchy: preregistration/metric protocol and machine-readable artifacts first, code second; generated
 Markdown reports are not used.  The reference latency L_SBS(s) is taken from the CORRECTED state-level derivative
 (SBS reference branch), never from the mislabeled columns of the frozen state-level file; it is cross-checked
-against the action-level rows (L_SBS = mean_latency_CF + A_LAT) and against the preregistered per-regime
+against the action-level rows (L_SBS = mean_latency_CF + A_LAT) and against the pre-specified per-regime
 ``mean_relative_headroom`` stored in the frozen result JSON.
 """
 from __future__ import annotations
 
 import csv
+import datetime as _dt
 import json
 import math
+import subprocess
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -39,6 +41,21 @@ def _q(xs, q):
     lo = math.floor(pos)
     hi = min(lo + 1, len(s) - 1)
     return s[lo] + (s[hi] - s[lo]) * (pos - lo)
+
+
+# protocol freeze and result commits (fallback epochs are the commit timestamps recorded in the repository history)
+PROTOCOL_COMMIT, RESULT_COMMIT = "b4e6c60", "b196c3e"
+_FALLBACK = {PROTOCOL_COMMIT: "2026-09-19T22:12:26-04:00", RESULT_COMMIT: "2026-09-20T00:26:14-04:00"}
+
+
+def _commit_time(commit: str) -> _dt.datetime:
+    try:
+        out = subprocess.run(["git", "-C", str(ROOT), "log", "-1", "--format=%cI", commit], capture_output=True, text=True, check=True).stdout.strip()
+        if out:
+            return _dt.datetime.fromisoformat(out)
+    except Exception:
+        pass
+    return _dt.datetime.fromisoformat(_FALLBACK[commit])
 
 
 def _mean(xs):
@@ -160,7 +177,7 @@ def compute() -> dict:
         "kv_code_states": len(kv_code), "kv_code_p90": _q([rel[s] for s in kv_code], 0.9), "kv_code_gt10": sum(rel[s] > 0.10 for s in kv_code),
         "max_mean_reference_latency_s": max(ref.values()),
     }
-    # preregistered per-regime relative headroom stored in the frozen result JSON must equal our recomputation
+    # pre-specified per-regime relative headroom stored in the frozen result JSON must equal our recomputation
     res = json.loads((FROZEN / "FRESH_LATENCY_CAUSAL_RESULT_V1.json").read_text())["workload_regime_results"]
     checked = 0
     for x in res:
@@ -170,6 +187,15 @@ def compute() -> dict:
         checked += 1
     assert checked == 5
     out["relative"]["kv_code_mean_prereg"] = next(x["mean_relative_headroom"] for x in res if x["condition_id"] == "kv_16000" and x["source_dataset"] == "azure_2023_code")
+
+    # ---------------------------------------------------------------- pre-specification timeline and cluster-key correction
+    t0, t1 = _commit_time(PROTOCOL_COMMIT), _commit_time(RESULT_COMMIT)
+    minutes = (t1 - t0).total_seconds() / 60.0
+    win = {(r["source_dataset"], r["window_index"]) for r in cor.values()}
+    idx = {r["window_index"] for r in cor.values()}
+    out["prespec"] = {"protocol_commit": PROTOCOL_COMMIT, "protocol_date": t0.date().isoformat(), "minutes_to_result_commit": minutes,
+                      "clusters_source_window": len(win), "clusters_bare_index": len(idx)}
+    assert out["prespec"]["clusters_source_window"] == 36 and out["prespec"]["clusters_bare_index"] == 26 and 133 <= minutes <= 135
 
     # ---------------------------------------------------------------- whole-window replay on the same 60 native windows
     rp = [json.loads(l) for l in REPLAY.read_text().splitlines()]

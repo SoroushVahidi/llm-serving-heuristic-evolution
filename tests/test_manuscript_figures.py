@@ -21,7 +21,7 @@ PAPER = ROOT / "paper" / "performance_evaluation"
 TEX = PAPER / "main.tex"
 FIG = PAPER / "figures"
 SCRIPTS = PAPER / "scripts"
-NAMES = ["pe_pipeline", "pe_disagreement_rates", "pe_pressure_transition", "pe_fresh_headroom", "pe_regime_map", "pe_robustness"]
+NAMES = ["pe_pipeline", "pe_disagreement_rates", "pe_regime_map", "pe_robustness"]
 LINEWIDTH_PT = 390.0  # \linewidth of the elsarticle preprint 12 pt class
 MIN_TEXT_PT = 7.0
 MATH_SUBSCRIPT = {"LAT"}  # mathtext subscripts are drawn at 70 % of the parent size (about 5.3-5.6 pt)
@@ -35,9 +35,9 @@ def tex():
     return TEX.read_text()
 
 
-def test_manuscript_includes_the_six_figures_at_natural_size(tex):
+def test_manuscript_includes_the_four_figures_at_natural_size(tex):
     inc = re.findall(r"\\includegraphics\[([^\]]*)\]\{figures/([^}]+)\.pdf\}", tex)
-    assert [n for _, n in inc] == NAMES  # order of appearance = Figures 1-6
+    assert [n for _, n in inc] == NAMES  # order of appearance = Figures 1-4
     for opts, name in inc:
         assert opts.strip() == "scale=1", f"{name}: figures are drawn at final size and must not be rescaled ({opts})"
 
@@ -101,19 +101,6 @@ def test_figure_2_uses_the_artifact_value_for_burstgpt_cap_8():
     assert "0.0171" in tokens and "0.03" not in tokens
 
 
-def test_figure_3_axis_direction_is_documented_and_matches_the_artifact(tex):
-    """The reversed horizontal axis is intentional: the artifact orders the cap settings by increasing pressure."""
-    import csv
-    rows = [r for r in csv.DictReader((ROOT / "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv").open())
-            if r["source_dataset"] == "azure_2023_code" and r["axis"] == "active_sequence_capacity"]
-    rows.sort(key=lambda r: int(r["pressure_order"]))
-    assert [int(float(r["axis_value"])) for r in rows] == [512, 64, 32, 16, 8, 4]
-    flat = re.sub(r"\s+", " ", tex)
-    assert "deliberately reversed, so pressure increases from left to right" in flat
-    txt = pymupdf.open(FIG / "pe_pressure_transition.pdf")[0].get_text("text")
-    assert "tighter caps to the right" in txt and "e−3" not in txt and "1e" not in txt
-
-
 def test_figures_regenerate_from_the_frozen_artifacts(tmp_path):
     """Regenerating into a scratch directory reproduces the committed figures (same size, same text)."""
     env = dict(os.environ, PEVA_FIG_DIR=str(tmp_path), MPLBACKEND="Agg")
@@ -128,8 +115,8 @@ def test_figures_regenerate_from_the_frozen_artifacts(tmp_path):
 def test_captions_use_consistent_figure_terminology(tex):
     flat = re.sub(r"\s+", " ", tex)
     caps = re.findall(r"\\begin\{figure\}.*?\\caption\{(.*?)\}\s*\\label", flat)
-    assert len(caps) == 6
+    assert len(caps) == 4
     for c in caps:
         assert "canonical disagreement rate" not in c.lower() and "16k" not in c and "1e-3" not in c
-    assert "Disagreement prevalence $P(D)$" in caps[1] and "Disagreement prevalence $P(D)$" in caps[2]
-    assert "disagreement prevalence $P(D)$" in caps[4]
+    assert "Disagreement prevalence $P(D)$" in caps[1]
+    assert "disagreement prevalence $P(D)$" in caps[2]

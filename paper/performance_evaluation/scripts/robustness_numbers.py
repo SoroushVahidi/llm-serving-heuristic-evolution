@@ -142,7 +142,7 @@ def compute():
         assert abs(1e3 * mean - float(w[name]["mean_H_ms"])) < 1e-9 and abs(p - float(w[name]["P_beneficial_canonical"])) < 1e-12
         ci = (float(wc[name]["boot_ci95_low_ms"]), float(wc[name]["boot_ci95_high_ms"]))
         weighting.append({"name": name, "units": units, "mean_ms": 1e3 * mean, "P": p, "ci_ms": ci, "replicates": int(wc[name]["boot_replicates"])})
-    weighting[0]["ci_ms"] = N["primary"]["ci_ms"]  # preregistered interval for the canonical estimand
+    weighting[0]["ci_ms"] = N["primary"]["ci_ms"]  # pre-specified interval for the canonical estimand
     weighting[0]["replicates"] = N["primary"]["replicates"]
     N["weighting"] = weighting
 

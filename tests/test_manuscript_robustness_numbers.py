@@ -37,13 +37,14 @@ def tex():
 
 @pytest.fixture(scope="module")
 def robust_section(tex):
-    s = tex[tex.index(r"\section{Results: Robustness and Concentration"):tex.index(r"\section{Results: Bounded vLLM System Correspondence Probe")]
+    main = tex[tex.index(r"\section{Concentration, Sensitivity, and Reference Dependence}"):tex.index(r"\section{A Bounded vLLM System Correspondence Probe}")]
+    s = main + " " + tex[tex.index(r"\section*{Appendix A."):tex.index(r"\section*{Declaration of generative")]  # Appendix A carries the interval diagnostics
     return re.sub(r"\s+", " ", s)  # LaTeX source wraps lines mid-phrase
 
 
 @pytest.fixture(scope="module")
 def fresh_section(tex):
-    s = tex[tex.index(r"\section{Results: Fresh Support"):tex.index(r"\section{Results: Robustness and Concentration")]
+    s = tex[tex.index(r"\section{Causal Headroom on Untouched Windows}"):tex.index(r"\section{Concentration, Sensitivity, and Reference Dependence}")]
     return re.sub(r"\s+", " ", s)
 
 
@@ -103,8 +104,7 @@ def test_weighting_claims_hold(N):
 # ----------------------------------------------------------------------------- prose numbers
 def test_distribution_prose(robust_section, N):
     d = N["dist"]
-    for s in (f"{d['median_ms']:.3f}~ms", f"{d['mean_ms']:.3f}~ms", pct(d["frac_le_mean"]), f"{d['p25_ms']:.3f} and", f"{d['p75_ms']:.2f}~ms",
-              f"{d['p90_ms']:.1f} and {d['p95_ms']:.1f}~ms", f"{d['max_ms']:.1f}~ms", f"{d['n_zero']} states ({100 * d['frac_zero']:.1f}\\%)",
+    for s in (f"{d['median_ms']:.3f}~ms", f"{d['mean_ms']:.3f}~ms", pct(d["frac_le_mean"]), f"{d['p90_ms']:.1f} and {d['p95_ms']:.1f}~ms", f"{d['max_ms']:.1f}~ms", f"{d['n_zero']} states ({100 * d['frac_zero']:.1f}\\%)",
               f"{d['n_pos']} states with positive headroom the median is {d['pos_median_ms']:.2f}~ms"):
         assert s in robust_section, s
     assert 0.09 < d["median_ms"] / d["mean_ms"] < 0.11  # "about one tenth"
@@ -151,8 +151,8 @@ def test_diagnostics_prose(robust_section, N):
 
 # ----------------------------------------------------------------------------- structure and editorial artifacts
 def test_section_order_and_references(tex):
-    order = [r"\section{Results: Native", r"\section{Results: Pressure-Induced Disagreement", r"\section{Results: Fresh Support",
-             r"\section{Results: Robustness and Concentration", r"\section{Results: Bounded vLLM System Correspondence Probe"]
+    order = [r"\section{Where Disagreement Appears}", r"\section{Causal Headroom on Untouched Windows}",
+             r"\section{Concentration, Sensitivity, and Reference Dependence}", r"\section{A Bounded vLLM System Correspondence Probe}"]
     pos = [tex.index(o) for o in order]
     assert pos == sorted(pos)
     labels = set(re.findall(r"\\label\{([^}]+)\}", tex))
@@ -162,7 +162,7 @@ def test_section_order_and_references(tex):
 
 
 def test_methods_define_posthoc_analyses(tex):
-    m = re.sub(r"\s+", " ", tex[tex.index(r"\subsection{Post hoc robustness analyses}"):tex.index(r"\section{Results: Native")]).lower()
+    m = re.sub(r"\s+", " ", tex[tex.index(r"\subsection{Statistical analysis}"):tex.index(r"\section{Where Disagreement Appears}")]).lower()
     for s in ("state-weighted mean", "equal-window", "equal-regime", "equal-workload", "leave-one-out", "bca", "jackknife", "10^{-12}", "0.1,0.25,0.5,1,2,5",
               "not alternative estimates", "diagnostics, not replacements", "weight $1/u$", "weight $1/|d|$"):
         assert s in m, s
@@ -179,4 +179,4 @@ def test_no_representativeness_or_deployment_language_in_new_section(robust_sect
     low = robust_section.lower()
     for bad in ("robust 2 ms", "consistent 2 ms", "adaptation produces", "production gain", "deployment benefit", "anomalous"):
         assert bad not in low, bad
-    assert "post hoc" in low and "preregistered" in low
+    assert "post hoc" in low and "pre-specified" in low
