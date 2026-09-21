@@ -50,10 +50,10 @@ def test_data_availability_makes_no_false_claim_about_the_existing_archive(tex):
     assert "TODO" not in tex and "Query 8" not in tex and "QUERY_8" not in tex  # the marker lives in repository documentation only
 
 
-def test_zenodo_todo_marker_is_in_repository_documentation():
+def test_zenodo_todo_marker_is_resolved():
     doc = READINESS.read_text()
-    assert "TODO(QUERY_8): ZENODO_NEW_VERSION" in doc
-    assert "TODO(QUERY_8)" in README.read_text()
+    assert "TODO(QUERY_8): ZENODO_NEW_VERSION" not in doc
+    assert "TODO(QUERY_8)" not in README.read_text()
     for needed in ("CITATION.cff", "@misc{vahidi2026archive", "submission/main.tex", "FINAL_CLAIM_MANIFEST.json"):
         assert needed in doc, needed
 

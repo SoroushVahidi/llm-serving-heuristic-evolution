@@ -163,24 +163,6 @@ figure code, the claim manifest and every figure and text change of the manuscri
 archive holds the frozen confirmatory artifacts and predates the robustness analysis, the corrected derivative and the
 final figure code, which are in the GitHub repository only.
 
-TODO(QUERY_8): ZENODO_NEW_VERSION. This marker is deliberately kept out of the manuscript text. After the new version
-is published:
-
-1. In `main.tex` (Data and Code Availability) replace the DOI, delete the sentence "That archive predates ...", and say
-   that the archive contains the frozen artifacts, the post hoc robustness outputs, the corrected derivative, the
-   figure/build code and `FINAL_CLAIM_MANIFEST.json`.
-2. Add a reference entry for the archive and cite it from that paragraph, for example
-   `@misc{vahidi2026archive, author = {Vahidi, Soroush}, title = {Reproducibility package for ``When Does LLM-Serving
-   Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay''}, year = {2026},
-   publisher = {Zenodo}, version = {<new tag>}, doi = {10.5281/zenodo.<new id>}}` (use the version DOI, and mention the
-   concept DOI in the archive README).
-3. Update `CITATION.cff`, `release/performance_evaluation_v1/{README.md,CITATION.cff,main.tex}` and the DOI mentions in
-   `paper/performance_evaluation/submission/`.
-4. Check the citation the Azure LLM trace asks users to give (the trace comes from the Splitwise study, reference [16])
-   and add it beside [11] if required; BurstGPT [12] and vLLM [13] are already cited.
-5. Regenerate `FINAL_CLAIM_MANIFEST.json` after any number-bearing edit, then rerun the manuscript tests; the
-   Data Availability test accepts the "predates" wording only while the old DOI is in the text.
-6. Regenerate `submission/main.tex`, `main.bbl`, the figures folder and the source zip from the final `main.tex`;
    write the highlights and cover letter; complete the declarations tool and the suggested-reviewer list.
 
 ## 8. Items for the author (not blockers)
