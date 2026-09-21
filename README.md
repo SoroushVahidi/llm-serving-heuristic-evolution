@@ -39,11 +39,8 @@ regenerated in this repository and verified against the frozen manuscript.
   ([`docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md`](docs/current/FGCS_SUBMISSION_ROADMAP_20260920.md))
   is superseded and retained for provenance only.
 - Zenodo: the v1.0.0 archive is published at `10.5281/zenodo.22865294`
-  (concept `10.5281/zenodo.22865293`). The v1.1.0 version is staged in the
-  Zenodo concept record (draft `22866983`, full metadata set); its publication
-  was pending on the Zenodo file-upload service at finalization time, so no
-  v1.1.0 version DOI is asserted here. The v1.1.0 version DOI will be recorded
-  only after Zenodo publication succeeds and the DOI resolves publicly.
+  (concept `10.5281/zenodo.22865293`). The v1.1.0 reproducibility archive is
+  published at `10.5281/zenodo.22866983`.
 
 ## Research Problem
 

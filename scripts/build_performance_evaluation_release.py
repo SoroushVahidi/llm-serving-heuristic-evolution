@@ -152,7 +152,7 @@ def release_readme(a: argparse.Namespace, commit: str, n_files: int, n_shards: i
 {TITLE}
 
 * v1.0.0 (published record): [10.5281/zenodo.22865294](https://doi.org/10.5281/zenodo.22865294)
-* v1.1.0 persistent DOI: assigned by Zenodo only if publication of the v1.1.0 version succeeds (concept DOI 10.5281/zenodo.22865293); this bundle is the intended upload payload
+* v1.1.0 (published record): [10.5281/zenodo.22866983](https://doi.org/10.5281/zenodo.22866983)
 * Source repository: {GITHUB}
 * Built from git commit `{commit}` on branch `release/peva-v1-20260920` (final Git tag not yet created)
 * Author: Soroush Vahidi, New Jersey Institute of Technology
@@ -309,7 +309,7 @@ def build(a: argparse.Namespace) -> None:
         "archive_name": out.name,
         "release": {"version": a.version, "tag": a.tag, "git_commit": commit, "git_commit_date": commit_date, "built_from_branch": branch,
                     "included_paths_clean_at_build": not a.allow_dirty},
-        "identifiers": {"v1_doi": a.prior_doi, "concept_doi": "10.5281/zenodo.22865293 (concept of record 22865294)", "v1_1_doi": "pending Zenodo publication", "repository": GITHUB},
+        "identifiers": {"v1_doi": a.prior_doi, "concept_doi": "10.5281/zenodo.22865293 (concept of record 22865294)", "v1_1_doi": "10.5281/zenodo.22866983", "repository": GITHUB},
         "title": TITLE,
         "builder": {"script": "scripts/build_performance_evaluation_release.py",
                     "script_sha256": sha256_file(Path(__file__)), "python": platform.python_version()},
@@ -396,7 +396,7 @@ def zenodo_metadata(a: argparse.Namespace, commit: str) -> dict:
         "related_identifiers": [
             {"relation": "isSupplementTo", "identifier": f"{GITHUB}/tree/{commit}", "resource_type": "software", "scheme": "url"},
         ],
-        "notes": f"Built from git commit {commit} (branch release/peva-v1-20260920; final Git tag not yet created). v1.0.0 is {a.prior_doi}; this bundle is the v1.1.0 version of the same record (record 22865294, concept DOI 10.5281/zenodo.22865293).",
+        "notes": f"Built from git commit {commit} (branch release/peva-v1-20260920; final Git tag not yet created). v1.0.0 is {a.prior_doi}; this bundle is the published v1.1.0 version (record 22866983, concept DOI 10.5281/zenodo.22865293).",
     }
 
 

@@ -5,18 +5,18 @@ Regenerated from the canonical manuscript source; see `SUBMISSION_CHECKLIST.md`.
 | File | Purpose | SHA-256 |
 |---|---|---|
 | `README_BUILD.txt` | Build instructions | `ba758905921ee0fd4fc844220fd5977955eb2de19a99b01cf8b104e93da1f21a` |
-| `SOURCE_ZIP_VERIFICATION.json` | Result of the clean-extraction build check | `3e5aee3960bc04b303beb3256f57441a18b7ca716f787d2744eb7c8ee30f96d9` |
-| `SUBMISSION_CHECKLIST.md` | Checklist | `df2d0f426bcd636d6c2d15d3a9d92b0c2053536bbf0ce457191f5c909a3e1d2f` |
+| `SOURCE_ZIP_VERIFICATION.json` | Result of the clean-extraction build check | `21882fb050ab91c529ba6520483ae9d9276ec48671b127e3403586449e9d9b4c` |
+| `SUBMISSION_CHECKLIST.md` | Checklist | `68943bcf36a2ab0fc14b0faa40103178f2905c2688689fbd12e3b32a59a523df` |
 | `cover_letter.txt` | Cover letter | `0f305836586b7bf1cee2944581c349302fb421a27ec4f86e1b6e1098789232e5` |
 | `credit_authorship_statement.txt` | CRediT statement (candidate; author to confirm) | `fba46a3e67945fc1b02d241b2c28ebe35c55e72904610aa515db5cf136f3c9b5` |
-| `declarations.md` | Declarations text for the Elsevier declarations tool | `2b41f8f0fb683edf2f44ba0574f63eeb274777325d406ddf2b81d757850acf5e` |
+| `declarations.md` | Declarations text for the Elsevier declarations tool | `4fddec77f22a64fde8113017cd7b20bed94f217193c3a8e28015df66cd7902a5` |
 | `figures/pe_disagreement_rates.pdf` | Figure (vector PDF) | `aab918f3615fef33f1b059a8b436fcb7c6d9b049cd68a5a41fc94cc151f83bb4` |
 | `figures/pe_pipeline.pdf` | Figure (vector PDF) | `8368eae19749014ccc5a92e603038ba6dcf7294d753c63460300dfb60243095c` |
 | `figures/pe_regime_map.pdf` | Figure (vector PDF) | `2e1f060a9e033caa92df4ea16207bc9545aac7c9bf921830689a875a383a8256` |
 | `figures/pe_robustness.pdf` | Figure (vector PDF) | `c45b043c3eb917d187a53ab5afb22b631775f86bc9c46af6b552399c364c1f5d` |
-| `main.bbl` | Compiled bibliography | `b0906df78b7487f67e4cc2e79008ee677cd6fc47856c6a437945f30bb47d1c62` |
-| `main.tex` | Editable LaTeX source | `a28aeccb210182eb3554238303dc534adfdc4951cb2b1f202f3c8a41cff5742f` |
+| `main.bbl` | Compiled bibliography | `c443edccf9df489ee11abc4009a36f62068247678e6d9f73d0b12a7545e96ba4` |
+| `main.tex` | Editable LaTeX source | `d8ced7b07b30cbe6ffc0d75c510b33857867dab4476eba14d384160ce703f830` |
 | `performance_evaluation_highlights.txt` | Highlights (upload as a separate file) | `d3b01cfa2acead5a621debc6e7c6bffdbda781d7ce302880b4e5a92d983e6ea2` |
-| `performance_evaluation_submission_sources.zip` | Elsevier source ZIP | `d2c6ee1518816e0ebb6684d6cd8db1fc1466bd8cce1a92261502e34709fc16e2` |
-| `references.bib` | Bibliography source | `efec5b72080f4fd294ecb00ec188bcba9415b7bb66a60a24ecebdeb7a20fc22e` |
+| `performance_evaluation_submission_sources.zip` | Elsevier source ZIP | `02548fe7a8e51893b371fa8b8f5f1fe2a57b7896e68b9234261990b98e139d44` |
+| `references.bib` | Bibliography source | `a5b95131e7008af336cc4d854c0f6573275f92bb0b2f4a84df97fa6ca5392293` |
 | `suggested_reviewers.md` | Optional reviewer suggestions (portal only) | `253e7573e5c645a7a334258a183e9543ee4e41c799b751c4cc05c9f076ab5646` |

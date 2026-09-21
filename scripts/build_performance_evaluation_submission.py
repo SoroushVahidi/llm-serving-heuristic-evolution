@@ -93,8 +93,7 @@ def declarations(tex: str, version_doi: str) -> str:
 ## Data availability
 {plain(section(tex, "Data and Code Availability"))}
 
-Archive: Zenodo record 22865294 (published v1.0.0: https://doi.org/10.5281/zenodo.22865294; concept DOI 10.5281/zenodo.22865293).
-The v1.1.0 version DOI is assigned by Zenodo when the v1.1.0 version is published.
+Archive: Zenodo record 22866983 (published v1.1.0: https://doi.org/10.5281/zenodo.22866983; concept DOI 10.5281/zenodo.22865293).
 """
 
 
@@ -116,7 +115,7 @@ def checklist(tex: str, f: dict, hl: list[str], version_doi: str, zip_sha: str, 
         ("Funding statement", "READY", "In the manuscript: in-kind Google Cloud Research Credits and CloudRift Inc. computational/tooling support; no monetary research grant"),
         ("AI declaration", "READY", "In the manuscript before the references: ChatGPT, Codex (OpenAI), Gemini (Google), Claude (Anthropic); purposes, author review and responsibility stated"),
         ("CRediT statement", "USER_CONFIRM", "Candidate for the sole author in `credit_authorship_statement.txt`; no Funding acquisition, Supervision, Resources or Project administration claimed"),
-        ("Data availability", "READY", "In the manuscript; Zenodo record 22865294 (v1.0.0 published, v1.1.0 version pending publication - DOI assigned by Zenodo at that time)"),
+        ("Data availability", "READY", "In the manuscript; Zenodo record 22866983 (v1.1.0 published)"),
         ("Data / software citation", "READY", "Reference [28] `[dataset]` (one combined dataset-and-software archive, version DOI) cited from Data and Code Availability"),
         ("Source ZIP build verified", "READY" if verification["all_ok"] else "FAIL", f"`{ZIP_NAME}`: {zip_info['files']} files, {zip_info['uncompressed_bytes']} bytes, sha256 {zip_sha}; build `{BUILD_CMD}` from a fresh extraction; {verification['summary']}"),
         ("Acknowledgements wording", "USER_CONFIRM", "The sentence 'the author thanks his mother' is grammatical and intentional; unchanged. Note the manuscript also uses 'they' for the author in the competing-interest declaration; confirm the pronoun choice."),
