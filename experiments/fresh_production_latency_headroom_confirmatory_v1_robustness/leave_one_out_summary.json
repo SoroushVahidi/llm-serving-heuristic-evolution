@@ -1,0 +1,41 @@
+{
+  "regime": {
+    "P_max": 0.8795986622073578,
+    "P_max_omitted": "azure_2023_code|active_sequence_capacity|active_4",
+    "P_min": 0.6643598615916955,
+    "P_min_omitted": "azure_2023_code|kv_capacity|kv_16000",
+    "all_loo_mean_H_positive": true,
+    "mean_H_ms_max": 2.387314510517496,
+    "mean_H_ms_max_omitted": "azure_2023_code|active_sequence_capacity|active_4",
+    "mean_H_ms_min": 0.15920462547493672,
+    "mean_H_ms_min_omitted": "azure_2023_code|kv_capacity|kv_16000"
+  },
+  "window": {
+    "P_max": 0.833570412517781,
+    "P_max_omitted": "azure_2023_code:w7",
+    "P_min": 0.7952,
+    "P_min_omitted": "azure_2023_conv:w18",
+    "all_loo_mean_H_positive": true,
+    "mean_H_ms_max": 2.263239105224156,
+    "mean_H_ms_max_omitted": "azure_2023_conv:w18",
+    "mean_H_ms_min": 0.3646901823194302,
+    "mean_H_ms_min_omitted": "azure_2023_code:w11"
+  },
+  "window_remainder_ci": {
+    "lowest_ci_low_ms": 0.15765803445623022,
+    "lowest_ci_low_omitted": "azure_2023_code:w37",
+    "n_omissions": 36,
+    "n_omissions_ci_excludes_zero": 36,
+    "omit_top_window": {
+      "boot_ci95_high_ms": 0.6823701247955324,
+      "boot_ci95_low_ms": 0.15783406633359676,
+      "boot_replicates": 200000,
+      "boot_seed": 20260920,
+      "ci_excludes_zero": true,
+      "mean_H_ms": 0.3646901823194302,
+      "n_states": 457,
+      "n_windows": 35,
+      "omitted": "azure_2023_code:w11"
+    }
+  }
+}

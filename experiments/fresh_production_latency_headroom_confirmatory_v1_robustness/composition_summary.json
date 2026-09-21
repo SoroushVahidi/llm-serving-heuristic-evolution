@@ -1,0 +1,90 @@
+{
+  "dominant_regime": "azure_2023_code|kv_capacity|kv_16000",
+  "dominant_regime_contribution_to_pooled_mean_ms": 1.9318882030879123,
+  "dominant_regime_label": "Code, KV 16,000",
+  "dominant_regime_share_of_states": 0.5986111111111111,
+  "dominant_regime_share_of_total_headroom": 0.9679811351709123,
+  "dominant_regime_without_top_window": {
+    "mean_H_ms": 0.5670945118733548,
+    "n_states": 226,
+    "n_windows": 13,
+    "sum_H_s": 0.1281633596833782
+  },
+  "effective_number_of_regimes_by_headroom": 1.0668178604957304,
+  "effective_number_of_windows_by_headroom": 1.2739857459329016,
+  "high_headroom_states_by_window": {
+    "gt_2_ms": {
+      "by_window": {
+        "azure_2023_code:w1": 2,
+        "azure_2023_code:w11": 140,
+        "azure_2023_code:w37": 19,
+        "azure_2023_conv:w3": 1
+      },
+      "n_states": 162,
+      "n_windows": 4,
+      "share_from_top_window": 0.8641975308641975
+    },
+    "gt_5_ms": {
+      "by_window": {
+        "azure_2023_code:w11": 128,
+        "azure_2023_conv:w3": 1
+      },
+      "n_states": 129,
+      "n_windows": 2,
+      "share_from_top_window": 0.9922480620155039
+    }
+  },
+  "n_states_for_50pct_of_headroom": 65,
+  "n_states_for_80pct_of_headroom": 120,
+  "n_windows_for_50pct": 1,
+  "n_windows_for_80pct": 1,
+  "pooled_mean_ms": 1.9957911708132692,
+  "pooled_mean_without_dominant_regime_ms": 0.15920462547493672,
+  "state_gini": 0.7784174890951397,
+  "state_top_share": {
+    "top_10pct": 0.5460569821084048,
+    "top_1pct": 0.06657558039688238,
+    "top_20pct": 0.8824553239729341,
+    "top_5pct": 0.2916430549731717
+  },
+  "states_without_dominant_regime": 289,
+  "top3_window_share": 0.9531630535167241,
+  "top_window": "azure_2023_code:w11",
+  "top_window_profile": {
+    "P_beneficial_canonical": 0.8174904942965779,
+    "by_regime": {
+      "azure_2023_code|active_sequence_capacity|active_4": {
+        "max_step": 3217.0,
+        "mean_H_ms": 0.14070227162906568,
+        "min_step": 545.0,
+        "n": 51.0,
+        "sum_H_s": 0.00717581585308235
+      },
+      "azure_2023_code|active_sequence_capacity|active_8": {
+        "max_step": 2764.0,
+        "mean_H_ms": 0.047752467510423224,
+        "min_step": 643.0,
+        "n": 7.0,
+        "sum_H_s": 0.00033426727257296254
+      },
+      "azure_2023_code|kv_capacity|kv_16000": {
+        "max_step": 3230.0,
+        "mean_H_ms": 6.15998120263375,
+        "min_step": 640.0,
+        "n": 205.0,
+        "sum_H_s": 1.2627961465399187
+      }
+    },
+    "mean_H_ms": 4.830061709755034,
+    "n_states": 263,
+    "step_span": [
+      545,
+      3230
+    ],
+    "window": "azure_2023_code:w11"
+  },
+  "top_window_share": 0.8840174431425654,
+  "total_headroom_s": 1.4369696429855536,
+  "windows_in_dominant_regime": 14,
+  "windows_total": 36
+}
