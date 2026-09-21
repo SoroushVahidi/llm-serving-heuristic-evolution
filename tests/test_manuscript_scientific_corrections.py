@@ -41,7 +41,7 @@ def test_no_unsupported_strength_or_load_claims(flat):
 
 def test_reference_scheduler_is_described_and_conditional(flat):
     methods = _section(flat, r"\section{Methods}", r"\section{Where Disagreement Appears}")
-    for s in ("KV-constrained online policy", "reserve of 0.82", "not tuned to these workloads or to latency", "not selected, tuned, or changed using fresh outcomes",
+    for s in ("KV-constrained online policy", "reserve of 0.82", "not selected, tuned, or changed using fresh outcomes, these workloads, or latency",
               "not claimed to be optimal or strong here", "earlier benchmark of 240 multi-mechanism scenarios",
               "imposed capacity setting", "physical binding", "reference's own reserve threshold"):
         assert s in methods, s
@@ -55,12 +55,13 @@ def test_overlays_and_capacity_are_disclosed_in_methods_and_limitations(flat):
         assert s in methods, s
     assert "hidden from policies" not in flat  # policies see the true length as their prediction
     lim = _section(flat, r"\subsection{Limitations and threats to validity}", r"\section{Conclusion}")
-    assert r"\item[Workload overlays.]" in lim and "1000~s after arrival" in lim and r"\item[Reference scheduler.]" in lim
+    assert r"\emph{Reference and portfolio.}" in lim and "1000~s deadlines" in lim and "exact output lengths" in lim
+    assert "constant priorities" in lim and "uncalibrated" in lim and "lightly loaded" in lim
 
 
 def test_burstgpt_mechanism_is_explained_not_merely_unselected(flat):
-    fresh = _section(flat, r"\section{Causal Headroom on Untouched Windows}", r"\section{Concentration, Sensitivity")
-    for s in ("All 360 untouched BurstGPT conditions were valid", "none had a binding capacity constraint", "never queued more than three requests"):
+    fresh = _section(flat, r"\section{Causal Headroom on Fresh Windows}", r"\section{Concentration, Sensitivity")
+    for s in ("All 360 fresh BurstGPT conditions were valid", "none had a binding capacity constraint", "never queued more than three requests"):
         assert s in fresh, s
     assert "contributed no selected regime" not in flat
 

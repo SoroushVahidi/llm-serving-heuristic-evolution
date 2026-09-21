@@ -59,9 +59,12 @@ def test_discussion_structure(discussion):
     for h in ("Sign and magnitude of the headroom", "Opportunity, prediction, and deployment", "Resource pressure and action support",
               "Implications for practice", "Limitations and threats to validity"):
         assert r"\subsection{" + h + "}" in discussion, h
-    for lim in ("Policy portfolio", "Workloads", "Controlled interventions", "One-step oracle", "Concentration", "System correspondence",
-                "Objective", "External validity", "Reference scheduler", "Workload overlays"):
-        assert r"\item[" + lim + ".]" in discussion, lim
+    for lim in ("Reference and portfolio", "Load and workloads", "Estimand and inference", "System correspondence"):
+        assert r"\emph{" + lim + ".}" in discussion, lim
+    # every boundary the manuscript must state, in its compact form
+    for topic in ("exact output lengths", "1000~s deadlines", "constant priorities", "0.82 KV reserve", "lightly loaded", "not sampled at random",
+                  "uncalibrated", "ex post best alternative", "not closed-loop", "tail-latency", "one model, one GPU, one vLLM version"):
+        assert topic in discussion, topic
 
 
 def test_discussion_numbers_match_artifacts(discussion, N):
@@ -71,13 +74,11 @@ def test_discussion_numbers_match_artifacts(discussion, N):
     c, L, g = N["conc"], N["loo"], N["diag"]
     w11, kv = L["window"][N["_W11"]], L["regime"][N["_KV"]]
     expect = [
-        f"{P['beneficial']} of {P['n']} disagreement states ({pct(P['beneficial'] / P['n'])})",
-        f"{P['mean_ms']:.2f}~ms", f"[{P['ci_ms'][0]:.2f}, {P['ci_ms'][1]:.2f}]~ms", f"is {D['median_ms']:.2f}~ms",
+        f"({P['beneficial']} of {P['n']})", f"is {D['median_ms']:.2f}~ms",
         f"falls to {W['equal-window']['mean_ms']:.2f}~ms when windows receive equal weight",
-        f"{pct(th[2.0]['share'])} of disagreement states offer more than 2~ms",
-        f"carries {pct(c['w11_headroom_share'])}", f"carries {pct(c['code_kv_headroom_share'])}", f"is {c['eff_windows']:.2f}",
+        f"carries {pct(c['w11_headroom_share'])}", f"an effective number of about {c['eff_windows']:.2f}",
         f"{N['thresholds'][0]['windows']} of the 36 windows contain a state with positive headroom",
-        f"the median disagreement state offers only {D['median_ms']:.2f}~ms",
+        f"in {pct(102 / P['n'])} every alternative is worse",  # 102 all-harmful states, checked in test_reference_numbers_recompute_from_artifacts
     ]
     for s in expect:
         assert s in discussion, s
@@ -88,7 +89,7 @@ def test_conclusion_numbers_and_ending(conclusion, N):
     P, D, c = N["primary"], N["dist"], N["conc"]
     W = {w["name"].split(" (")[0]: w for w in N["weighting"]}
     for s in (f"{P['beneficial']} of {P['n']} under the pre-specified criterion", f"{P['mean_ms']:.2f}~ms", f"offers {D['median_ms']:.2f}~ms",
-              f"{W['equal-window']['mean_ms']:.2f}~ms when windows are weighted equally", f"holds {pct(c['w11_headroom_share'])} of the total"):
+              f"holds {pct(c['w11_headroom_share'])} of the total"):
         assert s in conclusion, s
     last = re.split(r"(?<=\.) ", conclusion.strip())[-1].lower()
     assert "not by its average" in last and "future work" not in last

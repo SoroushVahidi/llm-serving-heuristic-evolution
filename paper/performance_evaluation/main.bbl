@@ -25,11 +25,10 @@ K.~Hong, X.~Li, L.~Chen, Q.~Mao, G.~Dai, X.~Ning, S.~Yan, Y.~Liang, Y.~Wang,
   state-aware scheduling, in: Proceedings of Machine Learning and Systems,
   Vol.~7, 2025.
 
-\bibitem{distserve2024}
-Y.~Zhong, S.~Liu, J.~Chen, J.~Hu, Y.~Zhu, X.~Liu, X.~Jin, H.~Zhang,
-  {DistServe}: Disaggregating prefill and decoding for goodput-optimized large
-  language model serving, in: 18th USENIX Symposium on Operating Systems Design
-  and Implementation (OSDI 24), USENIX Association, 2024, pp. 193--210.
+\bibitem{preble2025}
+V.~Srivatsa, Z.~He, R.~Abhyankar, D.~Li, Y.~Zhang, Preble: Efficient
+  distributed prompt scheduling for {LLM} serving, in: The Thirteenth
+  International Conference on Learning Representations (ICLR 2025), 2025.
 
 \bibitem{lmetric2026}
 D.~Zhang, J.~Han, K.~Zhang, X.~Wei, S.~Shen, C.~Fang, W.~Yu, J.~Zhou, R.~Chen,
@@ -69,6 +68,12 @@ A.~Agrawal, N.~Kedia, A.~Panwar, J.~Mohan, N.~Kwatra, B.~S. Gulavani,
   with {Sarathi-Serve}, in: 18th USENIX Symposium on Operating Systems Design
   and Implementation (OSDI 24), USENIX Association, 2024, pp. 117--134.
 
+\bibitem{distserve2024}
+Y.~Zhong, S.~Liu, J.~Chen, J.~Hu, Y.~Zhu, X.~Liu, X.~Jin, H.~Zhang,
+  {DistServe}: Disaggregating prefill and decoding for goodput-optimized large
+  language model serving, in: 18th USENIX Symposium on Operating Systems Design
+  and Implementation (OSDI 24), USENIX Association, 2024, pp. 193--210.
+
 \bibitem{splitwise2024}
 P.~Patel, E.~Choukse, C.~Zhang, A.~Shah, I.~Goiri, S.~Maleki, R.~Bianchini,
   {Splitwise}: Efficient generative {LLM} inference using phase splitting, in:
@@ -82,11 +87,6 @@ B.~Wu, Y.~Zhong, Z.~Zhang, S.~Liu, F.~Liu, Y.~Sun, G.~Huang, X.~Liu, X.~Jin,
   {FastServe}: {Iteration-Level} preemptive scheduling for large language model
   inference, in: 23rd USENIX Symposium on Networked Systems Design and
   Implementation (NSDI 26), USENIX Association, 2026, pp. 57--74.
-
-\bibitem{preble2025}
-V.~Srivatsa, Z.~He, R.~Abhyankar, D.~Li, Y.~Zhang, Preble: Efficient
-  distributed prompt scheduling for {LLM} serving, in: The Thirteenth
-  International Conference on Learning Representations (ICLR 2025), 2025.
 
 \bibitem{libra2026}
 C.~Ruan, Y.~Chen, D.~Tian, Y.~Shi, Y.~Wu, J.~Li, C.~Li, Libra: Flexible request
@@ -118,10 +118,12 @@ J.~Stojkovic, C.~Zhang, I.~Goiri, J.~Torrellas, E.~Choukse, {DynamoLLM}:
 \newblock \href {https://doi.org/10.1109/HPCA61900.2025.00102}
   {\path{doi:10.1109/HPCA61900.2025.00102}}.
 
-\bibitem{yearllmserving2026}
-W.~Nixon, J.~Durbin, F.~Standhartinger, H.~S. Gunawi, J.~Yang, A year in {LLM}
-  serving: Workload evolution, caching and load-balancing, arXiv preprint
-  arXiv:2608.13573 (2026).
+\bibitem{opentela2026}
+X.~Yao, Y.~Jiang, I.~Badanin, Q.~Hu, R.~M. Smith, B.~Yuan, I.~Schlag,
+  E.~Yoneki, A.~Klimovic, {OpenTela}: Unifying decentralized computing
+  resources for heterogeneous {LLM} serving, in: 20th USENIX Symposium on
+  Operating Systems Design and Implementation (OSDI 26), USENIX Association,
+  2026, pp. 1821--1838.
 
 \bibitem{servegen2025}
 Y.~Xiang, X.~Li, K.~Qian, Y.~Zhang, W.~Yu, E.~Zhai, X.~Jin, J.~Zhou,
@@ -129,12 +131,10 @@ Y.~Xiang, X.~Li, K.~Qian, Y.~Zhang, W.~Yu, E.~Zhai, X.~Jin, J.~Zhou,
   serving in production, in: 23rd USENIX Symposium on Networked Systems Design
   and Implementation (NSDI 26), USENIX Association, 2026, pp. 1845--1859.
 
-\bibitem{opentela2026}
-X.~Yao, Y.~Jiang, I.~Badanin, Q.~Hu, R.~M. Smith, B.~Yuan, I.~Schlag,
-  E.~Yoneki, A.~Klimovic, {OpenTela}: Unifying decentralized computing
-  resources for heterogeneous {LLM} serving, in: 20th USENIX Symposium on
-  Operating Systems Design and Implementation (OSDI 26), USENIX Association,
-  2026, pp. 1821--1838.
+\bibitem{yearllmserving2026}
+W.~Nixon, J.~Durbin, F.~Standhartinger, H.~S. Gunawi, J.~Yang, A year in {LLM}
+  serving: Workload evolution, caching and load-balancing, arXiv preprint
+  arXiv:2608.13573 (2026).
 
 \bibitem{jaillet2025online}
 P.~Jaillet, J.~Jiang, K.~Mellou, M.~Molinaro, C.~Podimata, Z.~Zhou, Online
@@ -194,8 +194,6 @@ M.~Lindauer, H.~H. Hoos, F.~Hutter, T.~Schaub, {AutoFolio}: An automatically
   Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in
   Production-Derived Replay}'': data, code and manuscript sources, Zenodo
   dataset and software archive, version 1.1.0; published v1.0.0 record:
-  \url{https://doi.org/10.5281/zenodo.22865294}; repository
-  \url{https://github.com/SoroushVahidi/llm-serving-heuristic-evolution}
-  (2026).
+  \url{https://doi.org/10.5281/zenodo.22865294} (2026).
 
 \end{thebibliography}

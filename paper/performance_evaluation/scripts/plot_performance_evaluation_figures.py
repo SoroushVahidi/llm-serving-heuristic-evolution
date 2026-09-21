@@ -44,7 +44,7 @@ STAGES = [  # (label, box width in inches); the fifth stage is outside the measu
     ("Action\ndisagreement\n$P(D)$", 0.98),
     ("Beneficial\ndisagreement\n$P(B_{\\mathrm{LAT}}\\mid D)$", 1.10),
     ("Headroom\nmagnitude\n$H_{\\mathrm{LAT}}$", 0.92),
-    ("Predictability,\ndeployability", 1.08),
+    ("Predictability,\ndeployment", 1.08),
 ]
 
 

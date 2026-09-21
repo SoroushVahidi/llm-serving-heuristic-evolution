@@ -44,7 +44,7 @@ def robust_section(tex):
 
 @pytest.fixture(scope="module")
 def fresh_section(tex):
-    s = tex[tex.index(r"\section{Causal Headroom on Untouched Windows}"):tex.index(r"\section{Concentration, Sensitivity, and Reference Dependence}")]
+    s = tex[tex.index(r"\section{Causal Headroom on Fresh Windows}"):tex.index(r"\section{Concentration, Sensitivity, and Reference Dependence}")]
     return re.sub(r"\s+", " ", s)
 
 
@@ -60,7 +60,7 @@ def test_primary_result_unchanged_and_stated_first(fresh_section, N):
     assert N["primary"]["beneficial"] == 590 and abs(N["primary"]["mean_ms"] - 1.9958) < 5e-5
     assert N["primary"]["replicates"] == 2000 and N["primary"]["seed"] == 20260920 and N["primary"]["clusters"] == 36
     assert "2,000" in TEX.read_text() and "20260920" in TEX.read_text()
-    assert fresh_section.index("590 beneficial") < fresh_section.index("post hoc analyses")  # primary result precedes the qualification
+    assert fresh_section.index("590 beneficial") < fresh_section.index("examined further in Section")  # primary result precedes the qualification
 
 
 def test_numerical_residue_sentence(fresh_section, N):
@@ -112,10 +112,9 @@ def test_distribution_prose(robust_section, N):
 
 def test_threshold_prose(robust_section, N):
     th = {r.get("tau_ms"): r for r in N["thresholds"] if "tau_ms" in r}
-    for tau in (0.1, 0.5, 2.0, 5.0):
+    for tau in (0.1, 2.0, 5.0):  # the 0.5 ms row, the KV-16,000 counts and the window counts are carried by the table (test_threshold_table_rows)
         assert pct(th[tau]["share"]) in robust_section
-    assert f"{th[0.5]['in_code_kv']} of the {th[0.5]['n']} states" in robust_section
-    assert f"only {th[2.0]['windows']} of the 36 windows" in robust_section
+    assert "concentrated in one regime and a few windows" in robust_section
 
 
 def test_concentration_prose(robust_section, N):
@@ -151,7 +150,7 @@ def test_diagnostics_prose(robust_section, N):
 
 # ----------------------------------------------------------------------------- structure and editorial artifacts
 def test_section_order_and_references(tex):
-    order = [r"\section{Where Disagreement Appears}", r"\section{Causal Headroom on Untouched Windows}",
+    order = [r"\section{Where Disagreement Appears}", r"\section{Causal Headroom on Fresh Windows}",
              r"\section{Concentration, Sensitivity, and Reference Dependence}", r"\section{A Bounded vLLM System Correspondence Probe}"]
     pos = [tex.index(o) for o in order]
     assert pos == sorted(pos)

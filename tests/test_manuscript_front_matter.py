@@ -109,9 +109,9 @@ def test_robustness_numbers_match_post_hoc_outputs():
     txt = _plain(_block("abstract")) + " " + _plain(_intro())
     assert f"{100 * comp['top_window_share']:.0f}" == "88" and "88%" in txt
     assert f"{float(dist['median_ms']):.2f}" == "0.20" and "0.20 ms" in txt
-    assert f"{100 * float(thr[('global', 2.0)]['fraction']):.1f}" == "22.5" and "22.5%" in txt
+    assert f"{100 * float(thr[('global', 2.0)]['fraction']):.1f}" == "22.5" and "22.5\\%" in _tex()  # reported in Section 6, not in the Introduction
     assert tol["beneficial_states_with_eps_guard"] == 589 and tol["canonical_beneficial_states_strict_gt0"] == 590
-    assert "589" in txt
+    assert "589/720" in _tex()  # the guarded count is reported with the primary result (Section 5), not in the Introduction
 
 
 def test_scope_statements_present_once_and_no_deployment_claim():

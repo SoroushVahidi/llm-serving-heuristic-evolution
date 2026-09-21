@@ -118,7 +118,7 @@ def build_claims():
     assert max(float(r["arrival_multiplier"]) for r in arr) == 8.0 and all(int(r["true_canonical_disagreement_states"]) == 0 for r in arr)
     assert {r["source_dataset"] for r in arr} == set(wl)
     C.add("pressure.arrival_scaling_action_null", "arrival scaling through 8x is action-null for all three workloads", {"max_multiplier": 8.0, "conditions": len(arr), "disagreement_states": 0},
-          ["Arrival scaling through $8\\times$ remained action-null", "up to eight times"], src_wc, "axis == arrival_pressure: max arrival_multiplier, sum of true_canonical_disagreement_states")
+          ["Arrival scaling through $8\\times$ produced no disagreement state", "up to eight times"], src_wc, "axis == arrival_pressure: max arrival_multiplier, sum of true_canonical_disagreement_states")
 
     tmap = csv_rows(PHASE_B / "PHASE_B_V2_TRANSITION_MAP.csv")
     axis_name = {"active_sequence_capacity": "Active-sequence cap", "kv_capacity": "KV capacity"}
@@ -140,6 +140,14 @@ def build_claims():
     for w, ax, v in (("azure_2023_code", "active_sequence_capacity", 4), ("azure_2023_code", "kv_capacity", 16000), ("azure_2023_conv", "active_sequence_capacity", 4), ("burstgpt", "active_sequence_capacity", 8)):
         r = next(x for x in axis_rows if x["source_dataset"] == w and x["axis"] == ax and int(float(x["axis_value"])) == v)
         fig2[f"{w}|{ax}|{v}"] = {"disagreement_rate": float(r["disagreement_rate"]), "disagreement_states": int(r["true_canonical_disagreement_states"]), "sbs_decision_states": int(r["sbs_decision_states"])}
+    onset = {v: next(x for x in axis_rows if x["source_dataset"] == "azure_2023_code" and x["axis"] == "active_sequence_capacity" and int(float(x["axis_value"])) == v) for v in (8, 4)}
+    o8, o4 = onset[8], onset[4]
+    assert (int(o8["true_canonical_disagreement_states"]), int(o8["sbs_decision_states"])) == (1, 99992) and (int(o4["true_canonical_disagreement_states"]), int(o4["sbs_decision_states"])) == (100, 100127)
+    assert f"{100 * float(o8['disagreement_rate']):.3f}" == "0.001" and f"{100 * float(o4['disagreement_rate']):.4f}" == "0.0999"
+    C.add("pressure.azure_code_onset", "Azure code active-sequence cap: 1 of 99,992 SBS decision states at the onset cap 8 (0.001%) versus 100 of 100,127 (0.0999%) at cap 4",
+          {"cap8": [1, 99992, float(o8["disagreement_rate"])], "cap4": [100, 100127, float(o4["disagreement_rate"])]},
+          ["disagreement is a\nsingle state among 99,992 SBS decision states (0.001\\%)".replace("\n", " "), "100 of 100,127\n(0.0999\\%) at a cap of 4".replace("\n", " ")],
+          rel(PHASE_B / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"), "true_canonical_disagreement_states / sbs_decision_states for azure_2023_code, axis=active_sequence_capacity, axis_value in {8, 4}")
     C.add("figure2.pressure_conditions", "Figure 2 pressure-condition prevalences (read from the artifact, not typed into the plot script)", fig2, ["figures/pe_disagreement_rates.pdf"],
           rel(PHASE_B / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"), "disagreement_rate = true_canonical_disagreement_states / sbs_decision_states for the four plotted rows")
 
@@ -150,7 +158,7 @@ def build_claims():
     src_res = f"{FROZEN}/FRESH_LATENCY_CAUSAL_RESULT_V1.json"
     src_state = f"{FROZEN}/FRESH_LATENCY_STATE_LEVEL_V1.csv"
     assert P["n"] == res["states"] == 720 and P["beneficial"] == res["beneficial_states"] == 590 and P["guarded_beneficial"] == 589
-    # support transfer: the pressure matrix repeated on untouched windows (recomputed from the frozen support conditions)
+    # support transfer: the pressure matrix repeated on fresh windows (recomputed from the frozen support conditions)
     src_sup = f"{FROZEN}/FRESH_SUPPORT_WINDOW_CONDITIONS_V1.csv"
     sup = [r for r in csv_rows(ROOT / src_sup) if r["validity_class"].startswith("VALID")]
     all_sup = csv_rows(ROOT / src_sup)
@@ -165,9 +173,9 @@ def build_claims():
     assert onset["azure_2023_code:kv_capacity"] == "16000" and onset["azure_2023_conv:kv_capacity"] == "16000"
     assert onset["azure_2023_code:active_sequence_capacity"] == "8" and onset["azure_2023_conv:active_sequence_capacity"] == "4"
     assert all(onset[f"{w}:arrival_pressure"] is None for w in ("azure_2023_code", "azure_2023_conv", "burstgpt"))
-    C.add("fresh.support_transfer", "pressure matrix repeated on 60 untouched windows: Azure onsets reproduce (KV 16,000; active cap 8 code, 4 conversation), arrival scaling action-null, BurstGPT has 0 disagreement states in all 360 (valid) conditions",
+    C.add("fresh.support_transfer", "pressure matrix repeated on 60 fresh windows: Azure onsets reproduce (KV 16,000; active cap 8 code, 4 conversation), arrival scaling action-null, BurstGPT has 0 disagreement states in all 360 (valid) conditions",
           {"conditions": len(all_sup), "onset_by_workload_axis": onset, "burstgpt_valid_conditions": len(burst), "burstgpt_disagreement_states": 0},
-          ["repeated on 60 untouched windows", "reproduced for both Azure traces", "All 360 untouched BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"],
+          ["repeated on 60 fresh windows", "reproduced for both Azure traces", "All 360 fresh BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"],
           src_sup, "true_canonical_disagreement_states summed over valid conditions per workload/axis; onset = lowest-pressure setting with any disagreement")
     # ------------------------------------------------------------------ reference policy, load range, overlays, secondary outcomes
     R = rp.compute()
@@ -182,8 +190,8 @@ def build_claims():
           AO, ["peak KV utilization stayed below 0.71\\% of the default capacity", "at most 46 sequences were active against a limit of 512", "the mean queue length per workload stayed below 0.09"],
           rel(PHASE_B / "PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv"), "rows with axis containing 'arrival': max_kv_utilization, mean_queue_length, max_active_sequences, binding states")
     assert AF["peak_kv_utilization"] < 0.0045 and AF["max_workload_mean_queue"] < 0.091 and AF["binding_states"] == 0 and AF["disagreement_states"] == 0 and AF["default_active_cap"] == 512 and AF["default_kv_tokens"] == 8000000
-    C.add("arrival.fresh_light_load", "arrival scaling through 8x on the untouched windows: peak KV utilization < 0.45%, no binding, no disagreement (default 512 sequences, 8,000,000 KV tokens)",
-          AF, ["peak KV utilization below 0.45\\%", "peak KV utilization below 1\\% of the default capacity"], src_sup2, "valid arrival_pressure rows: max_kv_utilization, mean_queue_length, binding states, true_canonical_disagreement_states")
+    C.add("arrival.fresh_light_load", "arrival scaling through 8x on the fresh windows: peak KV utilization < 0.45%, no binding, no disagreement (default 512 sequences, 8,000,000 KV tokens)",
+          AF, ["peak KV utilization below 0.45\\%", "arrival-rate scaling again\nproduced none".replace("\n", " ")], src_sup2, "valid arrival_pressure rows: max_kv_utilization, mean_queue_length, binding states, true_canonical_disagreement_states")
     assert [round(NQ[k], 4) for k in ("azure_2023_code", "azure_2023_conv", "burstgpt")] == [0.04, 0.0087, 0.0091]
     C.add("native.mean_queue_length", "native replay mean queue lengths 0.040 / 0.0087 / 0.0091 (Azure code / conversation / BurstGPT)", NQ,
           ["mean queue lengths were 0.040, 0.0087, and 0.0091 requests"], src_a, "mean_queue_length of PHASE_A_WORKLOAD_SUMMARY_V1.csv")
@@ -200,7 +208,7 @@ def build_claims():
     means = {q: sum(float(r[q]) for r in j) / len(j) for q in pol6}
     assert len(j) == 240 and max(means, key=means.get) == "kv_constrained_online"
     C.add("reference.sbs_selection", "SBS = kv_constrained_online = best single policy (highest mean goodput) over 240 joint-benchmark scenarios; reserve 0.82, urgency slack 0.25 s", {"scenarios": len(j), "mean_anwg_by_policy": means, "target_kv_utilization": 0.82, "urgent_laxity_seconds": 0.25},
-          ["highest mean goodput among the six policies on an earlier benchmark of 240 multi-mechanism scenarios", "reserve of 0.82 of the configured capacity", "slack under 0.25~s"],
+          ["highest mean goodput among the six policies on a separate earlier benchmark of 240 multi-mechanism scenarios", "reserve of 0.82 of the configured capacity", "slack under 0.25~s"],
           "experiments/joint240_same_distribution_adaptive_exploitability_v1/per_scenario_oof_results.csv; src/llmserveopt/policies/kv_constrained_online.py", "mean over scenarios of each policy column; defaults of KVConstrainedOnlinePolicy")
     assert (RF["all_five_differ"], RF["kv_states"], RF["kv_without_kv_binding"], RF["all_five_in_kv_regimes"], RF["all_five_single_alternative"]) == (512, 524, 414, 511, 445)
     assert abs(RF["all_five_headroom_share"] - 0.948) < 5e-4 and abs(RF["kv_nobind_headroom_share_of_kv"] - 0.896) < 5e-4
@@ -238,7 +246,7 @@ def build_claims():
     C.add("fresh.beneficial_preregistered", "590 of 720 states have positive one-step latency headroom (strict pre-specified criterion), 81.9%", {"beneficial": 590, "share": 590 / 720},
           ["590/720=0.8194\\ (81.9\\%)", "590 (81.9\\%)"], src_res, "primary.beneficial_states; share = beneficial / states")
     C.add("fresh.beneficial_guarded", "589 of 720 states exceed the 1e-12 s floating-point guard, 81.8%", {"guarded": 589, "share": 589 / 720},
-          ["589/720 (81.8\\%)", "589 excluding one floating-point-residue state"], src_state, "count of oracle_headroom > 1e-12 s")
+          ["589/720 (81.8\\%)"], src_state, "count of oracle_headroom > 1e-12 s")
     mean_s = res["mean_oracle_headroom"]
     lo_s, hi_s = boot["mean_oracle_headroom_ci95_low"], boot["mean_oracle_headroom_ci95_high"]
     C.add("fresh.mean_headroom", "state-weighted mean oracle headroom 0.001995791 s = 1.9958 ms", {"seconds": mean_s, "ms": 1e3 * mean_s},
@@ -267,7 +275,7 @@ def build_claims():
     # ------------------------------------------------------------------ robustness (post hoc)
     D = N["dist"]
     src_rob = f"{ROBUST}/ via paper/performance_evaluation/scripts/robustness_numbers.py::compute (recomputes from {FROZEN}/FRESH_LATENCY_STATE_LEVEL_V1.csv and asserts agreement)"
-    C.add("robust.median", "median headroom 0.197 ms", D["median_ms"], [f"{ms(D['median_ms'], 3)}~ms", f"median\nis {ms(D['median_ms'], 2)} ms".replace("\n", " "), f"median 0.20~ms"], src_rob, "distribution_summary.csv median_ms")
+    C.add("robust.median", "median headroom 0.197 ms", D["median_ms"], [f"{ms(D['median_ms'], 3)}~ms", f"median headroom is {ms(D['median_ms'], 3)}~ms", f"median is {ms(D['pos_median_ms'], 2)}~ms"], src_rob, "distribution_summary.csv median_ms")
     C.add("robust.distribution", "quartiles, 90th/95th percentiles, maximum, zero and positive-state statistics of headroom",
           {k: D[k] for k in ("p25_ms", "p75_ms", "p90_ms", "p95_ms", "max_ms", "n_zero", "frac_zero", "pos_median_ms", "n_pos", "frac_le_mean")},
           [f"{ms(D['p90_ms'], 1)} and {ms(D['p95_ms'], 1)}~ms", f"{ms(D['max_ms'], 1)}~ms",
@@ -342,6 +350,9 @@ def build_claims():
           [f"a {abs(1e3 * lo['late_ttft_T4096_minus_T512_s_mean']):.1f}~ms difference in late time to first token", f"a {1e3 * lo['hog_e2e_T4096_minus_T512_s_mean']:.1f}~ms\nprompt-heavy end-to-end tradeoff".replace("\n", " "),
            f"a {1e3 * hi['hog_e2e_T4096_minus_T512_s_mean']:.1f}~ms prompt-heavy end-to-end"], rel(VLLM_PROBE / "statistical_summary.json"), "comparisons.<regime>.{late_ttft,hog_e2e}_T4096_minus_T512_s_mean")
     assert hi["late_ttft_T4096_minus_T512_s_ci95"][0] < 0 < hi["late_ttft_T4096_minus_T512_s_ci95"][1] and abs(hi["late_ttft_T4096_minus_T512_s_mean"]) < abs(lo["late_ttft_T4096_minus_T512_s_mean"])
+    assert vr["direct_simulator_family_b_reversal"] == "NO_GO"
+    C.add("vllm.direct_comparison", "direct full-versus-chunked comparison did not reproduce the simulator's predicted class reversal (verdict NO_GO)", {"verdict": vr["direct_simulator_family_b_reversal"]},
+          ["vLLM did not reproduce this reversal"], rel(VLLM_RESULT), "direct_simulator_family_b_reversal")
     return C.items
 
 

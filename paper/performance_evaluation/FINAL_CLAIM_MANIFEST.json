@@ -2,8 +2,8 @@
  "schema": "peva_final_claim_manifest_v1",
  "purpose": "Provenance/verification metadata for the manuscript's quantitative claims; contains no independent scientific data. Values are recomputed from the canonical artifacts by scripts/build_claim_manifest.py.",
  "manuscript": "paper/performance_evaluation/main.tex",
- "manuscript_sha256_at_generation": "1ff1de39ffe830c6f908e357669c10e2b3fa0039b253e9c6ab142f22a34f1bd1",
- "n_claims": 60,
+ "manuscript_sha256_at_generation": "87e24170216e1d9b887cfdbb30f02ccd03d49e0f5d1275499f2dcc804c691eae",
+ "n_claims": 62,
  "claims": [
   {
    "id": "native.azure_2023_code.action_null",
@@ -20,7 +20,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.1 (Native replay)",
-     "line": 494,
+     "line": 469,
      "text": "Azure code had 0 disagreements in 99,992"
     }
    ]
@@ -40,7 +40,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.1 (Native replay)",
-     "line": 495,
+     "line": 470,
      "text": "Azure conversation had 0 in 461,985"
     }
    ]
@@ -60,7 +60,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.1 (Native replay)",
-     "line": 496,
+     "line": 471,
      "text": "BurstGPT had 0 in 440,461"
     }
    ]
@@ -98,7 +98,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.1 (Native replay)",
-     "line": 497,
+     "line": 472,
      "text": "0.0027, 0.0017, and 0.0038"
     }
    ]
@@ -115,7 +115,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.1 (Native replay)",
-     "line": 497,
+     "line": 472,
      "text": "no active-cap binding states"
     }
    ]
@@ -132,7 +132,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 515,
+     "line": 490,
      "text": "evaluated 1,080 one-axis conditions"
     }
    ]
@@ -154,7 +154,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 518,
+     "line": 493,
      "text": "926 conditions were valid and unconstrained, 38 partially constrained, 96 strongly constrained, and 20 horizon-invalid"
     }
    ]
@@ -171,7 +171,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 520,
+     "line": 495,
      "text": "11,328 canonical disagreement states"
     }
    ]
@@ -187,14 +187,14 @@
    "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WINDOW_CONDITION_SUMMARY.csv",
    "source_field": "axis == arrival_pressure: max arrival_multiplier, sum of true_canonical_disagreement_states",
    "manuscript_text": [
-    "Arrival scaling through $8\\times$ remained action-null",
+    "Arrival scaling through $8\\times$ produced no disagreement state",
     "up to eight times"
    ],
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 522,
-     "text": "Arrival scaling through $8\\times$ remained action-null"
+     "line": 497,
+     "text": "Arrival scaling through $8\\times$ produced no disagreement state"
     },
     {
      "section": "Abstract",
@@ -227,33 +227,67 @@
    "manuscript_location": [
     {
      "section": "Table 2",
-     "line": 548,
+     "line": 525,
      "text": "Azure code & Active-sequence cap & 8 & 8 & 4 \\\\"
     },
     {
      "section": "Table 2",
-     "line": 549,
+     "line": 526,
      "text": "Azure code & KV capacity & 16,000 & 16,000 & 16,000 \\\\"
     },
     {
      "section": "Table 2",
-     "line": 550,
+     "line": 527,
      "text": "Azure conversation & Active-sequence cap & 4 & 4 & 4 \\\\"
     },
     {
      "section": "Table 2",
-     "line": 551,
+     "line": 528,
      "text": "Azure conversation & KV capacity & 8,000 & 16,000 & 8,000 \\\\"
     },
     {
      "section": "Table 2",
-     "line": 552,
+     "line": 529,
      "text": "BurstGPT & Active-sequence cap & 16 & 16 & 8 \\\\"
     },
     {
      "section": "Table 2",
-     "line": 553,
+     "line": 530,
      "text": "BurstGPT & KV capacity & 16,000 & 16,000 & 16,000 \\\\"
+    }
+   ]
+  },
+  {
+   "id": "pressure.azure_code_onset",
+   "claim": "Azure code active-sequence cap: 1 of 99,992 SBS decision states at the onset cap 8 (0.001%) versus 100 of 100,127 (0.0999%) at cap 4",
+   "value": {
+    "cap8": [
+     1,
+     99992,
+     1.000080006400512e-05
+    ],
+    "cap4": [
+     100,
+     100127,
+     0.0009987316108542152
+    ]
+   },
+   "source_artifact": "experiments/industry_realism_action_opportunity_phase_b_v2/PHASE_B_V2_WORKLOAD_AXIS_SUMMARY.csv",
+   "source_field": "true_canonical_disagreement_states / sbs_decision_states for azure_2023_code, axis=active_sequence_capacity, axis_value in {8, 4}",
+   "manuscript_text": [
+    "disagreement is a single state among 99,992 SBS decision states (0.001\\%)",
+    "100 of 100,127 (0.0999\\%) at a cap of 4"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
+     "line": 503,
+     "text": "disagreement is a single state among 99,992 SBS decision states (0.001\\%)"
+    },
+    {
+     "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
+     "line": 504,
+     "text": "100 of 100,127 (0.0999\\%) at a cap of 4"
     }
    ]
   },
@@ -290,14 +324,14 @@
    "manuscript_location": [
     {
      "section": "Figure 2",
-     "line": 505,
+     "line": 480,
      "text": "figures/pe_disagreement_rates.pdf"
     }
    ]
   },
   {
    "id": "fresh.support_transfer",
-   "claim": "pressure matrix repeated on 60 untouched windows: Azure onsets reproduce (KV 16,000; active cap 8 code, 4 conversation), arrival scaling action-null, BurstGPT has 0 disagreement states in all 360 (valid) conditions",
+   "claim": "pressure matrix repeated on 60 fresh windows: Azure onsets reproduce (KV 16,000; active cap 8 code, 4 conversation), arrival scaling action-null, BurstGPT has 0 disagreement states in all 360 (valid) conditions",
    "value": {
     "conditions": 1080,
     "onset_by_workload_axis": {
@@ -317,25 +351,25 @@
    "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_SUPPORT_WINDOW_CONDITIONS_V1.csv",
    "source_field": "true_canonical_disagreement_states summed over valid conditions per workload/axis; onset = lowest-pressure setting with any disagreement",
    "manuscript_text": [
-    "repeated on 60 untouched windows",
+    "repeated on 60 fresh windows",
     "reproduced for both Azure traces",
-    "All 360 untouched BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"
+    "All 360 fresh BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.1 (Support on untouched windows)",
-     "line": 569,
-     "text": "repeated on 60 untouched windows"
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 545,
+     "text": "repeated on 60 fresh windows"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.1 (Support on untouched windows)",
-     "line": 570,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 546,
      "text": "reproduced for both Azure traces"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.1 (Support on untouched windows)",
-     "line": 575,
-     "text": "All 360 untouched BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 551,
+     "text": "All 360 fresh BurstGPT conditions were valid, none produced a disagreement state, and none had a binding capacity constraint"
     }
    ]
   },
@@ -358,13 +392,13 @@
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.1 (Support on untouched windows)",
-     "line": 577,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 553,
      "text": "never queued more than three requests"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.1 (Support on untouched windows)",
-     "line": 577,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 553,
      "text": "even the tightest caps (four active sequences, 8,000 KV tokens) were never reached"
     }
    ]
@@ -390,24 +424,24 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 523,
+     "line": 498,
      "text": "peak KV utilization stayed below 0.71\\% of the default capacity"
     },
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 524,
+     "line": 499,
      "text": "at most 46 sequences were active against a limit of 512"
     },
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.2 (Capacity pressure)",
-     "line": 525,
+     "line": 500,
      "text": "the mean queue length per workload stayed below 0.09"
     }
    ]
   },
   {
    "id": "arrival.fresh_light_load",
-   "claim": "arrival scaling through 8x on the untouched windows: peak KV utilization < 0.45%, no binding, no disagreement (default 512 sequences, 8,000,000 KV tokens)",
+   "claim": "arrival scaling through 8x on the fresh windows: peak KV utilization < 0.45%, no binding, no disagreement (default 512 sequences, 8,000,000 KV tokens)",
    "value": {
     "max_multiplier": 8.0,
     "peak_kv_utilization": 0.0044175,
@@ -422,18 +456,18 @@
    "source_field": "valid arrival_pressure rows: max_kv_utilization, mean_queue_length, binding states, true_canonical_disagreement_states",
    "manuscript_text": [
     "peak KV utilization below 0.45\\%",
-    "peak KV utilization below 1\\% of the default capacity"
+    "arrival-rate scaling again produced none"
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.1 (Support on untouched windows)",
-     "line": 574,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 550,
      "text": "peak KV utilization below 0.45\\%"
     },
     {
-     "section": "Section 8 (Discussion), subsection 8.3 (Resource pressure and action support)",
-     "line": 934,
-     "text": "peak KV utilization below 1\\% of the default capacity"
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.1 (Support on fresh windows)",
+     "line": 549,
+     "text": "arrival-rate scaling again produced none"
     }
    ]
   },
@@ -453,7 +487,7 @@
    "manuscript_location": [
     {
      "section": "Section 4 (Where Disagreement Appears), subsection 4.1 (Native replay)",
-     "line": 498,
+     "line": 473,
      "text": "mean queue lengths were 0.040, 0.0087, and 0.0091 requests"
     }
    ]
@@ -482,32 +516,32 @@
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 293,
+     "line": 270,
      "text": "deadline of arrival plus 1000~s"
     },
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 294,
+     "line": 271,
      "text": "a uniform priority of 1.0, and a single class"
     },
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 295,
+     "line": 272,
      "text": "predicted output length equal to the true length"
     },
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 290,
+     "line": 267,
      "text": "512 active-sequence slots"
     },
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 291,
+     "line": 268,
      "text": "8,000,000 KV tokens by default"
     },
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 292,
+     "line": 269,
      "text": "with a 1~ms step"
     }
    ]
@@ -524,7 +558,7 @@
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.1 (Workloads and simulator)",
-     "line": 296,
+     "line": 273,
      "text": "the largest mean continuation latency in any causal population is 0.36~s"
     }
    ]
@@ -548,24 +582,24 @@
    "source_artifact": "experiments/joint240_same_distribution_adaptive_exploitability_v1/per_scenario_oof_results.csv; src/llmserveopt/policies/kv_constrained_online.py",
    "source_field": "mean over scenarios of each policy column; defaults of KVConstrainedOnlinePolicy",
    "manuscript_text": [
-    "highest mean goodput among the six policies on an earlier benchmark of 240 multi-mechanism scenarios",
+    "highest mean goodput among the six policies on a separate earlier benchmark of 240 multi-mechanism scenarios",
     "reserve of 0.82 of the configured capacity",
     "slack under 0.25~s"
    ],
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.2 (Scheduling policies and reference)",
-     "line": 338,
-     "text": "highest mean goodput among the six policies on an earlier benchmark of 240 multi-mechanism scenarios"
+     "line": 318,
+     "text": "highest mean goodput among the six policies on a separate earlier benchmark of 240 multi-mechanism scenarios"
     },
     {
      "section": "Section 3 (Methods), subsection 3.2 (Scheduling policies and reference)",
-     "line": 346,
+     "line": 325,
      "text": "reserve of 0.82 of the configured capacity"
     },
     {
      "section": "Section 3 (Methods), subsection 3.2 (Scheduling policies and reference)",
-     "line": 347,
+     "line": 326,
      "text": "slack under 0.25~s"
     }
    ]
@@ -591,22 +625,22 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.4 (Dependence on the reference scheduler)",
-     "line": 830,
+     "line": 791,
      "text": "In 512 of the 720 disagreement states (71\\%) all five other policies differ from the SBS"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.4 (Dependence on the reference scheduler)",
-     "line": 832,
+     "line": 793,
      "text": "these states carry 94.8\\% of the total headroom"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.4 (Dependence on the reference scheduler)",
-     "line": 832,
+     "line": 793,
      "text": "511 of them lie in the two KV-capacity regimes"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.4 (Dependence on the reference scheduler)",
-     "line": 833,
+     "line": 794,
      "text": "in 445 the five policies agree on a single alternative action"
     },
     {
@@ -633,12 +667,12 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.4 (Dependence on the reference scheduler)",
-     "line": 835,
+     "line": 796,
      "text": "The KV-capacity regimes contain 524 disagreement states, of which 414 occur without physical KV binding"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.4 (Dependence on the reference scheduler)",
-     "line": 837,
+     "line": 798,
      "text": "hold 89.6\\% of those regimes' headroom"
     }
    ]
@@ -667,17 +701,17 @@
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.2 (Scheduling policies and reference)",
-     "line": 332,
+     "line": 312,
      "text": "exactly the same 519 states as ESTF"
     },
     {
      "section": "Section 3 (Methods), subsection 3.2 (Scheduling policies and reference)",
-     "line": 334,
+     "line": 314,
      "text": "1.15 distinct alternative actions"
     },
     {
      "section": "Section 3 (Methods), subsection 3.2 (Scheduling policies and reference)",
-     "line": 334,
+     "line": 314,
      "text": "610 states have exactly one"
     }
    ]
@@ -711,42 +745,42 @@
    "manuscript_location": [
     {
      "section": "Table 4",
-     "line": 682,
+     "line": 649,
      "text": "Some alternative reduces latency & 590 (81.9\\%)"
     },
     {
      "section": "Table 4",
-     "line": 683,
+     "line": 650,
      "text": "of which some alternative also increases it & 22"
     },
     {
      "section": "Table 4",
-     "line": 684,
+     "line": 651,
      "text": "Every alternative increases latency & 102 (14.2\\%)"
     },
     {
      "section": "Table 4",
-     "line": 685,
+     "line": 652,
      "text": "Zero headroom, not every alternative harmful & 28 (3.9\\%)"
     },
     {
      "section": "Table 4",
-     "line": 688,
+     "line": 655,
      "text": "Reduce latency & 660 (79.4\\%)"
     },
     {
      "section": "Table 4",
-     "line": 689,
+     "line": 656,
      "text": "Increase latency & 141 (17.0\\%)"
     },
     {
      "section": "Table 4",
-     "line": 690,
+     "line": 657,
      "text": "Leave latency unchanged & 30 (3.6\\%)"
     },
     {
      "section": "Section 8 (Discussion), subsection 8.1 (Sign and magnitude of the headroom)",
-     "line": 891,
+     "line": 857,
      "text": "in 14.2\\% every alternative is worse than the reference"
     }
    ]
@@ -782,42 +816,42 @@
    "manuscript_location": [
     {
      "section": "Table 4",
-     "line": 693,
+     "line": 660,
      "text": "Median & 0.21\\%"
     },
     {
      "section": "Table 4",
-     "line": 694,
+     "line": 661,
      "text": "90th percentile & 11.3\\%"
     },
     {
      "section": "Table 4",
-     "line": 695,
+     "line": 662,
      "text": "90th percentile, Azure-code KV 16,000 only & 16.1\\%"
     },
     {
      "section": "Table 4",
-     "line": 696,
+     "line": 663,
      "text": "States above 1\\% & 211 (29.3\\%)"
     },
     {
      "section": "Table 4",
-     "line": 697,
+     "line": 664,
      "text": "States above 5\\% & 133 (18.5\\%)"
     },
     {
      "section": "Table 4",
-     "line": 698,
+     "line": 665,
      "text": "States above 10\\% & 92 (12.8\\%)"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.3 (Secondary outcomes)",
-     "line": 663,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.3 (Secondary outcomes)",
+     "line": 629,
      "text": "92 states (12.8\\%) exceed 10\\% of the reference's mean latency"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.3 (Secondary outcomes)",
-     "line": 664,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.3 (Secondary outcomes)",
+     "line": 630,
      "text": "where they are 21.3\\% of the states"
     }
    ]
@@ -843,22 +877,22 @@
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.4 (Endpoints and pre-specification)",
-     "line": 429,
+     "line": 405,
      "text": "on 19 September 2026"
     },
     {
      "section": "Section 3 (Methods), subsection 3.4 (Endpoints and pre-specification)",
-     "line": 430,
+     "line": 406,
      "text": "committed 2 h 14 min later"
     },
     {
      "section": "Section 3 (Methods), subsection 3.4 (Endpoints and pre-specification)",
-     "line": 435,
+     "line": 411,
      "text": "index shared across workloads (26 clusters)"
     },
     {
      "section": "Section 3 (Methods), subsection 3.4 (Endpoints and pre-specification)",
-     "line": 436,
+     "line": 412,
      "text": "specified source window (36 clusters)"
     }
    ]
@@ -885,7 +919,7 @@
    "manuscript_location": [
     {
      "section": "Section 8 (Discussion), subsection 8.2 (Opportunity, prediction, and deployment)",
-     "line": 922,
+     "line": 882,
      "text": "small-chunk prefill has a higher whole-window mean latency than full prefill in all 60 (median 14.2\\%)"
     }
    ]
@@ -922,8 +956,8 @@
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 587,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 562,
      "text": "590/720=0.8194\\ (81.9\\%)"
     },
     {
@@ -943,19 +977,13 @@
    "source_artifact": "experiments/fresh_production_latency_headroom_confirmatory_v1/FRESH_LATENCY_STATE_LEVEL_V1.csv",
    "source_field": "count of oracle_headroom > 1e-12 s",
    "manuscript_text": [
-    "589/720 (81.8\\%)",
-    "589 excluding one floating-point-residue state"
+    "589/720 (81.8\\%)"
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 605,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 574,
      "text": "589/720 (81.8\\%)"
-    },
-    {
-     "section": "Section 1 (Introduction)",
-     "line": 130,
-     "text": "589 excluding one floating-point-residue state"
     }
    ]
   },
@@ -974,8 +1002,8 @@
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 588,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 563,
      "text": "0.001995791 s (1.9958 ms)"
     },
     {
@@ -1007,13 +1035,13 @@
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 589,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 564,
      "text": "[0.000190884, 0.003546196] s"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 590,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 565,
      "text": "[0.1909, 3.5462] ms"
     },
     {
@@ -1040,7 +1068,7 @@
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.5 (Statistical analysis)",
-     "line": 441,
+     "line": 417,
      "text": "2,000 replicates and seed 20260920"
     },
     {
@@ -1072,27 +1100,27 @@
    "manuscript_location": [
     {
      "section": "Table 3",
-     "line": 626,
+     "line": 595,
      "text": "(1) Azure code,\\newline active cap 8 & 10 & 2 & 0.0106 & 40.0 & 0.033 & 0.02 \\\\"
     },
     {
      "section": "Table 3",
-     "line": 627,
+     "line": 596,
      "text": "(2) Azure code,\\newline active cap 4 & 122 & 15 & 0.129 & 52.5 & 0.077 & 0.65 \\\\"
     },
     {
      "section": "Table 3",
-     "line": 628,
+     "line": 597,
      "text": "(3) Azure code,\\newline KV 16,000 & 431 & 14 & 0.456 & 92.3 & 3.227 & 96.80 \\\\"
     },
     {
      "section": "Table 3",
-     "line": 629,
+     "line": 598,
      "text": "(4) Azure conv.,\\newline active cap 4 & 64 & 17 & 0.0108 & 48.4 & 0.217 & 0.97 \\\\"
     },
     {
      "section": "Table 3",
-     "line": 630,
+     "line": 599,
      "text": "(5) Azure conv.,\\newline KV 16,000 & 93 & 1 & 0.0157 & 100.0 & 0.241 & 1.56 \\\\"
     }
    ]
@@ -1117,18 +1145,18 @@
    ],
    "manuscript_location": [
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 602,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 571,
      "text": "$5.6\\times10^{-17}$~s"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 603,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 572,
      "text": "0.357~s"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 605,
+     "section": "Section 5 (Causal Headroom on Fresh Windows), subsection 5.2 (Primary result)",
+     "line": 574,
      "text": "less than $10^{-19}$~s"
     }
    ]
@@ -1141,24 +1169,24 @@
    "source_field": "distribution_summary.csv median_ms",
    "manuscript_text": [
     "0.197~ms",
-    "median is 0.20 ms",
-    "median 0.20~ms"
+    "median headroom is 0.197~ms",
+    "median is 0.29~ms"
    ],
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
-     "line": 751,
+     "line": 716,
      "text": "0.197~ms"
     },
     {
-     "section": "Abstract",
-     "line": 43,
-     "text": "median is 0.20 ms"
+     "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
+     "line": 716,
+     "text": "median headroom is 0.197~ms"
     },
     {
-     "section": "Section 5 (Causal Headroom on Untouched Windows), subsection 5.2 (Primary result)",
-     "line": 601,
-     "text": "median 0.20~ms"
+     "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
+     "line": 718,
+     "text": "median is 0.29~ms"
     }
    ]
   },
@@ -1189,27 +1217,27 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
-     "line": 752,
+     "line": 717,
      "text": "8.4 and 11.3~ms"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
-     "line": 752,
+     "line": 717,
      "text": "12.1~ms"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
-     "line": 752,
+     "line": 717,
      "text": "130 states (18.1\\%)"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
-     "line": 753,
+     "line": 718,
      "text": "the median is 0.29~ms"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.1 (Effect scale and distribution)",
-     "line": 752,
+     "line": 717,
      "text": "77.4\\% of states lie at or below that mean"
     }
    ]
@@ -1234,7 +1262,7 @@
    "manuscript_location": [
     {
      "section": "Table 6",
-     "line": 806,
+     "line": 767,
      "text": "Equal-window & 36 windows & 0.327 & [0.114, 0.644] & 0.632 \\\\"
     }
    ]
@@ -1259,7 +1287,7 @@
    "manuscript_location": [
     {
      "section": "Table 6",
-     "line": 805,
+     "line": 766,
      "text": "Equal-regime & 5 regimes & 0.759 & [0.145, 1.161] & 0.666 \\\\"
     }
    ]
@@ -1284,7 +1312,7 @@
    "manuscript_location": [
     {
      "section": "Table 6",
-     "line": 804,
+     "line": 765,
      "text": "Equal-workload & 2 workloads & 1.360 & [0.184, 2.094] & 0.809 \\\\"
     }
    ]
@@ -1306,12 +1334,12 @@
    "manuscript_location": [
     {
      "section": "Section 8 (Discussion), subsection 8.1 (Sign and magnitude of the headroom)",
-     "line": 888,
+     "line": 854,
      "text": "falls to 0.33~ms when windows receive equal weight"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.2 (Sensitivity to aggregation and to individual windows and regimes)",
-     "line": 770,
+     "line": 735,
      "text": "from 1.996~ms (state-weighted) to 0.327~ms (equal-window)"
     }
    ]
@@ -1333,7 +1361,7 @@
    "manuscript_location": [
     {
      "section": "Table 5",
-     "line": 740,
+     "line": 705,
      "text": "$>0.1$~ms & 432 & 60.0\\% & 17 & 327 \\\\"
     }
    ]
@@ -1355,7 +1383,7 @@
    "manuscript_location": [
     {
      "section": "Table 5",
-     "line": 741,
+     "line": 706,
      "text": "$>0.25$~ms & 322 & 44.7\\% & 16 & 259 \\\\"
     }
    ]
@@ -1377,7 +1405,7 @@
    "manuscript_location": [
     {
      "section": "Table 5",
-     "line": 742,
+     "line": 707,
      "text": "$>0.5$~ms & 212 & 29.4\\% & 9 & 201 \\\\"
     }
    ]
@@ -1399,7 +1427,7 @@
    "manuscript_location": [
     {
      "section": "Table 5",
-     "line": 743,
+     "line": 708,
      "text": "$>1$~ms & 188 & 26.1\\% & 7 & 185 \\\\"
     }
    ]
@@ -1421,7 +1449,7 @@
    "manuscript_location": [
     {
      "section": "Table 5",
-     "line": 744,
+     "line": 709,
      "text": "$>2$~ms & 162 & 22.5\\% & 4 & 161 \\\\"
     }
    ]
@@ -1443,7 +1471,7 @@
    "manuscript_location": [
     {
      "section": "Table 5",
-     "line": 745,
+     "line": 710,
      "text": "$>5$~ms & 129 & 17.9\\% & 2 & 128 \\\\"
     }
    ]
@@ -1467,7 +1495,7 @@
    "manuscript_location": [
     {
      "section": "Section 3 (Methods), subsection 3.5 (Statistical analysis)",
-     "line": 452,
+     "line": 427,
      "text": "$\\epsilon\\in\\{0.1,0.25,0.5,1,2,5\\}$~ms"
     }
    ]
@@ -1491,17 +1519,17 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 816,
+     "line": 777,
      "text": "36.5\\%"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 817,
+     "line": 778,
      "text": "88.4\\%"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 816,
+     "line": 777,
      "text": "263 of the 720 states"
     },
     {
@@ -1528,12 +1556,12 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 820,
+     "line": 781,
      "text": "59.9\\% of the states and 96.8\\% of the headroom"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 820,
+     "line": 781,
      "text": "1.93 of the 2.00~ms"
     }
    ]
@@ -1563,22 +1591,22 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 818,
+     "line": 779,
      "text": "95.3\\%"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 819,
+     "line": 780,
      "text": "1.27 (5.7 by state count)"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 821,
+     "line": 782,
      "text": "205 states of that regime average 6.16~ms"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.3 (Concentration of headroom)",
-     "line": 822,
+     "line": 783,
      "text": "Of the 129 states above 5~ms, 128 are in w11, as are 140 of the 162"
     }
    ]
@@ -1603,7 +1631,7 @@
    "manuscript_location": [
     {
      "section": "Table 6",
-     "line": 809,
+     "line": 770,
      "text": "Omit Azure-code window w11 & 457 states & 0.365 & [0.158, 0.682] & 0.821 \\\\"
     }
    ]
@@ -1628,7 +1656,7 @@
    "manuscript_location": [
     {
      "section": "Table 6",
-     "line": 810,
+     "line": 771,
      "text": "Omit Azure-code KV 16,000 & 289 states & 0.159 & [0.058, 0.234] & 0.664 \\\\"
     }
    ]
@@ -1659,17 +1687,17 @@
    "manuscript_location": [
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.2 (Sensitivity to aggregation and to individual windows and regimes)",
-     "line": 782,
+     "line": 744,
      "text": "between 2.00 and 2.26~ms"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.2 (Sensitivity to aggregation and to individual windows and regimes)",
-     "line": 783,
+     "line": 744,
      "text": "between 2.02 and 2.39~ms"
     },
     {
      "section": "Section 6 (Concentration, Sensitivity, and Reference Dependence), subsection 6.2 (Sensitivity to aggregation and to individual windows and regimes)",
-     "line": 784,
+     "line": 745,
      "text": "all 41 omissions"
     }
    ]
@@ -1711,37 +1739,37 @@
    "manuscript_location": [
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1020,
+     "line": 971,
      "text": "[0.184, 3.543]~ms"
     },
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1023,
+     "line": 974,
      "text": "[0.239, 4.049]~ms"
     },
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1027,
+     "line": 978,
      "text": "[$-1.36$, 5.35]~ms"
     },
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1028,
+     "line": 979,
      "text": "(1.65~ms)"
     },
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1022,
+     "line": 973,
      "text": "0.004~ms (standard deviation) across 1000 seeds"
     },
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1023,
+     "line": 974,
      "text": "36\\% of replicates do not draw window w11"
     },
     {
      "section": "Section 9 (Conclusion)",
-     "line": 1025,
+     "line": 976,
      "text": "2.43~ms for those that do"
     }
    ]
@@ -1762,7 +1790,7 @@
    "manuscript_location": [
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 849,
+     "line": 811,
      "text": "RTX 5060 Ti GPU, vLLM 0.27.1, Qwen2.5-0.5B-Instruct"
     }
    ]
@@ -1782,7 +1810,7 @@
    "manuscript_location": [
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 850,
+     "line": 812,
      "text": "40 full-versus-chunked runs and a 20-run native chunked-prefill budget probe"
     }
    ]
@@ -1810,7 +1838,7 @@
    "manuscript_location": [
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 861,
+     "line": 823,
      "text": "1,680 scheduler steps, 165 mixed prefill/decode steps, and 194 partial-prefill items; T4096 produced 1,536, 55, and 9"
     }
    ]
@@ -1836,7 +1864,7 @@
    "manuscript_location": [
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 862,
+     "line": 824,
      "text": "lengths of 7 and 5, respectively, while running sequences reached 4 in both cases"
     }
    ]
@@ -1864,18 +1892,37 @@
    "manuscript_location": [
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 864,
+     "line": 826,
      "text": "a 30.6~ms difference in late time to first token"
     },
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 864,
+     "line": 826,
      "text": "a 16.3~ms prompt-heavy end-to-end tradeoff"
     },
     {
      "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
-     "line": 866,
+     "line": 828,
      "text": "a 23.3~ms prompt-heavy end-to-end"
+    }
+   ]
+  },
+  {
+   "id": "vllm.direct_comparison",
+   "claim": "direct full-versus-chunked comparison did not reproduce the simulator's predicted class reversal (verdict NO_GO)",
+   "value": {
+    "verdict": "NO_GO"
+   },
+   "source_artifact": "experiments/real_vllm_pressure_action_validation_v1/REAL_VLLM_VALIDATION_RESULT_V1.json",
+   "source_field": "direct_simulator_family_b_reversal",
+   "manuscript_text": [
+    "vLLM did not reproduce this reversal"
+   ],
+   "manuscript_location": [
+    {
+     "section": "Section 7 (A Bounded vLLM System Correspondence Probe)",
+     "line": 837,
+     "text": "vLLM did not reproduce this reversal"
     }
    ]
   }

@@ -20,12 +20,12 @@ pdflatex main.tex
 The output is written as `main.pdf`.
 
 ### Regenerate Manuscript Figures
-The six figures are regenerated from the frozen, verified result files by three scripts that share one style module
+The six figure files (four used in the manuscript) are regenerated from the frozen, verified result files by three scripts that share one style module
 (`figstyle.py`); each writes a vector PDF and a 300 dpi PNG into `paper/performance_evaluation/figures/`:
 ```bash
-python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py   # Figures 1-3
-python3 paper/performance_evaluation/scripts/plot_regime_figures.py                   # Figures 4-5
-python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # Figure 6
+python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py   # manuscript Figures 1-2 (+ dropped transition figure)
+python3 paper/performance_evaluation/scripts/plot_regime_figures.py                   # manuscript Figure 3 (+ dropped fresh-headroom figure)
+python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # manuscript Figure 4
 ```
 `scripts/build_performance_evaluation_manuscript.sh` runs all three, verifies the claim manifest
 (`paper/performance_evaluation/FINAL_CLAIM_MANIFEST.json`) and rebuilds the PDF. See
@@ -73,9 +73,9 @@ The core scientific computations in this paper are **frozen**. Running the full 
 | **Phase A Replay** (0/99,992, etc.) | `scripts/industry_realism_action_opportunity_phase_a_v1.py` | Local or HPC | Frozen (Re-run optional) |
 | **Phase B Pressure** | `scripts/industry_realism_action_opportunity_phase_b_v2.py` | Local or HPC | Frozen (Re-run optional) |
 | **Fresh Causal Headroom** | `scripts/fresh_latency_causal_confirmatory_v1.py` | HPC (Wulver Cluster) | Frozen |
-| **Figures 1-3** (evidence chain, native/pressure prevalence, active-cap transition) | `paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py` | Local | Instant from frozen CSVs (Phase A / Phase B) |
-| **Figures 4-5** (regime characterization and map) | `paper/performance_evaluation/scripts/plot_regime_figures.py` | Local | Instant from frozen artifacts |
-| **Figure 6** (distribution and concentration) | `paper/performance_evaluation/scripts/plot_robustness_figures.py` | Local | Instant from frozen artifacts and robustness outputs |
+| **Manuscript Figures 1-2** (evidence chain, native/pressure prevalence; plus the dropped active-cap transition figure) | `paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py` | Local | Instant from frozen CSVs (Phase A / Phase B) |
+| **Manuscript Figure 3** (regime map; plus the dropped regime-characterization figure) | `paper/performance_evaluation/scripts/plot_regime_figures.py` | Local | Instant from frozen artifacts |
+| **Manuscript Figure 4** (distribution and concentration) | `paper/performance_evaluation/scripts/plot_robustness_figures.py` | Local | Instant from frozen artifacts and robustness outputs |
 | **Reference-policy, load-range, overlay and secondary-outcome numbers** (Sec. 3, 5, 6.1, 6.4, 7.5, 9) | `paper/performance_evaluation/scripts/reference_policy_numbers.py` (recomputed from completed artifacts; no simulation) | Local | Instant; checked by `build_claim_manifest.py --check` and `tests/test_manuscript_scientific_corrections.py` |
 | **Table 1** (Closest-work) | (Static synthesis) | N/A | Analytical mapping |
 | **Table 2** (Transition) | (Static synthesis) | N/A | Analytical mapping |

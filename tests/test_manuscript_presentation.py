@@ -47,14 +47,14 @@ def test_no_terminology_drift(tex):
 def test_vllm_named_as_system_correspondence_probe(tex, flat):
     assert r"\section{A Bounded vLLM System Correspondence Probe}" in tex
     sec = _sect(flat, r"\section{A Bounded vLLM", r"\section{Discussion}")
-    assert "did not reproduce the simulator's qualitative reversal" in sec
+    assert "The simulator predicted a reversal between the two classes" in sec and "did not reproduce this reversal" in sec
     assert "does not estimate Eq.~\\ref{eq:latency} in the real system" in sec
     assert "Level 3" in sec and "is not established" in sec
 
 
 def test_regime_and_condition_defined_consistently(flat):
     assert "A pressure condition is a workload window plus one fixed one-axis intervention" in flat
-    assert "pooled over windows (five selected regimes)" in flat
+    assert "five pressure \\emph{regimes}, each a workload, pressure axis, and pressure setting pooled over windows" in flat
 
 
 # ------------------------------------------------------------------ Table 3 / Figures 4-5 consistency
@@ -144,9 +144,9 @@ def test_abstract_claims_are_supported_in_body(flat, tex):
     # about one million action-null decision states = sum of the three native counts in Section 4
     counts = [99992, 461985, 440461]  # native decision-state counts reported in Section 4
     assert "99,992" in body and "461,985" in body and "440,461" in body and 0.95e6 < sum(counts) < 1.05e6 and "about one million" in ab
-    assert "Arrival scaling through $8\\times$ remained action-null" in body and "up to eight times" in ab
+    assert "Arrival scaling through $8\\times$ produced no disagreement state" in body and "up to eight times" in ab
     assert "590/720=0.8194" in body and "590 (81.9\\%)" in ab
     assert "[0.1909, 3.5462]" in body and "0.19--3.55" in ab
-    assert "median 0.20~ms" in body and "the median is 0.20 ms" in ab
+    assert re.search(r"median (?:is )?0\.20~ms", body) and "the median is 0.20 ms" in ab
     assert "88.4\\%" in body and "88\\%" in ab
-    assert "did not reproduce the simulator's qualitative reversal" in body and "does not validate the simulated latency effect" in ab
+    assert "did not reproduce this reversal" in body and "does not validate the simulated latency effect" in ab

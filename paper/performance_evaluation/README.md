@@ -14,12 +14,12 @@ Status: the manuscript text, figures and tables are frozen for archive and packa
 |---|---|
 | `main.tex` | Manuscript source (canonical). |
 | `references.bib` | Bibliography; `main.bbl` is the compiled bibliography that is tracked with the source. |
-| `figures/` | Figures 1-6 as vector PDF (fonts embedded, drawn at final size) plus 300 dpi PNG preview. |
-| `scripts/figstyle.py` | Shared typography, grayscale encoding, size and export rules of all six figures. |
-| `scripts/plot_performance_evaluation_figures.py` | Figures 1-3 (Figures 2-3 read the frozen Phase A / Phase B CSVs; no value is typed in). |
-| `scripts/plot_regime_figures.py` | Figures 4-5. |
-| `scripts/plot_robustness_figures.py` | Figure 6. |
-| `scripts/robustness_numbers.py` | Recomputes every number used in Table 3, Tables 4-5 and Figures 4-6 from the frozen artifacts and asserts agreement with the robustness outputs. |
+| `figures/` | Figure files as vector PDF (fonts embedded, drawn at final size) plus 300 dpi PNG preview. The manuscript uses `pe_pipeline`, `pe_disagreement_rates`, `pe_regime_map` and `pe_robustness` (its Figures 1-4); `pe_pressure_transition` and `pe_fresh_headroom` were dropped from the manuscript as redundant with Tables 2-3 and are kept only for the record. |
+| `scripts/figstyle.py` | Shared typography, grayscale encoding, size and export rules of all figure files. |
+| `scripts/plot_performance_evaluation_figures.py` | `pe_pipeline`, `pe_disagreement_rates` (manuscript Figures 1-2) and the dropped `pe_pressure_transition`; the data-driven figures read the frozen Phase A / Phase B CSVs, no value is typed in. |
+| `scripts/plot_regime_figures.py` | `pe_regime_map` (manuscript Figure 3) and the dropped `pe_fresh_headroom`. |
+| `scripts/plot_robustness_figures.py` | `pe_robustness` (manuscript Figure 4). |
+| `scripts/robustness_numbers.py` | Recomputes every number used in the fresh-regime, threshold and sensitivity tables and in the regime-map and robustness figures from the frozen artifacts and asserts agreement with the robustness outputs. |
 | `scripts/build_claim_manifest.py` | Recomputes the paper's quantitative claims from the canonical artifacts and checks them against `main.tex`. |
 | `FINAL_CLAIM_MANIFEST.json` | Provenance/verification metadata: for each major claim its value, source artifact, source field or calculation, and manuscript location. It holds no independent scientific data. |
 | `../when_does_llm_serving_scheduler_adaptation_matter.pdf` | Compiled review copy (written by the build script). |
@@ -50,9 +50,9 @@ scripts/build_performance_evaluation_manuscript.sh
 Figures only:
 
 ```bash
-python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py   # Figures 1-3
-python3 paper/performance_evaluation/scripts/plot_regime_figures.py                   # Figures 4-5
-python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # Figure 6
+python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py   # manuscript Figures 1-2 (+ dropped transition figure)
+python3 paper/performance_evaluation/scripts/plot_regime_figures.py                   # manuscript Figure 3 (+ dropped fresh-headroom figure)
+python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # manuscript Figure 4
 ```
 
 Manuscript only:
