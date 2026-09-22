@@ -3,7 +3,7 @@
 Audit date: 2026-09-20. Branch `manuscript/peva-final-visual-freeze-20260920`, created from
 `63418512a84543afc83d09c06a3de65bf170fc31` (`manuscript/peva-final-scientific-cleanup-20260920`).
 Target journal: *Performance Evaluation* (Elsevier). Source: `paper/performance_evaluation/main.tex`
-(`elsarticle`, preprint, 12 pt; 30 pages, letter paper, text width 390 pt = 5.40 in).
+(`elsarticle`, preprint, 12 pt; 34 pages, letter paper, text width 390 pt = 5.40 in).
 
 No experiment was run, no scientific result, artifact or pre-specified analysis was changed, and neither Zenodo, `main`
 nor the submission package was touched.

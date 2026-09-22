@@ -79,7 +79,7 @@ pdflatex -interaction=nonstopmode main.tex && bibtex main
 pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
 ```
 
-The output is `paper/performance_evaluation/main.pdf` (30 pages), copied to
+The output is `paper/performance_evaluation/main.pdf` (34 pages), copied to
 `paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`. No experiment is run by the build.
 
 ## Checks
