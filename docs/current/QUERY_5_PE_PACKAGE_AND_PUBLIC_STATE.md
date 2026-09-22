@@ -77,16 +77,29 @@ Updated 30 -> 34 in `docs/PEVA_PREPACKAGE_READINESS.md` and `paper/performance_e
 | `references.bib` (= `submission/references.bib`) | `f45756813a9257922d9c22aa4f6b712aac02166026ca0f0eb8a1dee11efa0292` |
 | `main.bbl` (= `submission/main.bbl`) | `f73b4d2706d3f6d97f41ed8c468a7da3c0060f8d3635689bbbb8d0c129415cb9` |
 | `submission/performance_evaluation_submission_sources.zip` (8 files, 187,108 bytes) | `cfba8623fc4f5703c2e427a0fa1ece04cd1e0e13cbc5162c78a4865ebf594f31` |
-| `submission/declarations.md` | `fc2b5db325405ffcbbfde62115945de2c29909e3d0aff7d04e65dd7d5965615c` |
+| `submission/declarations.md` | `d5a5fcd4987213c1ec0d1443c625456987a4a08f8de99a3c24de1b36e7455165` |
 | canonical highlights (`submission_docs/` = `submission/`) | `d3b01cfa2acead5a621debc6e7c6bffdbda781d7ce302880b4e5a92d983e6ea2` |
 | cover letter (`submission/`) | `84893d165866fcf31ec6b3eaabe0bd62322c3f55b0f4ece5810eb9a0c4d6f17a` |
 | stale `paper/performance_evaluation_highlights.txt` (unused) | `ac6b4d46c301975be0910fd33fcbb321f3f0f7d4876131bee24691c2ab24c424` |
 
-Git: compliance commit `132e2fa`; experiment branch tip `327736b`; remote `main` before Query 5 `2bdf4b7`. Final commit, remote `main` and the availability check are appended in the Query-5 report returned to the author.
+Git: compliance commit `132e2fa`; package commit `67d50e9` (first push to `main`); experiment branch tip `327736b`; remote `main` before Query 5 `2bdf4b7`. A follow-up commit fixed one defect found by the availability truth check (below); the final SHA is the one returned in the Query-5 report.
+
+**Defect found and fixed after the first push:** the builder hardcoded the archive citation as "[28]" in `declarations.md` and the checklist, but the compiled manuscript numbers it [38] (it was [28] in an older bibliography). `ref_number()` in the builder now reads the number from the compiled `main.bbl`. The source ZIP is byte-identical (same SHA-256), because the ZIP does not contain these files.
 
 ## 13. Availability statement, sentence by sentence (after the push)
 
-Recorded in the final report; the statement itself is unchanged: GitHub repository public; v1.1.0 archived on Zenodo record 22866983 (contents verified in Query 4); reserve protocol, results and provenance under `experiments/reference_reserve_sensitivity_v1/` on `main`; raw third-party traces not redistributed.
+Checked at 2026-09-21 after the push, from an unauthenticated client:
+
+| Sentence | Result |
+|---|---|
+| Code, derived artifacts, configs, reproducibility materials are in the GitHub repository | true: repo page and raw files return HTTP 200 without authentication |
+| v1.1.0 manuscript release package is archived on Zenodo [38] | true: record 22866983, published, open (contents verified in Query 4) |
+| Archive contains confirmatory artifacts, robustness outputs, continuation shards, figure code, claim manifest, simulator, analysis code | true (Query 4 check against `MANIFEST.json`) |
+| Reserve analysis post-dates the archive | true |
+| Reserve protocol, results and provenance are in the repository under `experiments/reference_reserve_sensitivity_v1/` | **true now**: on public `main`, HTTP 200 for `PROTOCOL_V1.json`, `denominator_completion_v1/FINAL_RESERVE_METRICS_V1.json` and `results_v1/reserve_090/result_summary.json`; the raw `result_summary.json` and `main.tex` match local SHA-256 |
+| Raw third-party traces are not redistributed | true |
+
+Remote refs after the push: `main` and `revise/peva-metadata-consistency-20260921` at the package commit, `experiment/reference-reserve-sensitivity-20260921` at `327736b`. AVAILABILITY_STATEMENT = TRUE.
 
 ## 14. Remaining items for the author (not blockers)
 

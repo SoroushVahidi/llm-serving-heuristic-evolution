@@ -48,10 +48,16 @@ def section(tex: str, title: str) -> str:
     return re.sub(r"\s+", " ", m.group(1)).strip()
 
 
+def ref_number(key: str) -> int:
+    """Number of a bibliography entry as printed (order of appearance, from the compiled main.bbl)."""
+    keys = re.findall(r"\\bibitem(?:\[[^\]]*\])?\{([^}]+)\}", (PAPER / "main.bbl").read_text())
+    return keys.index(key) + 1
+
+
 def plain(s: str) -> str:
     s = re.sub(r"\\url\{([^}]*)\}", r"\1", s)
     s = re.sub(r"\\texttt\{([^}]*)\}", r"\1", s)
-    s = re.sub(r"\\cite\{[^}]*\}", "[28]", s)
+    s = re.sub(r"\\cite\{([^}]*)\}", lambda m: "[" + ", ".join(str(ref_number(k.strip())) for k in m.group(1).split(",")) + "]", s)
     s = re.sub(r"Section~\\ref\{[^}]*\}", "Section 7", s)
     s = s.replace("{\\leavevmode\\raggedright ", "").replace("\\par}", "").replace("~", " ")
     return re.sub(r"\s+", " ", s).strip()
@@ -116,7 +122,7 @@ def checklist(tex: str, f: dict, hl: list[str], version_doi: str, zip_sha: str, 
         ("AI declaration", "READY", "In the manuscript before the references: ChatGPT, Codex (OpenAI), Gemini (Google), Claude (Anthropic); purposes, author review and responsibility stated"),
         ("CRediT statement", "READY", "Eleven roles (author-confirmed 2026-09-21) for the sole author in `credit_authorship_statement.txt` (including Project administration); no Funding acquisition, Supervision or Resources claimed"),
         ("Data availability", "READY", "In the manuscript; Zenodo record 22866983 (v1.1.0 published)"),
-        ("Data / software citation", "READY", "Reference [28] `[dataset]` (one combined dataset-and-software archive, version DOI) cited from Data and Code Availability"),
+        ("Data / software citation", "READY", f"Reference [{ref_number('vahidi2026archive')}] `[dataset]` (one combined dataset-and-software archive, version DOI) cited from Data and Code Availability"),
         ("Source ZIP build verified", "READY" if verification["all_ok"] else "FAIL", f"`{ZIP_NAME}`: {zip_info['files']} files, {zip_info['uncompressed_bytes']} bytes, sha256 {zip_sha}; build `{BUILD_CMD}` from a fresh extraction; {verification['summary']}"),
         ("Acknowledgements wording", "READY", "Placed last, directly before the references, as the journal requires; the manuscript refers to 'the author' throughout."),
         ("Prior-submission disclosure", "USER_CONFIRM", "The cover letter states the manuscript is not under consideration elsewhere and does not mention the withdrawn, unpublished LLM 2026 predecessor (the roadmap suggested optional transparency); confirm."),
