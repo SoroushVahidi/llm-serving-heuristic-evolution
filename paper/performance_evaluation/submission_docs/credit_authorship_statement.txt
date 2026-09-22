@@ -1,5 +1,5 @@
 CRediT authorship contribution statement
 
-Soroush Vahidi: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Writing - original draft, Writing - review & editing.
+Soroush Vahidi: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Project administration, Writing - original draft, Writing - review & editing.
 
-[Candidate statement for the sole author. Roles not claimed because the project record does not support them: Funding acquisition, Supervision, Resources, Project administration. Author to confirm before submission.]
+[Roles not claimed: Funding acquisition, Supervision, Resources. Role list confirmed by the author, 2026-09-21.]

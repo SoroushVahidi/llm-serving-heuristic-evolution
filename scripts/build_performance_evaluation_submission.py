@@ -75,7 +75,7 @@ def declarations(tex: str, version_doi: str) -> str:
     return f"""# Declarations (verbatim from the manuscript; for the Elsevier declarations tool and the submission portal)
 
 ## Declaration of competing interest
-{plain(section(tex, "Declaration of Competing Interest"))}
+{plain(section(tex, "Declaration of competing interest"))}
 
 ## Funding
 {plain(section(tex, "Funding and Support"))}
@@ -84,8 +84,8 @@ def declarations(tex: str, version_doi: str) -> str:
 {plain(ai)}
 
 ## CRediT authorship contribution statement
-{plain((DOCS / "credit_authorship_statement.txt").read_text().split("[Candidate", 1)[0].replace("CRediT authorship contribution statement", "").strip())}
-(Candidate statement for the sole author; the author must confirm it. See `credit_authorship_statement.txt`.)
+{plain((DOCS / "credit_authorship_statement.txt").read_text().split("[Roles not claimed", 1)[0].replace("CRediT authorship contribution statement", "").strip())}
+(Sole-author statement; see `credit_authorship_statement.txt`.)
 
 ## Acknowledgements
 {plain(section(tex, "Acknowledgements"))}
@@ -112,13 +112,13 @@ def checklist(tex: str, f: dict, hl: list[str], version_doi: str, zip_sha: str, 
         ("Spelling / grammar", "READY", "aspell (en_US) over the manuscript body: only technical terms, product names and acronyms are flagged (no misspellings); an author read-through is still recommended"),
         ("Permissions", "READY", "All figures and tables are original (generated from the author's own artifacts); no third-party copyrighted material is reproduced, so no permission is required"),
         ("Competing-interest declaration", "READY", "In the manuscript; the Elsevier declarations tool must still be completed and its document uploaded at submission (portal step)"),
-        ("Funding statement", "READY", "In the manuscript: in-kind Google Cloud Research Credits and CloudRift Inc. computational/tooling support; no monetary research grant"),
+        ("Funding statement", "READY", "In the manuscript: Google Cloud Research Credits (USD 1,000) and USD 1,000 in compute credits through the CloudRift AI Builder Grant; both provided as computing credits, not cash; no sponsor role in the study"),
         ("AI declaration", "READY", "In the manuscript before the references: ChatGPT, Codex (OpenAI), Gemini (Google), Claude (Anthropic); purposes, author review and responsibility stated"),
-        ("CRediT statement", "USER_CONFIRM", "Candidate for the sole author in `credit_authorship_statement.txt`; no Funding acquisition, Supervision, Resources or Project administration claimed"),
+        ("CRediT statement", "USER_CONFIRM", "Eleven roles for the sole author in `credit_authorship_statement.txt` (including Project administration); no Funding acquisition, Supervision or Resources claimed"),
         ("Data availability", "READY", "In the manuscript; Zenodo record 22866983 (v1.1.0 published)"),
         ("Data / software citation", "READY", "Reference [28] `[dataset]` (one combined dataset-and-software archive, version DOI) cited from Data and Code Availability"),
         ("Source ZIP build verified", "READY" if verification["all_ok"] else "FAIL", f"`{ZIP_NAME}`: {zip_info['files']} files, {zip_info['uncompressed_bytes']} bytes, sha256 {zip_sha}; build `{BUILD_CMD}` from a fresh extraction; {verification['summary']}"),
-        ("Acknowledgements wording", "USER_CONFIRM", "The sentence 'the author thanks his mother' is grammatical and intentional; unchanged. Note the manuscript also uses 'they' for the author in the competing-interest declaration; confirm the pronoun choice."),
+        ("Acknowledgements wording", "USER_CONFIRM", "Placed last, directly before the references, as the journal requires; the manuscript refers to 'the author' throughout."),
         ("Prior-submission disclosure", "USER_CONFIRM", "The cover letter states the manuscript is not under consideration elsewhere and does not mention the withdrawn, unpublished LLM 2026 predecessor (the roadmap suggested optional transparency); confirm."),
         ("Suggested reviewers", "OPTIONAL", "`suggested_reviewers.md`: four verified candidates; portal-only, never in the manuscript"),
         ("Graphical abstract", "NOT_APPLICABLE", "Optional; deliberately not supplied"),
@@ -225,7 +225,7 @@ def main() -> None:
                 "| File | Purpose | SHA-256 |", "|---|---|---|"]
     purposes = {"main.tex": "Editable LaTeX source", "references.bib": "Bibliography source", "main.bbl": "Compiled bibliography", "README_BUILD.txt": "Build instructions",
                 "performance_evaluation_highlights.txt": "Highlights (upload as a separate file)", "cover_letter.txt": "Cover letter",
-                "credit_authorship_statement.txt": "CRediT statement (candidate; author to confirm)", "suggested_reviewers.md": "Optional reviewer suggestions (portal only)",
+                "credit_authorship_statement.txt": "CRediT statement", "suggested_reviewers.md": "Optional reviewer suggestions (portal only)",
                 "declarations.md": "Declarations text for the Elsevier declarations tool", "SUBMISSION_CHECKLIST.md": "Checklist",
                 "SOURCE_ZIP_VERIFICATION.json": "Result of the clean-extraction build check", ZIP_NAME: "Elsevier source ZIP"}
     for p in sorted(PKG.rglob("*")):

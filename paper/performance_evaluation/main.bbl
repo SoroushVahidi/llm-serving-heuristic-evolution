@@ -8,10 +8,14 @@
 \bibitem{rice1976algorithmselection}
 J.~R. Rice, The algorithm selection problem, Advances in Computers 15 (1976)
   65--118.
+\newblock \href {https://doi.org/10.1016/S0065-2458(08)60520-3}
+  {\path{doi:10.1016/S0065-2458(08)60520-3}}.
 
 \bibitem{gomes2001portfolios}
 C.~P. Gomes, B.~Selman, Algorithm portfolios, Artificial Intelligence
   126~(1--2) (2001) 43--62.
+\newblock \href {https://doi.org/10.1016/S0004-3702(00)00081-3}
+  {\path{doi:10.1016/S0004-3702(00)00081-3}}.
 
 \bibitem{llumnix2024}
 B.~Sun, Z.~Huang, H.~Zhao, W.~Xiao, X.~Zhang, Y.~Li, W.~Lin, Llumnix: Dynamic
@@ -70,6 +74,8 @@ W.~Kwon, Z.~Li, S.~Zhuang, Y.~Sheng, L.~Zheng, C.~H. Yu, J.~E. Gonzalez,
   H.~Zhang, I.~Stoica, Efficient memory management for large language model
   serving with {PagedAttention}, in: Proceedings of the 29th Symposium on
   Operating Systems Principles (SOSP 2023), ACM, 2023, pp. 611--626.
+\newblock \href {https://doi.org/10.1145/3600006.3613165}
+  {\path{doi:10.1145/3600006.3613165}}.
 
 \bibitem{orca2022}
 G.-I. Yu, J.~S. Jeong, G.-W. Kim, S.~Kim, B.-G. Chun, Orca: A distributed
@@ -224,11 +230,15 @@ Q.~Liang, H.~Wang, P.~Shenoy, Lilou: Resource-aware model-driven latency
 L.~Xu, F.~Hutter, H.~H. Hoos, K.~Leyton-Brown, {SATzilla}: Portfolio-based
   algorithm selection for {SAT}, Journal of Artificial Intelligence Research 32
   (2008) 565--606.
+\newblock \href {https://doi.org/10.1613/jair.2490}
+  {\path{doi:10.1613/jair.2490}}.
 
 \bibitem{autofolio2015}
 M.~Lindauer, H.~H. Hoos, F.~Hutter, T.~Schaub, {AutoFolio}: An automatically
   configured algorithm selector, Journal of Artificial Intelligence Research 53
   (2015) 745--778.
+\newblock \href {https://doi.org/10.1613/jair.4726}
+  {\path{doi:10.1613/jair.4726}}.
 
 \bibitem{vahidi2026archive}
 {[dataset] S. Vahidi}, Reproducibility package for ``{When Does LLM-Serving

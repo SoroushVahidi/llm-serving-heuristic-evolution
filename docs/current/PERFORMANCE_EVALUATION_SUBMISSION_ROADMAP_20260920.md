@@ -280,8 +280,10 @@ Include appropriately in a separate section before the references:
 
 ### G. Funding / support — DONE
 
-CloudRift Inc.: classify as in-kind computational/tool support. Do not falsely
-describe it as a conventional research grant. State the sponsor role accurately:
+CloudRift (updated 2026-09-21 from the award email): the support is the
+**CloudRift AI Builder Grant**, USD 1,000 in compute credits (not "CloudRift
+Inc."). Describe it as computing credits, not a cash or conventional research
+grant. State the sponsor role accurately:
 no role in study design, data collection, analysis, interpretation, manuscript
 decisions, or the decision to submit (assuming the evidence remains
 consistent). Also include the standard sentence:
