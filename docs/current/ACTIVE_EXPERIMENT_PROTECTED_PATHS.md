@@ -1,5 +1,7 @@
 # Active Experiment Protected Paths
 
+> **Historical document.** This protected-path record records the project state as of 2026-09-19 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md). The SBS-override selector line it describes ended with the one-shot fresh confirmatory evaluation of 2026-09-19 (verdict `POSITIVE_GENERALIZATION_NOT_CONFIRMED`; [`CONFIRMATORY_RESULT_V2.json`](../../experiments/sbs_override_fresh_id_confirmatory_v2/stage_b/one_shot_20260919/CONFIRMATORY_RESULT_V2.json)). No job from that line was running when this banner was added on 2026-10-04.
+
 ## 2026-09-19 Active Local Writer
 
 The active writer list has changed since the 2026-08-19 text below.

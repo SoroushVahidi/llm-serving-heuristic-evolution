@@ -1,5 +1,9 @@
 # Performance Evaluation Reproducibility Guide
 
+> Detailed guide for the current study. The short public entry point is
+> [`REPRODUCIBILITY.md`](../../REPRODUCIBILITY.md); the current-study index is
+> [`docs/current/README.md`](README.md).
+
 This document explains the environment requirements, workload provenance, and step-by-step procedures to reproduce the findings, tables, figures, and compiled manuscript for the Performance Evaluation paper.
 
 ---
@@ -28,7 +32,7 @@ python3 paper/performance_evaluation/scripts/plot_regime_figures.py             
 python3 paper/performance_evaluation/scripts/plot_robustness_figures.py               # manuscript Figure 4
 ```
 `scripts/build_performance_evaluation_manuscript.sh` runs all three, verifies the claim manifest
-(`paper/performance_evaluation/FINAL_CLAIM_MANIFEST.json`) and rebuilds the PDF. See
+(`paper/performance_evaluation/FINAL_CLAIM_MANIFEST.json`) and rebuilds `paper/performance_evaluation/main.pdf`; it replaces the canonical PDF only when `UPDATE_CANONICAL_PDF=1` is set. See
 `paper/performance_evaluation/README.md` for the inputs each script reads.
 
 ---
@@ -39,8 +43,14 @@ The Python environment requires standard scientific and machine learning librari
 
 ```bash
 pip install -e ".[dev]"          # editable install, pulls pyproject.toml deps
-python3 -m pytest --collect-only -q   # should report ~2,500 tests, 0 errors
+python3 -m pytest --collect-only -q   # collects the whole suite; expect 0 collection errors
 ```
+
+The suite covers the whole research program, not only this study. On
+2026-10-04 it collected 4,711 tests; CI runs a deterministic CPU-only subset
+(4,436 tests; see `.github/workflows/ci.yml`), and 21 tests are GPU-marked and
+opt-in. The total changes as tests are added, and some excluded modules fail
+without uncommitted datasets (see Section 6).
 
 Ensure `pandas`, `numpy`, `pyarrow`, `matplotlib`, and `tabulate` are available.
 
@@ -55,12 +65,20 @@ python3 -c "import pandas, numpy, matplotlib, pyarrow, tabulate"
 Our work utilizes production-derived traces from real-world deployments:
 1. **Microsoft Azure LLM serving traces (2023):** Contains `azure_2023_code` and `azure_2023_conversation` workloads.
    - Upstream URL: `https://github.com/Azure/AzurePublicDataset/blob/master/AzureLLMInferenceDataset2023.md`
-   - Redistribution status: Raw trace is obtained upstream; we include the derived, sampled simulation windows in this repository for reproducibility.
+   - Redistribution status: not redistributed; obtain the trace upstream.
 2. **BurstGPT workload trace:** Wang et al., KDD 2025 (10.31 M requests from regional Azure OpenAI GPT services over 213 days).
    - Upstream URL (dataset owner): `https://github.com/HPMLL/BurstGPT` (CC-BY-4.0). This is the dataset owner's repository, not a fork.
-   - Redistribution status: Raw trace is obtained upstream; the specific derived simulation windows used for replay are redistributed in `data/`.
+   - Redistribution status: not redistributed; obtain the trace upstream.
 
-All pre-processed, derived workload windows used in our simulations are stored under `data/public_trace_corpus_v1/`.
+Raw third-party traces and the derived workload windows built from them are
+**not** committed. Only the corpus metadata (`manifest.json`, `schema.json`,
+`distribution_stats.json`) is tracked under `data/public_trace_corpus_v1/`; the
+parquet window files are built locally from the upstream traces (see
+[`docs/DATA_RELEASE_POLICY.md`](../DATA_RELEASE_POLICY.md)). Checking the
+manuscript's numbers, figures and tables does not need them: the committed
+experiment artifacts are sufficient (Section 1 and
+[`REPRODUCIBILITY.md`](../../REPRODUCIBILITY.md)). Re-running the simulations
+does.
 
 ---
 
@@ -94,24 +112,32 @@ Our fresh causal headroom points are evaluated using a pre-specified bootstrap c
 
 ## 6. Running Tests
 
-To run the lightweight verification suite:
 ```bash
-python3 -m pytest                 # full non-GPU-safe suite
-python3 -m pytest -m gpu          # GPU-only tests (requires a CUDA-capable GPU)
+python3 -m pytest tests/test_manuscript_scientific_corrections.py tests/test_peva_prepackage_readiness.py -q   # this study's manuscript checks
+python3 -m pytest -m "not gpu"                                     # whole suite without GPU tests
+LLMSERVEOPT_RUN_GPU_TESTS=1 python3 -m pytest -m gpu               # GPU-only tests (CUDA GPU required)
 ```
+
+Without the uncommitted public-trace-corpus parquet files and the staged
+BurstGPT data, some historical test modules fail or error. Those are data
+availability failures, not code defects; CI excludes them (see
+`.github/workflows/ci.yml`).
 
 ---
 
-## 7. Real vLLM Bounded Validation
+## 7. Bounded Real-vLLM Correspondence Probe
 
-We validate simulator fidelity on a real serving platform (vLLM) under resource pressure.
-- Real-system verification requires a dedicated GPU (local RTX 5060 Ti or Wulver HPC A100 node).
+The vLLM probe checks whether resource pressure changes queueing and scheduling
+behavior in a real engine. It is a bounded correspondence probe: it does not
+validate the simulated latency magnitudes, and its direct full-versus-chunked
+comparison did not reproduce the simulator's predicted class reversal.
+- Re-running the probe requires a dedicated GPU and a separate vLLM environment; the manuscript's probe used one local RTX 5060 Ti.
 - The manuscript's vLLM numbers come from `experiments/real_vllm_mechanism_validation_v1/native_vllm_chunk_budget_semantics_probe_v1/` (`mechanism_summary.json`, `statistical_summary.json`) and `experiments/real_vllm_pressure_action_validation_v1/REAL_VLLM_VALIDATION_RESULT_V1.json`; each is checked by `paper/performance_evaluation/scripts/build_claim_manifest.py`.
 - No monetary API calls are performed; mock modes are used by default unless `--allow-live-api` is supplied with correct credentials.
 
 ---
 
-## 5. Known documentation corrections
+## 8. Known documentation corrections
 
 - The BurstGPT upstream URL above was corrected on 2026-09-21 (it previously named an author fork).
 - `docs/current/FRESH_PRODUCTION_SUPPORT_MAPPING_REPORT_V1.md` (a stage record, preserved unchanged) wrongly says BurstGPT `kv_8000` was

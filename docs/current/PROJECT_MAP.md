@@ -1,5 +1,7 @@
 # Project Map
 
+> **Historical document.** This code-navigation map records the project state as of 2026-08-17 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md). Directory pointers may still help, but status statements are dated; the maintained map is [`docs/REPOSITORY_MAP.md`](../../docs/REPOSITORY_MAP.md).
+
 A stable navigation map of this repository — not a dated narrative. For
 current status, see `docs/current/RESUME_HERE.md` and
 `docs/current/WORK_STATUS.md`; this file only answers "where do I look."

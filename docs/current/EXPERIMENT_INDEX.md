@@ -1,5 +1,7 @@
 # Experiment Index
 
+> **Historical document.** This experiment index of the earlier selector program records the project state as of 2026-08-19 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md).
+
 Generated during Query 1 cleanup audit on 2026-07-21, refreshed after the
 2026-07-22 Wulver data/simulator-discriminative workflows, extended on
 2026-07-25 for Tier 1 staging, real-window construction, and repaired pilots,

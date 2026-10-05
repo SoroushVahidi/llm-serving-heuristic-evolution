@@ -1,5 +1,7 @@
 # Resume Contextual Composition
 
+> **Historical document.** This contextual-composition (CC) resume document records the project state as of 2026-08-06 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](current/README.md).
+
 > Overall repository entry point:
 > **[docs/current/RESUME_HERE.md](current/RESUME_HERE.md)**. This file's
 > checkout/SHA-checkpoint list is current through the CC5 final operating

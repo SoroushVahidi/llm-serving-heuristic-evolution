@@ -19,28 +19,28 @@ def test_required_current_docs_exist():
     assert _module.check_required_docs_exist() == []
 
 
-def test_entry_points_link_to_canonical_resume_doc():
-    assert _module.check_canonical_links() == []
+def test_entry_points_link_to_current_study_index():
+    assert _module.check_entry_point_links() == []
 
 
-def test_no_forbidden_stale_claims_present():
-    assert _module.check_forbidden_claims() == []
+def test_historical_entry_points_carry_banner():
+    assert _module.check_historical_banners() == []
 
 
-def test_no_stale_phase_g_tokens_present_in_live_docs():
-    assert _module.check_no_stale_phase_g_tokens() == []
+def test_current_docs_free_of_stale_framing():
+    assert _module.check_current_docs_not_stale() == []
 
 
-def test_required_current_status_claims_present():
-    assert _module.check_required_claims() == []
+def test_at_most_one_resume_document():
+    assert _module.check_single_resume_doc() == []
 
 
-def test_resume_and_next_actions_agree():
-    assert _module.check_resume_and_next_action_agree() == []
-
-
-def test_exactly_one_canonical_resume_document():
-    assert _module.check_single_canonical_resume_doc() == []
+def test_banner_check_detects_missing_banner(tmp_path, monkeypatch):
+    doc = tmp_path / "STATUS.md"
+    doc.write_text("# Status\n\nThe current next action is X.\n", encoding="utf-8")
+    monkeypatch.setattr(_module, "ROOT", tmp_path)
+    monkeypatch.setattr(_module, "HISTORICAL_ENTRY_POINTS", [doc])
+    assert _module.check_historical_banners() != []
 
 
 def test_main_passes_on_current_repository_state():

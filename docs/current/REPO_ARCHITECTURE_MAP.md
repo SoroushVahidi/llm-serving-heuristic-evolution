@@ -1,5 +1,7 @@
 # Repository Architecture Map
 
+> **Historical document.** This architecture map of an integration branch records the project state as of 2026-07-24 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md).
+
 Current map for `wulver-selector-v2-and-composition-integrated`, combining
 `origin/wulver-final-integration-20260721`'s Policy Library v2/composition/
 structural-synthesis work with the Phase 2C selector-improvement and

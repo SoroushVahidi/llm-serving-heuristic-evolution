@@ -114,6 +114,8 @@ benchmark, not best action at every state.
    LaTeX source, figures, and figure scripts are in
    [`paper/performance_evaluation/`](paper/performance_evaluation/).
 2. **Reproducibility entry point:** [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md).
+   The current-study documentation index is
+   [`docs/current/README.md`](docs/current/README.md).
 3. **Key confirmatory artifacts:**
    - Fresh causal headroom study (protocol, states, actions, result, bootstrap):
      [`experiments/fresh_production_latency_headroom_confirmatory_v1/`](experiments/fresh_production_latency_headroom_confirmatory_v1/)
@@ -167,12 +169,11 @@ python3 paper/performance_evaluation/scripts/plot_robustness_figures.py
 ```
 
 To verify the self-contained v1.1.0 archive (checksums, frozen-artifact hashes,
-claims, figures, correction replay), unpack the ZIP (committed here and on
-Zenodo) and run its verifier:
+the 62 claims it covers, figures, correction replay), run its verifier. The
+tracked directory and an unpacked copy of the committed ZIP both work:
 
 ```bash
-unzip release/performance_evaluation_v1_1_0.zip -d /tmp/peva && cd /tmp/peva/performance_evaluation_v1_1_0
-python3 verify_release.py
+cd release/performance_evaluation_v1_1_0 && python3 verify_release.py
 ```
 
 Re-running the simulations themselves needs the raw upstream traces, which are
@@ -238,12 +239,12 @@ availability failures, not code defects.
 
 ## Historical Work and Provenance
 
-- Documentation index: [`docs/README.md`](docs/README.md). The
-  current study's detailed reproducibility guide is
-  [`docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`](docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md).
-- Operational handoff for the post-study SBS-override selector research line:
-  [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md). It is internal
-  working documentation.
+- Current-study documentation index (evidence reports, artifacts, scope):
+  [`docs/current/README.md`](docs/current/README.md). The full documentation
+  index, ordered from current to historical, is [`docs/README.md`](docs/README.md).
+- Handoff for the SBS-override selector research line, which ended on
+  2026-09-19 without confirming a positive result:
+  [`docs/current/RESUME_HERE.md`](docs/current/RESUME_HERE.md) (historical).
 - Long-term research-program roadmap (last reconciled in August 2026, so it
   predates the current study): [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md).
 - Dated scientific and technical audits: [`docs/audits/`](docs/audits/). They

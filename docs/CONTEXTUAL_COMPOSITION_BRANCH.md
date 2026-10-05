@@ -1,5 +1,7 @@
 # Contextual Compositional Heuristics Development Branch
 
+> **Historical document.** This branch marker for the contextual-composition line records the project state as of 2026-08-17 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](current/README.md).
+
 Branch name: `contextual-compositional-heuristics-20260731`
 
 Base branch: `reality-grounded-dataset-expansion-20260724`

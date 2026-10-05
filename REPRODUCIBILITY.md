@@ -62,28 +62,25 @@ lists which input each script reads.
 ## Level 3: archive verification
 
 The v1.1.0 archive is published on Zenodo at
-[10.5281/zenodo.22866983](https://doi.org/10.5281/zenodo.22866983). The same
-ZIP is committed as
-[`release/performance_evaluation_v1_1_0.zip`](release/performance_evaluation_v1_1_0.zip).
-Verify it from an unpacked copy of the ZIP:
+[10.5281/zenodo.22866983](https://doi.org/10.5281/zenodo.22866983). A copy is
+committed as
+[`release/performance_evaluation_v1_1_0.zip`](release/performance_evaluation_v1_1_0.zip)
+and unpacked in
+[`release/performance_evaluation_v1_1_0/`](release/performance_evaluation_v1_1_0/).
+Run the verifier from the root of either the tracked directory or an unpacked
+copy of the ZIP:
 
 ```bash
-unzip release/performance_evaluation_v1_1_0.zip -d /tmp/peva
-cd /tmp/peva/performance_evaluation_v1_1_0
+cd release/performance_evaluation_v1_1_0
 python3 verify_release.py
 ```
 
-Do not run the verifier in the unpacked tree under
-[`release/performance_evaluation_v1_1_0/`](release/performance_evaluation_v1_1_0/).
-The repository's `*.jsonl` ignore rule left one archive file
-(`experiments/public_trace_replay_v1/layer3_checkpoint.jsonl`) out of that tree,
-so the checksum and claim checks fail there. The ZIP contains the file.
-
 The archive's [`README.md`](release/performance_evaluation_v1_1_0/README.md)
-describes each check. The archive's build environment is recorded in `ENVIRONMENT.json`.
-A numpy or pandas version different from the one recorded there can change a
-recorded version string without changing any number. The reference-reserve
-sensitivity analysis came after this archive and is not part of it.
+describes each check. On 2026-10-04 both locations passed 7/7 with the library
+versions pinned in the archive's `ENVIRONMENT.json` (numpy 2.3.5, pandas 3.0.2).
+Other versions were not tested. The reference-reserve sensitivity analysis came
+after this archive and is not part of it. See also
+[`release/README.md`](release/README.md).
 
 ## Level 4: manuscript rebuild
 
@@ -135,6 +132,8 @@ environment does not reproduce it.
 
 The detailed guide for this study is
 [`docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`](docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md).
+The current-study documentation index, which lists every evidence report, is
+[`docs/current/README.md`](docs/current/README.md).
 
 ## Historical manuscripts
 

@@ -1,5 +1,7 @@
 # Performance Evaluation Submission Roadmap and Handoff
 
+> **Historical document.** This submission-time roadmap for the current study records the project state as of 2026-09-20 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md). Its STATUS line, portal steps and paths (for example `release/performance_evaluation_v1/`, superseded by `release/performance_evaluation_v1_1_0/`) describe that date and are not a live roadmap. For reproduction use [`REPRODUCIBILITY.md`](../../REPRODUCIBILITY.md).
+
 ## Query 2 Repository-level Organization & Cleanup Completions
 
 The following Query 2 completions are officially executed and verified:

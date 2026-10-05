@@ -1,5 +1,7 @@
 # Start Here: Contextual Composition
 
+> **Historical document.** This contextual-composition (CC) status document records the project state as of 2026-08-06 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](current/README.md).
+
 > This is the detailed CC-roadmap technical status document. The overall
 > repository entry point (Wulver/local task split, baseline status,
 > guardrails, exact next actions) is

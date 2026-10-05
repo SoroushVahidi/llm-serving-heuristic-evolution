@@ -1,5 +1,7 @@
 # Local Branch Status (Canonical)
 
+> **Historical document.** This branch-status record records the project state as of 2026-07-24 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md).
+
 > **Reconciliation update (2026-07-24):** the selector-improvement /
 > leakage-fix lineage described below was merged into
 > `origin/wulver-final-integration-20260721` (merge tip `37849b0`). This

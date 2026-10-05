@@ -1,5 +1,7 @@
 # Documentation Index
 
+> **Historical document.** This documentation index records the project state as of 2026-08-04 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](current/README.md). The maintained documentation index is [`docs/README.md`](../docs/README.md).
+
 Repository navigation hub, created 2026-08-04 during a repository
 organization pass. This is a map, not a replacement for the documents it
 links to — start here to find the right doc, then read that doc for full
