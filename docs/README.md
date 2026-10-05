@@ -61,6 +61,7 @@ These retain scientific provenance but are not live status authorities:
 
 ## Reproducibility
 
+- [`../REPRODUCIBILITY.md`](../REPRODUCIBILITY.md) - Top-level reproducibility entry point for the current study.
 - [`current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`](current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md) - Reproducibility guide.
 - [`current/LOCAL_ARTIFACT_RETENTION.md`](current/LOCAL_ARTIFACT_RETENTION.md)
 - [`COMPUTE_POLICY.md`](COMPUTE_POLICY.md)
