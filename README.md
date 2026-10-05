@@ -40,7 +40,7 @@ milliseconds.
 | Condition / quantity | Result |
 |---|---|
 | Native, resource-abundant replay (Azure code, Azure conversation, BurstGPT) | **0 executable disagreement states** out of 1,002,438 reference decision states (about one million) |
-| Arrival-rate scaling alone (up to 8×) | **0 disagreement states**: KV utilization stayed below 1% of capacity and no resource limit became binding |
+| Arrival-rate scaling alone (tested up to 8×) | **0 disagreement states in the tested range**: KV utilization stayed below 1% of capacity and no resource limit became binding. This does not show that higher load could never create disagreement |
 | KV-cache capacity or active-sequence caps | **Disagreement appears** on the Azure traces. On fresh windows BurstGPT never queued enough for the caps to bind |
 | Fresh disagreement states (pre-specified causal analysis) | **720** states from 36 source windows |
 | States with a beneficial alternative (pre-specified rule) | **590 / 720 = 81.9%** of *disagreement* states. Disagreement itself is below 0.5% of reference decisions in every selected regime |
@@ -68,8 +68,10 @@ flowchart LR
    simulator under a fixed reference scheduler.
 2. **Disagreement.** At every reference decision state, six policies are asked
    what they would do. A *disagreement state* is a state where at least one
-   alternative proposes a different **feasible, executable** action (a different
-   admission or ordering of waiting requests), not merely a different score.
+   alternative proposes a different **feasible, executable** action: a different
+   admission, batch, or request-ordering decision once infeasible and
+   semantically identical variants are collapsed. A ranking change that leads
+   to the same admission, batch, and order does not count.
 3. **Pressure.** Without resource pressure no disagreement occurs, so KV-cache
    capacity or the active-sequence limit is capped to expose scheduling choices.
 4. **One-step counterfactual.** At each disagreement state, the simulator forces
@@ -79,10 +81,12 @@ flowchart LR
 5. **Common continuation.** Right after that one decision, control returns to
    the same reference scheduler. The reference branch and every alternative
    branch therefore differ only in that single decision.
-6. **Headroom.** The outcome is the mean latency of the continuation request
-   population. A state is *beneficial* if some alternative gives lower mean
-   latency than the reference. Its oracle headroom is the largest such
-   reduction (zero if none).
+6. **Headroom.** The outcome is the mean end-to-end latency of the
+   continuation request population: every request of the window not yet
+   completed at the decision (running, queued, and future arrivals). Both
+   branches are scored on exactly the same requests. A state is *beneficial*
+   if some alternative gives lower mean latency than the reference. Its oracle
+   headroom is the largest such reduction (zero if none).
 
 The reference scheduler is the KV-constrained online policy. It had the highest
 mean goodput among the six policies on an earlier, separate 240-scenario
@@ -162,7 +166,8 @@ python3 -m pip install -e ".[dev]"
 python3 paper/performance_evaluation/scripts/build_claim_manifest.py --check
 
 # Regenerate the manuscript figures from the frozen artifacts
-# (overwrites paper/performance_evaluation/figures/; inspect with git diff)
+# (overwrites paper/performance_evaluation/figures/; byte-identical with matplotlib 3.10.9,
+#  otherwise restore with: git checkout -- paper/performance_evaluation/figures)
 python3 paper/performance_evaluation/scripts/plot_performance_evaluation_figures.py
 python3 paper/performance_evaluation/scripts/plot_regime_figures.py
 python3 paper/performance_evaluation/scripts/plot_robustness_figures.py
@@ -170,7 +175,10 @@ python3 paper/performance_evaluation/scripts/plot_robustness_figures.py
 
 To verify the self-contained v1.1.0 archive (checksums, frozen-artifact hashes,
 the 62 claims it covers, figures, correction replay), run its verifier. The
-tracked directory and an unpacked copy of the committed ZIP both work:
+tracked directory and an unpacked copy of the committed ZIP both work. With
+the library versions in the archive's `ENVIRONMENT.json` it reports 7/7. With
+newer numpy or pandas, one check reports a difference in recorded library
+versions only (see [`release/README.md`](release/README.md)):
 
 ```bash
 cd release/performance_evaluation_v1_1_0 && python3 verify_release.py
@@ -233,9 +241,9 @@ LLMSERVEOPT_RUN_GPU_TESTS=1 python3 -m pytest -m gpu   # opt-in GPU/checkpoint t
 [CI](.github/workflows/ci.yml) runs the deterministic, CPU-only test subset on
 Python 3.12 with no GPU, credentials, or network access beyond package
 installation. Tests that need uncommitted datasets (the public trace corpus
-parquet files, staged BurstGPT), a GPU, HPC/SLURM, real vLLM, or external APIs
-are excluded. Failures of those tests on a machine without the data are
-availability failures, not code defects.
+parquet files, staged BurstGPT), the optional `transformers` tokenizer, a GPU,
+HPC/SLURM, real vLLM, or external APIs are excluded from CI or skip
+automatically when their prerequisites are missing.
 
 ## Historical Work and Provenance
 

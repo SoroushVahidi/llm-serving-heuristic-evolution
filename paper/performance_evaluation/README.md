@@ -26,6 +26,7 @@ regenerated from this source and verified. The Zenodo v1.1.0 version is publishe
 | `scripts/build_claim_manifest.py` | Recomputes the paper's quantitative claims from the canonical artifacts and checks them against `main.tex`. |
 | `FINAL_CLAIM_MANIFEST.json` | Provenance/verification metadata: for each major claim its value, source artifact, source field or calculation, and manuscript location. It holds no independent scientific data. |
 | `../when_does_llm_serving_scheduler_adaptation_matter.pdf` | Canonical compiled PDF (the build script overwrites it only with `UPDATE_CANONICAL_PDF=1`). |
+| `when_does_llm_serving_scheduler_adaptation_matter.pdf` | Byte-identical copy of the canonical PDF, kept next to the source (added 2026-09-21). The build script does not update it. |
 
 ## Scope of the study's simulator and terminology
 
@@ -101,7 +102,7 @@ readiness checklist. After any edit of `main.tex` that changes a number, regener
 
 ## Related documentation
 
-* `docs/PEVA_PREPACKAGE_READINESS.md`: pre-package readiness checklist, deferred packaging items and the entries the
+* `docs/PEVA_PREPACKAGE_READINESS.md`: dated (2026-09-20) pre-package readiness checklist, deferred packaging items and the entries the
   archive step must add.
 * `docs/FRESH_CAUSAL_ROBUSTNESS_REPORT.md`: post hoc robustness analysis behind Section 6 (Tables 5-6, Figure 4).
 * `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`: artifact defect and corrected derivative.

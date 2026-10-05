@@ -17,10 +17,12 @@ cd release/performance_evaluation_v1_1_0     # or an unpacked copy of the ZIP
 python3 verify_release.py
 ```
 
-On 2026-10-04 the verifier passed 7/7 both on the tracked directory and on an
-unpacked copy of the committed ZIP. The environment matched the versions
-pinned in `ENVIRONMENT.json` (numpy 2.3.5, pandas 3.0.2). Other library
-versions were not tested here.
+On 2026-10-04 the verifier passed 7/7 on both the tracked directory and an
+unpacked copy of the committed ZIP with the library versions recorded in the
+archive's `ENVIRONMENT.json` (numpy 2.3.5, pandas 3.0.2). With newer versions
+(numpy 2.5.3, pandas 3.0.6) it passed 6/7. The failing check was the
+correction replay, and only because `CORRECTION_PROVENANCE_V1.json` records the
+library versions used. Every corrected data file was byte-identical.
 
 The post hoc reference-reserve sensitivity analysis came after v1.1.0. It is
 only in this repository, under

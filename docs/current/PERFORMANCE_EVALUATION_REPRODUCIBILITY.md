@@ -97,7 +97,9 @@ The core scientific computations in this paper are **frozen**. Running the full 
 | **Reference-policy, load-range, overlay and secondary-outcome numbers** (Sec. 3, 5, 6.1, 6.4, 7.5, 9) | `paper/performance_evaluation/scripts/reference_policy_numbers.py` (recomputed from completed artifacts; no simulation) | Local | Instant; checked by `build_claim_manifest.py --check` and `tests/test_manuscript_scientific_corrections.py` |
 | **Table 1** (Closest-work) | (Static synthesis) | N/A | Analytical mapping |
 | **Table 2** (Transition) | (Static synthesis) | N/A | Analytical mapping |
-| **Tables 3-5** (regime characterization, thresholds, sensitivity) | `paper/performance_evaluation/scripts/robustness_numbers.py` | Local | Recomputed from frozen CSVs and asserted against the robustness outputs |
+| **Tables 3, 5 and 6** (regime characterization, thresholds, sensitivity) | `paper/performance_evaluation/scripts/robustness_numbers.py` | Local | Recomputed from frozen CSVs and asserted against the robustness outputs |
+| **Table 4** (pre-specified secondary outcomes) | `paper/performance_evaluation/scripts/build_claim_manifest.py --check` (from `FRESH_LATENCY_ACTION_LEVEL_V1.csv`) | Local | Instant from the frozen action-level artifact |
+| **Table 7** (post hoc reference-reserve sensitivity) | `paper/performance_evaluation/scripts/build_claim_manifest.py --check` (from `experiments/reference_reserve_sensitivity_v1/`); runners on branch `experiment/reference-reserve-sensitivity-20260921` (see `REPRODUCIBILITY.md`) | Local check; original runs on HPC | Not in the v1.1.0 archive |
 
 ---
 

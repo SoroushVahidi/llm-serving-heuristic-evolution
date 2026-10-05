@@ -22,7 +22,7 @@ bibtex main
 pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
 
-# The canonical PDF is the submitted manuscript. Overwrite it only on request,
+# The canonical PDF is the frozen manuscript. Overwrite it only on request,
 # so that verifying the build does not modify a tracked, frozen artifact.
 if [ "${UPDATE_CANONICAL_PDF:-0}" = "1" ]; then
     echo "=== 3. Updating Canonical Review PDF ==="
