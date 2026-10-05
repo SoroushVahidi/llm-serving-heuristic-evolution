@@ -7,7 +7,20 @@ import pytest
 from scripts import industry_realism_action_opportunity_phase_a_v1 as phase_a
 from scripts import industry_realism_action_opportunity_phase_b_v2 as phase_b
 
+# These tests rebuild replay windows from the normalized public-trace corpus,
+# which is derived from third-party traces and is not committed (see
+# docs/DATA_RELEASE_POLICY.md). Skip them when the corpus has not been built
+# locally. The paper's numbers stay verifiable from tracked artifacts via
+# paper/performance_evaluation/scripts/build_claim_manifest.py --check.
+_TRACE_CORPUS = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "public_trace_corpus_v1"
+requires_trace_corpus = pytest.mark.skipif(
+    not all((_TRACE_CORPUS / w / "records.parquet").is_file() for w in ("azure_2023_code", "azure_2023_conv", "burstgpt")),
+    reason="needs the locally built public-trace corpus (data/public_trace_corpus_v1/*/records.parquet), which is not redistributed",
+)
 
+
+
+@requires_trace_corpus
 def test_phase_b_uses_same_sixty_faithful_windows():
     phase_a_rows = phase_a.phase_a_records_manifest()
     phase_b_rows = phase_b.faithful_manifest()
@@ -30,6 +43,7 @@ def test_phase_b_v2_grid_is_exact_and_telemetry_grounded():
     assert min(phase_b.KV_CAPACITY_TOKENS) >= 7437
 
 
+@requires_trace_corpus
 def test_condition_count_and_one_axis_isolation():
     conditions = phase_b.pressure_conditions()
     assert len(conditions) == 18
@@ -38,6 +52,7 @@ def test_condition_count_and_one_axis_isolation():
         phase_b.validate_one_axis_isolation(condition)
 
 
+@requires_trace_corpus
 def test_arrival_transform_preserves_request_identity_and_lengths():
     rec = phase_a.faithful_records()[0]
     req = rec["scenario"].requests[5]
@@ -50,6 +65,7 @@ def test_arrival_transform_preserves_request_identity_and_lengths():
     assert transformed.slo_deadline - transformed.arrival_time == pytest.approx(req.slo_deadline - req.arrival_time)
 
 
+@requires_trace_corpus
 def test_transformed_scenario_changes_only_declared_axis():
     rec = phase_a.faithful_records()[0]
     for condition in phase_b.pressure_conditions():
@@ -98,6 +114,7 @@ def test_complete_binding_condition_uses_preregistered_validity_class():
     assert phase_b.pressure_validity_from_row(base) == "VALID_STRONGLY_CONSTRAINED"
 
 
+@requires_trace_corpus
 def test_simulation_invalidity_detects_horizon_and_resource_infeasible():
     class Metrics:
         num_completed = 0

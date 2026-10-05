@@ -1,11 +1,44 @@
 cff-version: 1.2.0
-message: "This file describes the research software repository as a whole (project-level version 0.1.0). To cite the Performance Evaluation manuscript's reproducibility package instead, cite its Zenodo record: https://doi.org/10.5281/zenodo.22866983 (v1.1.0; concept DOI 10.5281/zenodo.22865293). Otherwise, cite the repository."
+message: >-
+  This file cites the research software repository as a whole (project-level
+  version 0.1.0). To cite the reproducibility package of the study "When Does
+  LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal
+  Headroom in Production-Derived Replay", cite its Zenodo record instead,
+  listed under references: version 1.1.0,
+  https://doi.org/10.5281/zenodo.22866983 (the concept DOI
+  10.5281/zenodo.22865293 resolves to the latest version).
 type: software
 title: "llm-serving-heuristic-evolution"
+abstract: >-
+  Research code for measuring when changing an LLM-serving scheduler creates an
+  actionable opportunity: a discrete-event serving simulator, scheduling
+  policies, production-derived trace replay, scheduler-disagreement detection,
+  one-step counterfactual latency headroom, and a bounded real-vLLM probe.
 authors:
   - family-names: "Vahidi"
     given-names: "Soroush"
+    affiliation: "New Jersey Institute of Technology"
 repository-code: "https://github.com/SoroushVahidi/llm-serving-heuristic-evolution"
 license: "MIT"
 version: "0.1.0"
 date-released: "2026-08-09"
+keywords:
+  - LLM serving
+  - scheduling
+  - KV cache
+  - trace replay
+  - counterfactual evaluation
+references:
+  - type: data
+    title: "When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay (Reproducibility Package)"
+    authors:
+      - family-names: "Vahidi"
+        given-names: "Soroush"
+        affiliation: "New Jersey Institute of Technology"
+    version: "1.1.0"
+    date-released: "2026-09-21"
+    doi: "10.5281/zenodo.22866983"
+    publisher:
+      name: "Zenodo"
+    license: "MIT"
+    url: "https://doi.org/10.5281/zenodo.22866983"

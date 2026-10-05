@@ -22,7 +22,13 @@ bibtex main
 pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
 
-echo "=== 3. Updating Canonical Review PDF ==="
-cp main.pdf "$ROOT_DIR/paper/when_does_llm_serving_scheduler_adaptation_matter.pdf"
+# The canonical PDF is the frozen manuscript. Overwrite it only on request,
+# so that verifying the build does not modify a tracked, frozen artifact.
+if [ "${UPDATE_CANONICAL_PDF:-0}" = "1" ]; then
+    echo "=== 3. Updating Canonical Review PDF ==="
+    cp main.pdf "$ROOT_DIR/paper/when_does_llm_serving_scheduler_adaptation_matter.pdf"
+else
+    echo "=== 3. Built $PAPER_DIR/main.pdf (canonical PDF left unchanged; set UPDATE_CANONICAL_PDF=1 to overwrite it) ==="
+fi
 
 echo "=== Rebuild Complete Successfully! ==="

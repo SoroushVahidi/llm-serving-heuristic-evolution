@@ -155,3 +155,7 @@ llmserveopt-data/
 !.env.example
 .local_data/
 *.spl
+
+# Frozen v1.1.0 release archive: this manifest-listed file must be tracked
+# (the *.jsonl rule above otherwise drops it and verify_release.py fails).
+!release/performance_evaluation_v1_1_0/experiments/public_trace_replay_v1/layer3_checkpoint.jsonl

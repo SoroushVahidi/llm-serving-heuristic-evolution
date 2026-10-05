@@ -2,8 +2,9 @@
 
 *When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay*
 
-Target journal: *Performance Evaluation* (Elsevier). The class is `elsarticle` (`preprint`, 12 pt) with the
-numbered `elsarticle-num` bibliography style.
+Manuscript source of the study's manuscript and reproducibility package. It is typeset with Elsevier's `elsarticle`
+class (`preprint`, 12 pt) and the numbered `elsarticle-num` bibliography style. The public overview is the root
+[`README.md`](../../README.md); the reproducibility entry point is [`REPRODUCIBILITY.md`](../../REPRODUCIBILITY.md).
 
 Status: the manuscript text, figures, tables, claim manifest, and canonical PDF
 are frozen. The Elsevier submission package (in `submission/`) and the v1.1.0
@@ -24,7 +25,8 @@ regenerated from this source and verified. The Zenodo v1.1.0 version is publishe
 | `scripts/robustness_numbers.py` | Recomputes every number used in the fresh-regime, threshold and sensitivity tables and in the regime-map and robustness figures from the frozen artifacts and asserts agreement with the robustness outputs. |
 | `scripts/build_claim_manifest.py` | Recomputes the paper's quantitative claims from the canonical artifacts and checks them against `main.tex`. |
 | `FINAL_CLAIM_MANIFEST.json` | Provenance/verification metadata: for each major claim its value, source artifact, source field or calculation, and manuscript location. It holds no independent scientific data. |
-| `../when_does_llm_serving_scheduler_adaptation_matter.pdf` | Compiled review copy (written by the build script). |
+| `../when_does_llm_serving_scheduler_adaptation_matter.pdf` | Canonical compiled PDF (the build script overwrites it only with `UPDATE_CANONICAL_PDF=1`). |
+| `when_does_llm_serving_scheduler_adaptation_matter.pdf` | Byte-identical copy of the canonical PDF, kept next to the source (added 2026-09-21). The build script does not update it. |
 
 ## Scope of the study's simulator and terminology
 
@@ -56,8 +58,8 @@ additionally use `pytest`, `pymupdf` and `pillow`.
 
 ## Build
 
-From the repository root, regenerate the figures from the frozen artifacts, check the claim manifest, rebuild the
-PDF and refresh the review copy:
+From the repository root, regenerate the figures from the frozen artifacts, check the claim manifest and rebuild the
+PDF:
 
 ```bash
 scripts/build_performance_evaluation_manuscript.sh
@@ -79,8 +81,9 @@ pdflatex -interaction=nonstopmode main.tex && bibtex main
 pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
 ```
 
-The output is `paper/performance_evaluation/main.pdf` (34 pages), copied to
-`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf`. No experiment is run by the build.
+The output is `paper/performance_evaluation/main.pdf` (34 pages). The build script copies it over the canonical
+`paper/when_does_llm_serving_scheduler_adaptation_matter.pdf` only when `UPDATE_CANONICAL_PDF=1` is set, so a
+verification build leaves the tracked PDF unchanged. No experiment is run by the build.
 
 ## Checks
 
@@ -99,14 +102,15 @@ readiness checklist. After any edit of `main.tex` that changes a number, regener
 
 ## Related documentation
 
-* `docs/PEVA_PREPACKAGE_READINESS.md`: pre-package readiness checklist, deferred packaging items and the entries the
+* `docs/PEVA_PREPACKAGE_READINESS.md`: dated (2026-09-20) pre-package readiness checklist, deferred packaging items and the entries the
   archive step must add.
 * `docs/FRESH_CAUSAL_ROBUSTNESS_REPORT.md`: post hoc robustness analysis behind Section 6 (Tables 5-6, Figure 4).
 * `docs/FRESH_CAUSAL_ARTIFACT_CORRECTION.md`: artifact defect and corrected derivative.
 * `docs/current/PERFORMANCE_EVALUATION_REPRODUCIBILITY.md`: environment and reproduction guide.
-* `docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`: journal requirements and submission status.
+* `docs/current/PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md`: dated submission-time roadmap (journal
+  requirements and packaging checklist as of 2026-09-20), retained for provenance.
 
-## Archive and submission packaging (current state)
+## Archive and submission packaging
 
 The Elsevier submission package in `submission/` and the v1.1.0 reproducibility
 archive in `release/performance_evaluation_v1_1_0/` were regenerated from this
@@ -135,7 +139,7 @@ Zenodo (this was not verified byte-for-byte). Neither is edited by hand: the dir
 "final Git tag not yet created" (the tag now exists), "the v1.1.0 version DOI is assigned by Zenodo on publication" (it is
 published: `10.5281/zenodo.22866983`), "branch `release/peva-v1-20260920`" in `README.md` and `.zenodo.json` versus
 `built_from_branch: main` in `MANIFEST.json`, and "paper Section 7, Tables 3-5, Figure 6" for the robustness analysis (in
-the submitted manuscript that is Section 6, Tables 5-6, Figure 4). The Zenodo record description and the archive's
+the manuscript that is Section 6, Tables 5-6, Figure 4). The Zenodo record description and the archive's
 `.zenodo.json` also say "preregistered", which the manuscript avoids (see above); Zenodo record metadata can be edited
 without creating a new version.
 

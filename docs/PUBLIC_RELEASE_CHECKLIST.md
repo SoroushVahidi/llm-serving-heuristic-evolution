@@ -1,5 +1,7 @@
 # Public Release Checklist
 
+> **Historical document.** This pre-publication release checklist records the project state as of 2026-08-24 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. The repository has since been made public, and its instructions are not current release steps. For the current study, start at [`docs/current/README.md`](current/README.md).
+
 Date: 2026-08-24
 
 Repository: `https://github.com/SoroushVahidi/llm-serving-heuristic-evolution`

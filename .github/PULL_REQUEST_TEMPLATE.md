@@ -12,7 +12,7 @@
 ## Reproducibility / Provenance
 
 - [ ] No historical audits or result artifacts were deleted without explicit scope.
-- [ ] Canonical status docs remain synchronized if status changed.
+- [ ] Current-study docs (`README.md`, `REPRODUCIBILITY.md`, `docs/current/README.md`) remain synchronized if status changed.
 - [ ] Long-running jobs, if any, were launched with wrapper metadata.
 
 ## Validation

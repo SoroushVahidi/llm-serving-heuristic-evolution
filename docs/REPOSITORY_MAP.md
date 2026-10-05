@@ -1,80 +1,43 @@
 # Repository Map
 
-Public-facing map of major directories. Prefer this over treating every folder
-under `docs/current/` or `experiments/` as equally canonical.
+Roles of the top-level paths. "Current" means the path is used by the current
+study (see [`current/README.md`](current/README.md)). "Historical" means it
+belongs to earlier research lines and is kept for provenance.
 
-## Top-level
+## Top level
 
-| Path | Role |
+| Path | Role | Current study? |
+|---|---|---|
+| `README.md`, `REPRODUCIBILITY.md` | Public overview and reproducibility entry point | Current |
+| `paper/` | Canonical manuscript PDF. `performance_evaluation/` holds source, figures, scripts, claim manifest and the `submission/` package. `history/` holds the superseded FGCS and withdrawn LLM 2026 manuscripts | Current (`history/` historical) |
+| `release/` | Reproducibility archives (v1.1.0 current, v1.0.0 superseded); see [`../release/README.md`](../release/README.md) | Current |
+| `experiments/` | Committed experiment artifacts and reports, one directory per study | Mixed; the current study's directories are listed in [`current/README.md`](current/README.md) |
+| `src/llmserveopt/` | Library: `simulator/`, `policies/`, `policy_separation/` (trace replay used by the current study), plus selector, DSL, composition and workload code | Mixed |
+| `scripts/` | Experiment runners, analysis and maintenance scripts; see [`../scripts/README.md`](../scripts/README.md) | Mixed |
+| `tests/` | pytest suite. CI runs the CPU-only subset in `.github/workflows/ci.yml` | Mixed |
+| `configs/` | Experiment and calibration configs | Mostly historical |
+| `baselines/`, `external/` | External-scheduler adapters and provenance notes | Historical |
+| `benchmarks/` | Workload suite definitions for the selector studies | Historical |
+| `data/` | Dataset metadata. Raw traces and derived parquet windows are not committed; see [`DATA_RELEASE_POLICY.md`](DATA_RELEASE_POLICY.md) | Metadata only |
+| `results/` | Local generated outputs; gitignored except a few provenance files | Local |
+| `tools/` | Maintenance and cluster helpers; see [`../tools/README.md`](../tools/README.md) | Historical |
+| `docs/` | Documentation; see [`README.md`](README.md) for the authority order | Mixed |
+| `p2_config.yaml`, `p3_chunk_control.py`, `p5_analysis_chunk_comp.py`, `p7_runner.py`, `p8_test_runner.py` | Self-contained Family B v2 prefill-control composition falsification experiment (2026-08-17). Its audit (`docs/audits/family_b_v2_prefill_control_composition_falsification_20260817.md`) and `scripts/smoke_prefill_control_composition_v2.py` use these files from the repository root, so they stay there | Historical |
+
+## Current study: code and artifacts
+
+| What | Where |
 |---|---|
-| `src/llmserveopt/` | **Canonical library:** simulator, policies, workloads, selector/router, GP scaffolding |
-| `tests/` | Automated tests (CPU default; GPU marked opt-in) |
-| `scripts/` | Runners, analysis, and maintenance utilities (mix of current and historical) |
-| `experiments/` | Per-study runners + frozen summaries used by audits and the manuscript |
-| `paper/llm2026/` | LNCS manuscript, figures, compile artifacts |
-| `docs/` | Roadmaps, design notes, audits, public indexes |
-| `configs/` | YAML/JSON configs for experiments and calibration |
-| `baselines/` | External baseline adapters + provenance notes |
-| `benchmarks/` | Canonical workload suite definitions |
-| `data/` | Local datasets; bulky raw/processed files gitignored |
-| `results/` | Local generated outputs; mostly gitignored |
-| `logs/` | Runtime logs; gitignored |
-| `artifacts/` | Bundled transfer packages (e.g. cluster sweep bundles); not all public-facing |
-| `datasets/` | Derived dataset roots used by some Family-A pipelines |
-| `external/` | Notes / pointers for external resources |
-| `tools/` | Small helper utilities |
+| Simulator | `src/llmserveopt/simulator/` |
+| Policies (reference: `kv_constrained_online.py`) | `src/llmserveopt/policies/` |
+| Replay configuration (1 ms step, service model) | `src/llmserveopt/policy_separation/public_trace_replay_v1.py` |
+| Runners | `scripts/industry_realism_action_opportunity_phase_a_v1.py`, `scripts/industry_realism_action_opportunity_phase_b_v2.py`, `scripts/fresh_latency_causal_confirmatory_v1.py` |
+| Artifacts | `experiments/industry_realism_action_opportunity_phase_a_v1/`, `..._phase_b_v2/`, `experiments/fresh_production_latency_headroom_confirmatory_v1{,_robustness,_corrected}/`, `experiments/reference_reserve_sensitivity_v1/`, `experiments/real_vllm_*` |
+| Manuscript checks | `paper/performance_evaluation/scripts/build_claim_manifest.py --check` |
 
 ## Documentation tiers
 
-| Path | Treat as |
-|---|---|
-| `README.md`, `REPRODUCIBILITY.md` | Public entry points |
-| `docs/RESULTS_INDEX.md` | Paper-relevant frozen evidence index |
-| `docs/PUBLIC_RELEASE_CHECKLIST.md` | Release / anonymity checklist |
-| `docs/PROJECT_MAP.md` | Long-term research roadmap (may lag manuscript freeze) |
-| `docs/audits/` | Immutable historical audits |
-| `docs/current/` | Working notes, analysis writeups, handoffs—**mixed freshness**; operational handoffs are **excluded** from the public allowlist |
-| `docs/DATA_RELEASE_POLICY.md`, `docs/PUBLIC_RELEASE_*` | Public-release classification, data policy, author decisions |
-| `docs/current/RESUME_HERE.md`, `WORK_STATUS.md`, `NEXT_ACTIONS.md` | Internal operational status — **excluded** from public allowlist |
-| `docs/DATA_RELEASE_POLICY.md`, `docs/PUBLIC_RELEASE_*` | Public-release classification and author decisions |
-
-## Experiment roles (paper chain)
-
-**Canonical manuscript evidence** (see `docs/RESULTS_INDEX.md`):
-
-- `experiments/unified_utility_matrix_v2/`
-- `experiments/joint_multimechanism_generalization_v1/`
-- `experiments/multifamily_contextual_selector_v1/` (and related selector audits)
-- `experiments/hierarchical_regime_router_live_reeval_v1/`
-- `experiments/family_a_wulver_dev_support_eval_v1/`
-- `experiments/family_a_mechanism_composite_rule_static_feasibility_v1/`
-- `experiments/portfolio_guided_typed_gp_screen_v1/`
-- `experiments/real_vllm_mechanism_validation_v1/`
-- `experiments/public_trace_replay_v1/`
-
-**Supporting / precursor studies:** Family A/B/C pilots, MF-PSD, composition
-falsifications, smoke diagnoses—useful provenance, not all cited as main
-results.
-
-**Historical / optional:** `experiments/real_llm/` hosted-API calibrations,
-many Wulver-era sweeps documented primarily via audits and external cluster
-storage.
-
-## Generated vs source
-
-| Keep / publish carefully | Usually local-only |
-|---|---|
-| Frozen JSON/CSV summaries under `experiments/` | `results/*` bulk outputs |
-| `paper/llm2026/main.pdf` + figures | `logs/`, `*.log`, coverage caches |
-| Provenance manifests | HF / model caches, virtualenvs |
-| Selected `results/provenance/` | Raw third-party traces |
-
-## Scratch / confusing roots (do not treat as canonical)
-
-These exist in the working tree and may be tracked historically:
-
-- Root `p2_config.yaml`, `p3_chunk_control.py`, `p5_analysis_chunk_comp.py`,
-  `p7_runner.py`, `p8_test_runner.py` — one-off scratch, not public entry points
-- `opencode.json` — local agent/provider UI config
-- `.claude/` — local agent memory (gitignored)
-- `docs/current/*RESUME*`, `AGENT_HANDOFF.md` — internal continuity notes
+See [`README.md`](README.md). In short: public entry points, then the
+current-study index [`current/README.md`](current/README.md), then
+study-specific documents, then historical material. Most files in
+`docs/current/` and all files in `docs/audits/` are dated records.

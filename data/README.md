@@ -1,5 +1,9 @@
 # Data Directory
 
+> For the current study's data sources and what is or is not redistributed, see
+> [`../REPRODUCIBILITY.md`](../REPRODUCIBILITY.md) and the current-scope note in
+> [`../docs/DATA_RELEASE_POLICY.md`](../docs/DATA_RELEASE_POLICY.md).
+
 ## Structure
 
 - `raw/` — unmodified downloaded datasets as obtained from original sources
@@ -7,8 +11,11 @@
 
 ## Version Control
 
-Neither `raw/` nor `processed/` is committed (see `.gitignore`). Only `.gitkeep`
-placeholder files are tracked. Do not commit raw CSV, JSONL, Parquet, or any
+Neither `raw/` nor `processed/` is committed (see `.gitignore`). The only tracked
+data files are the metadata of the public trace corpus under
+`public_trace_corpus_v1/` (`manifest.json`, `schema.json`,
+`distribution_stats.json`, `source_coverage.csv`); its parquet window tables are
+built locally and not committed. Do not commit raw CSV, JSONL, Parquet, or any
 file containing private user data.
 
 **Never commit API keys, tokens, or credentials anywhere under this directory.**
@@ -32,7 +39,11 @@ and which are synthetically augmented (SLOs, priorities, predicted output length
 
 ## Licensing
 
-- **BurstGPT**: MIT License. Wang et al., "BurstGPT: A Real-World Workload Dataset
-  for LLM Serving Systems," arXiv 2401.17644, SIGMETRICS 2025.
+- **BurstGPT**: CC-BY-4.0 (license of the upstream repository
+  <https://github.com/HPMLL/BurstGPT>, checked 2026-10-04; an earlier version of
+  this file said MIT). Wang et al., "BurstGPT: A Real-World Workload Dataset to
+  Optimize LLM Serving Systems," KDD 2025, doi:10.1145/3711896.3737413.
+- **Azure LLM inference traces 2023**: CC-BY-4.0 (license of the upstream
+  repository <https://github.com/Azure/AzurePublicDataset>, checked 2026-10-04).
 - **ShareGPT**: Community-collected conversational data. Check the original
   distribution source for current license terms before redistribution.

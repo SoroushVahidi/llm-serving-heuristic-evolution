@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
-"""Check that this repository's current documentation is internally consistent.
+"""Check that the repository's documentation hierarchy is internally consistent.
 
-Deliberately lightweight: this is a handful of string/existence checks, not
-a general documentation framework. It complements, and does not replace,
-``scripts/check_contextual_composition_status.py``.
+Deliberately lightweight: a handful of string/existence checks, not a general
+documentation framework. The hierarchy it enforces (see ``docs/README.md``):
+
+1. ``README.md`` and ``REPRODUCIBILITY.md`` -- public entry points;
+2. ``docs/current/README.md`` -- the current-study documentation index;
+3. study-specific documents linked from that index;
+4. historical material, whose former "current"/"next action" entry points
+   carry a *Historical document* banner.
+
+Until 2026-10-04 this script enforced the August 2026 project-handoff state
+(``docs/current/RESUME_HERE.md`` as the canonical entry point and a
+post-Phase-G next action). Those documents are now historical records.
 """
 
 from __future__ import annotations
@@ -13,205 +22,116 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-CANONICAL_RESUME = ROOT / "docs" / "current" / "RESUME_HERE.md"
-PROJECT_MAP = ROOT / "docs" / "PROJECT_MAP.md"
-WORK_STATUS = ROOT / "docs" / "current" / "WORK_STATUS.md"
-NEXT_ACTIONS = ROOT / "docs" / "current" / "NEXT_ACTIONS.md"
-BASELINE_STATUS = ROOT / "docs" / "BASELINE_STATUS.md"
-PHASE_G_AUDIT = ROOT / "docs" / "audits" / "apt_serve_phase_g_analysis_20260809.md"
+CURRENT_INDEX = ROOT / "docs" / "current" / "README.md"
+CURRENT_INDEX_LINK = "docs/current/README.md"
 
 REQUIRED_CURRENT_DOCS = [
-    CANONICAL_RESUME,
-    PROJECT_MAP,
-    ROOT / "docs" / "current" / "PROJECT_MAP.md",
-    WORK_STATUS,
-    NEXT_ACTIONS,
-    ROOT / "docs" / "current" / "SCIENTIFIC_DECISIONS.md",
-    BASELINE_STATUS,
-    PHASE_G_AUDIT,
-]
-
-# Files that must point a reader at the canonical resume doc, rather than
-# competing with it. Path is relative to ROOT; link_text is any substring
-# that proves the pointer exists (kept loose on purpose -- relative link
-# depth differs by file location).
-ENTRY_POINTS_REQUIRING_CANONICAL_LINK = [
     ROOT / "README.md",
+    ROOT / "REPRODUCIBILITY.md",
     ROOT / "docs" / "README.md",
-    ROOT / "docs" / "current" / "README.md",
+    CURRENT_INDEX,
+    ROOT / "docs" / "current" / "PERFORMANCE_EVALUATION_REPRODUCIBILITY.md",
+    ROOT / "paper" / "performance_evaluation" / "README.md",
 ]
 
-REQUIRED_CLAIMS = [
-    (CANONICAL_RESUME, "COMPLETE_REGIME_SPECIFIC"),
-    (CANONICAL_RESUME, "Posthoc analysis: complete with wrapper `exit_code=0`"),
-    (CANONICAL_RESUME, "post-Phase-G module-envelope interpretation"),
-    (CANONICAL_RESUME, "1182306"),
-    (CANONICAL_RESUME, "1182377"),
-    (CANONICAL_RESUME, "USEFUL_DIAGNOSTIC_ONLY"),
-    (CANONICAL_RESUME, "USEFUL_BUT_NEEDS_REFINEMENT"),
-    (CANONICAL_RESUME, "Family A v2"),
-    (CANONICAL_RESUME, "unweighted SLO-success"),
-    (PROJECT_MAP, "Documentation Authority"),
-    (PROJECT_MAP, "Return from Apt-Serve-specific collection to broader library-envelope"),
-    (PROJECT_MAP, "1182377"),
-    (PROJECT_MAP, "Family A v2"),
-    (WORK_STATUS, "Apt-Serve Phase G analysis"),
-    (WORK_STATUS, "USEFUL_BUT_NEEDS_REFINEMENT"),
-    (CANONICAL_RESUME, "SELECTION_SUFFICIENT_FOR_THIS_PAIR"),
-    (CANONICAL_RESUME, "next mechanism family"),
-    (NEXT_ACTIONS, "post-Phase-G module-envelope interpretation"),
-    (NEXT_ACTIONS, "SELECTION_SUFFICIENT_FOR_THIS_PAIR"),
-    (NEXT_ACTIONS, "next mechanism family"),
-    (WORK_STATUS, "SELECTION_SUFFICIENT_FOR_THIS_PAIR"),
-    (PROJECT_MAP, "SELECTION_SUFFICIENT_FOR_THIS_PAIR"),
-    (BASELINE_STATUS, "Positive marginal portfolio contribution; no global superiority claim"),
-    (PHASE_G_AUDIT, "Not Yet Established"),
+# Entry points that must route a reader to the current-study index. The link
+# text differs by file location, so a path suffix is enough.
+ENTRY_POINTS = {
+    ROOT / "README.md": CURRENT_INDEX_LINK,
+    ROOT / "REPRODUCIBILITY.md": CURRENT_INDEX_LINK,
+    ROOT / "docs" / "README.md": "current/README.md",
+}
+
+# Former entry points that describe an earlier project state. Each must start
+# with the historical banner (checked in its first lines) so that nobody reads
+# it as current status.
+HISTORICAL_BANNER = "**Historical document.**"
+BANNER_WINDOW_LINES = 6
+HISTORICAL_ENTRY_POINTS = [
+    ROOT / "docs" / "PROJECT_MAP.md",
+    ROOT / "docs" / "INDEX.md",
+    ROOT / "docs" / "RESULTS_INDEX.md",
+    ROOT / "docs" / "current" / "RESUME_HERE.md",
+    ROOT / "docs" / "current" / "WORK_STATUS.md",
+    ROOT / "docs" / "current" / "NEXT_ACTIONS.md",
+    ROOT / "docs" / "current" / "ACTIVE_JOBS.md",
+    ROOT / "docs" / "current" / "FGCS_CURRENT_STATUS.md",
+    ROOT / "docs" / "current" / "PERFORMANCE_EVALUATION_SUBMISSION_ROADMAP_20260920.md",
+    ROOT / "docs" / "current" / "FINAL_MANUSCRIPT_FREEZE.md",
 ]
 
-FORBIDDEN_CLAIMS = [
-    (CANONICAL_RESUME, "CC5 IN PROGRESS", "CC5 is finalized COMPLETE_REGIME_SPECIFIC"),
-    (CANONICAL_RESUME, "CC6 has started", "CC6 is not started"),
-    (CANONICAL_RESUME, "CC6 is COMPLETE", "CC6 is not started"),
-    (CANONICAL_RESUME, "Design and execute a targeted missing-mechanism pilot for Family A", "Family A pilot Job 1182306 already executed"),
-    (CANONICAL_RESUME, "ANALYSIS PENDING", "Family A scientific analysis is complete"),
-    (CANONICAL_RESUME, "Family A v2 redesign is the next PSD step", "Family A v2 analysis is complete"),
-    (NEXT_ACTIONS, "Draft the design and configuration for **Family A", "Family A generator+pilot already exist"),
-    (NEXT_ACTIONS, "Analyze Family A Fairness and Starvation Pilot", "Family A v1 analysis is complete"),
-    (NEXT_ACTIONS, "Launch and (after completion) analyze Family A v2", "Family A v2 analysis is complete"),
-    (NEXT_ACTIONS, "Finish/analyze the ESTF↔WFS minimal composition", "composition pilot analysis is complete"),
-    (CANONICAL_RESUME, "estf-wfs-comp-pilot`) finishes", "composition pilot analysis is complete"),
-    (BASELINE_STATUS, "Phase G reached only 9.5%", "Phase G collection is complete"),
-    (BASELINE_STATUS, "sweep has not yet been relaunched", "Phase G collection was resumed and completed"),
-    (BASELINE_STATUS, "Relaunch the Phase G sweep", "the next task is post-Phase-G interpretation"),
+# Stale framings that must not reappear in current documents.
+CURRENT_DOCS_FORBIDDEN = [
+    ("Target journal", "editorial framing; describe the manuscript and reproducibility package instead"),
+    ("SUBMISSION_READY", "submission-time status belongs to the dated roadmap"),
+    ("single authoritative source of truth", "the submission roadmap is historical"),
+    ("~2,500 tests", "stale test count"),
+    ("redistributed in `data/`", "derived trace windows are not committed"),
 ]
 
-LIVE_STATUS_DOCS = [
-    ROOT / "README.md",
-    PROJECT_MAP,
-    CANONICAL_RESUME,
-    WORK_STATUS,
-    NEXT_ACTIONS,
-    BASELINE_STATUS,
-]
 
-STALE_PHASE_G_TOKENS = [
-    "PHASE_G_SS15_FIXED_RESUME_PENDING",
-    "Phase G UNSTARTED",
-    "Phase G `UNSTARTED`",
-    "do not start Phase G",
-    "Do not start Phase G",
-    "resume the Phase G sweep",
-    "Resume the Phase G sweep",
-    "sweep has not yet been relaunched",
-    "Phase G reached only 9.5%",
-    "Phase F work is uncommitted",
-    "e413ba1dcbe8b79f0ebc0f7511e846481548b6bb",
-    "891881281b650f549b0bbebaa49df8182e535ba8",
-]
+def _rel(path: Path) -> str:
+    return str(path.relative_to(ROOT))
 
 
 def check_required_docs_exist() -> list[str]:
+    return [f"missing required current document: {_rel(p)}" for p in REQUIRED_CURRENT_DOCS if not p.is_file()]
+
+
+def check_entry_point_links() -> list[str]:
+    errors = []
+    for path, target in ENTRY_POINTS.items():
+        if not path.is_file():
+            errors.append(f"missing entry point: {_rel(path)}")
+        elif target not in path.read_text(encoding="utf-8"):
+            errors.append(f"{_rel(path)} does not link to {target}")
+    return errors
+
+
+def check_historical_banners() -> list[str]:
+    errors = []
+    for path in HISTORICAL_ENTRY_POINTS:
+        if not path.is_file():
+            errors.append(f"missing historical entry point: {_rel(path)}")
+            continue
+        head = "\n".join(path.read_text(encoding="utf-8").splitlines()[:BANNER_WINDOW_LINES])
+        if HISTORICAL_BANNER not in head:
+            errors.append(f"{_rel(path)} lacks the historical banner ({HISTORICAL_BANNER!r})")
+        elif CURRENT_INDEX_LINK not in head:
+            errors.append(f"{_rel(path)} banner does not point to {CURRENT_INDEX_LINK}")
+    return errors
+
+
+def check_current_docs_not_stale() -> list[str]:
     errors = []
     for path in REQUIRED_CURRENT_DOCS:
         if not path.is_file():
-            errors.append(f"missing required current document: {path.relative_to(ROOT)}")
-    return errors
-
-
-def check_canonical_links() -> list[str]:
-    errors = []
-    for path in ENTRY_POINTS_REQUIRING_CANONICAL_LINK:
-        if not path.is_file():
-            errors.append(f"missing entry-point file that should link to RESUME_HERE.md: {path.relative_to(ROOT)}")
             continue
         text = path.read_text(encoding="utf-8")
-        if "RESUME_HERE.md" not in text:
-            errors.append(
-                f"{path.relative_to(ROOT)} does not link to the canonical entry point "
-                f"(docs/current/RESUME_HERE.md) -- it should point readers there, not "
-                f"present itself as a competing entry point"
-            )
+        for phrase, reason in CURRENT_DOCS_FORBIDDEN:
+            if phrase in text:
+                errors.append(f"{_rel(path)} contains stale phrase {phrase!r} ({reason})")
     return errors
 
 
-def check_forbidden_claims() -> list[str]:
-    errors = []
-    for path, forbidden, reason in FORBIDDEN_CLAIMS:
-        if not path.is_file():
-            continue
-        text = path.read_text(encoding="utf-8")
-        if forbidden in text:
-            errors.append(
-                f"{path.relative_to(ROOT)} contains a stale/contradictory claim: "
-                f"{forbidden!r} ({reason})"
-            )
-    return errors
-
-
-def check_no_stale_phase_g_tokens() -> list[str]:
-    errors = []
-    for path in LIVE_STATUS_DOCS:
-        if not path.is_file():
-            continue
-        text = path.read_text(encoding="utf-8")
-        for token in STALE_PHASE_G_TOKENS:
-            if token in text:
-                errors.append(f"{path.relative_to(ROOT)} contains stale Phase G token: {token!r}")
-    return errors
-
-
-def check_resume_and_next_action_agree() -> list[str]:
-    phrase = "post-Phase-G module-envelope interpretation"
-    errors = []
-    for path in [CANONICAL_RESUME, NEXT_ACTIONS, WORK_STATUS]:
-        if path.is_file() and phrase not in path.read_text(encoding="utf-8"):
-            errors.append(f"{path.relative_to(ROOT)} does not name the current next action: {phrase}")
-    return errors
-
-
-def check_required_claims() -> list[str]:
-    errors = []
-    for path, required in REQUIRED_CLAIMS:
-        if not path.is_file():
-            errors.append(f"cannot check required claim -- missing file: {path.relative_to(ROOT)}")
-            continue
-        text = path.read_text(encoding="utf-8")
-        if required not in text:
-            errors.append(
-                f"{path.relative_to(ROOT)} is missing an expected current-status string: "
-                f"{required!r}"
-            )
-    return errors
-
-
-def check_single_canonical_resume_doc() -> list[str]:
-    """Guard against a future query adding a second competing resume file."""
-    errors = []
-    candidates = [
-        p
-        for p in (ROOT / "docs").rglob("RESUME_HERE*.md")
-        if "worktrees" not in p.parts and ".claude" not in p.parts
-    ]
-    if len(candidates) != 1:
-        errors.append(
-            "expected exactly one canonical RESUME_HERE*.md under docs/, found: "
-            + ", ".join(str(p.relative_to(ROOT)) for p in candidates)
-        )
-    return errors
+def check_single_resume_doc() -> list[str]:
+    """Guard against a second competing resume file appearing under docs/."""
+    candidates = [p for p in (ROOT / "docs").rglob("RESUME_HERE*.md") if "worktrees" not in p.parts]
+    if len(candidates) > 1:
+        return ["more than one RESUME_HERE*.md under docs/: " + ", ".join(_rel(p) for p in candidates)]
+    return []
 
 
 def main() -> int:
     errors: list[str] = []
     errors += check_required_docs_exist()
-    errors += check_canonical_links()
-    errors += check_forbidden_claims()
-    errors += check_no_stale_phase_g_tokens()
-    errors += check_required_claims()
-    errors += check_resume_and_next_action_agree()
-    errors += check_single_canonical_resume_doc()
+    errors += check_entry_point_links()
+    errors += check_historical_banners()
+    errors += check_current_docs_not_stale()
+    errors += check_single_resume_doc()
 
     if errors:
-        print("project handoff consistency check FAILED:", file=sys.stderr)
+        print("project documentation consistency check FAILED:", file=sys.stderr)
         for err in errors:
             print(f"  - {err}", file=sys.stderr)
         return 1

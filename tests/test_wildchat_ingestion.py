@@ -24,6 +24,15 @@ ingest = importlib.util.module_from_spec(_SPEC)
 sys.modules["ingest_wildchat_eval_dataset"] = ingest
 _SPEC.loader.exec_module(ingest)
 
+# tokenize_and_hash() loads a Hugging Face tokenizer, which needs the optional
+# `transformers` package and network access to download the tokenizer. CI
+# installs neither, so these classes skip there instead of failing.
+requires_tokenizer = pytest.mark.skipif(
+    importlib.util.find_spec("transformers") is None,
+    reason="needs the optional 'transformers' package (pip install -e '.[datasets]') "
+    "and network access to download a Hugging Face tokenizer",
+)
+
 
 def _row(
     turn=1,
@@ -167,6 +176,7 @@ class TestDeterministicSample:
         assert result == again
 
 
+@requires_tokenizer
 class TestTokenizeAndStableIds:
     @pytest.fixture(scope="class")
     def sample(self):
@@ -230,6 +240,7 @@ class TestTokenizeAndStableIds:
         assert set(prompts1.keys()) == {str(i) for i in range(5)}
 
 
+@requires_tokenizer
 class TestWriteOutputsShapeAndManifest:
     @pytest.fixture
     def rows(self):
@@ -265,6 +276,7 @@ class TestWriteOutputsShapeAndManifest:
             assert prompts[str(r["request_id"])] == r["prompt_text"]
 
 
+@requires_tokenizer
 class TestDuplicatePromptSummary:
     """Real 300-row WildChat sample (2026-08-04) had 2 rows (request_id 138,
     213) sharing byte-identical prompt text under different

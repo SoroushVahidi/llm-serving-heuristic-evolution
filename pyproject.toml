@@ -16,6 +16,7 @@ dependencies = [
     "matplotlib>=3.7",
     "tabulate>=0.9",    # for pandas .to_markdown()
     "scipy>=1.10",      # scipy.stats.qmc.Sobol, policy_separation/sobol_pilot.py
+    "pyarrow>=14",      # parquet I/O: public-trace corpus, replay trajectories, PE Phase A/B tests
 ]
 
 [project.optional-dependencies]

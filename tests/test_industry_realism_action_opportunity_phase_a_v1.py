@@ -9,7 +9,20 @@ from llmserveopt.policy_separation import public_trace_replay_v1 as ptr
 
 from scripts import industry_realism_action_opportunity_phase_a_v1 as phase_a
 
+# These tests rebuild replay windows from the normalized public-trace corpus,
+# which is derived from third-party traces and is not committed (see
+# docs/DATA_RELEASE_POLICY.md). Skip them when the corpus has not been built
+# locally. The paper's numbers stay verifiable from tracked artifacts via
+# paper/performance_evaluation/scripts/build_claim_manifest.py --check.
+_TRACE_CORPUS = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "public_trace_corpus_v1"
+requires_trace_corpus = pytest.mark.skipif(
+    not all((_TRACE_CORPUS / w / "records.parquet").is_file() for w in ("azure_2023_code", "azure_2023_conv", "burstgpt")),
+    reason="needs the locally built public-trace corpus (data/public_trace_corpus_v1/*/records.parquet), which is not redistributed",
+)
 
+
+
+@requires_trace_corpus
 def test_faithful_window_filter_exact_universe():
     records = phase_a.faithful_records()
     assert len(records) == 60
@@ -21,6 +34,7 @@ def test_faithful_window_filter_exact_universe():
     assert counts == {w: 20 for w in phase_a.WORKLOADS}
 
 
+@requires_trace_corpus
 def test_augmented_window_rejection(monkeypatch):
     base = phase_a.faithful_records()[0].copy()
     base["scenario_evidence_class"] = ptr.AUGMENTED
@@ -118,6 +132,7 @@ def test_per_window_aggregation_positive_case():
     assert out[0]["windows_with_disagreement"] == 1
 
 
+@requires_trace_corpus
 def test_pressure_telemetry_has_expected_fields():
     rec = phase_a.faithful_records()[0]
     state = rec["scenario"].requests  # smoke the fixture exists before unit-level helper checks
@@ -152,6 +167,7 @@ def test_no_causal_label_or_selector_dependency_in_phase_a_source():
         assert token.lower() not in lowered
 
 
+@requires_trace_corpus
 def test_deterministic_manifest_reconstruction():
     a = phase_a.phase_a_records_manifest()
     b = phase_a.phase_a_records_manifest()

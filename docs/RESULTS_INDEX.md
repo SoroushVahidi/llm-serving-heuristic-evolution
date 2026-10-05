@@ -1,5 +1,7 @@
 # Results Index (Paper-Relevant Evidence)
 
+> **Historical document.** This results index for the withdrawn LLM 2026 manuscript records the project state as of 2026-08-25 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](current/README.md).
+
 Neutral index of major completed evidence used by the LLM 2026 manuscript.
 Statuses below are the **recorded experiment verdicts**, not marketing claims.
 

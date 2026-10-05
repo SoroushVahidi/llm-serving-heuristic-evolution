@@ -1,5 +1,7 @@
 # Experiments and Results (Canonical)
 
+> **Historical document.** This results summary of the earlier selector program records the project state as of 2026-07-22 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md).
+
 ## Current Wulver Addendum (2026-07-22)
 
 For current Wulver experiment roots and conclusions, prefer

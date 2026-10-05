@@ -1,5 +1,7 @@
 # Project Map
 
+> **Historical document.** This long-term research-program roadmap records the project state as of 2026-08-19 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](current/README.md). It predates the current study; its NOT STARTED, next-step, selector, composition and synthesis entries describe that date, not current status.
+
 **Canonical long-term research roadmap.** For a short operational handoff, read
 [`docs/current/RESUME_HERE.md`](current/RESUME_HERE.md). For baseline-specific
 status, read [`docs/BASELINE_STATUS.md`](BASELINE_STATUS.md). Dated files in

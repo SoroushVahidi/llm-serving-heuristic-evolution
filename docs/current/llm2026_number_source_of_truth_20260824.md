@@ -1,5 +1,7 @@
 # LLM 2026 Number Source of Truth
 
+> **Historical document.** This number ledger for the withdrawn LLM 2026 manuscript records the project state as of 2026-08-25 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md). It is not a source of numbers for the current study, whose claims are checked by `paper/performance_evaluation/FINAL_CLAIM_MANIFEST.json`.
+
 Date: 2026-08-24
 
 Use this file as the first stop for manuscript numbers. Values are copied from

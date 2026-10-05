@@ -3,6 +3,33 @@
 Date: 2026-08-24  
 Scope: local evidence only (no internet lookups in this pass).
 
+> **Current-scope note (2026-10-04).** The policy below was written on
+> 2026-08-24 for the withdrawn LLM 2026 package. Its rules still hold, but some
+> statements are dated: the upstream BurstGPT repository is licensed CC-BY-4.0,
+> not MIT as `data/README.md` then said, and some paths have since moved. For
+> the current study:
+>
+> - **Not redistributed:** the raw Azure LLM inference 2023 and BurstGPT traces,
+>   and the parquet window tables of the public trace corpus built from them.
+>   Obtain the traces upstream:
+>   <https://github.com/Azure/AzurePublicDataset/blob/master/AzureLLMInferenceDataset2023.md>
+>   and <https://github.com/HPMLL/BurstGPT>.
+> - **Tracked in this repository:** corpus metadata under
+>   `data/public_trace_corpus_v1/` (`manifest.json`, `schema.json`,
+>   `distribution_stats.json`, `source_coverage.csv`), and the derived experiment
+>   artifacts (summary, state-level and action-level CSV/JSON files) under the
+>   study's `experiments/` directories listed in
+>   [`current/README.md`](current/README.md).
+> - **Inside the v1.1.0 ZIP** (`release/performance_evaluation_v1_1_0.zip`):
+>   manuscript source and figures, the frozen confirmatory artifacts, robustness
+>   outputs, the corrected derivative, 289 continuation-shard artifacts, vLLM
+>   probe summaries, per-window replay summary metrics
+>   (`experiments/public_trace_replay_v1/layer3_checkpoint.jsonl`), simulator
+>   and analysis code, tests, and `verify_release.py`.
+> - **Not inside the ZIP:** raw traces, parquet window tables, and the later
+>   reference-reserve sensitivity analysis (repository only, under
+>   `experiments/reference_reserve_sensitivity_v1/`).
+
 ## Summary categories
 
 ### INCLUDED (default public tree)

@@ -1,5 +1,7 @@
 # Final Manuscript Freeze
 
+> **Historical document.** This freeze record describes the manuscript as frozen on branch `release/peva-v1-20260920` and is retained for provenance. The manuscript was revised afterwards, so the source and PDF hashes below do not match the current `paper/performance_evaluation/main.tex` or canonical PDF; the current source hash is recorded in [`paper/performance_evaluation/submission/SUBMISSION_PACKAGE_MANIFEST.md`](../../paper/performance_evaluation/submission/SUBMISSION_PACKAGE_MANIFEST.md) and the current PDF hash in [`QUERY_5_PE_PACKAGE_AND_PUBLIC_STATE.md`](QUERY_5_PE_PACKAGE_AND_PUBLIC_STATE.md). For the current study, start at [`docs/current/README.md`](README.md).
+
 ## Identity
 
 - Title: When Does LLM-Serving Scheduler Adaptation Matter? Action Opportunity and Causal Headroom in Production-Derived Replay

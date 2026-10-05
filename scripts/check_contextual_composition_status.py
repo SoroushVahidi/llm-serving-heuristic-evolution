@@ -372,21 +372,24 @@ def check_no_stale_final_cc5_verdict_claim() -> None:
 
 
 def check_resume_readiness_extra() -> None:
+    # The git-state checks verify that an operator is ready to resume work on
+    # the historical CC branch itself. Elsewhere (main, documentation branches)
+    # they cannot hold, so only the document invariants below are checked.
     branch = run_git(["branch", "--show-current"])
-    if branch != EXPECTED_BRANCH:
-        fail(f"expected branch {EXPECTED_BRANCH}, found {branch!r}")
+    if branch == EXPECTED_BRANCH:
+        upstream = run_git(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"])
+        if upstream != EXPECTED_UPSTREAM:
+            fail(f"expected upstream {EXPECTED_UPSTREAM}, found {upstream!r}")
 
-    upstream = run_git(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"])
-    if upstream != EXPECTED_UPSTREAM:
-        fail(f"expected upstream {EXPECTED_UPSTREAM}, found {upstream!r}")
+        status = run_git(["status", "--porcelain"])
+        if status:
+            fail("working tree is not clean")
 
-    status = run_git(["status", "--porcelain"])
-    if status:
-        fail("working tree is not clean")
-
-    ahead_behind = run_git(["rev-list", "--left-right", "--count", "@{u}...HEAD"])
-    if ahead_behind != "0\t0":
-        fail(f"expected 0 ahead / 0 behind, found {ahead_behind!r}")
+        ahead_behind = run_git(["rev-list", "--left-right", "--count", "@{u}...HEAD"])
+        if ahead_behind != "0\t0":
+            fail(f"expected 0 ahead / 0 behind, found {ahead_behind!r}")
+    else:
+        print(f"note: not on {EXPECTED_BRANCH}; skipping its git-state checks, checking documents only")
 
     roadmap = read(ROADMAP)
     resume_doc = read(RESUME_DOC)

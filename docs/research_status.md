@@ -1,5 +1,7 @@
 # Research Status
 
+> **Historical document.** This research-status record is retained for provenance; its present-tense statements ("current", "active", "next") describe earlier project phases, and the status files its notice below points to are also historical. For the current study, start at [`docs/current/README.md`](current/README.md).
+
 > **This file is retained for historical compatibility. It is not the
 > current-status authority.** Current project status is maintained in
 > **[docs/current/PROJECT_STATUS.md](current/PROJECT_STATUS.md)**. See also

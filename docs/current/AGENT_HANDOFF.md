@@ -1,5 +1,7 @@
 # Agent Handoff
 
+> **Historical document.** This agent handoff records the project state as of 2026-07-22 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md).
+
 Short operational handoff for the current Wulver integration branch. For the
 full story, read `PROJECT_STATUS.md` first.
 

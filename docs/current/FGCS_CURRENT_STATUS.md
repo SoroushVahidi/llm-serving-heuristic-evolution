@@ -1,12 +1,14 @@
 # FGCS Current Status
 
+> **Historical document.** This status document for the superseded FGCS manuscript records the project state as of 2026-09-20 and is retained for provenance; its present-tense statements ("current", "active", "next") describe that date. For the current study, start at [`docs/current/README.md`](README.md). It is not the repository's current-status entry point.
+
 This is the canonical current-status entry point for the repository.
 
 - Canonical branch: `contextual-compositional-heuristics-20260731`
 - Canonical commit at this cleanup: see
   [`FGCS_REPOSITORY_FINALIZATION_REPORT.md`](FGCS_REPOSITORY_FINALIZATION_REPORT.md)
-- Canonical manuscript: [`paper/llm2026/main.tex`](../../paper/llm2026/main.tex)
-- Compiled PDF: [`paper/llm2026/main.pdf`](../../paper/llm2026/main.pdf)
+- Canonical manuscript: `paper/llm2026/main.tex` (path no longer exists; historical manuscript material is under [`paper/history/`](../../paper/history/))
+- Compiled PDF: `paper/llm2026/main.pdf` (path no longer exists)
 - Readiness: **92/100**
 - Contribution-strength confidence: **91%**
 - Package status: **READY_FOR_FINAL_SUBMISSION_AUDIT**
