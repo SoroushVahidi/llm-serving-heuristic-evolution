@@ -1,0 +1,5 @@
+# Optional dependencies for USAGE.md analysis examples only.
+# Public validation (validation/validate_public.py) needs Python 3.9+ stdlib.
+pandas>=1.5
+matplotlib>=3.5
+numpy>=1.22
