@@ -1,0 +1,7 @@
+policy_id,role,continuation
+kv_constrained_online,scan trajectory / SBS reference,fixed SBS
+full_prefill,candidate policy,not executed in scan; terminal labels only
+chunked_prefill_small,candidate policy,not executed in scan; terminal labels only
+estimated_service_time_first,candidate policy,not executed in scan; terminal labels only
+weighted_fair_share,candidate policy,not executed in scan; terminal labels only
+least_laxity_first,candidate policy,not executed in scan; terminal labels only
