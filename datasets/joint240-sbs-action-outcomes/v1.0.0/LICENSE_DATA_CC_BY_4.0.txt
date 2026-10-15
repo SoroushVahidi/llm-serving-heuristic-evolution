@@ -1,0 +1,9 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+This license applies only to the author-owned dataset files expressly listed
+in the release allowlist. It does not apply to third-party source material,
+the repository software, or any upstream dataset.
+
+License deed: https://creativecommons.org/licenses/by/4.0/
+Canonical legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+SPDX identifier: CC-BY-4.0
