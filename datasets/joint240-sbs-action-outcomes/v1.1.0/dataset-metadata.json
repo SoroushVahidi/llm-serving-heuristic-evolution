@@ -1,0 +1,10 @@
+{
+  "title": "Joint-240 SBS Action Outcomes: Full Scan (v1.1.0)",
+  "id": "soroushvahidi/joint240-sbs-action-outcomes",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0"
+    }
+  ],
+  "description": "452,918 synthetic SBS predecision state records from the completed Joint-240 campaign. Version 1.1.0 extends the published v1.0.0 selected outcomes; Kaggle is a distribution mirror of the same full-scan extension."
+}

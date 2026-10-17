@@ -1,0 +1,26 @@
+{
+  "dataset_title": "Joint-240 SBS Disagreement and One-Step Counterfactual Action Outcomes",
+  "version": "1.1.0",
+  "extension": "Full SBS predecision state scan",
+  "creator": "Soroush Vahidi",
+  "campaign": "joint240_sbs_disagreement_scan_v1/full_v1",
+  "source_scan_sha256": "e3808ffbb69bfba41c940bfc899db191ef1b642c49748a9021e959e20ea5a966",
+  "source_rows": 453016,
+  "excluded_matched_feature_keys": 98,
+  "released_rows": 452918,
+  "released_sha256": "3bf768f128a5a829506016fe1e54f93aebcb53e31335aa0d6dbfbd5a3d77bdfe",
+  "independent_scenarios": 240,
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "source_scenario_manifest_sha256": "9c1319eec8a107ced39277504caa17ffe47e3b3dc3ab866771470dd223363782",
+  "source_fold_manifest_sha256": "e676e785d9a56ce829cd317e29e04655e92140206b1936339e18263cf48e6708",
+  "source_validation": "Phase 6B validate_sources.py: all scan keys, five policy views/state, 240 scenarios, five folds, source hashes PASS",
+  "exclusion_rule": "Exclude 98 (scenario_id, step) keys whose 95 predecision numeric features match earlier Alive-acquired states within 1e-12; exact keys are in metadata/excluded_98_matched_feature_states.tsv.",
+  "prior_release": "https://zenodo.org/records/23398347",
+  "campaign_origin": "seeded synthetic scenario generator; no public workload trace, prompt, or raw third-party data included"
+}

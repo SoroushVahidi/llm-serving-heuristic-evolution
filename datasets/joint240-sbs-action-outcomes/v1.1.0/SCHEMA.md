@@ -1,0 +1,7 @@
+# Schema
+
+`data/full_sbs_state_scan.csv.gz` has 452,918 unique `(scenario_id,step)` and `state_id` records. Its 127 columns are the frozen canonical scan schema: seven leading trajectory/identity fields, SBS action, distinct-action counts and disagreement flags, six policy-specific full/admission canonical actions and difference indicators, and 95 `state__` numeric predecision features. The exact field names are the CSV header; no columns are inferred from the filename. `sim_time` is relative synthetic simulator time, not a source trace timestamp. Action tuples may contain synthetic request indices, not real user identifiers.
+
+`any_non_sbs_policy_differs` is 1 at 8,886 retained states and 0 at 444,032. The five other P6 policies are `full_prefill`, `chunked_prefill_small`, `estimated_service_time_first`, `weighted_fair_share`, and `least_laxity_first`; SBS is `kv_constrained_online`. `n_distinct_canonical_p6_actions_full` counts distinct full actions. `differing_policy_ids` is a policy-name list, not source data.
+
+Scenario metadata is one row per generated scenario (240). `split_oof_folds.csv` preserves the grouped fold assignment. The 98-key exclusion table is separate audit metadata; none of its keys occur in the scientific CSV. This release contains no terminal counterfactual outcome for the 444,032 equal-action states. The v1.0.0 outcome package remains the correct source for selected disagreement-state alternatives.
